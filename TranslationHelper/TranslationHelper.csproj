@@ -64,6 +64,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="THAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="THAbout.Designer.cs">
+      <DependentUpon>THAbout.cs</DependentUpon>
+    </Compile>
     <Compile Include="THMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +81,9 @@
     <Compile Include="THRPGMTransPatchFile.cs" />
     <Compile Include="THDetectSource.cs" />
     <Compile Include="THLang.cs" />
+    <EmbeddedResource Include="THAbout.resx">
+      <DependentUpon>THAbout.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="THMain.resx">
       <DependentUpon>THMain.cs</DependentUpon>
     </EmbeddedResource>

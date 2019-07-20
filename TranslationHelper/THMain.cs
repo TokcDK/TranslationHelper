@@ -424,15 +424,15 @@ namespace TranslationHelper
                     if (!String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGOriginalColumnName].Value.ToString())) //проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
                         THSourceTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGOriginalColumnName].Value.ToString(); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
-                                                                                                                                                //https://github.com/caguiclajmg/WanaKanaSharp
-                                                                                                                                                //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
-                                                                                                                                                //{
-                                                                                                                                                //    GetWords(THSourceTextBox.Text);
-                                                                                                                                                //   var hepburnConverter = new HepburnConverter();
-                                                                                                                                                //   WanaKana.ToRomaji(hepburnConverter, THSourceTextBox.Text); // hiragana
-                                                                                                                                                //}
-                                                                                                                                                //также по японо ыфуригане
-                                                                                                                                                //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
+                                                                                                                                                    //https://github.com/caguiclajmg/WanaKanaSharp
+                                                                                                                                                    //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
+                                                                                                                                                    //{
+                                                                                                                                                    //    GetWords(THSourceTextBox.Text);
+                                                                                                                                                    //   var hepburnConverter = new HepburnConverter();
+                                                                                                                                                    //   WanaKana.ToRomaji(hepburnConverter, THSourceTextBox.Text); // hiragana
+                                                                                                                                                    //}
+                                                                                                                                                    //также по японо ыфуригане
+                                                                                                                                                    //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
                     }
                     if (!String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value.ToString())) //проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
@@ -713,6 +713,12 @@ namespace TranslationHelper
             //pbstatuslabel.Visible = false;
             //pbstatuslabel.Text = string.Empty;
             return true;
+        }
+
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            THAboutForm AboutForm = new THAboutForm();
+            AboutForm.Show();
         }
     }
 
