@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,6 +14,8 @@ namespace TranslationHelper
         //public const string THStrDGTranslationColumnName = "Translation";
         //public const string THStrDGOriginalColumnName = "Original";
         private THLang LangF;
+        public string apppath = Application.StartupPath.ToString();
+        private string extractedpatchpath = "";
 
         private string FVariant = "";
         private BindingList<THRPGMTransPatchFile> THRPGMTransPatchFiles; //Все файлы
@@ -45,28 +48,22 @@ namespace TranslationHelper
         {
             OpenFileDialog THFOpen = new OpenFileDialog
             {
-                Filter = "RPGMaker file RPGMKTRANSPATCH|RPGMKTRANSPATCH|Game exe|*.exe|All files (*.*)|*.*"
+                Filter = "All compatible|*.exe;RPGMKTRANSPATCH|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|All files (*.*)|*.*"
             };
 
             if (THFOpen.ShowDialog() == DialogResult.OK)
             {
                 if (THFOpen.OpenFile() != null)
                 {
-                    //Cleaning
-                    THFilesListBox.Items.Clear();
-
-                    //Disable menus
-                    saveToolStripMenuItem.Enabled = false;
-                    saveAsToolStripMenuItem.Enabled = false;
-                    editToolStripMenuItem.Enabled = false;
-                    viewToolStripMenuItem.Enabled = false;
+                    THCleanupThings();
 
                     var dir = new DirectoryInfo(Path.GetDirectoryName(THFOpen.FileName));
+                    //MessageBox.Show("THFOpen.FileName=" + THFOpen.FileName);
                     //MessageBox.Show("dir=" + dir);
                     THSelectedDir = dir.ToString();
                     //MessageBox.Show("THSelectedDir=" + THSelectedDir);
 
-                    THSelectedSourceType = GetSourceType(THSelectedDir);
+                    THSelectedSourceType = GetSourceType(THFOpen.FileName);
                     //MessageBox.Show("sType=" + sType);
 
                     if (THSelectedSourceType == "RPGMTransPatch")
@@ -112,24 +109,132 @@ namespace TranslationHelper
             }
         }
 
+        private void THCleanupThings()
+        {
+            //Cleaning
+            THFilesListBox.Items.Clear();
+
+            //Disable menus
+            saveToolStripMenuItem.Enabled = false;
+            saveAsToolStripMenuItem.Enabled = false;
+            editToolStripMenuItem.Enabled = false;
+            viewToolStripMenuItem.Enabled = false;
+        }
+
         private string GetSourceType(String sPath)
         {
-            string SourceType = "";
 
             //MessageBox.Show("sPath=" + sPath);
-            if (File.Exists(sPath + "\\RPGMKTRANSPATCH"))
+            if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
             {
                 return "RPGMTransPatch";
             }
+            else if (sPath.ToLower().Contains("\\game.exe"))
+            {
+                extractedpatchpath = "";
+                bool result = TryToExtractToRPGMakerTransPatch(sPath);
+                //MessageBox.Show("result=" + result);
+                //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
+                if (result)
+                {
 
-            return SourceType;
+                    //Cleaning of the type
+                    THRPGMTransPatchFiles.Clear();
+
+                    //var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+                    //string patchver;
+                    var patchdir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+                    bool isv3 = Directory.Exists(extractedpatchpath + "\\patch");
+                    //MessageBox.Show("isv3=" + isv3+ ", patchdir="+ extractedpatchpath+ ", extractedpatchpath="+ extractedpatchpath);
+                    if (isv3) //если есть подпапка patch, тогда это версия патча 3.2
+                    {
+                        THRPGMTransPatchver = "3.2";
+                        extractedpatchpath += "\\patch";
+                        //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
+                        patchdir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpath+"\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
+                        //MessageBox.Show("patchdir1=" + patchdir);
+                    }
+                    else //иначе это версия 2
+                    {
+                        THRPGMTransPatchver = "2.0";
+                    }
+                    //MessageBox.Show("patchdir2=" + patchdir);
+
+                    var vRPGMTransPatchFiles = new List<string>();
+
+                    foreach (FileInfo file in patchdir.GetFiles("*.txt"))
+                    {
+                        //MessageBox.Show("file.FullName=" + file.FullName);
+                        vRPGMTransPatchFiles.Add(file.FullName);
+                    }
+
+                    //var RPGMTransPatch = new THRPGMTransPatchLoad(this);
+
+                    //THFilesDataGridView.Nodes.Add("main");
+                    //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
+                    //RPGMTransPatch.OpenTransFiles(files, patchver);
+                    //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
+                    if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
+                    {
+                        THSelectedDir = extractedpatchpath.Replace("\\patch","");
+                        saveToolStripMenuItem.Enabled = true;
+                        saveAsToolStripMenuItem.Enabled = true;
+                        editToolStripMenuItem.Enabled = true;
+                        viewToolStripMenuItem.Enabled = true;
+                        MessageBox.Show(THSelectedSourceType + " loaded!");
+                        return "RPG Maker game with RPGMTransPatch";
+                    }
+                }
+            }
+
+            MessageBox.Show("Uncompatible source.");
+            return "";
+        }
+
+        private bool TryToExtractToRPGMakerTransPatch(string sPath)
+        {
+            var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+            bool ret = false;
+            string tempdir = apppath + "\\Temp";
+            if (!Directory.Exists(tempdir))
+            {
+                Directory.CreateDirectory(tempdir);
+            }
+            //MessageBox.Show("tempdir=" + tempdir);
+            string outdir = apppath + "\\Temp\\" + Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath));
+
+            extractedpatchpath = outdir + "_patch";
+            if (!Directory.Exists(outdir))
+            {
+                Directory.CreateDirectory(outdir);
+
+                Process RPGMakerTransPatch = new Process();
+                //MessageBox.Show("outdir=" + outdir);
+                RPGMakerTransPatch.StartInfo.FileName = apppath + @"\\Res\\rpgmakertrans\\rpgmt.exe";
+                RPGMakerTransPatch.StartInfo.Arguments = "\"" + dir + "\" -p \"" + outdir + "_patch\"" + "\" -o \"" + outdir + "_translated\"";
+                ret = RPGMakerTransPatch.Start();
+                RPGMakerTransPatch.WaitForExit();
+                /*MessageBox.Show(
+                      "INFO: apppath=" + apppath
+                    + "\r\nRPGMakerTransPatch.StartInfo.FileName=" + RPGMakerTransPatch.StartInfo.FileName
+                    + "\r\nRPGMakerTransPatch.StartInfo.Arguments=" + RPGMakerTransPatch.StartInfo.Arguments
+                    + "\r\nsPath=" + sPath
+                               );*/
+            }
+            else
+            {
+                return true;
+            }
+            return ret;
         }
 
         private int invalidformat;
 
         public bool OpenRPGMTransPatchFiles(List<string> ListFiles, string patchver = "2.0")
         {
+            //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
             //MessageBox.Show("ListFiles=" + ListFiles);
+            //MessageBox.Show("ListFiles[0]=" + ListFiles[0]);
             System.IO.StreamReader _file;   //Через что читаем
             string _context = "";           //Комментарий
             string _advice = "";            //Предел длины строки
@@ -382,10 +487,14 @@ namespace TranslationHelper
                 //THFileElementsDataGridView.RowHeadersVisible = false; // set it to false if not needed
 
                 //https://www.codeproject.com/Questions/784355/How-to-solve-performance-issue-in-Datagridview-Min
-                THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
                 // Поменял List на BindingList и вроде чуть быстрее стало загружаться
                 try
                 {
+                    //THFiltersDataGridView.Columns.Clear();
+
+                    //сунул под try так как один раз здесь была ошибка о выходе за диапахон
+                    THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+
                     THFileElementsDataGridView.Columns["Context"].Visible = false;
                     THFileElementsDataGridView.Columns["Original"].Name = LangF.THStrDGOriginalColumnName;
                     THFileElementsDataGridView.Columns["Translation"].Name = LangF.THStrDGTranslationColumnName;
@@ -395,6 +504,25 @@ namespace TranslationHelper
                     {
                         THFileElementsDataGridView.Columns["Advice"].Visible = false;
                     }
+                    //MessageBox.Show("THFiltersDataGridView.Columns.Count=" + THFiltersDataGridView.Columns.Count
+                    //    + "\r\nTHFileElementsDataGridView visible Columns Count=" + THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible));
+                    if (THFiltersDataGridView.Columns.Count != THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible))
+                    {
+                        for (int cindx = 0; cindx < THFileElementsDataGridView.Columns.Count; cindx++)
+                        {
+                            if (THFileElementsDataGridView.Columns[cindx].Visible)
+                            {
+                                //MessageBox.Show("THFileElementsDataGridView.Columns[cindx].Name="+ THFileElementsDataGridView.Columns[cindx].Name
+                                //    + "\r\nTHFileElementsDataGridView.Columns[cindx].HeaderText="+ THFileElementsDataGridView.Columns[cindx].HeaderText);
+                                THFiltersDataGridView.Columns.Add(THFileElementsDataGridView.Columns[cindx].Name, THFileElementsDataGridView.Columns[cindx].HeaderText);
+                            }
+                        }
+                        THFiltersDataGridView.Rows.Add(1);
+                        THFiltersDataGridView.CurrentRow.Selected = false;
+                    }
+                    THSourceTextBox.Enabled = true;
+                    THTargetTextBox.Enabled = true;
+                    THTargetTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                 }
                 catch
                 {
@@ -408,8 +536,6 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
-            THSourceTextBox.Enabled = true;
-            THTargetTextBox.Enabled = true;
         }
 
         private void THFileElementsDataGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
@@ -584,9 +710,12 @@ namespace TranslationHelper
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (THSelectedSourceType == "RPGMTransPatch")
+            
+            MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
+            if (THSelectedSourceType == "RPGMTransPatch" || THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
             {
                 THInfoTextBox.Text = "Saving...";
+                MessageBox.Show("THSelectedDir="+ THSelectedDir);
                 SaveRPGMTransPatchFiles(THSelectedDir, THRPGMTransPatchver);
                 THInfoTextBox.Text = "";
             }
@@ -681,7 +810,7 @@ namespace TranslationHelper
                         }
                         String _path = SelectedDir + "\\patch\\" + THRPGMTransPatchFiles[i].Name + ".txt";
                         File.WriteAllText(_path, buffer);
-                        buffer = "";
+                        //buffer = "";
                     }
                 }
             }
@@ -692,7 +821,7 @@ namespace TranslationHelper
                     buffer = "# RPGMAKER TRANS PATCH FILE VERSION 2.0\r\n";
                     for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
                     {
-                        buffer = buffer + "# TEXT STRING\r\n";
+                        buffer += "# TEXT STRING\r\n";
                         if (THRPGMTransPatchFiles[i].blocks[y].Translation == "\r\n")
                             buffer += "# UNTRANSLATED\r\n";
                         buffer += "# CONTEXT : " + THRPGMTransPatchFiles[i].blocks[y].Context + "\r\n";
@@ -706,7 +835,7 @@ namespace TranslationHelper
                     {
                         String _path = SelectedDir + "\\" + THRPGMTransPatchFiles[i].Name + ".txt";
                         File.WriteAllText(_path, buffer);
-                        buffer = "";
+                        //buffer = "";
                     }
                 }
             }
@@ -720,9 +849,144 @@ namespace TranslationHelper
             THAboutForm AboutForm = new THAboutForm();
             AboutForm.Show();
         }
+
+        private void THTargetTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            //Ctrl+Del function
+            //https://stackoverflow.com/questions/18543198/why-cant-i-press-ctrla-or-ctrlbackspace-in-my-textbox
+            if (e.Control)
+            {
+                //if (e.KeyCode == Keys.A)
+                //{
+                //    THTargetTextBox.SelectAll();
+                //}
+                if (e.KeyCode == Keys.Back)
+                {
+                    e.SuppressKeyPress = true;
+                    int selStart = THTargetTextBox.SelectionStart;
+                    while (selStart > 0 && THTargetTextBox.Text.Substring(selStart - 1, 1) == " ")
+                    {
+                        selStart--;
+                    }
+                    int prevSpacePos = -1;
+                    if (selStart != 0)
+                    {
+                        prevSpacePos = THTargetTextBox.Text.LastIndexOf(' ', selStart - 1);
+                    }
+                    THTargetTextBox.Select(prevSpacePos + 1, THTargetTextBox.SelectionStart - prevSpacePos - 1);
+                    THTargetTextBox.SelectedText = "";
+                }
+            }
+        }
+
+        private void THFiltersDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            int cindx = e.ColumnIndex;
+            MessageBox.Show("e.ColumnIndex" + cindx);
+            for (int i = 0; i < THFileElementsDataGridView.Rows.Count; i++) //сделать все видимыми
+            {
+                THFileElementsDataGridView.Rows[i].Visible = true;
+            }
+
+            bool allfiltersisempty = true;
+            for (int c = 0; c < THFiltersDataGridView.Columns.Count; c++)//check if all filters is empty
+            {
+                if (THFiltersDataGridView.Rows[0].Cells[c].Value == null || string.IsNullOrEmpty(THFiltersDataGridView.Rows[0].Cells[c].Value.ToString()))
+                {
+                }
+                else
+                {
+                    allfiltersisempty = false;
+                    break;
+                }
+
+            }
+
+            if (allfiltersisempty)//Возврат, если все фильтры пустые
+            {
+                return;
+            }
+
+            //http://www.cyberforum.ru/post5844571.html
+            THFileElementsDataGridView.CurrentCell = null;
+            for (int i = 0; i < THFileElementsDataGridView.Rows.Count; i++)
+            {
+                bool stringfound = false;//по умолчанию скрыть, не найдено
+                for (int c = 0; c < THFiltersDataGridView.Columns.Count; c++)
+                {
+                    if (THFiltersDataGridView.Rows[0].Cells[c].Value == null)
+                    {
+
+                    }
+                    else
+                    {
+                        string THFilteringColumnValue = THFiltersDataGridView.Rows[0].Cells[c].Value.ToString();
+                        if (string.IsNullOrEmpty(THFilteringColumnValue))
+                        {
+                        }
+                        else
+                        {
+                            if (THFiltersDataGridView.Rows[0].Cells[c].Value == null)
+                            {
+                            }
+                            else
+                            {
+                                foreach (DataGridViewColumn column in THFileElementsDataGridView.Columns)
+                                {
+                                    //MessageBox.Show("THFiltersDataGridView.Columns[cindx].Name=" + THFiltersDataGridView.Columns[e.ColumnIndex].Name
+                                    //    + "\r\nTHFileElementsDataGridView.Columns[cindx].Name=" + THFileElementsDataGridView.Columns[cindx].Name);
+                                    if (cindx < THFileElementsDataGridView.Columns.Count-1/*Контроль на превышение лимита колонок, на всякий*/ && THFiltersDataGridView.Columns[e.ColumnIndex].Name == THFileElementsDataGridView.Columns[cindx].Name)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        cindx += 1;
+                                    }
+                                }
+
+                                if (THFileElementsDataGridView.Rows[i].Cells[cindx].Value == null)
+                                {
+                                    //THFileElementsDataGridView.Rows[i].Visible = false;
+                                }
+                                else if (THFileElementsDataGridView.Rows[i].Cells[cindx].Value.ToString().Contains(THFilteringColumnValue))
+                                {
+                                    stringfound = true; //строка найдена, показать
+                                }
+                                else
+                                {
+                                    //MessageBox.Show("THFileElementsDataGridView.Rows[i].Cells[e.ColumnIndex].Value.ToString()=" + THFileElementsDataGridView.Rows[i].Cells[e.ColumnIndex].Value.ToString());
+                                    //THFileElementsDataGridView.Rows[i].Visible = false;
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+                if (stringfound)
+                {
+                    THFileElementsDataGridView.Rows[i].Visible = true;
+                }
+                else
+                {
+                    THFileElementsDataGridView.Rows[i].Visible = false;
+                }
+            }
+        }
+
+        private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            THProgramSettingsForm THSettings = new THProgramSettingsForm();
+            THSettings.Show();
+        }
     }
 
     //Материалы
     //Сортировка при виртуальном режиме DatagridView
     //http://qaru.site/questions/1486005/c-datagridview-virtual-mode-enable-sorting
+    //c# - Поиск ячеек/строк по DataGridView
+    //http://www.skillcoding.com/Default.aspx?id=151
+    //Ошибка "Строку, связанную с положением CurrencyManager, нельзя сделать невидимой"
+    //http://www.cyberforum.ru/csharp-beginners/thread757809.html
 }

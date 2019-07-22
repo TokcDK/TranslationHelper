@@ -14,8 +14,8 @@ namespace TranslationHelper
 
         public string Procent
         {
-            get { return _procent; }
-            set { _procent = value; }
+            get => _procent;
+            set => _procent = value;
         }
 
         public THRPGMTransPatchFile(string Nm, string Pt, string Pc)

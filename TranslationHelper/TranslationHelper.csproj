@@ -64,6 +64,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="THProgramSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="THProgramSettingsForm.Designer.cs">
+      <DependentUpon>THProgramSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="THAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,11 +87,15 @@
     <Compile Include="THRPGMTransPatchFile.cs" />
     <Compile Include="THDetectSource.cs" />
     <Compile Include="THLang.cs" />
+    <EmbeddedResource Include="THProgramSettingsForm.resx">
+      <DependentUpon>THProgramSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="THAbout.resx">
       <DependentUpon>THAbout.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="THMain.resx">
       <DependentUpon>THMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

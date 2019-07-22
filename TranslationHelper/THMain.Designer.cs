@@ -34,6 +34,7 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.writeTranslationInGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,6 +42,7 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THsplitContainerFilesElements = new System.Windows.Forms.SplitContainer();
             this.THFilesListBox = new System.Windows.Forms.ListBox();
+            this.THFiltersDataGridView = new System.Windows.Forms.DataGridView();
             this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
             this.THEditElementsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THSourceTextBox = new System.Windows.Forms.TextBox();
@@ -49,11 +51,15 @@
             this.THInfoEditSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THInfoTextBox = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openInWebToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tryToTranslateOnlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
             this.THsplitContainerFilesElements.Panel2.SuspendLayout();
             this.THsplitContainerFilesElements.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.THEditElementsSplitContainer)).BeginInit();
             this.THEditElementsSplitContainer.Panel1.SuspendLayout();
@@ -88,7 +94,8 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem,
-            this.saveAsToolStripMenuItem});
+            this.saveAsToolStripMenuItem,
+            this.writeTranslationInGameToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -96,7 +103,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
@@ -104,7 +111,7 @@
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
             // 
@@ -112,12 +119,21 @@
             // 
             this.saveAsToolStripMenuItem.Enabled = false;
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.saveAsToolStripMenuItem.Text = "Save As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
             // 
+            // writeTranslationInGameToolStripMenuItem
+            // 
+            this.writeTranslationInGameToolStripMenuItem.Name = "writeTranslationInGameToolStripMenuItem";
+            this.writeTranslationInGameToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.writeTranslationInGameToolStripMenuItem.Text = "Write in game";
+            // 
             // editToolStripMenuItem
             // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openInWebToolStripMenuItem,
+            this.tryToTranslateOnlineToolStripMenuItem});
             this.editToolStripMenuItem.Enabled = false;
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -132,6 +148,8 @@
             // 
             // optionsToolStripMenuItem
             // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -147,7 +165,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
@@ -165,8 +183,9 @@
             // 
             // THsplitContainerFilesElements.Panel2
             // 
+            this.THsplitContainerFilesElements.Panel2.Controls.Add(this.THFiltersDataGridView);
             this.THsplitContainerFilesElements.Panel2.Controls.Add(this.THFileElementsDataGridView);
-            this.THsplitContainerFilesElements.Size = new System.Drawing.Size(773, 380);
+            this.THsplitContainerFilesElements.Size = new System.Drawing.Size(773, 366);
             this.THsplitContainerFilesElements.SplitterDistance = 125;
             this.THsplitContainerFilesElements.TabIndex = 3;
             // 
@@ -176,21 +195,44 @@
             this.THFilesListBox.FormattingEnabled = true;
             this.THFilesListBox.Location = new System.Drawing.Point(0, 0);
             this.THFilesListBox.Name = "THFilesListBox";
-            this.THFilesListBox.Size = new System.Drawing.Size(125, 380);
+            this.THFilesListBox.Size = new System.Drawing.Size(125, 366);
             this.THFilesListBox.TabIndex = 0;
             this.THFilesListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.THFilesListBox_MouseClick);
             // 
+            // THFiltersDataGridView
+            // 
+            this.THFiltersDataGridView.AllowUserToAddRows = false;
+            this.THFiltersDataGridView.AllowUserToDeleteRows = false;
+            this.THFiltersDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.THFiltersDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
+            this.THFiltersDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.THFiltersDataGridView.ColumnHeadersVisible = false;
+            this.THFiltersDataGridView.Dock = System.Windows.Forms.DockStyle.Top;
+            this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.THFiltersDataGridView.Location = new System.Drawing.Point(0, 0);
+            this.THFiltersDataGridView.Name = "THFiltersDataGridView";
+            this.THFiltersDataGridView.RowTemplate.Height = 23;
+            this.THFiltersDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.THFiltersDataGridView.Size = new System.Drawing.Size(644, 23);
+            this.THFiltersDataGridView.TabIndex = 3;
+            this.THFiltersDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellValueChanged);
+            // 
             // THFileElementsDataGridView
             // 
+            this.THFileElementsDataGridView.AllowUserToAddRows = false;
+            this.THFileElementsDataGridView.AllowUserToDeleteRows = false;
+            this.THFileElementsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.THFileElementsDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.THFileElementsDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.THFileElementsDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.THFileElementsDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.THFileElementsDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 0);
+            this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 22);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
-            this.THFileElementsDataGridView.Size = new System.Drawing.Size(644, 380);
+            this.THFileElementsDataGridView.Size = new System.Drawing.Size(644, 344);
             this.THFileElementsDataGridView.TabIndex = 2;
             this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
             this.THFileElementsDataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.THFileElementsDataGridView_CellValueNeeded);
@@ -209,7 +251,7 @@
             // THEditElementsSplitContainer.Panel2
             // 
             this.THEditElementsSplitContainer.Panel2.Controls.Add(this.THTargetTextBox);
-            this.THEditElementsSplitContainer.Size = new System.Drawing.Size(638, 96);
+            this.THEditElementsSplitContainer.Size = new System.Drawing.Size(638, 93);
             this.THEditElementsSplitContainer.SplitterDistance = 291;
             this.THEditElementsSplitContainer.TabIndex = 4;
             // 
@@ -222,18 +264,21 @@
             this.THSourceTextBox.Multiline = true;
             this.THSourceTextBox.Name = "THSourceTextBox";
             this.THSourceTextBox.ReadOnly = true;
-            this.THSourceTextBox.Size = new System.Drawing.Size(291, 96);
+            this.THSourceTextBox.Size = new System.Drawing.Size(291, 93);
             this.THSourceTextBox.TabIndex = 1;
             // 
             // THTargetTextBox
             // 
+            this.THTargetTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.THTargetTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.RecentlyUsedList;
             this.THTargetTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.THTargetTextBox.Enabled = false;
             this.THTargetTextBox.Location = new System.Drawing.Point(0, 0);
             this.THTargetTextBox.Multiline = true;
             this.THTargetTextBox.Name = "THTargetTextBox";
-            this.THTargetTextBox.Size = new System.Drawing.Size(343, 96);
+            this.THTargetTextBox.Size = new System.Drawing.Size(343, 93);
             this.THTargetTextBox.TabIndex = 0;
+            this.THTargetTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
             // 
             // THWorkSpaceSplitContainer
             // 
@@ -251,8 +296,8 @@
             // THWorkSpaceSplitContainer.Panel2
             // 
             this.THWorkSpaceSplitContainer.Panel2.Controls.Add(this.THInfoEditSplitContainer);
-            this.THWorkSpaceSplitContainer.Size = new System.Drawing.Size(773, 482);
-            this.THWorkSpaceSplitContainer.SplitterDistance = 382;
+            this.THWorkSpaceSplitContainer.Size = new System.Drawing.Size(773, 465);
+            this.THWorkSpaceSplitContainer.SplitterDistance = 368;
             this.THWorkSpaceSplitContainer.TabIndex = 5;
             // 
             // THInfoEditSplitContainer
@@ -270,7 +315,7 @@
             // THInfoEditSplitContainer.Panel2
             // 
             this.THInfoEditSplitContainer.Panel2.Controls.Add(this.THEditElementsSplitContainer);
-            this.THInfoEditSplitContainer.Size = new System.Drawing.Size(770, 96);
+            this.THInfoEditSplitContainer.Size = new System.Drawing.Size(770, 93);
             this.THInfoEditSplitContainer.SplitterDistance = 128;
             this.THInfoEditSplitContainer.TabIndex = 5;
             // 
@@ -281,7 +326,7 @@
             this.THInfoTextBox.Multiline = true;
             this.THInfoTextBox.Name = "THInfoTextBox";
             this.THInfoTextBox.ReadOnly = true;
-            this.THInfoTextBox.Size = new System.Drawing.Size(128, 96);
+            this.THInfoTextBox.Size = new System.Drawing.Size(128, 93);
             this.THInfoTextBox.TabIndex = 0;
             // 
             // contextMenuStrip1
@@ -289,11 +334,32 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // openInWebToolStripMenuItem
+            // 
+            this.openInWebToolStripMenuItem.Name = "openInWebToolStripMenuItem";
+            this.openInWebToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F12;
+            this.openInWebToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.openInWebToolStripMenuItem.Text = "Open in web";
+            // 
+            // tryToTranslateOnlineToolStripMenuItem
+            // 
+            this.tryToTranslateOnlineToolStripMenuItem.Name = "tryToTranslateOnlineToolStripMenuItem";
+            this.tryToTranslateOnlineToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F12)));
+            this.tryToTranslateOnlineToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.tryToTranslateOnlineToolStripMenuItem.Text = "Try to translate online";
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
+            // 
             // THMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(790, 521);
+            this.ClientSize = new System.Drawing.Size(790, 504);
             this.Controls.Add(this.THWorkSpaceSplitContainer);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -305,6 +371,7 @@
             this.THsplitContainerFilesElements.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).EndInit();
             this.THsplitContainerFilesElements.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).EndInit();
             this.THEditElementsSplitContainer.Panel1.ResumeLayout(false);
             this.THEditElementsSplitContainer.Panel1.PerformLayout();
@@ -347,6 +414,11 @@
         public System.Windows.Forms.ListBox THFilesListBox;
         private System.Windows.Forms.TextBox THInfoTextBox;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem writeTranslationInGameToolStripMenuItem;
+        private System.Windows.Forms.DataGridView THFiltersDataGridView;
+        private System.Windows.Forms.ToolStripMenuItem openInWebToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tryToTranslateOnlineToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
     }
 }
 
