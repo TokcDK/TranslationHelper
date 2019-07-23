@@ -44,7 +44,8 @@
             this.THAboutTextBox.Size = new System.Drawing.Size(298, 223);
             this.THAboutTextBox.TabIndex = 0;
             this.THAboutTextBox.Text = "Translation Helper bu DenisK (c)2019\r\n\r\nUtility which helps in translation of som" +
-    "e games and other.\r\n\r\nCurrently can help translate:\r\nRPG Maker Trans Patch";
+    "e games and other.\r\n\r\nCurrently can help translate:\r\nRPG Maker Trans Patch\r\n\r\nCr" +
+    "edits:\r\nAleph Fell for RPGMakerTrans";
             // 
             // THAboutForm
             // 

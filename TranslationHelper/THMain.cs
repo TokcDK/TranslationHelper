@@ -42,6 +42,9 @@ namespace TranslationHelper
             LangF.THReadLanguageFileToStrings();
             THRPGMTransPatchFiles = new BindingList<THRPGMTransPatchFile>();
             //dt = new DataTable();
+
+            //Test Проверка ключа Git для планируемой функции использования Git
+            //string GitPath = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows", "InstallPath", null).ToString();
         }
 
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
