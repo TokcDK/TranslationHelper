@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,11 +15,14 @@ namespace TranslationHelper
         //public const string THStrDGTranslationColumnName = "Translation";
         //public const string THStrDGOriginalColumnName = "Original";
         private THLang LangF;
+
         public string apppath = Application.StartupPath.ToString();
         private string extractedpatchpath = "";
 
         private string FVariant = "";
         private BindingList<THRPGMTransPatchFile> THRPGMTransPatchFiles; //Все файлы
+        DataTable fileslistdt = new DataTable();
+        DataSet ds = new DataSet();
         //DataTable dt;
         //private BindingSource THBS = new BindingSource();
 
@@ -51,7 +55,7 @@ namespace TranslationHelper
         {
             OpenFileDialog THFOpen = new OpenFileDialog
             {
-                Filter = "All compatible|*.exe;RPGMKTRANSPATCH|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|All files (*.*)|*.*"
+                Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|All files (*.*)|*.*"
             };
 
             if (THFOpen.ShowDialog() == DialogResult.OK)
@@ -59,55 +63,7 @@ namespace TranslationHelper
                 if (THFOpen.OpenFile() != null)
                 {
                     THCleanupThings();
-
-                    var dir = new DirectoryInfo(Path.GetDirectoryName(THFOpen.FileName));
-                    //MessageBox.Show("THFOpen.FileName=" + THFOpen.FileName);
-                    //MessageBox.Show("dir=" + dir);
-                    THSelectedDir = dir.ToString();
-                    //MessageBox.Show("THSelectedDir=" + THSelectedDir);
-
                     THSelectedSourceType = GetSourceType(THFOpen.FileName);
-                    //MessageBox.Show("sType=" + sType);
-
-                    if (THSelectedSourceType == "RPGMTransPatch")
-                    {
-                        //Cleaning of the type
-                        THRPGMTransPatchFiles.Clear();
-
-                        //string patchver;
-                        var patchdir = dir;
-                        if (Directory.Exists(THSelectedDir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3.2
-                        {
-                            THRPGMTransPatchver = "3.2";
-                            patchdir = new DirectoryInfo(Path.GetDirectoryName(THFOpen.FileName) + "\\patch");
-                        }
-                        else //иначе это версия 2
-                        {
-                            THRPGMTransPatchver = "2.0";
-                        }
-
-                        var vRPGMTransPatchFiles = new List<string>();
-
-                        foreach (FileInfo file in patchdir.GetFiles("*.txt"))
-                        {
-                            //MessageBox.Show("file.FullName=" + file.FullName);
-                            vRPGMTransPatchFiles.Add(file.FullName);
-                        }
-
-                        //var RPGMTransPatch = new THRPGMTransPatchLoad(this);
-
-                        //THFilesDataGridView.Nodes.Add("main");
-                        //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
-                        //RPGMTransPatch.OpenTransFiles(files, patchver);
-                        if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
-                        {
-                            saveToolStripMenuItem.Enabled = true;
-                            saveAsToolStripMenuItem.Enabled = true;
-                            editToolStripMenuItem.Enabled = true;
-                            viewToolStripMenuItem.Enabled = true;
-                            MessageBox.Show(THSelectedSourceType + " loaded!");
-                        }
-                    }
                 }
             }
         }
@@ -126,78 +82,461 @@ namespace TranslationHelper
 
         private string GetSourceType(String sPath)
         {
-
             //MessageBox.Show("sPath=" + sPath);
             if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
             {
-                return "RPGMTransPatch";
+                return RPGMTransPatchPrepare(sPath);
+                //return "RPGMTransPatch";
             }
             else if (sPath.ToLower().Contains("\\game.exe"))
             {
-                extractedpatchpath = "";
-                bool result = TryToExtractToRPGMakerTransPatch(sPath);
-                //MessageBox.Show("result=" + result);
-                //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
-                if (result)
+                var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+
+                if (File.Exists(dir.ToString() + "\\www\\data\\system.json"))
                 {
-
-                    //Cleaning of the type
-                    THRPGMTransPatchFiles.Clear();
-
-                    //var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-                    //string patchver;
-                    var patchdir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-                    bool isv3 = Directory.Exists(extractedpatchpath + "\\patch");
-                    //MessageBox.Show("isv3=" + isv3+ ", patchdir="+ extractedpatchpath+ ", extractedpatchpath="+ extractedpatchpath);
-                    if (isv3) //если есть подпапка patch, тогда это версия патча 3.2
-                    {
-                        THRPGMTransPatchver = "3.2";
-                        extractedpatchpath += "\\patch";
-                        //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
-                        patchdir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpath+"\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
-                        //MessageBox.Show("patchdir1=" + patchdir);
-                    }
-                    else //иначе это версия 2
-                    {
-                        THRPGMTransPatchver = "2.0";
-                    }
-                    //MessageBox.Show("patchdir2=" + patchdir);
-
-                    var vRPGMTransPatchFiles = new List<string>();
-
-                    foreach (FileInfo file in patchdir.GetFiles("*.txt"))
+                    //var MVJsonFIles = new List<string>();
+                    var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(dir.ToString() + "\\www\\data\\"));
+                    foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
                     {
                         //MessageBox.Show("file.FullName=" + file.FullName);
-                        vRPGMTransPatchFiles.Add(file.FullName);
+                        //MVJsonFIles.Add(file.FullName);
+
+                        if (OpenRPGMakerMVjson(file.FullName))
+                        {
+                        }
+                        else
+                        {
+                            return "";
+                        }
                     }
 
-                    //var RPGMTransPatch = new THRPGMTransPatchLoad(this);
-
-                    //THFilesDataGridView.Nodes.Add("main");
-                    //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
-                    //RPGMTransPatch.OpenTransFiles(files, patchver);
-                    //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
-                    if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
+                    for (int i = 0; i < ds.Tables.Count; i++)
                     {
-                        THSelectedDir = extractedpatchpath.Replace("\\patch","");
-                        saveToolStripMenuItem.Enabled = true;
-                        saveAsToolStripMenuItem.Enabled = true;
-                        editToolStripMenuItem.Enabled = true;
-                        viewToolStripMenuItem.Enabled = true;
-                        MessageBox.Show(THSelectedSourceType + " loaded!");
-                        return "RPG Maker game with RPGMTransPatch";
+                        THFilesListBox.Items.Add(ds.Tables[i].TableName);
                     }
+                    return "RPG Maker MV json";
+                }
+                else
+                {
+
+                    extractedpatchpath = "";
+                    bool result = TryToExtractToRPGMakerTransPatch(sPath);
+                    //MessageBox.Show("result=" + result);
+                    //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
+                    if (result)
+                    {
+                        //Cleaning of the type
+                        THRPGMTransPatchFiles.Clear();
+
+                        //var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+                        //string patchver;
+                        bool isv3 = Directory.Exists(extractedpatchpath + "\\patch");
+                        //MessageBox.Show("isv3=" + isv3+ ", patchdir="+ extractedpatchpath+ ", extractedpatchpath="+ extractedpatchpath);
+                        if (isv3) //если есть подпапка patch, тогда это версия патча 3.2
+                        {
+                            THRPGMTransPatchver = "3.2";
+                            extractedpatchpath += "\\patch";
+                            //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
+                            dir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpath + "\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
+                                                                                                       //MessageBox.Show("patchdir1=" + patchdir);
+                        }
+                        else //иначе это версия 2
+                        {
+                            THRPGMTransPatchver = "2.0";
+                        }
+                        //MessageBox.Show("patchdir2=" + patchdir);
+
+                        var vRPGMTransPatchFiles = new List<string>();
+
+                        foreach (FileInfo file in dir.GetFiles("*.txt"))
+                        {
+                            //MessageBox.Show("file.FullName=" + file.FullName);
+                            vRPGMTransPatchFiles.Add(file.FullName);
+                        }
+
+                        //var RPGMTransPatch = new THRPGMTransPatchLoad(this);
+
+                        //THFilesDataGridView.Nodes.Add("main");
+                        //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
+                        //RPGMTransPatch.OpenTransFiles(files, patchver);
+                        //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
+                        if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
+                        {
+                            THSelectedDir = extractedpatchpath.Replace("\\patch", "");
+                            saveToolStripMenuItem.Enabled = true;
+                            saveAsToolStripMenuItem.Enabled = true;
+                            editToolStripMenuItem.Enabled = true;
+                            viewToolStripMenuItem.Enabled = true;
+                            MessageBox.Show(THSelectedSourceType + " loaded!");
+                            return "RPG Maker game with RPGMTransPatch";
+                        }
+                    }
+                }
+
+            }
+            else if (sPath.ToLower().Contains(".json"))
+            {
+                if (OpenRPGMakerMVjson(sPath))
+                {
+                    for (int i=0; i < ds.Tables.Count; i++)
+                    {
+                        THFilesListBox.Items.Add(ds.Tables[i].TableName);
+                    }
+                    return "RPG Maker MV json";
                 }
             }
 
-            MessageBox.Show("Uncompatible source.");
+            MessageBox.Show("Uncompatible source or problem while opening.");
             return "";
+        }
+
+        private string RPGMTransPatchPrepare(string sPath)
+        {
+
+            var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+            //MessageBox.Show("THFOpen.FileName=" + THFOpen.FileName);
+            //MessageBox.Show("dir=" + dir);
+            THSelectedDir = dir.ToString();
+            //MessageBox.Show("THSelectedDir=" + THSelectedDir);
+
+            //MessageBox.Show("sType=" + sType);
+
+            //if (THSelectedSourceType == "RPGMTransPatch")
+            //{
+                //Cleaning of the type
+                THRPGMTransPatchFiles.Clear();
+
+                //string patchver;
+                var patchdir = dir;
+                if (Directory.Exists(THSelectedDir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3.2
+                {
+                    THRPGMTransPatchver = "3.2";
+                    patchdir = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\patch");
+                }
+                else //иначе это версия 2
+                {
+                    THRPGMTransPatchver = "2.0";
+                }
+
+                var vRPGMTransPatchFiles = new List<string>();
+
+                foreach (FileInfo file in patchdir.GetFiles("*.txt"))
+                {
+                    //MessageBox.Show("file.FullName=" + file.FullName);
+                    vRPGMTransPatchFiles.Add(file.FullName);
+                }
+
+                //var RPGMTransPatch = new THRPGMTransPatchLoad(this);
+
+                //THFilesDataGridView.Nodes.Add("main");
+                //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
+                //RPGMTransPatch.OpenTransFiles(files, patchver);
+                if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
+                {
+                    saveToolStripMenuItem.Enabled = true;
+                    saveAsToolStripMenuItem.Enabled = true;
+                    editToolStripMenuItem.Enabled = true;
+                    viewToolStripMenuItem.Enabled = true;
+                    MessageBox.Show(THSelectedSourceType + " loaded!");
+                    return "RPGMTransPatch";
+                }
+            //}
+            return "";
+        }
+
+        private bool OpenRPGMakerMVjson(string sPath)
+        {
+            //StreamReader _file = new StreamReader(sPath);
+            //while (!_file.EndOfStream)
+            //{
+            //string jsonline = _file.ReadLine();
+            //string jsonstring = _file.ReadToEnd();
+            //JObject o1 = JObject.Parse(File.ReadAllText(@"test.json"));
+            //var parsedObject = JObject.Parse(o1);
+            //THFileElementsDataGridView.DataSource = o1;
+            //if (parsedObject.ToString().ToLower().Contains("name"))
+            //{
+            //RPGMakerMVjsonFile o = JsonConvert.DeserializeObject<RPGMakerMVjsonFile>(jsonline);
+            //MessageBox.Show(o.Name);
+            //}
+            //}
+
+            //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
+            /*using (var reader = new StreamReader(sPath))
+            using (var jsonReader = new JsonTextReader(reader))
+            {
+                var root = JToken.Load(jsonReader);
+                THFileElementsDataGridView.DataSource = root;
+            }*/
+
+            try
+            {
+
+                //Вроде прочитало в DGV
+                //источник: https://stackoverflow.com/questions/23763446/how-to-display-the-json-data-in-datagridview-in-c-sharp-windows-application-from
+
+                string Jsonname = Path.GetFileNameWithoutExtension(sPath); // get json file name
+                string jsondata = File.ReadAllText(sPath); // get json data
+
+                ds.Tables.Add(Jsonname); // create table with json name
+                ds.Tables[Jsonname].Columns.Add("Original"); //create Original column
+
+                bool name = false;
+                bool description = false;
+                bool displayname = false;
+                bool note = false;
+                bool message1 = false;
+                bool message2 = false;
+                bool message3 = false;
+                bool message4 = false;
+                bool nickname = false;
+                bool profile = false;
+
+                string jsonname = Jsonname.ToLower(); //set jsonname to lower registry
+                if (jsonname == "items" || jsonname == "armors" || jsonname == "weapons")
+                {
+                    //("name", "description", "note")
+                    name = true;
+                    description = true;
+                    note = true;
+                }
+                else if (jsonname == "skills")
+                {
+                    //("name", "description", "message1", "message2", "note")
+                    name = true;
+                    description = true;
+                    message1 = true;
+                    message2 = true;
+                    note = true;
+                }
+                else if (jsonname == "states")
+                {
+                    //("name", "message1", "message2", "message3", "message4", "note")
+                    name = true;
+                    message1 = true;
+                    message2 = true;
+                    message3 = true;
+                    message4 = true;
+                    note = true;
+                }
+                else if (jsonname == "classes" || jsonname == "enemies" || jsonname == "tilesets")
+                {
+                    //("name", "note")
+                    name = true;
+                    note = true;
+                }
+                else if (jsonname == "animations" || jsonname == "mapinfos")
+                {
+                    //("name")
+                    name = true;
+                }
+                else if (jsonname == "actors")
+                {
+                    //("name", "nickname", "note", "profile")
+                    name = true;
+                    nickname = true;
+                    note = true;
+                    profile = true;
+                }
+                else if (jsonname == "map")
+                {
+                    //['displayName'] / ['note'] / ['events'][$eIndex]['name'] / ['events'][$eIndex]['note']
+                    displayname = true;
+                    name = true;
+                    note = true;
+                }
+                else if (jsonname == "troops")
+                {
+                    //"name" / 
+                    name = true;
+                }
+                else if (jsonname == "commonevents")
+                {
+                    //"name" / 
+                    name = true;
+                }
+                else if (jsonname == "system")
+                {
+                    //"name" /
+                    name = true;
+                }
+
+                ds.Tables[Jsonname].Columns.Add("Translation");
+
+                bool ret = FillDSTableWithJsonValues(
+                    jsondata,
+                    name,
+                    description,
+                    displayname,
+                    note, message1,
+                    message2,
+                    message3,
+                    message4,
+                    nickname,
+                    profile);
+
+                //var result = JsonConvert.DeserializeObject<List<RPGMakerMVjson>>(File.ReadAllText(sPath));
+                //var resultdescriptions = JsonConvert.DeserializeObject<List<RPGMakerMVjsonFileDescriptions>>(File.ReadAllText(sPath));
+                //var resultparameters = JsonConvert.DeserializeObject<List<RPGMakerMVjsonFileParameters>>(File.ReadAllText(sPath));
+                
+                //THFileElementsDataGridView.DataSource = ds.Tables[0];
+                //THFileElementsDataGridView.Columns[0].ReadOnly = true;
+
+                return ret;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+        private bool FillDSTableWithJsonValues(string jsondata, bool name = false, bool description = false, bool displayname = false, bool note = false, bool message1 = false, bool message2 = false, bool message3 = false, bool message4 = false, bool nickname = false , bool profile = false )
+        {
+            try
+            {
+                if (name)
+                {
+                    foreach (RPGMakerMVjsonName Name in JsonConvert.DeserializeObject<List<RPGMakerMVjsonName>>(jsondata))
+                    {
+                        if (Name == null || string.IsNullOrEmpty(Name.Name))
+                        {
+                        }
+                        else
+                        {
+                            ds.Tables[0].Rows.Add(Name.Name);
+                        }
+                    }
+                }
+                if (description)
+                {
+                    foreach (RPGMakerMVjsonDescription Description in JsonConvert.DeserializeObject<List<RPGMakerMVjsonDescription>>(jsondata))
+                    {
+                        if (Description == null || string.IsNullOrEmpty(Description.Description))
+                        {
+                        }
+                        else
+                        {
+                            ds.Tables[0].Rows.Add(Description.Description);
+                        }
+                    }
+                }
+                if (displayname)
+                {
+                    foreach (RPGMakerMVjsonDisplayName DisplayName in JsonConvert.DeserializeObject<List<RPGMakerMVjsonDisplayName>>(jsondata))
+                    {
+                        if (DisplayName == null || string.IsNullOrEmpty(DisplayName.DisplayName))
+                        {
+                        }
+                        else
+                        {
+                            ds.Tables[0].Rows.Add(DisplayName.DisplayName);
+                        }
+                    }
+                }
+                if (note)
+                {
+                    foreach (RPGMakerMVjsonNote Note in JsonConvert.DeserializeObject<List<RPGMakerMVjsonNote>>(jsondata))
+                    {
+                        if (Note == null || string.IsNullOrEmpty(Note.Note))
+                        {
+                        }
+                        else
+                        {
+                            ds.Tables[0].Rows.Add(Note.Note);
+                        }
+                    }
+                }
+                if (message1)
+                {
+                    foreach (RPGMakerMVjsonMessage1 Message1 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage1>>(jsondata))
+                    {
+                        if (Message1 == null || string.IsNullOrEmpty(Message1.Message1))
+                        {
+                        }
+                        else
+                        {
+                            ds.Tables[0].Rows.Add(Message1.Message1);
+                        }
+                    }
+                }
+                if (message2)
+                {
+                    foreach (RPGMakerMVjsonMessage2 Message2 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage2>>(jsondata))
+                    {
+                        if (Message2 == null || string.IsNullOrEmpty(Message2.Message2))
+                        {
+                        }
+                        else
+                        {
+                            ds.Tables[0].Rows.Add(Message2.Message2);
+                        }
+                    }
+                }
+                if (message3)
+                {
+                    foreach (RPGMakerMVjsonMessage3 Message3 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage3>>(jsondata))
+                    {
+                        if (Message3 == null || string.IsNullOrEmpty(Message3.Message3))
+                        {
+                        }
+                        else
+                        {
+                            ds.Tables[0].Rows.Add(Message3.Message3);
+                        }
+                    }
+                }
+                if (message4)
+                {
+                    foreach (RPGMakerMVjsonMessage4 Message4 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage4>>(jsondata))
+                    {
+                        if (Message4 == null || string.IsNullOrEmpty(Message4.Message4))
+                        {
+                        }
+                        else
+                        {
+                            ds.Tables[0].Rows.Add(Message4.Message4);
+                        }
+                    }
+                }
+                if (nickname)
+                {
+                    foreach (RPGMakerMVjsonNickname Nickname in JsonConvert.DeserializeObject<List<RPGMakerMVjsonNickname>>(jsondata))
+                    {
+                        if (Nickname == null || string.IsNullOrEmpty(Nickname.Nickname))
+                        {
+                        }
+                        else
+                        {
+                            ds.Tables[0].Rows.Add(Nickname.Nickname);
+                        }
+                    }
+                }
+                if (profile)
+                {
+                    foreach (RPGMakerMVjsonProfile Profile in JsonConvert.DeserializeObject<List<RPGMakerMVjsonProfile>>(jsondata))
+                    {
+                        if (Profile == null || string.IsNullOrEmpty(Profile.Profile))
+                        {
+                        }
+                        else
+                        {
+                            ds.Tables[0].Rows.Add(Profile.Profile);
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private bool TryToExtractToRPGMakerTransPatch(string sPath)
         {
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-            bool ret = false;
             string tempdir = apppath + "\\Temp";
             if (!Directory.Exists(tempdir))
             {
@@ -207,6 +546,7 @@ namespace TranslationHelper
             string outdir = apppath + "\\Temp\\" + Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath));
 
             extractedpatchpath = outdir + "_patch";
+            bool ret;
             if (!Directory.Exists(outdir))
             {
                 Directory.CreateDirectory(outdir);
@@ -493,36 +833,46 @@ namespace TranslationHelper
                 // Поменял List на BindingList и вроде чуть быстрее стало загружаться
                 try
                 {
-                    //THFiltersDataGridView.Columns.Clear();
+                    if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
+                    {
+                        //THFiltersDataGridView.Columns.Clear();
 
-                    //сунул под try так как один раз здесь была ошибка о выходе за диапахон
-                    THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+                        //сунул под try так как один раз здесь была ошибка о выходе за диапахон
+                        THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
 
-                    THFileElementsDataGridView.Columns["Context"].Visible = false;
+                        THFileElementsDataGridView.Columns["Context"].Visible = false;
+                        THFileElementsDataGridView.Columns["Status"].Visible = false;
+                        THFiltersDataGridView.Enabled = true;
+                        if (FVariant == " * RPG Maker Trans Patch 3.2")
+                        {
+                            THFileElementsDataGridView.Columns["Advice"].Visible = false;
+                        }
+                        //MessageBox.Show("THFiltersDataGridView.Columns.Count=" + THFiltersDataGridView.Columns.Count
+                        //    + "\r\nTHFileElementsDataGridView visible Columns Count=" + THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible));
+                        if (THFiltersDataGridView.Columns.Count != THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible))
+                        {
+                            for (int cindx = 0; cindx < THFileElementsDataGridView.Columns.Count; cindx++)
+                            {
+                                if (THFileElementsDataGridView.Columns[cindx].Visible)
+                                {
+                                    //MessageBox.Show("THFileElementsDataGridView.Columns[cindx].Name="+ THFileElementsDataGridView.Columns[cindx].Name
+                                    //    + "\r\nTHFileElementsDataGridView.Columns[cindx].HeaderText="+ THFileElementsDataGridView.Columns[cindx].HeaderText);
+                                    THFiltersDataGridView.Columns.Add(THFileElementsDataGridView.Columns[cindx].Name, THFileElementsDataGridView.Columns[cindx].HeaderText);
+                                }
+                            }
+                            THFiltersDataGridView.Rows.Add(1);
+                            THFiltersDataGridView.CurrentRow.Selected = false;
+                        }
+                    }
+                    else if (THSelectedSourceType.Contains("RPG Maker MV"))
+                    {
+                        THFileElementsDataGridView.DataSource = ds.Tables[THFilesListBox.SelectedIndex];
+                    }
+
+
                     THFileElementsDataGridView.Columns["Original"].Name = LangF.THStrDGOriginalColumnName;
                     THFileElementsDataGridView.Columns["Translation"].Name = LangF.THStrDGTranslationColumnName;
                     THFileElementsDataGridView.Columns[LangF.THStrDGOriginalColumnName].ReadOnly = true;
-                    THFileElementsDataGridView.Columns["Status"].Visible = false;
-                    if (FVariant == " * RPG Maker Trans Patch 3.2")
-                    {
-                        THFileElementsDataGridView.Columns["Advice"].Visible = false;
-                    }
-                    //MessageBox.Show("THFiltersDataGridView.Columns.Count=" + THFiltersDataGridView.Columns.Count
-                    //    + "\r\nTHFileElementsDataGridView visible Columns Count=" + THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible));
-                    if (THFiltersDataGridView.Columns.Count != THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible))
-                    {
-                        for (int cindx = 0; cindx < THFileElementsDataGridView.Columns.Count; cindx++)
-                        {
-                            if (THFileElementsDataGridView.Columns[cindx].Visible)
-                            {
-                                //MessageBox.Show("THFileElementsDataGridView.Columns[cindx].Name="+ THFileElementsDataGridView.Columns[cindx].Name
-                                //    + "\r\nTHFileElementsDataGridView.Columns[cindx].HeaderText="+ THFileElementsDataGridView.Columns[cindx].HeaderText);
-                                THFiltersDataGridView.Columns.Add(THFileElementsDataGridView.Columns[cindx].Name, THFileElementsDataGridView.Columns[cindx].HeaderText);
-                            }
-                        }
-                        THFiltersDataGridView.Rows.Add(1);
-                        THFiltersDataGridView.CurrentRow.Selected = false;
-                    }
                     THSourceTextBox.Enabled = true;
                     THTargetTextBox.Enabled = true;
                     THTargetTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
@@ -713,12 +1063,11 @@ namespace TranslationHelper
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
             MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
             if (THSelectedSourceType == "RPGMTransPatch" || THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
             {
                 THInfoTextBox.Text = "Saving...";
-                MessageBox.Show("THSelectedDir="+ THSelectedDir);
+                MessageBox.Show("THSelectedDir=" + THSelectedDir);
                 SaveRPGMTransPatchFiles(THSelectedDir, THRPGMTransPatchver);
                 THInfoTextBox.Text = "";
             }
@@ -902,7 +1251,6 @@ namespace TranslationHelper
                     allfiltersisempty = false;
                     break;
                 }
-
             }
 
             if (allfiltersisempty)//Возврат, если все фильтры пустые
@@ -919,7 +1267,6 @@ namespace TranslationHelper
                 {
                     if (THFiltersDataGridView.Rows[0].Cells[c].Value == null)
                     {
-
                     }
                     else
                     {
@@ -938,7 +1285,7 @@ namespace TranslationHelper
                                 {
                                     //MessageBox.Show("THFiltersDataGridView.Columns[cindx].Name=" + THFiltersDataGridView.Columns[e.ColumnIndex].Name
                                     //    + "\r\nTHFileElementsDataGridView.Columns[cindx].Name=" + THFileElementsDataGridView.Columns[cindx].Name);
-                                    if (cindx < THFileElementsDataGridView.Columns.Count-1/*Контроль на превышение лимита колонок, на всякий*/ && THFiltersDataGridView.Columns[e.ColumnIndex].Name == THFileElementsDataGridView.Columns[cindx].Name)
+                                    if (cindx < THFileElementsDataGridView.Columns.Count - 1/*Контроль на превышение лимита колонок, на всякий*/ && THFiltersDataGridView.Columns[e.ColumnIndex].Name == THFileElementsDataGridView.Columns[cindx].Name)
                                     {
                                         break;
                                     }
@@ -961,7 +1308,6 @@ namespace TranslationHelper
                                     //MessageBox.Show("THFileElementsDataGridView.Rows[i].Cells[e.ColumnIndex].Value.ToString()=" + THFileElementsDataGridView.Rows[i].Cells[e.ColumnIndex].Value.ToString());
                                     //THFileElementsDataGridView.Rows[i].Visible = false;
                                 }
-
                             }
                         }
                     }

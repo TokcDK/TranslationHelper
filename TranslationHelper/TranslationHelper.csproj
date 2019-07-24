@@ -39,6 +39,9 @@
     <Reference Include="gem, Version=1.1.0.4239, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Gem.1.1.0.4239\lib\netstandard2.0\gem.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
@@ -64,6 +67,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RPGMakerMVjson.cs" />
     <Compile Include="THProgramSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>

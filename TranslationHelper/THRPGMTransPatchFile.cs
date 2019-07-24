@@ -4,7 +4,7 @@ namespace TranslationHelper
 {
     internal class THRPGMTransPatchFile
     {
-        public string _procent;       //Путь к файлу
+        public string _procent;
 
         public BindingList<Block> blocks;  //Блоки
 

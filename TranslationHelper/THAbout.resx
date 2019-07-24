@@ -117,4 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="THAboutTextBox.Text" xml:space="preserve">
+    <value>Translation Helper bu DenisK (c)2019
+
+Utility which helps in translation of some games and other.
+
+Currently can help translate:
+RPG Maker Trans Patch
+
+Credits:
+Aleph Fell (Habisain) for RPGMakerTrans</value>
+  </data>
 </root>
