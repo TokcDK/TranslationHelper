@@ -334,6 +334,7 @@
             this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
             this.THFileElementsDataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.THFileElementsDataGridView_CellValueNeeded);
             this.THFileElementsDataGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.THFileElementsDataGridView_DataBindingComplete);
+            this.THFileElementsDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFileElementsDataGridView_RowPostPaint);
             // 
             // THEditElementsSplitContainer
             // 

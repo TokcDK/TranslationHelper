@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -12,6 +13,8 @@ namespace TranslationHelper
 {
     public partial class THMain : Form
     {
+        //public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
+        THProgramSettingsForm Settings = new THProgramSettingsForm();
         //public const string THStrDGTranslationColumnName = "Translation";
         //public const string THStrDGOriginalColumnName = "Original";
         private THLang LangF;
@@ -34,6 +37,7 @@ namespace TranslationHelper
         {
             InitializeComponent();
             LangF = new THLang();
+            Settings.GetSettings();
             fileToolStripMenuItem.Text = LangF.THStrfileToolStripMenuItemName;
             openToolStripMenuItem.Text = LangF.THStropenToolStripMenuItemName;
             saveToolStripMenuItem.Text = LangF.THStrsaveToolStripMenuItemName;
@@ -276,6 +280,11 @@ namespace TranslationHelper
                 //источник: https://stackoverflow.com/questions/23763446/how-to-display-the-json-data-in-datagridview-in-c-sharp-windows-application-from
 
                 string Jsonname = Path.GetFileNameWithoutExtension(sPath); // get json file name
+                if (ds.Tables.Contains(Jsonname))
+                {
+                    //MessageBox.Show("true!");
+                    return true;
+                }
                 string jsondata = File.ReadAllText(sPath); // get json data
 
                 ds.Tables.Add(Jsonname); // create table with json name
@@ -291,6 +300,8 @@ namespace TranslationHelper
                 bool message4 = false;
                 bool nickname = false;
                 bool profile = false;
+                bool maps = false;
+                bool cmnevents = false;
 
                 string jsonname = Jsonname.ToLower(); //set jsonname to lower registry
                 if (jsonname == "items" || jsonname == "armors" || jsonname == "weapons")
@@ -338,12 +349,13 @@ namespace TranslationHelper
                     note = true;
                     profile = true;
                 }
-                else if (jsonname == "map")
+                else if (jsonname.StartsWith("map"))
                 {
                     //['displayName'] / ['note'] / ['events'][$eIndex]['name'] / ['events'][$eIndex]['note']
-                    displayname = true;
-                    name = true;
-                    note = true;
+                    //displayname = true;
+                    //name = true;
+                    //note = true;
+                    maps = true;
                 }
                 else if (jsonname == "troops")
                 {
@@ -354,6 +366,7 @@ namespace TranslationHelper
                 {
                     //"name" / 
                     name = true;
+                    cmnevents = true;
                 }
                 else if (jsonname == "system")
                 {
@@ -364,6 +377,7 @@ namespace TranslationHelper
                 ds.Tables[Jsonname].Columns.Add("Translation");
 
                 bool ret = FillDSTableWithJsonValues(
+                    Jsonname,
                     jsondata,
                     name,
                     description,
@@ -373,7 +387,9 @@ namespace TranslationHelper
                     message3,
                     message4,
                     nickname,
-                    profile);
+                    profile,
+                    maps,
+                    cmnevents);
 
                 //var result = JsonConvert.DeserializeObject<List<RPGMakerMVjson>>(File.ReadAllText(sPath));
                 //var resultdescriptions = JsonConvert.DeserializeObject<List<RPGMakerMVjsonFileDescriptions>>(File.ReadAllText(sPath));
@@ -391,7 +407,20 @@ namespace TranslationHelper
 
         }
 
-        private bool FillDSTableWithJsonValues(string jsondata, bool name = false, bool description = false, bool displayname = false, bool note = false, bool message1 = false, bool message2 = false, bool message3 = false, bool message4 = false, bool nickname = false , bool profile = false )
+        private bool FillDSTableWithJsonValues(string Jsonname,
+                                               string jsondata,
+                                               bool name = false,
+                                               bool description = false,
+                                               bool displayname = false,
+                                               bool note = false,
+                                               bool message1 = false,
+                                               bool message2 = false,
+                                               bool message3 = false,
+                                               bool message4 = false,
+                                               bool nickname = false,
+                                               bool profile = false,
+                                               bool maps = false,
+                                               bool cmnevents = false)
         {
             try
             {
@@ -404,7 +433,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            ds.Tables[0].Rows.Add(Name.Name);
+                            ds.Tables[Jsonname].Rows.Add(Name.Name);
                         }
                     }
                 }
@@ -417,7 +446,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            ds.Tables[0].Rows.Add(Description.Description);
+                            ds.Tables[Jsonname].Rows.Add(Description.Description);
                         }
                     }
                 }
@@ -430,7 +459,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            ds.Tables[0].Rows.Add(DisplayName.DisplayName);
+                            ds.Tables[Jsonname].Rows.Add(DisplayName.DisplayName);
                         }
                     }
                 }
@@ -443,7 +472,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            ds.Tables[0].Rows.Add(Note.Note);
+                            ds.Tables[Jsonname].Rows.Add(Note.Note);
                         }
                     }
                 }
@@ -456,7 +485,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            ds.Tables[0].Rows.Add(Message1.Message1);
+                            ds.Tables[Jsonname].Rows.Add(Message1.Message1);
                         }
                     }
                 }
@@ -469,7 +498,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            ds.Tables[0].Rows.Add(Message2.Message2);
+                            ds.Tables[Jsonname].Rows.Add(Message2.Message2);
                         }
                     }
                 }
@@ -482,7 +511,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            ds.Tables[0].Rows.Add(Message3.Message3);
+                            ds.Tables[Jsonname].Rows.Add(Message3.Message3);
                         }
                     }
                 }
@@ -495,7 +524,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            ds.Tables[0].Rows.Add(Message4.Message4);
+                            ds.Tables[Jsonname].Rows.Add(Message4.Message4);
                         }
                     }
                 }
@@ -508,7 +537,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            ds.Tables[0].Rows.Add(Nickname.Nickname);
+                            ds.Tables[Jsonname].Rows.Add(Nickname.Nickname);
                         }
                     }
                 }
@@ -521,9 +550,208 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            ds.Tables[0].Rows.Add(Profile.Profile);
+                            ds.Tables[Jsonname].Rows.Add(Profile.Profile);
                         }
                     }
+                }
+
+                if (cmnevents)
+                {
+                    var cmnevent = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
+
+                    foreach (var p in cmnevent)
+                    {
+                        if (p == null || p.Property1 == null)
+                        {
+
+                        }
+                        else
+                        {
+                            foreach (var p1 in p.Property1)
+                            {
+                                foreach (var lst in p1.list)
+                                {
+                                    foreach (var parameter in lst.parameters)
+                                    {
+                                        if (parameter == null)
+                                        {
+
+                                        }
+                                        else if (parameter.GetType().Name == "String")
+                                        {
+                                            string pstring = parameter.ToString();
+                                            if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring))
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                ds.Tables[Jsonname].Rows.Add(pstring);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+                if (maps)
+                {
+                    //bool eventsdone = false;
+                    //bool geteventnamenotedone = false;
+
+                    var map = JsonConvert.DeserializeObject<RPGMakerMVjsonMap>(jsondata);
+
+                    if (map.Events.Length > 1) //first event is empty
+                    {
+                        //Map displayed name
+                        if (string.IsNullOrEmpty(map.DisplayName) || SelectedLocalePercentFromStringIsNotValid(map.DisplayName))
+                        {
+                        }
+                        else
+                        {
+                            //MessageBox.Show("map.DisplayName:" + map.DisplayName);
+                            ds.Tables[Jsonname].Rows.Add(map.DisplayName);
+                        }
+                        //Map note
+                        if (string.IsNullOrEmpty(map.Note) || SelectedLocalePercentFromStringIsNotValid(map.Note))
+                        {
+                        }
+                        else
+                        {
+                            //MessageBox.Show("map.Note:" + map.Note);
+                            ds.Tables[Jsonname].Rows.Add(map.Note);
+                        }
+
+                        //string prevval = "";
+                        foreach (Event ev in map.Events)
+                        {
+                            if (ev == null)
+                            {
+                            }
+                            else
+                            {
+                                //event name
+                                if (string.IsNullOrEmpty(ev.Name) || ev.Name.StartsWith("EV") || SelectedLocalePercentFromStringIsNotValid(ev.Name))
+                                {
+                                }
+                                else
+                                {
+                                    //MessageBox.Show("map.Events add name"+ ev.Name);
+                                    ds.Tables[Jsonname].Rows.Add(ev.Name);
+                                    //prevval = ev.Name;
+                                }
+                                //event note
+                                if (string.IsNullOrEmpty(ev.Note) || SelectedLocalePercentFromStringIsNotValid(ev.Note))
+                                {
+                                }
+                                else
+                                {
+                                    //MessageBox.Show("map.Events add note:" + ev.Note);
+                                    ds.Tables[Jsonname].Rows.Add(ev.Note);
+                                }
+
+                                //event parameters
+                                foreach (Page page in ev.pages)
+                                {
+                                    foreach (PageList lst in page.list)
+                                    {
+                                        foreach (var parameter in lst.parameters)
+                                        {
+                                            if (parameter == null)
+                                            {
+
+                                            }
+                                            else if (parameter.GetType().Name == "String")
+                                            {
+                                                string pstring = parameter.ToString();
+                                                if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring))
+                                                {
+
+                                                }
+                                                else
+                                                {
+                                                    ds.Tables[Jsonname].Rows.Add(pstring);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    /*
+                    foreach (RPGMakerMVjsonMap map in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMap>>(jsondata))
+                    {
+                        if (map == null)
+                        {
+                        }
+                        else
+                        {
+                            if (geteventnamenotedone)
+                            {
+
+                            }
+                            else
+                            {
+                                if (string.IsNullOrEmpty(map.Note))
+                                {
+                                }
+                                else
+                                {
+                                    //MessageBox.Show("map.Note:" + map.Note);
+                                    ds.Tables[Jsonname].Rows.Add(map.Note);
+                                }
+                                if (string.IsNullOrEmpty(map.DisplayName))
+                                {
+                                }
+                                else
+                                {
+                                    //MessageBox.Show("map.DisplayName:" + map.DisplayName);
+                                    ds.Tables[Jsonname].Rows.Add(map.DisplayName);
+                                }
+                                geteventnamenotedone = true;
+                            }
+
+                            //events
+                            if (eventsdone)
+                            {
+
+                            }
+                            else if (map.Events.Length < 2)
+                            {
+                                //MessageBox.Show("map.Events.Length < 2 / break");
+                                break;
+                            }
+                            else
+                            {
+                                foreach (Event ev in map.Events)
+                                {
+                                    if (ev == null || string.IsNullOrEmpty(ev.Name))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        //MessageBox.Show("map.Events add name"+ ev.Name);
+                                        ds.Tables[Jsonname].Rows.Add(ev.Name);
+                                    }
+                                    if (ev == null || string.IsNullOrEmpty(ev.Note))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        //MessageBox.Show("map.Events add note:" + ev.Note);
+                                        ds.Tables[Jsonname].Rows.Add(ev.Note);
+                                    }
+                                }
+                                eventsdone = true;
+
+                            }
+                        }
+                    }
+                    */
                 }
 
                 return true;
@@ -532,6 +760,11 @@ namespace TranslationHelper
             {
                 return false;
             }
+        }
+
+        private bool HasNOJPcharacters(string str)
+        {
+            return GetLocaleLangCount(str, "kanji") < 1 && GetLocaleLangCount(str, "katakana") < 1 && GetLocaleLangCount(str, "hiragana") < 1;
         }
 
         private bool TryToExtractToRPGMakerTransPatch(string sPath)
@@ -1061,6 +1294,16 @@ namespace TranslationHelper
             return all;
         }
 
+        private bool SelectedLocalePercentFromStringIsNotValid(string target, string langlocale = "romaji", float percent = 80)
+        {
+            if (langlocale == "romaji" && Settings.THOptionDontLoadStringIfRomajiPercentCheckBox.Checked)
+            {
+                //MessageBox.Show("romaji percent in "+ target + "=" + GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all"));
+                return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > int.Parse(Settings.THOptionDontLoadStringIfRomajiPercentTextBox.Text);
+            }
+            return false;
+        }
+
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
@@ -1328,6 +1571,22 @@ namespace TranslationHelper
         {
             THProgramSettingsForm THSettings = new THProgramSettingsForm();
             THSettings.Show();
+        }
+
+        private void THFileElementsDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            var grid = sender as DataGridView;
+            var rowIdx = (e.RowIndex + 1).ToString();
+
+            var centerFormat = new StringFormat()
+            {
+                // right alignment might actually make more sense for numbers
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
+
+            var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+            e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
     }
 

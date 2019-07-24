@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,91 +6,8 @@ using System.Threading.Tasks;
 
 namespace TranslationHelper
 {
-    class RPGMakerMVjson
-    {
-        //name - string
-        //description - string
-        //displayName - string
-        //note - string
-        //parameters - array?
 
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string DisplayName { get; set; }
-        public string Note { get; set; }
-        public string Parameters { get; set; }
-
-    }
-
-    class RPGMakerMVjsonName
-    {
-        public string Name { get; set; }
-    }
-
-    class RPGMakerMVjsonDescription
-    {
-        public string Description { get; set; }
-    }
-
-    class RPGMakerMVjsonDisplayName
-    {
-        public string DisplayName { get; set; }
-    }
-
-    class RPGMakerMVjsonNote
-    {
-        public string Note { get; set; }
-    }
-
-    class RPGMakerMVjsonMessage1
-    {
-        public string Message1 { get; set; }
-    }
-
-    class RPGMakerMVjsonMessage2
-    {
-        public string Message2 { get; set; }
-    }
-
-    class RPGMakerMVjsonMessage3
-    {
-        public string Message3 { get; set; }
-    }
-
-    class RPGMakerMVjsonMessage4
-    {
-        public string Message4 { get; set; }
-    }
-
-    class RPGMakerMVjsonNickname
-    {
-        public string Nickname { get; set; }
-    }
-
-    class RPGMakerMVjsonProfile
-    {
-        public string Profile { get; set; }
-    }
-
-
-    /////////////////////////
-    /*
-    public class RPGMakerMVjsonMap
-    {
-        public string DisplayName { get; set; }
-        public string Note { get; set; }
-        public Event[] Events { get; set; }
-    }
-
-    public class Event
-    {
-        public string Name { get; set; }
-        public string Note { get; set; }
-    }
-    */
-
-    //RPGMakerMVjsonMap
-    public class RPGMakerMVjsonMap
+    public class Rootobject
     {
         public bool autoplayBgm { get; set; }
         public bool autoplayBgs { get; set; }
@@ -101,11 +16,11 @@ namespace TranslationHelper
         public Bgm bgm { get; set; }
         public Bgs bgs { get; set; }
         public bool disableDashing { get; set; }
-        public string DisplayName { get; set; }
+        public string displayName { get; set; }
         public Encounterlist[] encounterList { get; set; }
         public int encounterStep { get; set; }
         public int height { get; set; }
-        public string Note { get; set; }
+        public string note { get; set; }
         public bool parallaxLoopX { get; set; }
         public bool parallaxLoopY { get; set; }
         public string parallaxName { get; set; }
@@ -117,7 +32,7 @@ namespace TranslationHelper
         public int tilesetId { get; set; }
         public int width { get; set; }
         public int[] data { get; set; }
-        public Event[] Events { get; set; }
+        public Event[] events { get; set; }
     }
 
     public class Bgm
@@ -146,8 +61,8 @@ namespace TranslationHelper
     public class Event
     {
         public int id { get; set; }
-        public string Name { get; set; }
-        public string Note { get; set; }
+        public string name { get; set; }
+        public string note { get; set; }
         public Page[] pages { get; set; }
         public int x { get; set; }
         public int y { get; set; }
@@ -158,7 +73,7 @@ namespace TranslationHelper
         public Conditions conditions { get; set; }
         public bool directionFix { get; set; }
         public Image image { get; set; }
-        public PageList[] list { get; set; }
+        public List1[] list { get; set; }
         public int moveFrequency { get; set; }
         public Moveroute moveRoute { get; set; }
         public int moveSpeed { get; set; }
@@ -210,34 +125,12 @@ namespace TranslationHelper
         public object[] parameters { get; set; }
     }
 
-    public class PageList
+    public class List1
     {
         public int code { get; set; }
         public int indent { get; set; }
         public object[] parameters { get; set; }
     }
-    //RPGMakerMVjsonMap
 
-    //RPGMakerMVjsonCommonEvents
-    public class RPGMakerMVjsonCommonEvents
-    {
-       public CEventProperty1[] Property1 { get; set; }
-    }
 
-    public class CEventProperty1
-    {
-        public int id { get; set; }
-        public CEList[] list { get; set; }
-        public string name { get; set; }
-        public int switchId { get; set; }
-        public int trigger { get; set; }
-    }
-
-    public class CEList
-    {
-        public int code { get; set; }
-        public int indent { get; set; }
-        public object[] parameters { get; set; }
-    }
-    //RPGMakerMVjsonCommonEvents
 }
