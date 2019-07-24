@@ -428,7 +428,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonName Name in JsonConvert.DeserializeObject<List<RPGMakerMVjsonName>>(jsondata))
                     {
-                        if (Name == null || string.IsNullOrEmpty(Name.Name))
+                        if (Name == null || string.IsNullOrEmpty(Name.Name) || SelectedLocalePercentFromStringIsNotValid(Name.Name))
                         {
                         }
                         else
@@ -441,7 +441,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonDescription Description in JsonConvert.DeserializeObject<List<RPGMakerMVjsonDescription>>(jsondata))
                     {
-                        if (Description == null || string.IsNullOrEmpty(Description.Description))
+                        if (Description == null || string.IsNullOrEmpty(Description.Description) || SelectedLocalePercentFromStringIsNotValid(Description.Description))
                         {
                         }
                         else
@@ -454,7 +454,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonDisplayName DisplayName in JsonConvert.DeserializeObject<List<RPGMakerMVjsonDisplayName>>(jsondata))
                     {
-                        if (DisplayName == null || string.IsNullOrEmpty(DisplayName.DisplayName))
+                        if (DisplayName == null || string.IsNullOrEmpty(DisplayName.DisplayName) || SelectedLocalePercentFromStringIsNotValid(DisplayName.DisplayName))
                         {
                         }
                         else
@@ -467,7 +467,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonNote Note in JsonConvert.DeserializeObject<List<RPGMakerMVjsonNote>>(jsondata))
                     {
-                        if (Note == null || string.IsNullOrEmpty(Note.Note))
+                        if (Note == null || string.IsNullOrEmpty(Note.Note) || SelectedLocalePercentFromStringIsNotValid(Note.Note))
                         {
                         }
                         else
@@ -480,7 +480,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonMessage1 Message1 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage1>>(jsondata))
                     {
-                        if (Message1 == null || string.IsNullOrEmpty(Message1.Message1))
+                        if (Message1 == null || string.IsNullOrEmpty(Message1.Message1) || SelectedLocalePercentFromStringIsNotValid(Message1.Message1))
                         {
                         }
                         else
@@ -493,7 +493,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonMessage2 Message2 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage2>>(jsondata))
                     {
-                        if (Message2 == null || string.IsNullOrEmpty(Message2.Message2))
+                        if (Message2 == null || string.IsNullOrEmpty(Message2.Message2) || SelectedLocalePercentFromStringIsNotValid(Message2.Message2))
                         {
                         }
                         else
@@ -506,7 +506,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonMessage3 Message3 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage3>>(jsondata))
                     {
-                        if (Message3 == null || string.IsNullOrEmpty(Message3.Message3))
+                        if (Message3 == null || string.IsNullOrEmpty(Message3.Message3) || SelectedLocalePercentFromStringIsNotValid(Message3.Message3))
                         {
                         }
                         else
@@ -519,7 +519,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonMessage4 Message4 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage4>>(jsondata))
                     {
-                        if (Message4 == null || string.IsNullOrEmpty(Message4.Message4))
+                        if (Message4 == null || string.IsNullOrEmpty(Message4.Message4) || SelectedLocalePercentFromStringIsNotValid(Message4.Message4))
                         {
                         }
                         else
@@ -532,7 +532,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonNickname Nickname in JsonConvert.DeserializeObject<List<RPGMakerMVjsonNickname>>(jsondata))
                     {
-                        if (Nickname == null || string.IsNullOrEmpty(Nickname.Nickname))
+                        if (Nickname == null || string.IsNullOrEmpty(Nickname.Nickname) || SelectedLocalePercentFromStringIsNotValid(Nickname.Nickname))
                         {
                         }
                         else
@@ -545,7 +545,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonProfile Profile in JsonConvert.DeserializeObject<List<RPGMakerMVjsonProfile>>(jsondata))
                     {
-                        if (Profile == null || string.IsNullOrEmpty(Profile.Profile))
+                        if (Profile == null || string.IsNullOrEmpty(Profile.Profile) || SelectedLocalePercentFromStringIsNotValid(Profile.Profile))
                         {
                         }
                         else
@@ -1224,9 +1224,9 @@ namespace TranslationHelper
                 {
                     ret += ("       katakana:" + GetLocaleLangCount(target, "katakana") + "\r\n");
                 }
-                if (target.Length > GetLocaleLangCount(target, "all"))
+                if (GetLocaleLangCount(target, "other") > 0)
                 {
-                    ret += ("       other:" + (target.Length - GetLocaleLangCount(target, "all")) + "\r\n");
+                    ret += ("       other:" + (GetLocaleLangCount(target, "other")) + "\r\n");
                 }
             }
             else if (langlocale.ToLower() == "romaji")
@@ -1268,7 +1268,7 @@ namespace TranslationHelper
             int all = (romaji + kanji + hiragana + katakana);
             if (langlocale.ToLower() == "all")
             {
-                return (all);
+                return all + (target.Length - all);
             }
             else if (langlocale.ToLower() == "romaji")
             {
@@ -1298,7 +1298,6 @@ namespace TranslationHelper
         {
             if (langlocale == "romaji" && Settings.THOptionDontLoadStringIfRomajiPercentCheckBox.Checked)
             {
-                //MessageBox.Show("romaji percent in "+ target + "=" + GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all"));
                 return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > int.Parse(Settings.THOptionDontLoadStringIfRomajiPercentTextBox.Text);
             }
             return false;
