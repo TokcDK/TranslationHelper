@@ -70,8 +70,6 @@
     <Compile Include="FileWriter.cs" />
     <Compile Include="IniFiles.cs" />
     <Compile Include="RPGMakerMVjson.cs" />
-    <Compile Include="RPGMMVjsonCommonEvents.cs" />
-    <Compile Include="RPGMMVjsonmap.cs" />
     <Compile Include="THProgramSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>

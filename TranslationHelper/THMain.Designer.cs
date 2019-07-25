@@ -362,6 +362,7 @@
             this.THSourceTextBox.Multiline = true;
             this.THSourceTextBox.Name = "THSourceTextBox";
             this.THSourceTextBox.ReadOnly = true;
+            this.THSourceTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.THSourceTextBox.Size = new System.Drawing.Size(291, 93);
             this.THSourceTextBox.TabIndex = 1;
             // 
@@ -374,6 +375,7 @@
             this.THTargetTextBox.Location = new System.Drawing.Point(0, 0);
             this.THTargetTextBox.Multiline = true;
             this.THTargetTextBox.Name = "THTargetTextBox";
+            this.THTargetTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.THTargetTextBox.Size = new System.Drawing.Size(343, 93);
             this.THTargetTextBox.TabIndex = 0;
             this.THTargetTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);

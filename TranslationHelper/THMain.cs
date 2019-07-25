@@ -13,6 +13,7 @@ namespace TranslationHelper
 {
     public partial class THMain : Form
     {
+        string THLog;
         //public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
         THProgramSettingsForm Settings = new THProgramSettingsForm();
         //public const string THStrDGTranslationColumnName = "Translation";
@@ -184,7 +185,7 @@ namespace TranslationHelper
                 {
                     for (int i=0; i < ds.Tables.Count; i++)
                     {
-                        THFilesListBox.Items.Add(ds.Tables[i].TableName);
+                        THFilesListBox.Items.Add(ds.Tables[i].TableName); //add all dataset tables names to the ListBox
                     }
                     return "RPG Maker MV json";
                 }
@@ -365,7 +366,7 @@ namespace TranslationHelper
                 else if (jsonname == "commonevents")
                 {
                     //"name" / 
-                    name = true;
+                    //name = true;
                     cmnevents = true;
                 }
                 else if (jsonname == "system")
@@ -373,9 +374,7 @@ namespace TranslationHelper
                     //"name" /
                     name = true;
                 }
-
-                ds.Tables[Jsonname].Columns.Add("Translation");
-
+                
                 bool ret = FillDSTableWithJsonValues(
                     Jsonname,
                     jsondata,
@@ -394,9 +393,18 @@ namespace TranslationHelper
                 //var result = JsonConvert.DeserializeObject<List<RPGMakerMVjson>>(File.ReadAllText(sPath));
                 //var resultdescriptions = JsonConvert.DeserializeObject<List<RPGMakerMVjsonFileDescriptions>>(File.ReadAllText(sPath));
                 //var resultparameters = JsonConvert.DeserializeObject<List<RPGMakerMVjsonFileParameters>>(File.ReadAllText(sPath));
-                
+
                 //THFileElementsDataGridView.DataSource = ds.Tables[0];
                 //THFileElementsDataGridView.Columns[0].ReadOnly = true;
+
+                if (ds.Tables[Jsonname].Rows.Count > 0)
+                {
+                    ds.Tables[Jsonname].Columns.Add("Translation");
+                }
+                else
+                {
+                    ds.Tables.Remove(Jsonname); // remove table if was no items added
+                }
 
                 return ret;
             }
@@ -428,7 +436,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonName Name in JsonConvert.DeserializeObject<List<RPGMakerMVjsonName>>(jsondata))
                     {
-                        if (Name == null || string.IsNullOrEmpty(Name.Name) || SelectedLocalePercentFromStringIsNotValid(Name.Name))
+                        if (Name == null || string.IsNullOrEmpty(Name.Name) || SelectedLocalePercentFromStringIsNotValid(Name.Name) || GetAlreadyAddedInTable(Jsonname, Name.Name))
                         {
                         }
                         else
@@ -441,7 +449,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonDescription Description in JsonConvert.DeserializeObject<List<RPGMakerMVjsonDescription>>(jsondata))
                     {
-                        if (Description == null || string.IsNullOrEmpty(Description.Description) || SelectedLocalePercentFromStringIsNotValid(Description.Description))
+                        if (Description == null || string.IsNullOrEmpty(Description.Description) || SelectedLocalePercentFromStringIsNotValid(Description.Description) || GetAlreadyAddedInTable(Jsonname, Description.Description))
                         {
                         }
                         else
@@ -454,7 +462,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonDisplayName DisplayName in JsonConvert.DeserializeObject<List<RPGMakerMVjsonDisplayName>>(jsondata))
                     {
-                        if (DisplayName == null || string.IsNullOrEmpty(DisplayName.DisplayName) || SelectedLocalePercentFromStringIsNotValid(DisplayName.DisplayName))
+                        if (DisplayName == null || string.IsNullOrEmpty(DisplayName.DisplayName) || SelectedLocalePercentFromStringIsNotValid(DisplayName.DisplayName) || GetAlreadyAddedInTable(Jsonname, DisplayName.DisplayName))
                         {
                         }
                         else
@@ -467,7 +475,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonNote Note in JsonConvert.DeserializeObject<List<RPGMakerMVjsonNote>>(jsondata))
                     {
-                        if (Note == null || string.IsNullOrEmpty(Note.Note) || SelectedLocalePercentFromStringIsNotValid(Note.Note))
+                        if (Note == null || string.IsNullOrEmpty(Note.Note) || SelectedLocalePercentFromStringIsNotValid(Note.Note) || GetAlreadyAddedInTable(Jsonname, Note.Note))
                         {
                         }
                         else
@@ -480,7 +488,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonMessage1 Message1 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage1>>(jsondata))
                     {
-                        if (Message1 == null || string.IsNullOrEmpty(Message1.Message1) || SelectedLocalePercentFromStringIsNotValid(Message1.Message1))
+                        if (Message1 == null || string.IsNullOrEmpty(Message1.Message1) || SelectedLocalePercentFromStringIsNotValid(Message1.Message1) || GetAlreadyAddedInTable(Jsonname, Message1.Message1))
                         {
                         }
                         else
@@ -493,7 +501,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonMessage2 Message2 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage2>>(jsondata))
                     {
-                        if (Message2 == null || string.IsNullOrEmpty(Message2.Message2) || SelectedLocalePercentFromStringIsNotValid(Message2.Message2))
+                        if (Message2 == null || string.IsNullOrEmpty(Message2.Message2) || SelectedLocalePercentFromStringIsNotValid(Message2.Message2) || GetAlreadyAddedInTable(Jsonname, Message2.Message2))
                         {
                         }
                         else
@@ -506,7 +514,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonMessage3 Message3 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage3>>(jsondata))
                     {
-                        if (Message3 == null || string.IsNullOrEmpty(Message3.Message3) || SelectedLocalePercentFromStringIsNotValid(Message3.Message3))
+                        if (Message3 == null || string.IsNullOrEmpty(Message3.Message3) || SelectedLocalePercentFromStringIsNotValid(Message3.Message3) || GetAlreadyAddedInTable(Jsonname, Message3.Message3))
                         {
                         }
                         else
@@ -519,7 +527,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonMessage4 Message4 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage4>>(jsondata))
                     {
-                        if (Message4 == null || string.IsNullOrEmpty(Message4.Message4) || SelectedLocalePercentFromStringIsNotValid(Message4.Message4))
+                        if (Message4 == null || string.IsNullOrEmpty(Message4.Message4) || SelectedLocalePercentFromStringIsNotValid(Message4.Message4) || GetAlreadyAddedInTable(Jsonname, Message4.Message4))
                         {
                         }
                         else
@@ -532,7 +540,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonNickname Nickname in JsonConvert.DeserializeObject<List<RPGMakerMVjsonNickname>>(jsondata))
                     {
-                        if (Nickname == null || string.IsNullOrEmpty(Nickname.Nickname) || SelectedLocalePercentFromStringIsNotValid(Nickname.Nickname))
+                        if (Nickname == null || string.IsNullOrEmpty(Nickname.Nickname) || SelectedLocalePercentFromStringIsNotValid(Nickname.Nickname) || GetAlreadyAddedInTable(Jsonname, Nickname.Nickname))
                         {
                         }
                         else
@@ -545,7 +553,7 @@ namespace TranslationHelper
                 {
                     foreach (RPGMakerMVjsonProfile Profile in JsonConvert.DeserializeObject<List<RPGMakerMVjsonProfile>>(jsondata))
                     {
-                        if (Profile == null || string.IsNullOrEmpty(Profile.Profile) || SelectedLocalePercentFromStringIsNotValid(Profile.Profile))
+                        if (Profile == null || string.IsNullOrEmpty(Profile.Profile) || SelectedLocalePercentFromStringIsNotValid(Profile.Profile) || GetAlreadyAddedInTable(Jsonname, Profile.Profile))
                         {
                         }
                         else
@@ -557,55 +565,163 @@ namespace TranslationHelper
 
                 if (cmnevents)
                 {
-                    var cmnevent = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
+                    //info RPG Maker MV Event codes
+                    //https://forums.rpgmakerweb.com/index.php?threads/extract-events-to-text-file.17444/
+                    //https://forums.rpgmakerweb.com/index.php?threads/cross-reference-tool.72563/
+                    //https://pastebin.com/JyRTdq0b
+                    //https://pastebin.com/eJx0EvXB
+                    //    case 401 : return 'Show Text';              break;
+                    //    case 102 : return 'Show Choices';           break;
+                    //    case 103 : return 'Input Number';           break;
+                    //    case 104 : return 'Select Item';            break;
+                    //    case 405 : return 'Show Scrolling Text';    break;
+                    //    case 111 : return 'Conditional Branch';     break;
+                    //    case 119 : return 'Common Event';           break;
+                    //    case 121 : return 'Control Switches';       break;
+                    //    case 122 : return 'Control Variables';      break;
+                    //    case 125 : return 'Change Gold';            break;
+                    //    case 126 : return 'Change Items';           break;
+                    //    case 127 : return 'Change Weapons';         break;
+                    //    case 128 : return 'Change Armors';          break;
+                    //    case 129 : return 'Change Party Member';    break;
+                    //    case 201 : return 'Transfer Player';        break;
+                    //    case 202 : return 'Set Vehicle Location';   break;
+                    //    case 203 : return 'Set Event Location';     break;
+                    //    case 505 : return 'Set Movement Route';     break;
+                    //    case 212 : return 'Show Animation';         break;
+                    //    case 231 : return 'Show Picture';           break;
+                    //    case 232 : return 'Move Picture';           break;
+                    //    case 285 : return 'Get Location Info';      break;
+                    //    case 301 : return 'Battle Processing';      break;
+                    //    case 302 :
+                    //    case 605 : return 'Shop Processing';        break;
+                    //    case 303 : return 'Name Input Processing';  break;
+                    //    case 311 : return 'Change HP';              break;
+                    //    case 312 : return 'Change MP';              break;
+                    //    case 326 : return 'Change TP';              break;
+                    //    case 313 : return 'Change State';           break;
+                    //    case 314 : return 'Recover All';            break;
+                    //    case 315 : return 'Change EXP';             break;
+                    //    case 316 : return 'Change Level';           break;
+                    //    case 317 : return 'Change Parameter';       break;
+                    //    case 318 : return 'Change Skill';           break;
+                    //    case 319 : return 'Change Equipment';       break;
+                    //    case 320 : return 'Change Name';            break;
+                    //    case 321 : return 'Change Class';           break;
+                    //    case 322 : return 'Change Actor Images';    break;
+                    //    case 324 : return 'Change Nickname';        break;
+                    //    case 325 : return 'Change Profile';         break;
+                    //    case 331 : return 'Change Enemy HP';        break;
+                    //    case 332 : return 'Change Enemy MP';        break;
+                    //    case 342 : return 'Change Enemy TP';        break;
+                    //    case 333 : return 'Change Enemy State';     break;
+                    //    case 336 : return 'Enemy Transform';        break;
+                    //    case 337 : return 'Show Battle Animation';  break;
+                    //    case 339 : return 'Force Action';           break;
+                    //
+                    //Will be handled:
+                    //401 - Show text (mergeable)
+                    //102 - Show choices (Choices list)
+                    //402 - Choice for choices - ignore because already in 102
+                    //405 - Show Scrolling Text (mergeable)
+                    //108 and 408 - Comment - can be ignored because it is for dev suppose
+                    //normal example about command values adding: https://galvs-scripts.com/galvs-party-select/
 
-                    foreach (var p in cmnevent)
+
+                    var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
+
+                    for (int i = 1; i < commoneventsdata.Count; i++)
                     {
-                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
-                        if (p == null/* || p.Property1 == null*/)
-                        {
+                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
 
-                        }
-                        else
+                        //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
+                        //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
+                        //ds.Tables[Jsonname].Rows.Add(commonevent.Name); //add event name to new row
+
+                        string newline = "";
+                        int commandcode;
+                        int commandoldcode = 999999;
+                        bool textaddingstarted = false;
+
+                        foreach (var command in commoneventsdata[i].list)
                         {
-                            //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p.Property1=\"" + p.Property1.ToString() + "\"\r\n", true);
-                            //foreach (RPGMakerMVjsonCommonEvents p1 in p.Property1)
-                            //{
-                            //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p.ToString() + "\"\r\n", true);
-                            foreach (var lst in p.list)
+                            commandcode = command.Code;
+
+                            if (commandcode == commandoldcode)
                             {
-                                if (lst == null || lst.parameters == null)
+                            }
+                            else
+                            {
+                                if (string.IsNullOrEmpty(newline) || GetAlreadyAddedInTable(Jsonname, newline))
                                 {
-
                                 }
-                                else
+                                else //if code not equal old code and newline is not empty
                                 {
-                                    //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: lst=\"" + lst.ToString() + "\"\r\n", true);
-                                    foreach (object parameter in lst.parameters)
-                                    {
-                                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: parameter=\"" + parameter + "\"\r\n", true);
-                                        if (parameter == null)
-                                        {
-                                            //MessageBox.Show("lst.parameters");
-                                        }
-                                        else if (parameter.GetType().Name == "String")
-                                        {
-                                            string pstring = parameter.ToString();
-                                            if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring)/* || GetAlreadyAddedInTable(Jsonname, pstring) хотел отфильтровать дубликаты, но это долго*/)
-                                            {
+                                    //THLog += DateTime.Now + " >>: added newline=\"" + newline + "\"\r\n";
+                                    ds.Tables[Jsonname].Rows.Add(newline); //Save text to new row
+                                    newline = ""; //clear text data
+                                    textaddingstarted = false;
+                                }
+                            }
 
-                                            }
-                                            else
-                                            {
-                                                ds.Tables[Jsonname].Rows.Add(pstring);
-                                            }
-                                        }
+                            if (commandcode == 102) //Show choices
+                            {
+                                foreach (var choice in command.parameters) //Get all choices
+                                {
+
+                                    if (string.IsNullOrEmpty(newline) || GetAlreadyAddedInTable(Jsonname, newline))
+                                    {
+                                    }
+                                    else //if code not equal old code and newline is not empty
+                                    {
+                                        //THLog += DateTime.Now + " >>: 102 added newline=\"" + newline + "\"\r\n";
+                                        ds.Tables[Jsonname].Rows.Add(newline); //Save text to new row
+                                        newline = ""; //clear text data
+                                        textaddingstarted = false;
                                     }
                                 }
                             }
-                            //}
+                            else if (commandcode == 401) //Show text 401
+                            {
+                                if (textaddingstarted)
+                                {
+                                    /*
+                                    if (newline == "")
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        newline += "\r\n";//add new line when multiline value in 401/405 text. But new lines is breaking online translation. Better to merge without \r\n and unmerge by equal parts while saving
+                                    }
+                                    */
+                                }
+                                newline += command.parameters[0]; //Add text to variable for case if the command will add more lines
+                                textaddingstarted = true;
+                            }
+                            else if (commandcode == 405) //Show text 401 OR Show Scrolling Text 405
+                            {
+                                if (textaddingstarted)
+                                {
+                                    if (newline == "")
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        newline += "\r\n";//add new line when multiline value in 405 text.
+                                    }
+                                }
+                                newline += command.parameters[0]; //Add text to variable for case if the command will add more lines
+                                textaddingstarted = true;
+                            }
+
+                            commandoldcode = commandcode;//save current command code to commandoldcode variable
                         }
+                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+                        //THLog = "";
                     }
+
                 }
                 if (maps)
                 {
@@ -617,7 +733,7 @@ namespace TranslationHelper
                     if (map.Events.Length > 1) //first event is empty
                     {
                         //Map displayed name
-                        if (string.IsNullOrEmpty(map.DisplayName) || SelectedLocalePercentFromStringIsNotValid(map.DisplayName))
+                        if (string.IsNullOrEmpty(map.DisplayName) || SelectedLocalePercentFromStringIsNotValid(map.DisplayName) || GetAlreadyAddedInTable(Jsonname, map.DisplayName))
                         {
                         }
                         else
@@ -626,7 +742,7 @@ namespace TranslationHelper
                             ds.Tables[Jsonname].Rows.Add(map.DisplayName);
                         }
                         //Map note
-                        if (string.IsNullOrEmpty(map.Note) || SelectedLocalePercentFromStringIsNotValid(map.Note))
+                        if (string.IsNullOrEmpty(map.Note) || SelectedLocalePercentFromStringIsNotValid(map.Note) || GetAlreadyAddedInTable(Jsonname, map.Note))
                         {
                         }
                         else
@@ -644,7 +760,7 @@ namespace TranslationHelper
                             else
                             {
                                 //event name
-                                if (string.IsNullOrEmpty(ev.Name) || ev.Name.StartsWith("EV") || SelectedLocalePercentFromStringIsNotValid(ev.Name))
+                                if (string.IsNullOrEmpty(ev.Name) || ev.Name.StartsWith("EV") || SelectedLocalePercentFromStringIsNotValid(ev.Name) || GetAlreadyAddedInTable(Jsonname, ev.Name))
                                 {
                                 }
                                 else
@@ -654,7 +770,7 @@ namespace TranslationHelper
                                     //prevval = ev.Name;
                                 }
                                 //event note
-                                if (string.IsNullOrEmpty(ev.Note) || SelectedLocalePercentFromStringIsNotValid(ev.Note))
+                                if (string.IsNullOrEmpty(ev.Note) || SelectedLocalePercentFromStringIsNotValid(ev.Note) || GetAlreadyAddedInTable(Jsonname, ev.Note))
                                 {
                                 }
                                 else
@@ -677,7 +793,7 @@ namespace TranslationHelper
                                             else if (parameter.GetType().Name == "String")
                                             {
                                                 string pstring = parameter.ToString();
-                                                if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring))
+                                                if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring) || GetAlreadyAddedInTable(Jsonname, pstring))
                                                 {
 
                                                 }
@@ -769,19 +885,38 @@ namespace TranslationHelper
             }
             catch
             {
+                //if (string.IsNullOrEmpty(THLog))
+                //{
+                //}
+                //else
+                //{
+                //    FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+                //}
                 return false;
             }
         }
 
         private bool GetAlreadyAddedInTable(string tablename, string value)
         {
-            /*
+            //про primary key взял отсюда: https://stackoverflow.com/questions/3567552/table-doesnt-have-a-primary-key
+            DataColumn[] keyColumns = new DataColumn[1];
+            keyColumns[0] = ds.Tables[tablename].Columns["Original"];
+            ds.Tables[tablename].PrimaryKey = keyColumns;
+
+            //очень быстрый способ поиска дубликата значения, два нижник в разы медленней, этот почти не заметен
+            if (ds.Tables[tablename].Rows.Contains(value))
+            {
+                //MessageBox.Show("found! value=" + value);
+                return true;
+            }
+            /*самый медленный способ, заметно медленней нижнего и непомерно критически медленней верхнего
             if (ds.Tables[tablename].Select("Original = '" + value.Replace("'", "''") + "'").Length > 0)
             {
                 //MessageBox.Show("found! value=" + value);
                 return true;
             }
             */
+            /*довольно медленный способ, быстрее того, что перед этим с Select, но критически медленней верхнего первого
             for (int i=0; i < ds.Tables[tablename].Rows.Count; i++)
             {
                 if (ds.Tables[tablename].Rows[i][0].ToString() == value)
@@ -789,6 +924,7 @@ namespace TranslationHelper
                     return true;
                 }
             }
+            */
             return false;
         }
 
