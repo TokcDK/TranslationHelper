@@ -67,6 +67,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileWriter.cs" />
     <Compile Include="IniFiles.cs" />
     <Compile Include="RPGMakerMVjson.cs" />
     <Compile Include="RPGMMVjsonCommonEvents.cs" />

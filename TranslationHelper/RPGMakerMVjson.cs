@@ -221,22 +221,17 @@ namespace TranslationHelper
     //RPGMakerMVjsonCommonEvents
     public class RPGMakerMVjsonCommonEvents
     {
-       public CEventProperty1[] Property1 { get; set; }
-    }
-
-    public class CEventProperty1
-    {
-        public int id { get; set; }
+        public int Id { get; set; }
         public CEList[] list { get; set; }
-        public string name { get; set; }
-        public int switchId { get; set; }
-        public int trigger { get; set; }
+        public string Name { get; set; }
+        public int SwitchId { get; set; }
+        public int Trigger { get; set; }
     }
 
     public class CEList
     {
-        public int code { get; set; }
-        public int indent { get; set; }
+        public int Code { get; set; }
+        public int Indent { get; set; }
         public object[] parameters { get; set; }
     }
     //RPGMakerMVjsonCommonEvents

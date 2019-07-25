@@ -561,26 +561,37 @@ namespace TranslationHelper
 
                     foreach (var p in cmnevent)
                     {
-                        if (p == null || p.Property1 == null)
+                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
+                        if (p == null/* || p.Property1 == null*/)
                         {
 
                         }
                         else
                         {
-                            foreach (var p1 in p.Property1)
+                            //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p.Property1=\"" + p.Property1.ToString() + "\"\r\n", true);
+                            //foreach (RPGMakerMVjsonCommonEvents p1 in p.Property1)
+                            //{
+                            //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p.ToString() + "\"\r\n", true);
+                            foreach (var lst in p.list)
                             {
-                                foreach (var lst in p1.list)
+                                if (lst == null || lst.parameters == null)
                                 {
-                                    foreach (var parameter in lst.parameters)
+
+                                }
+                                else
+                                {
+                                    //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: lst=\"" + lst.ToString() + "\"\r\n", true);
+                                    foreach (object parameter in lst.parameters)
                                     {
+                                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: parameter=\"" + parameter + "\"\r\n", true);
                                         if (parameter == null)
                                         {
-
+                                            //MessageBox.Show("lst.parameters");
                                         }
                                         else if (parameter.GetType().Name == "String")
                                         {
                                             string pstring = parameter.ToString();
-                                            if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring))
+                                            if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring)/* || GetAlreadyAddedInTable(Jsonname, pstring) хотел отфильтровать дубликаты, но это долго*/)
                                             {
 
                                             }
@@ -592,8 +603,8 @@ namespace TranslationHelper
                                     }
                                 }
                             }
+                            //}
                         }
-
                     }
                 }
                 if (maps)
@@ -760,6 +771,25 @@ namespace TranslationHelper
             {
                 return false;
             }
+        }
+
+        private bool GetAlreadyAddedInTable(string tablename, string value)
+        {
+            /*
+            if (ds.Tables[tablename].Select("Original = '" + value.Replace("'", "''") + "'").Length > 0)
+            {
+                //MessageBox.Show("found! value=" + value);
+                return true;
+            }
+            */
+            for (int i=0; i < ds.Tables[tablename].Rows.Count; i++)
+            {
+                if (ds.Tables[tablename].Rows[i][0].ToString() == value)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private bool HasNOJPcharacters(string str)
