@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace TranslationHelper
@@ -303,6 +304,7 @@ namespace TranslationHelper
                 bool profile = false;
                 bool maps = false;
                 bool cmnevents = false;
+                bool system = false;
 
                 string jsonname = Jsonname.ToLower(); //set jsonname to lower registry
                 if (jsonname == "items" || jsonname == "armors" || jsonname == "weapons")
@@ -372,7 +374,8 @@ namespace TranslationHelper
                 else if (jsonname == "system")
                 {
                     //"name" /
-                    name = true;
+                    //name = true;
+                    system = true;
                 }
                 
                 bool ret = FillDSTableWithJsonValues(
@@ -388,7 +391,8 @@ namespace TranslationHelper
                     nickname,
                     profile,
                     maps,
-                    cmnevents);
+                    cmnevents,
+                    system);
 
                 //var result = JsonConvert.DeserializeObject<List<RPGMakerMVjson>>(File.ReadAllText(sPath));
                 //var resultdescriptions = JsonConvert.DeserializeObject<List<RPGMakerMVjsonFileDescriptions>>(File.ReadAllText(sPath));
@@ -428,7 +432,8 @@ namespace TranslationHelper
                                                bool nickname = false,
                                                bool profile = false,
                                                bool maps = false,
-                                               bool cmnevents = false)
+                                               bool cmnevents = false,
+                                               bool system = false)
         {
             try
             {
@@ -685,6 +690,7 @@ namespace TranslationHelper
                             {
                                 if (textaddingstarted)
                                 {
+                                    newline += "\r\n";//add new line when multiline value in text.
                                     /*
                                     if (newline == "")
                                     {
@@ -703,14 +709,14 @@ namespace TranslationHelper
                             {
                                 if (textaddingstarted)
                                 {
-                                    if (newline == "")
-                                    {
+                                    //if (newline == "")
+                                    //{
 
-                                    }
-                                    else
-                                    {
-                                        newline += "\r\n";//add new line when multiline value in 405 text.
-                                    }
+                                    //}
+                                    //else
+                                    //{
+                                        newline += "\r\n";//add new line when multiline value in text.
+                                    //}
                                 }
                                 newline += command.parameters[0]; //Add text to variable for case if the command will add more lines
                                 textaddingstarted = true;
@@ -880,19 +886,260 @@ namespace TranslationHelper
                     }
                     */
                 }
+                if (system)
+                {
+                    var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
+
+                    ds.Tables[Jsonname].Rows.Add(systemdata.gameTitle);
+
+                    if (systemdata.armorTypes==null || systemdata.armorTypes.Length < 1)
+                    {
+
+                    }
+                    else
+                    {
+                        foreach (string armortype in systemdata.armorTypes)
+                        {
+                            if (string.IsNullOrEmpty(armortype))
+                            {
+
+                            }
+                            else
+                            {
+                                ds.Tables[Jsonname].Rows.Add(armortype);
+                            }
+                        }
+                    }
+                    if (systemdata.elements==null || systemdata.elements.Length < 1)
+                    {
+
+                    }
+                    else
+                    {
+                        foreach (string element in systemdata.elements)
+                        {
+                            if (string.IsNullOrEmpty(element))
+                            {
+
+                            }
+                            else
+                            {
+                                ds.Tables[Jsonname].Rows.Add(element);
+                            }
+                        }
+                    }
+                    if (systemdata.equipTypes == null || systemdata.equipTypes.Length < 1)
+                    {
+
+                    }
+                    else
+                    {
+                        foreach (string equipType in systemdata.equipTypes)
+                        {
+                            if (string.IsNullOrEmpty(equipType))
+                            {
+
+                            }
+                            else
+                            {
+                                ds.Tables[Jsonname].Rows.Add(equipType);
+                            }
+                        }
+                    }
+                    if (systemdata.skillTypes == null || systemdata.skillTypes.Length < 1)
+                    {
+
+                    }
+                    else
+                    {
+                        foreach (string skillType in systemdata.skillTypes)
+                        {
+                            if (string.IsNullOrEmpty(skillType))
+                            {
+
+                            }
+                            else
+                            {
+                                ds.Tables[Jsonname].Rows.Add(skillType);
+                            }
+                        }
+                    }
+                    if (systemdata.switches == null || systemdata.switches.Length < 1)
+                    {
+
+                    }
+                    else
+                    {
+                        foreach (string _switch in systemdata.switches)
+                        {
+                            if (string.IsNullOrEmpty(_switch))
+                            {
+
+                            }
+                            else
+                            {
+                                ds.Tables[Jsonname].Rows.Add(_switch);
+                            }
+                        }
+                    }
+                    if (systemdata.switches == null || systemdata.switches.Length < 1)
+                    {
+
+                    }
+                    else
+                    {
+                        foreach (string _switch in systemdata.switches)
+                        {
+                            if (string.IsNullOrEmpty(_switch))
+                            {
+
+                            }
+                            else
+                            {
+                                ds.Tables[Jsonname].Rows.Add(_switch);
+                            }
+                        }
+                    }
+                    if (systemdata.weaponTypes == null || systemdata.weaponTypes.Length < 1)
+                    {
+
+                    }
+                    else
+                    {
+                        foreach (string weaponType in systemdata.weaponTypes)
+                        {
+                            if (string.IsNullOrEmpty(weaponType))
+                            {
+
+                            }
+                            else
+                            {
+                                ds.Tables[Jsonname].Rows.Add(weaponType);
+                            }
+                        }
+                    }
+                    if (systemdata.terms == null)
+                    {
+
+                    }
+                    else
+                    {
+                        foreach (var basic in systemdata.terms.basic)
+                        {
+                            if (string.IsNullOrEmpty(basic))
+                            {
+
+                            }
+                            else
+                            {
+                                ds.Tables[Jsonname].Rows.Add(basic);
+                            }
+                        }
+                        foreach (var command in systemdata.terms.commands)
+                        {
+                            if (string.IsNullOrEmpty(command))
+                            {
+
+                            }
+                            else
+                            {
+                                ds.Tables[Jsonname].Rows.Add(command);
+                            }
+                        }
+
+                        foreach (string param in systemdata.terms.Params)
+                        {
+                            if (string.IsNullOrEmpty(param))
+                            {
+
+                            }
+                            else
+                            {
+                                ds.Tables[Jsonname].Rows.Add(param);
+                            }
+                        }
+
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actionFailure);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorDamage);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorDrain);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorGain);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorLoss);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorNoDamage);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorNoHit);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorRecovery);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.alwaysDash);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.bgmVolume);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.bgsVolume);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.buffAdd);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.buffRemove);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.commandRemember);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.counterAttack);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.criticalToActor);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.criticalToEnemy);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.debuffAdd);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.defeat);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.emerge);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyDamage);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyDrain);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyGain);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyLoss);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyNoDamage);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyNoHit);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyRecovery);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.escapeFailure);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.escapeStart);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.evasion);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.expNext);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.expTotal);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.file);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.levelUp);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.loadMessage);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.magicEvasion);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.magicReflection);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.meVolume);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.obtainExp);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.obtainGold);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.obtainItem);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.obtainSkill);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.partyName);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.possession);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.preemptive);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.saveMessage);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.seVolume);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.substitute);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.surprise);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.useItem);
+                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.victory);
+
+                    }
+                    //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+                    //THLog = "";
+                }
+
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
                 //if (string.IsNullOrEmpty(THLog))
                 //{
                 //}
                 //else
                 //{
-                //    FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+                    //FileWriter.WriteData(apppath + "\\TranslationHelper.log", ex.Message, true);
                 //}
                 return false;
+            }
+        }
+
+        public static IEnumerable<Type> GetAllSubclassOf(Type parent)
+        {
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var t in a.GetTypes())
+                {
+                    if (t.IsSubclassOf(parent)) yield return t;
+                }
             }
         }
 
