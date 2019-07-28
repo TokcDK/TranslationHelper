@@ -10,12 +10,12 @@ using System.Windows.Forms;
 
 namespace TranslationHelper
 {
-    public partial class THProgramSettingsForm : Form
+    public partial class THSettingsForm : Form
     {
         //Defaults
         public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
 
-        public THProgramSettingsForm()
+        public THSettingsForm()
         {
             InitializeComponent();
         }

@@ -16,7 +16,7 @@ namespace TranslationHelper
     {
         string THLog;
         //public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
-        THProgramSettingsForm Settings = new THProgramSettingsForm();
+        THSettingsForm Settings = new THSettingsForm();
         //public const string THStrDGTranslationColumnName = "Translation";
         //public const string THStrDGOriginalColumnName = "Original";
         private THLang LangF;
@@ -1981,7 +1981,7 @@ namespace TranslationHelper
 
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            THProgramSettingsForm THSettings = new THProgramSettingsForm();
+            THSettingsForm THSettings = new THSettingsForm();
             THSettings.Show();
         }
 
