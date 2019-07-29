@@ -67,9 +67,11 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RPGMakerMVjsonCommonEvents.cs" />
     <Compile Include="FileWriter.cs" />
     <Compile Include="IniFiles.cs" />
     <Compile Include="RPGMakerMVjson.cs" />
+    <Compile Include="RPGMakerMVjsonSystem.cs" />
     <Compile Include="temp.cs" />
     <Compile Include="THSettingsForm.cs">
       <SubType>Form</SubType>

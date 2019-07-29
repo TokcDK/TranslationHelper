@@ -279,8 +279,8 @@
             // 
             // THsplitContainerFilesElements.Panel2
             // 
-            this.THsplitContainerFilesElements.Panel2.Controls.Add(this.THFiltersDataGridView);
             this.THsplitContainerFilesElements.Panel2.Controls.Add(this.THFileElementsDataGridView);
+            this.THsplitContainerFilesElements.Panel2.Controls.Add(this.THFiltersDataGridView);
             this.THsplitContainerFilesElements.Size = new System.Drawing.Size(773, 366);
             this.THsplitContainerFilesElements.SplitterDistance = 125;
             this.THsplitContainerFilesElements.TabIndex = 3;
@@ -301,19 +301,19 @@
             // 
             this.THFiltersDataGridView.AllowUserToAddRows = false;
             this.THFiltersDataGridView.AllowUserToDeleteRows = false;
-            this.THFiltersDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.THFiltersDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.THFiltersDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
             this.THFiltersDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFiltersDataGridView.ColumnHeadersVisible = false;
-            this.THFiltersDataGridView.Dock = System.Windows.Forms.DockStyle.Top;
             this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.THFiltersDataGridView.Enabled = false;
             this.THFiltersDataGridView.Location = new System.Drawing.Point(0, 0);
             this.THFiltersDataGridView.Name = "THFiltersDataGridView";
             this.THFiltersDataGridView.RowTemplate.Height = 23;
             this.THFiltersDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.THFiltersDataGridView.Size = new System.Drawing.Size(644, 23);
+            this.THFiltersDataGridView.Size = new System.Drawing.Size(644, 24);
             this.THFiltersDataGridView.TabIndex = 3;
             this.THFiltersDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellValueChanged);
             // 
@@ -328,10 +328,10 @@
             this.THFileElementsDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.THFileElementsDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 22);
+            this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
-            this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 344);
+            this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 349);
             this.THFileElementsDataGridView.TabIndex = 2;
             this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
             this.THFileElementsDataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.THFileElementsDataGridView_CellValueNeeded);
@@ -443,6 +443,7 @@
             this.ClientSize = new System.Drawing.Size(790, 504);
             this.Controls.Add(this.THWorkSpaceSplitContainer);
             this.Controls.Add(this.menuStrip1);
+            this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "THMain";
             this.Text = "Translation Helper by DenisK";

@@ -101,59 +101,44 @@ namespace TranslationHelper
 
     public class Event
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Note { get; set; }
-        public Page[] pages { get; set; }
+        public Page[] Pages { get; set; }
     }
 
     public class Page
     {
-        public PageList[] list { get; set; }
-        public Moveroute moveRoute { get; set; }
+        public PageList[] List { get; set; }
+        public Moveroute MoveRoute { get; set; }
     }
 
     public class Moveroute
     {
-        public List[] list { get; set; }
+        public List[] List { get; set; }
     }
 
     public class List
     {
-        public int code { get; set; }
-        public object[] parameters { get; set; }
+        public int Code { get; set; }
+        public object[] Parameters { get; set; }
     }
 
     public class PageList
-    {
-        public int code { get; set; }
-        public int indent { get; set; }
-        public object[] parameters { get; set; }
-    }
-    //RPGMakerMVjsonMap
-
-    //RPGMakerMVjsonCommonEvents
-    public class RPGMakerMVjsonCommonEvents
-    {
-        public int Id { get; set; }
-        public CEList[] list { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class CEList
     {
         public int Code { get; set; }
         public int Indent { get; set; }
         public object[] Parameters { get; set; }
     }
-    //RPGMakerMVjsonCommonEvents
-
+    //RPGMakerMVjsonMap
+    
     //RPGMakerMVjsonSystem
+    /*
     public class RPGMakerMVjsonSystem
     {
-        public Airship airship { get; set; }
-        public string[] armorTypes { get; set; }
-        public Attackmotion[] attackMotions { get; set; }
+        public Airship Airship { get; set; }
+        public string[] ArmorTypes { get; set; }
+        public Attackmotion[] AttackMotions { get; set; }
         public Battlebgm battleBgm { get; set; }
         public string battleback1Name { get; set; }
         public string battleback2Name { get; set; }
@@ -163,12 +148,12 @@ namespace TranslationHelper
         public string currencyUnit { get; set; }
         public Defeatme defeatMe { get; set; }
         public int editMapId { get; set; }
-        public string[] elements { get; set; }
-        public string[] equipTypes { get; set; }
-        public string gameTitle { get; set; }
+        public string[] Elements { get; set; }
+        public string[] EquipTypes { get; set; }
+        public string GameTitle { get; set; }
         public Gameoverme gameoverMe { get; set; }
         public string locale { get; set; }
-        public int[] magicSkills { get; set; }
+        public int[] MagicSkills { get; set; }
         public bool[] menuCommands { get; set; }
         public bool optDisplayTp { get; set; }
         public bool optDrawTitle { get; set; }
@@ -195,7 +180,7 @@ namespace TranslationHelper
         public string[] variables { get; set; }
         public int versionId { get; set; }
         public Victoryme victoryMe { get; set; }
-        public string[] weaponTypes { get; set; }
+        public string[] WeaponTypes { get; set; }
         public int[] windowTone { get; set; }
     }
 
@@ -282,7 +267,7 @@ namespace TranslationHelper
         public string[] basic { get; set; }
         public string[] commands { get; set; }
         public string[] Params { get; set; }
-        public RPGMakerMVjsonSystemMessages messages { get; set; }
+        public RPGMakerMVjsonSystemMessages Messages { get; set; }
     }
 
     public class RPGMakerMVjsonSystemMessages
@@ -376,4 +361,7 @@ namespace TranslationHelper
         public int[] equips { get; set; }
         public int level { get; set; }
     }
+    */
+    //System
+
 }

@@ -36,11 +36,19 @@ namespace TranslationHelper
         private string THRPGMTransPatchver;
         private string THSelectedSourceType;
 
+        //Language strings
+        string THMainDGVOriginalColumnName;
+        string THMainDGVTranslationColumnName;
+
         public THMain()
         {
             InitializeComponent();
             LangF = new THLang();
             Settings.GetSettings();
+
+            //anguage strings setup
+            THMainDGVOriginalColumnName = LangF.THStrDGOriginalColumnName;
+            THMainDGVTranslationColumnName = LangF.THStrDGTranslationColumnName;
             fileToolStripMenuItem.Text = LangF.THStrfileToolStripMenuItemName;
             openToolStripMenuItem.Text = LangF.THStropenToolStripMenuItemName;
             saveToolStripMenuItem.Text = LangF.THStrsaveToolStripMenuItemName;
@@ -51,6 +59,7 @@ namespace TranslationHelper
             helpToolStripMenuItem.Text = LangF.THStrhelpToolStripMenuItemName;
             aboutToolStripMenuItem.Text = LangF.THStraboutToolStripMenuItemName;
             LangF.THReadLanguageFileToStrings();
+
             THRPGMTransPatchFiles = new BindingList<THRPGMTransPatchFile>();
             //dt = new DataTable();
 
@@ -215,7 +224,9 @@ namespace TranslationHelper
 
                 //string patchver;
                 var patchdir = dir;
-                if (Directory.Exists(THSelectedDir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3.2
+                StreamReader patchfile = new StreamReader(sPath); 
+                //MessageBox.Show(patchfile.ReadLine());
+                if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(THSelectedDir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3.2
                 {
                     THRPGMTransPatchver = "3.2";
                     patchdir = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\patch");
@@ -224,6 +235,7 @@ namespace TranslationHelper
                 {
                     THRPGMTransPatchver = "2.0";
                 }
+                patchfile.Close();
 
                 var vRPGMTransPatchFiles = new List<string>();
 
@@ -635,7 +647,7 @@ namespace TranslationHelper
 
 
                     var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
-
+                    
                     for (int i = 1; i < commoneventsdata.Count; i++)
                     {
                         //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
@@ -653,21 +665,21 @@ namespace TranslationHelper
                         }
 
                         string newline = "";
-                        int commandcode;
+                        //int commandcode;
                         //int commandoldcode = 999999;
                         bool textaddingstarted = false;
 
 
-                        int CommandsCount = commoneventsdata[i].list.Length;
+                        int CommandsCount = commoneventsdata[i].List.Length;
                         for (int c=0; c < CommandsCount; c++)
                         {
                             if (textaddingstarted)
                             {
-                                if (commoneventsdata[i].list[c].Code == 401 || commoneventsdata[i].list[c].Code == 405)
+                                if (commoneventsdata[i].List[c].Code == 401 || commoneventsdata[i].List[c].Code == 405)
                                 {
-                                    newline += commoneventsdata[i].list[c].Parameters[0];
+                                    newline += commoneventsdata[i].List[c].Parameters[0];
 
-                                    if (c < CommandsCount - 1 && commoneventsdata[i].list[c].Code == commoneventsdata[i].list[c + 1].Code)
+                                    if (c < CommandsCount - 1 && commoneventsdata[i].List[c].Code == commoneventsdata[i].List[c + 1].Code)
                                     {
                                         newline += "\r\n";
                                     }
@@ -703,7 +715,7 @@ namespace TranslationHelper
                                     }
                                 }
                             }
-                            else if (commoneventsdata[i].list[c].Code == 101 || commoneventsdata[i].list[c].Code == 105)
+                            else if (commoneventsdata[i].List[c].Code == 101 || commoneventsdata[i].List[c].Code == 105)
                             {
                                 if (string.IsNullOrEmpty(newline))
                                 {
@@ -734,9 +746,9 @@ namespace TranslationHelper
 
                                 textaddingstarted = true;
                             }
-                            else if (commoneventsdata[i].list[c].Code == 102)
+                            else if (commoneventsdata[i].List[c].Code == 102)
                             {
-                                JArray choices = JArray.Parse(commoneventsdata[i].list[c].Parameters[0].ToString());
+                                JArray choices = JArray.Parse(commoneventsdata[i].List[c].Parameters[0].ToString());
 
                                 foreach (var choice in choices)
                                 {
@@ -939,11 +951,11 @@ namespace TranslationHelper
                                 }
 
                                 //event parameters
-                                foreach (Page page in ev.pages)
+                                foreach (Page page in ev.Pages)
                                 {
-                                    foreach (PageList lst in page.list)
+                                    foreach (PageList lst in page.List)
                                     {
-                                        foreach (var parameter in lst.parameters)
+                                        foreach (var parameter in lst.Parameters)
                                         {
                                             if (parameter == null)
                                             {
@@ -970,17 +982,20 @@ namespace TranslationHelper
                 }
                 if (system)
                 {
-                    var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
+                    //новые классы сгенерированы через этот сервис: https://app.quicktype.io/#l=cs&r=json2csharp
+                    var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
 
-                    ds.Tables[Jsonname].Rows.Add(systemdata.gameTitle);
+                    //var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
 
-                    if (systemdata.armorTypes==null || systemdata.armorTypes.Length < 1)
+                    ds.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
+
+                    if (systemdata.ArmorTypes==null || systemdata.ArmorTypes.Length < 1)
                     {
 
                     }
                     else
                     {
-                        foreach (string armortype in systemdata.armorTypes)
+                        foreach (string armortype in systemdata.ArmorTypes)
                         {
                             if (string.IsNullOrEmpty(armortype))
                             {
@@ -992,13 +1007,13 @@ namespace TranslationHelper
                             }
                         }
                     }
-                    if (systemdata.elements==null || systemdata.elements.Length < 1)
+                    if (systemdata.Elements==null || systemdata.Elements.Length < 1)
                     {
 
                     }
                     else
                     {
-                        foreach (string element in systemdata.elements)
+                        foreach (string element in systemdata.Elements)
                         {
                             if (string.IsNullOrEmpty(element))
                             {
@@ -1010,13 +1025,13 @@ namespace TranslationHelper
                             }
                         }
                     }
-                    if (systemdata.equipTypes == null || systemdata.equipTypes.Length < 1)
+                    if (systemdata.EquipTypes == null || systemdata.EquipTypes.Length < 1)
                     {
 
                     }
                     else
                     {
-                        foreach (string equipType in systemdata.equipTypes)
+                        foreach (string equipType in systemdata.EquipTypes)
                         {
                             if (string.IsNullOrEmpty(equipType))
                             {
@@ -1046,13 +1061,13 @@ namespace TranslationHelper
                             }
                         }
                     }
-                    if (systemdata.switches == null || systemdata.switches.Length < 1)
+                    if (systemdata.Switches == null || systemdata.Switches.Length < 1)
                     {
 
                     }
                     else
                     {
-                        foreach (string _switch in systemdata.switches)
+                        foreach (string _switch in systemdata.Switches)
                         {
                             if (string.IsNullOrEmpty(_switch))
                             {
@@ -1064,13 +1079,13 @@ namespace TranslationHelper
                             }
                         }
                     }
-                    if (systemdata.switches == null || systemdata.switches.Length < 1)
+                    if (systemdata.Switches == null || systemdata.Switches.Length < 1)
                     {
 
                     }
                     else
                     {
-                        foreach (string _switch in systemdata.switches)
+                        foreach (string _switch in systemdata.Switches)
                         {
                             if (string.IsNullOrEmpty(_switch))
                             {
@@ -1082,13 +1097,13 @@ namespace TranslationHelper
                             }
                         }
                     }
-                    if (systemdata.weaponTypes == null || systemdata.weaponTypes.Length < 1)
+                    if (systemdata.WeaponTypes == null || systemdata.WeaponTypes.Length < 1)
                     {
 
                     }
                     else
                     {
-                        foreach (string weaponType in systemdata.weaponTypes)
+                        foreach (string weaponType in systemdata.WeaponTypes)
                         {
                             if (string.IsNullOrEmpty(weaponType))
                             {
@@ -1100,13 +1115,13 @@ namespace TranslationHelper
                             }
                         }
                     }
-                    if (systemdata.terms == null)
+                    if (systemdata.Terms == null)
                     {
 
                     }
                     else
                     {
-                        foreach (var basic in systemdata.terms.basic)
+                        foreach (var basic in systemdata.Terms.Basic)
                         {
                             if (string.IsNullOrEmpty(basic))
                             {
@@ -1117,7 +1132,7 @@ namespace TranslationHelper
                                 ds.Tables[Jsonname].Rows.Add(basic);
                             }
                         }
-                        foreach (var command in systemdata.terms.commands)
+                        foreach (var command in systemdata.Terms.Commands)
                         {
                             if (string.IsNullOrEmpty(command))
                             {
@@ -1129,7 +1144,7 @@ namespace TranslationHelper
                             }
                         }
 
-                        foreach (string param in systemdata.terms.Params)
+                        foreach (string param in systemdata.Terms.Params)
                         {
                             if (string.IsNullOrEmpty(param))
                             {
@@ -1141,58 +1156,10 @@ namespace TranslationHelper
                             }
                         }
 
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actionFailure);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorDamage);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorDrain);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorGain);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorLoss);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorNoDamage);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorNoHit);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.actorRecovery);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.alwaysDash);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.bgmVolume);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.bgsVolume);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.buffAdd);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.buffRemove);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.commandRemember);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.counterAttack);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.criticalToActor);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.criticalToEnemy);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.debuffAdd);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.defeat);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.emerge);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyDamage);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyDrain);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyGain);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyLoss);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyNoDamage);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyNoHit);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.enemyRecovery);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.escapeFailure);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.escapeStart);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.evasion);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.expNext);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.expTotal);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.file);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.levelUp);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.loadMessage);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.magicEvasion);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.magicReflection);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.meVolume);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.obtainExp);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.obtainGold);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.obtainItem);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.obtainSkill);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.partyName);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.possession);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.preemptive);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.saveMessage);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.seVolume);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.substitute);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.surprise);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.useItem);
-                        ds.Tables[Jsonname].Rows.Add(systemdata.terms.messages.victory);
-
+                        foreach (var Message in systemdata.Terms.Messages)
+                        {
+                            ds.Tables[Jsonname].Rows.Add(Message.Value);
+                        }
                     }
                     //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
                     //THLog = "";
@@ -1561,7 +1528,7 @@ namespace TranslationHelper
                 // Поменял List на BindingList и вроде чуть быстрее стало загружаться
                 try
                 {
-                    if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
+                    if (THSelectedSourceType.Contains("RPGMTransPatch"))
                     {
                         //THFiltersDataGridView.Columns.Clear();
 
@@ -1598,9 +1565,9 @@ namespace TranslationHelper
                     }
 
 
-                    THFileElementsDataGridView.Columns["Original"].Name = LangF.THStrDGOriginalColumnName;
-                    THFileElementsDataGridView.Columns["Translation"].Name = LangF.THStrDGTranslationColumnName;
-                    THFileElementsDataGridView.Columns[LangF.THStrDGOriginalColumnName].ReadOnly = true;
+                    THFileElementsDataGridView.Columns["Original"].Name = THMainDGVOriginalColumnName;
+                    THFileElementsDataGridView.Columns["Translation"].Name = THMainDGVTranslationColumnName;
+                    THFileElementsDataGridView.Columns[THMainDGVOriginalColumnName].ReadOnly = true;
                     THSourceTextBox.Enabled = true;
                     THTargetTextBox.Enabled = true;
                     THTargetTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
@@ -1628,9 +1595,9 @@ namespace TranslationHelper
                 {
                     THTargetTextBox.Clear();
 
-                    if (!String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGOriginalColumnName].Value.ToString())) //проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
+                    if (!String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString())) //проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
-                        THSourceTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGOriginalColumnName].Value.ToString(); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        THSourceTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString(); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
                                                                                                                                                     //https://github.com/caguiclajmg/WanaKanaSharp
                                                                                                                                                     //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
                                                                                                                                                     //{
@@ -1981,7 +1948,7 @@ namespace TranslationHelper
         private void THFiltersDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             int cindx = e.ColumnIndex;
-            MessageBox.Show("e.ColumnIndex" + cindx);
+            //MessageBox.Show("e.ColumnIndex" + cindx);
             for (int i = 0; i < THFileElementsDataGridView.Rows.Count; i++) //сделать все видимыми
             {
                 THFileElementsDataGridView.Rows[i].Visible = true;
