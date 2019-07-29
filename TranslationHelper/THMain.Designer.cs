@@ -287,11 +287,13 @@
             // 
             // THFilesListBox
             // 
-            this.THFilesListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.THFilesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.THFilesListBox.FormattingEnabled = true;
             this.THFilesListBox.Location = new System.Drawing.Point(0, 0);
             this.THFilesListBox.Name = "THFilesListBox";
-            this.THFilesListBox.Size = new System.Drawing.Size(125, 366);
+            this.THFilesListBox.Size = new System.Drawing.Size(125, 381);
             this.THFilesListBox.TabIndex = 0;
             this.THFilesListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.THFilesListBox_MouseClick);
             // 
@@ -329,7 +331,7 @@
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 22);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
-            this.THFileElementsDataGridView.Size = new System.Drawing.Size(644, 344);
+            this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 344);
             this.THFileElementsDataGridView.TabIndex = 2;
             this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
             this.THFileElementsDataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.THFileElementsDataGridView_CellValueNeeded);
@@ -349,7 +351,7 @@
             // THEditElementsSplitContainer.Panel2
             // 
             this.THEditElementsSplitContainer.Panel2.Controls.Add(this.THTargetTextBox);
-            this.THEditElementsSplitContainer.Size = new System.Drawing.Size(638, 93);
+            this.THEditElementsSplitContainer.Size = new System.Drawing.Size(639, 95);
             this.THEditElementsSplitContainer.SplitterDistance = 291;
             this.THEditElementsSplitContainer.TabIndex = 4;
             // 
@@ -363,7 +365,7 @@
             this.THSourceTextBox.Name = "THSourceTextBox";
             this.THSourceTextBox.ReadOnly = true;
             this.THSourceTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.THSourceTextBox.Size = new System.Drawing.Size(291, 93);
+            this.THSourceTextBox.Size = new System.Drawing.Size(291, 95);
             this.THSourceTextBox.TabIndex = 1;
             // 
             // THTargetTextBox
@@ -376,7 +378,7 @@
             this.THTargetTextBox.Multiline = true;
             this.THTargetTextBox.Name = "THTargetTextBox";
             this.THTargetTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.THTargetTextBox.Size = new System.Drawing.Size(343, 93);
+            this.THTargetTextBox.Size = new System.Drawing.Size(344, 95);
             this.THTargetTextBox.TabIndex = 0;
             this.THTargetTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
             // 
@@ -405,7 +407,7 @@
             this.THInfoEditSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.THInfoEditSplitContainer.Location = new System.Drawing.Point(0, 0);
+            this.THInfoEditSplitContainer.Location = new System.Drawing.Point(0, -2);
             this.THInfoEditSplitContainer.Name = "THInfoEditSplitContainer";
             // 
             // THInfoEditSplitContainer.Panel1
@@ -415,8 +417,8 @@
             // THInfoEditSplitContainer.Panel2
             // 
             this.THInfoEditSplitContainer.Panel2.Controls.Add(this.THEditElementsSplitContainer);
-            this.THInfoEditSplitContainer.Size = new System.Drawing.Size(770, 93);
-            this.THInfoEditSplitContainer.SplitterDistance = 128;
+            this.THInfoEditSplitContainer.Size = new System.Drawing.Size(770, 95);
+            this.THInfoEditSplitContainer.SplitterDistance = 127;
             this.THInfoEditSplitContainer.TabIndex = 5;
             // 
             // THInfoTextBox
@@ -426,7 +428,7 @@
             this.THInfoTextBox.Multiline = true;
             this.THInfoTextBox.Name = "THInfoTextBox";
             this.THInfoTextBox.ReadOnly = true;
-            this.THInfoTextBox.Size = new System.Drawing.Size(128, 93);
+            this.THInfoTextBox.Size = new System.Drawing.Size(127, 95);
             this.THInfoTextBox.TabIndex = 0;
             // 
             // contextMenuStrip1

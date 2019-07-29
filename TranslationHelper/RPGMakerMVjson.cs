@@ -144,7 +144,7 @@ namespace TranslationHelper
     {
         public int Code { get; set; }
         public int Indent { get; set; }
-        public object[] parameters { get; set; }
+        public object[] Parameters { get; set; }
     }
     //RPGMakerMVjsonCommonEvents
 

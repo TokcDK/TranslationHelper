@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -641,13 +642,180 @@ namespace TranslationHelper
 
                         //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
                         //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
-                        //ds.Tables[Jsonname].Rows.Add(commonevent.Name); //add event name to new row
+
+                        string eventname = commoneventsdata[i].Name;
+                        if (string.IsNullOrEmpty(eventname) || GetAlreadyAddedInTable(Jsonname, eventname))
+                        {
+                        }
+                        else //if code not equal old code and newline is not empty
+                        {
+                            ds.Tables[Jsonname].Rows.Add(eventname); //add event name to new row
+                        }
 
                         string newline = "";
                         int commandcode;
-                        int commandoldcode = 999999;
+                        //int commandoldcode = 999999;
                         bool textaddingstarted = false;
 
+
+                        int CommandsCount = commoneventsdata[i].list.Length;
+                        for (int c=0; c < CommandsCount; c++)
+                        {
+                            if (textaddingstarted)
+                            {
+                                if (commoneventsdata[i].list[c].Code == 401 || commoneventsdata[i].list[c].Code == 405)
+                                {
+                                    newline += commoneventsdata[i].list[c].Parameters[0];
+
+                                    if (c < CommandsCount - 1 && commoneventsdata[i].list[c].Code == commoneventsdata[i].list[c + 1].Code)
+                                    {
+                                        newline += "\r\n";
+                                    }
+                                    else
+                                    {
+                                        if (string.IsNullOrEmpty(newline))
+                                        {
+                                            if (textaddingstarted)
+                                            {
+                                                THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted is true and newline is empty\r\n";
+                                                textaddingstarted = false;
+                                            }
+                                        }
+                                        else //if code not equal old code and newline is not empty
+                                        {
+                                            if (GetAlreadyAddedInTable(Jsonname, newline))
+                                            {
+                                                THLog += DateTime.Now + " >>: Code 401/405 newline already in table=\"" + newline + "\"\r\n";
+                                                newline = ""; //clear text data
+                                                if (textaddingstarted)
+                                                {
+                                                    textaddingstarted = false;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted=true added newline=\"" + newline + "\"\r\n";
+                                                ds.Tables[Jsonname].Rows.Add(newline); //Save text to new row
+                                                newline = ""; //clear text data
+                                                textaddingstarted = false;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (commoneventsdata[i].list[c].Code == 101 || commoneventsdata[i].list[c].Code == 105)
+                            {
+                                if (string.IsNullOrEmpty(newline))
+                                {
+                                    if (textaddingstarted)
+                                    {
+                                        THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline is empty\r\n";
+                                        textaddingstarted = false;
+                                    }
+                                }
+                                else //if code not equal old code and newline is not empty
+                                {
+                                    if (GetAlreadyAddedInTable(Jsonname, newline))
+                                    {
+                                        if (textaddingstarted)
+                                        {
+                                            THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline already in table=\"" + newline + "\"\r\n";
+                                            textaddingstarted = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        THLog += DateTime.Now + " >>: Code 101/105 newline is not empty=\"" + newline + "\"\r\n";
+                                        ds.Tables[Jsonname].Rows.Add(newline); //Save text to new row
+                                        newline = ""; //clear text data
+                                        textaddingstarted = false;
+                                    }
+                                }
+
+                                textaddingstarted = true;
+                            }
+                            else if (commoneventsdata[i].list[c].Code == 102)
+                            {
+                                JArray choices = JArray.Parse(commoneventsdata[i].list[c].Parameters[0].ToString());
+
+                                foreach (var choice in choices)
+                                {
+                                    string schoice = choice.ToString();
+                                    if (string.IsNullOrEmpty(schoice))
+                                    {
+                                        if (textaddingstarted)
+                                        {
+                                            THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
+                                            textaddingstarted = false;
+                                        }
+                                    }
+                                    else //if code not equal old code and newline is not empty
+                                    {
+                                        if (GetAlreadyAddedInTable(Jsonname, schoice))
+                                        {
+                                            THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
+                                            if (textaddingstarted)
+                                            {
+                                                THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
+                                                textaddingstarted = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
+                                            ds.Tables[Jsonname].Rows.Add(schoice); //Save text to new row
+                                            if (string.IsNullOrEmpty(newline))
+                                            {
+                                            }
+                                            else
+                                            {
+                                                THLog += DateTime.Now + " >>: Code 102 added schoice and also newline is not empty, set empty\r\n";
+                                                newline = ""; //clear text data
+                                            }
+                                            if (textaddingstarted)
+                                            {
+                                                THLog += DateTime.Now + " >>: Code 102 added schoice and also textaddingstarted is true , set false\r\n";
+                                                textaddingstarted = false;
+                                            }
+                                        }
+
+                                    }
+                                }
+
+                                /*
+                                string schoice = commoneventsdata[i].list[c].Parameters[0].ToString();
+                                if (string.IsNullOrEmpty(schoice))
+                                {
+                                    if (textaddingstarted)
+                                    {
+                                        THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
+                                        textaddingstarted = false;
+                                    }
+                                }
+                                else //if code not equal old code and newline is not empty
+                                {
+                                    if (GetAlreadyAddedInTable(Jsonname, schoice))
+                                    {
+                                        THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
+                                        if (textaddingstarted)
+                                        {
+                                            THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
+                                            textaddingstarted = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
+                                        ds.Tables[Jsonname].Rows.Add(schoice); //Save text to new row
+                                        newline = ""; //clear text data
+                                        textaddingstarted = false;
+                                    }
+
+                                }
+                                */
+                            }
+                        }
+                        /*
                         foreach (var command in commoneventsdata[i].list)
                         {
                             commandcode = command.Code;
@@ -691,16 +859,6 @@ namespace TranslationHelper
                                 if (textaddingstarted)
                                 {
                                     newline += "\r\n";//add new line when multiline value in text.
-                                    /*
-                                    if (newline == "")
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        newline += "\r\n";//add new line when multiline value in 401/405 text. But new lines is breaking online translation. Better to merge without \r\n and unmerge by equal parts while saving
-                                    }
-                                    */
                                 }
                                 newline += command.parameters[0]; //Add text to variable for case if the command will add more lines
                                 textaddingstarted = true;
@@ -709,23 +867,18 @@ namespace TranslationHelper
                             {
                                 if (textaddingstarted)
                                 {
-                                    //if (newline == "")
-                                    //{
-
-                                    //}
-                                    //else
-                                    //{
-                                        newline += "\r\n";//add new line when multiline value in text.
-                                    //}
+                                    newline += "\r\n";//add new line when multiline value in text.
                                 }
                                 newline += command.parameters[0]; //Add text to variable for case if the command will add more lines
                                 textaddingstarted = true;
                             }
 
                             commandoldcode = commandcode;//save current command code to commandoldcode variable
+                            
                         }
-                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
-                        //THLog = "";
+                        */
+                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+                        THLog = "";
                     }
 
                 }
@@ -814,77 +967,6 @@ namespace TranslationHelper
                             }
                         }
                     }
-
-                    /*
-                    foreach (RPGMakerMVjsonMap map in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMap>>(jsondata))
-                    {
-                        if (map == null)
-                        {
-                        }
-                        else
-                        {
-                            if (geteventnamenotedone)
-                            {
-
-                            }
-                            else
-                            {
-                                if (string.IsNullOrEmpty(map.Note))
-                                {
-                                }
-                                else
-                                {
-                                    //MessageBox.Show("map.Note:" + map.Note);
-                                    ds.Tables[Jsonname].Rows.Add(map.Note);
-                                }
-                                if (string.IsNullOrEmpty(map.DisplayName))
-                                {
-                                }
-                                else
-                                {
-                                    //MessageBox.Show("map.DisplayName:" + map.DisplayName);
-                                    ds.Tables[Jsonname].Rows.Add(map.DisplayName);
-                                }
-                                geteventnamenotedone = true;
-                            }
-
-                            //events
-                            if (eventsdone)
-                            {
-
-                            }
-                            else if (map.Events.Length < 2)
-                            {
-                                //MessageBox.Show("map.Events.Length < 2 / break");
-                                break;
-                            }
-                            else
-                            {
-                                foreach (Event ev in map.Events)
-                                {
-                                    if (ev == null || string.IsNullOrEmpty(ev.Name))
-                                    {
-                                    }
-                                    else
-                                    {
-                                        //MessageBox.Show("map.Events add name"+ ev.Name);
-                                        ds.Tables[Jsonname].Rows.Add(ev.Name);
-                                    }
-                                    if (ev == null || string.IsNullOrEmpty(ev.Note))
-                                    {
-                                    }
-                                    else
-                                    {
-                                        //MessageBox.Show("map.Events add note:" + ev.Note);
-                                        ds.Tables[Jsonname].Rows.Add(ev.Note);
-                                    }
-                                }
-                                eventsdone = true;
-
-                            }
-                        }
-                    }
-                    */
                 }
                 if (system)
                 {
@@ -1126,7 +1208,7 @@ namespace TranslationHelper
                 //}
                 //else
                 //{
-                    //FileWriter.WriteData(apppath + "\\TranslationHelper.log", ex.Message, true);
+                    FileWriter.WriteData(apppath + "\\TranslationHelper.log", ex.Message, true);
                 //}
                 return false;
             }
@@ -1705,6 +1787,16 @@ namespace TranslationHelper
             }
 
             return all;
+        }
+
+        //Для функции перевода, чтобы не переводить, когда в тексте нет иероглифов
+        private bool NoKanjiHiraganaKatakanaInTheString(string target)
+        {
+            if (GetLocaleLangCount(target, "kanji")==0 && GetLocaleLangCount(target, "hiragana") == 0 && GetLocaleLangCount(target, "katakana") == 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool SelectedLocalePercentFromStringIsNotValid(string target, string langlocale = "romaji", float percent = 80)
