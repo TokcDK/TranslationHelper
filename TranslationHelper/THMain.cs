@@ -1533,11 +1533,20 @@ namespace TranslationHelper
                         //THFiltersDataGridView.Columns.Clear();
 
                         //сунул под try так как один раз здесь была ошибка о выходе за диапахон
+
+                        //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
+                        //THFileElementsDataGridView.SuspendDrawing();
+                        THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
+
                         THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
 
                         THFileElementsDataGridView.Columns["Context"].Visible = false;
                         THFileElementsDataGridView.Columns["Status"].Visible = false;
                         THFiltersDataGridView.Enabled = true;
+
+                        THFileElementsDataGridView.ResumeLayout();
+                        //THFileElementsDataGridView.ResumeDrawing();
+
                         if (FVariant == " * RPG Maker Trans Patch 3.2")
                         {
                             THFileElementsDataGridView.Columns["Advice"].Visible = false;
