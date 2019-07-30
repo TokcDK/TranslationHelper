@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -64,11 +65,14 @@ namespace TranslationHelper
             THRPGMTransPatchFiles = new BindingList<THRPGMTransPatchFile>();
             //dt = new DataTable();
 
+            //THFileElementsDataGridView set doublebuffered to true
+            SetDoublebuffered(true);
+
             //Test Проверка ключа Git для планируемой функции использования Git
             //string GitPath = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows", "InstallPath", null).ToString();
         }
 
-        public void StartLoadingForm()
+        public static void StartLoadingForm()
         {
             try
             {
@@ -1505,8 +1509,24 @@ namespace TranslationHelper
             return true;
         }
 
-        private bool THFilesListBox_MouseClickBusy;
+        //https://10tec.com/articles/why-datagridview-slow.aspx
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, Int32 wMsg, bool wParam, Int32 lParam);
+        private const int WM_SETREDRAW = 11;
 
+        private void SetDoublebuffered(bool value)
+        {
+            // Double buffering can make DGV slow in remote desktop
+            if (!System.Windows.Forms.SystemInformation.TerminalServerSession)
+            {
+                Type dgvType = THFileElementsDataGridView.GetType();
+                PropertyInfo pi = dgvType.GetProperty("DoubleBuffered",
+                  BindingFlags.Instance | BindingFlags.NonPublic);
+                pi.SetValue(THFileElementsDataGridView, value, null);
+            }
+        }
+
+        private bool THFilesListBox_MouseClickBusy;
         private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (THFilesListBox_MouseClickBusy)
@@ -1551,26 +1571,46 @@ namespace TranslationHelper
 
                         //сунул под try так как один раз здесь была ошибка о выходе за диапахон
 
-                        //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
-                        //THFileElementsDataGridView.SuspendDrawing();
-                        THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
 
                         //https://www.youtube.com/watch?v=wZ4BkPyZllY
-                        Thread t = new Thread(new ThreadStart(StartLoadingForm));
-                        t.Start();
+                        //Thread t = new Thread(new ThreadStart(StartLoadingForm));
+                        //t.Start();
                         //Thread.Sleep(100);
-                        
-                        THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
-                        //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
-                        
-                        t.Abort();
+
+                        //измерение времени выполнения
+                        //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
+                        System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
+                        swatch.Start();
+
+                        //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
+                        //THFileElementsDataGridView.SuspendDrawing();
+                        //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
+
+                        //https://10tec.com/articles/why-datagridview-slow.aspx
+                        SendMessage(THFileElementsDataGridView.Handle, WM_SETREDRAW, false, 0);
+
+                        //THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
+                        THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+
+                        //iGrid1.FillWithData(THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks);
+
+
+                        //t.Abort();
 
                         THFileElementsDataGridView.Columns["Context"].Visible = false;
                         THFileElementsDataGridView.Columns["Status"].Visible = false;
                         THFiltersDataGridView.Enabled = true;
 
-                        THFileElementsDataGridView.ResumeLayout();
-                        //THFileElementsDataGridView.ResumeDrawing();
+                        SendMessage(THFileElementsDataGridView.Handle, WM_SETREDRAW, true, 0);
+                        THFileElementsDataGridView.Refresh();
+
+                        //THFileElementsDataGridView.ResumeLayout();
+                        //THFileElementsDataGridView.ResumeDrawing();swatch.Stop();
+
+                        string time = swatch.Elapsed.ToString();
+                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:"+ THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
+                        //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
+
 
                         if (FVariant == " * RPG Maker Trans Patch 3.2")
                         {
@@ -1606,7 +1646,7 @@ namespace TranslationHelper
                     THTargetTextBox.Enabled = true;
                     THTargetTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                 }
-                catch
+                catch (ArgumentNullException)
                 {
                 }
 
@@ -2088,6 +2128,11 @@ namespace TranslationHelper
 
             var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
+        }
+
+        private void THMain_Load(object sender, EventArgs e)
+        {
+            iGrid1.Parent = THEditElementsSplitContainer;
         }
     }
 
