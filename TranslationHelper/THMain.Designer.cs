@@ -62,7 +62,6 @@
             this.THInfoEditSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THInfoTextBox = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.iGrid1 = new TenTec.Windows.iGridLib.iGrid();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -82,7 +81,6 @@
             this.THInfoEditSplitContainer.Panel1.SuspendLayout();
             this.THInfoEditSplitContainer.Panel2.SuspendLayout();
             this.THInfoEditSplitContainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.iGrid1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -313,7 +311,7 @@
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
-            this.THFileElementsDataGridView.Size = new System.Drawing.Size(646, 142);
+            this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 349);
             this.THFileElementsDataGridView.TabIndex = 2;
             this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
             this.THFileElementsDataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.THFileElementsDataGridView_CellValueNeeded);
@@ -335,7 +333,7 @@
             this.THFiltersDataGridView.Name = "THFiltersDataGridView";
             this.THFiltersDataGridView.RowTemplate.Height = 23;
             this.THFiltersDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.THFiltersDataGridView.Size = new System.Drawing.Size(644, 24);
+            this.THFiltersDataGridView.Size = new System.Drawing.Size(641, 24);
             this.THFiltersDataGridView.TabIndex = 3;
             this.THFiltersDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellValueChanged);
             // 
@@ -437,13 +435,6 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // iGrid1
-            // 
-            this.iGrid1.Header.Height = 20;
-            this.iGrid1.Location = new System.Drawing.Point(0, 0);
-            this.iGrid1.Name = "iGrid1";
-            this.iGrid1.TabIndex = 0;
-            // 
             // THMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -479,7 +470,6 @@
             this.THInfoEditSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.THInfoEditSplitContainer)).EndInit();
             this.THInfoEditSplitContainer.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.iGrid1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -519,7 +509,6 @@
         private System.Windows.Forms.ToolStripMenuItem toXmlToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadTranslationFromToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem xmlToolStripMenuItem;
-        private TenTec.Windows.iGridLib.iGrid iGrid1;
     }
 }
 
