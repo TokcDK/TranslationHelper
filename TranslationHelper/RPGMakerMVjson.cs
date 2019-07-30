@@ -1,12 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TranslationHelper
+﻿namespace TranslationHelper
 {
     class RPGMakerMVjson
     {
@@ -131,7 +123,7 @@ namespace TranslationHelper
         public object[] Parameters { get; set; }
     }
     //RPGMakerMVjsonMap
-    
+
     //RPGMakerMVjsonSystem
     /*
     public class RPGMakerMVjsonSystem

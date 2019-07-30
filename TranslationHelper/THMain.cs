@@ -78,7 +78,7 @@ namespace TranslationHelper
             {
                 Application.Run(new THLoadingForm());
             }
-            catch(ThreadAbortException)
+            catch (ThreadAbortException)
             {
             }
         }
@@ -210,7 +210,7 @@ namespace TranslationHelper
             {
                 if (OpenRPGMakerMVjson(sPath))
                 {
-                    for (int i=0; i < ds.Tables.Count; i++)
+                    for (int i = 0; i < ds.Tables.Count; i++)
                     {
                         THFilesListBox.Items.Add(ds.Tables[i].TableName); //add all dataset tables names to the ListBox
                     }
@@ -235,46 +235,46 @@ namespace TranslationHelper
 
             //if (THSelectedSourceType == "RPGMTransPatch")
             //{
-                //Cleaning of the type
-                THRPGMTransPatchFiles.Clear();
+            //Cleaning of the type
+            THRPGMTransPatchFiles.Clear();
 
-                //string patchver;
-                var patchdir = dir;
-                StreamReader patchfile = new StreamReader(sPath); 
-                //MessageBox.Show(patchfile.ReadLine());
-                if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(THSelectedDir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3.2
-                {
-                    THRPGMTransPatchver = "3.2";
-                    patchdir = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\patch");
-                }
-                else //иначе это версия 2
-                {
-                    THRPGMTransPatchver = "2.0";
-                }
-                patchfile.Close();
+            //string patchver;
+            var patchdir = dir;
+            StreamReader patchfile = new StreamReader(sPath);
+            //MessageBox.Show(patchfile.ReadLine());
+            if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(THSelectedDir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3.2
+            {
+                THRPGMTransPatchver = "3.2";
+                patchdir = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\patch");
+            }
+            else //иначе это версия 2
+            {
+                THRPGMTransPatchver = "2.0";
+            }
+            patchfile.Close();
 
-                var vRPGMTransPatchFiles = new List<string>();
+            var vRPGMTransPatchFiles = new List<string>();
 
-                foreach (FileInfo file in patchdir.GetFiles("*.txt"))
-                {
-                    //MessageBox.Show("file.FullName=" + file.FullName);
-                    vRPGMTransPatchFiles.Add(file.FullName);
-                }
+            foreach (FileInfo file in patchdir.GetFiles("*.txt"))
+            {
+                //MessageBox.Show("file.FullName=" + file.FullName);
+                vRPGMTransPatchFiles.Add(file.FullName);
+            }
 
-                //var RPGMTransPatch = new THRPGMTransPatchLoad(this);
+            //var RPGMTransPatch = new THRPGMTransPatchLoad(this);
 
-                //THFilesDataGridView.Nodes.Add("main");
-                //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
-                //RPGMTransPatch.OpenTransFiles(files, patchver);
-                if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
-                {
-                    saveToolStripMenuItem.Enabled = true;
-                    saveAsToolStripMenuItem.Enabled = true;
-                    editToolStripMenuItem.Enabled = true;
-                    viewToolStripMenuItem.Enabled = true;
-                    MessageBox.Show(THSelectedSourceType + " loaded!");
-                    return "RPGMTransPatch";
-                }
+            //THFilesDataGridView.Nodes.Add("main");
+            //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
+            //RPGMTransPatch.OpenTransFiles(files, patchver);
+            if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
+            {
+                saveToolStripMenuItem.Enabled = true;
+                saveAsToolStripMenuItem.Enabled = true;
+                editToolStripMenuItem.Enabled = true;
+                viewToolStripMenuItem.Enabled = true;
+                MessageBox.Show(THSelectedSourceType + " loaded!");
+                return "RPGMTransPatch";
+            }
             //}
             return "";
         }
@@ -406,7 +406,7 @@ namespace TranslationHelper
                     //name = true;
                     system = true;
                 }
-                
+
                 bool ret = FillDSTableWithJsonValues(
                     Jsonname,
                     jsondata,
@@ -663,7 +663,7 @@ namespace TranslationHelper
 
 
                     var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
-                    
+
                     for (int i = 1; i < commoneventsdata.Count; i++)
                     {
                         //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
@@ -687,7 +687,7 @@ namespace TranslationHelper
 
 
                         int CommandsCount = commoneventsdata[i].List.Length;
-                        for (int c=0; c < CommandsCount; c++)
+                        for (int c = 0; c < CommandsCount; c++)
                         {
                             if (textaddingstarted)
                             {
@@ -1005,7 +1005,7 @@ namespace TranslationHelper
 
                     ds.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
 
-                    if (systemdata.ArmorTypes==null || systemdata.ArmorTypes.Length < 1)
+                    if (systemdata.ArmorTypes == null || systemdata.ArmorTypes.Length < 1)
                     {
 
                     }
@@ -1023,7 +1023,7 @@ namespace TranslationHelper
                             }
                         }
                     }
-                    if (systemdata.Elements==null || systemdata.Elements.Length < 1)
+                    if (systemdata.Elements == null || systemdata.Elements.Length < 1)
                     {
 
                     }
@@ -1191,7 +1191,7 @@ namespace TranslationHelper
                 //}
                 //else
                 //{
-                    FileWriter.WriteData(apppath + "\\TranslationHelper.log", ex.Message, true);
+                FileWriter.WriteData(apppath + "\\TranslationHelper.log", ex.Message, true);
                 //}
                 return false;
             }
@@ -1579,12 +1579,12 @@ namespace TranslationHelper
 
                         //измерение времени выполнения
                         //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
-                        System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
-                        swatch.Start();
+                        //System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
+                        //swatch.Start();
 
                         //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
                         //THFileElementsDataGridView.SuspendDrawing();
-                        //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
+                        THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
 
                         //https://10tec.com/articles/why-datagridview-slow.aspx
                         SendMessage(THFileElementsDataGridView.Handle, WM_SETREDRAW, false, 0);
@@ -1604,11 +1604,12 @@ namespace TranslationHelper
                         SendMessage(THFileElementsDataGridView.Handle, WM_SETREDRAW, true, 0);
                         THFileElementsDataGridView.Refresh();
 
-                        //THFileElementsDataGridView.ResumeLayout();
+                        THFileElementsDataGridView.ResumeLayout();
                         //THFileElementsDataGridView.ResumeDrawing();swatch.Stop();
 
-                        string time = swatch.Elapsed.ToString();
-                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:"+ THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
+                        //swatch.Stop();
+                        //string time = swatch.Elapsed.ToString();
+                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
                         //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
 
 
@@ -1668,15 +1669,15 @@ namespace TranslationHelper
                     if (!String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString())) //проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
                         THSourceTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString(); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
-                                                                                                                                                    //https://github.com/caguiclajmg/WanaKanaSharp
-                                                                                                                                                    //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
-                                                                                                                                                    //{
-                                                                                                                                                    //    GetWords(THSourceTextBox.Text);
-                                                                                                                                                    //   var hepburnConverter = new HepburnConverter();
-                                                                                                                                                    //   WanaKana.ToRomaji(hepburnConverter, THSourceTextBox.Text); // hiragana
-                                                                                                                                                    //}
-                                                                                                                                                    //также по японо ыфуригане
-                                                                                                                                                    //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
+                                                                                                                                                //https://github.com/caguiclajmg/WanaKanaSharp
+                                                                                                                                                //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
+                                                                                                                                                //{
+                                                                                                                                                //    GetWords(THSourceTextBox.Text);
+                                                                                                                                                //   var hepburnConverter = new HepburnConverter();
+                                                                                                                                                //   WanaKana.ToRomaji(hepburnConverter, THSourceTextBox.Text); // hiragana
+                                                                                                                                                //}
+                                                                                                                                                //также по японо ыфуригане
+                                                                                                                                                //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
                     }
                     if (!String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value.ToString())) //проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
@@ -1829,7 +1830,7 @@ namespace TranslationHelper
         //Для функции перевода, чтобы не переводить, когда в тексте нет иероглифов
         private bool NoKanjiHiraganaKatakanaInTheString(string target)
         {
-            if (GetLocaleLangCount(target, "kanji")==0 && GetLocaleLangCount(target, "hiragana") == 0 && GetLocaleLangCount(target, "katakana") == 0)
+            if (GetLocaleLangCount(target, "kanji") == 0 && GetLocaleLangCount(target, "hiragana") == 0 && GetLocaleLangCount(target, "katakana") == 0)
             {
                 return true;
             }
@@ -2132,7 +2133,6 @@ namespace TranslationHelper
 
         private void THMain_Load(object sender, EventArgs e)
         {
-            iGrid1.Parent = THEditElementsSplitContainer;
         }
     }
 
