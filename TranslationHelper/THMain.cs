@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TranslationHelper
@@ -65,6 +66,17 @@ namespace TranslationHelper
 
             //Test Проверка ключа Git для планируемой функции использования Git
             //string GitPath = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows", "InstallPath", null).ToString();
+        }
+
+        public void StartLoadingForm()
+        {
+            try
+            {
+                Application.Run(new THLoadingForm());
+            }
+            catch(ThreadAbortException)
+            {
+            }
         }
 
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1503,6 +1515,11 @@ namespace TranslationHelper
             }
             else
             {
+                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                //int index = THFilesListBox.SelectedIndex;
+                //Thread actions = new Thread(new ParameterizedThreadStart((obj) => THFilesListBoxMouseClickEventActions(index)));
+                //actions.Start();
+
                 THFilesListBox_MouseClickBusy = true;
 
                 //Пример с присваиванием Dataset. Они вроде быстро открываются, в отличие от List. Проверка не подтвердила ускорения, всё также
@@ -1538,7 +1555,15 @@ namespace TranslationHelper
                         //THFileElementsDataGridView.SuspendDrawing();
                         THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
 
-                        THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+                        //https://www.youtube.com/watch?v=wZ4BkPyZllY
+                        Thread t = new Thread(new ThreadStart(StartLoadingForm));
+                        t.Start();
+                        //Thread.Sleep(100);
+                        
+                        THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
+                        //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+                        
+                        t.Abort();
 
                         THFileElementsDataGridView.Columns["Context"].Visible = false;
                         THFileElementsDataGridView.Columns["Status"].Visible = false;
@@ -1589,10 +1614,6 @@ namespace TranslationHelper
 
                 THFilesListBox_MouseClickBusy = false;
             }
-        }
-
-        private void THFileElementsDataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
-        {
         }
 
         private void THFileElementsDataGridView_CellEnter(object sender, DataGridViewCellEventArgs e)

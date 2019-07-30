@@ -53,8 +53,8 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THsplitContainerFilesElements = new System.Windows.Forms.SplitContainer();
             this.THFilesListBox = new System.Windows.Forms.ListBox();
-            this.THFiltersDataGridView = new System.Windows.Forms.DataGridView();
             this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
+            this.THFiltersDataGridView = new System.Windows.Forms.DataGridView();
             this.THEditElementsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THSourceTextBox = new System.Windows.Forms.TextBox();
             this.THTargetTextBox = new System.Windows.Forms.TextBox();
@@ -67,8 +67,8 @@
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
             this.THsplitContainerFilesElements.Panel2.SuspendLayout();
             this.THsplitContainerFilesElements.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.THEditElementsSplitContainer)).BeginInit();
             this.THEditElementsSplitContainer.Panel1.SuspendLayout();
             this.THEditElementsSplitContainer.Panel2.SuspendLayout();
@@ -297,6 +297,26 @@
             this.THFilesListBox.TabIndex = 0;
             this.THFilesListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.THFilesListBox_MouseClick);
             // 
+            // THFileElementsDataGridView
+            // 
+            this.THFileElementsDataGridView.AllowUserToAddRows = false;
+            this.THFileElementsDataGridView.AllowUserToDeleteRows = false;
+            this.THFileElementsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.THFileElementsDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.THFileElementsDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.THFileElementsDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
+            this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
+            this.THFileElementsDataGridView.RowTemplate.Height = 23;
+            this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 349);
+            this.THFileElementsDataGridView.TabIndex = 2;
+            this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
+            this.THFileElementsDataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.THFileElementsDataGridView_CellValueNeeded);
+            this.THFileElementsDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFileElementsDataGridView_RowPostPaint);
+            // 
             // THFiltersDataGridView
             // 
             this.THFiltersDataGridView.AllowUserToAddRows = false;
@@ -316,27 +336,6 @@
             this.THFiltersDataGridView.Size = new System.Drawing.Size(644, 24);
             this.THFiltersDataGridView.TabIndex = 3;
             this.THFiltersDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellValueChanged);
-            // 
-            // THFileElementsDataGridView
-            // 
-            this.THFileElementsDataGridView.AllowUserToAddRows = false;
-            this.THFileElementsDataGridView.AllowUserToDeleteRows = false;
-            this.THFileElementsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.THFileElementsDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.THFileElementsDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.THFileElementsDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
-            this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            this.THFileElementsDataGridView.RowTemplate.Height = 23;
-            this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 349);
-            this.THFileElementsDataGridView.TabIndex = 2;
-            this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
-            this.THFileElementsDataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.THFileElementsDataGridView_CellValueNeeded);
-            this.THFileElementsDataGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.THFileElementsDataGridView_DataBindingComplete);
-            this.THFileElementsDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFileElementsDataGridView_RowPostPaint);
             // 
             // THEditElementsSplitContainer
             // 
@@ -453,8 +452,8 @@
             this.THsplitContainerFilesElements.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).EndInit();
             this.THsplitContainerFilesElements.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).EndInit();
             this.THEditElementsSplitContainer.Panel1.ResumeLayout(false);
             this.THEditElementsSplitContainer.Panel1.PerformLayout();
             this.THEditElementsSplitContainer.Panel2.ResumeLayout(false);

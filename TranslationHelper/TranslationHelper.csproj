@@ -74,6 +74,12 @@
     <Compile Include="RPGMakerMVjson.cs" />
     <Compile Include="RPGMakerMVjsonSystem.cs" />
     <Compile Include="temp.cs" />
+    <Compile Include="THLoadingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="THLoadingForm.Designer.cs">
+      <DependentUpon>THLoadingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="THSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,6 +103,9 @@
     <Compile Include="THRPGMTransPatchFile.cs" />
     <Compile Include="THDetectSource.cs" />
     <Compile Include="THLang.cs" />
+    <EmbeddedResource Include="THLoadingForm.resx">
+      <DependentUpon>THLoadingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="THSettingsForm.resx">
       <DependentUpon>THSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -137,4 +146,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.12.0\build\NUnit.props'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>
