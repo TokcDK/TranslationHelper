@@ -313,9 +313,13 @@
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 349);
             this.THFileElementsDataGridView.TabIndex = 2;
+            this.THFileElementsDataGridView.VirtualMode = true;
             this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
             this.THFileElementsDataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.THFileElementsDataGridView_CellValueNeeded);
+            this.THFileElementsDataGridView.NewRowNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.THFileElementsDataGridView_NewRowNeeded);
             this.THFileElementsDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFileElementsDataGridView_RowPostPaint);
+            this.THFileElementsDataGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.THFileElementsDataGridView_RowsAdded);
+            this.THFileElementsDataGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.THFileElementsDataGridView_Scroll);
             // 
             // THFiltersDataGridView
             // 

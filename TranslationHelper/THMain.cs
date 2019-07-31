@@ -164,9 +164,9 @@ namespace TranslationHelper
                         //string patchver;
                         bool isv3 = Directory.Exists(extractedpatchpath + "\\patch");
                         //MessageBox.Show("isv3=" + isv3+ ", patchdir="+ extractedpatchpath+ ", extractedpatchpath="+ extractedpatchpath);
-                        if (isv3) //если есть подпапка patch, тогда это версия патча 3.2
+                        if (isv3) //если есть подпапка patch, тогда это версия патча 3
                         {
-                            THRPGMTransPatchver = "3.2";
+                            THRPGMTransPatchver = "3";
                             extractedpatchpath += "\\patch";
                             //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
                             dir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpath + "\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
@@ -242,9 +242,9 @@ namespace TranslationHelper
             var patchdir = dir;
             StreamReader patchfile = new StreamReader(sPath);
             //MessageBox.Show(patchfile.ReadLine());
-            if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(THSelectedDir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3.2
+            if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(THSelectedDir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3
             {
-                THRPGMTransPatchver = "3.2";
+                THRPGMTransPatchver = "3";
                 patchdir = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\patch");
             }
             else //иначе это версия 2
@@ -1316,13 +1316,13 @@ namespace TranslationHelper
                 _file = new StreamReader(ListFiles[i]); //Задаем файл
                 THRPGMTransPatchFiles.Add(new THRPGMTransPatchFile(Path.GetFileNameWithoutExtension(ListFiles[i]), ListFiles[i].ToString(), ""));    //Добaвляем файл
 
-                if (patchver == "3.2")
+                if (patchver == "3")
                 {
                     verok = 1; //Версия опознана
                     while (!_file.EndOfStream)   //Читаем до конца
                     {
                         _string = _file.ReadLine();                       //Чтение
-                        //Код для версии патча 3.2
+                        //Код для версии патча 3
                         if (_string.StartsWith("> BEGIN STRING"))
                         {
                             invalidformat = 2; //если нашло строку
@@ -1509,11 +1509,6 @@ namespace TranslationHelper
             return true;
         }
 
-        //https://10tec.com/articles/why-datagridview-slow.aspx
-        [DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hWnd, Int32 wMsg, bool wParam, Int32 lParam);
-        private const int WM_SETREDRAW = 11;
-
         private void SetDoublebuffered(bool value)
         {
             // Double buffering can make DGV slow in remote desktop
@@ -1526,6 +1521,7 @@ namespace TranslationHelper
             }
         }
 
+        int numberOfRows=500;
         private bool THFilesListBox_MouseClickBusy;
         private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
         {
@@ -1579,43 +1575,60 @@ namespace TranslationHelper
 
                         //измерение времени выполнения
                         //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
-                        //System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
-                        //swatch.Start();
+                        System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
+                        swatch.Start();
 
                         //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
-                        //THFileElementsDataGridView.SuspendDrawing();
-                        THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
+                        THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
+                        //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
 
-                        //https://10tec.com/articles/why-datagridview-slow.aspx
-                        SendMessage(THFileElementsDataGridView.Handle, WM_SETREDRAW, false, 0);
+                        //THsplitContainerFilesElements.Panel2.Visible = false;//сделать невидимым родительский элемент на время
 
                         //THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
-                        THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+                        //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+                        
+                        //Virtual mode implementation
+                        THFileElementsDataGridView.Rows.Clear();
+                        THFileElementsDataGridView.Columns.Clear();
+                        THFileElementsDataGridView.Columns.Add("Original", THMainDGVOriginalColumnName);
+                        THFileElementsDataGridView.Columns.Add("Translation", THMainDGVTranslationColumnName);
+                        if (THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count < numberOfRows)
+                        {
+                            THFileElementsDataGridView.RowCount = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count;
+                        }
+                        else
+                        {
+                            THFileElementsDataGridView.RowCount = numberOfRows;
+                        }
+
+                        //foreach (var sblock in THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks)
+                        //{
+                        //    THFileElementsDataGridView.Rows.Add(sblock.Original, sblock.Translation);
+                        //}
 
                         //iGrid1.FillWithData(THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks);
 
 
                         //t.Abort();
 
-                        THFileElementsDataGridView.Columns["Context"].Visible = false;
-                        THFileElementsDataGridView.Columns["Status"].Visible = false;
+                        //THsplitContainerFilesElements.Panel2.Visible = true;
+
+                        //THFileElementsDataGridView.Columns["Context"].Visible = false;
+                        //THFileElementsDataGridView.Columns["Status"].Visible = false;
                         THFiltersDataGridView.Enabled = true;
 
-                        SendMessage(THFileElementsDataGridView.Handle, WM_SETREDRAW, true, 0);
-                        THFileElementsDataGridView.Refresh();
+                        //THFileElementsDataGridView.ResumeLayout();
+                        THFileElementsDataGridView.ResumeDrawing();
 
-                        THFileElementsDataGridView.ResumeLayout();
-                        //THFileElementsDataGridView.ResumeDrawing();swatch.Stop();
-
-                        //swatch.Stop();
-                        //string time = swatch.Elapsed.ToString();
-                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
-                        //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
+                        swatch.Stop();
+                        string time = swatch.Elapsed.ToString();
+                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
+                        MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
 
 
-                        if (FVariant == " * RPG Maker Trans Patch 3.2")
+                        if (FVariant == " * RPG Maker Trans Patch 3")
                         {
-                            THFileElementsDataGridView.Columns["Advice"].Visible = false;
+                            //THFileElementsDataGridView.Columns["Advice"].Visible = false;
                         }
                         //MessageBox.Show("THFiltersDataGridView.Columns.Count=" + THFiltersDataGridView.Columns.Count
                         //    + "\r\nTHFileElementsDataGridView visible Columns Count=" + THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible));
@@ -1715,7 +1728,15 @@ namespace TranslationHelper
         private void THFileElementsDataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
             //MessageBox.Show("THFileElementsDataGridView_CellValueNeeded");
-            //e.Value = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks[e.RowIndex];
+
+            if (e.ColumnIndex == 0)
+            {
+                e.Value = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks[e.RowIndex].Original;
+            }
+            else
+            {
+                e.Value = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks[e.RowIndex].Translation;
+            }
         }
 
         //Detect languages
@@ -1893,7 +1914,7 @@ namespace TranslationHelper
             //MessageBox.Show(progressBar.Maximum.ToString());
             //progressBar.Value = 0;
 
-            if (patchver == "3.2")
+            if (patchver == "3")
             {
                 //запись в файл RPGMKTRANSPATCH строки > RPGMAKER TRANS PATCH V3
                 //StreamWriter RPGMKTRANSPATCHwriter = new StreamWriter("RPGMKTRANSPATCH", true);
@@ -1902,7 +1923,7 @@ namespace TranslationHelper
 
                 for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
                 {
-                    buffer = "> RPGMAKER TRANS PATCH FILE VERSION 3.2\r\n";
+                    buffer = "> RPGMAKER TRANS PATCH FILE VERSION 3\r\n";
                     for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
                     {
                         buffer += "> BEGIN STRING\r\n";
@@ -2133,6 +2154,51 @@ namespace TranslationHelper
 
         private void THMain_Load(object sender, EventArgs e)
         {
+        }
+
+        private void THFileElementsDataGridView_Scroll(object sender, ScrollEventArgs e)
+        {
+            //if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
+            //{
+                /*
+                if (THFileElementsDataGridView.Rows.Count < THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count)
+                {
+                    THFileElementsDataGridView.Rows.Add();
+                }
+
+                
+                if (THFileElementsDataGridView.Rows.Count+500 > THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count)
+                {
+                    THFileElementsDataGridView.RowCount = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count;
+                }
+                else
+                {
+                    THFileElementsDataGridView.RowCount = THFileElementsDataGridView.Rows.Count + 500;
+                }
+                */
+            //}
+
+
+        }
+
+        bool newRowNeeded;
+        private void THFileElementsDataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            
+            //if (e.RowIndex == numberOfRows /*newRowNeeded*/)
+            //{
+                //newRowNeeded = false;
+                //numberOfRows = numberOfRows + 1;
+                //THFileElementsDataGridView.Rows.Add();
+            //}
+            
+
+        }
+
+        private void THFileElementsDataGridView_NewRowNeeded(object sender, DataGridViewRowEventArgs e)
+        {
+            MessageBox.Show("hhhhhhhhhhhh");
+            newRowNeeded = true;
         }
     }
 

@@ -4,7 +4,7 @@
     {
         //Menus
         //-//File
-        public string THStrfileToolStripMenuItemName { get; set; } = "Файл";
+        public string THStrfileToolStripMenuItemName { get; set; } = "FIle";
 
         public string THStropenToolStripMenuItemName { get; set; } = "Open";
         public string THStrsaveToolStripMenuItemName { get; set; } = "Save";
