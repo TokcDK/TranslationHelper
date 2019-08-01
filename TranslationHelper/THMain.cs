@@ -1577,8 +1577,8 @@ namespace TranslationHelper
 
                         //измерение времени выполнения
                         //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
-                        System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
-                        swatch.Start();
+                        //System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
+                        //swatch.Start();
 
                         //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
                         //THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
@@ -1632,9 +1632,9 @@ namespace TranslationHelper
                         //THFileElementsDataGridView.ResumeLayout();
                         THFileElementsDataGridView.ResumeDrawing();
 
-                        swatch.Stop();
-                        string time = swatch.Elapsed.ToString();
-                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
+                        //swatch.Stop();
+                        //string time = swatch.Elapsed.ToString();
+                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
                         //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
 
 
@@ -1642,7 +1642,6 @@ namespace TranslationHelper
                         {
                             THFileElementsDataGridView.Columns["Advice"].Visible = false;
                         }
-
 
                         this.Cursor = Cursors.Default; ;//Поменять курсор обратно на обычный
 
