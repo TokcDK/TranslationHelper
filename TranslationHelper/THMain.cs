@@ -1575,110 +1575,9 @@ namespace TranslationHelper
                 // Поменял List на BindingList и вроде чуть быстрее стало загружаться
                 try
                 {
+                    /*
                     if (THSelectedSourceType.Contains("RPGMTransPatch"))
                     {
-                        //THFiltersDataGridView.Columns.Clear();
-
-                        //сунул под try так как один раз здесь была ошибка о выходе за диапахон
-
-
-                        //https://www.youtube.com/watch?v=wZ4BkPyZllY
-                        //Thread t = new Thread(new ThreadStart(StartLoadingForm));
-                        //t.Start();
-                        //Thread.Sleep(100);
-
-                        this.Cursor = Cursors.WaitCursor; // Поменять курсор на часики
-
-                        //измерение времени выполнения
-                        //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
-                        //System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
-                        //swatch.Start();
-
-                        //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
-                        //THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
-                        //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
-
-                        //THsplitContainerFilesElements.Panel2.Visible = false;//сделать невидимым родительский элемент на время
-
-                        //Советы, после которых отображение ячеек стало во много раз быстрее, 
-                        //https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/best-practices-for-scaling-the-windows-forms-datagridview-control
-                        //Конкретно, поменял режим отображения строк(Rows) c AllCells на DisplayerCells, что ускорило отображение 3400к. строк в таблице в 100 раз, с 9с. до 0.09с. !
-
-                        //THBS.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;
-                        //THFileElementsDataGridView.DataSource = THBS;
-
-                        //THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
-                        //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
-                        THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
-
-
-                        /*
-                        //Virtual mode implementation
-                        THFileElementsDataGridView.Rows.Clear();
-                        THFileElementsDataGridView.Columns.Clear();
-                        THFileElementsDataGridView.Columns.Add("Original", THMainDGVOriginalColumnName);
-                        THFileElementsDataGridView.Columns.Add("Translation", THMainDGVTranslationColumnName);
-                        if (THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count < numberOfRows)
-                        {
-                            THFileElementsDataGridView.RowCount = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count;
-                        }
-                        else
-                        {
-                            THFileElementsDataGridView.RowCount = numberOfRows;
-                        }
-                        */
-
-                        //foreach (var sblock in THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks)
-                        //{
-                        //    THFileElementsDataGridView.Rows.Add(sblock.Original, sblock.Translation);
-                        //}
-
-                        //iGrid1.FillWithData(THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks);
-
-
-                        //t.Abort();
-
-                        //THsplitContainerFilesElements.Panel2.Visible = true;
-
-                        THFileElementsDataGridView.Columns["Context"].Visible = false;
-                        THFileElementsDataGridView.Columns["Status"].Visible = false;
-                        THFiltersDataGridView.Enabled = true;
-
-                        //THFileElementsDataGridView.ResumeLayout();
-                        THFileElementsDataGridView.ResumeDrawing();
-
-                        //swatch.Stop();
-                        //string time = swatch.Elapsed.ToString();
-                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
-                        //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
-
-
-                        if (FVariant == " * RPG Maker Trans Patch 3")
-                        {
-                            THFileElementsDataGridView.Columns["Advice"].Visible = false;
-                        }
-
-                        this.Cursor = Cursors.Default; ;//Поменять курсор обратно на обычный
-
-                        //MessageBox.Show("THFiltersDataGridView.Columns.Count=" + THFiltersDataGridView.Columns.Count
-                        //    + "\r\nTHFileElementsDataGridView visible Columns Count=" + THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible));
-                        if (THFiltersDataGridView.Columns.Count != THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible))
-                        {
-                            //int visibleindex = -1;
-                            for (int cindx = 0; cindx < THFileElementsDataGridView.Columns.Count; cindx++)
-                            {
-                                if (THFileElementsDataGridView.Columns[cindx].Visible)
-                                {
-                                    //visibleindex += 1;
-                                    //MessageBox.Show("THFileElementsDataGridView.Columns[cindx].Name="+ THFileElementsDataGridView.Columns[cindx].Name
-                                    //    + "\r\nTHFileElementsDataGridView.Columns[cindx].HeaderText="+ THFileElementsDataGridView.Columns[cindx].HeaderText);
-                                    THFiltersDataGridView.Columns.Add(THFileElementsDataGridView.Columns[cindx].Name, THFileElementsDataGridView.Columns[cindx].HeaderText);
-                                    //THFiltersDataGridView.Columns[visibleindex].Width = THFileElementsDataGridView.Columns[cindx].Width;
-                                }
-                            }
-                            THFiltersDataGridView.Rows.Add(1);
-                            THFiltersDataGridView.CurrentRow.Selected = false;
-                        }
                     }
                     else if (THSelectedSourceType.Contains("RPG Maker MV"))
                     {
@@ -1688,14 +1587,96 @@ namespace TranslationHelper
                         //ds.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("Text LIKE '%{0}%'", "FIltering string");
                         
                     }
+                    */
+
+                    //THFiltersDataGridView.Columns.Clear();
+
+                    //сунул под try так как один раз здесь была ошибка о выходе за диапахон
 
 
-                    THFileElementsDataGridView.Columns["Original"].Name = THMainDGVOriginalColumnName;
-                    THFileElementsDataGridView.Columns["Translation"].Name = THMainDGVTranslationColumnName;
-                    THFileElementsDataGridView.Columns[THMainDGVOriginalColumnName].ReadOnly = true;
-                    THSourceTextBox.Enabled = true;
-                    THTargetTextBox.Enabled = true;
-                    THTargetTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    //https://www.youtube.com/watch?v=wZ4BkPyZllY
+                    //Thread t = new Thread(new ThreadStart(StartLoadingForm));
+                    //t.Start();
+                    //Thread.Sleep(100);
+
+                    this.Cursor = Cursors.WaitCursor; // Поменять курсор на часики
+
+                    //измерение времени выполнения
+                    //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
+                    //System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
+                    //swatch.Start();
+
+                    //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
+                    //THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
+                    //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
+
+                    //THsplitContainerFilesElements.Panel2.Visible = false;//сделать невидимым родительский элемент на время
+
+                    //Советы, после которых отображение ячеек стало во много раз быстрее, 
+                    //https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/best-practices-for-scaling-the-windows-forms-datagridview-control
+                    //Конкретно, поменял режим отображения строк(Rows) c AllCells на DisplayerCells, что ускорило отображение 3400к. строк в таблице в 100 раз, с 9с. до 0.09с. !
+
+                    //THBS.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;
+                    //THFileElementsDataGridView.DataSource = THBS;
+
+                    //THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
+                    //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+                    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+
+
+                    /*
+                    //Virtual mode implementation
+                    THFileElementsDataGridView.Rows.Clear();
+                    THFileElementsDataGridView.Columns.Clear();
+                    THFileElementsDataGridView.Columns.Add("Original", THMainDGVOriginalColumnName);
+                    THFileElementsDataGridView.Columns.Add("Translation", THMainDGVTranslationColumnName);
+                    if (THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count < numberOfRows)
+                    {
+                        THFileElementsDataGridView.RowCount = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count;
+                    }
+                    else
+                    {
+                        THFileElementsDataGridView.RowCount = numberOfRows;
+                    }
+                    */
+
+                    //foreach (var sblock in THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks)
+                    //{
+                    //    THFileElementsDataGridView.Rows.Add(sblock.Original, sblock.Translation);
+                    //}
+
+                    //iGrid1.FillWithData(THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks);
+
+
+                    //t.Abort();
+
+                    //THsplitContainerFilesElements.Panel2.Visible = true;
+                                       
+                    //swatch.Stop();
+                    //string time = swatch.Elapsed.ToString();
+                    //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
+                    //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
+
+                    if (THSelectedSourceType.Contains("RPGMTransPatch")) //Additional tweaks for RPGMTransPatch table
+                    {
+                        THFileElementsDataGridView.Columns["Context"].Visible = false;
+                        THFileElementsDataGridView.Columns["Status"].Visible = false;
+                        if (FVariant == " * RPG Maker Trans Patch 3")
+                        {
+                            THFileElementsDataGridView.Columns["Advice"].Visible = false;
+                        }
+                    }
+
+                    this.Cursor = Cursors.Default; ;//Поменять курсор обратно на обычный
+
+                    //THFileElementsDataGridView.ResumeLayout();
+                    //THFileElementsDataGridView.ResumeDrawing();
+
+                    SetFilterDGV(); //Init Filters datagridview
+
+                    SetOnTHFileElementsDataGridViewWasLoaded(); //Additional actions when elements of file was loaded in datagridview
+
+                    CheckFilterDGV(); //Apply filters if they is not empty
                 }
                 catch (Exception)
                 {
@@ -1704,6 +1685,42 @@ namespace TranslationHelper
                 //THFileElementsDataGridView.RowHeadersVisible = true; // set it to false if not needed
 
                 THFilesListBox_MouseClickBusy = false;
+            }
+        }
+
+        private void SetOnTHFileElementsDataGridViewWasLoaded()
+        {
+            THFileElementsDataGridView.Columns["Original"].Name = THMainDGVOriginalColumnName;
+            THFileElementsDataGridView.Columns["Translation"].Name = THMainDGVTranslationColumnName;
+            THFileElementsDataGridView.Columns[THMainDGVOriginalColumnName].ReadOnly = true;
+            THFiltersDataGridView.Enabled = true;
+            THSourceTextBox.Enabled = true;
+            THTargetTextBox.Enabled = true;
+            THTargetTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+        }
+
+        private void SetFilterDGV()
+        {
+            //MessageBox.Show("THFiltersDataGridView.Columns.Count=" + THFiltersDataGridView.Columns.Count
+            //    + "\r\nTHFileElementsDataGridView visible Columns Count=" + THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible));
+            if (THFiltersDataGridView.Columns.Count != THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible))
+            {
+                THFiltersDataGridView.Columns.Clear();
+                THFiltersDataGridView.Rows.Clear();
+                //int visibleindex = -1;
+                for (int cindx = 0; cindx < THFileElementsDataGridView.Columns.Count; cindx++)
+                {
+                    if (THFileElementsDataGridView.Columns[cindx].Visible)
+                    {
+                        //visibleindex += 1;
+                        //MessageBox.Show("THFileElementsDataGridView.Columns[cindx].Name="+ THFileElementsDataGridView.Columns[cindx].Name
+                        //    + "\r\nTHFileElementsDataGridView.Columns[cindx].HeaderText="+ THFileElementsDataGridView.Columns[cindx].HeaderText);
+                        THFiltersDataGridView.Columns.Add(THFileElementsDataGridView.Columns[cindx].Name, THFileElementsDataGridView.Columns[cindx].HeaderText);
+                        //THFiltersDataGridView.Columns[visibleindex].Width = THFileElementsDataGridView.Columns[cindx].Width;
+                    }
+                }
+                THFiltersDataGridView.Rows.Add(1);
+                THFiltersDataGridView.CurrentRow.Selected = false;
             }
         }
 
@@ -1890,11 +1907,11 @@ namespace TranslationHelper
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
+            //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
             if (THSelectedSourceType == "RPGMTransPatch" || THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
             {
                 THInfoTextBox.Text = "Saving...";
-                MessageBox.Show("THSelectedDir=" + THSelectedDir);
+                //MessageBox.Show("THSelectedDir=" + THSelectedDir);
                 SaveRPGMTransPatchFiles(THSelectedDir, THRPGMTransPatchver);
                 THInfoTextBox.Text = "";
             }
@@ -2075,7 +2092,7 @@ namespace TranslationHelper
 
         private void THFiltersDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            DGVFilter();
+            CheckFilterDGV();
             /*
             int cindx = e.ColumnIndex;
             //MessageBox.Show("e.ColumnIndex" + cindx);
@@ -2169,7 +2186,7 @@ namespace TranslationHelper
             */
         }
 
-        private void DGVFilter()
+        private void CheckFilterDGV()
         {
             //private void DGVFilter()
             string OverallFilter = string.Empty;
