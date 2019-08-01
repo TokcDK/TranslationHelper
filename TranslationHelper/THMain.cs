@@ -218,10 +218,6 @@ namespace TranslationHelper
                         if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
                         {
                             THSelectedDir = extractedpatchpath.Replace("\\patch", "");
-                            saveToolStripMenuItem.Enabled = true;
-                            saveAsToolStripMenuItem.Enabled = true;
-                            editToolStripMenuItem.Enabled = true;
-                            viewToolStripMenuItem.Enabled = true;
                             MessageBox.Show(THSelectedSourceType + " loaded!");
                             return "RPG Maker game with RPGMTransPatch";
                         }
@@ -292,10 +288,6 @@ namespace TranslationHelper
             //RPGMTransPatch.OpenTransFiles(files, patchver);
             if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
             {
-                saveToolStripMenuItem.Enabled = true;
-                saveAsToolStripMenuItem.Enabled = true;
-                editToolStripMenuItem.Enabled = true;
-                viewToolStripMenuItem.Enabled = true;
                 MessageBox.Show(THSelectedSourceType + " loaded!");
                 return "RPGMTransPatch";
             }
@@ -1720,6 +1712,11 @@ namespace TranslationHelper
             THSourceTextBox.Enabled = true;
             THTargetTextBox.Enabled = true;
             THTargetTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+
+            saveToolStripMenuItem.Enabled = true;
+            saveAsToolStripMenuItem.Enabled = true;
+            editToolStripMenuItem.Enabled = true;
+            viewToolStripMenuItem.Enabled = true;
         }
 
         private void SetFilterDGV()
@@ -1929,15 +1926,17 @@ namespace TranslationHelper
         }
 
         bool SaveInAction = false;
+        bool FIleDataWasChanged = false;
         private async void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SaveInAction)
             {
                 //MessageBox.Show("Saving still in progress. Please wait a little.");
             }
-            else
+            else if (FIleDataWasChanged)
             {
                 SaveInAction = true;
+                FIleDataWasChanged = false;
                 //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
                 if (THSelectedSourceType == "RPGMTransPatch" || THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
                 {
@@ -1959,7 +1958,6 @@ namespace TranslationHelper
 
                     //THActionProgressBar.Visible = false;
                 }
-                SaveInAction = false;
             }
         }
 
@@ -2121,6 +2119,7 @@ namespace TranslationHelper
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Visible = false));
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Text = ""));
                 ProgressInfo(false, "");
+                SaveInAction = false;
                 return false;
             }
             finally
@@ -2132,6 +2131,7 @@ namespace TranslationHelper
                 ProgressInfo(false, "");
             }
 
+            SaveInAction = false;
             return true;
 
         }
@@ -2403,6 +2403,11 @@ namespace TranslationHelper
         {
             //MessageBox.Show("hhhhhhhhhhhh");
             //newRowNeeded = true;
+        }
+
+        private void THFileElementsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            FIleDataWasChanged = true;
         }
     }
 

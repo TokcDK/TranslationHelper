@@ -317,6 +317,7 @@
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 352);
             this.THFileElementsDataGridView.TabIndex = 2;
             this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
+            this.THFileElementsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellValueChanged);
             this.THFileElementsDataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.THFileElementsDataGridView_CellValueNeeded);
             this.THFileElementsDataGridView.NewRowNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.THFileElementsDataGridView_NewRowNeeded);
             this.THFileElementsDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFileElementsDataGridView_RowPostPaint);
