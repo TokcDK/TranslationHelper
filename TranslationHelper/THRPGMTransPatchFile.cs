@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿/*
+using System.ComponentModel;
 
 namespace TranslationHelper
 {
@@ -54,3 +55,4 @@ namespace TranslationHelper
         }
     }
 }
+*/

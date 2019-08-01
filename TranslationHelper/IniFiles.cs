@@ -8,7 +8,7 @@ namespace TranslationHelper
     {
         //Материал: https://habr.com/ru/post/271483/
 
-        string Path; //Имя файла.
+        readonly string Path; //Имя файла.
 
         [DllImport("kernel32", CharSet = CharSet.Unicode)] // Подключаем kernel32.dll и описываем его функцию WritePrivateProfilesString
         static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
