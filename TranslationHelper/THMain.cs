@@ -31,8 +31,8 @@ namespace TranslationHelper
         private BindingList<THRPGMTransPatchFile> THRPGMTransPatchFiles; //Все файлы
         DataTable fileslistdt = new DataTable();
         DataSet ds = new DataSet();
-        //DataTable dt;
-        //private BindingSource THBS = new BindingSource();
+        //DataTable THFilesElementsDatatable;
+        private BindingSource THBS = new BindingSource();
 
         private string THSelectedDir;
         private string THRPGMTransPatchver;
@@ -1521,7 +1521,7 @@ namespace TranslationHelper
             }
         }
 
-        int numberOfRows=500;
+        //int numberOfRows=500;
         private bool THFilesListBox_MouseClickBusy;
         private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
         {
@@ -1573,20 +1573,31 @@ namespace TranslationHelper
                         //t.Start();
                         //Thread.Sleep(100);
 
+                        this.Cursor = Cursors.WaitCursor; // Поменять курсор на часики
+
                         //измерение времени выполнения
                         //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
                         System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
                         swatch.Start();
 
                         //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
-                        THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
+                        //THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
                         //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
 
                         //THsplitContainerFilesElements.Panel2.Visible = false;//сделать невидимым родительский элемент на время
 
+                        //Советы, после которых отображение ячеек стало во много раз быстрее, 
+                        //https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/best-practices-for-scaling-the-windows-forms-datagridview-control
+                        //Конкретно, поменял режим отображения строк(Rows) c AllCells на DisplayerCells, что ускорило отображение 3400к. строк в таблице в 100 раз, с 9с. до 0.09с. !
+
+                        //THBS.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;
+                        //THFileElementsDataGridView.DataSource = THBS;
+
                         //THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
-                        //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
-                        
+                        THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+
+
+                        /*
                         //Virtual mode implementation
                         THFileElementsDataGridView.Rows.Clear();
                         THFileElementsDataGridView.Columns.Clear();
@@ -1600,6 +1611,7 @@ namespace TranslationHelper
                         {
                             THFileElementsDataGridView.RowCount = numberOfRows;
                         }
+                        */
 
                         //foreach (var sblock in THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks)
                         //{
@@ -1613,8 +1625,8 @@ namespace TranslationHelper
 
                         //THsplitContainerFilesElements.Panel2.Visible = true;
 
-                        //THFileElementsDataGridView.Columns["Context"].Visible = false;
-                        //THFileElementsDataGridView.Columns["Status"].Visible = false;
+                        THFileElementsDataGridView.Columns["Context"].Visible = false;
+                        THFileElementsDataGridView.Columns["Status"].Visible = false;
                         THFiltersDataGridView.Enabled = true;
 
                         //THFileElementsDataGridView.ResumeLayout();
@@ -1623,24 +1635,31 @@ namespace TranslationHelper
                         swatch.Stop();
                         string time = swatch.Elapsed.ToString();
                         FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
-                        MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
+                        //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
 
 
                         if (FVariant == " * RPG Maker Trans Patch 3")
                         {
-                            //THFileElementsDataGridView.Columns["Advice"].Visible = false;
+                            THFileElementsDataGridView.Columns["Advice"].Visible = false;
                         }
+
+
+                        this.Cursor = Cursors.Default; ;//Поменять курсор обратно на обычный
+
                         //MessageBox.Show("THFiltersDataGridView.Columns.Count=" + THFiltersDataGridView.Columns.Count
                         //    + "\r\nTHFileElementsDataGridView visible Columns Count=" + THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible));
                         if (THFiltersDataGridView.Columns.Count != THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible))
                         {
+                            //int visibleindex = -1;
                             for (int cindx = 0; cindx < THFileElementsDataGridView.Columns.Count; cindx++)
                             {
                                 if (THFileElementsDataGridView.Columns[cindx].Visible)
                                 {
+                                    //visibleindex += 1;
                                     //MessageBox.Show("THFileElementsDataGridView.Columns[cindx].Name="+ THFileElementsDataGridView.Columns[cindx].Name
                                     //    + "\r\nTHFileElementsDataGridView.Columns[cindx].HeaderText="+ THFileElementsDataGridView.Columns[cindx].HeaderText);
                                     THFiltersDataGridView.Columns.Add(THFileElementsDataGridView.Columns[cindx].Name, THFileElementsDataGridView.Columns[cindx].HeaderText);
+                                    //THFiltersDataGridView.Columns[visibleindex].Width = THFileElementsDataGridView.Columns[cindx].Width;
                                 }
                             }
                             THFiltersDataGridView.Rows.Add(1);
@@ -1660,7 +1679,7 @@ namespace TranslationHelper
                     THTargetTextBox.Enabled = true;
                     THTargetTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                 }
-                catch (ArgumentNullException)
+                catch (Exception)
                 {
                 }
 
@@ -1720,22 +1739,6 @@ namespace TranslationHelper
             }
             catch
             {
-            }
-        }
-
-        //Пример виртуального режима
-        //http://www.cyberforum.ru/post9306711.html
-        private void THFileElementsDataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
-        {
-            //MessageBox.Show("THFileElementsDataGridView_CellValueNeeded");
-
-            if (e.ColumnIndex == 0)
-            {
-                e.Value = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks[e.RowIndex].Original;
-            }
-            else
-            {
-                e.Value = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks[e.RowIndex].Translation;
             }
         }
 
@@ -2039,6 +2042,8 @@ namespace TranslationHelper
 
         private void THFiltersDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            
+
             int cindx = e.ColumnIndex;
             //MessageBox.Show("e.ColumnIndex" + cindx);
             for (int i = 0; i < THFileElementsDataGridView.Rows.Count; i++) //сделать все видимыми
@@ -2091,7 +2096,7 @@ namespace TranslationHelper
                                 {
                                     //MessageBox.Show("THFiltersDataGridView.Columns[cindx].Name=" + THFiltersDataGridView.Columns[e.ColumnIndex].Name
                                     //    + "\r\nTHFileElementsDataGridView.Columns[cindx].Name=" + THFileElementsDataGridView.Columns[cindx].Name);
-                                    if (cindx < THFileElementsDataGridView.Columns.Count - 1/*Контроль на превышение лимита колонок, на всякий*/ && THFiltersDataGridView.Columns[e.ColumnIndex].Name == THFileElementsDataGridView.Columns[cindx].Name)
+                                    if (cindx < THFileElementsDataGridView.Columns.Count - 1 /*Контроль на превышение лимита колонок, на всякий*/ && THFiltersDataGridView.Columns[e.ColumnIndex].Name == THFileElementsDataGridView.Columns[cindx].Name)
                                     {
                                         break;
                                     }
@@ -2156,17 +2161,51 @@ namespace TranslationHelper
         {
         }
 
+        //Пример виртуального режима
+        //http://www.cyberforum.ru/post9306711.html
+        private void THFileElementsDataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
+        {
+            //MessageBox.Show("THFileElementsDataGridView_CellValueNeeded");
+            /*
+            if (e.ColumnIndex == 0)
+            {
+                e.Value = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks[e.RowIndex].Original;
+            }
+            else
+            {
+                e.Value = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks[e.RowIndex].Translation;
+            }
+            */
+        }
+
         private void THFileElementsDataGridView_Scroll(object sender, ScrollEventArgs e)
         {
             //if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
             //{
+                //newRowNeeded = true;
                 /*
                 if (THFileElementsDataGridView.Rows.Count < THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count)
                 {
                     THFileElementsDataGridView.Rows.Add();
                 }
+                */
 
-                
+                /*debug info
+                //https://docs.microsoft.com/ru-ru/dotnet/api/system.windows.forms.datagridview.scroll?view=netframework-4.8
+                System.Text.StringBuilder messageBoxCS = new System.Text.StringBuilder();
+                messageBoxCS.AppendFormat("{0} = {1}", "ScrollOrientation", e.ScrollOrientation);
+                messageBoxCS.AppendLine();
+                messageBoxCS.AppendFormat("{0} = {1}", "Type", e.Type);
+                messageBoxCS.AppendLine();
+                messageBoxCS.AppendFormat("{0} = {1}", "NewValue", e.NewValue);
+                messageBoxCS.AppendLine();
+                messageBoxCS.AppendFormat("{0} = {1}", "OldValue", e.OldValue);
+                messageBoxCS.AppendLine();
+                MessageBox.Show(messageBoxCS.ToString(), "Scroll Event");
+                */
+
+
+                /*
                 if (THFileElementsDataGridView.Rows.Count+500 > THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count)
                 {
                     THFileElementsDataGridView.RowCount = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks.Count;
@@ -2181,7 +2220,7 @@ namespace TranslationHelper
 
         }
 
-        bool newRowNeeded;
+        //bool newRowNeeded;
         private void THFileElementsDataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             
@@ -2197,8 +2236,8 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_NewRowNeeded(object sender, DataGridViewRowEventArgs e)
         {
-            MessageBox.Show("hhhhhhhhhhhh");
-            newRowNeeded = true;
+            //MessageBox.Show("hhhhhhhhhhhh");
+            //newRowNeeded = true;
         }
     }
 
@@ -2209,4 +2248,6 @@ namespace TranslationHelper
     //http://www.skillcoding.com/Default.aspx?id=151
     //Ошибка "Строку, связанную с положением CurrencyManager, нельзя сделать невидимой"
     //http://www.cyberforum.ru/csharp-beginners/thread757809.html
+    //Виртуальный режим
+    //https://stackoverflow.com/questions/31458197/how-to-sort-datagridview-data-when-virtual-mode-enable
 }
