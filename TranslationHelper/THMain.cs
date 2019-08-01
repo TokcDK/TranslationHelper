@@ -7,6 +7,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -111,12 +112,13 @@ namespace TranslationHelper
         {
             try
             {
+                //Reset strings
                 ActiveForm.Text = "Translation Helper by DenisK";
                 THInfoTextBox.Text = string.Empty;
                 THSourceTextBox.Text = string.Empty;
                 THTargetTextBox.Text = string.Empty;
 
-                //Cleaning
+                //Clean data
                 THFilesListBox.Items.Clear();
                 THFilesElementsDataset.Reset();
                 THFileElementsDataGridView.Columns.Clear();
@@ -127,6 +129,8 @@ namespace TranslationHelper
                 saveAsToolStripMenuItem.Enabled = false;
                 editToolStripMenuItem.Enabled = false;
                 viewToolStripMenuItem.Enabled = false;
+                saveTranslationToolStripMenuItem.Enabled = false;
+                loadTranslationToolStripMenuItem.Enabled = false;
             }
             catch
             {
@@ -1717,6 +1721,8 @@ namespace TranslationHelper
             saveAsToolStripMenuItem.Enabled = true;
             editToolStripMenuItem.Enabled = true;
             viewToolStripMenuItem.Enabled = true;
+            saveTranslationToolStripMenuItem.Enabled = true;
+            loadTranslationToolStripMenuItem.Enabled = true;
         }
 
         private void SetFilterDGV()
@@ -2408,6 +2414,125 @@ namespace TranslationHelper
         private void THFileElementsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             FIleDataWasChanged = true;
+        }
+
+        string dbpath;
+        string lastautosavepath;
+        private void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dbpath = apppath + "\\DB";
+            string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
+            lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
+
+            ProgressInfo(true);
+
+            WriteFile(THFilesElementsDataset, lastautosavepath);
+            //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
+
+            Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
+
+            ProgressInfo(false);
+        }
+
+        private void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dbpath = apppath + "\\DB";
+            string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
+
+            ProgressInfo(true);
+
+            lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
+
+            WriteFile(THFilesElementsDataset, lastautosavepath);
+            //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
+
+            THFilesElementsDataset.Reset();
+
+            //THFilesElementsDataset.ReadXml(Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
+            ReadFile(THFilesElementsDataset, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
+
+            Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath); // write lastsavedpath
+
+            //THFileElementsDataGridView.Refresh();
+            if (THFilesListBox.SelectedIndex > -1)
+            {
+                THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];
+            }
+
+            ProgressInfo(false);
+        }
+
+        private string GetDBCompressionExt()
+        {
+            //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"));
+            if (Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked") == "True")
+            {
+                //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression"));
+                if (Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "XML (none)")
+                {
+                    //MessageBox.Show(".xml");
+                    return ".xml";
+                }
+                else if (Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "Gzip (cmx)")
+                {
+                    //MessageBox.Show(".cmx");
+                    return ".cmx";
+                }
+                else if (Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "Deflate (cmz)")
+                {
+                    //MessageBox.Show(".cmz");
+                    return ".cmz";
+                }
+
+            }
+            //MessageBox.Show("Default .xml");
+            return ".xml";
+        }
+
+        //https://stackoverflow.com/questions/223738/net-stream-dataset-of-xml-data-to-zip-file
+        //http://madprops.org/blog/saving-datasets-locally-with-compression/
+        public static void ReadFile(DataSet DS, string fileName)
+        {
+            using (FileStream fs = new FileStream(fileName, FileMode.Open))
+            {
+                Stream s;
+                if (Path.GetExtension(fileName) == ".cmx")
+                {
+                    s = new GZipStream(fs, CompressionMode.Decompress);
+                }
+                else if (Path.GetExtension(fileName) == ".cmz")
+                {
+                    s = new DeflateStream(fs, CompressionMode.Decompress);
+                }
+                else
+                {
+                    s = fs;
+                }
+                DS.ReadXml(s);
+                s.Close();
+            }
+        }
+
+        public static void WriteFile(DataSet DS, string fileName)
+        {
+            using (FileStream fs = new FileStream(fileName, FileMode.Create))
+            {
+                Stream s;
+                if (Path.GetExtension(fileName) == ".cmx")
+                {
+                    s = new GZipStream(fs, CompressionMode.Compress);
+                }
+                else if (Path.GetExtension(fileName) == ".cmz")
+                {
+                    s = new DeflateStream(fs, CompressionMode.Compress);
+                }
+                else
+                {
+                    s = fs;
+                }
+                DS.WriteXml(s);
+                s.Close();
+            }
         }
     }
 

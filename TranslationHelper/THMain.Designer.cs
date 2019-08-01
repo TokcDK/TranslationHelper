@@ -64,6 +64,8 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
             this.THInfolabel = new System.Windows.Forms.Label();
+            this.saveTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -107,7 +109,9 @@
             this.saveAsToolStripMenuItem,
             this.writeTranslationInGameToolStripMenuItem,
             this.exportToolStripMenuItem,
-            this.loadTranslationFromToolStripMenuItem});
+            this.loadTranslationFromToolStripMenuItem,
+            this.saveTranslationToolStripMenuItem,
+            this.loadTranslationToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -465,6 +469,22 @@
             this.THInfolabel.Text = "...";
             this.THInfolabel.Visible = false;
             // 
+            // saveTranslationToolStripMenuItem
+            // 
+            this.saveTranslationToolStripMenuItem.Enabled = false;
+            this.saveTranslationToolStripMenuItem.Name = "saveTranslationToolStripMenuItem";
+            this.saveTranslationToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.saveTranslationToolStripMenuItem.Text = "Save translation";
+            this.saveTranslationToolStripMenuItem.Click += new System.EventHandler(this.SaveTranslationToolStripMenuItem_Click);
+            // 
+            // loadTranslationToolStripMenuItem
+            // 
+            this.loadTranslationToolStripMenuItem.Enabled = false;
+            this.loadTranslationToolStripMenuItem.Name = "loadTranslationToolStripMenuItem";
+            this.loadTranslationToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.loadTranslationToolStripMenuItem.Text = "Load Translation";
+            this.loadTranslationToolStripMenuItem.Click += new System.EventHandler(this.LoadTranslationToolStripMenuItem_Click);
+            // 
             // THMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -543,6 +563,8 @@
         private System.Windows.Forms.ToolStripMenuItem xmlToolStripMenuItem;
         public System.Windows.Forms.ProgressBar THActionProgressBar;
         public System.Windows.Forms.Label THInfolabel;
+        private System.Windows.Forms.ToolStripMenuItem saveTranslationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadTranslationToolStripMenuItem;
     }
 }
 

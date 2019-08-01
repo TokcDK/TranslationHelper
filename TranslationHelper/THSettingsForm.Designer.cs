@@ -31,11 +31,13 @@
             this.THSettingsTabControl = new System.Windows.Forms.TabControl();
             this.THSettingsMainTabPage = new System.Windows.Forms.TabPage();
             this.THSettingsOptimizationsTabPage = new System.Windows.Forms.TabPage();
-            this.THSettingsToolsTabPage = new System.Windows.Forms.TabPage();
             this.THProgramSettingsReadOptionsPanel = new System.Windows.Forms.Panel();
             this.THSettingsOptimizationsGroupLabel = new System.Windows.Forms.Label();
             this.THOptionDontLoadStringIfRomajiPercentTextBox = new System.Windows.Forms.TextBox();
             this.THOptionDontLoadStringIfRomajiPercentCheckBox = new System.Windows.Forms.CheckBox();
+            this.THSettingsToolsTabPage = new System.Windows.Forms.TabPage();
+            this.THOptionDBCompressionCheckBox = new System.Windows.Forms.CheckBox();
+            this.THOptionDBCompressionComboBox = new System.Windows.Forms.ComboBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsOptimizationsTabPage.SuspendLayout();
             this.THProgramSettingsReadOptionsPanel.SuspendLayout();
@@ -74,17 +76,10 @@
             this.THSettingsOptimizationsTabPage.Text = "Optimizations";
             this.THSettingsOptimizationsTabPage.UseVisualStyleBackColor = true;
             // 
-            // THSettingsToolsTabPage
-            // 
-            this.THSettingsToolsTabPage.Location = new System.Drawing.Point(4, 22);
-            this.THSettingsToolsTabPage.Name = "THSettingsToolsTabPage";
-            this.THSettingsToolsTabPage.Size = new System.Drawing.Size(524, 379);
-            this.THSettingsToolsTabPage.TabIndex = 2;
-            this.THSettingsToolsTabPage.Text = "Tools";
-            this.THSettingsToolsTabPage.UseVisualStyleBackColor = true;
-            // 
             // THProgramSettingsReadOptionsPanel
             // 
+            this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDBCompressionComboBox);
+            this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDBCompressionCheckBox);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THSettingsOptimizationsGroupLabel);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDontLoadStringIfRomajiPercentTextBox);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDontLoadStringIfRomajiPercentCheckBox);
@@ -125,6 +120,43 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Text = "Do not load string if it has more of next romaji percent - ";
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.UseVisualStyleBackColor = true;
             // 
+            // THSettingsToolsTabPage
+            // 
+            this.THSettingsToolsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.THSettingsToolsTabPage.Name = "THSettingsToolsTabPage";
+            this.THSettingsToolsTabPage.Size = new System.Drawing.Size(524, 379);
+            this.THSettingsToolsTabPage.TabIndex = 2;
+            this.THSettingsToolsTabPage.Text = "Tools";
+            this.THSettingsToolsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // THOptionDBCompressionCheckBox
+            // 
+            this.THOptionDBCompressionCheckBox.AutoSize = true;
+            this.THOptionDBCompressionCheckBox.Checked = true;
+            this.THOptionDBCompressionCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionDBCompressionCheckBox.Location = new System.Drawing.Point(3, 43);
+            this.THOptionDBCompressionCheckBox.Name = "THOptionDBCompressionCheckBox";
+            this.THOptionDBCompressionCheckBox.Size = new System.Drawing.Size(146, 17);
+            this.THOptionDBCompressionCheckBox.TabIndex = 4;
+            this.THOptionDBCompressionCheckBox.Text = "Compression for DB files:";
+            this.THOptionDBCompressionCheckBox.UseVisualStyleBackColor = true;
+            this.THOptionDBCompressionCheckBox.CheckedChanged += new System.EventHandler(this.THOptionDBCompressionCheckBox_CheckedChanged);
+            // 
+            // THOptionDBCompressionComboBox
+            // 
+            this.THOptionDBCompressionComboBox.FormattingEnabled = true;
+            this.THOptionDBCompressionComboBox.Items.AddRange(new object[] {
+            "XML (none)",
+            "Gzip (cmx)",
+            "Deflate (cmz)"});
+            this.THOptionDBCompressionComboBox.Location = new System.Drawing.Point(149, 39);
+            this.THOptionDBCompressionComboBox.MaxDropDownItems = 3;
+            this.THOptionDBCompressionComboBox.Name = "THOptionDBCompressionComboBox";
+            this.THOptionDBCompressionComboBox.Size = new System.Drawing.Size(121, 21);
+            this.THOptionDBCompressionComboBox.TabIndex = 5;
+            this.THOptionDBCompressionComboBox.Text = "XML (None)";
+            this.THOptionDBCompressionComboBox.SelectionChangeCommitted += new System.EventHandler(this.THOptionDBCompressionComboBox_SelectionChangeCommitted);
+            // 
             // THSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -152,5 +184,7 @@
         public System.Windows.Forms.TextBox THOptionDontLoadStringIfRomajiPercentTextBox;
         public System.Windows.Forms.CheckBox THOptionDontLoadStringIfRomajiPercentCheckBox;
         private System.Windows.Forms.TabPage THSettingsToolsTabPage;
+        public System.Windows.Forms.CheckBox THOptionDBCompressionCheckBox;
+        public System.Windows.Forms.ComboBox THOptionDBCompressionComboBox;
     }
 }
