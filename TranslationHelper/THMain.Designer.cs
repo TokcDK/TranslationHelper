@@ -62,6 +62,8 @@
             this.THInfoEditSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THInfoTextBox = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
+            this.THInfolabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -131,6 +133,7 @@
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
             this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
             this.saveAsToolStripMenuItem.Text = "Save As";
+            this.saveAsToolStripMenuItem.Visible = false;
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
             // 
             // writeTranslationInGameToolStripMenuItem
@@ -281,7 +284,7 @@
             // 
             this.THsplitContainerFilesElements.Panel2.Controls.Add(this.THFileElementsDataGridView);
             this.THsplitContainerFilesElements.Panel2.Controls.Add(this.THFiltersDataGridView);
-            this.THsplitContainerFilesElements.Size = new System.Drawing.Size(773, 366);
+            this.THsplitContainerFilesElements.Size = new System.Drawing.Size(773, 369);
             this.THsplitContainerFilesElements.SplitterDistance = 125;
             this.THsplitContainerFilesElements.TabIndex = 3;
             // 
@@ -311,7 +314,7 @@
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
-            this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 349);
+            this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 352);
             this.THFileElementsDataGridView.TabIndex = 2;
             this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
             this.THFileElementsDataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.THFileElementsDataGridView_CellValueNeeded);
@@ -354,7 +357,7 @@
             // THEditElementsSplitContainer.Panel2
             // 
             this.THEditElementsSplitContainer.Panel2.Controls.Add(this.THTargetTextBox);
-            this.THEditElementsSplitContainer.Size = new System.Drawing.Size(639, 95);
+            this.THEditElementsSplitContainer.Size = new System.Drawing.Size(639, 97);
             this.THEditElementsSplitContainer.SplitterDistance = 291;
             this.THEditElementsSplitContainer.TabIndex = 4;
             // 
@@ -368,7 +371,7 @@
             this.THSourceTextBox.Name = "THSourceTextBox";
             this.THSourceTextBox.ReadOnly = true;
             this.THSourceTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.THSourceTextBox.Size = new System.Drawing.Size(291, 95);
+            this.THSourceTextBox.Size = new System.Drawing.Size(291, 97);
             this.THSourceTextBox.TabIndex = 1;
             // 
             // THTargetTextBox
@@ -381,7 +384,7 @@
             this.THTargetTextBox.Multiline = true;
             this.THTargetTextBox.Name = "THTargetTextBox";
             this.THTargetTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.THTargetTextBox.Size = new System.Drawing.Size(344, 95);
+            this.THTargetTextBox.Size = new System.Drawing.Size(344, 97);
             this.THTargetTextBox.TabIndex = 0;
             this.THTargetTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
             // 
@@ -401,8 +404,8 @@
             // THWorkSpaceSplitContainer.Panel2
             // 
             this.THWorkSpaceSplitContainer.Panel2.Controls.Add(this.THInfoEditSplitContainer);
-            this.THWorkSpaceSplitContainer.Size = new System.Drawing.Size(773, 465);
-            this.THWorkSpaceSplitContainer.SplitterDistance = 368;
+            this.THWorkSpaceSplitContainer.Size = new System.Drawing.Size(773, 470);
+            this.THWorkSpaceSplitContainer.SplitterDistance = 371;
             this.THWorkSpaceSplitContainer.TabIndex = 5;
             // 
             // THInfoEditSplitContainer
@@ -420,7 +423,7 @@
             // THInfoEditSplitContainer.Panel2
             // 
             this.THInfoEditSplitContainer.Panel2.Controls.Add(this.THEditElementsSplitContainer);
-            this.THInfoEditSplitContainer.Size = new System.Drawing.Size(770, 95);
+            this.THInfoEditSplitContainer.Size = new System.Drawing.Size(770, 97);
             this.THInfoEditSplitContainer.SplitterDistance = 127;
             this.THInfoEditSplitContainer.TabIndex = 5;
             // 
@@ -431,7 +434,7 @@
             this.THInfoTextBox.Multiline = true;
             this.THInfoTextBox.Name = "THInfoTextBox";
             this.THInfoTextBox.ReadOnly = true;
-            this.THInfoTextBox.Size = new System.Drawing.Size(127, 95);
+            this.THInfoTextBox.Size = new System.Drawing.Size(127, 97);
             this.THInfoTextBox.TabIndex = 0;
             // 
             // contextMenuStrip1
@@ -439,11 +442,35 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // THActionProgressBar
+            // 
+            this.THActionProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.THActionProgressBar.Location = new System.Drawing.Point(50, 498);
+            this.THActionProgressBar.MarqueeAnimationSpeed = 50;
+            this.THActionProgressBar.Name = "THActionProgressBar";
+            this.THActionProgressBar.Size = new System.Drawing.Size(82, 10);
+            this.THActionProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.THActionProgressBar.TabIndex = 6;
+            this.THActionProgressBar.Visible = false;
+            // 
+            // THInfolabel
+            // 
+            this.THInfolabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.THInfolabel.AutoSize = true;
+            this.THInfolabel.Location = new System.Drawing.Point(9, 495);
+            this.THInfolabel.Name = "THInfolabel";
+            this.THInfolabel.Size = new System.Drawing.Size(19, 13);
+            this.THInfolabel.TabIndex = 7;
+            this.THInfolabel.Text = "...";
+            this.THInfolabel.Visible = false;
+            // 
             // THMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(790, 504);
+            this.ClientSize = new System.Drawing.Size(790, 509);
+            this.Controls.Add(this.THInfolabel);
+            this.Controls.Add(this.THActionProgressBar);
             this.Controls.Add(this.THWorkSpaceSplitContainer);
             this.Controls.Add(this.menuStrip1);
             this.DoubleBuffered = true;
@@ -513,6 +540,8 @@
         private System.Windows.Forms.ToolStripMenuItem toXmlToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadTranslationFromToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem xmlToolStripMenuItem;
+        public System.Windows.Forms.ProgressBar THActionProgressBar;
+        public System.Windows.Forms.Label THInfolabel;
     }
 }
 

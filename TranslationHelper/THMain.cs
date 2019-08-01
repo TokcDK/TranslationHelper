@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TranslationHelper
@@ -94,25 +95,43 @@ namespace TranslationHelper
             {
                 if (THFOpen.OpenFile() != null)
                 {
+                    //THActionProgressBar.Visible = true;
+                    ProgressInfo(true);
+
                     THCleanupThings();
                     THSelectedSourceType = GetSourceType(THFOpen.FileName);
+
+                    //THActionProgressBar.Visible = false;
+                    ProgressInfo(false, "");
                 }
             }
         }
 
         private void THCleanupThings()
         {
-            //Cleaning
-            THFilesListBox.Items.Clear();
-            THFilesElementsDataset.Clear();
-            THFileElementsDataGridView.Columns.Clear();
-            THFileElementsDataGridView.Rows.Clear();
+            try
+            {
+                ActiveForm.Text = "Translation Helper by DenisK";
+                THInfoTextBox.Text = string.Empty;
+                THSourceTextBox.Text = string.Empty;
+                THTargetTextBox.Text = string.Empty;
 
-            //Disable menus
-            saveToolStripMenuItem.Enabled = false;
-            saveAsToolStripMenuItem.Enabled = false;
-            editToolStripMenuItem.Enabled = false;
-            viewToolStripMenuItem.Enabled = false;
+                //Cleaning
+                THFilesListBox.Items.Clear();
+                THFilesElementsDataset.Reset();
+                THFileElementsDataGridView.Columns.Clear();
+                //THFileElementsDataGridView.Rows.Clear();
+
+                //Disable menus
+                saveToolStripMenuItem.Enabled = false;
+                saveAsToolStripMenuItem.Enabled = false;
+                editToolStripMenuItem.Enabled = false;
+                viewToolStripMenuItem.Enabled = false;
+            }
+            catch
+            {
+
+            }
         }
 
         private string GetSourceType(String sPath)
@@ -178,7 +197,7 @@ namespace TranslationHelper
                         }
                         else //иначе это версия 2
                         {
-                            THRPGMTransPatchver = "2.0";
+                            THRPGMTransPatchver = "2";
                         }
                         //MessageBox.Show("patchdir2=" + patchdir);
 
@@ -254,7 +273,7 @@ namespace TranslationHelper
             }
             else //иначе это версия 2
             {
-                THRPGMTransPatchver = "2.0";
+                THRPGMTransPatchver = "2";
             }
             patchfile.Close();
 
@@ -1289,7 +1308,7 @@ namespace TranslationHelper
 
         private int invalidformat;
 
-        public bool OpenRPGMTransPatchFiles(List<string> ListFiles, string patchver = "2.0")
+        public bool OpenRPGMTransPatchFiles(List<string> ListFiles, string patchver = "2")
         {
             //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
             //MessageBox.Show("ListFiles=" + ListFiles);
@@ -1421,7 +1440,7 @@ namespace TranslationHelper
                     }
                     _file.Close();  //Закрываем файл
                 }
-                else if (patchver == "2.0")
+                else if (patchver == "2")
                 {
                     verok = 1; //Версия опознана
                     while (!_file.EndOfStream)   //Читаем до конца
@@ -1575,6 +1594,8 @@ namespace TranslationHelper
                 // Поменял List на BindingList и вроде чуть быстрее стало загружаться
                 try
                 {
+                    ProgressInfo(true);
+
                     /*
                     if (THSelectedSourceType.Contains("RPGMTransPatch"))
                     {
@@ -1599,7 +1620,7 @@ namespace TranslationHelper
                     //t.Start();
                     //Thread.Sleep(100);
 
-                    this.Cursor = Cursors.WaitCursor; // Поменять курсор на часики
+                    //this.Cursor = Cursors.WaitCursor; // Поменять курсор на часики
 
                     //измерение времени выполнения
                     //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
@@ -1667,7 +1688,7 @@ namespace TranslationHelper
                         }
                     }
 
-                    this.Cursor = Cursors.Default; ;//Поменять курсор обратно на обычный
+                    //this.Cursor = Cursors.Default; ;//Поменять курсор обратно на обычный
 
                     //THFileElementsDataGridView.ResumeLayout();
                     //THFileElementsDataGridView.ResumeDrawing();
@@ -1677,6 +1698,8 @@ namespace TranslationHelper
                     SetOnTHFileElementsDataGridViewWasLoaded(); //Additional actions when elements of file was loaded in datagridview
 
                     CheckFilterDGV(); //Apply filters if they is not empty
+
+                    ProgressInfo(false, "");
                 }
                 catch (Exception)
                 {
@@ -1905,16 +1928,46 @@ namespace TranslationHelper
             return false;
         }
 
-        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        bool SaveInAction = false;
+        private async void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
-            if (THSelectedSourceType == "RPGMTransPatch" || THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
+            if (SaveInAction)
             {
-                THInfoTextBox.Text = "Saving...";
-                //MessageBox.Show("THSelectedDir=" + THSelectedDir);
-                SaveRPGMTransPatchFiles(THSelectedDir, THRPGMTransPatchver);
-                THInfoTextBox.Text = "";
+                //MessageBox.Show("Saving still in progress. Please wait a little.");
             }
+            else
+            {
+                SaveInAction = true;
+                //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
+                if (THSelectedSourceType == "RPGMTransPatch" || THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
+                {
+                    //THActionProgressBar.Visible = true;
+                    //THInfolabel.Visible = true;
+                    //THInfolabel.Text = "saving..";
+                    ProgressInfo(true);
+
+                    //THInfoTextBox.Text = "Saving...";
+
+                    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                    Thread save = new Thread(new ParameterizedThreadStart((obj) => SaveRPGMTransPatchFiles(THSelectedDir, THRPGMTransPatchver)));
+                    save.Start();
+
+                    //MessageBox.Show("THSelectedDir=" + THSelectedDir);
+                    //SaveRPGMTransPatchFiles(THSelectedDir, THRPGMTransPatchver);
+
+                    //THInfoTextBox.Text = "";
+
+                    //THActionProgressBar.Visible = false;
+                }
+                SaveInAction = false;
+            }
+        }
+
+        private void ProgressInfo(bool status, string statustext = "working..")
+        {
+            THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = status));
+            THInfolabel.Invoke((Action)(() => THInfolabel.Visible = status));
+            THInfolabel.Invoke((Action)(() => THInfolabel.Text = statustext));
         }
 
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1938,121 +1991,149 @@ namespace TranslationHelper
             }
         }
 
-        public bool SaveRPGMTransPatchFiles(string SelectedDir, string patchver = "2.0")
+        public bool SaveRPGMTransPatchFiles(string SelectedDir, string patchver = "2")
         {
-            string buffer;
-
-            //Прогресс
-            //pbstatuslabel.Visible = true;
-            //pbstatuslabel.Text = "сохранение..";
-            //progressBar.Maximum = 0;
-            //for (int i = 0; i < ArrayTransFilses.Count; i++)
-            //    for (int y = 0; y < ArrayTransFilses[i].blocks.Count; y++)
-            //        progressBar.Maximum = progressBar.Maximum + ArrayTransFilses[i].blocks.Count;
-            //MessageBox.Show(progressBar.Maximum.ToString());
-            //progressBar.Value = 0;
-
-            if (patchver == "3")
+            try
             {
-                //запись в файл RPGMKTRANSPATCH строки > RPGMAKER TRANS PATCH V3
-                //StreamWriter RPGMKTRANSPATCHwriter = new StreamWriter("RPGMKTRANSPATCH", true);
-                //RPGMKTRANSPATCHwriter.WriteLine("> RPGMAKER TRANS PATCH V3");
-                //RPGMKTRANSPATCHwriter.Close();
+                string buffer;
 
-                //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
-                for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
+                //Прогресс
+                //pbstatuslabel.Visible = true;
+                //pbstatuslabel.Text = "сохранение..";
+                //progressBar.Maximum = 0;
+                //for (int i = 0; i < ArrayTransFilses.Count; i++)
+                //    for (int y = 0; y < ArrayTransFilses[i].blocks.Count; y++)
+                //        progressBar.Maximum = progressBar.Maximum + ArrayTransFilses[i].blocks.Count;
+                //MessageBox.Show(progressBar.Maximum.ToString());
+                //progressBar.Value = 0;
+
+                if (patchver == "3")
                 {
-                    buffer = "> RPGMAKER TRANS PATCH FILE VERSION 3\r\n";
-                    //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
-                    for (int y = 0; y < THFilesElementsDataset.Tables[i].Rows.Count; y++)
+                    //запись в файл RPGMKTRANSPATCH строки > RPGMAKER TRANS PATCH V3
+                    //StreamWriter RPGMKTRANSPATCHwriter = new StreamWriter("RPGMKTRANSPATCH", true);
+                    //RPGMKTRANSPATCHwriter.WriteLine("> RPGMAKER TRANS PATCH V3");
+                    //RPGMKTRANSPATCHwriter.Close();
+
+                    //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
+                    for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
                     {
-                        buffer += "> BEGIN STRING\r\n";
-                        //buffer += THRPGMTransPatchFiles[i].blocks[y].Original + "\r\n";
-                        buffer += THFilesElementsDataset.Tables[i].Rows[y][2] + "\r\n";
-                        //MessageBox.Show("1: " + ArrayTransFilses[i].blocks[y].Trans);
-                        //MessageBox.Show("2: " + ArrayTransFilses[i].blocks[y].Context);
-                        //string[] str = THRPGMTransPatchFiles[i].blocks[y].Context.Split('\n');
-                        string[] str = THFilesElementsDataset.Tables[i].Rows[y][0].ToString().Split('\n');
-                        //string str1 = "";
-                        for (int g = 0; g < str.Count(); g++)
+                        buffer = "> RPGMAKER TRANS PATCH FILE VERSION 3.2\r\n";
+                        //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
+                        for (int y = 0; y < THFilesElementsDataset.Tables[i].Rows.Count; y++)
                         {
-                            if (str.Count() > 1)
+                            buffer += "> BEGIN STRING\r\n";
+                            //buffer += THRPGMTransPatchFiles[i].blocks[y].Original + "\r\n";
+                            buffer += THFilesElementsDataset.Tables[i].Rows[y][2] + "\r\n";
+                            //MessageBox.Show("1: " + ArrayTransFilses[i].blocks[y].Trans);
+                            //MessageBox.Show("2: " + ArrayTransFilses[i].blocks[y].Context);
+                            //string[] str = THRPGMTransPatchFiles[i].blocks[y].Context.Split('\n');
+                            string[] str = THFilesElementsDataset.Tables[i].Rows[y][0].ToString().Split('\n');
+                            //string str1 = "";
+                            for (int g = 0; g < str.Count(); g++)
                             {
-                                str[g] = str[g].Replace("\r", "");//очистка от знака переноса в отдельную переменную
-                                buffer += "> CONTEXT: " + str[g] + "\r\n";
-                            }
-                            else
-                            {
-                                str[g] = str[g].Replace("\r", "");//очистка от знака переноса в отдельную переменную
-                                //if (String.IsNullOrEmpty(THRPGMTransPatchFiles[i].blocks[y].Translation)) //if (ArrayTransFilses[i].blocks[y].Trans == "\r\n")
-                                if (String.IsNullOrEmpty(THFilesElementsDataset.Tables[i].Rows[y][3].ToString())) //if (ArrayTransFilses[i].blocks[y].Trans == "\r\n")
+                                if (str.Count() > 1)
                                 {
-                                    buffer += "> CONTEXT: " + str[g] + " < UNTRANSLATED\r\n";
+                                    str[g] = str[g].Replace("\r", "");//очистка от знака переноса в отдельную переменную
+                                    buffer += "> CONTEXT: " + str[g] + "\r\n";
                                 }
                                 else
                                 {
-                                    buffer += "> CONTEXT: " + str[g] + "\r\n";
+                                    str[g] = str[g].Replace("\r", "");//очистка от знака переноса в отдельную переменную
+                                                                      //if (String.IsNullOrEmpty(THRPGMTransPatchFiles[i].blocks[y].Translation)) //if (ArrayTransFilses[i].blocks[y].Trans == "\r\n")
+                                    if (String.IsNullOrEmpty(THFilesElementsDataset.Tables[i].Rows[y][3].ToString())) //if (ArrayTransFilses[i].blocks[y].Trans == "\r\n")
+                                    {
+                                        buffer += "> CONTEXT: " + str[g] + " < UNTRANSLATED\r\n";
+                                    }
+                                    else
+                                    {
+                                        buffer += "> CONTEXT: " + str[g] + "\r\n";
+                                    }
                                 }
                             }
+                            //buffer += "\r\n";
+                            //buffer += THRPGMTransPatchFiles[i].blocks[y].Translation + "\r\n";
+                            buffer += THFilesElementsDataset.Tables[i].Rows[y][3] + "\r\n";
+                            buffer += "> END STRING\r\n\r\n";
+
+                            //progressBar.Value++;
+                            //MessageBox.Show(progressBar.Value.ToString());
                         }
-                        //buffer += "\r\n";
-                        //buffer += THRPGMTransPatchFiles[i].blocks[y].Translation + "\r\n";
-                        buffer += THFilesElementsDataset.Tables[i].Rows[y][3] + "\r\n";
-                        buffer += "> END STRING\r\n\r\n";
 
-                        //progressBar.Value++;
-                        //MessageBox.Show(progressBar.Value.ToString());
-                    }
-
-                    if (!String.IsNullOrWhiteSpace(buffer))
-                    {
-                        if (!Directory.Exists(SelectedDir + "\\patch"))
+                        if (String.IsNullOrWhiteSpace(buffer))
                         {
-                            Directory.CreateDirectory(SelectedDir + "\\patch");
                         }
-                        //String _path = SelectedDir + "\\patch\\" + THRPGMTransPatchFiles[i].Name + ".txt";
-                        String _path = SelectedDir + "\\patch\\" + THFilesElementsDataset.Tables[i].TableName + ".txt";
-                        File.WriteAllText(_path, buffer);
-                        //buffer = "";
+                        else
+                        {
+                            if (Directory.Exists(SelectedDir + "\\patch"))
+                            {
+                            }
+                            else
+                            {
+                                Directory.CreateDirectory(SelectedDir + "\\patch");
+                            }
+                            //String _path = SelectedDir + "\\patch\\" + THRPGMTransPatchFiles[i].Name + ".txt";
+                            String _path = SelectedDir + "\\patch\\" + THFilesElementsDataset.Tables[i].TableName + ".txt";
+                            File.WriteAllText(_path, buffer);
+                            //buffer = "";
+                        }
                     }
                 }
-            }
-            else if (patchver == "2.0")
-            {
-                //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
-                for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
+                else if (patchver == "2")
                 {
-                    buffer = "# RPGMAKER TRANS PATCH FILE VERSION 2.0\r\n";
-                    //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
-                    for (int y = 0; y < THFilesElementsDataset.Tables[i].Rows.Count; y++)
+                    //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
+                    for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
                     {
-                        buffer += "# TEXT STRING\r\n";
-                        //if (THRPGMTransPatchFiles[i].blocks[y].Translation == "\r\n")
-                        if (THFilesElementsDataset.Tables[i].Rows[y][3].ToString() == "\r\n")
-                            buffer += "# UNTRANSLATED\r\n";
-                        //buffer += "# CONTEXT : " + THRPGMTransPatchFiles[i].blocks[y].Context + "\r\n";
-                        buffer += "# CONTEXT : " + THFilesElementsDataset.Tables[i].Rows[y][0].ToString() + "\r\n";
-                        //buffer += "# ADVICE : " + THRPGMTransPatchFiles[i].blocks[y].Advice + "\r\n";
-                        buffer += "# ADVICE : " + THFilesElementsDataset.Tables[i].Rows[y][1].ToString() + "\r\n";
-                        //buffer += THRPGMTransPatchFiles[i].blocks[y].Original;
-                        buffer += THFilesElementsDataset.Tables[i].Rows[y][2].ToString();
-                        buffer += "# TRANSLATION \r\n";
-                        //buffer += THRPGMTransPatchFiles[i].blocks[y].Translation;
-                        buffer += THFilesElementsDataset.Tables[i].Rows[y][3].ToString();
-                        buffer += "# END STRING\r\n\r\n";
-                    }
-                    if (!String.IsNullOrWhiteSpace(buffer))
-                    {
-                        //String _path = SelectedDir + "\\" + THRPGMTransPatchFiles[i].Name + ".txt";
-                        String _path = SelectedDir + "\\" + THFilesElementsDataset.Tables[i].TableName + ".txt";
-                        File.WriteAllText(_path, buffer);
-                        //buffer = "";
+                        buffer = "# RPGMAKER TRANS PATCH FILE VERSION 2.0\r\n";
+                        //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
+                        for (int y = 0; y < THFilesElementsDataset.Tables[i].Rows.Count; y++)
+                        {
+                            buffer += "# TEXT STRING\r\n";
+                            //if (THRPGMTransPatchFiles[i].blocks[y].Translation == "\r\n")
+                            if (THFilesElementsDataset.Tables[i].Rows[y][3].ToString() == "\r\n")
+                                buffer += "# UNTRANSLATED\r\n";
+                            //buffer += "# CONTEXT : " + THRPGMTransPatchFiles[i].blocks[y].Context + "\r\n";
+                            buffer += "# CONTEXT : " + THFilesElementsDataset.Tables[i].Rows[y][0].ToString() + "\r\n";
+                            //buffer += "# ADVICE : " + THRPGMTransPatchFiles[i].blocks[y].Advice + "\r\n";
+                            buffer += "# ADVICE : " + THFilesElementsDataset.Tables[i].Rows[y][1].ToString() + "\r\n";
+                            //buffer += THRPGMTransPatchFiles[i].blocks[y].Original;
+                            buffer += THFilesElementsDataset.Tables[i].Rows[y][2].ToString();
+                            buffer += "# TRANSLATION \r\n";
+                            //buffer += THRPGMTransPatchFiles[i].blocks[y].Translation;
+                            buffer += THFilesElementsDataset.Tables[i].Rows[y][3].ToString();
+                            buffer += "# END STRING\r\n\r\n";
+                        }
+                        if (!String.IsNullOrWhiteSpace(buffer))
+                        {
+                            //String _path = SelectedDir + "\\" + THRPGMTransPatchFiles[i].Name + ".txt";
+                            String _path = SelectedDir + "\\" + THFilesElementsDataset.Tables[i].TableName + ".txt";
+                            File.WriteAllText(_path, buffer);
+                            //buffer = "";
+                        }
                     }
                 }
+                //pbstatuslabel.Visible = false;
+                //pbstatuslabel.Text = string.Empty;
             }
-            //pbstatuslabel.Visible = false;
-            //pbstatuslabel.Text = string.Empty;
+            catch
+            {
+                //THInfoTextBox.Text = "";
+                //THActionProgressBar.Visible = false;
+                //THInfolabel.Invoke((Action)(() => THInfolabel.Visible = false));
+                //THInfolabel.Invoke((Action)(() => THInfolabel.Text = ""));
+                ProgressInfo(false, "");
+                return false;
+            }
+            finally
+            {
+                //THInfoTextBox.Text = "";
+                //THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = false));
+                //THInfolabel.Invoke((Action)(() => THInfolabel.Visible = false));
+                //THInfolabel.Invoke((Action)(() => THInfolabel.Text = ""));
+                ProgressInfo(false, "");
+            }
+
             return true;
+
         }
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
