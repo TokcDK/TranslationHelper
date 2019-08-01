@@ -1668,6 +1668,10 @@ namespace TranslationHelper
                     else if (THSelectedSourceType.Contains("RPG Maker MV"))
                     {
                         THFileElementsDataGridView.DataSource = ds.Tables[THFilesListBox.SelectedIndex];
+
+                        //https://10tec.com/articles/why-datagridview-slow.aspx
+                        //ds.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("Text LIKE '%{0}%'", "FIltering string");
+                        
                     }
 
 
