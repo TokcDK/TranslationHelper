@@ -725,7 +725,7 @@ namespace TranslationHelper
                                         {
                                             if (textaddingstarted)
                                             {
-                                                THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted is true and newline is empty\r\n";
+                                                //THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted is true and newline is empty\r\n";
                                                 textaddingstarted = false;
                                             }
                                         }
@@ -733,7 +733,7 @@ namespace TranslationHelper
                                         {
                                             if (GetAlreadyAddedInTable(Jsonname, newline))
                                             {
-                                                THLog += DateTime.Now + " >>: Code 401/405 newline already in table=\"" + newline + "\"\r\n";
+                                                //THLog += DateTime.Now + " >>: Code 401/405 newline already in table=\"" + newline + "\"\r\n";
                                                 newline = ""; //clear text data
                                                 if (textaddingstarted)
                                                 {
@@ -742,7 +742,7 @@ namespace TranslationHelper
                                             }
                                             else
                                             {
-                                                THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted=true added newline=\"" + newline + "\"\r\n";
+                                                //THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted=true added newline=\"" + newline + "\"\r\n";
                                                 THFilesElementsDataset.Tables[Jsonname].Rows.Add(newline); //Save text to new row
                                                 newline = ""; //clear text data
                                                 textaddingstarted = false;
@@ -757,7 +757,7 @@ namespace TranslationHelper
                                 {
                                     if (textaddingstarted)
                                     {
-                                        THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline is empty\r\n";
+                                        //THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline is empty\r\n";
                                         textaddingstarted = false;
                                     }
                                 }
@@ -767,13 +767,13 @@ namespace TranslationHelper
                                     {
                                         if (textaddingstarted)
                                         {
-                                            THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline already in table=\"" + newline + "\"\r\n";
+                                            //THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline already in table=\"" + newline + "\"\r\n";
                                             textaddingstarted = false;
                                         }
                                     }
                                     else
                                     {
-                                        THLog += DateTime.Now + " >>: Code 101/105 newline is not empty=\"" + newline + "\"\r\n";
+                                        //THLog += DateTime.Now + " >>: Code 101/105 newline is not empty=\"" + newline + "\"\r\n";
                                         THFilesElementsDataset.Tables[Jsonname].Rows.Add(newline); //Save text to new row
                                         newline = ""; //clear text data
                                         textaddingstarted = false;
@@ -793,7 +793,7 @@ namespace TranslationHelper
                                     {
                                         if (textaddingstarted)
                                         {
-                                            THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
+                                            //THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
                                             textaddingstarted = false;
                                         }
                                     }
@@ -801,28 +801,28 @@ namespace TranslationHelper
                                     {
                                         if (GetAlreadyAddedInTable(Jsonname, schoice))
                                         {
-                                            THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
+                                            //THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
                                             if (textaddingstarted)
                                             {
-                                                THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
+                                                //THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
                                                 textaddingstarted = false;
                                             }
                                         }
                                         else
                                         {
-                                            THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
+                                            //THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
                                             THFilesElementsDataset.Tables[Jsonname].Rows.Add(schoice); //Save text to new row
                                             if (string.IsNullOrEmpty(newline))
                                             {
                                             }
                                             else
                                             {
-                                                THLog += DateTime.Now + " >>: Code 102 added schoice and also newline is not empty, set empty\r\n";
+                                                //THLog += DateTime.Now + " >>: Code 102 added schoice and also newline is not empty, set empty\r\n";
                                                 newline = ""; //clear text data
                                             }
                                             if (textaddingstarted)
                                             {
-                                                THLog += DateTime.Now + " >>: Code 102 added schoice and also textaddingstarted is true , set false\r\n";
+                                                //THLog += DateTime.Now + " >>: Code 102 added schoice and also textaddingstarted is true , set false\r\n";
                                                 textaddingstarted = false;
                                             }
                                         }
@@ -925,8 +925,8 @@ namespace TranslationHelper
                             
                         }
                         */
-                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
-                        THLog = "";
+                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+                        //THLog = "";
                     }
 
                 }
@@ -1933,7 +1933,7 @@ namespace TranslationHelper
 
         bool SaveInAction = false;
         bool FIleDataWasChanged = false;
-        private async void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SaveInAction)
             {

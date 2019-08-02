@@ -39,6 +39,8 @@
             this.toXmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTranslationFromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openInWebToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tryToTranslateOnlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,8 +66,6 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
             this.THInfolabel = new System.Windows.Forms.Label();
-            this.saveTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -176,6 +176,22 @@
             this.xmlToolStripMenuItem.Name = "xmlToolStripMenuItem";
             this.xmlToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.xmlToolStripMenuItem.Text = "Xml";
+            // 
+            // saveTranslationToolStripMenuItem
+            // 
+            this.saveTranslationToolStripMenuItem.Enabled = false;
+            this.saveTranslationToolStripMenuItem.Name = "saveTranslationToolStripMenuItem";
+            this.saveTranslationToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.saveTranslationToolStripMenuItem.Text = "Save translation";
+            this.saveTranslationToolStripMenuItem.Click += new System.EventHandler(this.SaveTranslationToolStripMenuItem_Click);
+            // 
+            // loadTranslationToolStripMenuItem
+            // 
+            this.loadTranslationToolStripMenuItem.Enabled = false;
+            this.loadTranslationToolStripMenuItem.Name = "loadTranslationToolStripMenuItem";
+            this.loadTranslationToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.loadTranslationToolStripMenuItem.Text = "Load Translation";
+            this.loadTranslationToolStripMenuItem.Click += new System.EventHandler(this.LoadTranslationToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -288,7 +304,7 @@
             // 
             this.THsplitContainerFilesElements.Panel2.Controls.Add(this.THFileElementsDataGridView);
             this.THsplitContainerFilesElements.Panel2.Controls.Add(this.THFiltersDataGridView);
-            this.THsplitContainerFilesElements.Size = new System.Drawing.Size(773, 369);
+            this.THsplitContainerFilesElements.Size = new System.Drawing.Size(773, 368);
             this.THsplitContainerFilesElements.SplitterDistance = 125;
             this.THsplitContainerFilesElements.TabIndex = 3;
             // 
@@ -300,7 +316,7 @@
             this.THFilesListBox.FormattingEnabled = true;
             this.THFilesListBox.Location = new System.Drawing.Point(0, 0);
             this.THFilesListBox.Name = "THFilesListBox";
-            this.THFilesListBox.Size = new System.Drawing.Size(125, 381);
+            this.THFilesListBox.Size = new System.Drawing.Size(125, 368);
             this.THFilesListBox.TabIndex = 0;
             this.THFilesListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.THFilesListBox_MouseClick);
             // 
@@ -318,7 +334,7 @@
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
-            this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 352);
+            this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 351);
             this.THFileElementsDataGridView.TabIndex = 2;
             this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
             this.THFileElementsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellValueChanged);
@@ -362,7 +378,7 @@
             // THEditElementsSplitContainer.Panel2
             // 
             this.THEditElementsSplitContainer.Panel2.Controls.Add(this.THTargetTextBox);
-            this.THEditElementsSplitContainer.Size = new System.Drawing.Size(639, 97);
+            this.THEditElementsSplitContainer.Size = new System.Drawing.Size(639, 98);
             this.THEditElementsSplitContainer.SplitterDistance = 291;
             this.THEditElementsSplitContainer.TabIndex = 4;
             // 
@@ -376,7 +392,7 @@
             this.THSourceTextBox.Name = "THSourceTextBox";
             this.THSourceTextBox.ReadOnly = true;
             this.THSourceTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.THSourceTextBox.Size = new System.Drawing.Size(291, 97);
+            this.THSourceTextBox.Size = new System.Drawing.Size(291, 98);
             this.THSourceTextBox.TabIndex = 1;
             // 
             // THTargetTextBox
@@ -389,7 +405,7 @@
             this.THTargetTextBox.Multiline = true;
             this.THTargetTextBox.Name = "THTargetTextBox";
             this.THTargetTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.THTargetTextBox.Size = new System.Drawing.Size(344, 97);
+            this.THTargetTextBox.Size = new System.Drawing.Size(344, 98);
             this.THTargetTextBox.TabIndex = 0;
             this.THTargetTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
             // 
@@ -410,7 +426,7 @@
             // 
             this.THWorkSpaceSplitContainer.Panel2.Controls.Add(this.THInfoEditSplitContainer);
             this.THWorkSpaceSplitContainer.Size = new System.Drawing.Size(773, 470);
-            this.THWorkSpaceSplitContainer.SplitterDistance = 371;
+            this.THWorkSpaceSplitContainer.SplitterDistance = 370;
             this.THWorkSpaceSplitContainer.TabIndex = 5;
             // 
             // THInfoEditSplitContainer
@@ -428,7 +444,7 @@
             // THInfoEditSplitContainer.Panel2
             // 
             this.THInfoEditSplitContainer.Panel2.Controls.Add(this.THEditElementsSplitContainer);
-            this.THInfoEditSplitContainer.Size = new System.Drawing.Size(770, 97);
+            this.THInfoEditSplitContainer.Size = new System.Drawing.Size(770, 98);
             this.THInfoEditSplitContainer.SplitterDistance = 127;
             this.THInfoEditSplitContainer.TabIndex = 5;
             // 
@@ -439,7 +455,7 @@
             this.THInfoTextBox.Multiline = true;
             this.THInfoTextBox.Name = "THInfoTextBox";
             this.THInfoTextBox.ReadOnly = true;
-            this.THInfoTextBox.Size = new System.Drawing.Size(127, 97);
+            this.THInfoTextBox.Size = new System.Drawing.Size(127, 98);
             this.THInfoTextBox.TabIndex = 0;
             // 
             // contextMenuStrip1
@@ -468,22 +484,6 @@
             this.THInfolabel.TabIndex = 7;
             this.THInfolabel.Text = "...";
             this.THInfolabel.Visible = false;
-            // 
-            // saveTranslationToolStripMenuItem
-            // 
-            this.saveTranslationToolStripMenuItem.Enabled = false;
-            this.saveTranslationToolStripMenuItem.Name = "saveTranslationToolStripMenuItem";
-            this.saveTranslationToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-            this.saveTranslationToolStripMenuItem.Text = "Save translation";
-            this.saveTranslationToolStripMenuItem.Click += new System.EventHandler(this.SaveTranslationToolStripMenuItem_Click);
-            // 
-            // loadTranslationToolStripMenuItem
-            // 
-            this.loadTranslationToolStripMenuItem.Enabled = false;
-            this.loadTranslationToolStripMenuItem.Name = "loadTranslationToolStripMenuItem";
-            this.loadTranslationToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-            this.loadTranslationToolStripMenuItem.Text = "Load Translation";
-            this.loadTranslationToolStripMenuItem.Click += new System.EventHandler(this.LoadTranslationToolStripMenuItem_Click);
             // 
             // THMain
             // 
