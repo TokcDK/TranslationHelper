@@ -2664,9 +2664,9 @@ namespace TranslationHelper
 
         private bool SelectedLocalePercentFromStringIsNotValid(string target, string langlocale = "romaji", float percent = 80)
         {
-            if (Settings.THOptionDontLoadStringIfRomajiPercentCheckBox.Checked)
+            if (Settings.THOptionDontLoadStringIfRomajiPercentCheckBoxChecked)
             {
-                return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > int.Parse(Settings.THOptionDontLoadStringIfRomajiPercentTextBox.Text);
+                return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > Settings.THOptionDontLoadStringIfRomajiPercentValue;
             }
             return false;
         }
