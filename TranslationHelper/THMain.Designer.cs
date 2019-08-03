@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -333,6 +334,8 @@
             this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 351);
             this.THFileElementsDataGridView.TabIndex = 2;
@@ -466,7 +469,7 @@
             // THActionProgressBar
             // 
             this.THActionProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.THActionProgressBar.Location = new System.Drawing.Point(50, 498);
+            this.THActionProgressBar.Location = new System.Drawing.Point(12, 498);
             this.THActionProgressBar.MarqueeAnimationSpeed = 50;
             this.THActionProgressBar.Name = "THActionProgressBar";
             this.THActionProgressBar.Size = new System.Drawing.Size(82, 10);
@@ -478,7 +481,7 @@
             // 
             this.THInfolabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.THInfolabel.AutoSize = true;
-            this.THInfolabel.Location = new System.Drawing.Point(9, 495);
+            this.THInfolabel.Location = new System.Drawing.Point(100, 495);
             this.THInfolabel.Name = "THInfolabel";
             this.THInfolabel.Size = new System.Drawing.Size(19, 13);
             this.THInfolabel.TabIndex = 7;

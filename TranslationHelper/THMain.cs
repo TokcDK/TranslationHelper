@@ -85,34 +85,45 @@ namespace TranslationHelper
             }
         }
 
+        bool IsOpeningInProcess = false;
         private async void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog THFOpen = new OpenFileDialog
+            if (IsOpeningInProcess)//Do nothing if user will try to use Open menu before previous will be finished
             {
-                Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|All files (*.*)|*.*"
-            };
+            }
+            else
+            {
+                IsOpeningInProcess = true;
 
-            if (THFOpen.ShowDialog() == DialogResult.OK)
-            {
-                if (THFOpen.OpenFile() != null)
+                OpenFileDialog THFOpen = new OpenFileDialog
                 {
-                    //THActionProgressBar.Visible = true;
-                    ProgressInfo(true);
+                    Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|All files (*.*)|*.*"
+                };
 
-                    THCleanupThings();
+                if (THFOpen.ShowDialog() == DialogResult.OK)
+                {
+                    if (THFOpen.OpenFile() != null)
+                    {
+                        //THActionProgressBar.Visible = true;
+                        ProgressInfo(true);
 
-                    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
-                    //open.Start();
+                        THCleanupThings();
 
-                    //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => THSelectedSourceType = GetSourceType(THFOpen.FileName));
+                        //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                        //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
+                        //open.Start();
 
-                    //THSelectedSourceType = GetSourceType(THFOpen.FileName);
+                        //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                        await Task.Run(() => THSelectedSourceType = GetSourceType(THFOpen.FileName));
 
-                    //THActionProgressBar.Visible = false;
-                    ProgressInfo(false, "");
+                        //THSelectedSourceType = GetSourceType(THFOpen.FileName);
+
+                        //THActionProgressBar.Visible = false;
+                        ProgressInfo(false, "");
+                    }
                 }
+
+                IsOpeningInProcess = false;
             }
         }
 
@@ -647,8 +658,8 @@ namespace TranslationHelper
                     {
                         GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
                         GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Nickname);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Profile);
                         GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
+                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Profile);
                     }
                 }
 
@@ -2061,7 +2072,7 @@ namespace TranslationHelper
             //THMain Main = new THMain();
             //var Main = (THMain)MainForm;
             //THRPGMTransPatchFiles = new List<RPGMTransPatchFile>();
-            THFileElementsDataGridView.RowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            //THFileElementsDataGridView.RowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //THFilesDataGridView.Columns.Add("Filename", "Text");
             THSourceTextBox.Enabled = false;
             THTargetTextBox.Enabled = false;
@@ -2375,6 +2386,8 @@ namespace TranslationHelper
 
                     //THBS.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;
                     //THFileElementsDataGridView.DataSource = THBS;
+                    
+                    //THFileElementsDataGridView.RowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
                     //THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
                     //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
@@ -2501,16 +2514,17 @@ namespace TranslationHelper
 
                     if (!String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString())) //проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
-                        THSourceTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString(); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
-                                                                                                                                                //https://github.com/caguiclajmg/WanaKanaSharp
-                                                                                                                                                //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
-                                                                                                                                                //{
-                                                                                                                                                //    GetWords(THSourceTextBox.Text);
-                                                                                                                                                //   var hepburnConverter = new HepburnConverter();
-                                                                                                                                                //   WanaKana.ToRomaji(hepburnConverter, THSourceTextBox.Text); // hiragana
-                                                                                                                                                //}
-                                                                                                                                                //также по японо ыфуригане
-                                                                                                                                                //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
+                        //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
+                        THSourceTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString().Replace("\n", Environment.NewLine); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        //https://github.com/caguiclajmg/WanaKanaSharp
+                        //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
+                        //{
+                        //    GetWords(THSourceTextBox.Text);
+                        //   var hepburnConverter = new HepburnConverter();
+                        //   WanaKana.ToRomaji(hepburnConverter, THSourceTextBox.Text); // hiragana
+                        //}
+                        //также по японо ыфуригане
+                        //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
                     }
                     if (!String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value.ToString())) //проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
@@ -2519,7 +2533,7 @@ namespace TranslationHelper
                             THTargetTextBox.Clear();
                         }
 
-                        THTargetTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value.ToString(); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        THTargetTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value.ToString().Replace("\n", Environment.NewLine); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
                     }
 
                     THInfoTextBox.Text = "";
