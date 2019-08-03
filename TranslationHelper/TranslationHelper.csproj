@@ -39,6 +39,7 @@
     <Reference Include="gem, Version=1.1.0.4239, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Gem.1.1.0.4239\lib\netstandard2.0\gem.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -49,6 +50,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -67,6 +69,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GoogleAPI.cs" />
     <Compile Include="ControlHelper.cs" />
     <Compile Include="RPGMakerMVjsonCommonEvents.cs" />
     <Compile Include="FileWriter.cs" />

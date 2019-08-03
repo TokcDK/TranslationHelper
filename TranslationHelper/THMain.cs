@@ -262,7 +262,7 @@ namespace TranslationHelper
                 }
             }
 
-            MessageBox.Show("Uncompatible source or problem while opening.");
+            MessageBox.Show("Uncompatible source or problem with opening.");
             return "";
         }
 
@@ -885,38 +885,6 @@ namespace TranslationHelper
 
                                 }
                             }
-
-                            /*
-                            string schoice = commoneventsdata[i].list[c].Parameters[0].ToString();
-                            if (string.IsNullOrEmpty(schoice))
-                            {
-                                if (textaddingstarted)
-                                {
-                                    THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
-                                    textaddingstarted = false;
-                                }
-                            }
-                            else //if code not equal old code and newline is not empty
-                            {
-                                if (GetAlreadyAddedInTable(Jsonname, schoice))
-                                {
-                                    THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
-                                    if (textaddingstarted)
-                                    {
-                                        THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
-                                        textaddingstarted = false;
-                                    }
-                                }
-                                else
-                                {
-                                    THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
-                                    ds.Tables[Jsonname].Rows.Add(schoice); //Save text to new row
-                                    newline = ""; //clear text data
-                                    textaddingstarted = false;
-                                }
-
-                            }
-                            */
                         }
                     }
                 }
@@ -1034,11 +1002,16 @@ namespace TranslationHelper
 
                 //var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
 
-                THFilesElementsDataset.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
+                if (systemdata.GameTitle == null || string.IsNullOrEmpty(systemdata.GameTitle))
+                {
+                }
+                else
+                {
+                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
+                }
 
                 if (systemdata.ArmorTypes == null || systemdata.ArmorTypes.Length < 1)
                 {
-
                 }
                 else
                 {
@@ -1219,21 +1192,7 @@ namespace TranslationHelper
             }
         }
 
-        private bool FillDSTableWithJsonValues(string Jsonname,
-                                               string jsondata,
-                                               bool name = false,
-                                               bool description = false,
-                                               bool displayname = false,
-                                               bool note = false,
-                                               bool message1 = false,
-                                               bool message2 = false,
-                                               bool message3 = false,
-                                               bool message4 = false,
-                                               bool nickname = false,
-                                               bool profile = false,
-                                               bool maps = false,
-                                               bool cmnevents = false,
-                                               bool system = false)
+        private bool FillDSTableWithJsonValues(string Jsonname, string jsondata, bool name = false, bool description = false, bool displayname = false, bool note = false, bool message1 = false, bool message2 = false, bool message3 = false, bool message4 = false, bool nickname = false, bool profile = false, bool maps = false, bool cmnevents = false, bool system = false)
         {
             try
             {
@@ -1968,6 +1927,7 @@ namespace TranslationHelper
             }
         }
 
+        /*
         public static IEnumerable<Type> GetAllSubclassOf(Type parent)
         {
             foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
@@ -1978,6 +1938,7 @@ namespace TranslationHelper
                 }
             }
         }
+        */
 
         private bool GetAlreadyAddedInTable(string tablename, string value)
         {
@@ -2687,7 +2648,7 @@ namespace TranslationHelper
 
         bool SaveInAction = false;
         bool FIleDataWasChanged = false;
-        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SaveInAction)
             {
@@ -3180,7 +3141,7 @@ namespace TranslationHelper
 
             ProgressInfo(true);
 
-            WriteFile(THFilesElementsDataset, lastautosavepath);
+            WriteDBFile(THFilesElementsDataset, lastautosavepath);
             //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
 
             Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
@@ -3197,14 +3158,14 @@ namespace TranslationHelper
 
             lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
 
-            WriteFile(THFilesElementsDataset, lastautosavepath);
+            WriteDBFile(THFilesElementsDataset, lastautosavepath);
             //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
 
             THFilesElementsDataset.Reset();
             THFilesListBox.Items.Clear();
 
             //THFilesElementsDataset.ReadXml(Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
-            ReadFile(THFilesElementsDataset, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
+            ReadDBFile(THFilesElementsDataset, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
 
             Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath); // write lastsavedpath
 
@@ -3255,7 +3216,7 @@ namespace TranslationHelper
 
         //https://stackoverflow.com/questions/223738/net-stream-dataset-of-xml-data-to-zip-file
         //http://madprops.org/blog/saving-datasets-locally-with-compression/
-        public static void ReadFile(DataSet DS, string fileName)
+        public static void ReadDBFile(DataSet DS, string fileName)
         {
             using (FileStream fs = new FileStream(fileName, FileMode.Open))
             {
@@ -3277,7 +3238,7 @@ namespace TranslationHelper
             }
         }
 
-        public static void WriteFile(DataSet DS, string fileName)
+        public static void WriteDBFile(DataSet DS, string fileName)
         {
             using (FileStream fs = new FileStream(fileName, FileMode.Create))
             {
@@ -3297,6 +3258,16 @@ namespace TranslationHelper
                 DS.WriteXml(s);
                 s.Close();
             }
+        }
+
+        private void ToXmlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void XmlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

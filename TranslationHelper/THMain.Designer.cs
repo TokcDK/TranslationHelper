@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -120,7 +120,8 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
@@ -128,15 +129,16 @@
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
+            this.saveToolStripMenuItem.Visible = false;
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.WriteTranslationToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Enabled = false;
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.saveAsToolStripMenuItem.Text = "Save As";
             this.saveAsToolStripMenuItem.Visible = false;
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
@@ -145,8 +147,11 @@
             // 
             this.writeTranslationInGameToolStripMenuItem.Enabled = false;
             this.writeTranslationInGameToolStripMenuItem.Name = "writeTranslationInGameToolStripMenuItem";
-            this.writeTranslationInGameToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-            this.writeTranslationInGameToolStripMenuItem.Text = "Write translation in game";
+            this.writeTranslationInGameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+            this.writeTranslationInGameToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.writeTranslationInGameToolStripMenuItem.Text = "Write translation";
+            this.writeTranslationInGameToolStripMenuItem.Click += new System.EventHandler(this.WriteTranslationToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
@@ -154,14 +159,15 @@
             this.toXmlToolStripMenuItem});
             this.exportToolStripMenuItem.Enabled = false;
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.exportToolStripMenuItem.Text = "Export translation to";
             // 
             // toXmlToolStripMenuItem
             // 
             this.toXmlToolStripMenuItem.Name = "toXmlToolStripMenuItem";
-            this.toXmlToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.toXmlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.toXmlToolStripMenuItem.Text = "Xml";
+            this.toXmlToolStripMenuItem.Click += new System.EventHandler(this.ToXmlToolStripMenuItem_Click);
             // 
             // loadTranslationFromToolStripMenuItem
             // 
@@ -169,20 +175,22 @@
             this.xmlToolStripMenuItem});
             this.loadTranslationFromToolStripMenuItem.Enabled = false;
             this.loadTranslationFromToolStripMenuItem.Name = "loadTranslationFromToolStripMenuItem";
-            this.loadTranslationFromToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.loadTranslationFromToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.loadTranslationFromToolStripMenuItem.Text = "Import translation from";
             // 
             // xmlToolStripMenuItem
             // 
             this.xmlToolStripMenuItem.Name = "xmlToolStripMenuItem";
-            this.xmlToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.xmlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.xmlToolStripMenuItem.Text = "Xml";
+            this.xmlToolStripMenuItem.Click += new System.EventHandler(this.XmlToolStripMenuItem_Click);
             // 
             // saveTranslationToolStripMenuItem
             // 
             this.saveTranslationToolStripMenuItem.Enabled = false;
             this.saveTranslationToolStripMenuItem.Name = "saveTranslationToolStripMenuItem";
-            this.saveTranslationToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.saveTranslationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveTranslationToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.saveTranslationToolStripMenuItem.Text = "Save translation";
             this.saveTranslationToolStripMenuItem.Click += new System.EventHandler(this.SaveTranslationToolStripMenuItem_Click);
             // 
@@ -190,7 +198,8 @@
             // 
             this.loadTranslationToolStripMenuItem.Enabled = false;
             this.loadTranslationToolStripMenuItem.Name = "loadTranslationToolStripMenuItem";
-            this.loadTranslationToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.loadTranslationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+            this.loadTranslationToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.loadTranslationToolStripMenuItem.Text = "Load Translation";
             this.loadTranslationToolStripMenuItem.Click += new System.EventHandler(this.LoadTranslationToolStripMenuItem_Click);
             // 
@@ -334,8 +343,8 @@
             this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 351);
             this.THFileElementsDataGridView.TabIndex = 2;

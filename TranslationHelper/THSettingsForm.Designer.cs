@@ -34,10 +34,11 @@
             this.THProgramSettingsReadOptionsPanel = new System.Windows.Forms.Panel();
             this.THOptionDBCompressionComboBox = new System.Windows.Forms.ComboBox();
             this.THOptionDBCompressionCheckBox = new System.Windows.Forms.CheckBox();
-            this.THSettingsOptimizationsGroupLabel = new System.Windows.Forms.Label();
             this.THOptionDontLoadStringIfRomajiPercentTextBox = new System.Windows.Forms.TextBox();
             this.THOptionDontLoadStringIfRomajiPercentCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsToolsTabPage = new System.Windows.Forms.TabPage();
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation = new System.Windows.Forms.CheckBox();
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen = new System.Windows.Forms.CheckBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsOptimizationsTabPage.SuspendLayout();
             this.THProgramSettingsReadOptionsPanel.SuspendLayout();
@@ -78,9 +79,10 @@
             // 
             // THProgramSettingsReadOptionsPanel
             // 
+            this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen);
+            this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDBCompressionComboBox);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDBCompressionCheckBox);
-            this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THSettingsOptimizationsGroupLabel);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDontLoadStringIfRomajiPercentTextBox);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDontLoadStringIfRomajiPercentCheckBox);
             this.THProgramSettingsReadOptionsPanel.Location = new System.Drawing.Point(8, 6);
@@ -116,18 +118,9 @@
             this.THOptionDBCompressionCheckBox.UseVisualStyleBackColor = true;
             this.THOptionDBCompressionCheckBox.CheckedChanged += new System.EventHandler(this.THOptionDBCompressionCheckBox_CheckedChanged);
             // 
-            // THSettingsOptimizationsGroupLabel
-            // 
-            this.THSettingsOptimizationsGroupLabel.AutoSize = true;
-            this.THSettingsOptimizationsGroupLabel.Location = new System.Drawing.Point(3, 4);
-            this.THSettingsOptimizationsGroupLabel.Name = "THSettingsOptimizationsGroupLabel";
-            this.THSettingsOptimizationsGroupLabel.Size = new System.Drawing.Size(71, 13);
-            this.THSettingsOptimizationsGroupLabel.TabIndex = 3;
-            this.THSettingsOptimizationsGroupLabel.Text = "Optimizations";
-            // 
             // THOptionDontLoadStringIfRomajiPercentTextBox
             // 
-            this.THOptionDontLoadStringIfRomajiPercentTextBox.Location = new System.Drawing.Point(292, 16);
+            this.THOptionDontLoadStringIfRomajiPercentTextBox.Location = new System.Drawing.Point(292, 3);
             this.THOptionDontLoadStringIfRomajiPercentTextBox.MaxLength = 3;
             this.THOptionDontLoadStringIfRomajiPercentTextBox.Name = "THOptionDontLoadStringIfRomajiPercentTextBox";
             this.THOptionDontLoadStringIfRomajiPercentTextBox.ShortcutsEnabled = false;
@@ -142,7 +135,7 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.AutoSize = true;
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Checked = true;
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.THOptionDontLoadStringIfRomajiPercentCheckBox.Location = new System.Drawing.Point(3, 20);
+            this.THOptionDontLoadStringIfRomajiPercentCheckBox.Location = new System.Drawing.Point(3, 7);
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Name = "THOptionDontLoadStringIfRomajiPercentCheckBox";
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Size = new System.Drawing.Size(296, 17);
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.TabIndex = 1;
@@ -158,6 +151,30 @@
             this.THSettingsToolsTabPage.TabIndex = 2;
             this.THSettingsToolsTabPage.Text = "Tools";
             this.THSettingsToolsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation
+            // 
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.AutoSize = true;
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.Checked = true;
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.Location = new System.Drawing.Point(403, 7);
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.Name = "THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation";
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.Size = new System.Drawing.Size(102, 17);
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.TabIndex = 6;
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.Text = "..for translation";
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.UseVisualStyleBackColor = true;
+            // 
+            // THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen
+            // 
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.AutoSize = true;
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.Checked = true;
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.Location = new System.Drawing.Point(322, 7);
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.Name = "THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen";
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.Size = new System.Drawing.Size(75, 17);
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.TabIndex = 7;
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.Text = "..for open";
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.UseVisualStyleBackColor = true;
             // 
             // THSettingsForm
             // 
@@ -182,11 +199,12 @@
         private System.Windows.Forms.TabPage THSettingsMainTabPage;
         public System.Windows.Forms.TabPage THSettingsOptimizationsTabPage;
         private System.Windows.Forms.Panel THProgramSettingsReadOptionsPanel;
-        private System.Windows.Forms.Label THSettingsOptimizationsGroupLabel;
         public System.Windows.Forms.TextBox THOptionDontLoadStringIfRomajiPercentTextBox;
         public System.Windows.Forms.CheckBox THOptionDontLoadStringIfRomajiPercentCheckBox;
         private System.Windows.Forms.TabPage THSettingsToolsTabPage;
         public System.Windows.Forms.CheckBox THOptionDBCompressionCheckBox;
         public System.Windows.Forms.ComboBox THOptionDBCompressionComboBox;
+        public System.Windows.Forms.CheckBox THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen;
+        public System.Windows.Forms.CheckBox THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation;
     }
 }
