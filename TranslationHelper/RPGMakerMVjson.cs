@@ -9,11 +9,56 @@
         //parameters - array?
 
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string Nickname { get; set; }
         public string DisplayName { get; set; }
+        public string Description { get; set; }
         public string Note { get; set; }
-        public string Parameters { get; set; }
+        public string Profile { get; set; }
+        public string Message1 { get; set; }
+        public string Message2 { get; set; }
+        public string Message3 { get; set; }
+        public string Message4 { get; set; }
 
+    }
+
+    class RPGMakerMVjsonItemsArmorsWeapons
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Note { get; set; }
+    }
+    class RPGMakerMVjsonSkills
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Note { get; set; }
+        public string Message1 { get; set; }
+        public string Message2 { get; set; }
+    }
+    class RPGMakerMVjsonStates
+    {
+        public string Name { get; set; }
+        public string Note { get; set; }
+        public string Message1 { get; set; }
+        public string Message2 { get; set; }
+        public string Message3 { get; set; }
+        public string Message4 { get; set; }
+    }
+    class RPGMakerMVjsonClassesEnemiesTilesets
+    {
+        public string Name { get; set; }
+        public string Note { get; set; }
+    }
+    class RPGMakerMVjsonAnimationsMapInfosTroops
+    {
+        public string Name { get; set; }
+    }
+    class RPGMakerMVjsonActors
+    {
+        public string Name { get; set; }
+        public string Nickname { get; set; }
+        public string Profile { get; set; }
+        public string Note { get; set; }
     }
 
     class RPGMakerMVjsonName

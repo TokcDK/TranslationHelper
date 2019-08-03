@@ -26,7 +26,7 @@ namespace TranslationHelper
                 else
                 {
                     //MessageBox.Show("GetSettings() 81");
-                    THOptionDontLoadStringIfRomajiPercentTextBox.Text = "80";
+                    THOptionDontLoadStringIfRomajiPercentTextBox.Text = "90";
                 }
                 if (THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", "Optimizations"))
                 {
@@ -81,7 +81,7 @@ namespace TranslationHelper
             else
             {
                 //MessageBox.Show("ValidTHOptionDontLoadStringIfRomajiPercent() 80");
-                THOptionDontLoadStringIfRomajiPercentTextBox.Text = "80";
+                THOptionDontLoadStringIfRomajiPercentTextBox.Text = "90";
             }
         }
 
