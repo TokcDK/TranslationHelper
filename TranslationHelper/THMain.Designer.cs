@@ -67,6 +67,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
             this.THInfolabel = new System.Windows.Forms.Label();
+            this.loadTrasnlationAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -112,7 +113,8 @@
             this.exportToolStripMenuItem,
             this.loadTranslationFromToolStripMenuItem,
             this.saveTranslationToolStripMenuItem,
-            this.loadTranslationToolStripMenuItem});
+            this.loadTranslationToolStripMenuItem,
+            this.loadTrasnlationAsToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -165,7 +167,7 @@
             // toXmlToolStripMenuItem
             // 
             this.toXmlToolStripMenuItem.Name = "toXmlToolStripMenuItem";
-            this.toXmlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.toXmlToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.toXmlToolStripMenuItem.Text = "Xml";
             this.toXmlToolStripMenuItem.Click += new System.EventHandler(this.ToXmlToolStripMenuItem_Click);
             // 
@@ -181,7 +183,7 @@
             // xmlToolStripMenuItem
             // 
             this.xmlToolStripMenuItem.Name = "xmlToolStripMenuItem";
-            this.xmlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.xmlToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.xmlToolStripMenuItem.Text = "Xml";
             this.xmlToolStripMenuItem.Click += new System.EventHandler(this.XmlToolStripMenuItem_Click);
             // 
@@ -497,6 +499,14 @@
             this.THInfolabel.Text = "...";
             this.THInfolabel.Visible = false;
             // 
+            // loadTrasnlationAsToolStripMenuItem
+            // 
+            this.loadTrasnlationAsToolStripMenuItem.Enabled = false;
+            this.loadTrasnlationAsToolStripMenuItem.Name = "loadTrasnlationAsToolStripMenuItem";
+            this.loadTrasnlationAsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.loadTrasnlationAsToolStripMenuItem.Text = "Load Trasnlation as";
+            this.loadTrasnlationAsToolStripMenuItem.Click += new System.EventHandler(this.LoadTrasnlationAsToolStripMenuItem_Click);
+            // 
             // THMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -577,6 +587,7 @@
         public System.Windows.Forms.Label THInfolabel;
         private System.Windows.Forms.ToolStripMenuItem saveTranslationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadTranslationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadTrasnlationAsToolStripMenuItem;
     }
 }
 

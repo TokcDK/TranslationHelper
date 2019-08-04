@@ -11,6 +11,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -32,7 +33,7 @@ namespace TranslationHelper
         private string FVariant = "";
         //private BindingList<THRPGMTransPatchFile> THRPGMTransPatchFiles; //Все файлы
         //DataTable fileslistdt = new DataTable();
-        DataSet THFilesElementsDataset = new DataSet();
+        public DataSet THFilesElementsDataset = new DataSet();
         //DataTable THFilesElementsDatatable;
         private BindingSource THBS = new BindingSource();
 
@@ -72,6 +73,31 @@ namespace TranslationHelper
 
             //Test Проверка ключа Git для планируемой функции использования Git
             //string GitPath = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows", "InstallPath", null).ToString();
+        }
+
+        bool THdebug = true;
+        StringBuilder THsbLog = new StringBuilder();
+        public void LogToFile(string s, bool w = false)
+        {
+            if (THdebug)
+            {
+                if (w)
+                {
+                    if (THsbLog.Length == 0)
+                    {
+                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>" + s + "\r\n", true);
+                    }
+                    else
+                    {
+                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>" + THsbLog + "\r\n", true);
+                        THsbLog.Clear();
+                    }
+                }
+                else
+                {
+                    THsbLog.Append(DateTime.Now + " >>" + s + "\r\n");
+                }
+            }
         }
 
         public static void StartLoadingForm()
@@ -150,6 +176,7 @@ namespace TranslationHelper
                 viewToolStripMenuItem.Enabled = false;
                 saveTranslationToolStripMenuItem.Enabled = false;
                 loadTranslationToolStripMenuItem.Enabled = false;
+                loadTrasnlationAsToolStripMenuItem.Enabled = false;
             }
             catch
             {
@@ -157,6 +184,7 @@ namespace TranslationHelper
             }
         }
 
+        public DirectoryInfo mvdatadir;
         private string GetSourceType(String sPath)
         {
             //MessageBox.Show("sPath=" + sPath);
@@ -172,7 +200,7 @@ namespace TranslationHelper
                 if (File.Exists(dir.ToString() + "\\www\\data\\system.json"))
                 {
                     //var MVJsonFIles = new List<string>();
-                    var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(dir.ToString() + "\\www\\data\\"));
+                    mvdatadir = new DirectoryInfo(Path.GetDirectoryName(dir.ToString() + "\\www\\data\\"));
                     foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
                     {
                         //MessageBox.Show("file.FullName=" + file.FullName);
@@ -1940,7 +1968,7 @@ namespace TranslationHelper
         }
         */
 
-        private bool GetAlreadyAddedInTable(string tablename, string value)
+        public bool GetAlreadyAddedInTable(string tablename, string value)
         {
             //про primary key взял отсюда: https://stackoverflow.com/questions/3567552/table-doesnt-have-a-primary-key
             DataColumn[] keyColumns = new DataColumn[1];
@@ -1972,7 +2000,7 @@ namespace TranslationHelper
             return false;
         }
 
-        private bool HasNOJPcharacters(string str)
+        public bool HasNOJPcharacters(string str)
         {
             return GetLocaleLangCount(str, "kanji") < 1 && GetLocaleLangCount(str, "katakana") < 1 && GetLocaleLangCount(str, "hiragana") < 1;
         }
@@ -2437,6 +2465,7 @@ namespace TranslationHelper
             viewToolStripMenuItem.Enabled = true;
             saveTranslationToolStripMenuItem.Enabled = true;
             loadTranslationToolStripMenuItem.Enabled = true;
+            loadTrasnlationAsToolStripMenuItem.Enabled = true;
         }
 
         private void SetFilterDGV()
@@ -2637,7 +2666,7 @@ namespace TranslationHelper
             return false;
         }
 
-        private bool SelectedLocalePercentFromStringIsNotValid(string target, string langlocale = "romaji", float percent = 80)
+        public bool SelectedLocalePercentFromStringIsNotValid(string target, string langlocale = "romaji", float percent = 80)
         {
             if (Settings.THOptionDontLoadStringIfRomajiPercentCheckBoxChecked)
             {
@@ -2678,6 +2707,10 @@ namespace TranslationHelper
                     //THInfoTextBox.Text = "";
 
                     //THActionProgressBar.Visible = false;
+                }
+                else if (THSelectedSourceType == "RPG Maker MV json")
+                {
+
                 }
             }
         }
@@ -3149,26 +3182,39 @@ namespace TranslationHelper
             ProgressInfo(false);
         }
 
-        private void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            dbpath = apppath + "\\DB";
-            string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
+            LoadTranslationFromDB();
+        }
+
+        bool LoadTranslationToolStripMenuItem_ClickIsBusy = false;
+        private async void LoadTranslationFromDB(string sPath = "")
+        {
+            if (LoadTranslationToolStripMenuItem_ClickIsBusy)
+            {
+                return;
+            }
+            LoadTranslationToolStripMenuItem_ClickIsBusy = true;
+
+            //dbpath = apppath + "\\DB";
+            //string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
 
             ProgressInfo(true);
 
-            lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
+            //lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
 
-            WriteDBFile(THFilesElementsDataset, lastautosavepath);
+            //WriteDBFile(THFilesElementsDataset, lastautosavepath);
             //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
 
-            THFilesElementsDataset.Reset();
-            THFilesListBox.Items.Clear();
+            //THFilesElementsDataset.Reset();
+            //THFilesListBox.Items.Clear();
 
-            //THFilesElementsDataset.ReadXml(Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
-            ReadDBFile(THFilesElementsDataset, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
 
-            Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath); // write lastsavedpath
+            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+            await Task.Run(() => THLoadDBCompare(sPath));
 
+            THFileElementsDataGridView.Refresh();
+            /*
             THFileElementsDataGridView.DataSource = THFilesElementsDataset;
 
             foreach (DataTable t in THFilesElementsDataset.Tables)
@@ -3176,15 +3222,110 @@ namespace TranslationHelper
                 THFilesListBox.Items.Add(t.TableName);
                 //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: \"" + t.TableName + "\"\r\n", true);
             }
-
-
             //THFileElementsDataGridView.Refresh();
             if (THFilesListBox.SelectedIndex > -1)
             {
                 THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];
-            }
+            }            
+            */
 
             ProgressInfo(false);
+
+            LoadTranslationToolStripMenuItem_ClickIsBusy = false;
+        }
+
+        private void THLoadDBCompare(string sPath)
+        {
+            DataSet THTempDS = new DataSet();
+            
+            if (sPath == "")
+            {
+                //THFilesElementsDataset.ReadXml(Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
+                ReadDBFile(THTempDS, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
+            }
+            else
+            {
+                ReadDBFile(THTempDS, sPath); //load new data
+            }
+
+            //Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath); // write lastsavedpath
+
+            for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
+            {
+                int ocol = THFilesElementsDataset.Tables[t].Columns.Count - 1; //если вдруг колонка была только одна
+                LogToFile("ocol=" + ocol);
+                if (ocol == 0)
+                {
+                    LogToFile("ocol=0! creating second");
+                    THFilesElementsDataset.Tables[t].Columns.Add("Translation");
+                    continue;
+                }
+
+                while (ocol > 1) //на будущее, если колонок будет больше одной
+                {
+                    if (THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName == "Original")
+                    {
+                        break;
+                    }
+                    ocol -= 1;
+                }
+                LogToFile("THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName=" + THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName);
+
+                for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                {
+                    if (String.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[r][ocol].ToString()) || THFilesElementsDataset.Tables[t].Rows[r][0] == THFilesElementsDataset.Tables[t].Rows[r][ocol])
+                    {
+                        LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][" + ocol + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[r][ocol].ToString());
+                        bool transwasset = false;
+                        for (int t1 = 0; t1 < THTempDS.Tables.Count; t1++)
+                        {
+                            if (THTempDS.Tables[t1].Columns.Count > 1)
+                            {
+                                for (int r1 = 0; r1 < THTempDS.Tables[t1].Rows.Count; r1++)
+                                {
+                                    int tcol = THTempDS.Tables[t1].Columns.Count - 1;
+                                    LogToFile("tcol=" + tcol);
+                                    while (tcol > 1) //поиск колонки оригинал
+                                    {
+                                        if (THTempDS.Tables[t1].Columns[tcol].ColumnName == "Original")
+                                        {
+                                            break;
+                                        }
+                                        tcol -= 1;
+                                    }
+
+                                    if (THTempDS.Tables[t1].Rows[r1][tcol] == null || string.IsNullOrEmpty(THTempDS.Tables[t1].Rows[r1][tcol].ToString()))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][0].ToString()=" + THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
+                                        LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][0].ToString()=" + THTempDS.Tables[t1].Rows[r1][0].ToString());
+                                        LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][0]=" + THFilesElementsDataset.Tables[t].Rows[r][0]);
+                                        LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][0]=" + THTempDS.Tables[t1].Rows[r1][0]);
+                                        LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][" + tcol + "].ToString()=" + THTempDS.Tables[t1].Rows[r1][tcol].ToString());
+                                        if (THFilesElementsDataset.Tables[t].Rows[r][0].ToString() == THTempDS.Tables[t1].Rows[r1][0].ToString())
+                                        {
+                                            THFilesElementsDataset.Tables[t].Rows[r][ocol] = THTempDS.Tables[t1].Rows[r1][tcol];
+                                            transwasset = true;
+                                            LogToFile("value set. transwasset=" + transwasset.ToString());
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (transwasset)
+                                {
+                                    LogToFile("value set. transwasset=" + transwasset.ToString());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            LogToFile("cleaning THTempDS and refreshing dgv", true);
+            THTempDS.Reset();//очистка временной таблицы
         }
 
         private string GetDBCompressionExt()
@@ -3268,6 +3409,29 @@ namespace TranslationHelper
         private void XmlToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog THFOpenBD = new OpenFileDialog
+            {
+                Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz",
+                InitialDirectory = apppath + "\\DB"
+            };
+
+            if (THFOpenBD.ShowDialog() == DialogResult.OK)
+            {
+                if (string.IsNullOrEmpty(THFOpenBD.FileName))
+                {
+                }
+                else
+                {
+                    //string spath = THFOpenBD.FileName;
+                    //THFOpenBD.OpenFile().Close();
+                    //MessageBox.Show(THFOpenBD.FileName);
+                    LoadTranslationFromDB(THFOpenBD.FileName);
+                }
+            }
         }
     }
 

@@ -76,6 +76,7 @@
     <Compile Include="IniFiles.cs" />
     <Compile Include="RPGMakerMVjson.cs" />
     <Compile Include="RPGMakerMVjsonSystem.cs" />
+    <Compile Include="RPGMakerMVSave.cs" />
     <Compile Include="THLoadingForm.cs">
       <SubType>Form</SubType>
     </Compile>
