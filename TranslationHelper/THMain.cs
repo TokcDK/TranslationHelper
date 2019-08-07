@@ -22,7 +22,7 @@ namespace TranslationHelper
     {
         string THLog;
         //public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
-        THSettingsForm Settings = new THSettingsForm();
+        public THSettingsForm Settings = new THSettingsForm();
         //public const string THStrDGTranslationColumnName = "Translation";
         //public const string THStrDGOriginalColumnName = "Original";
         private readonly THLang LangF;
@@ -121,42 +121,44 @@ namespace TranslationHelper
             {
                 IsOpeningInProcess = true;
 
-                OpenFileDialog THFOpen = new OpenFileDialog
+                //об сообщении Освобождаемый объект никогда не освобождается и почему using здесь
+                //https://stackoverflow.com/questions/2926869/do-you-need-to-dispose-of-objects-and-set-them-to-null
+                using (OpenFileDialog THFOpen = new OpenFileDialog())
                 {
-                    Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe"
-                };
+                    THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe";
 
-                if (THFOpen.ShowDialog() == DialogResult.OK)
-                {
-                    if (THFOpen.OpenFile() != null)
+                    if (THFOpen.ShowDialog() == DialogResult.OK)
                     {
-                        //THActionProgressBar.Visible = true;
-                        ProgressInfo(true);
-
-                        THCleanupThings();
-
-                        //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                        //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
-                        //open.Start();
-
-                        //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                        await Task.Run(() => THSelectedSourceType = GetSourceType(THFOpen.FileName));
-
-                        //THSelectedSourceType = GetSourceType(THFOpen.FileName);
-
-                        //THActionProgressBar.Visible = false;
-                        ProgressInfo(false, "");
-
-                        if (THSelectedSourceType == string.Empty)
+                        if (THFOpen.OpenFile() != null)
                         {
-                            THMsg.Show("Still can't open this source.\r\nTry to report about this to developer.");
-                        }
-                        else
-                        {
-                            THMsg.Show(THSelectedSourceType + " loaded!");
-                        }
+                            //THActionProgressBar.Visible = true;
+                            ProgressInfo(true);
 
-                        ActiveForm.Text += FVariant;
+                            THCleanupThings();
+
+                            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                            //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
+                            //open.Start();
+
+                            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                            await Task.Run(() => THSelectedSourceType = GetSourceType(THFOpen.FileName));
+
+                            //THSelectedSourceType = GetSourceType(THFOpen.FileName);
+
+                            //THActionProgressBar.Visible = false;
+                            ProgressInfo(false, "");
+
+                            if (string.IsNullOrEmpty(THSelectedSourceType))
+                            {
+                                THMsg.Show("Still can't open this source.\r\nTry to report about this to developer.");
+                            }
+                            else
+                            {
+                                THMsg.Show(THSelectedSourceType + " loaded!");
+                            }
+
+                            ActiveForm.Text += FVariant;
+                        }
                     }
                 }
 
@@ -2040,12 +2042,14 @@ namespace TranslationHelper
             {
                 Directory.CreateDirectory(outdir);
 
-                Process RPGMakerTransPatch = new Process();
-                //MessageBox.Show("outdir=" + outdir);
-                RPGMakerTransPatch.StartInfo.FileName = apppath + @"\\Res\\rpgmakertrans\\rpgmt.exe";
-                RPGMakerTransPatch.StartInfo.Arguments = "\"" + dir + "\" -p \"" + outdir + "_patch\"" + "\" -o \"" + outdir + "_translated\"";
-                ret = RPGMakerTransPatch.Start();
-                RPGMakerTransPatch.WaitForExit();
+                using (Process RPGMakerTransPatch = new Process())
+                {
+                    //MessageBox.Show("outdir=" + outdir);
+                    RPGMakerTransPatch.StartInfo.FileName = apppath + @"\\Res\\rpgmakertrans\\rpgmt.exe";
+                    RPGMakerTransPatch.StartInfo.Arguments = "\"" + dir + "\" -p \"" + outdir + "_patch\"" + "\" -o \"" + outdir + "_translated\"";
+                    ret = RPGMakerTransPatch.Start();
+                    RPGMakerTransPatch.WaitForExit();
+                }
                 /*MessageBox.Show(
                       "INFO: apppath=" + apppath
                     + "\r\nRPGMakerTransPatch.StartInfo.FileName=" + RPGMakerTransPatch.StartInfo.FileName
@@ -2684,7 +2688,7 @@ namespace TranslationHelper
             return false;
         }
 
-        public bool SelectedLocalePercentFromStringIsNotValid(string target, string langlocale = "romaji", float percent = 80)
+        public bool SelectedLocalePercentFromStringIsNotValid(string target, string langlocale = "romaji")
         {
             if (Settings.THOptionDontLoadStringIfRomajiPercentCheckBoxChecked)
             {
@@ -2742,21 +2746,21 @@ namespace TranslationHelper
 
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog THSaveFolderBrowser = new FolderBrowserDialog
+            using (FolderBrowserDialog THSaveFolderBrowser = new FolderBrowserDialog())
             {
                 //MessageBox.Show(dirpath);
-                SelectedPath = THSelectedDir //Установить начальный путь на тот, что был установлен при открытии.
-            };
+                THSaveFolderBrowser.SelectedPath = THSelectedDir; //Установить начальный путь на тот, что был установлен при открытии.
 
-            if (THSaveFolderBrowser.ShowDialog() == DialogResult.OK)
-            {
-                if (THSelectedSourceType == "RPGMTransPatch")
+                if (THSaveFolderBrowser.ShowDialog() == DialogResult.OK)
                 {
-                    if (SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, THRPGMTransPatchver))
+                    if (THSelectedSourceType == "RPGMTransPatch")
                     {
-                        THSelectedDir = THSaveFolderBrowser.SelectedPath;
-                        //MessageBox.Show("Сохранение завершено!");
-                        THMsg.Show("Сохранение завершено!");
+                        if (SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, THRPGMTransPatchver))
+                        {
+                            THSelectedDir = THSaveFolderBrowser.SelectedPath;
+                            //MessageBox.Show("Сохранение завершено!");
+                            THMsg.Show("Сохранение завершено!");
+                        }
                     }
                 }
             }
@@ -2911,8 +2915,10 @@ namespace TranslationHelper
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            THAboutForm AboutForm = new THAboutForm();
-            AboutForm.Show();
+            using (THAboutForm AboutForm = new THAboutForm())
+            {
+                AboutForm.Show();
+            }
         }
 
         private void THTargetTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -3075,8 +3081,10 @@ namespace TranslationHelper
 
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            THSettingsForm THSettings = new THSettingsForm();
-            THSettings.Show();
+            using (THSettingsForm THSettings = new THSettingsForm())
+            {
+                THSettings.Show();
+            }
         }
 
         private void THFileElementsDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
@@ -3201,7 +3209,7 @@ namespace TranslationHelper
             ProgressInfo(false);
         }
 
-        private async void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadTranslationFromDB();
         }
@@ -3255,96 +3263,97 @@ namespace TranslationHelper
 
         private void THLoadDBCompare(string sPath)
         {
-            DataSet THTempDS = new DataSet();
-            
-            if (sPath == "")
+            using (DataSet THTempDS = new DataSet())
             {
-                //THFilesElementsDataset.ReadXml(Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
-                ReadDBFile(THTempDS, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
-            }
-            else
-            {
-                ReadDBFile(THTempDS, sPath); //load new data
-            }
-
-            //Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath); // write lastsavedpath
-
-            for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
-            {
-                int ocol = THFilesElementsDataset.Tables[t].Columns.Count - 1; //если вдруг колонка была только одна
-                LogToFile("ocol=" + ocol);
-                if (ocol == 0)
+                if (string.IsNullOrEmpty(sPath))
                 {
-                    LogToFile("ocol=0! creating second");
-                    THFilesElementsDataset.Tables[t].Columns.Add("Translation");
-                    continue;
+                    //THFilesElementsDataset.ReadXml(Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
+                    ReadDBFile(THTempDS, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
+                }
+                else
+                {
+                    ReadDBFile(THTempDS, sPath); //load new data
                 }
 
-                while (ocol > 1) //на будущее, если колонок будет больше одной
+                //Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath); // write lastsavedpath
+
+                for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
                 {
-                    if (THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName == "Original")
+                    int ocol = THFilesElementsDataset.Tables[t].Columns.Count - 1; //если вдруг колонка была только одна
+                    LogToFile("ocol=" + ocol);
+                    if (ocol == 0)
                     {
-                        break;
+                        LogToFile("ocol=0! creating second");
+                        THFilesElementsDataset.Tables[t].Columns.Add("Translation");
+                        continue;
                     }
-                    ocol -= 1;
-                }
-                LogToFile("THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName=" + THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName);
 
-                for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
-                {
-                    if (String.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[r][ocol].ToString()) || THFilesElementsDataset.Tables[t].Rows[r][0] == THFilesElementsDataset.Tables[t].Rows[r][ocol])
+                    while (ocol > 1) //на будущее, если колонок будет больше одной
                     {
-                        LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][" + ocol + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[r][ocol].ToString());
-                        bool transwasset = false;
-                        for (int t1 = 0; t1 < THTempDS.Tables.Count; t1++)
+                        if (THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName == "Original")
                         {
-                            if (THTempDS.Tables[t1].Columns.Count > 1)
-                            {
-                                for (int r1 = 0; r1 < THTempDS.Tables[t1].Rows.Count; r1++)
-                                {
-                                    int tcol = THTempDS.Tables[t1].Columns.Count - 1;
-                                    LogToFile("tcol=" + tcol);
-                                    while (tcol > 1) //поиск колонки оригинал
-                                    {
-                                        if (THTempDS.Tables[t1].Columns[tcol].ColumnName == "Original")
-                                        {
-                                            break;
-                                        }
-                                        tcol -= 1;
-                                    }
+                            break;
+                        }
+                        ocol -= 1;
+                    }
+                    LogToFile("THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName=" + THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName);
 
-                                    if (THTempDS.Tables[t1].Rows[r1][tcol] == null || string.IsNullOrEmpty(THTempDS.Tables[t1].Rows[r1][tcol].ToString()))
+                    for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                    {
+                        if (String.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[r][ocol].ToString()) || THFilesElementsDataset.Tables[t].Rows[r][0] == THFilesElementsDataset.Tables[t].Rows[r][ocol])
+                        {
+                            LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][" + ocol + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[r][ocol].ToString());
+                            bool transwasset = false;
+                            for (int t1 = 0; t1 < THTempDS.Tables.Count; t1++)
+                            {
+                                if (THTempDS.Tables[t1].Columns.Count > 1)
+                                {
+                                    for (int r1 = 0; r1 < THTempDS.Tables[t1].Rows.Count; r1++)
                                     {
-                                    }
-                                    else
-                                    {
-                                        LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][0].ToString()=" + THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
-                                        LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][0].ToString()=" + THTempDS.Tables[t1].Rows[r1][0].ToString());
-                                        LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][0]=" + THFilesElementsDataset.Tables[t].Rows[r][0]);
-                                        LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][0]=" + THTempDS.Tables[t1].Rows[r1][0]);
-                                        LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][" + tcol + "].ToString()=" + THTempDS.Tables[t1].Rows[r1][tcol].ToString());
-                                        if (THFilesElementsDataset.Tables[t].Rows[r][0].ToString() == THTempDS.Tables[t1].Rows[r1][0].ToString())
+                                        int tcol = THTempDS.Tables[t1].Columns.Count - 1;
+                                        LogToFile("tcol=" + tcol);
+                                        while (tcol > 1) //поиск колонки оригинал
                                         {
-                                            THFilesElementsDataset.Tables[t].Rows[r][ocol] = THTempDS.Tables[t1].Rows[r1][tcol];
-                                            transwasset = true;
-                                            LogToFile("value set. transwasset=" + transwasset.ToString());
-                                            break;
+                                            if (THTempDS.Tables[t1].Columns[tcol].ColumnName == "Original")
+                                            {
+                                                break;
+                                            }
+                                            tcol -= 1;
+                                        }
+
+                                        if (THTempDS.Tables[t1].Rows[r1][tcol] == null || string.IsNullOrEmpty(THTempDS.Tables[t1].Rows[r1][tcol].ToString()))
+                                        {
+                                        }
+                                        else
+                                        {
+                                            LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][0].ToString()=" + THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
+                                            LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][0].ToString()=" + THTempDS.Tables[t1].Rows[r1][0].ToString());
+                                            LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][0]=" + THFilesElementsDataset.Tables[t].Rows[r][0]);
+                                            LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][0]=" + THTempDS.Tables[t1].Rows[r1][0]);
+                                            LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][" + tcol + "].ToString()=" + THTempDS.Tables[t1].Rows[r1][tcol].ToString());
+                                            if (THFilesElementsDataset.Tables[t].Rows[r][0].ToString() == THTempDS.Tables[t1].Rows[r1][0].ToString())
+                                            {
+                                                THFilesElementsDataset.Tables[t].Rows[r][ocol] = THTempDS.Tables[t1].Rows[r1][tcol];
+                                                transwasset = true;
+                                                LogToFile("value set. transwasset=" + transwasset.ToString());
+                                                break;
+                                            }
                                         }
                                     }
-                                }
-                                if (transwasset)
-                                {
-                                    LogToFile("value set. transwasset=" + transwasset.ToString());
-                                    break;
+                                    if (transwasset)
+                                    {
+                                        LogToFile("value set. transwasset=" + transwasset.ToString());
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            LogToFile("cleaning THTempDS and refreshing dgv", true);
-            THTempDS.Reset();//очистка временной таблицы
+                LogToFile("cleaning THTempDS and refreshing dgv", true);
+                THTempDS.Reset();//очистка временной таблицы
+            }            
         }
 
         private string GetDBCompressionExt()
@@ -3432,23 +3441,23 @@ namespace TranslationHelper
 
         private void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog THFOpenBD = new OpenFileDialog
+            using (OpenFileDialog THFOpenBD = new OpenFileDialog())
             {
-                Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz",
-                InitialDirectory = apppath + "\\DB"
-            };
+                THFOpenBD.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
+                THFOpenBD.InitialDirectory = apppath + "\\DB";
 
-            if (THFOpenBD.ShowDialog() == DialogResult.OK)
-            {
-                if (string.IsNullOrEmpty(THFOpenBD.FileName))
+                if (THFOpenBD.ShowDialog() == DialogResult.OK)
                 {
-                }
-                else
-                {
-                    //string spath = THFOpenBD.FileName;
-                    //THFOpenBD.OpenFile().Close();
-                    //MessageBox.Show(THFOpenBD.FileName);
-                    LoadTranslationFromDB(THFOpenBD.FileName);
+                    if (string.IsNullOrEmpty(THFOpenBD.FileName))
+                    {
+                    }
+                    else
+                    {
+                        //string spath = THFOpenBD.FileName;
+                        //THFOpenBD.OpenFile().Close();
+                        //MessageBox.Show(THFOpenBD.FileName);
+                        LoadTranslationFromDB(THFOpenBD.FileName);
+                    }
                 }
             }
         }
