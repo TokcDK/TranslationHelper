@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,6 +42,7 @@
             this.xmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadTrasnlationAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openInWebToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tryToTranslateOnlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,7 +68,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
             this.THInfolabel = new System.Windows.Forms.Label();
-            this.loadTrasnlationAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testWruteJsonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -114,7 +115,8 @@
             this.loadTranslationFromToolStripMenuItem,
             this.saveTranslationToolStripMenuItem,
             this.loadTranslationToolStripMenuItem,
-            this.loadTrasnlationAsToolStripMenuItem});
+            this.loadTrasnlationAsToolStripMenuItem,
+            this.testWruteJsonToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -204,6 +206,14 @@
             this.loadTranslationToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.loadTranslationToolStripMenuItem.Text = "Load Translation";
             this.loadTranslationToolStripMenuItem.Click += new System.EventHandler(this.LoadTranslationToolStripMenuItem_Click);
+            // 
+            // loadTrasnlationAsToolStripMenuItem
+            // 
+            this.loadTrasnlationAsToolStripMenuItem.Enabled = false;
+            this.loadTrasnlationAsToolStripMenuItem.Name = "loadTrasnlationAsToolStripMenuItem";
+            this.loadTrasnlationAsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.loadTrasnlationAsToolStripMenuItem.Text = "Load Trasnlation as";
+            this.loadTrasnlationAsToolStripMenuItem.Click += new System.EventHandler(this.LoadTrasnlationAsToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -345,8 +355,8 @@
             this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 351);
             this.THFileElementsDataGridView.TabIndex = 2;
@@ -499,13 +509,12 @@
             this.THInfolabel.Text = "...";
             this.THInfolabel.Visible = false;
             // 
-            // loadTrasnlationAsToolStripMenuItem
+            // testWruteJsonToolStripMenuItem
             // 
-            this.loadTrasnlationAsToolStripMenuItem.Enabled = false;
-            this.loadTrasnlationAsToolStripMenuItem.Name = "loadTrasnlationAsToolStripMenuItem";
-            this.loadTrasnlationAsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.loadTrasnlationAsToolStripMenuItem.Text = "Load Trasnlation as";
-            this.loadTrasnlationAsToolStripMenuItem.Click += new System.EventHandler(this.LoadTrasnlationAsToolStripMenuItem_Click);
+            this.testWruteJsonToolStripMenuItem.Name = "testWruteJsonToolStripMenuItem";
+            this.testWruteJsonToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.testWruteJsonToolStripMenuItem.Text = "Test Wrute json";
+            this.testWruteJsonToolStripMenuItem.Click += new System.EventHandler(this.TestWriteJsonToolStripMenuItem_Click);
             // 
             // THMain
             // 
@@ -588,6 +597,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveTranslationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadTranslationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadTrasnlationAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testWruteJsonToolStripMenuItem;
     }
 }
 

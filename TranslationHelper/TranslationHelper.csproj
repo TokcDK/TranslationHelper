@@ -71,6 +71,13 @@
   <ItemGroup>
     <Compile Include="GoogleAPI.cs" />
     <Compile Include="ControlHelper.cs" />
+    <Compile Include="MessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageForm.Designer.cs">
+      <DependentUpon>MessageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RPGMakerMVjsonActors.cs" />
     <Compile Include="RPGMakerMVjsonCommonEvents.cs" />
     <Compile Include="FileWriter.cs" />
     <Compile Include="IniFiles.cs" />
@@ -106,6 +113,9 @@
     <Compile Include="THRPGMTransPatchFile.cs" />
     <Compile Include="THDetectSource.cs" />
     <Compile Include="THLang.cs" />
+    <EmbeddedResource Include="MessageForm.resx">
+      <DependentUpon>MessageForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="THLoadingForm.resx">
       <DependentUpon>THLoadingForm.cs</DependentUpon>
     </EmbeddedResource>

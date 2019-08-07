@@ -123,7 +123,7 @@ namespace TranslationHelper
 
                 OpenFileDialog THFOpen = new OpenFileDialog
                 {
-                    Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|All files (*.*)|*.*"
+                    Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe"
                 };
 
                 if (THFOpen.ShowDialog() == DialogResult.OK)
@@ -146,6 +146,17 @@ namespace TranslationHelper
 
                         //THActionProgressBar.Visible = false;
                         ProgressInfo(false, "");
+
+                        if (THSelectedSourceType == string.Empty)
+                        {
+                            THMsg.Show("Still can't open this source.\r\nTry to report about this to developer.");
+                        }
+                        else
+                        {
+                            THMsg.Show(THSelectedSourceType + " loaded!");
+                        }
+
+                        ActiveForm.Text += FVariant;
                     }
                 }
 
@@ -169,7 +180,7 @@ namespace TranslationHelper
                 THFileElementsDataGridView.Columns.Clear();
                 //THFileElementsDataGridView.Rows.Clear();
 
-                //Disable menus
+                //Disable items
                 saveToolStripMenuItem.Enabled = false;
                 saveAsToolStripMenuItem.Enabled = false;
                 editToolStripMenuItem.Enabled = false;
@@ -177,6 +188,8 @@ namespace TranslationHelper
                 saveTranslationToolStripMenuItem.Enabled = false;
                 loadTranslationToolStripMenuItem.Enabled = false;
                 loadTrasnlationAsToolStripMenuItem.Enabled = false;
+                THSourceTextBox.Enabled = false;
+                THTargetTextBox.Enabled = false;
             }
             catch
             {
@@ -217,7 +230,7 @@ namespace TranslationHelper
 
                     for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
                     {
-                        //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);//asdf
+                        //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
                         THFilesListBox.Invoke((Action)(() => THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName)));
                     }
                     return "RPG Maker MV json";
@@ -270,7 +283,7 @@ namespace TranslationHelper
                         if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
                         {
                             THSelectedDir = extractedpatchpath.Replace("\\patch", "");
-                            MessageBox.Show(THSelectedSourceType + " loaded!");
+                            //MessageBox.Show(THSelectedSourceType + " loaded!");
                             //ProgressInfo(false, "");
                             return "RPG Maker game with RPGMTransPatch";
                         }
@@ -284,14 +297,15 @@ namespace TranslationHelper
                 {
                     for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
                     {
-                        THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName); //add all dataset tables names to the ListBox
+                        THFilesListBox.Invoke((Action)(() => THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName)));//add all dataset tables names to the ListBox
+
                     }
                     return "RPG Maker MV json";
                 }
             }
 
-            MessageBox.Show("Uncompatible source or problem with opening.");
-            return "";
+            //MessageBox.Show("Uncompatible source or problem with opening.");
+            return string.Empty;
         }
 
         private string RPGMTransPatchPrepare(string sPath)
@@ -341,7 +355,8 @@ namespace TranslationHelper
             //RPGMTransPatch.OpenTransFiles(files, patchver);
             if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver))
             {
-                MessageBox.Show(THSelectedSourceType + " loaded!");
+                //MessageBox.Show(THSelectedSourceType + " loaded!");
+                //THShowMessage(THSelectedSourceType + " loaded!");
                 //ProgressInfo(false, "");
                 return "RPGMTransPatch";
             }
@@ -677,7 +692,8 @@ namespace TranslationHelper
         {
             try
             {
-                foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonActors>>(jsondata))
+                var actors = RPGMakerMVjsonActors.FromJson(jsondata);//JsonConvert.DeserializeObject<List<RPGMakerMVjsonActors>>(jsondata)
+                foreach (var JsonElement in actors)
                 {
                     if (JsonElement == null)
                     {
@@ -1127,6 +1143,7 @@ namespace TranslationHelper
                         }
                     }
                 }
+                /*
                 if (systemdata.Switches == null || systemdata.Switches.Length < 1)
                 {
 
@@ -1145,6 +1162,7 @@ namespace TranslationHelper
                         }
                     }
                 }
+                */
                 if (systemdata.WeaponTypes == null || systemdata.WeaponTypes.Length < 1)
                 {
 
@@ -2063,8 +2081,6 @@ namespace TranslationHelper
             //THRPGMTransPatchFiles = new List<RPGMTransPatchFile>();
             //THFileElementsDataGridView.RowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //THFilesDataGridView.Columns.Add("Filename", "Text");
-            THSourceTextBox.Enabled = false;
-            THTargetTextBox.Enabled = false;
 
             //прогрессбар
             //progressBar.Maximum = ListFiles.Count;
@@ -2231,14 +2247,16 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    MessageBox.Show(LangF.THStrRPGMTransPatchInvalidVersionMsg);
+                    //MessageBox.Show(LangF.THStrRPGMTransPatchInvalidVersionMsg);
+                    //THMsg.Show(LangF.THStrRPGMTransPatchInvalidVersionMsg);
                     _file.Close();  //Закрываем файл
                     return false;
                 }
 
                 if (invalidformat == 1)
                 {
-                    MessageBox.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
+                    //MessageBox.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
+                    //THMsg.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
                     invalidformat = 0;
                     return false;
                 }
@@ -2255,7 +2273,8 @@ namespace TranslationHelper
                 {
                     //MessageBox.Show("ListFiles=" + ListFiles[i]);
                     //THFilesListBox.Items.Add(THRPGMTransPatchFiles[i].Name);
-                    THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
+                    //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);//asdf
+                    THFilesListBox.Invoke((Action)(() => THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName)));
                     //THFilesDataGridView.Rows.Add();
                     //THFilesDataGridView.Rows[i].Cells[0].Value = THRPGMTransPatchFiles[i].Name /*Path.GetFileNameWithoutExtension(ListFiles[i])*/;
                     //dGFiles.Rows.Add();
@@ -2264,12 +2283,11 @@ namespace TranslationHelper
                 //ConnnectLinesToGrid(0); //подозрения, что вызывается 2 раза
                 //MessageBox.Show("Готово!");
                 FVariant = " * RPG Maker Trans Patch " + patchver;
-
-                ActiveForm.Text += FVariant;
             }
             else if (invalidformat == 1)
             {
-                MessageBox.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
+                //MessageBox.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
+                //THMsg.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
                 return false;
             }
 
@@ -2737,7 +2755,8 @@ namespace TranslationHelper
                     if (SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, THRPGMTransPatchver))
                     {
                         THSelectedDir = THSaveFolderBrowser.SelectedPath;
-                        MessageBox.Show("Сохранение завершено!");
+                        //MessageBox.Show("Сохранение завершено!");
+                        THMsg.Show("Сохранение завершено!");
                     }
                 }
             }
@@ -3433,7 +3452,488 @@ namespace TranslationHelper
                 }
             }
         }
+
+        private void TestWriteJsonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //string jsondata = File.ReadAllText(@"C:\\000 test RPGMaker MV data\\Armors.json"); // get json data
+            //TestSaveGetDataFromRPGMakerMVjsonItemsArmorsWeapons("Armors", jsondata);
+            //string jsondata = File.ReadAllText(@"C:\\000 test RPGMaker MV data\\System.json"); // get json data
+            //TestSaveGetDataFromRPGMakerMVjsonSystem("System", jsondata);
+            string jsondata = File.ReadAllText(@"C:\\000 test RPGMaker MV data\\Actors.json"); // get json data
+            TestSaveGetDataFromRPGMakerMVjsonActors("Actors", jsondata);
+        }
+
+        private string TestSaveGetDataFromRPGMakerMVjsonOfType(string Jsonname, string JsonElement)
+        {
+            if (string.IsNullOrEmpty(JsonElement) || SelectedLocalePercentFromStringIsNotValid(JsonElement))
+            {
+            }
+            else
+            {
+                for (int i = 0; i < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i++)
+                {
+                    if (THFilesElementsDataset.Tables[Jsonname].Rows[i][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString()))
+                    {
+
+                    }
+                    else
+                    {
+                        if (JsonElement == THFilesElementsDataset.Tables[Jsonname].Rows[i][0].ToString())
+                        {
+                            return THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString();
+                        }
+                    }
+                }
+                //THFilesElementsDataset.Tables[Jsonname].Rows[i][1];
+                //THFilesElementsDataset.Tables[Jsonname].Rows.Add(JsonElement);
+            }
+            return string.Empty;
+        }
+
+        private bool TestSaveGetDataFromRPGMakerMVjsonItemsArmorsWeapons(string Jsonname, string jsondata)
+        {
+            try
+            {
+                var testjsonforwrite = JsonConvert.DeserializeObject<List<RPGMakerMVjsonItemsArmorsWeapons>>(jsondata);
+                foreach (var JsonElement in testjsonforwrite)
+                {
+                    if (JsonElement == null)
+                    {
+                    }
+                    else
+                    {
+                        string Name = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
+                        if (string.IsNullOrEmpty(Name))
+                        {
+                        }
+                        else
+                        {
+                            JsonElement.Name = Name;
+                        }
+                        string Description = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Description);
+                        if (string.IsNullOrEmpty(Description))
+                        {
+                        }
+                        else
+                        {
+                            JsonElement.Description = Description;
+                        }
+                        string Note = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
+                        if (string.IsNullOrEmpty(Note))
+                        {
+                        }
+                        else
+                        {
+                            JsonElement.Note = Note;
+                        }
+                    }
+                }
+
+                string s = JsonConvert.SerializeObject(testjsonforwrite);
+                File.WriteAllText(@"C:\\000 test RPGMaker MV data\\Armors1.json", s);
+                MessageBox.Show("test write finished");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool TestSaveGetDataFromRPGMakerMVjsonSystem(string Jsonname, string jsondata)
+        {
+            try
+            {
+                //новые классы сгенерированы через этот сервис: https://app.quicktype.io/#l=cs&r=json2csharp
+                var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
+
+                //var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
+
+                if (systemdata.GameTitle == null || string.IsNullOrEmpty(systemdata.GameTitle))
+                {
+                }
+                else
+                {
+                    for (int i = 0; i < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i++)
+                    {
+                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString()))
+                        {
+                        }
+                        else
+                        {
+                            if (systemdata.GameTitle == THFilesElementsDataset.Tables[Jsonname].Rows[i][0].ToString())
+                            {
+                                systemdata.GameTitle = THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString();
+                                break;
+                            }
+                        }
+                    }
+                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
+                }
+
+                if (systemdata.ArmorTypes == null || systemdata.ArmorTypes.Length < 1)
+                {
+                }
+                else
+                {
+                    for (int i = 0; i < systemdata.ArmorTypes.Length; i++)
+                    {
+                        if (string.IsNullOrEmpty(systemdata.ArmorTypes[i]))
+                        {
+
+                        }
+                        else
+                        {
+                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            {
+                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+                                {
+                                }
+                                else
+                                {
+                                    if (systemdata.ArmorTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                    {
+                                        systemdata.ArmorTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(armortype);
+                        }
+                    }
+                }
+                if (systemdata.Elements == null || systemdata.Elements.Length < 1)
+                {
+
+                }
+                else
+                {
+                    for (int i=0;i< systemdata.Elements.Length;i++)
+                    {
+                        if (string.IsNullOrEmpty(systemdata.Elements[i]))
+                        {
+
+                        }
+                        else
+                        {
+                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            {
+                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+                                {
+                                }
+                                else
+                                {
+                                    if (systemdata.Elements[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                    {
+                                        systemdata.Elements[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(element);
+                        }
+                    }
+                }
+                if (systemdata.EquipTypes == null || systemdata.EquipTypes.Length < 1)
+                {
+                }
+                else
+                {
+                    for (int i=0;i< systemdata.EquipTypes.Length;i++)
+                    {
+                        if (string.IsNullOrEmpty(systemdata.EquipTypes[i]))
+                        {
+                        }
+                        else
+                        {
+                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            {
+                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+                                {
+                                }
+                                else
+                                {
+                                    if (systemdata.EquipTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                    {
+                                        systemdata.EquipTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(equipType);
+                        }
+                    }
+                }
+                if (systemdata.skillTypes == null || systemdata.skillTypes.Length < 1)
+                {
+                }
+                else
+                {
+                    for (int i=0; i< systemdata.skillTypes.Length; i++)
+                    {
+                        if (string.IsNullOrEmpty(systemdata.skillTypes[i]))
+                        {
+                        }
+                        else
+                        {
+                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            {
+                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+                                {
+                                }
+                                else
+                                {
+                                    if (systemdata.skillTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                    {
+                                        systemdata.skillTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(skillType);
+                        }
+                    }
+                }
+                if (systemdata.Switches == null || systemdata.Switches.Length < 1)
+                {
+                }
+                else
+                {
+                    for (int i=0;i< systemdata.Switches.Length;i++)
+                    {
+                        if (string.IsNullOrEmpty(systemdata.Switches[i]))
+                        {
+                        }
+                        else
+                        {
+                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            {
+                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+                                {
+                                }
+                                else
+                                {
+                                    if (systemdata.Switches[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                    {
+                                        systemdata.Switches[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(_switch);
+                        }
+                    }
+                }
+                if (systemdata.WeaponTypes == null || systemdata.WeaponTypes.Length < 1)
+                {
+                }
+                else
+                {
+                    for (int i=0;i< systemdata.WeaponTypes.Length;i++)
+                    {
+                        if (string.IsNullOrEmpty(systemdata.WeaponTypes[i]))
+                        {
+                        }
+                        else
+                        {
+                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            {
+                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+                                {
+                                }
+                                else
+                                {
+                                    if (systemdata.WeaponTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                    {
+                                        systemdata.WeaponTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(weaponType);
+                        }
+                    }
+                }
+                if (systemdata.Terms == null)
+                {
+                }
+                else
+                {
+                    for (int i=0;i< systemdata.Terms.Basic.Length;i++)
+                    {
+                        if (string.IsNullOrEmpty(systemdata.Terms.Basic[i]))
+                        {
+                        }
+                        else
+                        {
+                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            {
+                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+                                {
+                                }
+                                else
+                                {
+                                    if (systemdata.Terms.Basic[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                    {
+                                        systemdata.Terms.Basic[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(basic);
+                        }
+                    }
+                    for (int i=0;i< systemdata.Terms.Commands.Length;i++)
+                    {
+                        if (string.IsNullOrEmpty(systemdata.Terms.Commands[i]))
+                        {
+                        }
+                        else
+                        {
+                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            {
+                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+                                {
+                                }
+                                else
+                                {
+                                    if (systemdata.Terms.Commands[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                    {
+                                        systemdata.Terms.Commands[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(command);
+                        }
+                    }
+
+                    for (int i=0;i < systemdata.Terms.Params.Length;i++)
+                    {
+                        if (string.IsNullOrEmpty(systemdata.Terms.Params[i]))
+                        {
+                        }
+                        else
+                        {
+                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            {
+                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+                                {
+                                }
+                                else
+                                {
+                                    if (systemdata.Terms.Params[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                    {
+                                        systemdata.Terms.Params[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(param);
+                        }
+                    }
+
+                    //http://www.cyberforum.ru/csharp-beginners/thread785914.html
+                    for (int i = 0; i < systemdata.Terms.Messages.Count; i++)
+                    {
+                        if (string.IsNullOrEmpty(systemdata.Terms.Messages.ElementAt(i).Value))
+                        {
+                        }
+                        else
+                        {
+                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            {
+                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+                                {
+                                }
+                                else
+                                {
+                                    if (systemdata.Terms.Messages.ElementAt(i).Value == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                    {
+                                        systemdata.Terms.Messages[systemdata.Terms.Messages.ElementAt(i).Key] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        //THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message.Value);
+                    }
+                }
+                //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+                //THLog = "";
+
+                //var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
+                string s = RPGMakerMVjsonSystemTo.ToJson(systemdata);
+                File.WriteAllText(@"C:\\000 test RPGMaker MV data\\System1.json", s);
+                MessageBox.Show("test write finished");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool TestSaveGetDataFromRPGMakerMVjsonActors(string Jsonname, string jsondata)
+        {
+            try
+            {
+                var actors = RPGMakerMVjsonActors.FromJson(jsondata);//JsonConvert.DeserializeObject<List<RPGMakerMVjsonActors>>(jsondata)
+                foreach (var JsonElement in actors)
+                {
+                    if (JsonElement == null)
+                    {
+                    }
+                    else
+                    {
+                        string Name = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
+                        if (string.IsNullOrEmpty(Name))
+                        {
+                        }
+                        else
+                        {
+                            JsonElement.Name = Name;
+                        }
+                        string Nickname = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Nickname);
+                        if (string.IsNullOrEmpty(Nickname))
+                        {
+                        }
+                        else
+                        {
+                            JsonElement.Nickname = Nickname;
+                        }
+                        string Note = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
+                        if (string.IsNullOrEmpty(Note))
+                        {
+                        }
+                        else
+                        {
+                            JsonElement.Note = Note;
+                        }
+                        string Profile = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Profile);
+                        if (string.IsNullOrEmpty(Profile))
+                        {
+                        }
+                        else
+                        {
+                            JsonElement.Profile = Profile;
+                        }
+                    }
+                }
+
+                string s = RPGMakerMVjsonActorsTo.ToJson(actors);
+                File.WriteAllText(@"C:\\000 test RPGMaker MV data\\Actors1.json", s);
+                MessageBox.Show("test write finished");
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
+
 
     //Материалы
     //Сортировка при виртуальном режиме DatagridView

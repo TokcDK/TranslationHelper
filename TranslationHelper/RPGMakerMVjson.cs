@@ -20,7 +20,6 @@
         public string Message4 { get; set; }
 
     }
-
     class RPGMakerMVjsonItemsArmorsWeapons
     {
         public string Name { get; set; }
@@ -53,6 +52,7 @@
     {
         public string Name { get; set; }
     }
+    /*
     class RPGMakerMVjsonActors
     {
         public string Name { get; set; }
@@ -60,6 +60,7 @@
         public string Profile { get; set; }
         public string Note { get; set; }
     }
+    */
 
     class RPGMakerMVjsonName
     {
