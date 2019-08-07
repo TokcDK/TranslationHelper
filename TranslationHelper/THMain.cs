@@ -150,7 +150,7 @@ namespace TranslationHelper
 
                             if (string.IsNullOrEmpty(THSelectedSourceType))
                             {
-                                THMsg.Show("Still can't open this source.\r\nTry to report about this to developer.");
+                                THMsg.Show("Still can't open the source or was error in open. Try to report about this to devs.");
                             }
                             else
                             {
