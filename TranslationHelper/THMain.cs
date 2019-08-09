@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -232,7 +233,7 @@ namespace TranslationHelper
                 {
                     THSelectedDir += "\\www\\data";
                     //var MVJsonFIles = new List<string>();
-                    mvdatadir = new DirectoryInfo(Path.GetDirectoryName(THSelectedDir+"\\"));
+                    mvdatadir = new DirectoryInfo(Path.GetDirectoryName(THSelectedDir+ "\\"));
                     foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
                     {
                         //MessageBox.Show("file.FullName=" + file.FullName);
@@ -252,7 +253,7 @@ namespace TranslationHelper
                         //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
                         THFilesListBox.Invoke((Action)(() => THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName)));
                     }
-                    return "RPG Maker MV json";
+                    return "RPG Maker MV";
                 }
                 else
                 {
@@ -2813,8 +2814,33 @@ namespace TranslationHelper
                 }
                 else if (THSelectedSourceType == "RPG Maker MV json")
                 {
-                    THMsg.Show(THFilesListBox.SelectedItem.ToString());
-                    //WriteJson(THFilesListBox.SelectedItem.ToString(), THSelectedDir + "\\" + THFilesListBox.SelectedItem.ToString() + ".json");
+                    //THMsg.Show(THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                    WriteJson(THFilesListBox.Items[0].ToString(), THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                }
+                else if (THSelectedSourceType == "RPG Maker MV")
+                {
+                    for (int f=0;f < THFilesListBox.Items.Count; f++)
+                    {
+                        bool changed = false;
+                        for (int r = 0; r < THFilesElementsDataset.Tables[f].Rows.Count; r++)
+                        {
+                            if (THFilesElementsDataset.Tables[f].Rows[r]["Translation"] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[f].Rows[r]["Translation"].ToString()))
+                            {
+                            }
+                            else
+                            {
+                                changed = true;
+                                break;
+                            }
+                        }
+                        //THMsg.Show(THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                        if (changed)
+                        {
+                            THMsg.Show("start writing");
+                            WriteJson(THFilesListBox.Items[f].ToString(), THSelectedDir + "\\" + THFilesListBox.Items[f].ToString() + ".json");
+                        }
+                    }
+                    THMsg.Show("finished");
                 }
             }
         }
@@ -4349,6 +4375,25 @@ namespace TranslationHelper
             THMsg.Show("s.Length=" + s.Length + infoabouts);
         }
 
+        private bool GetAnyFileWithTheNameExist(string name)
+        {
+            //исключение имен с недопустимыми именами для файла или папки
+            //http://www.cyberforum.ru/post5599483.html
+            if (name.Intersect(Path.GetInvalidFileNameChars()).Any())
+            {
+                //MessageBox.Show("GetAnyFileWithTheNameExist return false because invalid! name=" + name);
+                return false;
+            }
+            //MessageBox.Show("THSelectedDir=" + THSelectedDir.Replace("\\www\\data", "\\www") + "\r\n, name=" + name + "\r\n, Count=" + Directory.EnumerateFiles(THSelectedDir, name + ".*", SearchOption.AllDirectories).Count());
+            if (Directory.EnumerateFiles(THSelectedDir.Replace("\\www\\data", "\\www"), name + ".*", SearchOption.AllDirectories).Count() > 0)
+            {
+                //MessageBox.Show("GetAnyFileWithTheNameExist Returns True! name="+ name);
+                return true;
+            }
+            //MessageBox.Show("GetAnyFileWithTheNameExist Returns False! name=" + name);
+            return false;
+        }
+
         private bool ReadJson(string Jsonname, string sPath)
         {
             LogToFile("Jsonname = " + Jsonname);
@@ -4414,22 +4459,6 @@ namespace TranslationHelper
 
             if (token is JValue)
             {
-                /*
-                if (propertyname == "id")
-                {
-                    cId = "ID" + token.ToString();
-                }
-                else if (propertyname == "code")
-                {
-                    curcode = token.ToString();
-                    cCode = "Code" + curcode;
-                    //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
-                }
-                else if (!string.IsNullOrEmpty(propertyname))
-                {
-                    cName = propertyname;
-                }
-                */
                 if (propertyname == "code")
                 {
                     curcode = token.ToString();
@@ -4447,18 +4476,18 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            if (GetAlreadyAddedInTable(Jsonname, textsb.ToString()) || SelectedLocalePercentFromStringIsNotValid(textsb.ToString()))
+                            string mergedstring = textsb.ToString();
+                            if (GetAlreadyAddedInTable(Jsonname, mergedstring) || SelectedLocalePercentFromStringIsNotValid(mergedstring))
                             {
                             }
                             else
                             {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(textsb.ToString());
-                                //dsinfo.Tables[0].Rows.Add(cType+"\\"+ cId + "\\" + cCode + "\\" + cName);
+                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(mergedstring);
                                 THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JArray:Object");
                             }
                             textsb.Clear();
                         }
-                        if (string.IsNullOrEmpty(tokenvalue) || GetAlreadyAddedInTable(Jsonname, tokenvalue) || SelectedLocalePercentFromStringIsNotValid(tokenvalue))
+                        if (string.IsNullOrEmpty(tokenvalue) || GetAlreadyAddedInTable(Jsonname, tokenvalue) || SelectedLocalePercentFromStringIsNotValid(tokenvalue) || GetAnyFileWithTheNameExist(tokenvalue))
                         {
                         }
                         else
@@ -4562,7 +4591,8 @@ namespace TranslationHelper
 
                 WProceedJToken(root, Jsonname);
 
-                File.WriteAllText(@"C:\\000 test RPGMaker MV data\\CommonEvents1.json", root.ToString());
+                Regex regex = new Regex(@"^\[null,(.+)\]$");//Корректировка формата записываемого json так, как в файлах RPGMaker MV
+                File.WriteAllText(sPath, regex.Replace(root.ToString(Formatting.None),"[\r\nnull,\r\n$1\r\n]"));
 
                 //treeView1.ExpandAll();
             }
