@@ -424,7 +424,8 @@ namespace TranslationHelper
                 //normal example about command values adding: https://galvs-scripts.com/galvs-party-select/
 
 
-                var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
+                //var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
+                var commoneventsdata = RpgMakerMVjsonCommonEvents.FromJson(jsondata);
 
                 for (int i = 1; i < commoneventsdata.Count; i++)
                 {
@@ -448,7 +449,7 @@ namespace TranslationHelper
                     bool textaddingstarted = false;
 
 
-                    int CommandsCount = commoneventsdata[i].List.Length;
+                    int CommandsCount = commoneventsdata[i].List.Count;
                     for (int c = 0; c < CommandsCount; c++)
                     {
                         if (textaddingstarted)
@@ -614,7 +615,7 @@ namespace TranslationHelper
                     }
 
                     //string prevval = "";
-                    foreach (Event ev in map.Events)
+                    foreach (RPGMakerMVjsonMapEvent ev in map.Events)
                     {
                         if (ev == null)
                         {
@@ -642,9 +643,9 @@ namespace TranslationHelper
                             }
 
                             //event parameters
-                            foreach (Page page in ev.Pages)
+                            foreach (RPGMakerMVjsonMapPage page in ev.Pages)
                             {
-                                foreach (PageList lst in page.List)
+                                foreach (RPGMakerMVjsonMapPageList lst in page.List)
                                 {
                                     foreach (var parameter in lst.Parameters)
                                     {

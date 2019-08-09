@@ -42,7 +42,7 @@ namespace TranslationHelper
         public string FaceName { get; set; }
 
         [JsonProperty("traits")]
-        public List<Trait> Traits { get; set; }
+        public List<RPGMakerMVjsonActorsTrait> Traits { get; set; }
 
         [JsonProperty("initialLevel")]
         public long InitialLevel { get; set; }
@@ -63,7 +63,7 @@ namespace TranslationHelper
         public string Profile { get; set; }
     }
 
-    public partial class Trait
+    public partial class RPGMakerMVjsonActorsTrait
     {
         [JsonProperty("code")]
         public long Code { get; set; }
@@ -85,15 +85,15 @@ namespace TranslationHelper
 
     public partial class RPGMakerMVjsonActors
     {
-        public static List<RPGMakerMVjsonActors> FromJson(string json) => JsonConvert.DeserializeObject<List<RPGMakerMVjsonActors>>(json, TranslationHelper.Converter.Settings);
+        public static List<RPGMakerMVjsonActors> FromJson(string json) => JsonConvert.DeserializeObject<List<RPGMakerMVjsonActors>>(json, TranslationHelper.RPGMakerMVjsonActorsConverter.Settings);
     }
 
     public static class RPGMakerMVjsonActorsTo
     {
-        public static string ToJson(this List<RPGMakerMVjsonActors> self) => JsonConvert.SerializeObject(self, TranslationHelper.Converter.Settings);
+        public static string ToJson(this List<RPGMakerMVjsonActors> self) => JsonConvert.SerializeObject(self, TranslationHelper.RPGMakerMVjsonActorsConverter.Settings);
     }
 
-    internal static class Converter
+    internal static class RPGMakerMVjsonActorsConverter
     {
         public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {

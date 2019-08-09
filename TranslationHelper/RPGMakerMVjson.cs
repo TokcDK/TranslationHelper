@@ -134,35 +134,35 @@
     {
         public string DisplayName { get; set; }
         public string Note { get; set; }
-        public Event[] Events { get; set; }
+        public RPGMakerMVjsonMapEvent[] Events { get; set; }
     }
 
-    public class Event
+    public class RPGMakerMVjsonMapEvent
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Note { get; set; }
-        public Page[] Pages { get; set; }
+        public RPGMakerMVjsonMapPage[] Pages { get; set; }
     }
 
-    public class Page
+    public class RPGMakerMVjsonMapPage
     {
-        public PageList[] List { get; set; }
-        public Moveroute MoveRoute { get; set; }
+        public RPGMakerMVjsonMapPageList[] List { get; set; }
+        public RPGMakerMVjsonMapMoveroute MoveRoute { get; set; }
     }
 
-    public class Moveroute
+    public class RPGMakerMVjsonMapMoveroute
     {
-        public List[] List { get; set; }
+        public RPGMakerMVjsonMapList[] List { get; set; }
     }
 
-    public class List
+    public class RPGMakerMVjsonMapList
     {
         public int Code { get; set; }
         public object[] Parameters { get; set; }
     }
 
-    public class PageList
+    public class RPGMakerMVjsonMapPageList
     {
         public int Code { get; set; }
         public int Indent { get; set; }
