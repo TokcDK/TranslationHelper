@@ -582,1486 +582,1307 @@ namespace TranslationHelper
 
         }
 
-        private void GetDataFromRPGMakerMVjsonOfType(string Jsonname, string JsonElement)
-        {
-            if (string.IsNullOrEmpty(JsonElement) || SelectedLocalePercentFromStringIsNotValid(JsonElement) || GetAlreadyAddedInTable(Jsonname, JsonElement))
-            {
-            }
-            else
-            {
-                THFilesElementsDataset.Tables[Jsonname].Rows.Add(JsonElement);
-            }
-        }
-
-        private bool GetDataFromRPGMakerMVjsonItemsArmorsWeapons(string Jsonname, string jsondata)
-        {
-            try
-            {
-                foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonItemsArmorsWeapons>>(jsondata))
-                {
-                    if (JsonElement == null)
-                    {
-                    }
-                    else
-                    {
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Description);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
-                    }
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool GetDataFromRPGMakerMVjsonSkills(string Jsonname, string jsondata)
-        {
-            try
-            {
-                foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonSkills>>(jsondata))
-                {
-                    if (JsonElement == null)
-                    {
-                    }
-                    else
-                    {
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Description);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message1);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message2);
-                    }
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool GetDataFromRPGMakerMVjsonStates(string Jsonname, string jsondata)
-        {
-            try
-            {
-                foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonStates>>(jsondata))
-                {
-                    if (JsonElement == null)
-                    {
-                    }
-                    else
-                    {
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message1);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message2);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message3);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message4);
-                    }
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool GetDataFromRPGMakerMVjsonClassesEnemiesTilesets(string Jsonname, string jsondata)
-        {
-            try
-            {
-                foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonClassesEnemiesTilesets>>(jsondata))
-                {
-                    if (JsonElement == null)
-                    {
-                    }
-                    else
-                    {
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
-                    }
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool GetDataFromRPGMakerMVjsonAnimationsMapInfosTroops(string Jsonname, string jsondata)
-        {
-            try
-            {
-                foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonAnimationsMapInfosTroops>>(jsondata))
-                {
-                    if (JsonElement == null)
-                    {
-                    }
-                    else
-                    {
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
-                    }
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool GetDataFromRPGMakerMVjsonActors(string Jsonname, string jsondata)
-        {
-            try
-            {
-                var actors = RPGMakerMVjsonActors.FromJson(jsondata);//JsonConvert.DeserializeObject<List<RPGMakerMVjsonActors>>(jsondata)
-                foreach (var JsonElement in actors)
-                {
-                    if (JsonElement == null)
-                    {
-                    }
-                    else
-                    {
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Nickname);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
-                        GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Profile);
-                    }
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool GetDataFromRPGMakerMVjsonCommonEvents(string Jsonname, string jsondata)
-        {
-            try
-            {
-                //info RPG Maker MV Event codes
-                //https://forums.rpgmakerweb.com/index.php?threads/extract-events-to-text-file.17444/
-                //https://forums.rpgmakerweb.com/index.php?threads/cross-reference-tool.72563/
-                //https://pastebin.com/JyRTdq0b
-                //https://pastebin.com/eJx0EvXB
-                //    case 401 : return 'Show Text';              break;
-                //    case 102 : return 'Show Choices';           break;
-                //    case 103 : return 'Input Number';           break;
-                //    case 104 : return 'Select Item';            break;
-                //    case 405 : return 'Show Scrolling Text';    break;
-                //    case 111 : return 'Conditional Branch';     break;
-                //    case 119 : return 'Common Event';           break;
-                //    case 121 : return 'Control Switches';       break;
-                //    case 122 : return 'Control Variables';      break;
-                //    case 125 : return 'Change Gold';            break;
-                //    case 126 : return 'Change Items';           break;
-                //    case 127 : return 'Change Weapons';         break;
-                //    case 128 : return 'Change Armors';          break;
-                //    case 129 : return 'Change Party Member';    break;
-                //    case 201 : return 'Transfer Player';        break;
-                //    case 202 : return 'Set Vehicle Location';   break;
-                //    case 203 : return 'Set Event Location';     break;
-                //    case 505 : return 'Set Movement Route';     break;
-                //    case 212 : return 'Show Animation';         break;
-                //    case 231 : return 'Show Picture';           break;
-                //    case 232 : return 'Move Picture';           break;
-                //    case 285 : return 'Get Location Info';      break;
-                //    case 301 : return 'Battle Processing';      break;
-                //    case 302 :
-                //    case 605 : return 'Shop Processing';        break;
-                //    case 303 : return 'Name Input Processing';  break;
-                //    case 311 : return 'Change HP';              break;
-                //    case 312 : return 'Change MP';              break;
-                //    case 326 : return 'Change TP';              break;
-                //    case 313 : return 'Change State';           break;
-                //    case 314 : return 'Recover All';            break;
-                //    case 315 : return 'Change EXP';             break;
-                //    case 316 : return 'Change Level';           break;
-                //    case 317 : return 'Change Parameter';       break;
-                //    case 318 : return 'Change Skill';           break;
-                //    case 319 : return 'Change Equipment';       break;
-                //    case 320 : return 'Change Name';            break;
-                //    case 321 : return 'Change Class';           break;
-                //    case 322 : return 'Change Actor Images';    break;
-                //    case 324 : return 'Change Nickname';        break;
-                //    case 325 : return 'Change Profile';         break;
-                //    case 331 : return 'Change Enemy HP';        break;
-                //    case 332 : return 'Change Enemy MP';        break;
-                //    case 342 : return 'Change Enemy TP';        break;
-                //    case 333 : return 'Change Enemy State';     break;
-                //    case 336 : return 'Enemy Transform';        break;
-                //    case 337 : return 'Show Battle Animation';  break;
-                //    case 339 : return 'Force Action';           break;
-                //
-                //Will be handled:
-                //401 - Show text (mergeable)
-                //102 - Show choices (Choices list)
-                //402 - Choice for choices - ignore because already in 102
-                //405 - Show Scrolling Text (mergeable)
-                //108 and 408 - Comment - can be ignored because it is for dev suppose
-                //normal example about command values adding: https://galvs-scripts.com/galvs-party-select/
-
-
-                //var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
-                var commoneventsdata = RpgMakerMVjsonCommonEvents.FromJson(jsondata);
-
-                for (int i = 1; i < commoneventsdata.Count; i++)
-                {
-                    //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
-
-                    //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
-                    //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
-
-                    string eventname = commoneventsdata[i].Name;
-                    if (string.IsNullOrEmpty(eventname) || GetAlreadyAddedInTable(Jsonname, eventname))
-                    {
-                    }
-                    else //if code not equal old code and newline is not empty
-                    {
-                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(eventname); //add event name to new row
-                    }
-
-                    string newline = "";
-                    //int commandcode;
-                    //int commandoldcode = 999999;
-                    bool textaddingstarted = false;
-
-
-                    int CommandsCount = commoneventsdata[i].List.Count;
-                    for (int c = 0; c < CommandsCount; c++)
-                    {
-                        if (textaddingstarted)
-                        {
-                            if (commoneventsdata[i].List[c].Code == 401 || commoneventsdata[i].List[c].Code == 405)
-                            {
-                                newline += commoneventsdata[i].List[c].Parameters[0].String;
-
-                                if (c < CommandsCount - 1 && commoneventsdata[i].List[c].Code == commoneventsdata[i].List[c + 1].Code)
-                                {
-                                    newline += "\r\n";
-                                }
-                                else
-                                {
-                                    if (string.IsNullOrEmpty(newline))
-                                    {
-                                        if (textaddingstarted)
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted is true and newline is empty\r\n";
-                                            textaddingstarted = false;
-                                        }
-                                    }
-                                    else //if code not equal old code and newline is not empty
-                                    {
-                                        if (GetAlreadyAddedInTable(Jsonname, newline))
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 401/405 newline already in table=\"" + newline + "\"\r\n";
-                                            newline = ""; //clear text data
-                                            if (textaddingstarted)
-                                            {
-                                                textaddingstarted = false;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted=true added newline=\"" + newline + "\"\r\n";
-                                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(newline); //Save text to new row
-                                            newline = ""; //clear text data
-                                            textaddingstarted = false;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else if (commoneventsdata[i].List[c].Code == 101 || commoneventsdata[i].List[c].Code == 105)
-                        {
-                            if (string.IsNullOrEmpty(newline))
-                            {
-                                if (textaddingstarted)
-                                {
-                                    //THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline is empty\r\n";
-                                    textaddingstarted = false;
-                                }
-                            }
-                            else //if code not equal old code and newline is not empty
-                            {
-                                if (GetAlreadyAddedInTable(Jsonname, newline))
-                                {
-                                    if (textaddingstarted)
-                                    {
-                                        //THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline already in table=\"" + newline + "\"\r\n";
-                                        textaddingstarted = false;
-                                    }
-                                }
-                                else
-                                {
-                                    //THLog += DateTime.Now + " >>: Code 101/105 newline is not empty=\"" + newline + "\"\r\n";
-                                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(newline); //Save text to new row
-                                    newline = ""; //clear text data
-                                    textaddingstarted = false;
-                                }
-                            }
-
-                            textaddingstarted = true;
-                        }
-                        else if (commoneventsdata[i].List[c].Code == 102)
-                        {
-                            for (int i1 = 0; i1 < commoneventsdata[i].List[c].Parameters[0].AnythingArray.Count; i1++)
-                            {
-                                if (string.IsNullOrEmpty(commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String))
-                                {
-                                    if (textaddingstarted)
-                                    {
-                                        //THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
-                                        textaddingstarted = false;
-                                    }
-                                }
-                                else //if code not equal old code and newline is not empty
-                                {
-                                    if (GetAlreadyAddedInTable(Jsonname, commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String))
-                                    {
-                                        //THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
-                                        if (textaddingstarted)
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
-                                            textaddingstarted = false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
-                                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String); //Save text to new row
-                                        if (string.IsNullOrEmpty(newline))
-                                        {
-                                        }
-                                        else
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 102 added schoice and also newline is not empty, set empty\r\n";
-                                            newline = ""; //clear text data
-                                        }
-                                        if (textaddingstarted)
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 102 added schoice and also textaddingstarted is true , set false\r\n";
-                                            textaddingstarted = false;
-                                        }
-                                    }
-                                }
-                            }
-
-                            /*
-                            //JArray choices = JArray.Parse(commoneventsdata[i].List[c].Parameters[0].ToString());
-                            foreach (var choice in JArray.Parse(commoneventsdata[i].List[c].Parameters[0].ToString()))
-                            {
-                                string schoice = choice.ToString();
-                                if (string.IsNullOrEmpty(schoice))
-                                {
-                                    if (textaddingstarted)
-                                    {
-                                        //THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
-                                        textaddingstarted = false;
-                                    }
-                                }
-                                else //if code not equal old code and newline is not empty
-                                {
-                                    if (GetAlreadyAddedInTable(Jsonname, schoice))
-                                    {
-                                        //THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
-                                        if (textaddingstarted)
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
-                                            textaddingstarted = false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
-                                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(schoice); //Save text to new row
-                                        if (string.IsNullOrEmpty(newline))
-                                        {
-                                        }
-                                        else
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 102 added schoice and also newline is not empty, set empty\r\n";
-                                            newline = ""; //clear text data
-                                        }
-                                        if (textaddingstarted)
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 102 added schoice and also textaddingstarted is true , set false\r\n";
-                                            textaddingstarted = false;
-                                        }
-                                    }
-
-                                }
-                            }
-                            */
-                        }
-                    }
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool GetDataFromRPGMakerMVjsonMap(string Jsonname, string jsondata)
-        {
-            try
-            {
-                //bool eventsdone = false;
-                //bool geteventnamenotedone = false;
-
-                var map = JsonConvert.DeserializeObject<RPGMakerMVjsonMap>(jsondata);
-
-                if (map.Events.Length > 1) //first event is empty
-                {
-                    //Map displayed name
-                    if (string.IsNullOrEmpty(map.DisplayName) || SelectedLocalePercentFromStringIsNotValid(map.DisplayName) || GetAlreadyAddedInTable(Jsonname, map.DisplayName))
-                    {
-                    }
-                    else
-                    {
-                        //MessageBox.Show("map.DisplayName:" + map.DisplayName);
-                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(map.DisplayName);
-                    }
-                    //Map note
-                    if (string.IsNullOrEmpty(map.Note) || SelectedLocalePercentFromStringIsNotValid(map.Note) || GetAlreadyAddedInTable(Jsonname, map.Note))
-                    {
-                    }
-                    else
-                    {
-                        //MessageBox.Show("map.Note:" + map.Note);
-                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(map.Note);
-                    }
-
-                    //string prevval = "";
-                    foreach (RPGMakerMVjsonMapEvent ev in map.Events)
-                    {
-                        if (ev == null)
-                        {
-                        }
-                        else
-                        {
-                            //event name
-                            if (string.IsNullOrEmpty(ev.Name) || ev.Name.StartsWith("EV") || SelectedLocalePercentFromStringIsNotValid(ev.Name) || GetAlreadyAddedInTable(Jsonname, ev.Name))
-                            {
-                            }
-                            else
-                            {
-                                //MessageBox.Show("map.Events add name"+ ev.Name);
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(ev.Name);
-                                //prevval = ev.Name;
-                            }
-                            //event note
-                            if (string.IsNullOrEmpty(ev.Note) || SelectedLocalePercentFromStringIsNotValid(ev.Note) || GetAlreadyAddedInTable(Jsonname, ev.Note))
-                            {
-                            }
-                            else
-                            {
-                                //MessageBox.Show("map.Events add note:" + ev.Note);
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(ev.Note);
-                            }
-
-                            //event parameters
-                            foreach (RPGMakerMVjsonMapPage page in ev.Pages)
-                            {
-                                foreach (RPGMakerMVjsonMapPageList lst in page.List)
-                                {
-                                    foreach (var parameter in lst.Parameters)
-                                    {
-                                        if (parameter == null)
-                                        {
-
-                                        }
-                                        else if (parameter.GetType().Name == "String")
-                                        {
-                                            string pstring = parameter.ToString();
-                                            if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring) || GetAlreadyAddedInTable(Jsonname, pstring))
-                                            {
-
-                                            }
-                                            else
-                                            {
-                                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(pstring);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool GetDataFromRPGMakerMVjsonSystem(string Jsonname, string jsondata)
-        {
-            try
-            {
-                //новые классы сгенерированы через этот сервис: https://app.quicktype.io/#l=cs&r=json2csharp
-                var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
-
-                //var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
-
-                if (systemdata.GameTitle == null || string.IsNullOrEmpty(systemdata.GameTitle))
-                {
-                }
-                else
-                {
-                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
-                }
-
-                if (systemdata.ArmorTypes == null || systemdata.ArmorTypes.Length < 1)
-                {
-                }
-                else
-                {
-                    foreach (string armortype in systemdata.ArmorTypes)
-                    {
-                        if (string.IsNullOrEmpty(armortype))
-                        {
-
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(armortype);
-                        }
-                    }
-                }
-                if (systemdata.Elements == null || systemdata.Elements.Length < 1)
-                {
-
-                }
-                else
-                {
-                    foreach (string element in systemdata.Elements)
-                    {
-                        if (string.IsNullOrEmpty(element))
-                        {
-
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(element);
-                        }
-                    }
-                }
-                if (systemdata.EquipTypes == null || systemdata.EquipTypes.Length < 1)
-                {
-
-                }
-                else
-                {
-                    foreach (string equipType in systemdata.EquipTypes)
-                    {
-                        if (string.IsNullOrEmpty(equipType))
-                        {
-
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(equipType);
-                        }
-                    }
-                }
-                if (systemdata.skillTypes == null || systemdata.skillTypes.Length < 1)
-                {
-
-                }
-                else
-                {
-                    foreach (string skillType in systemdata.skillTypes)
-                    {
-                        if (string.IsNullOrEmpty(skillType))
-                        {
-
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(skillType);
-                        }
-                    }
-                }
-                if (systemdata.Switches == null || systemdata.Switches.Length < 1)
-                {
-
-                }
-                else
-                {
-                    foreach (string _switch in systemdata.Switches)
-                    {
-                        if (string.IsNullOrEmpty(_switch))
-                        {
-
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(_switch);
-                        }
-                    }
-                }
-                /*
-                if (systemdata.Switches == null || systemdata.Switches.Length < 1)
-                {
-
-                }
-                else
-                {
-                    foreach (string _switch in systemdata.Switches)
-                    {
-                        if (string.IsNullOrEmpty(_switch))
-                        {
-
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(_switch);
-                        }
-                    }
-                }
-                */
-                if (systemdata.WeaponTypes == null || systemdata.WeaponTypes.Length < 1)
-                {
-
-                }
-                else
-                {
-                    foreach (string weaponType in systemdata.WeaponTypes)
-                    {
-                        if (string.IsNullOrEmpty(weaponType))
-                        {
-
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(weaponType);
-                        }
-                    }
-                }
-                if (systemdata.Terms == null)
-                {
-
-                }
-                else
-                {
-                    foreach (var basic in systemdata.Terms.Basic)
-                    {
-                        if (string.IsNullOrEmpty(basic))
-                        {
-
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(basic);
-                        }
-                    }
-                    foreach (var command in systemdata.Terms.Commands)
-                    {
-                        if (string.IsNullOrEmpty(command))
-                        {
-
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(command);
-                        }
-                    }
-
-                    foreach (string param in systemdata.Terms.Params)
-                    {
-                        if (string.IsNullOrEmpty(param))
-                        {
-
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(param);
-                        }
-                    }
-
-                    foreach (var Message in systemdata.Terms.Messages)
-                    {
-                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message.Value);
-                    }
-                }
-                //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
-                //THLog = "";
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool FillDSTableWithJsonValues(string Jsonname, string jsondata, bool name = false, bool description = false, bool displayname = false, bool note = false, bool message1 = false, bool message2 = false, bool message3 = false, bool message4 = false, bool nickname = false, bool profile = false, bool maps = false, bool cmnevents = false, bool system = false)
-        {
-            try
-            {
-                if (name)
-                {
-                    foreach (RPGMakerMVjsonName Name in JsonConvert.DeserializeObject<List<RPGMakerMVjsonName>>(jsondata))
-                    {
-                        if (Name == null || string.IsNullOrEmpty(Name.Name) || SelectedLocalePercentFromStringIsNotValid(Name.Name) || GetAlreadyAddedInTable(Jsonname, Name.Name))
-                        {
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(Name.Name);
-                        }
-                    }
-                }
-                if (description)
-                {
-                    foreach (RPGMakerMVjsonDescription Description in JsonConvert.DeserializeObject<List<RPGMakerMVjsonDescription>>(jsondata))
-                    {
-                        if (Description == null || string.IsNullOrEmpty(Description.Description) || SelectedLocalePercentFromStringIsNotValid(Description.Description) || GetAlreadyAddedInTable(Jsonname, Description.Description))
-                        {
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(Description.Description);
-                        }
-                    }
-                }
-                if (displayname)
-                {
-                    foreach (RPGMakerMVjsonDisplayName DisplayName in JsonConvert.DeserializeObject<List<RPGMakerMVjsonDisplayName>>(jsondata))
-                    {
-                        if (DisplayName == null || string.IsNullOrEmpty(DisplayName.DisplayName) || SelectedLocalePercentFromStringIsNotValid(DisplayName.DisplayName) || GetAlreadyAddedInTable(Jsonname, DisplayName.DisplayName))
-                        {
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(DisplayName.DisplayName);
-                        }
-                    }
-                }
-                if (note)
-                {
-                    foreach (RPGMakerMVjsonNote Note in JsonConvert.DeserializeObject<List<RPGMakerMVjsonNote>>(jsondata))
-                    {
-                        if (Note == null || string.IsNullOrEmpty(Note.Note) || SelectedLocalePercentFromStringIsNotValid(Note.Note) || GetAlreadyAddedInTable(Jsonname, Note.Note))
-                        {
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(Note.Note);
-                        }
-                    }
-                }
-                if (message1)
-                {
-                    foreach (RPGMakerMVjsonMessage1 Message1 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage1>>(jsondata))
-                    {
-                        if (Message1 == null || string.IsNullOrEmpty(Message1.Message1) || SelectedLocalePercentFromStringIsNotValid(Message1.Message1) || GetAlreadyAddedInTable(Jsonname, Message1.Message1))
-                        {
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message1.Message1);
-                        }
-                    }
-                }
-                if (message2)
-                {
-                    foreach (RPGMakerMVjsonMessage2 Message2 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage2>>(jsondata))
-                    {
-                        if (Message2 == null || string.IsNullOrEmpty(Message2.Message2) || SelectedLocalePercentFromStringIsNotValid(Message2.Message2) || GetAlreadyAddedInTable(Jsonname, Message2.Message2))
-                        {
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message2.Message2);
-                        }
-                    }
-                }
-                if (message3)
-                {
-                    foreach (RPGMakerMVjsonMessage3 Message3 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage3>>(jsondata))
-                    {
-                        if (Message3 == null || string.IsNullOrEmpty(Message3.Message3) || SelectedLocalePercentFromStringIsNotValid(Message3.Message3) || GetAlreadyAddedInTable(Jsonname, Message3.Message3))
-                        {
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message3.Message3);
-                        }
-                    }
-                }
-                if (message4)
-                {
-                    foreach (RPGMakerMVjsonMessage4 Message4 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage4>>(jsondata))
-                    {
-                        if (Message4 == null || string.IsNullOrEmpty(Message4.Message4) || SelectedLocalePercentFromStringIsNotValid(Message4.Message4) || GetAlreadyAddedInTable(Jsonname, Message4.Message4))
-                        {
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message4.Message4);
-                        }
-                    }
-                }
-                if (nickname)
-                {
-                    foreach (RPGMakerMVjsonNickname Nickname in JsonConvert.DeserializeObject<List<RPGMakerMVjsonNickname>>(jsondata))
-                    {
-                        if (Nickname == null || string.IsNullOrEmpty(Nickname.Nickname) || SelectedLocalePercentFromStringIsNotValid(Nickname.Nickname) || GetAlreadyAddedInTable(Jsonname, Nickname.Nickname))
-                        {
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(Nickname.Nickname);
-                        }
-                    }
-                }
-                if (profile)
-                {
-                    foreach (RPGMakerMVjsonProfile Profile in JsonConvert.DeserializeObject<List<RPGMakerMVjsonProfile>>(jsondata))
-                    {
-                        if (Profile == null || string.IsNullOrEmpty(Profile.Profile) || SelectedLocalePercentFromStringIsNotValid(Profile.Profile) || GetAlreadyAddedInTable(Jsonname, Profile.Profile))
-                        {
-                        }
-                        else
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(Profile.Profile);
-                        }
-                    }
-                }
-
-                if (cmnevents)
-                {
-                    //info RPG Maker MV Event codes
-                    //https://forums.rpgmakerweb.com/index.php?threads/extract-events-to-text-file.17444/
-                    //https://forums.rpgmakerweb.com/index.php?threads/cross-reference-tool.72563/
-                    //https://pastebin.com/JyRTdq0b
-                    //https://pastebin.com/eJx0EvXB
-                    //    case 401 : return 'Show Text';              break;
-                    //    case 102 : return 'Show Choices';           break;
-                    //    case 103 : return 'Input Number';           break;
-                    //    case 104 : return 'Select Item';            break;
-                    //    case 405 : return 'Show Scrolling Text';    break;
-                    //    case 111 : return 'Conditional Branch';     break;
-                    //    case 119 : return 'Common Event';           break;
-                    //    case 121 : return 'Control Switches';       break;
-                    //    case 122 : return 'Control Variables';      break;
-                    //    case 125 : return 'Change Gold';            break;
-                    //    case 126 : return 'Change Items';           break;
-                    //    case 127 : return 'Change Weapons';         break;
-                    //    case 128 : return 'Change Armors';          break;
-                    //    case 129 : return 'Change Party Member';    break;
-                    //    case 201 : return 'Transfer Player';        break;
-                    //    case 202 : return 'Set Vehicle Location';   break;
-                    //    case 203 : return 'Set Event Location';     break;
-                    //    case 505 : return 'Set Movement Route';     break;
-                    //    case 212 : return 'Show Animation';         break;
-                    //    case 231 : return 'Show Picture';           break;
-                    //    case 232 : return 'Move Picture';           break;
-                    //    case 285 : return 'Get Location Info';      break;
-                    //    case 301 : return 'Battle Processing';      break;
-                    //    case 302 :
-                    //    case 605 : return 'Shop Processing';        break;
-                    //    case 303 : return 'Name Input Processing';  break;
-                    //    case 311 : return 'Change HP';              break;
-                    //    case 312 : return 'Change MP';              break;
-                    //    case 326 : return 'Change TP';              break;
-                    //    case 313 : return 'Change State';           break;
-                    //    case 314 : return 'Recover All';            break;
-                    //    case 315 : return 'Change EXP';             break;
-                    //    case 316 : return 'Change Level';           break;
-                    //    case 317 : return 'Change Parameter';       break;
-                    //    case 318 : return 'Change Skill';           break;
-                    //    case 319 : return 'Change Equipment';       break;
-                    //    case 320 : return 'Change Name';            break;
-                    //    case 321 : return 'Change Class';           break;
-                    //    case 322 : return 'Change Actor Images';    break;
-                    //    case 324 : return 'Change Nickname';        break;
-                    //    case 325 : return 'Change Profile';         break;
-                    //    case 331 : return 'Change Enemy HP';        break;
-                    //    case 332 : return 'Change Enemy MP';        break;
-                    //    case 342 : return 'Change Enemy TP';        break;
-                    //    case 333 : return 'Change Enemy State';     break;
-                    //    case 336 : return 'Enemy Transform';        break;
-                    //    case 337 : return 'Show Battle Animation';  break;
-                    //    case 339 : return 'Force Action';           break;
-                    //
-                    //Will be handled:
-                    //401 - Show text (mergeable)
-                    //102 - Show choices (Choices list)
-                    //402 - Choice for choices - ignore because already in 102
-                    //405 - Show Scrolling Text (mergeable)
-                    //108 and 408 - Comment - can be ignored because it is for dev suppose
-                    //normal example about command values adding: https://galvs-scripts.com/galvs-party-select/
-
-
-                    //var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
-                    var commoneventsdata = RpgMakerMVjsonCommonEvents.FromJson(jsondata);
-
-                    for (int i = 1; i < commoneventsdata.Count; i++)
-                    {
-                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
-
-                        //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
-                        //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
-
-                        string eventname = commoneventsdata[i].Name;
-                        if (string.IsNullOrEmpty(eventname) || GetAlreadyAddedInTable(Jsonname, eventname))
-                        {
-                        }
-                        else //if code not equal old code and newline is not empty
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(eventname); //add event name to new row
-                        }
-
-                        string newline = "";
-                        //int commandcode;
-                        //int commandoldcode = 999999;
-                        bool textaddingstarted = false;
-
-
-                        int CommandsCount = commoneventsdata[i].List.Count;
-                        for (int c = 0; c < CommandsCount; c++)
-                        {
-                            if (textaddingstarted)
-                            {
-                                if (commoneventsdata[i].List[c].Code == 401 || commoneventsdata[i].List[c].Code == 405)
-                                {
-                                    newline += commoneventsdata[i].List[c].Parameters[0];
-
-                                    if (c < CommandsCount - 1 && commoneventsdata[i].List[c].Code == commoneventsdata[i].List[c + 1].Code)
-                                    {
-                                        newline += "\r\n";
-                                    }
-                                    else
-                                    {
-                                        if (string.IsNullOrEmpty(newline))
-                                        {
-                                            if (textaddingstarted)
-                                            {
-                                                //THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted is true and newline is empty\r\n";
-                                                textaddingstarted = false;
-                                            }
-                                        }
-                                        else //if code not equal old code and newline is not empty
-                                        {
-                                            if (GetAlreadyAddedInTable(Jsonname, newline))
-                                            {
-                                                //THLog += DateTime.Now + " >>: Code 401/405 newline already in table=\"" + newline + "\"\r\n";
-                                                newline = ""; //clear text data
-                                                if (textaddingstarted)
-                                                {
-                                                    textaddingstarted = false;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                //THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted=true added newline=\"" + newline + "\"\r\n";
-                                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(newline); //Save text to new row
-                                                newline = ""; //clear text data
-                                                textaddingstarted = false;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else if (commoneventsdata[i].List[c].Code == 101 || commoneventsdata[i].List[c].Code == 105)
-                            {
-                                if (string.IsNullOrEmpty(newline))
-                                {
-                                    if (textaddingstarted)
-                                    {
-                                        //THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline is empty\r\n";
-                                        textaddingstarted = false;
-                                    }
-                                }
-                                else //if code not equal old code and newline is not empty
-                                {
-                                    if (GetAlreadyAddedInTable(Jsonname, newline))
-                                    {
-                                        if (textaddingstarted)
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline already in table=\"" + newline + "\"\r\n";
-                                            textaddingstarted = false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //THLog += DateTime.Now + " >>: Code 101/105 newline is not empty=\"" + newline + "\"\r\n";
-                                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(newline); //Save text to new row
-                                        newline = ""; //clear text data
-                                        textaddingstarted = false;
-                                    }
-                                }
-
-                                textaddingstarted = true;
-                            }
-                            else if (commoneventsdata[i].List[c].Code == 102)
-                            {
-                                JArray choices = JArray.Parse(commoneventsdata[i].List[c].Parameters[0].ToString());
-
-                                foreach (var choice in choices)
-                                {
-                                    string schoice = choice.ToString();
-                                    if (string.IsNullOrEmpty(schoice))
-                                    {
-                                        if (textaddingstarted)
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
-                                            textaddingstarted = false;
-                                        }
-                                    }
-                                    else //if code not equal old code and newline is not empty
-                                    {
-                                        if (GetAlreadyAddedInTable(Jsonname, schoice))
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
-                                            if (textaddingstarted)
-                                            {
-                                                //THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
-                                                textaddingstarted = false;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            //THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
-                                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(schoice); //Save text to new row
-                                            if (string.IsNullOrEmpty(newline))
-                                            {
-                                            }
-                                            else
-                                            {
-                                                //THLog += DateTime.Now + " >>: Code 102 added schoice and also newline is not empty, set empty\r\n";
-                                                newline = ""; //clear text data
-                                            }
-                                            if (textaddingstarted)
-                                            {
-                                                //THLog += DateTime.Now + " >>: Code 102 added schoice and also textaddingstarted is true , set false\r\n";
-                                                textaddingstarted = false;
-                                            }
-                                        }
-
-                                    }
-                                }
-
-                                /*
-                                string schoice = commoneventsdata[i].list[c].Parameters[0].ToString();
-                                if (string.IsNullOrEmpty(schoice))
-                                {
-                                    if (textaddingstarted)
-                                    {
-                                        THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
-                                        textaddingstarted = false;
-                                    }
-                                }
-                                else //if code not equal old code and newline is not empty
-                                {
-                                    if (GetAlreadyAddedInTable(Jsonname, schoice))
-                                    {
-                                        THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
-                                        if (textaddingstarted)
-                                        {
-                                            THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
-                                            textaddingstarted = false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
-                                        ds.Tables[Jsonname].Rows.Add(schoice); //Save text to new row
-                                        newline = ""; //clear text data
-                                        textaddingstarted = false;
-                                    }
-
-                                }
-                                */
-                            }
-                        }
-                        /*
-                        foreach (var command in commoneventsdata[i].list)
-                        {
-                            commandcode = command.Code;
-
-                            if (commandcode == commandoldcode)
-                            {
-                            }
-                            else
-                            {
-                                if (string.IsNullOrEmpty(newline) || GetAlreadyAddedInTable(Jsonname, newline))
-                                {
-                                }
-                                else //if code not equal old code and newline is not empty
-                                {
-                                    //THLog += DateTime.Now + " >>: added newline=\"" + newline + "\"\r\n";
-                                    ds.Tables[Jsonname].Rows.Add(newline); //Save text to new row
-                                    newline = ""; //clear text data
-                                    textaddingstarted = false;
-                                }
-                            }
-
-                            if (commandcode == 102) //Show choices
-                            {
-                                foreach (var choice in command.parameters) //Get all choices
-                                {
-
-                                    if (string.IsNullOrEmpty(newline) || GetAlreadyAddedInTable(Jsonname, newline))
-                                    {
-                                    }
-                                    else //if code not equal old code and newline is not empty
-                                    {
-                                        //THLog += DateTime.Now + " >>: 102 added newline=\"" + newline + "\"\r\n";
-                                        ds.Tables[Jsonname].Rows.Add(newline); //Save text to new row
-                                        newline = ""; //clear text data
-                                        textaddingstarted = false;
-                                    }
-                                }
-                            }
-                            else if (commandcode == 401) //Show text 401
-                            {
-                                if (textaddingstarted)
-                                {
-                                    newline += "\r\n";//add new line when multiline value in text.
-                                }
-                                newline += command.parameters[0]; //Add text to variable for case if the command will add more lines
-                                textaddingstarted = true;
-                            }
-                            else if (commandcode == 405) //Show text 401 OR Show Scrolling Text 405
-                            {
-                                if (textaddingstarted)
-                                {
-                                    newline += "\r\n";//add new line when multiline value in text.
-                                }
-                                newline += command.parameters[0]; //Add text to variable for case if the command will add more lines
-                                textaddingstarted = true;
-                            }
-
-                            commandoldcode = commandcode;//save current command code to commandoldcode variable
-                            
-                        }
-                        */
-                        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
-                        //THLog = "";
-                    }
-
-                }
-                if (maps)
-                {
-                    //bool eventsdone = false;
-                    //bool geteventnamenotedone = false;
-
-                    var map = JsonConvert.DeserializeObject<RPGMakerMVjsonMap>(jsondata);
-
-                    if (map.Events.Length > 1) //first event is empty
-                    {
-                        //Map displayed name
-                        if (string.IsNullOrEmpty(map.DisplayName) || SelectedLocalePercentFromStringIsNotValid(map.DisplayName) || GetAlreadyAddedInTable(Jsonname, map.DisplayName))
-                        {
-                        }
-                        else
-                        {
-                            //MessageBox.Show("map.DisplayName:" + map.DisplayName);
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(map.DisplayName);
-                        }
-                        //Map note
-                        if (string.IsNullOrEmpty(map.Note) || SelectedLocalePercentFromStringIsNotValid(map.Note) || GetAlreadyAddedInTable(Jsonname, map.Note))
-                        {
-                        }
-                        else
-                        {
-                            //MessageBox.Show("map.Note:" + map.Note);
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(map.Note);
-                        }
-
-                        //string prevval = "";
-                        foreach (RPGMakerMVjsonMapEvent ev in map.Events)
-                        {
-                            if (ev == null)
-                            {
-                            }
-                            else
-                            {
-                                //event name
-                                if (string.IsNullOrEmpty(ev.Name) || ev.Name.StartsWith("EV") || SelectedLocalePercentFromStringIsNotValid(ev.Name) || GetAlreadyAddedInTable(Jsonname, ev.Name))
-                                {
-                                }
-                                else
-                                {
-                                    //MessageBox.Show("map.Events add name"+ ev.Name);
-                                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(ev.Name);
-                                    //prevval = ev.Name;
-                                }
-                                //event note
-                                if (string.IsNullOrEmpty(ev.Note) || SelectedLocalePercentFromStringIsNotValid(ev.Note) || GetAlreadyAddedInTable(Jsonname, ev.Note))
-                                {
-                                }
-                                else
-                                {
-                                    //MessageBox.Show("map.Events add note:" + ev.Note);
-                                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(ev.Note);
-                                }
-
-                                //event parameters
-                                foreach (RPGMakerMVjsonMapPage page in ev.Pages)
-                                {
-                                    foreach (RPGMakerMVjsonMapPageList lst in page.List)
-                                    {
-                                        foreach (var parameter in lst.Parameters)
-                                        {
-                                            if (parameter == null)
-                                            {
-
-                                            }
-                                            else if (parameter.GetType().Name == "String")
-                                            {
-                                                string pstring = parameter.ToString();
-                                                if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring) || GetAlreadyAddedInTable(Jsonname, pstring))
-                                                {
-
-                                                }
-                                                else
-                                                {
-                                                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(pstring);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (system)
-                {
-                    //новые классы сгенерированы через этот сервис: https://app.quicktype.io/#l=cs&r=json2csharp
-                    var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
-
-                    //var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
-
-                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
-
-                    if (systemdata.ArmorTypes == null || systemdata.ArmorTypes.Length < 1)
-                    {
-
-                    }
-                    else
-                    {
-                        foreach (string armortype in systemdata.ArmorTypes)
-                        {
-                            if (string.IsNullOrEmpty(armortype))
-                            {
-
-                            }
-                            else
-                            {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(armortype);
-                            }
-                        }
-                    }
-                    if (systemdata.Elements == null || systemdata.Elements.Length < 1)
-                    {
-
-                    }
-                    else
-                    {
-                        foreach (string element in systemdata.Elements)
-                        {
-                            if (string.IsNullOrEmpty(element))
-                            {
-
-                            }
-                            else
-                            {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(element);
-                            }
-                        }
-                    }
-                    if (systemdata.EquipTypes == null || systemdata.EquipTypes.Length < 1)
-                    {
-
-                    }
-                    else
-                    {
-                        foreach (string equipType in systemdata.EquipTypes)
-                        {
-                            if (string.IsNullOrEmpty(equipType))
-                            {
-
-                            }
-                            else
-                            {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(equipType);
-                            }
-                        }
-                    }
-                    if (systemdata.skillTypes == null || systemdata.skillTypes.Length < 1)
-                    {
-
-                    }
-                    else
-                    {
-                        foreach (string skillType in systemdata.skillTypes)
-                        {
-                            if (string.IsNullOrEmpty(skillType))
-                            {
-
-                            }
-                            else
-                            {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(skillType);
-                            }
-                        }
-                    }
-                    if (systemdata.Switches == null || systemdata.Switches.Length < 1)
-                    {
-
-                    }
-                    else
-                    {
-                        foreach (string _switch in systemdata.Switches)
-                        {
-                            if (string.IsNullOrEmpty(_switch))
-                            {
-
-                            }
-                            else
-                            {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(_switch);
-                            }
-                        }
-                    }
-                    if (systemdata.Switches == null || systemdata.Switches.Length < 1)
-                    {
-
-                    }
-                    else
-                    {
-                        foreach (string _switch in systemdata.Switches)
-                        {
-                            if (string.IsNullOrEmpty(_switch))
-                            {
-
-                            }
-                            else
-                            {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(_switch);
-                            }
-                        }
-                    }
-                    if (systemdata.WeaponTypes == null || systemdata.WeaponTypes.Length < 1)
-                    {
-
-                    }
-                    else
-                    {
-                        foreach (string weaponType in systemdata.WeaponTypes)
-                        {
-                            if (string.IsNullOrEmpty(weaponType))
-                            {
-
-                            }
-                            else
-                            {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(weaponType);
-                            }
-                        }
-                    }
-                    if (systemdata.Terms == null)
-                    {
-
-                    }
-                    else
-                    {
-                        foreach (var basic in systemdata.Terms.Basic)
-                        {
-                            if (string.IsNullOrEmpty(basic))
-                            {
-
-                            }
-                            else
-                            {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(basic);
-                            }
-                        }
-                        foreach (var command in systemdata.Terms.Commands)
-                        {
-                            if (string.IsNullOrEmpty(command))
-                            {
-
-                            }
-                            else
-                            {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(command);
-                            }
-                        }
-
-                        foreach (string param in systemdata.Terms.Params)
-                        {
-                            if (string.IsNullOrEmpty(param))
-                            {
-
-                            }
-                            else
-                            {
-                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(param);
-                            }
-                        }
-
-                        foreach (var Message in systemdata.Terms.Messages)
-                        {
-                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message.Value);
-                        }
-                    }
-                    //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
-                    //THLog = "";
-                }
-
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                //if (string.IsNullOrEmpty(THLog))
-                //{
-                //}
-                //else
-                //{
-                FileWriter.WriteData(apppath + "\\TranslationHelper.log", ex.Message, true);
-                //}
-                return false;
-            }
-        }
-
-        /*
-        public static IEnumerable<Type> GetAllSubclassOf(Type parent)
-        {
-            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (var t in a.GetTypes())
-                {
-                    if (t.IsSubclassOf(parent)) yield return t;
-                }
-            }
-        }
-        */
+        //private void GetDataFromRPGMakerMVjsonOfType(string Jsonname, string JsonElement)
+        //{
+        //    if (string.IsNullOrEmpty(JsonElement) || SelectedLocalePercentFromStringIsNotValid(JsonElement) || GetAlreadyAddedInTable(Jsonname, JsonElement))
+        //    {
+        //    }
+        //    else
+        //    {
+        //        THFilesElementsDataset.Tables[Jsonname].Rows.Add(JsonElement);
+        //    }
+        //}
+
+        //private bool GetDataFromRPGMakerMVjsonItemsArmorsWeapons(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonItemsArmorsWeapons>>(jsondata))
+        //        {
+        //            if (JsonElement == null)
+        //            {
+        //            }
+        //            else
+        //            {
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Description);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
+        //            }
+        //        }
+
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //private bool GetDataFromRPGMakerMVjsonSkills(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonSkills>>(jsondata))
+        //        {
+        //            if (JsonElement == null)
+        //            {
+        //            }
+        //            else
+        //            {
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Description);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message1);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message2);
+        //            }
+        //        }
+
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //private bool GetDataFromRPGMakerMVjsonStates(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonStates>>(jsondata))
+        //        {
+        //            if (JsonElement == null)
+        //            {
+        //            }
+        //            else
+        //            {
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message1);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message2);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message3);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Message4);
+        //            }
+        //        }
+
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //private bool GetDataFromRPGMakerMVjsonClassesEnemiesTilesets(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonClassesEnemiesTilesets>>(jsondata))
+        //        {
+        //            if (JsonElement == null)
+        //            {
+        //            }
+        //            else
+        //            {
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
+        //            }
+        //        }
+
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //private bool GetDataFromRPGMakerMVjsonAnimationsMapInfosTroops(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        foreach (var JsonElement in JsonConvert.DeserializeObject<List<RPGMakerMVjsonAnimationsMapInfosTroops>>(jsondata))
+        //        {
+        //            if (JsonElement == null)
+        //            {
+        //            }
+        //            else
+        //            {
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
+        //            }
+        //        }
+
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //private bool GetDataFromRPGMakerMVjsonActors(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        var actors = RPGMakerMVjsonActors.FromJson(jsondata);//JsonConvert.DeserializeObject<List<RPGMakerMVjsonActors>>(jsondata)
+        //        foreach (var JsonElement in actors)
+        //        {
+        //            if (JsonElement == null)
+        //            {
+        //            }
+        //            else
+        //            {
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Nickname);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
+        //                GetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Profile);
+        //            }
+        //        }
+
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //private bool GetDataFromRPGMakerMVjsonCommonEvents(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        //info RPG Maker MV Event codes
+        //        //https://forums.rpgmakerweb.com/index.php?threads/extract-events-to-text-file.17444/
+        //        //https://forums.rpgmakerweb.com/index.php?threads/cross-reference-tool.72563/
+        //        //https://pastebin.com/JyRTdq0b
+        //        //https://pastebin.com/eJx0EvXB
+        //        //    case 401 : return 'Show Text';              break;
+        //        //    case 102 : return 'Show Choices';           break;
+        //        //    case 103 : return 'Input Number';           break;
+        //        //    case 104 : return 'Select Item';            break;
+        //        //    case 405 : return 'Show Scrolling Text';    break;
+        //        //    case 111 : return 'Conditional Branch';     break;
+        //        //    case 119 : return 'Common Event';           break;
+        //        //    case 121 : return 'Control Switches';       break;
+        //        //    case 122 : return 'Control Variables';      break;
+        //        //    case 125 : return 'Change Gold';            break;
+        //        //    case 126 : return 'Change Items';           break;
+        //        //    case 127 : return 'Change Weapons';         break;
+        //        //    case 128 : return 'Change Armors';          break;
+        //        //    case 129 : return 'Change Party Member';    break;
+        //        //    case 201 : return 'Transfer Player';        break;
+        //        //    case 202 : return 'Set Vehicle Location';   break;
+        //        //    case 203 : return 'Set Event Location';     break;
+        //        //    case 505 : return 'Set Movement Route';     break;
+        //        //    case 212 : return 'Show Animation';         break;
+        //        //    case 231 : return 'Show Picture';           break;
+        //        //    case 232 : return 'Move Picture';           break;
+        //        //    case 285 : return 'Get Location Info';      break;
+        //        //    case 301 : return 'Battle Processing';      break;
+        //        //    case 302 :
+        //        //    case 605 : return 'Shop Processing';        break;
+        //        //    case 303 : return 'Name Input Processing';  break;
+        //        //    case 311 : return 'Change HP';              break;
+        //        //    case 312 : return 'Change MP';              break;
+        //        //    case 326 : return 'Change TP';              break;
+        //        //    case 313 : return 'Change State';           break;
+        //        //    case 314 : return 'Recover All';            break;
+        //        //    case 315 : return 'Change EXP';             break;
+        //        //    case 316 : return 'Change Level';           break;
+        //        //    case 317 : return 'Change Parameter';       break;
+        //        //    case 318 : return 'Change Skill';           break;
+        //        //    case 319 : return 'Change Equipment';       break;
+        //        //    case 320 : return 'Change Name';            break;
+        //        //    case 321 : return 'Change Class';           break;
+        //        //    case 322 : return 'Change Actor Images';    break;
+        //        //    case 324 : return 'Change Nickname';        break;
+        //        //    case 325 : return 'Change Profile';         break;
+        //        //    case 331 : return 'Change Enemy HP';        break;
+        //        //    case 332 : return 'Change Enemy MP';        break;
+        //        //    case 342 : return 'Change Enemy TP';        break;
+        //        //    case 333 : return 'Change Enemy State';     break;
+        //        //    case 336 : return 'Enemy Transform';        break;
+        //        //    case 337 : return 'Show Battle Animation';  break;
+        //        //    case 339 : return 'Force Action';           break;
+        //        //
+        //        //Will be handled:
+        //        //401 - Show text (mergeable)
+        //        //102 - Show choices (Choices list)
+        //        //402 - Choice for choices - ignore because already in 102
+        //        //405 - Show Scrolling Text (mergeable)
+        //        //108 and 408 - Comment - can be ignored because it is for dev suppose
+        //        //normal example about command values adding: https://galvs-scripts.com/galvs-party-select/
+
+
+        //        //var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
+        //        var commoneventsdata = RpgMakerMVjsonCommonEvents.FromJson(jsondata);
+
+        //        for (int i = 1; i < commoneventsdata.Count; i++)
+        //        {
+        //            //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
+
+        //            //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
+        //            //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
+
+        //            string eventname = commoneventsdata[i].Name;
+        //            if (string.IsNullOrEmpty(eventname) || GetAlreadyAddedInTable(Jsonname, eventname))
+        //            {
+        //            }
+        //            else //if code not equal old code and newline is not empty
+        //            {
+        //                THFilesElementsDataset.Tables[Jsonname].Rows.Add(eventname); //add event name to new row
+        //            }
+
+        //            string newline = "";
+        //            //int commandcode;
+        //            //int commandoldcode = 999999;
+        //            bool textaddingstarted = false;
+
+
+        //            int CommandsCount = commoneventsdata[i].List.Count;
+        //            for (int c = 0; c < CommandsCount; c++)
+        //            {
+        //                if (textaddingstarted)
+        //                {
+        //                    if (commoneventsdata[i].List[c].Code == 401 || commoneventsdata[i].List[c].Code == 405)
+        //                    {
+        //                        newline += commoneventsdata[i].List[c].Parameters[0].String;
+
+        //                        if (c < CommandsCount - 1 && commoneventsdata[i].List[c].Code == commoneventsdata[i].List[c + 1].Code)
+        //                        {
+        //                            newline += "\r\n";
+        //                        }
+        //                        else
+        //                        {
+        //                            if (string.IsNullOrEmpty(newline))
+        //                            {
+        //                                if (textaddingstarted)
+        //                                {
+        //                                    //THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted is true and newline is empty\r\n";
+        //                                    textaddingstarted = false;
+        //                                }
+        //                            }
+        //                            else //if code not equal old code and newline is not empty
+        //                            {
+        //                                if (GetAlreadyAddedInTable(Jsonname, newline))
+        //                                {
+        //                                    //THLog += DateTime.Now + " >>: Code 401/405 newline already in table=\"" + newline + "\"\r\n";
+        //                                    newline = ""; //clear text data
+        //                                    if (textaddingstarted)
+        //                                    {
+        //                                        textaddingstarted = false;
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    //THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted=true added newline=\"" + newline + "\"\r\n";
+        //                                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(newline); //Save text to new row
+        //                                    newline = ""; //clear text data
+        //                                    textaddingstarted = false;
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else if (commoneventsdata[i].List[c].Code == 101 || commoneventsdata[i].List[c].Code == 105)
+        //                {
+        //                    if (string.IsNullOrEmpty(newline))
+        //                    {
+        //                        if (textaddingstarted)
+        //                        {
+        //                            //THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline is empty\r\n";
+        //                            textaddingstarted = false;
+        //                        }
+        //                    }
+        //                    else //if code not equal old code and newline is not empty
+        //                    {
+        //                        if (GetAlreadyAddedInTable(Jsonname, newline))
+        //                        {
+        //                            if (textaddingstarted)
+        //                            {
+        //                                //THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline already in table=\"" + newline + "\"\r\n";
+        //                                textaddingstarted = false;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            //THLog += DateTime.Now + " >>: Code 101/105 newline is not empty=\"" + newline + "\"\r\n";
+        //                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(newline); //Save text to new row
+        //                            newline = ""; //clear text data
+        //                            textaddingstarted = false;
+        //                        }
+        //                    }
+
+        //                    textaddingstarted = true;
+        //                }
+        //                else if (commoneventsdata[i].List[c].Code == 102)
+        //                {
+        //                    for (int i1 = 0; i1 < commoneventsdata[i].List[c].Parameters[0].AnythingArray.Count; i1++)
+        //                    {
+        //                        if (string.IsNullOrEmpty(commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String))
+        //                        {
+        //                            if (textaddingstarted)
+        //                            {
+        //                                //THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
+        //                                textaddingstarted = false;
+        //                            }
+        //                        }
+        //                        else //if code not equal old code and newline is not empty
+        //                        {
+        //                            if (GetAlreadyAddedInTable(Jsonname, commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String))
+        //                            {
+        //                                //THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
+        //                                if (textaddingstarted)
+        //                                {
+        //                                    //THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
+        //                                    textaddingstarted = false;
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                //THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
+        //                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String); //Save text to new row
+        //                                if (string.IsNullOrEmpty(newline))
+        //                                {
+        //                                }
+        //                                else
+        //                                {
+        //                                    //THLog += DateTime.Now + " >>: Code 102 added schoice and also newline is not empty, set empty\r\n";
+        //                                    newline = ""; //clear text data
+        //                                }
+        //                                if (textaddingstarted)
+        //                                {
+        //                                    //THLog += DateTime.Now + " >>: Code 102 added schoice and also textaddingstarted is true , set false\r\n";
+        //                                    textaddingstarted = false;
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //private bool GetDataFromRPGMakerMVjsonMap(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        //bool eventsdone = false;
+        //        //bool geteventnamenotedone = false;
+
+        //        var map = JsonConvert.DeserializeObject<RPGMakerMVjsonMap>(jsondata);
+
+        //        if (map.Events.Length > 1) //first event is empty
+        //        {
+        //            //Map displayed name
+        //            if (string.IsNullOrEmpty(map.DisplayName) || SelectedLocalePercentFromStringIsNotValid(map.DisplayName) || GetAlreadyAddedInTable(Jsonname, map.DisplayName))
+        //            {
+        //            }
+        //            else
+        //            {
+        //                //MessageBox.Show("map.DisplayName:" + map.DisplayName);
+        //                THFilesElementsDataset.Tables[Jsonname].Rows.Add(map.DisplayName);
+        //            }
+        //            //Map note
+        //            if (string.IsNullOrEmpty(map.Note) || SelectedLocalePercentFromStringIsNotValid(map.Note) || GetAlreadyAddedInTable(Jsonname, map.Note))
+        //            {
+        //            }
+        //            else
+        //            {
+        //                //MessageBox.Show("map.Note:" + map.Note);
+        //                THFilesElementsDataset.Tables[Jsonname].Rows.Add(map.Note);
+        //            }
+
+        //            //string prevval = "";
+        //            foreach (RPGMakerMVjsonMapEvent ev in map.Events)
+        //            {
+        //                if (ev == null)
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    //event name
+        //                    if (string.IsNullOrEmpty(ev.Name) || ev.Name.StartsWith("EV") || SelectedLocalePercentFromStringIsNotValid(ev.Name) || GetAlreadyAddedInTable(Jsonname, ev.Name))
+        //                    {
+        //                    }
+        //                    else
+        //                    {
+        //                        //MessageBox.Show("map.Events add name"+ ev.Name);
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(ev.Name);
+        //                        //prevval = ev.Name;
+        //                    }
+        //                    //event note
+        //                    if (string.IsNullOrEmpty(ev.Note) || SelectedLocalePercentFromStringIsNotValid(ev.Note) || GetAlreadyAddedInTable(Jsonname, ev.Note))
+        //                    {
+        //                    }
+        //                    else
+        //                    {
+        //                        //MessageBox.Show("map.Events add note:" + ev.Note);
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(ev.Note);
+        //                    }
+
+        //                    //event parameters
+        //                    foreach (RPGMakerMVjsonMapPage page in ev.Pages)
+        //                    {
+        //                        foreach (RPGMakerMVjsonMapPageList lst in page.List)
+        //                        {
+        //                            foreach (var parameter in lst.Parameters)
+        //                            {
+        //                                if (parameter == null)
+        //                                {
+
+        //                                }
+        //                                else if (parameter.GetType().Name == "String")
+        //                                {
+        //                                    string pstring = parameter.ToString();
+        //                                    if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring) || GetAlreadyAddedInTable(Jsonname, pstring))
+        //                                    {
+
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(pstring);
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //private bool GetDataFromRPGMakerMVjsonSystem(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        //новые классы сгенерированы через этот сервис: https://app.quicktype.io/#l=cs&r=json2csharp
+        //        var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
+
+        //        //var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
+
+        //        if (systemdata.GameTitle == null || string.IsNullOrEmpty(systemdata.GameTitle))
+        //        {
+        //        }
+        //        else
+        //        {
+        //            THFilesElementsDataset.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
+        //        }
+
+        //        if (systemdata.ArmorTypes == null || systemdata.ArmorTypes.Length < 1)
+        //        {
+        //        }
+        //        else
+        //        {
+        //            foreach (string armortype in systemdata.ArmorTypes)
+        //            {
+        //                if (string.IsNullOrEmpty(armortype))
+        //                {
+
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(armortype);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.Elements == null || systemdata.Elements.Length < 1)
+        //        {
+
+        //        }
+        //        else
+        //        {
+        //            foreach (string element in systemdata.Elements)
+        //            {
+        //                if (string.IsNullOrEmpty(element))
+        //                {
+
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(element);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.EquipTypes == null || systemdata.EquipTypes.Length < 1)
+        //        {
+
+        //        }
+        //        else
+        //        {
+        //            foreach (string equipType in systemdata.EquipTypes)
+        //            {
+        //                if (string.IsNullOrEmpty(equipType))
+        //                {
+
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(equipType);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.skillTypes == null || systemdata.skillTypes.Length < 1)
+        //        {
+
+        //        }
+        //        else
+        //        {
+        //            foreach (string skillType in systemdata.skillTypes)
+        //            {
+        //                if (string.IsNullOrEmpty(skillType))
+        //                {
+
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(skillType);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.Switches == null || systemdata.Switches.Length < 1)
+        //        {
+
+        //        }
+        //        else
+        //        {
+        //            foreach (string _switch in systemdata.Switches)
+        //            {
+        //                if (string.IsNullOrEmpty(_switch))
+        //                {
+
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(_switch);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.WeaponTypes == null || systemdata.WeaponTypes.Length < 1)
+        //        {
+
+        //        }
+        //        else
+        //        {
+        //            foreach (string weaponType in systemdata.WeaponTypes)
+        //            {
+        //                if (string.IsNullOrEmpty(weaponType))
+        //                {
+
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(weaponType);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.Terms == null)
+        //        {
+
+        //        }
+        //        else
+        //        {
+        //            foreach (var basic in systemdata.Terms.Basic)
+        //            {
+        //                if (string.IsNullOrEmpty(basic))
+        //                {
+
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(basic);
+        //                }
+        //            }
+        //            foreach (var command in systemdata.Terms.Commands)
+        //            {
+        //                if (string.IsNullOrEmpty(command))
+        //                {
+
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(command);
+        //                }
+        //            }
+
+        //            foreach (string param in systemdata.Terms.Params)
+        //            {
+        //                if (string.IsNullOrEmpty(param))
+        //                {
+
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(param);
+        //                }
+        //            }
+
+        //            foreach (var Message in systemdata.Terms.Messages)
+        //            {
+        //                THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message.Value);
+        //            }
+        //        }
+        //        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+        //        //THLog = "";
+
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        //private bool FillDSTableWithJsonValues(string Jsonname, string jsondata, bool name = false, bool description = false, bool displayname = false, bool note = false, bool message1 = false, bool message2 = false, bool message3 = false, bool message4 = false, bool nickname = false, bool profile = false, bool maps = false, bool cmnevents = false, bool system = false)
+        //{
+        //    try
+        //    {
+        //        if (name)
+        //        {
+        //            foreach (RPGMakerMVjsonName Name in JsonConvert.DeserializeObject<List<RPGMakerMVjsonName>>(jsondata))
+        //            {
+        //                if (Name == null || string.IsNullOrEmpty(Name.Name) || SelectedLocalePercentFromStringIsNotValid(Name.Name) || GetAlreadyAddedInTable(Jsonname, Name.Name))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Name.Name);
+        //                }
+        //            }
+        //        }
+        //        if (description)
+        //        {
+        //            foreach (RPGMakerMVjsonDescription Description in JsonConvert.DeserializeObject<List<RPGMakerMVjsonDescription>>(jsondata))
+        //            {
+        //                if (Description == null || string.IsNullOrEmpty(Description.Description) || SelectedLocalePercentFromStringIsNotValid(Description.Description) || GetAlreadyAddedInTable(Jsonname, Description.Description))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Description.Description);
+        //                }
+        //            }
+        //        }
+        //        if (displayname)
+        //        {
+        //            foreach (RPGMakerMVjsonDisplayName DisplayName in JsonConvert.DeserializeObject<List<RPGMakerMVjsonDisplayName>>(jsondata))
+        //            {
+        //                if (DisplayName == null || string.IsNullOrEmpty(DisplayName.DisplayName) || SelectedLocalePercentFromStringIsNotValid(DisplayName.DisplayName) || GetAlreadyAddedInTable(Jsonname, DisplayName.DisplayName))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(DisplayName.DisplayName);
+        //                }
+        //            }
+        //        }
+        //        if (note)
+        //        {
+        //            foreach (RPGMakerMVjsonNote Note in JsonConvert.DeserializeObject<List<RPGMakerMVjsonNote>>(jsondata))
+        //            {
+        //                if (Note == null || string.IsNullOrEmpty(Note.Note) || SelectedLocalePercentFromStringIsNotValid(Note.Note) || GetAlreadyAddedInTable(Jsonname, Note.Note))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Note.Note);
+        //                }
+        //            }
+        //        }
+        //        if (message1)
+        //        {
+        //            foreach (RPGMakerMVjsonMessage1 Message1 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage1>>(jsondata))
+        //            {
+        //                if (Message1 == null || string.IsNullOrEmpty(Message1.Message1) || SelectedLocalePercentFromStringIsNotValid(Message1.Message1) || GetAlreadyAddedInTable(Jsonname, Message1.Message1))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message1.Message1);
+        //                }
+        //            }
+        //        }
+        //        if (message2)
+        //        {
+        //            foreach (RPGMakerMVjsonMessage2 Message2 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage2>>(jsondata))
+        //            {
+        //                if (Message2 == null || string.IsNullOrEmpty(Message2.Message2) || SelectedLocalePercentFromStringIsNotValid(Message2.Message2) || GetAlreadyAddedInTable(Jsonname, Message2.Message2))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message2.Message2);
+        //                }
+        //            }
+        //        }
+        //        if (message3)
+        //        {
+        //            foreach (RPGMakerMVjsonMessage3 Message3 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage3>>(jsondata))
+        //            {
+        //                if (Message3 == null || string.IsNullOrEmpty(Message3.Message3) || SelectedLocalePercentFromStringIsNotValid(Message3.Message3) || GetAlreadyAddedInTable(Jsonname, Message3.Message3))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message3.Message3);
+        //                }
+        //            }
+        //        }
+        //        if (message4)
+        //        {
+        //            foreach (RPGMakerMVjsonMessage4 Message4 in JsonConvert.DeserializeObject<List<RPGMakerMVjsonMessage4>>(jsondata))
+        //            {
+        //                if (Message4 == null || string.IsNullOrEmpty(Message4.Message4) || SelectedLocalePercentFromStringIsNotValid(Message4.Message4) || GetAlreadyAddedInTable(Jsonname, Message4.Message4))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message4.Message4);
+        //                }
+        //            }
+        //        }
+        //        if (nickname)
+        //        {
+        //            foreach (RPGMakerMVjsonNickname Nickname in JsonConvert.DeserializeObject<List<RPGMakerMVjsonNickname>>(jsondata))
+        //            {
+        //                if (Nickname == null || string.IsNullOrEmpty(Nickname.Nickname) || SelectedLocalePercentFromStringIsNotValid(Nickname.Nickname) || GetAlreadyAddedInTable(Jsonname, Nickname.Nickname))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Nickname.Nickname);
+        //                }
+        //            }
+        //        }
+        //        if (profile)
+        //        {
+        //            foreach (RPGMakerMVjsonProfile Profile in JsonConvert.DeserializeObject<List<RPGMakerMVjsonProfile>>(jsondata))
+        //            {
+        //                if (Profile == null || string.IsNullOrEmpty(Profile.Profile) || SelectedLocalePercentFromStringIsNotValid(Profile.Profile) || GetAlreadyAddedInTable(Jsonname, Profile.Profile))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Profile.Profile);
+        //                }
+        //            }
+        //        }
+
+        //        if (cmnevents)
+        //        {
+        //            //info RPG Maker MV Event codes
+        //            //https://forums.rpgmakerweb.com/index.php?threads/extract-events-to-text-file.17444/
+        //            //https://forums.rpgmakerweb.com/index.php?threads/cross-reference-tool.72563/
+        //            //https://pastebin.com/JyRTdq0b
+        //            //https://pastebin.com/eJx0EvXB
+        //            //    case 401 : return 'Show Text';              break;
+        //            //    case 102 : return 'Show Choices';           break;
+        //            //    case 103 : return 'Input Number';           break;
+        //            //    case 104 : return 'Select Item';            break;
+        //            //    case 405 : return 'Show Scrolling Text';    break;
+        //            //    case 111 : return 'Conditional Branch';     break;
+        //            //    case 119 : return 'Common Event';           break;
+        //            //    case 121 : return 'Control Switches';       break;
+        //            //    case 122 : return 'Control Variables';      break;
+        //            //    case 125 : return 'Change Gold';            break;
+        //            //    case 126 : return 'Change Items';           break;
+        //            //    case 127 : return 'Change Weapons';         break;
+        //            //    case 128 : return 'Change Armors';          break;
+        //            //    case 129 : return 'Change Party Member';    break;
+        //            //    case 201 : return 'Transfer Player';        break;
+        //            //    case 202 : return 'Set Vehicle Location';   break;
+        //            //    case 203 : return 'Set Event Location';     break;
+        //            //    case 505 : return 'Set Movement Route';     break;
+        //            //    case 212 : return 'Show Animation';         break;
+        //            //    case 231 : return 'Show Picture';           break;
+        //            //    case 232 : return 'Move Picture';           break;
+        //            //    case 285 : return 'Get Location Info';      break;
+        //            //    case 301 : return 'Battle Processing';      break;
+        //            //    case 302 :
+        //            //    case 605 : return 'Shop Processing';        break;
+        //            //    case 303 : return 'Name Input Processing';  break;
+        //            //    case 311 : return 'Change HP';              break;
+        //            //    case 312 : return 'Change MP';              break;
+        //            //    case 326 : return 'Change TP';              break;
+        //            //    case 313 : return 'Change State';           break;
+        //            //    case 314 : return 'Recover All';            break;
+        //            //    case 315 : return 'Change EXP';             break;
+        //            //    case 316 : return 'Change Level';           break;
+        //            //    case 317 : return 'Change Parameter';       break;
+        //            //    case 318 : return 'Change Skill';           break;
+        //            //    case 319 : return 'Change Equipment';       break;
+        //            //    case 320 : return 'Change Name';            break;
+        //            //    case 321 : return 'Change Class';           break;
+        //            //    case 322 : return 'Change Actor Images';    break;
+        //            //    case 324 : return 'Change Nickname';        break;
+        //            //    case 325 : return 'Change Profile';         break;
+        //            //    case 331 : return 'Change Enemy HP';        break;
+        //            //    case 332 : return 'Change Enemy MP';        break;
+        //            //    case 342 : return 'Change Enemy TP';        break;
+        //            //    case 333 : return 'Change Enemy State';     break;
+        //            //    case 336 : return 'Enemy Transform';        break;
+        //            //    case 337 : return 'Show Battle Animation';  break;
+        //            //    case 339 : return 'Force Action';           break;
+        //            //
+        //            //Will be handled:
+        //            //401 - Show text (mergeable)
+        //            //102 - Show choices (Choices list)
+        //            //402 - Choice for choices - ignore because already in 102
+        //            //405 - Show Scrolling Text (mergeable)
+        //            //108 and 408 - Comment - can be ignored because it is for dev suppose
+        //            //normal example about command values adding: https://galvs-scripts.com/galvs-party-select/
+
+
+        //            //var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
+        //            var commoneventsdata = RpgMakerMVjsonCommonEvents.FromJson(jsondata);
+
+        //            for (int i = 1; i < commoneventsdata.Count; i++)
+        //            {
+        //                //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
+
+        //                //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
+        //                //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
+
+        //                string eventname = commoneventsdata[i].Name;
+        //                if (string.IsNullOrEmpty(eventname) || GetAlreadyAddedInTable(Jsonname, eventname))
+        //                {
+        //                }
+        //                else //if code not equal old code and newline is not empty
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(eventname); //add event name to new row
+        //                }
+
+        //                string newline = "";
+        //                //int commandcode;
+        //                //int commandoldcode = 999999;
+        //                bool textaddingstarted = false;
+
+
+        //                int CommandsCount = commoneventsdata[i].List.Count;
+        //                for (int c = 0; c < CommandsCount; c++)
+        //                {
+        //                    if (textaddingstarted)
+        //                    {
+        //                        if (commoneventsdata[i].List[c].Code == 401 || commoneventsdata[i].List[c].Code == 405)
+        //                        {
+        //                            newline += commoneventsdata[i].List[c].Parameters[0];
+
+        //                            if (c < CommandsCount - 1 && commoneventsdata[i].List[c].Code == commoneventsdata[i].List[c + 1].Code)
+        //                            {
+        //                                newline += "\r\n";
+        //                            }
+        //                            else
+        //                            {
+        //                                if (string.IsNullOrEmpty(newline))
+        //                                {
+        //                                    if (textaddingstarted)
+        //                                    {
+        //                                        //THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted is true and newline is empty\r\n";
+        //                                        textaddingstarted = false;
+        //                                    }
+        //                                }
+        //                                else //if code not equal old code and newline is not empty
+        //                                {
+        //                                    if (GetAlreadyAddedInTable(Jsonname, newline))
+        //                                    {
+        //                                        //THLog += DateTime.Now + " >>: Code 401/405 newline already in table=\"" + newline + "\"\r\n";
+        //                                        newline = ""; //clear text data
+        //                                        if (textaddingstarted)
+        //                                        {
+        //                                            textaddingstarted = false;
+        //                                        }
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        //THLog += DateTime.Now + " >>: Code 401/405 textaddingstarted=true added newline=\"" + newline + "\"\r\n";
+        //                                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(newline); //Save text to new row
+        //                                        newline = ""; //clear text data
+        //                                        textaddingstarted = false;
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                    else if (commoneventsdata[i].List[c].Code == 101 || commoneventsdata[i].List[c].Code == 105)
+        //                    {
+        //                        if (string.IsNullOrEmpty(newline))
+        //                        {
+        //                            if (textaddingstarted)
+        //                            {
+        //                                //THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline is empty\r\n";
+        //                                textaddingstarted = false;
+        //                            }
+        //                        }
+        //                        else //if code not equal old code and newline is not empty
+        //                        {
+        //                            if (GetAlreadyAddedInTable(Jsonname, newline))
+        //                            {
+        //                                if (textaddingstarted)
+        //                                {
+        //                                    //THLog += DateTime.Now + " >>: Code 101/105 textaddingstarted is true and newline already in table=\"" + newline + "\"\r\n";
+        //                                    textaddingstarted = false;
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                //THLog += DateTime.Now + " >>: Code 101/105 newline is not empty=\"" + newline + "\"\r\n";
+        //                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(newline); //Save text to new row
+        //                                newline = ""; //clear text data
+        //                                textaddingstarted = false;
+        //                            }
+        //                        }
+
+        //                        textaddingstarted = true;
+        //                    }
+        //                    else if (commoneventsdata[i].List[c].Code == 102)
+        //                    {
+        //                        JArray choices = JArray.Parse(commoneventsdata[i].List[c].Parameters[0].ToString());
+
+        //                        foreach (var choice in choices)
+        //                        {
+        //                            string schoice = choice.ToString();
+        //                            if (string.IsNullOrEmpty(schoice))
+        //                            {
+        //                                if (textaddingstarted)
+        //                                {
+        //                                    //THLog += DateTime.Now + " >>: Code 102 textaddingstarted is true and schoice is empty\r\n";
+        //                                    textaddingstarted = false;
+        //                                }
+        //                            }
+        //                            else //if code not equal old code and newline is not empty
+        //                            {
+        //                                if (GetAlreadyAddedInTable(Jsonname, schoice))
+        //                                {
+        //                                    //THLog += DateTime.Now + " >>: Code 102 newline already in table=\"" + newline + "\"\r\n";
+        //                                    if (textaddingstarted)
+        //                                    {
+        //                                        //THLog += DateTime.Now + " >>: Code 102 newline already in table and also textaddingstarted is true , set false\r\n";
+        //                                        textaddingstarted = false;
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    //THLog += DateTime.Now + " >>: Code 102 added schoice=\"" + schoice + "\"\r\n";
+        //                                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(schoice); //Save text to new row
+        //                                    if (string.IsNullOrEmpty(newline))
+        //                                    {
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        //THLog += DateTime.Now + " >>: Code 102 added schoice and also newline is not empty, set empty\r\n";
+        //                                        newline = ""; //clear text data
+        //                                    }
+        //                                    if (textaddingstarted)
+        //                                    {
+        //                                        //THLog += DateTime.Now + " >>: Code 102 added schoice and also textaddingstarted is true , set false\r\n";
+        //                                        textaddingstarted = false;
+        //                                    }
+        //                                }
+
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+        //                //THLog = "";
+        //            }
+
+        //        }
+        //        if (maps)
+        //        {
+        //            //bool eventsdone = false;
+        //            //bool geteventnamenotedone = false;
+
+        //            var map = JsonConvert.DeserializeObject<RPGMakerMVjsonMap>(jsondata);
+
+        //            if (map.Events.Length > 1) //first event is empty
+        //            {
+        //                //Map displayed name
+        //                if (string.IsNullOrEmpty(map.DisplayName) || SelectedLocalePercentFromStringIsNotValid(map.DisplayName) || GetAlreadyAddedInTable(Jsonname, map.DisplayName))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    //MessageBox.Show("map.DisplayName:" + map.DisplayName);
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(map.DisplayName);
+        //                }
+        //                //Map note
+        //                if (string.IsNullOrEmpty(map.Note) || SelectedLocalePercentFromStringIsNotValid(map.Note) || GetAlreadyAddedInTable(Jsonname, map.Note))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    //MessageBox.Show("map.Note:" + map.Note);
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(map.Note);
+        //                }
+
+        //                //string prevval = "";
+        //                foreach (RPGMakerMVjsonMapEvent ev in map.Events)
+        //                {
+        //                    if (ev == null)
+        //                    {
+        //                    }
+        //                    else
+        //                    {
+        //                        //event name
+        //                        if (string.IsNullOrEmpty(ev.Name) || ev.Name.StartsWith("EV") || SelectedLocalePercentFromStringIsNotValid(ev.Name) || GetAlreadyAddedInTable(Jsonname, ev.Name))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            //MessageBox.Show("map.Events add name"+ ev.Name);
+        //                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(ev.Name);
+        //                            //prevval = ev.Name;
+        //                        }
+        //                        //event note
+        //                        if (string.IsNullOrEmpty(ev.Note) || SelectedLocalePercentFromStringIsNotValid(ev.Note) || GetAlreadyAddedInTable(Jsonname, ev.Note))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            //MessageBox.Show("map.Events add note:" + ev.Note);
+        //                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(ev.Note);
+        //                        }
+
+        //                        //event parameters
+        //                        foreach (RPGMakerMVjsonMapPage page in ev.Pages)
+        //                        {
+        //                            foreach (RPGMakerMVjsonMapPageList lst in page.List)
+        //                            {
+        //                                foreach (var parameter in lst.Parameters)
+        //                                {
+        //                                    if (parameter == null)
+        //                                    {
+
+        //                                    }
+        //                                    else if (parameter.GetType().Name == "String")
+        //                                    {
+        //                                        string pstring = parameter.ToString();
+        //                                        if (string.IsNullOrEmpty(pstring) || HasNOJPcharacters(pstring) || SelectedLocalePercentFromStringIsNotValid(pstring) || GetAlreadyAddedInTable(Jsonname, pstring))
+        //                                        {
+
+        //                                        }
+        //                                        else
+        //                                        {
+        //                                            THFilesElementsDataset.Tables[Jsonname].Rows.Add(pstring);
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (system)
+        //        {
+        //            //новые классы сгенерированы через этот сервис: https://app.quicktype.io/#l=cs&r=json2csharp
+        //            var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
+
+        //            //var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
+
+        //            THFilesElementsDataset.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
+
+        //            if (systemdata.ArmorTypes == null || systemdata.ArmorTypes.Length < 1)
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                foreach (string armortype in systemdata.ArmorTypes)
+        //                {
+        //                    if (string.IsNullOrEmpty(armortype))
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(armortype);
+        //                    }
+        //                }
+        //            }
+        //            if (systemdata.Elements == null || systemdata.Elements.Length < 1)
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                foreach (string element in systemdata.Elements)
+        //                {
+        //                    if (string.IsNullOrEmpty(element))
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(element);
+        //                    }
+        //                }
+        //            }
+        //            if (systemdata.EquipTypes == null || systemdata.EquipTypes.Length < 1)
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                foreach (string equipType in systemdata.EquipTypes)
+        //                {
+        //                    if (string.IsNullOrEmpty(equipType))
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(equipType);
+        //                    }
+        //                }
+        //            }
+        //            if (systemdata.skillTypes == null || systemdata.skillTypes.Length < 1)
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                foreach (string skillType in systemdata.skillTypes)
+        //                {
+        //                    if (string.IsNullOrEmpty(skillType))
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(skillType);
+        //                    }
+        //                }
+        //            }
+        //            if (systemdata.Switches == null || systemdata.Switches.Length < 1)
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                foreach (string _switch in systemdata.Switches)
+        //                {
+        //                    if (string.IsNullOrEmpty(_switch))
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(_switch);
+        //                    }
+        //                }
+        //            }
+        //            if (systemdata.Switches == null || systemdata.Switches.Length < 1)
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                foreach (string _switch in systemdata.Switches)
+        //                {
+        //                    if (string.IsNullOrEmpty(_switch))
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(_switch);
+        //                    }
+        //                }
+        //            }
+        //            if (systemdata.WeaponTypes == null || systemdata.WeaponTypes.Length < 1)
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                foreach (string weaponType in systemdata.WeaponTypes)
+        //                {
+        //                    if (string.IsNullOrEmpty(weaponType))
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(weaponType);
+        //                    }
+        //                }
+        //            }
+        //            if (systemdata.Terms == null)
+        //            {
+
+        //            }
+        //            else
+        //            {
+        //                foreach (var basic in systemdata.Terms.Basic)
+        //                {
+        //                    if (string.IsNullOrEmpty(basic))
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(basic);
+        //                    }
+        //                }
+        //                foreach (var command in systemdata.Terms.Commands)
+        //                {
+        //                    if (string.IsNullOrEmpty(command))
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(command);
+        //                    }
+        //                }
+
+        //                foreach (string param in systemdata.Terms.Params)
+        //                {
+        //                    if (string.IsNullOrEmpty(param))
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+        //                        THFilesElementsDataset.Tables[Jsonname].Rows.Add(param);
+        //                    }
+        //                }
+
+        //                foreach (var Message in systemdata.Terms.Messages)
+        //                {
+        //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message.Value);
+        //                }
+        //            }
+        //            //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+        //            //THLog = "";
+        //        }
+
+
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        FileWriter.WriteData(apppath + "\\TranslationHelper.log", ex.Message, true);
+        //        return false;
+        //    }
+        //}
+
 
         public bool GetAlreadyAddedInTable(string tablename, string value)
         {
@@ -3583,746 +3404,746 @@ namespace TranslationHelper
             //TestSaveGetDataFromRPGMakerMVjsonActors("Actors", jsondata);
             //string jsondata = File.ReadAllText(@"C:\\000 test RPGMaker MV data\\CommonEvents.json"); // get json data
             //TestSaveGetDataFromRPGMakerMVjsonCommonEvents("CommonEvents", jsondata);
-            WriteJson("CommonEvents", @"C:\\000 test RPGMaker MV data\\CommonEvents.json");
+            //WriteJson("CommonEvents", @"C:\\000 test RPGMaker MV data\\CommonEvents.json");
         }
 
-        private string TestSaveGetDataFromRPGMakerMVjsonOfType(string Jsonname, string JsonElement)
-        {
-            if (string.IsNullOrEmpty(JsonElement) || SelectedLocalePercentFromStringIsNotValid(JsonElement))
-            {
-            }
-            else
-            {
-                for (int i = 0; i < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i++)
-                {
-                    if (THFilesElementsDataset.Tables[Jsonname].Rows[i][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString()))
-                    {
+        //private string TestSaveGetDataFromRPGMakerMVjsonOfType(string Jsonname, string JsonElement)
+        //{
+        //    if (string.IsNullOrEmpty(JsonElement) || SelectedLocalePercentFromStringIsNotValid(JsonElement))
+        //    {
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i++)
+        //        {
+        //            if (THFilesElementsDataset.Tables[Jsonname].Rows[i][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString()))
+        //            {
 
-                    }
-                    else
-                    {
-                        if (JsonElement == THFilesElementsDataset.Tables[Jsonname].Rows[i][0].ToString())
-                        {
-                            return THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString();
-                        }
-                    }
-                }
-                //THFilesElementsDataset.Tables[Jsonname].Rows[i][1];
-                //THFilesElementsDataset.Tables[Jsonname].Rows.Add(JsonElement);
-            }
-            return string.Empty;
-        }
+        //            }
+        //            else
+        //            {
+        //                if (JsonElement == THFilesElementsDataset.Tables[Jsonname].Rows[i][0].ToString())
+        //                {
+        //                    return THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString();
+        //                }
+        //            }
+        //        }
+        //        //THFilesElementsDataset.Tables[Jsonname].Rows[i][1];
+        //        //THFilesElementsDataset.Tables[Jsonname].Rows.Add(JsonElement);
+        //    }
+        //    return string.Empty;
+        //}
 
-        private bool TestSaveGetDataFromRPGMakerMVjsonItemsArmorsWeapons(string Jsonname, string jsondata)
-        {
-            try
-            {
-                var testjsonforwrite = JsonConvert.DeserializeObject<List<RPGMakerMVjsonItemsArmorsWeapons>>(jsondata);
-                foreach (var JsonElement in testjsonforwrite)
-                {
-                    if (JsonElement == null)
-                    {
-                    }
-                    else
-                    {
-                        string Name = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
-                        if (string.IsNullOrEmpty(Name))
-                        {
-                        }
-                        else
-                        {
-                            JsonElement.Name = Name;
-                        }
-                        string Description = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Description);
-                        if (string.IsNullOrEmpty(Description))
-                        {
-                        }
-                        else
-                        {
-                            JsonElement.Description = Description;
-                        }
-                        string Note = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
-                        if (string.IsNullOrEmpty(Note))
-                        {
-                        }
-                        else
-                        {
-                            JsonElement.Note = Note;
-                        }
-                    }
-                }
+        //private bool TestSaveGetDataFromRPGMakerMVjsonItemsArmorsWeapons(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        var testjsonforwrite = JsonConvert.DeserializeObject<List<RPGMakerMVjsonItemsArmorsWeapons>>(jsondata);
+        //        foreach (var JsonElement in testjsonforwrite)
+        //        {
+        //            if (JsonElement == null)
+        //            {
+        //            }
+        //            else
+        //            {
+        //                string Name = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
+        //                if (string.IsNullOrEmpty(Name))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    JsonElement.Name = Name;
+        //                }
+        //                string Description = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Description);
+        //                if (string.IsNullOrEmpty(Description))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    JsonElement.Description = Description;
+        //                }
+        //                string Note = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
+        //                if (string.IsNullOrEmpty(Note))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    JsonElement.Note = Note;
+        //                }
+        //            }
+        //        }
 
-                string s = JsonConvert.SerializeObject(testjsonforwrite);
-                File.WriteAllText(@"C:\\000 test RPGMaker MV data\\Armors1.json", s);
-                MessageBox.Show("test write finished");
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //        string s = JsonConvert.SerializeObject(testjsonforwrite);
+        //        File.WriteAllText(@"C:\\000 test RPGMaker MV data\\Armors1.json", s);
+        //        MessageBox.Show("test write finished");
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        private bool TestSaveGetDataFromRPGMakerMVjsonSystem(string Jsonname, string jsondata)
-        {
-            try
-            {
-                //новые классы сгенерированы через этот сервис: https://app.quicktype.io/#l=cs&r=json2csharp
-                var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
+        //private bool TestSaveGetDataFromRPGMakerMVjsonSystem(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        //новые классы сгенерированы через этот сервис: https://app.quicktype.io/#l=cs&r=json2csharp
+        //        var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
 
-                //var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
+        //        //var systemdata = JsonConvert.DeserializeObject<RPGMakerMVjsonSystem>(jsondata);
 
-                if (systemdata.GameTitle == null || string.IsNullOrEmpty(systemdata.GameTitle))
-                {
-                }
-                else
-                {
-                    for (int i = 0; i < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i++)
-                    {
-                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString()))
-                        {
-                        }
-                        else
-                        {
-                            if (systemdata.GameTitle == THFilesElementsDataset.Tables[Jsonname].Rows[i][0].ToString())
-                            {
-                                systemdata.GameTitle = THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString();
-                                break;
-                            }
-                        }
-                    }
-                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
-                }
+        //        if (systemdata.GameTitle == null || string.IsNullOrEmpty(systemdata.GameTitle))
+        //        {
+        //        }
+        //        else
+        //        {
+        //            for (int i = 0; i < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i++)
+        //            {
+        //                if (THFilesElementsDataset.Tables[Jsonname].Rows[i][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString()))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    if (systemdata.GameTitle == THFilesElementsDataset.Tables[Jsonname].Rows[i][0].ToString())
+        //                    {
+        //                        systemdata.GameTitle = THFilesElementsDataset.Tables[Jsonname].Rows[i][1].ToString();
+        //                        break;
+        //                    }
+        //                }
+        //            }
+        //            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(systemdata.GameTitle);
+        //        }
 
-                if (systemdata.ArmorTypes == null || systemdata.ArmorTypes.Length < 1)
-                {
-                }
-                else
-                {
-                    for (int i = 0; i < systemdata.ArmorTypes.Length; i++)
-                    {
-                        if (string.IsNullOrEmpty(systemdata.ArmorTypes[i]))
-                        {
+        //        if (systemdata.ArmorTypes == null || systemdata.ArmorTypes.Length < 1)
+        //        {
+        //        }
+        //        else
+        //        {
+        //            for (int i = 0; i < systemdata.ArmorTypes.Length; i++)
+        //            {
+        //                if (string.IsNullOrEmpty(systemdata.ArmorTypes[i]))
+        //                {
 
-                        }
-                        else
-                        {
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (systemdata.ArmorTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                    {
-                                        systemdata.ArmorTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(armortype);
-                        }
-                    }
-                }
-                if (systemdata.Elements == null || systemdata.Elements.Length < 1)
-                {
+        //                }
+        //                else
+        //                {
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (systemdata.ArmorTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                            {
+        //                                systemdata.ArmorTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(armortype);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.Elements == null || systemdata.Elements.Length < 1)
+        //        {
 
-                }
-                else
-                {
-                    for (int i=0;i< systemdata.Elements.Length;i++)
-                    {
-                        if (string.IsNullOrEmpty(systemdata.Elements[i]))
-                        {
+        //        }
+        //        else
+        //        {
+        //            for (int i=0;i< systemdata.Elements.Length;i++)
+        //            {
+        //                if (string.IsNullOrEmpty(systemdata.Elements[i]))
+        //                {
 
-                        }
-                        else
-                        {
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (systemdata.Elements[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                    {
-                                        systemdata.Elements[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(element);
-                        }
-                    }
-                }
-                if (systemdata.EquipTypes == null || systemdata.EquipTypes.Length < 1)
-                {
-                }
-                else
-                {
-                    for (int i=0;i< systemdata.EquipTypes.Length;i++)
-                    {
-                        if (string.IsNullOrEmpty(systemdata.EquipTypes[i]))
-                        {
-                        }
-                        else
-                        {
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (systemdata.EquipTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                    {
-                                        systemdata.EquipTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(equipType);
-                        }
-                    }
-                }
-                if (systemdata.skillTypes == null || systemdata.skillTypes.Length < 1)
-                {
-                }
-                else
-                {
-                    for (int i=0; i< systemdata.skillTypes.Length; i++)
-                    {
-                        if (string.IsNullOrEmpty(systemdata.skillTypes[i]))
-                        {
-                        }
-                        else
-                        {
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (systemdata.skillTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                    {
-                                        systemdata.skillTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(skillType);
-                        }
-                    }
-                }
-                if (systemdata.Switches == null || systemdata.Switches.Length < 1)
-                {
-                }
-                else
-                {
-                    for (int i=0;i< systemdata.Switches.Length;i++)
-                    {
-                        if (string.IsNullOrEmpty(systemdata.Switches[i]))
-                        {
-                        }
-                        else
-                        {
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (systemdata.Switches[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                    {
-                                        systemdata.Switches[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(_switch);
-                        }
-                    }
-                }
-                if (systemdata.WeaponTypes == null || systemdata.WeaponTypes.Length < 1)
-                {
-                }
-                else
-                {
-                    for (int i=0;i< systemdata.WeaponTypes.Length;i++)
-                    {
-                        if (string.IsNullOrEmpty(systemdata.WeaponTypes[i]))
-                        {
-                        }
-                        else
-                        {
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (systemdata.WeaponTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                    {
-                                        systemdata.WeaponTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(weaponType);
-                        }
-                    }
-                }
-                if (systemdata.Terms == null)
-                {
-                }
-                else
-                {
-                    for (int i=0;i< systemdata.Terms.Basic.Length;i++)
-                    {
-                        if (string.IsNullOrEmpty(systemdata.Terms.Basic[i]))
-                        {
-                        }
-                        else
-                        {
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (systemdata.Terms.Basic[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                    {
-                                        systemdata.Terms.Basic[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(basic);
-                        }
-                    }
-                    for (int i=0;i< systemdata.Terms.Commands.Length;i++)
-                    {
-                        if (string.IsNullOrEmpty(systemdata.Terms.Commands[i]))
-                        {
-                        }
-                        else
-                        {
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (systemdata.Terms.Commands[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                    {
-                                        systemdata.Terms.Commands[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(command);
-                        }
-                    }
+        //                }
+        //                else
+        //                {
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (systemdata.Elements[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                            {
+        //                                systemdata.Elements[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(element);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.EquipTypes == null || systemdata.EquipTypes.Length < 1)
+        //        {
+        //        }
+        //        else
+        //        {
+        //            for (int i=0;i< systemdata.EquipTypes.Length;i++)
+        //            {
+        //                if (string.IsNullOrEmpty(systemdata.EquipTypes[i]))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (systemdata.EquipTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                            {
+        //                                systemdata.EquipTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(equipType);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.skillTypes == null || systemdata.skillTypes.Length < 1)
+        //        {
+        //        }
+        //        else
+        //        {
+        //            for (int i=0; i< systemdata.skillTypes.Length; i++)
+        //            {
+        //                if (string.IsNullOrEmpty(systemdata.skillTypes[i]))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (systemdata.skillTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                            {
+        //                                systemdata.skillTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(skillType);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.Switches == null || systemdata.Switches.Length < 1)
+        //        {
+        //        }
+        //        else
+        //        {
+        //            for (int i=0;i< systemdata.Switches.Length;i++)
+        //            {
+        //                if (string.IsNullOrEmpty(systemdata.Switches[i]))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (systemdata.Switches[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                            {
+        //                                systemdata.Switches[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(_switch);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.WeaponTypes == null || systemdata.WeaponTypes.Length < 1)
+        //        {
+        //        }
+        //        else
+        //        {
+        //            for (int i=0;i< systemdata.WeaponTypes.Length;i++)
+        //            {
+        //                if (string.IsNullOrEmpty(systemdata.WeaponTypes[i]))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (systemdata.WeaponTypes[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                            {
+        //                                systemdata.WeaponTypes[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(weaponType);
+        //                }
+        //            }
+        //        }
+        //        if (systemdata.Terms == null)
+        //        {
+        //        }
+        //        else
+        //        {
+        //            for (int i=0;i< systemdata.Terms.Basic.Length;i++)
+        //            {
+        //                if (string.IsNullOrEmpty(systemdata.Terms.Basic[i]))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (systemdata.Terms.Basic[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                            {
+        //                                systemdata.Terms.Basic[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(basic);
+        //                }
+        //            }
+        //            for (int i=0;i< systemdata.Terms.Commands.Length;i++)
+        //            {
+        //                if (string.IsNullOrEmpty(systemdata.Terms.Commands[i]))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (systemdata.Terms.Commands[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                            {
+        //                                systemdata.Terms.Commands[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(command);
+        //                }
+        //            }
 
-                    for (int i=0;i < systemdata.Terms.Params.Length;i++)
-                    {
-                        if (string.IsNullOrEmpty(systemdata.Terms.Params[i]))
-                        {
-                        }
-                        else
-                        {
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (systemdata.Terms.Params[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                    {
-                                        systemdata.Terms.Params[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(param);
-                        }
-                    }
+        //            for (int i=0;i < systemdata.Terms.Params.Length;i++)
+        //            {
+        //                if (string.IsNullOrEmpty(systemdata.Terms.Params[i]))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (systemdata.Terms.Params[i] == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                            {
+        //                                systemdata.Terms.Params[i] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(param);
+        //                }
+        //            }
 
-                    //http://www.cyberforum.ru/csharp-beginners/thread785914.html
-                    for (int i = 0; i < systemdata.Terms.Messages.Count; i++)
-                    {
-                        if (string.IsNullOrEmpty(systemdata.Terms.Messages.ElementAt(i).Value))
-                        {
-                        }
-                        else
-                        {
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (systemdata.Terms.Messages.ElementAt(i).Value == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                    {
-                                        systemdata.Terms.Messages[systemdata.Terms.Messages.ElementAt(i).Key] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        //THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message.Value);
-                    }
-                }
-                //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
-                //THLog = "";
+        //            //http://www.cyberforum.ru/csharp-beginners/thread785914.html
+        //            for (int i = 0; i < systemdata.Terms.Messages.Count; i++)
+        //            {
+        //                if (string.IsNullOrEmpty(systemdata.Terms.Messages.ElementAt(i).Value))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (systemdata.Terms.Messages.ElementAt(i).Value == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                            {
+        //                                systemdata.Terms.Messages[systemdata.Terms.Messages.ElementAt(i).Key] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                //THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message.Value);
+        //            }
+        //        }
+        //        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+        //        //THLog = "";
 
-                //var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
-                string s = RPGMakerMVjsonSystemTo.ToJson(systemdata);
-                File.WriteAllText(@"C:\\000 test RPGMaker MV data\\System1.json", s);
-                MessageBox.Show("test write finished");
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //        //var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
+        //        string s = RPGMakerMVjsonSystemTo.ToJson(systemdata);
+        //        File.WriteAllText(@"C:\\000 test RPGMaker MV data\\System1.json", s);
+        //        MessageBox.Show("test write finished");
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        private bool TestSaveGetDataFromRPGMakerMVjsonActors(string Jsonname, string jsondata)
-        {
-            try
-            {
-                var actors = RPGMakerMVjsonActors.FromJson(jsondata);//JsonConvert.DeserializeObject<List<RPGMakerMVjsonActors>>(jsondata)
-                foreach (var JsonElement in actors)
-                {
-                    if (JsonElement == null)
-                    {
-                    }
-                    else
-                    {
-                        string Name = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
-                        if (string.IsNullOrEmpty(Name))
-                        {
-                        }
-                        else
-                        {
-                            JsonElement.Name = Name;
-                        }
-                        string Nickname = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Nickname);
-                        if (string.IsNullOrEmpty(Nickname))
-                        {
-                        }
-                        else
-                        {
-                            JsonElement.Nickname = Nickname;
-                        }
-                        string Note = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
-                        if (string.IsNullOrEmpty(Note))
-                        {
-                        }
-                        else
-                        {
-                            JsonElement.Note = Note;
-                        }
-                        string Profile = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Profile);
-                        if (string.IsNullOrEmpty(Profile))
-                        {
-                        }
-                        else
-                        {
-                            JsonElement.Profile = Profile;
-                        }
-                    }
-                }
+        //private bool TestSaveGetDataFromRPGMakerMVjsonActors(string Jsonname, string jsondata)
+        //{
+        //    try
+        //    {
+        //        var actors = RPGMakerMVjsonActors.FromJson(jsondata);//JsonConvert.DeserializeObject<List<RPGMakerMVjsonActors>>(jsondata)
+        //        foreach (var JsonElement in actors)
+        //        {
+        //            if (JsonElement == null)
+        //            {
+        //            }
+        //            else
+        //            {
+        //                string Name = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Name);
+        //                if (string.IsNullOrEmpty(Name))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    JsonElement.Name = Name;
+        //                }
+        //                string Nickname = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Nickname);
+        //                if (string.IsNullOrEmpty(Nickname))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    JsonElement.Nickname = Nickname;
+        //                }
+        //                string Note = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Note);
+        //                if (string.IsNullOrEmpty(Note))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    JsonElement.Note = Note;
+        //                }
+        //                string Profile = TestSaveGetDataFromRPGMakerMVjsonOfType(Jsonname, JsonElement.Profile);
+        //                if (string.IsNullOrEmpty(Profile))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    JsonElement.Profile = Profile;
+        //                }
+        //            }
+        //        }
 
-                string s = RPGMakerMVjsonActorsTo.ToJson(actors);
-                File.WriteAllText(@"C:\\000 test RPGMaker MV data\\Actors1.json", s);
-                MessageBox.Show("test write finished");
+        //        string s = RPGMakerMVjsonActorsTo.ToJson(actors);
+        //        File.WriteAllText(@"C:\\000 test RPGMaker MV data\\Actors1.json", s);
+        //        MessageBox.Show("test write finished");
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        private bool TestSaveGetDataFromRPGMakerMVjsonCommonEvents(string Jsonname, string jsondata)
-        {
-            //info RPG Maker MV Event codes
-            //https://forums.rpgmakerweb.com/index.php?threads/extract-events-to-text-file.17444/
-            //https://forums.rpgmakerweb.com/index.php?threads/cross-reference-tool.72563/
-            //https://pastebin.com/JyRTdq0b
-            //https://pastebin.com/eJx0EvXB
-            //    case 401 : return 'Show Text';              break;
-            //    case 102 : return 'Show Choices';           break;
-            //    case 103 : return 'Input Number';           break;
-            //    case 104 : return 'Select Item';            break;
-            //    case 405 : return 'Show Scrolling Text';    break;
-            //    case 111 : return 'Conditional Branch';     break;
-            //    case 119 : return 'Common Event';           break;
-            //    case 121 : return 'Control Switches';       break;
-            //    case 122 : return 'Control Variables';      break;
-            //    case 125 : return 'Change Gold';            break;
-            //    case 126 : return 'Change Items';           break;
-            //    case 127 : return 'Change Weapons';         break;
-            //    case 128 : return 'Change Armors';          break;
-            //    case 129 : return 'Change Party Member';    break;
-            //    case 201 : return 'Transfer Player';        break;
-            //    case 202 : return 'Set Vehicle Location';   break;
-            //    case 203 : return 'Set Event Location';     break;
-            //    case 505 : return 'Set Movement Route';     break;
-            //    case 212 : return 'Show Animation';         break;
-            //    case 231 : return 'Show Picture';           break;
-            //    case 232 : return 'Move Picture';           break;
-            //    case 285 : return 'Get Location Info';      break;
-            //    case 301 : return 'Battle Processing';      break;
-            //    case 302 :
-            //    case 605 : return 'Shop Processing';        break;
-            //    case 303 : return 'Name Input Processing';  break;
-            //    case 311 : return 'Change HP';              break;
-            //    case 312 : return 'Change MP';              break;
-            //    case 326 : return 'Change TP';              break;
-            //    case 313 : return 'Change State';           break;
-            //    case 314 : return 'Recover All';            break;
-            //    case 315 : return 'Change EXP';             break;
-            //    case 316 : return 'Change Level';           break;
-            //    case 317 : return 'Change Parameter';       break;
-            //    case 318 : return 'Change Skill';           break;
-            //    case 319 : return 'Change Equipment';       break;
-            //    case 320 : return 'Change Name';            break;
-            //    case 321 : return 'Change Class';           break;
-            //    case 322 : return 'Change Actor Images';    break;
-            //    case 324 : return 'Change Nickname';        break;
-            //    case 325 : return 'Change Profile';         break;
-            //    case 331 : return 'Change Enemy HP';        break;
-            //    case 332 : return 'Change Enemy MP';        break;
-            //    case 342 : return 'Change Enemy TP';        break;
-            //    case 333 : return 'Change Enemy State';     break;
-            //    case 336 : return 'Enemy Transform';        break;
-            //    case 337 : return 'Show Battle Animation';  break;
-            //    case 339 : return 'Force Action';           break;
-            //
-            //Will be handled:
-            //401 - Show text (mergeable)
-            //102 - Show choices (Choices list)
-            //402 - Choice for choices - ignore because already in 102
-            //405 - Show Scrolling Text (mergeable)
-            //108 and 408 - Comment - can be ignored because it is for dev suppose
-            //normal example about command values adding: https://galvs-scripts.com/galvs-party-select/
+        //private bool TestSaveGetDataFromRPGMakerMVjsonCommonEvents(string Jsonname, string jsondata)
+        //{
+        //    //info RPG Maker MV Event codes
+        //    //https://forums.rpgmakerweb.com/index.php?threads/extract-events-to-text-file.17444/
+        //    //https://forums.rpgmakerweb.com/index.php?threads/cross-reference-tool.72563/
+        //    //https://pastebin.com/JyRTdq0b
+        //    //https://pastebin.com/eJx0EvXB
+        //    //    case 401 : return 'Show Text';              break;
+        //    //    case 102 : return 'Show Choices';           break;
+        //    //    case 103 : return 'Input Number';           break;
+        //    //    case 104 : return 'Select Item';            break;
+        //    //    case 405 : return 'Show Scrolling Text';    break;
+        //    //    case 111 : return 'Conditional Branch';     break;
+        //    //    case 119 : return 'Common Event';           break;
+        //    //    case 121 : return 'Control Switches';       break;
+        //    //    case 122 : return 'Control Variables';      break;
+        //    //    case 125 : return 'Change Gold';            break;
+        //    //    case 126 : return 'Change Items';           break;
+        //    //    case 127 : return 'Change Weapons';         break;
+        //    //    case 128 : return 'Change Armors';          break;
+        //    //    case 129 : return 'Change Party Member';    break;
+        //    //    case 201 : return 'Transfer Player';        break;
+        //    //    case 202 : return 'Set Vehicle Location';   break;
+        //    //    case 203 : return 'Set Event Location';     break;
+        //    //    case 505 : return 'Set Movement Route';     break;
+        //    //    case 212 : return 'Show Animation';         break;
+        //    //    case 231 : return 'Show Picture';           break;
+        //    //    case 232 : return 'Move Picture';           break;
+        //    //    case 285 : return 'Get Location Info';      break;
+        //    //    case 301 : return 'Battle Processing';      break;
+        //    //    case 302 :
+        //    //    case 605 : return 'Shop Processing';        break;
+        //    //    case 303 : return 'Name Input Processing';  break;
+        //    //    case 311 : return 'Change HP';              break;
+        //    //    case 312 : return 'Change MP';              break;
+        //    //    case 326 : return 'Change TP';              break;
+        //    //    case 313 : return 'Change State';           break;
+        //    //    case 314 : return 'Recover All';            break;
+        //    //    case 315 : return 'Change EXP';             break;
+        //    //    case 316 : return 'Change Level';           break;
+        //    //    case 317 : return 'Change Parameter';       break;
+        //    //    case 318 : return 'Change Skill';           break;
+        //    //    case 319 : return 'Change Equipment';       break;
+        //    //    case 320 : return 'Change Name';            break;
+        //    //    case 321 : return 'Change Class';           break;
+        //    //    case 322 : return 'Change Actor Images';    break;
+        //    //    case 324 : return 'Change Nickname';        break;
+        //    //    case 325 : return 'Change Profile';         break;
+        //    //    case 331 : return 'Change Enemy HP';        break;
+        //    //    case 332 : return 'Change Enemy MP';        break;
+        //    //    case 342 : return 'Change Enemy TP';        break;
+        //    //    case 333 : return 'Change Enemy State';     break;
+        //    //    case 336 : return 'Enemy Transform';        break;
+        //    //    case 337 : return 'Show Battle Animation';  break;
+        //    //    case 339 : return 'Force Action';           break;
+        //    //
+        //    //Will be handled:
+        //    //401 - Show text (mergeable)
+        //    //102 - Show choices (Choices list)
+        //    //402 - Choice for choices - ignore because already in 102
+        //    //405 - Show Scrolling Text (mergeable)
+        //    //108 and 408 - Comment - can be ignored because it is for dev suppose
+        //    //normal example about command values adding: https://galvs-scripts.com/galvs-party-select/
 
 
-            //var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
-            var commoneventsdata = RpgMakerMVjsonCommonEvents.FromJson(jsondata);
+        //    //var commoneventsdata = JsonConvert.DeserializeObject<List<RPGMakerMVjsonCommonEvents>>(jsondata);
+        //    var commoneventsdata = RpgMakerMVjsonCommonEvents.FromJson(jsondata);
 
-            for (int i = 1; i < commoneventsdata.Count; i++)
-            {
-                //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
+        //    for (int i = 1; i < commoneventsdata.Count; i++)
+        //    {
+        //        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
 
-                //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
-                //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
+        //        //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
+        //        //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
 
-                //string eventname = commoneventsdata[i].Name;
-                if (string.IsNullOrEmpty(commoneventsdata[i].Name))
-                {
-                }
-                else //if code not equal old code and newline is not empty
-                {
-                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                    {
-                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                        {
-                        }
-                        else
-                        {
-                            if (commoneventsdata[i].Name == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                            {
-                                commoneventsdata[i].Name = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                break;
-                            }
-                        }
-                    }
-                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(commoneventsdata[i].Name); //add event name to new row
-                }
+        //        //string eventname = commoneventsdata[i].Name;
+        //        if (string.IsNullOrEmpty(commoneventsdata[i].Name))
+        //        {
+        //        }
+        //        else //if code not equal old code and newline is not empty
+        //        {
+        //            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //            {
+        //                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    if (commoneventsdata[i].Name == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                    {
+        //                        commoneventsdata[i].Name = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                        break;
+        //                    }
+        //                }
+        //            }
+        //            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(commoneventsdata[i].Name); //add event name to new row
+        //        }
 
-                for (int c = 0; c < commoneventsdata[i].List.Count; c++)
-                {
-                    if (commoneventsdata[i].List[c].Code == 101 || commoneventsdata[i].List[c].Code == 105 || commoneventsdata[i].List[c].Code == 401 || commoneventsdata[i].List[c].Code == 405)
-                    {
-                        string parameter0value = commoneventsdata[i].List[c].Parameters[0].String;
-                        if (string.IsNullOrEmpty(parameter0value))
-                        {
-                        }
-                        else //if code not equal old code and newline is not empty
-                        {
-                            //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
+        //        for (int c = 0; c < commoneventsdata[i].List.Count; c++)
+        //        {
+        //            if (commoneventsdata[i].List[c].Code == 101 || commoneventsdata[i].List[c].Code == 105 || commoneventsdata[i].List[c].Code == 401 || commoneventsdata[i].List[c].Code == 405)
+        //            {
+        //                string parameter0value = commoneventsdata[i].List[c].Parameters[0].String;
+        //                if (string.IsNullOrEmpty(parameter0value))
+        //                {
+        //                }
+        //                else //if code not equal old code and newline is not empty
+        //                {
+        //                    //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
 
-                            for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    //Where здесь формирует новый массив из входного, из элементов входного, удовлетворяющих заданному условию
-                                    //https://stackoverflow.com/questions/1912128/filter-an-array-in-c-sharp
-                                    string[] origA = THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString().Split('\n').Where(emptyvalues => !string.IsNullOrEmpty(emptyvalues.Replace("\r", ""))).ToArray();//Все строки, кроме пустых, чтобы потом исключить из проверки
-                                    int origALength = origA.Length;
-                                    if (origALength == 0)
-                                    {
-                                        origA = new string[1];
-                                        origA[0] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString();
-                                        LogToFile("(origALength == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
-                                    }
+        //                    for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            //Where здесь формирует новый массив из входного, из элементов входного, удовлетворяющих заданному условию
+        //                            //https://stackoverflow.com/questions/1912128/filter-an-array-in-c-sharp
+        //                            string[] origA = THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString().Split('\n').Where(emptyvalues => !string.IsNullOrEmpty(emptyvalues.Replace("\r", ""))).ToArray();//Все строки, кроме пустых, чтобы потом исключить из проверки
+        //                            int origALength = origA.Length;
+        //                            if (origALength == 0)
+        //                            {
+        //                                origA = new string[1];
+        //                                origA[0] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString();
+        //                                LogToFile("(origALength == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
+        //                            }
 
-                                    if (origALength > 0)
-                                    {
-                                        string[] transA = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString().Split('\n').Where(emptyvalues => !string.IsNullOrEmpty(emptyvalues.Replace("\r", ""))).ToArray();//Все строки, кроме пустых
-                                        if (transA.Length == 0)
-                                        {
-                                            transA = new string[1];
-                                            transA[0] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                            LogToFile("(transA.Length == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString());
-                                        }
-                                        string transmerged = string.Empty;
-                                        if (transA.Length == origALength)//если количество строк в оригинале и переводе равно
-                                        {
-                                            //ничего не делать
-                                        }
-                                        else // если перевод вдруг был переведен так, что не равен количеством строк оригиналу, тогда поделить его на равные строки
-                                        {
-                                            if (transA.Length > 0) // но перед этим, если перевод больше одной строки
-                                            {
-                                                foreach (string ts in transA)
-                                                {
-                                                    transmerged += ts; // объединить все строки в одну
-                                                }
-                                            }
+        //                            if (origALength > 0)
+        //                            {
+        //                                string[] transA = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString().Split('\n').Where(emptyvalues => !string.IsNullOrEmpty(emptyvalues.Replace("\r", ""))).ToArray();//Все строки, кроме пустых
+        //                                if (transA.Length == 0)
+        //                                {
+        //                                    transA = new string[1];
+        //                                    transA[0] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                    LogToFile("(transA.Length == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString());
+        //                                }
+        //                                string transmerged = string.Empty;
+        //                                if (transA.Length == origALength)//если количество строк в оригинале и переводе равно
+        //                                {
+        //                                    //ничего не делать
+        //                                }
+        //                                else // если перевод вдруг был переведен так, что не равен количеством строк оригиналу, тогда поделить его на равные строки
+        //                                {
+        //                                    if (transA.Length > 0) // но перед этим, если перевод больше одной строки
+        //                                    {
+        //                                        foreach (string ts in transA)
+        //                                        {
+        //                                            transmerged += ts; // объединить все строки в одну
+        //                                        }
+        //                                    }
 
-                                            //Это заменил расширением Where, что выше при задании массива, пустые строки будут исключены сразу
-                                            //Проверить, есть ли в массиве хоть один пустой элемент
-                                            //https://stackoverflow.com/questions/44405411/how-can-i-check-wether-an-array-contains-any-item-or-is-completely-empty
-                                            //if (orig.Any(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", "")) ) )
-                                            //А это считает количество пустых элементов в массиве
-                                            //https://stackoverflow.com/questions/2391743/how-many-elements-of-array-are-not-null
-                                            //int ymptyelementscnt = orig.Count(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", "")));
+        //                                    //Это заменил расширением Where, что выше при задании массива, пустые строки будут исключены сразу
+        //                                    //Проверить, есть ли в массиве хоть один пустой элемент
+        //                                    //https://stackoverflow.com/questions/44405411/how-can-i-check-wether-an-array-contains-any-item-or-is-completely-empty
+        //                                    //if (orig.Any(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", "")) ) )
+        //                                    //А это считает количество пустых элементов в массиве
+        //                                    //https://stackoverflow.com/questions/2391743/how-many-elements-of-array-are-not-null
+        //                                    //int ymptyelementscnt = orig.Count(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", "")));
                                             
-                                            transA = THSplit(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
-                                        }
-                                        bool br = false; //это чтобы выйти потом из прохода по таблице и перейти к след. элементу json, если перевод был присвоен
-                                        for (int i2 = 0; i2 < origALength; i2++)
-                                        {
-                                            //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", "") + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", "")));
-                                            if (parameter0value == origA[i2].Replace("\r", "")) //Replace здесь убирает \r из за которой строки считались неравными
-                                            {
-                                                LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", "") + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", "")));
+        //                                    transA = THSplit(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
+        //                                }
+        //                                bool br = false; //это чтобы выйти потом из прохода по таблице и перейти к след. элементу json, если перевод был присвоен
+        //                                for (int i2 = 0; i2 < origALength; i2++)
+        //                                {
+        //                                    //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", "") + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", "")));
+        //                                    if (parameter0value == origA[i2].Replace("\r", "")) //Replace здесь убирает \r из за которой строки считались неравными
+        //                                    {
+        //                                        LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", "") + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", "")));
 
-                                                commoneventsdata[i].List[c].Parameters[0] = transA[i2].Replace("\r", ""); //Replace убирает \r
+        //                                        commoneventsdata[i].List[c].Parameters[0] = transA[i2].Replace("\r", ""); //Replace убирает \r
 
-                                                LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
-                                                br = true;
-                                                break;
-                                            }
-                                        }
-                                        if (br) //выход из цикла прохода по всей таблице, если значение найдено для одной из строк оригинала, и переход к следующему элементу json
-                                        {
-                                            break;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (commoneventsdata[i].List[c].Parameters[0].String == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                        {
-                                            commoneventsdata[i].List[c].Parameters[0] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if (commoneventsdata[i].List[c].Code == 102)
-                    {
-                        for (int i1 = 0; i1 < commoneventsdata[i].List[c].Parameters[0].AnythingArray.Count; i1++)
-                        {
-                            string parameter0value = commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String;
-                            if (string.IsNullOrEmpty(parameter0value))
-                            {
-                            }
-                            else //if code not equal old code and newline is not empty
-                            {
-                                for (int i2 = 0; i2 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i2++)
-                                {
-                                    if (THFilesElementsDataset.Tables[Jsonname].Rows[i2][1] == null)
-                                    {
-                                    }
-                                    else
-                                    {
-                                        string orig = THFilesElementsDataset.Tables[Jsonname].Rows[i2][0].ToString();
-                                        string trans = THFilesElementsDataset.Tables[Jsonname].Rows[i2][1].ToString();
-                                        if (string.IsNullOrEmpty(trans) || orig == trans)
-                                        {
-                                        }
-                                        else
-                                        {
-                                            //LogToFile("parameter0value=" + parameter0value+ ", orig=" + orig + ", (parameter0value == orig) is " + (parameter0value == orig));
-                                            if (parameter0value == orig)
-                                            {
-                                                LogToFile("parameter0value=" + parameter0value + ", orig=" + orig + ", (parameter0value == orig) is " + (parameter0value == orig));
+        //                                        LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
+        //                                        br = true;
+        //                                        break;
+        //                                    }
+        //                                }
+        //                                if (br) //выход из цикла прохода по всей таблице, если значение найдено для одной из строк оригинала, и переход к следующему элементу json
+        //                                {
+        //                                    break;
+        //                                }
+        //                            }
+        //                            else
+        //                            {
+        //                                if (commoneventsdata[i].List[c].Parameters[0].String == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+        //                                {
+        //                                    commoneventsdata[i].List[c].Parameters[0] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
+        //                                    break;
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            else if (commoneventsdata[i].List[c].Code == 102)
+        //            {
+        //                for (int i1 = 0; i1 < commoneventsdata[i].List[c].Parameters[0].AnythingArray.Count; i1++)
+        //                {
+        //                    string parameter0value = commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String;
+        //                    if (string.IsNullOrEmpty(parameter0value))
+        //                    {
+        //                    }
+        //                    else //if code not equal old code and newline is not empty
+        //                    {
+        //                        for (int i2 = 0; i2 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i2++)
+        //                        {
+        //                            if (THFilesElementsDataset.Tables[Jsonname].Rows[i2][1] == null)
+        //                            {
+        //                            }
+        //                            else
+        //                            {
+        //                                string orig = THFilesElementsDataset.Tables[Jsonname].Rows[i2][0].ToString();
+        //                                string trans = THFilesElementsDataset.Tables[Jsonname].Rows[i2][1].ToString();
+        //                                if (string.IsNullOrEmpty(trans) || orig == trans)
+        //                                {
+        //                                }
+        //                                else
+        //                                {
+        //                                    //LogToFile("parameter0value=" + parameter0value+ ", orig=" + orig + ", (parameter0value == orig) is " + (parameter0value == orig));
+        //                                    if (parameter0value == orig)
+        //                                    {
+        //                                        LogToFile("parameter0value=" + parameter0value + ", orig=" + orig + ", (parameter0value == orig) is " + (parameter0value == orig));
 
-                                                commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1] = trans;
-                                                LogToFile("commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1]=" + commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String+ ", trans"+ trans);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                                //THFilesElementsDataset.Tables[Jsonname].Rows.Add(commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String); //Save text to new row
-                            }
-                        }
-                    }
-                    else if (commoneventsdata[i].List[c].Code == 402)
-                    {
-                        if (string.IsNullOrEmpty(commoneventsdata[i].List[c].Parameters[1].String))
-                        {
-                        }
-                        else //if code not equal old code and newline is not empty
-                        {
-                            for (int i2 = 0; i2 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i2++)
-                            {
-                                if (THFilesElementsDataset.Tables[Jsonname].Rows[i2][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i2][1].ToString()))
-                                {
-                                }
-                                else
-                                {
-                                    if (commoneventsdata[i].List[c].Parameters[1].String == THFilesElementsDataset.Tables[Jsonname].Rows[i2][0].ToString())
-                                    {
-                                        commoneventsdata[i].List[c].Parameters[1] = THFilesElementsDataset.Tables[Jsonname].Rows[i2][1].ToString();
-                                        break;
-                                    }
-                                }
-                            }
-                            //THFilesElementsDataset.Tables[Jsonname].Rows.Add(commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String); //Save text to new row
-                        }
-                    }
-                }
-            }
-            LogToFile("", true);
-            string s = RpgMakerMVjsonCommonEventsTo.ToJson(commoneventsdata);
-            File.WriteAllText(@"C:\\000 test RPGMaker MV data\\" + Jsonname + "1.json", s);
-            MessageBox.Show("test write finished");
+        //                                        commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1] = trans;
+        //                                        LogToFile("commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1]=" + commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String+ ", trans"+ trans);
+        //                                        break;
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                        //THFilesElementsDataset.Tables[Jsonname].Rows.Add(commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String); //Save text to new row
+        //                    }
+        //                }
+        //            }
+        //            else if (commoneventsdata[i].List[c].Code == 402)
+        //            {
+        //                if (string.IsNullOrEmpty(commoneventsdata[i].List[c].Parameters[1].String))
+        //                {
+        //                }
+        //                else //if code not equal old code and newline is not empty
+        //                {
+        //                    for (int i2 = 0; i2 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i2++)
+        //                    {
+        //                        if (THFilesElementsDataset.Tables[Jsonname].Rows[i2][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i2][1].ToString()))
+        //                        {
+        //                        }
+        //                        else
+        //                        {
+        //                            if (commoneventsdata[i].List[c].Parameters[1].String == THFilesElementsDataset.Tables[Jsonname].Rows[i2][0].ToString())
+        //                            {
+        //                                commoneventsdata[i].List[c].Parameters[1] = THFilesElementsDataset.Tables[Jsonname].Rows[i2][1].ToString();
+        //                                break;
+        //                            }
+        //                        }
+        //                    }
+        //                    //THFilesElementsDataset.Tables[Jsonname].Rows.Add(commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String); //Save text to new row
+        //                }
+        //            }
+        //        }
+        //    }
+        //    LogToFile("", true);
+        //    string s = RpgMakerMVjsonCommonEventsTo.ToJson(commoneventsdata);
+        //    File.WriteAllText(@"C:\\000 test RPGMaker MV data\\" + Jsonname + "1.json", s);
+        //    MessageBox.Show("test write finished");
 
-            return true;
-        }
+        //    return true;
+        //}
 
         //split string to several with equal lenght //работает криво, выдает результат "te" и "st" вместо "test1" и "test2" для "test1test2"
         //https://stackoverflow.com/questions/1450774/splitting-a-string-into-chunks-of-a-certain-size
@@ -4365,14 +4186,14 @@ namespace TranslationHelper
 
         private void TestSplitToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            string[] s = THSplit("test1test2ddd", 3);
-            string infoabouts = "";
-            for (int i = 0;i< s.Length; i++)
-            {
-                infoabouts += ", s[" + i + "]=" + s[i];
-            }
+            //string[] s = THSplit("test1test2ddd", 3);
+            //string infoabouts = "";
+            //for (int i = 0;i< s.Length; i++)
+            //{
+            //    infoabouts += ", s[" + i + "]=" + s[i];
+            //}
 
-            THMsg.Show("s.Length=" + s.Length + infoabouts);
+            //THMsg.Show("s.Length=" + s.Length + infoabouts);
         }
 
         private bool GetAnyFileWithTheNameExist(string name)
@@ -4548,18 +4369,6 @@ namespace TranslationHelper
                 //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
         private bool WriteJson(string Jsonname, string sPath)
         {

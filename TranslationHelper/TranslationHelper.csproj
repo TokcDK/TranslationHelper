@@ -69,22 +69,20 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GoogleAPI.cs" />
-    <Compile Include="ControlHelper.cs" />
+    <Compile Include="ExternalAdditions\GoogleAPI.cs" />
+    <Compile Include="ExternalAdditions\ControlHelper.cs" />
     <Compile Include="MessageForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MessageForm.Designer.cs">
       <DependentUpon>MessageForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReadJson.cs" />
-    <Compile Include="RPGMakerMVjsonActors.cs" />
-    <Compile Include="RPGMakerMVjsonCommonEvents.cs" />
-    <Compile Include="FileWriter.cs" />
-    <Compile Include="IniFiles.cs" />
-    <Compile Include="RPGMakerMVjson.cs" />
-    <Compile Include="RPGMakerMVjsonSystem.cs" />
-    <Compile Include="RPGMakerMVSave.cs" />
+    <Compile Include="Old elements\RPGMakerMVjsonActors.cs" />
+    <Compile Include="Old elements\RPGMakerMVjsonCommonEvents.cs" />
+    <Compile Include="ExternalAdditions\FileWriter.cs" />
+    <Compile Include="ExternalAdditions\IniFiles.cs" />
+    <Compile Include="Old elements\RPGMakerMVjson.cs" />
+    <Compile Include="Old elements\RPGMakerMVjsonSystem.cs" />
     <Compile Include="THLoadingForm.cs">
       <SubType>Form</SubType>
     </Compile>
