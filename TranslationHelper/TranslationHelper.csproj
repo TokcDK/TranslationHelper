@@ -69,6 +69,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeepL.cs" />
     <Compile Include="ExternalAdditions\GoogleAPI.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
     <Compile Include="MessageForm.cs">

@@ -51,12 +51,13 @@
             // 
             this.THMessageFormInfoLinkLabel.AutoSize = true;
             this.THMessageFormInfoLinkLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.THMessageFormInfoLinkLabel.Location = new System.Drawing.Point(24, 122);
+            this.THMessageFormInfoLinkLabel.Location = new System.Drawing.Point(29, 122);
             this.THMessageFormInfoLinkLabel.Name = "THMessageFormInfoLinkLabel";
             this.THMessageFormInfoLinkLabel.Size = new System.Drawing.Size(193, 13);
             this.THMessageFormInfoLinkLabel.TabIndex = 1;
             this.THMessageFormInfoLinkLabel.TabStop = true;
             this.THMessageFormInfoLinkLabel.Text = "https://patreon.com/TranslationHelper";
+            this.THMessageFormInfoLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.THMessageFormInfoLinkLabel_LinkClicked);
             // 
             // THMessageFormInfoLabel
             // 
