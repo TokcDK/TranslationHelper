@@ -21,9 +21,9 @@ namespace TranslationHelper
 {
     public partial class THMain : Form
     {
-        string THLog;
+        //string THLog;
         //public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
-        public THSettingsForm Settings = new THSettingsForm();
+        public THSettingsForm Settings;
         //public const string THStrDGTranslationColumnName = "Translation";
         //public const string THStrDGOriginalColumnName = "Original";
         private readonly THLang LangF;
@@ -34,10 +34,10 @@ namespace TranslationHelper
         private string FVariant = "";
         //private BindingList<THRPGMTransPatchFile> THRPGMTransPatchFiles; //Все файлы
         //DataTable fileslistdt = new DataTable();
-        public DataSet THFilesElementsDataset = new DataSet();
-        public DataSet THFilesElementsDatasetInfo = new DataSet();
+        public DataSet THFilesElementsDataset;
+        public DataSet THFilesElementsDatasetInfo;
         //DataTable THFilesElementsDatatable;
-        private BindingSource THBS = new BindingSource();
+        //private BindingSource THBS = new BindingSource();
 
         public string THSelectedDir;
         public string THRPGMTransPatchver;
@@ -54,6 +54,8 @@ namespace TranslationHelper
         {
             InitializeComponent();
             LangF = new THLang();
+            Settings = new THSettingsForm();
+
             Settings.GetSettings();
 
             //anguage strings setup
@@ -69,6 +71,10 @@ namespace TranslationHelper
             helpToolStripMenuItem.Text = LangF.THStrhelpToolStripMenuItemName;
             aboutToolStripMenuItem.Text = LangF.THStraboutToolStripMenuItemName;
             LangF.THReadLanguageFileToStrings();
+
+            THFilesElementsDataset = new DataSet();
+            THFilesElementsDatasetInfo = new DataSet();
+
 
             //THRPGMTransPatchFiles = new BindingList<THRPGMTransPatchFile>();
             //dt = new DataTable();
@@ -4268,9 +4274,9 @@ namespace TranslationHelper
         StringBuilder textsb = new StringBuilder();
         private string curcode = "";
         private string cType = "";
-        private string cCode = "";
+        //private string cCode = "";
         private string cName = "";
-        private string cId = "";
+        //private string cId = "";
         private void ProceedJToken(JToken token, string Jsonname, string propertyname = "")
         {
             if (token == null)
