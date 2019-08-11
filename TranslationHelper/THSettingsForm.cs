@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace TranslationHelper
@@ -134,7 +135,7 @@ namespace TranslationHelper
 
         private void LinkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-
+            Process.Start("https://patreon.com/TranslationHelper");
         }
     }
 }
