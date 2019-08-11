@@ -2879,10 +2879,8 @@ namespace TranslationHelper
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (THAboutForm AboutForm = new THAboutForm())
-            {
-                AboutForm.Show();
-            }
+            THAboutForm AboutForm = new THAboutForm();
+            AboutForm.Show();
         }
 
         private void THTargetTextBox_KeyDown(object sender, KeyEventArgs e)
