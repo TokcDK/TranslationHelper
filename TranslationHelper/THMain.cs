@@ -4812,7 +4812,7 @@ namespace TranslationHelper
         
         private void OpenInWebToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("https://translate.google.com/?hl=en&ie=UTF-8&tab=wT#view=home&op=translate&sl=auto&tl=en&text=" + THFileElementsDataGridView.CurrentCell.Value.ToString());
+            Process.Start(Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}","auto").Replace("{languageto}","en").Replace("{text}", THFileElementsDataGridView.CurrentCell.Value.ToString()));
         }
 
 

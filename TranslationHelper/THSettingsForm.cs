@@ -65,6 +65,15 @@ namespace TranslationHelper
                     //MessageBox.Show("GetSettings() 81");
                     THOptionDBCompressionCheckBox.Checked = THOptionDBCompressionCheckBoxChecked;
                 }
+                if (THConfigINI.KeyExists("THOptionWebPageLinkForManualTranslation", "Tools"))
+                {
+                    THSettingsWebTransLinkTextBox.Text = THConfigINI.ReadINI("Tools", "THOptionWebPageLinkForManualTranslation");
+                }
+                else
+                {
+                    //MessageBox.Show("GetSettings() 81");
+                    THSettingsWebTransLinkTextBox.Text = "https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}";
+                }
             }
             catch
             {
@@ -116,6 +125,11 @@ namespace TranslationHelper
         {
             THConfigINI.WriteINI("Optimizations", "THOptionDBCompressionCheckBox.Checked", THOptionDBCompressionCheckBox.Checked.ToString());
             THOptionDBCompressionCheckBoxChecked = THOptionDBCompressionCheckBox.Checked;
+        }
+
+        private void THSettingsWebTransLinkTextBox_Validated(object sender, EventArgs e)
+        {
+            THConfigINI.WriteINI("Tools", "THOptionWebPageLinkForManualTranslation", THSettingsWebTransLinkTextBox.Text);
         }
     }
 }
