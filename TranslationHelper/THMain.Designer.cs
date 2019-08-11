@@ -425,6 +425,7 @@
             this.THFiltersDataGridView.Size = new System.Drawing.Size(641, 21);
             this.THFiltersDataGridView.TabIndex = 3;
             this.THFiltersDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellValueChanged);
+            this.THFiltersDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFiltersDataGridView_RowPostPaint);
             // 
             // THEditElementsSplitContainer
             // 
@@ -469,6 +470,7 @@
             this.THTargetTextBox.Size = new System.Drawing.Size(344, 98);
             this.THTargetTextBox.TabIndex = 0;
             this.THTargetTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
+            this.THTargetTextBox.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
             // 
             // THWorkSpaceSplitContainer
             // 

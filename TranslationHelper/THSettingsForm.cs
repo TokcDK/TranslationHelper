@@ -131,5 +131,10 @@ namespace TranslationHelper
         {
             THConfigINI.WriteINI("Tools", "THOptionWebPageLinkForManualTranslation", THSettingsWebTransLinkTextBox.Text);
         }
+
+        private void LinkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+
+        }
     }
 }

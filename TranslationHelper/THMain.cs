@@ -4638,38 +4638,15 @@ namespace TranslationHelper
             }
         }
 
+        bool IsTranslating = false;
         private void TryToTranslateOnlineToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //for (int i = 0; i < THFileElementsDataGridView.SelectedCells.Count; i++)
-            //{
-            //    int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-            //    int cind = 0;//2-поле untrans
-            //    if (THFileElementsDataGridView.SelectedCells[i].Value == null)
-            //    {
-
-            //    }
-            //    else
-            //    {
-            //        if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
-            //        {
-            //            try
-            //            {
-            //                THFileElementsDataGridView[cind + 1, rind].Value = GoogleAPI.Translate(THFileElementsDataGridView.SelectedCells[i].Value.ToString());//из исходников ESPTranslator
-
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                MessageBox.Show(ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            //            }
-            //            finally
-            //            {
-            //                //this._lblStatus.Text = string.Format("Translated in {0} mSec", (int)t.TranslationTime.TotalMilliseconds);
-            //                this.Cursor = Cursors.Default;
-            //            }
-            //        }
-            //    }
-            //}
-
+            if (IsTranslating)
+            {
+                THMsg.Show("Already in process\r\nPlease wait..");
+                return;
+            }
+            IsTranslating = true;
 
             //координаты стартовой строк, колонки оригинала и номера таблицы
             int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
@@ -4680,7 +4657,7 @@ namespace TranslationHelper
                 selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
             }
 
-            THMsg.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
+            //THMsg.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
             
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
             //почемуто так не переводит, переводчик кидает ошибку при заппуске в другом потоке
@@ -4768,19 +4745,19 @@ namespace TranslationHelper
 
                                 if (string.IsNullOrEmpty(onlinetranslation))
                                 {
-                                    LogToFile("Row value for translation=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString(), true);
+                                    //LogToFile("Row value for translation=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString(), true);
 
                                     //запрос перевода
                                     //string onlinetranslation = GoogleAPI.Translate(THFileElementsDataGridView.SelectedCells[i].Value.ToString());//из исходников ESPTranslator 
                                     onlinetranslation = GoogleAPI.Translate(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString());//из исходников ESPTranslator 
                                                                                                                                                             //string onlinetranslation = DEEPL.Translate(origvalue);//из исходников ESPTranslator 
 
-                                    LogToFile("Result onlinetranslation=" + onlinetranslation, true);
+                                    //LogToFile("Result onlinetranslation=" + onlinetranslation, true);
                                     //проверка наличия результата и вторичная проверка пустого значения поля для перевода перед записью
                                     //if (!string.IsNullOrEmpty(onlinetranslation) && (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString())))
                                     if (!string.IsNullOrEmpty(onlinetranslation) && (THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind + 1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind + 1].ToString())))
                                     {
-                                        LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
+                                        //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
                                         THTranslationCache.Tables[0].Rows.Add(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString(), onlinetranslation);
                                         //THTranslationCacheAdd(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString(), onlinetranslation);                                    
 
@@ -4806,13 +4783,56 @@ namespace TranslationHelper
             {
                 LogToFile("Error: "+ex,true);
             }
-
+            IsTranslating = false;
             ProgressInfo(false);
         }
         
         private void OpenInWebToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start(Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}","auto").Replace("{languageto}","en").Replace("{text}", THFileElementsDataGridView.CurrentCell.Value.ToString()));
+            //координаты стартовой строк, колонки оригинала и номера таблицы
+            int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
+            int tableindex = THFilesListBox.SelectedIndex;
+            StringBuilder value = new StringBuilder();
+            int selcellscnt = THFileElementsDataGridView.SelectedCells.Count;
+            for (int i = 0; i < selcellscnt; i++)
+            {
+                //MessageBox.Show(THFilesElementsDataset.Tables[tableindex].Rows[THFileElementsDataGridView.SelectedCells[i].RowIndex][cind].ToString());
+                //MessageBox.Show(THFileElementsDataGridView.CurrentCell.Value.ToString());
+                value.Append(THFilesElementsDataset.Tables[tableindex].Rows[THFileElementsDataGridView.SelectedCells[i].RowIndex][cind].ToString());
+                if (i+1 < selcellscnt)
+                {
+                    value.Append("\r\n");
+                }
+            }
+            //MessageBox.Show(value.ToString());
+            string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\""));
+            //MessageBox.Show(result);
+            Process.Start(result);
+        }
+
+        private void THTargetTextBox_Leave(object sender, EventArgs e)
+        {
+            //int sel = dataGridView1.CurrentRow.Index; //присвоить перевенной номер выбранной строки в таблице
+            if (!String.IsNullOrEmpty(THSourceTextBox.Text)) //если текстовое поле 2 не пустое
+            {
+                THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                
+            }
+        }
+
+        private void THFiltersDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            var grid = sender as DataGridView;
+            //var rowIdx = (e.RowIndex + 1).ToString();
+
+            var centerFormat = new StringFormat()
+            {
+                // right alignment might actually make more sense for numbers
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
+
+            var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+            e.Graphics.DrawString("F", this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
 
 
