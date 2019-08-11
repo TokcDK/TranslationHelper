@@ -4835,6 +4835,195 @@ namespace TranslationHelper
             e.Graphics.DrawString("F", this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
 
+        bool THIsFixingCells;
+        private void THFixCells(string method, int cind, int tind)//cind - индекс столбца перевода, задан до старта потока
+        {
+            //возвращать, если занято, когда исправление в процессе
+            if (THIsFixingCells)
+            {
+                return;
+            }
+            //установить занятость при старте
+            THIsFixingCells = true;
+
+            //если файл с правилами существует
+            if (File.Exists(apppath + "\\TranslationHelperCellFixesRegexRules.txt"))
+            {
+                //читать файл с правилами
+                using (StreamReader rules = new StreamReader(apppath + "\\TranslationHelperCellFixesRegexRules.txt"))
+                {
+                    try
+                    {
+                        //индекс столбца перевода, таблицы и массив индексов для варианта с несколькими выбранными ячейками
+                        //int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans
+                        int tableindex=0;
+                        int[] selcellscnt;
+
+                        //method
+                        //a - All
+                        //t - Table
+                        //s - Selected
+
+                        if (method == "s")
+                        {
+                            //cind = THFileElementsDataGridView.Columns["Translation"].Index;//-поле untrans                            
+                            tableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
+                            selcellscnt = new int[THFileElementsDataGridView.SelectedCells.Count];//создать массив длинной числом выбранных ячеек
+                            for (int i = 0; i < selcellscnt.Length; i++) //записать индексы всех выбранных ячеек
+                            {
+                                selcellscnt[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                            }
+                        }
+                        else if (method == "t")
+                        {
+                            tableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
+                            //cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;
+                            selcellscnt = new int[1];//не будет использоваться с этим вариантом
+                        }
+                        else
+                        {
+                            selcellscnt = new int[1];//не будет использоваться с этим вариантом
+                        }
+
+                        //regex правило и результат из файла
+                        string rule;
+                        string result;
+
+                        //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
+                        int tablescount;
+                        int rowscount;
+                        int rowindex;
+                        while (!rules.EndOfStream)
+                        {
+                            //читать правило и результат
+                            rule = rules.ReadLine();
+                            result = rules.ReadLine();
+
+                            //проверить, есть ли правило и результат, если вдруг файле будет нечетное количество строк, по ошибке юзера
+                            if (string.IsNullOrEmpty(rule) || string.IsNullOrEmpty(result))
+                            {
+                            }
+                            else
+                            {
+                                if (method == "a")
+                                {
+                                    tablescount = THFilesElementsDataset.Tables.Count;//все таблицы в dataset
+                                }
+                                else
+                                {
+                                    tablescount = tableindex + 1;//одна таблица с индексом на один больше индекса стартовой
+                                }
+
+                                //перебор таблиц dataset
+                                for (int t = tableindex; t < tablescount; t++)
+                                {
+                                    if (method == "a" || method == "t")
+                                    {
+                                        //все строки в выбранной таблице
+                                        rowscount = THFilesElementsDataset.Tables[tableindex].Rows.Count;
+                                    }
+                                    else
+                                    {
+                                        //все выделенные строки в выбранной таблице
+                                        rowscount = selcellscnt.Length;
+                                    }
+
+                                    //перебор строк таблицы
+                                    for (int i = 0; i < rowscount; i++)
+                                    {
+                                        if (method == "s")
+                                        {
+                                            //индекс = первому из заданного списка выбранных индексов
+                                            rowindex = selcellscnt[i];
+                                        }
+                                        else
+                                        {
+                                            //индекс с нуля и до последней строки
+                                            rowindex = i;
+                                        }
+
+                                        //не трогать строку перевода, если она пустая
+                                        if (THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind].ToString()))
+                                        {
+                                        }
+                                        else
+                                        {
+                                            //задать правило
+                                            Regex regexrule = new Regex(rule);
+                                            //найти совпадение с заданным правилом в выбранной ячейке
+                                            MatchCollection mc = regexrule.Matches(THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind].ToString());
+                                            //перебрать все айденные совпадения
+                                            foreach (Match m in mc)
+                                            {
+                                                LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
+
+                                                //исправить значения по найденным совпадениям в выбранной ячейке
+                                                THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind] = THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind].ToString().Replace(m.Value.ToString(), regexrule.Replace(m.Value.ToString(), result));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
+            //снять занятость по окончании
+            THIsFixingCells = false;
+        }
+
+        private void SelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
+            //на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
+            //пока оставлю выполнение в другом потоке, как нибудь проверю без второго потока там, где много исправлять, по крайней мере оставлю для вариантов Таблица и все
+            int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans               
+            int tableindex = THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
+
+            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("s", cind, tableindex)));
+            //но при выборе только одной строчки почему-то кидает исключение
+            //trans.Start();
+
+            //убрал здесь выполнение во втором потоке, т.к. слишком мало править, не стоит того
+            THFixCells("s", cind, tableindex);
+        }
+
+        private void TableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
+            //на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
+            //пока оставлю выполнение в другом потоке, как нибудь проверю без второго потока там, где много исправлять, по крайней мере оставлю для вариантов Таблица и все
+            int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans               
+            int tableindex = THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
+            
+            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            Thread trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("t", cind, tableindex)));
+            //но при выборе только одной строчки почему-то кидает исключение
+            trans.Start();
+
+            //THFixCells("t");
+        }
+
+        private void AllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
+            //на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
+            //пока оставлю выполнение в другом потоке, как нибудь проверю без второго потока там, где много исправлять, по крайней мере оставлю для вариантов Таблица и все
+            int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans               
+            int tableindex = THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
+
+            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            Thread trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("a", cind, tableindex)));
+            //но при выборе только одной строчки почему-то кидает исключение
+            trans.Start();
+            //THFixCells("a");
+        }
+
 
 
 
