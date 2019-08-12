@@ -74,6 +74,7 @@ namespace TranslationHelper
             optionsToolStripMenuItem.Text = LangF.THStroptionsToolStripMenuItemName;
             helpToolStripMenuItem.Text = LangF.THStrhelpToolStripMenuItemName;
             aboutToolStripMenuItem.Text = LangF.THStraboutToolStripMenuItemName;
+
             LangF.THReadLanguageFileToStrings();
 
             THFilesElementsDataset = new DataSet();
@@ -239,7 +240,7 @@ namespace TranslationHelper
                 return RPGMTransPatchPrepare(sPath);
                 //return "RPGMTransPatch";
             }
-            else if (sPath.ToLower().Contains("\\game.exe"))
+            else if (sPath.ToLower().Contains("\\game.exe") || File.Exists(THSelectedDir+"\\game.exe"))
             {
                 if (File.Exists(THSelectedDir + "\\www\\data\\system.json"))
                 {
@@ -3151,7 +3152,7 @@ namespace TranslationHelper
         private void THFileElementsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex > 0)
-            {
+            {   cellchanged = true;
                 FIleDataWasChanged = true;
             }
         }
@@ -4637,11 +4638,11 @@ namespace TranslationHelper
         }
 
         bool IsTranslating = false;
-        private void TryToTranslateOnlineToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OnlineTranslateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (IsTranslating)
             {
-                THMsg.Show("Already in process\r\nPlease wait..");
+                THMsg.Show("Already in process..");
                 return;
             }
             IsTranslating = true;
@@ -4662,7 +4663,7 @@ namespace TranslationHelper
             //await Task.Run(() => OnlineTranslateSelected(cind, tableindex, selindexes));
 
             //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => OnlineTranslateSelected(cind, tableindex, selindexes)));
+            Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "s")));
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -4674,6 +4675,56 @@ namespace TranslationHelper
             //OnlineTranslateSelected(cind, tableindex, selindexes);
             //ProgressInfo(false);
 
+        }
+
+        private void OnlineTranslateTableToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (IsTranslating)
+            {
+                THMsg.Show("Already in process..");
+                return;
+            }
+            IsTranslating = true;
+
+            //координаты стартовой строк, колонки оригинала и номера таблицы
+            int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Original"].Ordinal;//-поле untrans
+            int tableindex = THFilesListBox.SelectedIndex;
+            int[] selindexes = new int[1];
+
+            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "t")));
+            //
+            //..и фикс ошибки:
+            //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
+            //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
+            trans.SetApartmentState(ApartmentState.STA);
+            //но при выборе только одной строчки почему-то кидает исключение
+            trans.Start();
+        }
+
+        private void OnlineTranslateAllToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (IsTranslating)
+            {
+                THMsg.Show("Already in process..");
+                return;
+            }
+            IsTranslating = true;
+
+            //координаты стартовой строк, колонки оригинала и номера таблицы
+            int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Original"].Ordinal;//-поле untrans
+            int tableindex = 0;
+            int[] selindexes = new int[1];
+
+            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
+            //
+            //..и фикс ошибки:
+            //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
+            //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
+            trans.SetApartmentState(ApartmentState.STA);
+            //но при выборе только одной строчки почему-то кидает исключение
+            trans.Start();
         }
 
         //DataSet THTranslationCache = new DataSet();
@@ -4716,7 +4767,7 @@ namespace TranslationHelper
         }
 
 
-        private void OnlineTranslateSelected(int cind, int tableindex, int[] selindexes)
+        private void THOnlineTranslate(int cind, int tableindex, int[] selindexes, string method="s")
         {
             try
             {
@@ -4724,49 +4775,99 @@ namespace TranslationHelper
                 {
                     TranslationCacheInit(THTranslationCache);
 
-                    //проход по всем выбранным ячейкам
-                    for (int i = 0; i < selindexes.Length; i++)
+                    //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
+                    int tablescount;
+                    int rowscount;
+                    int rowindex;
+                    if (method == "a")
                     {
-                        ProgressInfo(true, "Getting translation: " + (i + 1) + "/" + selindexes.Length);
-                        //проверка пустого значения поля для перевода
-                        //if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
-                        if (THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind + 1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind + 1].ToString()))
+                        tablescount = THFilesElementsDataset.Tables.Count;//все таблицы в dataset
+                    }
+                    else
+                    {
+                        tablescount = tableindex + 1;//одна таблица с индексом на один больше индекса стартовой
+                    }
+
+                    //перебор таблиц dataset
+                    for (int t = tableindex; t < tablescount; t++)
+                    {
+                        if (method == "a" || method == "t")
                         {
-                            //проверка наличия заданного процента romaji или other в оригинале
-                            //if ( SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString()) || SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString(), "other"))
-                            if (SelectedLocalePercentFromStringIsNotValid(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString()) || SelectedLocalePercentFromStringIsNotValid(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString(), "other"))
+                            //все строки в выбранной таблице
+                            rowscount = THFilesElementsDataset.Tables[tableindex].Rows.Count;
+                        }
+                        else
+                        {
+                            //все выделенные строки в выбранной таблице
+                            rowscount = selindexes.Length;
+                        }
+
+                        //перебор строк таблицы
+                        for (int i = 0; i < rowscount; i++)
+                        {
+                            string progressinfo;
+                            if (method == "s")
                             {
+                                progressinfo = "Getting translation: " + (i + 1) + "/" + rowscount;
+                                //индекс = первому из заданного списка выбранных индексов
+                                rowindex = selindexes[i];
+                            }
+                            else if (method == "t")
+                            {
+                                progressinfo = "Getting translation: " + (i + 1) + "/" + rowscount;
+                                //индекс с нуля и до последней строки
+                                rowindex = i;
                             }
                             else
                             {
-                                string onlinetranslation = TranslationCacheFind(THTranslationCache, THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString());
+                                progressinfo = "Getting translation: "+ tableindex+"/"+ tablescount+"::" + (i + 1) + "/" + rowscount;
+                                //индекс с нуля и до последней строки
+                                rowindex = i;
+                            }
 
-                                if (string.IsNullOrEmpty(onlinetranslation))
+                            ProgressInfo(true, progressinfo);
+                            //проверка пустого значения поля для перевода
+                            //if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
+                            if (THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind + 1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind + 1].ToString()))
+                            {
+                                //проверка наличия заданного процента romaji или other в оригинале
+                                //if ( SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString()) || SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString(), "other"))
+                                if (SelectedLocalePercentFromStringIsNotValid(THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind].ToString()) || SelectedLocalePercentFromStringIsNotValid(THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind].ToString(), "other"))
                                 {
-                                    //LogToFile("Row value for translation=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString(), true);
-
-                                    //запрос перевода
-                                    //string onlinetranslation = GoogleAPI.Translate(THFileElementsDataGridView.SelectedCells[i].Value.ToString());//из исходников ESPTranslator 
-                                    onlinetranslation = GoogleAPI.Translate(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString());//из исходников ESPTranslator 
-                                                                                                                                                            //string onlinetranslation = DEEPL.Translate(origvalue);//из исходников ESPTranslator 
-
-                                    //LogToFile("Result onlinetranslation=" + onlinetranslation, true);
-                                    //проверка наличия результата и вторичная проверка пустого значения поля для перевода перед записью
-                                    //if (!string.IsNullOrEmpty(onlinetranslation) && (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString())))
-                                    if (!string.IsNullOrEmpty(onlinetranslation) && (THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind + 1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind + 1].ToString())))
-                                    {
-                                        //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
-                                        THTranslationCache.Tables[0].Rows.Add(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString(), onlinetranslation);
-                                        //THTranslationCacheAdd(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString(), onlinetranslation);                                    
-
-                                        //запись перевода
-                                        //THFileElementsDataGridView[cind + 1, rind].Value = onlinetranslation;
-                                        THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind + 1] = onlinetranslation;
-                                    }
                                 }
                                 else
                                 {
-                                    THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind + 1] = onlinetranslation;
+                                    string onlinetranslation = TranslationCacheFind(THTranslationCache, THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind].ToString());
+
+                                    if (string.IsNullOrEmpty(onlinetranslation))
+                                    {
+                                        //LogToFile("Row value for translation=" + THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind].ToString(), true);
+
+                                        //запрос перевода
+                                        //string onlinetranslation = GoogleAPI.Translate(THFileElementsDataGridView.SelectedCells[i].Value.ToString());//из исходников ESPTranslator 
+                                        onlinetranslation = GoogleAPI.Translate(THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind].ToString());//из исходников ESPTranslator 
+                                                                                                                                                                //string onlinetranslation = DEEPL.Translate(origvalue);//из исходников ESPTranslator 
+
+                                        //LogToFile("Result onlinetranslation=" + onlinetranslation, true);
+                                        //проверка наличия результата и вторичная проверка пустого значения поля для перевода перед записью
+                                        //if (!string.IsNullOrEmpty(onlinetranslation) && (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString())))
+                                        if (!string.IsNullOrEmpty(onlinetranslation) && (THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind + 1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind + 1].ToString())))
+                                        {
+                                            //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
+                                            THTranslationCache.Tables[0].Rows.Add(THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind].ToString(), onlinetranslation);
+                                            //THTranslationCacheAdd(THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind].ToString(), onlinetranslation);                                    
+
+                                            //запись перевода
+                                            //THFileElementsDataGridView[cind + 1, rind].Value = onlinetranslation;
+                                            THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind + 1] = onlinetranslation;
+                                            THAutoSetValueForSameCells(tableindex, rowindex, cind);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        THFilesElementsDataset.Tables[tableindex].Rows[rowindex][cind + 1] = onlinetranslation;
+                                        THAutoSetValueForSameCells(tableindex, rowindex, cind);
+                                    }
                                 }
                             }
                         }
@@ -5020,6 +5121,348 @@ namespace TranslationHelper
             //но при выборе только одной строчки почему-то кидает исключение
             trans.Start();
             //THFixCells("a");
+        }
+
+        private void SetOriginalValueToTranslationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                for (int i = 0; i < THFileElementsDataGridView.SelectedCells.Count; i++)
+                {
+                    //координаты ячейки
+                    int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                    int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Original"].Ordinal;//2-поле untrans
+                      
+                    //только для пустой ячейки перевода
+                    if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
+                    {
+                        THFileElementsDataGridView[cind + 1, rind].Value = THFileElementsDataGridView[cind, rind].Value;
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        bool cellchanged = false;
+        private void THAutoSetValueForSameCells(int tableind, int rind, int cind, bool forcerun = true)
+        {
+            if (cellchanged || forcerun) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
+            {
+                int transcind = cind + 1;
+                if (THFilesElementsDataset.Tables[tableind].Rows[rind][transcind] != null && !String.IsNullOrEmpty(THFilesElementsDataset.Tables[tableind].Rows[rind][transcind].ToString()))//Запускать сравнение только если ячейка имеет значение
+                {
+                    //LogToFile("THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]="+ THFilesElementsDataset.Tables[tableind].Rows[rind][transcind].ToString());
+                    //http://www.cyberforum.ru/csharp-beginners/thread244709.html
+                    Regex reg = new Regex(@"\d+"); //reg равняется любым цифрам
+                    string inputorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][cind].ToString());
+                    string inputtranscellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][transcind].ToString());
+                    MatchCollection mc = reg.Matches(inputorigcellvalue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
+                    bool digitalsexist = (mc.Count > 0);
+                    
+                    for (int Tindx = 0; Tindx < THFilesElementsDataset.Tables.Count; Tindx++) //количество файлов
+                    {
+                        //LogToFile("Table "+Tindx+" proceed");
+                        for (int Rindx = 0; Rindx < THFilesElementsDataset.Tables[Tindx].Rows.Count; Rindx++) //количество строк в каждом файле
+                        {
+                            if (THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] == null || String.IsNullOrEmpty(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind].ToString())) //Проверять только для пустых ячеек перевода
+                            {
+                                //LogToFile("THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString()=" + THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString());
+                                if (digitalsexist) //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
+                                {
+                                    string checkingorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind].ToString());
+                                    MatchCollection mc0 = reg.Matches(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind].ToString()); //mc0 равно значениям цифр ячейки под номером y в файле i
+
+                                    string inputresult = inputtranscellvalue;
+                                    if (mc0.Count > 0 && mc.Count == mc0.Count) //если количество совпадений в mc0 больше нуля, т.е. цифры были в поле untrans проверяемой на совпадение ячейки
+                                    {
+                                        //оборачивание совпадений в {{}}, чтобы не было ошибочных замен
+                                        string[] inputorigmatches = new string[mc.Count];
+                                        string[] targetorigmatches = new string[mc0.Count];
+                                        for (int r = 0; r < mc.Count; r++)
+                                        {
+                                            inputorigmatches[r] = THFixDigits(mc[r].Value.Replace(mc[r].Value, mc[r].Value));
+                                            targetorigmatches[r] = THFixDigits(mc0[r].Value.Replace(mc0[r].Value, mc0[r].Value));
+                                        }
+
+                                        string checkingorigcellvalueNoDigits = Regex.Replace(checkingorigcellvalue, @"\d+", "");
+                                        string inputorigcellvalueNoDigits = Regex.Replace(inputorigcellvalue, @"\d+", "");
+
+                                        LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
+                                        //если поле перевода равно только что измененному во входной, без учета цифр
+                                        if (checkingorigcellvalueNoDigits == inputorigcellvalueNoDigits)
+                                        {
+                                            //только если ячейка пустая
+                                            if (THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind].ToString()))
+                                            {
+                                                LogToFile("mc.Count=" + mc.Count);
+                                                for (int m = 0; m < mc.Count; m++)
+                                                {
+                                                    LogToFile("m[" + m + "]=" + mc[m].Value + ", m0[" + m + "]=" + mc0[m].Value);
+                                                    inputresult = inputresult.Replace(inputorigmatches[m], targetorigmatches[m]);
+                                                    LogToFile("result[" + m + "]=" + inputresult);
+                                                }
+                                                THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = inputresult;
+                                            }
+                                        }
+                                    }
+                                }
+                                else //иначе, если в поле оригинала не было цифр, сравнить как обычно, два поля между собой 
+                                {
+                                    if (THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind] == THFilesElementsDataset.Tables[tableind].Rows[rind][cind]) //если поле Untrans елемента равно только что измененному
+                                    {
+                                        THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода                                        
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            LogToFile("",true);
+            cellchanged = false;
+        }
+
+        /// <summary>
+        /// Замена японских(и не только) цифр на стандартные
+        /// </summary>
+        private string THFixDigits(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+            else
+            {
+                string ret = input;
+                //Перевод японских(и не только) цифр в стандартные--------------------------
+                string[,] ReplaceData = {
+                { "０", "0" }, { "１", "1" },{ "２", "2" }, { "３", "3" }, { "４", "4" }, { "５", "5" }, { "６", "6" },
+                { "７", "7" }, { "８", "8" }, { "９", "9" }, { "①", "1" }, { "②", "2" }, { "③", "3" }, { "④", "4" },
+                { "⑤", "5" }, { "⑥", "6" }, { "⑦", "7" }, { "⑧", "8" }, { "⑨", "9" }
+                                    };
+
+                int ReplaceDataCount = ReplaceData.Length / 2;
+                for (int a = 0; a < ReplaceDataCount; a++)
+                {
+                    ret = ret.Replace(ReplaceData[a, 0], ReplaceData[a, 1]);
+                }
+
+                return ret;
+            }
+        }
+
+        private void THFileElementsDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            //использован код отсюда:https://stackoverflow.com/a/22912594
+            //но модифицирован для ситуации когда выбрана только ячейка, а не строка полностью
+            if (e.RowIndex != -1 && e.ColumnIndex != -1)
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    DataGridViewRow clickedRow = (sender as DataGridView).Rows[e.RowIndex];
+                    if (clickedRow.Cells[e.ColumnIndex].Selected || clickedRow.Selected)//вот это модифицировано
+                    {
+                    }
+                    else
+                    {
+                        THFileElementsDataGridView.CurrentCell = clickedRow.Cells[e.ColumnIndex];
+                    }
+
+                    if (clickedRow.Cells[e.ColumnIndex].IsInEditMode)//не вызывать меню, когда ячейка в режиме редактирования
+                    {
+                    }
+                    else
+                    {
+                        var mousePosition = THFileElementsDataGridView.PointToClient(Cursor.Position);
+
+                        THFileElementsDataGridViewContextMenuStrip.Show(THFileElementsDataGridView, mousePosition);
+                    }
+                }
+            }
+        }
+
+        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Ensure that text is currently selected in the text box.    
+            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            {
+                //Copy to clipboard
+                CopyToClipboard();
+
+                //Clear selected cells                
+                //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
+                if (THFileElementsDataGridView.CurrentCell.ReadOnly)
+                {
+                }
+                else
+                {
+                    foreach (DataGridViewCell dgvCell in THFileElementsDataGridView.SelectedCells)
+                    {
+                        dgvCell.Value = string.Empty;
+                    }
+                }
+
+            }
+        }
+
+        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Ensure that text is selected in the text box.    
+            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            {
+                CopyToClipboard();
+            }
+        }
+
+        private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Determine if there is any text in the Clipboard to paste into the text box. 
+            if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text) == true)
+            {
+                // Determine if any text is selected in the text box. 
+                if (THFileElementsDataGridView.SelectedCells.Count > 0)
+                {
+                    if (!THFileElementsDataGridView.CurrentCell.ReadOnly) //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
+                    {
+                        //Perform paste Operation
+                        PasteClipboardValue();
+                    }
+                }
+            }
+        }
+
+        //==============вырезать, копировать, вставить, для одной или нескольких ячеек
+        private void CopyToClipboard()
+        {
+            //Copy to clipboard
+            DataObject dataObj = THFileElementsDataGridView.GetClipboardContent();
+            if (dataObj == null)
+            {
+            }
+            else
+            {
+                Clipboard.SetDataObject(dataObj);
+            }
+        }
+
+        private void PasteClipboardValue()
+        {
+            //Show Error if no cell is selected
+            if (THFileElementsDataGridView.SelectedCells.Count == 0)
+            {
+                MessageBox.Show("Select cell first", "Paste",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            //Get the starting Cell
+            DataGridViewCell startCell = GetStartCell(THFileElementsDataGridView);
+            //Get the clipboard value in a dictionary
+            Dictionary<int, Dictionary<int, string>> cbValue =
+                    ClipBoardValues(Clipboard.GetText());
+
+            int iRowIndex = startCell.RowIndex;
+            foreach (int rowKey in cbValue.Keys)
+            {
+                int iColIndex = startCell.ColumnIndex;
+                foreach (int cellKey in cbValue[rowKey].Keys)
+                {
+                    //Check if the index is within the limit
+                    if (iColIndex <= THFileElementsDataGridView.Columns.Count - 1
+                    && iRowIndex <= THFileElementsDataGridView.Rows.Count - 1)
+                    {
+                        DataGridViewCell cell = THFileElementsDataGridView[iColIndex, iRowIndex];
+
+                        //Copy to selected cells if 'chkPasteToSelectedCells' is checked
+                        // Закомментировал как здесь: https://code.google.com/p/seminary-software-engineering/source/browse/trunk/SystemForResultsEvaluaton/SystemForResultsEvaluaton/Core.cs?spec=svn21&r=21
+                        //if ((chkPasteToSelectedCells.Checked && cell.Selected) ||
+                        //   (!chkPasteToSelectedCells.Checked))
+                        if (cbValue.Count > 1)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
+                        {
+                            LogToFile("value=" + cbValue[rowKey][cellKey], true);
+                            cell.Value = Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
+                        }
+                        else
+                        {
+                            cell.Value = cbValue[rowKey][cellKey];
+                        }
+                    }
+                    iColIndex++;
+                }
+                iRowIndex++;
+            }
+        }
+
+        private DataGridViewCell GetStartCell(DataGridView dgView)
+        {
+            //get the smallest row,column index
+            if (dgView.SelectedCells.Count == 0)
+                return null;
+
+            int rowIndex = dgView.Rows.Count - 1;
+            int colIndex = dgView.Columns.Count - 1;
+
+            foreach (DataGridViewCell dgvCell in dgView.SelectedCells)
+            {
+                if (dgvCell.RowIndex < rowIndex)
+                    rowIndex = dgvCell.RowIndex;
+                if (dgvCell.ColumnIndex < colIndex)
+                    colIndex = dgvCell.ColumnIndex;
+            }
+
+            return dgView[colIndex, rowIndex];
+        }
+
+        private Dictionary<int, Dictionary<int, string>> ClipBoardValues(string clipboardValue)
+        {
+            Dictionary<int, Dictionary<int, string>>
+            copyValues = new Dictionary<int, Dictionary<int, string>>();
+
+            String[] lines = clipboardValue.Split('\n');
+
+            for (int i = 0; i <= lines.Length - 1; i++)
+            {
+                copyValues[i] = new Dictionary<int, string>();
+                String[] lineContent = lines[i].Split('\t');
+
+                //if an empty cell value copied, then set the dictionary with an empty string
+                //else Set value to dictionary
+                if (lineContent.Length == 0)
+                    copyValues[i][0] = string.Empty;
+                else
+                {
+                    for (int j = 0; j <= lineContent.Length - 1; j++)
+                        copyValues[i][j] = lineContent[j];
+                }
+            }
+            return copyValues;
+        }
+
+        private void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Ensure that text is currently selected in the text box.    
+            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            {
+                //Clear selected cells                
+                //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
+                if (THFileElementsDataGridView.CurrentCell.ReadOnly)
+                {
+                }
+                else
+                {
+                    foreach (DataGridViewCell dgvCell in THFileElementsDataGridView.SelectedCells)
+                    {
+                        dgvCell.Value = string.Empty;
+                    }
+                }
+            }
+        }//==============вырезать, копировать, вставить, для одной или нескольких ячеек
+
+        private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.Sort = "";
         }
 
 
