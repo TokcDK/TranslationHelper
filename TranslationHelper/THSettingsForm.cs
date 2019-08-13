@@ -75,6 +75,22 @@ namespace TranslationHelper
                     //MessageBox.Show("GetSettings() 81");
                     THSettingsWebTransLinkTextBox.Text = "https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}";
                 }
+                if (THConfigINI.KeyExists("THOptionEnableTranslationCacheCheckBox.Checked", "Tools"))
+                {
+                    THOptionEnableTranslationCacheCheckBox.Checked = bool.Parse(THConfigINI.ReadINI("Tools", "THOptionEnableTranslationCacheCheckBox.Checked"));
+                }
+                else
+                {
+                    THOptionEnableTranslationCacheCheckBox.Checked = true;
+                }
+                if (THConfigINI.KeyExists("THOptionAutotranslationForIdenticalCheckBox.Checked", "Tools"))
+                {
+                    THOptionAutotranslationForIdenticalCheckBox.Checked = bool.Parse(THConfigINI.ReadINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked"));
+                }
+                else
+                {
+                    THOptionAutotranslationForIdenticalCheckBox.Checked = true;
+                }
             }
             catch
             {
@@ -136,6 +152,16 @@ namespace TranslationHelper
         private void LinkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://patreon.com/TranslationHelper");
+        }
+
+        private void THOptionEnableTranslationCacheCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            THConfigINI.WriteINI("Tools", "THOptionEnableTranslationCacheCheckBox.Checked", THOptionEnableTranslationCacheCheckBox.Checked.ToString());
+        }
+
+        private void THOptionAutotranslationForIdenticalCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            THConfigINI.WriteINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked", THOptionAutotranslationForIdenticalCheckBox.Checked.ToString());
         }
     }
 }

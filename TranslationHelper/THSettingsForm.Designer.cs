@@ -30,7 +30,12 @@
         {
             this.THSettingsTabControl = new System.Windows.Forms.TabControl();
             this.THSettingsMainTabPage = new System.Windows.Forms.TabPage();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.THSettingsOptimizationsTabPage = new System.Windows.Forms.TabPage();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.label2 = new System.Windows.Forms.Label();
             this.THProgramSettingsReadOptionsPanel = new System.Windows.Forms.Panel();
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen = new System.Windows.Forms.CheckBox();
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation = new System.Windows.Forms.CheckBox();
@@ -39,16 +44,13 @@
             this.THOptionDontLoadStringIfRomajiPercentTextBox = new System.Windows.Forms.TextBox();
             this.THOptionDontLoadStringIfRomajiPercentCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsToolsTabPage = new System.Windows.Forms.TabPage();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.linkLabel4 = new System.Windows.Forms.LinkLabel();
+            this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTransLinkTextBox = new System.Windows.Forms.TextBox();
-            this.linkLabel4 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.THOptionEnableTranslationCacheCheckBox = new System.Windows.Forms.CheckBox();
+            this.THOptionAutotranslationForIdenticalCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.THSettingsOptimizationsTabPage.SuspendLayout();
@@ -82,6 +84,35 @@
             this.THSettingsMainTabPage.Text = "Main";
             this.THSettingsMainTabPage.UseVisualStyleBackColor = true;
             // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.linkLabel2.Location = new System.Drawing.Point(331, 366);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(193, 13);
+            this.linkLabel2.TabIndex = 13;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "https://patreon.com/TranslationHelper";
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(194, 366);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(141, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Translation  Helper support:";
+            // 
+            // panel1
+            // 
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(518, 373);
+            this.panel1.TabIndex = 7;
+            // 
             // THSettingsOptimizationsTabPage
             // 
             this.THSettingsOptimizationsTabPage.Controls.Add(this.linkLabel1);
@@ -94,6 +125,27 @@
             this.THSettingsOptimizationsTabPage.TabIndex = 1;
             this.THSettingsOptimizationsTabPage.Text = "Optimizations";
             this.THSettingsOptimizationsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.linkLabel1.Location = new System.Drawing.Point(331, 366);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(193, 13);
+            this.linkLabel1.TabIndex = 9;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "https://patreon.com/TranslationHelper";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(194, 366);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(141, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "Translation  Helper support:";
             // 
             // THProgramSettingsReadOptionsPanel
             // 
@@ -196,37 +248,10 @@
             this.THSettingsToolsTabPage.Text = "Tools";
             this.THSettingsToolsTabPage.UseVisualStyleBackColor = true;
             // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.linkLabel1.Location = new System.Drawing.Point(331, 366);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(193, 13);
-            this.linkLabel1.TabIndex = 9;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "https://patreon.com/TranslationHelper";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(194, 366);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(141, 13);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Translation  Helper support:";
-            // 
-            // panel1
-            // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(518, 373);
-            this.panel1.TabIndex = 7;
-            // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.THOptionAutotranslationForIdenticalCheckBox);
+            this.panel2.Controls.Add(this.THOptionEnableTranslationCacheCheckBox);
             this.panel2.Controls.Add(this.linkLabel4);
             this.panel2.Controls.Add(this.label4);
             this.panel2.Controls.Add(this.label1);
@@ -236,6 +261,27 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(524, 379);
             this.panel2.TabIndex = 8;
+            // 
+            // linkLabel4
+            // 
+            this.linkLabel4.AutoSize = true;
+            this.linkLabel4.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.linkLabel4.Location = new System.Drawing.Point(331, 366);
+            this.linkLabel4.Name = "linkLabel4";
+            this.linkLabel4.Size = new System.Drawing.Size(193, 13);
+            this.linkLabel4.TabIndex = 11;
+            this.linkLabel4.TabStop = true;
+            this.linkLabel4.Text = "https://patreon.com/TranslationHelper";
+            this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(194, 366);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(141, 13);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Translation  Helper support:";
             // 
             // label1
             // 
@@ -255,47 +301,31 @@
             this.THSettingsWebTransLinkTextBox.TabIndex = 7;
             this.THSettingsWebTransLinkTextBox.Text = "https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}";
             // 
-            // linkLabel4
+            // THOptionEnableTranslationCacheCheckBox
             // 
-            this.linkLabel4.AutoSize = true;
-            this.linkLabel4.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.linkLabel4.Location = new System.Drawing.Point(331, 366);
-            this.linkLabel4.Name = "linkLabel4";
-            this.linkLabel4.Size = new System.Drawing.Size(193, 13);
-            this.linkLabel4.TabIndex = 11;
-            this.linkLabel4.TabStop = true;
-            this.linkLabel4.Text = "https://patreon.com/TranslationHelper";
-            this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
+            this.THOptionEnableTranslationCacheCheckBox.AutoSize = true;
+            this.THOptionEnableTranslationCacheCheckBox.Checked = true;
+            this.THOptionEnableTranslationCacheCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionEnableTranslationCacheCheckBox.Location = new System.Drawing.Point(9, 290);
+            this.THOptionEnableTranslationCacheCheckBox.Name = "THOptionEnableTranslationCacheCheckBox";
+            this.THOptionEnableTranslationCacheCheckBox.Size = new System.Drawing.Size(178, 17);
+            this.THOptionEnableTranslationCacheCheckBox.TabIndex = 12;
+            this.THOptionEnableTranslationCacheCheckBox.Text = "Enable online translation cache.";
+            this.THOptionEnableTranslationCacheCheckBox.UseVisualStyleBackColor = true;
+            this.THOptionEnableTranslationCacheCheckBox.CheckedChanged += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_CheckedChanged);
             // 
-            // linkLabel2
+            // THOptionAutotranslationForIdenticalCheckBox
             // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.linkLabel2.Location = new System.Drawing.Point(331, 366);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(193, 13);
-            this.linkLabel2.TabIndex = 13;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "https://patreon.com/TranslationHelper";
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(194, 366);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(141, 13);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Translation  Helper support:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(194, 366);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(141, 13);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "Translation  Helper support:";
+            this.THOptionAutotranslationForIdenticalCheckBox.AutoSize = true;
+            this.THOptionAutotranslationForIdenticalCheckBox.Checked = true;
+            this.THOptionAutotranslationForIdenticalCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionAutotranslationForIdenticalCheckBox.Location = new System.Drawing.Point(9, 267);
+            this.THOptionAutotranslationForIdenticalCheckBox.Name = "THOptionAutotranslationForIdenticalCheckBox";
+            this.THOptionAutotranslationForIdenticalCheckBox.Size = new System.Drawing.Size(159, 17);
+            this.THOptionAutotranslationForIdenticalCheckBox.TabIndex = 13;
+            this.THOptionAutotranslationForIdenticalCheckBox.Text = "Autotranslation for identical";
+            this.THOptionAutotranslationForIdenticalCheckBox.UseVisualStyleBackColor = true;
+            this.THOptionAutotranslationForIdenticalCheckBox.CheckedChanged += new System.EventHandler(this.THOptionAutotranslationForIdenticalCheckBox_CheckedChanged);
             // 
             // THSettingsForm
             // 
@@ -343,5 +373,7 @@
         internal System.Windows.Forms.Label label3;
         internal System.Windows.Forms.LinkLabel linkLabel4;
         internal System.Windows.Forms.Label label4;
+        public System.Windows.Forms.CheckBox THOptionEnableTranslationCacheCheckBox;
+        public System.Windows.Forms.CheckBox THOptionAutotranslationForIdenticalCheckBox;
     }
 }

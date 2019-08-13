@@ -2705,9 +2705,15 @@ namespace TranslationHelper
 
         private void ProgressInfo(bool status, string statustext = "working..")
         {
-            THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = status));
-            THInfolabel.Invoke((Action)(() => THInfolabel.Visible = status));
-            THInfolabel.Invoke((Action)(() => THInfolabel.Text = statustext));
+            try
+            {
+                THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = status));
+                THInfolabel.Invoke((Action)(() => THInfolabel.Visible = status));
+                THInfolabel.Invoke((Action)(() => THInfolabel.Text = statustext));
+            }
+            catch
+            {
+            }
         }
 
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4044,7 +4050,7 @@ namespace TranslationHelper
         //                            {
         //                                origA = new string[1];
         //                                origA[0] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString();
-        //                                LogToFile("(origALength == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
+        //                                //LogToFile("(origALength == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
         //                            }
 
         //                            if (origALength > 0)
@@ -4054,7 +4060,7 @@ namespace TranslationHelper
         //                                {
         //                                    transA = new string[1];
         //                                    transA[0] = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-        //                                    LogToFile("(transA.Length == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString());
+        //                                    //LogToFile("(transA.Length == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString());
         //                                }
         //                                string transmerged = string.Empty;
         //                                if (transA.Length == origALength)//если количество строк в оригинале и переводе равно
@@ -4087,11 +4093,11 @@ namespace TranslationHelper
         //                                    //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", "") + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", "")));
         //                                    if (parameter0value == origA[i2].Replace("\r", "")) //Replace здесь убирает \r из за которой строки считались неравными
         //                                    {
-        //                                        LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", "") + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", "")));
+        //                                        //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", "") + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", "")));
 
         //                                        commoneventsdata[i].List[c].Parameters[0] = transA[i2].Replace("\r", ""); //Replace убирает \r
 
-        //                                        LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
+        //                                        //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
         //                                        br = true;
         //                                        break;
         //                                    }
@@ -4140,10 +4146,10 @@ namespace TranslationHelper
         //                                    //LogToFile("parameter0value=" + parameter0value+ ", orig=" + orig + ", (parameter0value == orig) is " + (parameter0value == orig));
         //                                    if (parameter0value == orig)
         //                                    {
-        //                                        LogToFile("parameter0value=" + parameter0value + ", orig=" + orig + ", (parameter0value == orig) is " + (parameter0value == orig));
+        //                                        //LogToFile("parameter0value=" + parameter0value + ", orig=" + orig + ", (parameter0value == orig) is " + (parameter0value == orig));
 
         //                                        commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1] = trans;
-        //                                        LogToFile("commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1]=" + commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String+ ", trans"+ trans);
+        //                                        //LogToFile("commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1]=" + commoneventsdata[i].List[c].Parameters[0].AnythingArray[i1].String+ ", trans"+ trans);
         //                                        break;
         //                                    }
         //                                }
@@ -4179,7 +4185,7 @@ namespace TranslationHelper
         //            }
         //        }
         //    }
-        //    LogToFile("", true);
+        //    //LogToFile("", true);
         //    string s = RpgMakerMVjsonCommonEventsTo.ToJson(commoneventsdata);
         //    File.WriteAllText(@"C:\\000 test RPGMaker MV data\\" + Jsonname + "1.json", s);
         //    MessageBox.Show("test write finished");
@@ -4849,13 +4855,13 @@ namespace TranslationHelper
                             }
 
                             ProgressInfo(true, progressinfo);
-                            LogToFile("111=" + 111, true);
+                            //LogToFile("111=" + 111, true);
                             //проверка пустого значения поля для перевода
                             //if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
                             if (THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1].ToString()))
                             {
                                 string inputvalue = THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString();
-                                LogToFile("1 inputvalue=" + inputvalue, true);
+                                //LogToFile("1 inputvalue=" + inputvalue, true);
                                 //проверка наличия заданного процента romaji или other в оригинале
                                 //if ( SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString()) || SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString(), "other"))
                                 if (SelectedLocalePercentFromStringIsNotValid(inputvalue) || SelectedLocalePercentFromStringIsNotValid(inputvalue, "other"))
@@ -4865,9 +4871,9 @@ namespace TranslationHelper
                                 {
                                     string resultvalue = TranslationCacheFind(THTranslationCache, inputvalue);
 
-                                    if (string.IsNullOrEmpty(resultvalue))
+                                    if (string.IsNullOrEmpty(resultvalue) || !Settings.THOptionEnableTranslationCacheCheckBox.Checked)
                                     {
-                                        LogToFile("resultvalue from cache is empty. resultvalue=" + resultvalue, true);
+                                        //LogToFile("resultvalue from cache is empty. resultvalue=" + resultvalue, true);
                                         string[] inputvaluearray = inputvalue.Split('\n');
                                         if (inputvaluearray.Length > 1)
                                         {
@@ -4876,16 +4882,20 @@ namespace TranslationHelper
                                         else
                                         {
                                             string extractedvalue = THExtractTextForTranslation(inputvalue);
-                                            LogToFile("extractedvalue="+ extractedvalue,true);
+                                            //LogToFile("extractedvalue="+ extractedvalue,true);
                                             if (string.IsNullOrEmpty(extractedvalue) || extractedvalue==inputvalue)
                                             {
                                                 string cachedvalue = TranslationCacheFind(THTranslationCache, inputvalue);
-                                                LogToFile("cachedvalue=" + cachedvalue, true);
-                                                if (string.IsNullOrEmpty(cachedvalue))
+                                                //LogToFile("cachedvalue=" + cachedvalue, true);
+                                                if (string.IsNullOrEmpty(cachedvalue) || !Settings.THOptionEnableTranslationCacheCheckBox.Checked)
                                                 {
                                                     string onlinevalue = GoogleAPI.Translate(inputvalue);//из исходников ESPTranslator 
                                                     resultvalue = inputvalue.Replace(inputvalue, onlinevalue);
-                                                    LogToFile("resultvalue=" + resultvalue, true);
+                                                    //LogToFile("resultvalue=" + resultvalue, true);
+                                                    if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                                    {
+                                                        THTranslationCache.Tables[0].Rows.Add(inputvalue, resultvalue);
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -4897,12 +4907,16 @@ namespace TranslationHelper
                                             else
                                             {
                                                 string cachedvalue = TranslationCacheFind(THTranslationCache, extractedvalue);
-                                                LogToFile("cachedvalue=" + cachedvalue, true);
-                                                if (string.IsNullOrEmpty(cachedvalue))
+                                                //LogToFile("cachedvalue=" + cachedvalue, true);
+                                                if (string.IsNullOrEmpty(cachedvalue) || !Settings.THOptionEnableTranslationCacheCheckBox.Checked)
                                                 {
                                                     string onlinevalue = GoogleAPI.Translate(extractedvalue);//из исходников ESPTranslator 
                                                     resultvalue = inputvalue.Replace(extractedvalue, onlinevalue);
-                                                    LogToFile("resultvalue=" + resultvalue, true);
+                                                    //LogToFile("resultvalue=" + resultvalue, true);
+                                                    if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                                    {
+                                                        THTranslationCache.Tables[0].Rows.Add(inputvalue, resultvalue);
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -4919,7 +4933,10 @@ namespace TranslationHelper
                                         if (!string.IsNullOrEmpty(resultvalue) && (THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1].ToString())))
                                         {
                                             //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
-                                            THTranslationCache.Tables[0].Rows.Add(inputvalue, resultvalue);
+                                            if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                            {
+                                                THTranslationCache.Tables[0].Rows.Add(inputvalue, resultvalue);
+                                            }
                                             //THTranslationCacheAdd(inputvalue, onlinetranslation);                                    
 
                                             //запись перевода
@@ -4937,15 +4954,15 @@ namespace TranslationHelper
                             }
                         }
                     }
-                    if (THTranslationCache.Tables[0].Rows.Count > 0)
+                    if (THTranslationCache.Tables[0].Rows.Count > 0 && Settings.THOptionEnableTranslationCacheCheckBox.Checked)
                     {
                         WriteDBFile(THTranslationCache, THTranslationCachePath);
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                LogToFile("Error: "+ex,true);
+                //LogToFile("Error: "+ex,true);
             }
             IsTranslating = false;
             ProgressInfo(false);
@@ -4953,82 +4970,88 @@ namespace TranslationHelper
 
         private string TranslateMultilineValue(string[] input, DataSet cacheDS)
         {
-            LogToFile("0 Started multiline array handling");
+            //LogToFile("0 Started multiline array handling");
             string resultvalue="";
             string inputlinevalue;
             for (int a = 0; a < input.Length; a++)
             {
                 inputlinevalue = input[a].Replace("\r", "");
-                LogToFile("1 inputlinevalue="+ inputlinevalue);
+                //LogToFile("1 inputlinevalue="+ inputlinevalue);
                 if (string.IsNullOrEmpty(inputlinevalue))
                 {
                     resultvalue += inputlinevalue;
-                    LogToFile("1.1 inputlinevalue is empty. resultvalue="+ resultvalue);
+                    //LogToFile("1.1 inputlinevalue is empty. resultvalue="+ resultvalue);
                 }
                 else
                 {
                     string extractedvalue = THExtractTextForTranslation(inputlinevalue);
-                    LogToFile("2 extractedvalue=" + extractedvalue);
+                    //LogToFile("2 extractedvalue=" + extractedvalue);
                     if (string.IsNullOrEmpty(extractedvalue))
                     {
-                        LogToFile("2 extractedvalue is empty or has small count of");
+                        //LogToFile("2 extractedvalue is empty or has small count of");
                         string valuefromcache = TranslationCacheFind(cacheDS, extractedvalue);
-                        LogToFile("2.1 valuefromcache=" + valuefromcache);
-                        if (string.IsNullOrEmpty(valuefromcache))
+                        //LogToFile("2.1 valuefromcache=" + valuefromcache);
+                        if (string.IsNullOrEmpty(valuefromcache) || !Settings.THOptionEnableTranslationCacheCheckBox.Checked)
                         {
                             string onlinevalue = GoogleAPI.Translate(extractedvalue);
-                            LogToFile("2.1.1 onlinevalue=" + onlinevalue);
+                            //LogToFile("2.1.1 onlinevalue=" + onlinevalue);
                             if (string.IsNullOrEmpty(onlinevalue))
                             {
                                 resultvalue += inputlinevalue;
-                                LogToFile("2.1.1.1 onlinevalue is empty. resultvalue=" + resultvalue);
+                                //LogToFile("2.1.1.1 onlinevalue is empty. resultvalue=" + resultvalue);
                             }
                             else
                             {
                                 string resultwithonline = inputlinevalue.Replace(extractedvalue, onlinevalue);
                                 resultvalue += resultwithonline;
-                                cacheDS.Tables[0].Rows.Add(inputlinevalue, resultwithonline);
-                                LogToFile("2.1.1.2 onlinevalue was set and added to cache. resultvalue=" + resultvalue);
+                                if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                {
+                                    cacheDS.Tables[0].Rows.Add(inputlinevalue, resultwithonline);
+                                }
+                                //LogToFile("2.1.1.2 onlinevalue was set and added to cache. resultvalue=" + resultvalue);
                             }
                         }
                         else
                         {
                             resultvalue += inputlinevalue.Replace(extractedvalue, valuefromcache);
-                            LogToFile("2.1.2 found in cache. resultvalue=" + resultvalue);
+                            //LogToFile("2.1.2 found in cache. resultvalue=" + resultvalue);
                         }
                     }
                     else
                     {   
                         if (SelectedLocalePercentFromStringIsNotValid(extractedvalue) || SelectedLocalePercentFromStringIsNotValid(extractedvalue, "other"))
                         {
-                            LogToFile("2.1 value has many romaji or other. extractedvalue" + extractedvalue);
+                            //LogToFile("2.1 value has many romaji or other. extractedvalue" + extractedvalue);
                             resultvalue += inputlinevalue;
                         }
                         else
                         {
                             string valuefromcache = TranslationCacheFind(cacheDS, extractedvalue);
-                            LogToFile("3 valuefromcache=" + valuefromcache);
-                            if (string.IsNullOrEmpty(valuefromcache))
+                            //LogToFile("3 valuefromcache=" + valuefromcache);
+                            if (string.IsNullOrEmpty(valuefromcache) || !Settings.THOptionEnableTranslationCacheCheckBox.Checked)
                             {
                                 string onlinevalue = GoogleAPI.Translate(extractedvalue);
-                                LogToFile("4 onlinevalue=" + onlinevalue);
+                                //LogToFile("4 onlinevalue=" + onlinevalue);
                                 if (string.IsNullOrEmpty(onlinevalue))
                                 {
                                     resultvalue += inputlinevalue;
-                                    LogToFile("4.1 onlinevalue is empty. resultvalue=" + resultvalue);
+                                    //LogToFile("4.1 onlinevalue is empty. resultvalue=" + resultvalue);
                                 }
                                 else
                                 {
                                     string resultwithonline = inputlinevalue.Replace(extractedvalue, onlinevalue);
                                     resultvalue += resultwithonline;
-                                    cacheDS.Tables[0].Rows.Add(inputlinevalue, resultwithonline);
-                                    LogToFile("4.2 onlinevalue was set and added to cache. resultvalue=" + resultvalue);
+                                    if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                    {
+                                        cacheDS.Tables[0].Rows.Add(inputlinevalue, resultwithonline);
+                                    }
+                                    //LogToFile("4.2 onlinevalue was set and added to cache. resultvalue=" + resultvalue);
                                 }
                             }
                             else
                             {
                                 resultvalue += inputlinevalue.Replace(extractedvalue, valuefromcache);
-                                LogToFile("3.1 found in cache. resultvalue=" + resultvalue);
+                                //LogToFile("3.1 found in cache. resultvalue=" + resultvalue);
                             }
                         }
                     }
@@ -5037,9 +5060,9 @@ namespace TranslationHelper
                 {
                     resultvalue += "\r\n";
                 }
-                LogToFile("5 resultvalue=" + resultvalue);
+                //LogToFile("5 resultvalue=" + resultvalue);
             }
-            LogToFile("",true);
+            //LogToFile("",true);
             return resultvalue;
         }
         
@@ -5153,6 +5176,7 @@ namespace TranslationHelper
                                     {
                                         //исправить значения по найденным совпадениям в выбранной ячейке
                                         THFilesElementsDataset.Tables[tind].Rows[rind][cind] = THFilesElementsDataset.Tables[tind].Rows[rind][cind].ToString().Replace(m.Value.ToString(), regexrule.Replace(m.Value.ToString(), result));
+                                        //THFilesElementsDataset.Tables[tind].Rows[rind][cind] = Regex.Replace(THFilesElementsDataset.Tables[tind].Rows[rind][cind].ToString(),m.Value.ToString(), result);
                                     }
                                 }
                             }
@@ -5292,6 +5316,7 @@ namespace TranslationHelper
 
                                                         //исправить значения по найденным совпадениям в выбранной ячейке
                                                         THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString().Replace(m.Value.ToString(), regexrule.Replace(m.Value.ToString(), result));
+                                                        //THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), m.Value.ToString(), result);
 
                                                         //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
                                                     }
@@ -5458,7 +5483,7 @@ namespace TranslationHelper
         bool cellchanged = false;
         private void THAutoSetValueForSameCells(int tableind, int rind, int cind, bool forcerun = true)
         {
-            if (cellchanged || forcerun) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
+            if ((cellchanged || forcerun) && Settings.THOptionAutotranslationForIdenticalCheckBox.Checked) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
                 int transcind = cind + 1;
                 if (THFilesElementsDataset.Tables[tableind].Rows[rind][transcind] != null && !String.IsNullOrEmpty(THFilesElementsDataset.Tables[tableind].Rows[rind][transcind].ToString()))//Запускать сравнение только если ячейка имеет значение
@@ -5537,7 +5562,7 @@ namespace TranslationHelper
                     }
                 }
             }
-            LogToFile("",true);
+            //LogToFile("",true);
             cellchanged = false;
         }
 
@@ -5698,7 +5723,7 @@ namespace TranslationHelper
                         //   (!chkPasteToSelectedCells.Checked))
                         if (cbValue.Count > 1)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
                         {
-                            LogToFile("value=" + cbValue[rowKey][cellKey], true);
+                            //LogToFile("value=" + cbValue[rowKey][cellKey], true);
                             cell.Value = Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
                         }
                         else
