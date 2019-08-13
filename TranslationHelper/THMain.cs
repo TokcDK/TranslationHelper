@@ -220,6 +220,7 @@ namespace TranslationHelper
                 writeTranslationInGameToolStripMenuItem.Enabled = false;
                 loadTranslationToolStripMenuItem.Enabled = false;
                 loadTrasnlationAsToolStripMenuItem.Enabled = false;
+                saveTranslationAsToolStripMenuItem.Enabled = false;
                 THSourceTextBox.Enabled = false;
                 THTargetTextBox.Enabled = false;
             }
@@ -2713,6 +2714,13 @@ namespace TranslationHelper
         {
             using (FolderBrowserDialog THSaveFolderBrowser = new FolderBrowserDialog())
             {
+
+                if (SaveInAction)
+                {
+                    return;
+                    //MessageBox.Show("Saving still in progress. Please wait a little.");
+                }
+
                 //MessageBox.Show(dirpath);
                 THSaveFolderBrowser.SelectedPath = THSelectedDir; //Установить начальный путь на тот, что был установлен при открытии.
 
@@ -4634,6 +4642,7 @@ namespace TranslationHelper
                 saveToolStripMenuItem.Enabled = true;
                 saveAsToolStripMenuItem.Enabled = true;
                 saveTranslationToolStripMenuItem.Enabled = true;
+                saveTranslationAsToolStripMenuItem.Enabled = true;
             }
 
             int tableind = THFilesListBox.SelectedIndex;
@@ -4840,46 +4849,88 @@ namespace TranslationHelper
                             }
 
                             ProgressInfo(true, progressinfo);
+                            LogToFile("111=" + 111, true);
                             //проверка пустого значения поля для перевода
                             //if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
                             if (THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1].ToString()))
                             {
+                                string inputvalue = THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString();
+                                LogToFile("1 inputvalue=" + inputvalue, true);
                                 //проверка наличия заданного процента romaji или other в оригинале
                                 //if ( SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString()) || SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString(), "other"))
-                                if (SelectedLocalePercentFromStringIsNotValid(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString()) || SelectedLocalePercentFromStringIsNotValid(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), "other"))
+                                if (SelectedLocalePercentFromStringIsNotValid(inputvalue) || SelectedLocalePercentFromStringIsNotValid(inputvalue, "other"))
                                 {
                                 }
                                 else
                                 {
-                                    string onlinetranslation = TranslationCacheFind(THTranslationCache, THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+                                    string resultvalue = TranslationCacheFind(THTranslationCache, inputvalue);
 
-                                    if (string.IsNullOrEmpty(onlinetranslation))
+                                    if (string.IsNullOrEmpty(resultvalue))
                                     {
-                                        //LogToFile("Row value for translation=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), true);
+                                        LogToFile("resultvalue from cache is empty. resultvalue=" + resultvalue, true);
+                                        string[] inputvaluearray = inputvalue.Split('\n');
+                                        if (inputvaluearray.Length > 1)
+                                        {
+                                            resultvalue = TranslateMultilineValue(inputvaluearray, THTranslationCache);
+                                        }
+                                        else
+                                        {
+                                            string extractedvalue = THExtractTextForTranslation(inputvalue);
+                                            LogToFile("extractedvalue="+ extractedvalue,true);
+                                            if (string.IsNullOrEmpty(extractedvalue) || extractedvalue==inputvalue)
+                                            {
+                                                string cachedvalue = TranslationCacheFind(THTranslationCache, inputvalue);
+                                                LogToFile("cachedvalue=" + cachedvalue, true);
+                                                if (string.IsNullOrEmpty(cachedvalue))
+                                                {
+                                                    string onlinevalue = GoogleAPI.Translate(inputvalue);//из исходников ESPTranslator 
+                                                    resultvalue = inputvalue.Replace(inputvalue, onlinevalue);
+                                                    LogToFile("resultvalue=" + resultvalue, true);
+                                                }
+                                                else
+                                                {
+                                                    resultvalue = inputvalue.Replace(extractedvalue, cachedvalue);
+                                                }
+                                                //запрос перевода
+                                                //string onlinetranslation = GoogleAPI.Translate(THFileElementsDataGridView.SelectedCells[i].Value.ToString());//из исходников ESPTranslator 
+                                            }
+                                            else
+                                            {
+                                                string cachedvalue = TranslationCacheFind(THTranslationCache, extractedvalue);
+                                                LogToFile("cachedvalue=" + cachedvalue, true);
+                                                if (string.IsNullOrEmpty(cachedvalue))
+                                                {
+                                                    string onlinevalue = GoogleAPI.Translate(extractedvalue);//из исходников ESPTranslator 
+                                                    resultvalue = inputvalue.Replace(extractedvalue, onlinevalue);
+                                                    LogToFile("resultvalue=" + resultvalue, true);
+                                                }
+                                                else
+                                                {
+                                                    resultvalue = inputvalue.Replace(extractedvalue, cachedvalue);
+                                                }
 
-                                        //запрос перевода
-                                        //string onlinetranslation = GoogleAPI.Translate(THFileElementsDataGridView.SelectedCells[i].Value.ToString());//из исходников ESPTranslator 
-                                        onlinetranslation = GoogleAPI.Translate(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());//из исходников ESPTranslator 
-                                                                                                                                                                //string onlinetranslation = DEEPL.Translate(origvalue);//из исходников ESPTranslator 
+
+                                            }
+                                        }                                                                                            //string onlinetranslation = DEEPL.Translate(origvalue);//из исходников ESPTranslator 
 
                                         //LogToFile("Result onlinetranslation=" + onlinetranslation, true);
                                         //проверка наличия результата и вторичная проверка пустого значения поля для перевода перед записью
                                         //if (!string.IsNullOrEmpty(onlinetranslation) && (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString())))
-                                        if (!string.IsNullOrEmpty(onlinetranslation) && (THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1].ToString())))
+                                        if (!string.IsNullOrEmpty(resultvalue) && (THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1].ToString())))
                                         {
                                             //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
-                                            THTranslationCache.Tables[0].Rows.Add(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), onlinetranslation);
-                                            //THTranslationCacheAdd(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), onlinetranslation);                                    
+                                            THTranslationCache.Tables[0].Rows.Add(inputvalue, resultvalue);
+                                            //THTranslationCacheAdd(inputvalue, onlinetranslation);                                    
 
                                             //запись перевода
                                             //THFileElementsDataGridView[cind + 1, rind].Value = onlinetranslation;
-                                            THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] = onlinetranslation;
+                                            THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] = resultvalue;
                                             THAutoSetValueForSameCells(t, rowindex, cind);
                                         }
                                     }
                                     else
                                     {
-                                        THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] = onlinetranslation;
+                                        THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] = resultvalue;
                                         THAutoSetValueForSameCells(t, rowindex, cind);
                                     }
                                 }
@@ -4898,6 +4949,98 @@ namespace TranslationHelper
             }
             IsTranslating = false;
             ProgressInfo(false);
+        }
+
+        private string TranslateMultilineValue(string[] input, DataSet cacheDS)
+        {
+            LogToFile("0 Started multiline array handling");
+            string resultvalue="";
+            string inputlinevalue;
+            for (int a = 0; a < input.Length; a++)
+            {
+                inputlinevalue = input[a].Replace("\r", "");
+                LogToFile("1 inputlinevalue="+ inputlinevalue);
+                if (string.IsNullOrEmpty(inputlinevalue))
+                {
+                    resultvalue += inputlinevalue;
+                    LogToFile("1.1 inputlinevalue is empty. resultvalue="+ resultvalue);
+                }
+                else
+                {
+                    string extractedvalue = THExtractTextForTranslation(inputlinevalue);
+                    LogToFile("2 extractedvalue=" + extractedvalue);
+                    if (string.IsNullOrEmpty(extractedvalue))
+                    {
+                        LogToFile("2 extractedvalue is empty or has small count of");
+                        string valuefromcache = TranslationCacheFind(cacheDS, extractedvalue);
+                        LogToFile("2.1 valuefromcache=" + valuefromcache);
+                        if (string.IsNullOrEmpty(valuefromcache))
+                        {
+                            string onlinevalue = GoogleAPI.Translate(extractedvalue);
+                            LogToFile("2.1.1 onlinevalue=" + onlinevalue);
+                            if (string.IsNullOrEmpty(onlinevalue))
+                            {
+                                resultvalue += inputlinevalue;
+                                LogToFile("2.1.1.1 onlinevalue is empty. resultvalue=" + resultvalue);
+                            }
+                            else
+                            {
+                                string resultwithonline = inputlinevalue.Replace(extractedvalue, onlinevalue);
+                                resultvalue += resultwithonline;
+                                cacheDS.Tables[0].Rows.Add(inputlinevalue, resultwithonline);
+                                LogToFile("2.1.1.2 onlinevalue was set and added to cache. resultvalue=" + resultvalue);
+                            }
+                        }
+                        else
+                        {
+                            resultvalue += inputlinevalue.Replace(extractedvalue, valuefromcache);
+                            LogToFile("2.1.2 found in cache. resultvalue=" + resultvalue);
+                        }
+                    }
+                    else
+                    {   
+                        if (SelectedLocalePercentFromStringIsNotValid(extractedvalue) || SelectedLocalePercentFromStringIsNotValid(extractedvalue, "other"))
+                        {
+                            LogToFile("2.1 value has many romaji or other. extractedvalue" + extractedvalue);
+                            resultvalue += inputlinevalue;
+                        }
+                        else
+                        {
+                            string valuefromcache = TranslationCacheFind(cacheDS, extractedvalue);
+                            LogToFile("3 valuefromcache=" + valuefromcache);
+                            if (string.IsNullOrEmpty(valuefromcache))
+                            {
+                                string onlinevalue = GoogleAPI.Translate(extractedvalue);
+                                LogToFile("4 onlinevalue=" + onlinevalue);
+                                if (string.IsNullOrEmpty(onlinevalue))
+                                {
+                                    resultvalue += inputlinevalue;
+                                    LogToFile("4.1 onlinevalue is empty. resultvalue=" + resultvalue);
+                                }
+                                else
+                                {
+                                    string resultwithonline = inputlinevalue.Replace(extractedvalue, onlinevalue);
+                                    resultvalue += resultwithonline;
+                                    cacheDS.Tables[0].Rows.Add(inputlinevalue, resultwithonline);
+                                    LogToFile("4.2 onlinevalue was set and added to cache. resultvalue=" + resultvalue);
+                                }
+                            }
+                            else
+                            {
+                                resultvalue += inputlinevalue.Replace(extractedvalue, valuefromcache);
+                                LogToFile("3.1 found in cache. resultvalue=" + resultvalue);
+                            }
+                        }
+                    }
+                }
+                if (a + 1 < input.Length)
+                {
+                    resultvalue += "\r\n";
+                }
+                LogToFile("5 resultvalue=" + resultvalue);
+            }
+            LogToFile("",true);
+            return resultvalue;
         }
         
         private void OpenInWebToolStripMenuItem_Click(object sender, EventArgs e)
@@ -5169,6 +5312,77 @@ namespace TranslationHelper
 
             //снять занятость по окончании
             THIsFixingCells = false;
+        }
+
+        bool THIsExtractingTextForTranslation;
+        private string THExtractTextForTranslation(string input)
+        {
+            //возвращать, если занято, когда исправление в процессе
+            if (THIsExtractingTextForTranslation)
+            {
+                return "";
+            }
+            //установить занятость при старте
+            THIsExtractingTextForTranslation = true;
+
+            string ret = input;
+            //если файл с правилами существует
+            if (File.Exists(apppath + "\\TranslationHelperTranslationRegexRules.txt"))
+            {
+                //читать файл с правилами
+                using (StreamReader rules = new StreamReader(apppath + "\\TranslationHelperTranslationRegexRules.txt"))
+                {
+                    try
+                    {
+                        //regex правило и результат из файла
+                        string rule;
+                        string result = "";
+                        while (!rules.EndOfStream)
+                        {
+                            //читать правило и результат
+                            rule = rules.ReadLine();
+                            result = rules.ReadLine();
+
+                            //проверить, есть ли правило и результат, если вдруг файле будет нечетное количество строк, по ошибке юзера
+                            if (string.IsNullOrEmpty(rule) || !result.Contains("$"))
+                            {
+                            }
+                            else
+                            {
+                                ret = Regex.Replace(ret, rule, result);
+                                //задать правило
+                                //Regex regexrule = new Regex(rule);
+
+                                ////найти совпадение с заданным правилом в выбранной ячейке
+                                //MatchCollection mc = regexrule.Matches(input);
+
+                                ////перебрать все найденные совпадения
+                                //foreach (Match m in mc)
+                                //{
+                                //    //исправить значения по найденным совпадениям в выбранной ячейке
+                                //    //ret = ret.Replace(m.Value.ToString(), regexrule.Replace(m.Value.ToString(), result));
+                                //    ret = Regex.Replace(ret, rule, result);
+                                //}
+                                if (ret == input)
+                                {
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        //LogToFile("",true);
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
+            //снять занятость по окончании
+            THIsExtractingTextForTranslation = false;
+            return ret;
         }
 
         private void SelectedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -5566,6 +5780,39 @@ namespace TranslationHelper
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.Sort = "";
+        }
+
+        private void SaveTranslationAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
+            {
+                dbpath = apppath + "\\DB";
+                string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir.Replace("\\www\\data","")) + "_" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
+                
+                THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
+                THFSaveBDAs.InitialDirectory = apppath + "\\DB";
+                THFSaveBDAs.FileName = dbfilename + GetDBCompressionExt();
+
+                if (THFSaveBDAs.ShowDialog() == DialogResult.OK)
+                {
+                    if (string.IsNullOrEmpty(THFSaveBDAs.FileName))
+                    {
+                    }
+                    else
+                    {
+                        //string spath = THFOpenBD.FileName;
+                        //THFOpenBD.OpenFile().Close();
+                        //MessageBox.Show(THFOpenBD.FileName);
+                        LoadTranslationFromDB();
+                        
+                        ProgressInfo(true);
+
+                        WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
+
+                        ProgressInfo(false);
+                    }
+                }
+            }
         }
 
 
