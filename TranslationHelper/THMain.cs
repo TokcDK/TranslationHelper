@@ -147,6 +147,7 @@ namespace TranslationHelper
                 //https://stackoverflow.com/questions/2926869/do-you-need-to-dispose-of-objects-and-set-them-to-null
                 using (OpenFileDialog THFOpen = new OpenFileDialog())
                 {
+                    THFOpen.InitialDirectory = Settings.THConfigINI.ReadINI("Paths","LastPath");
                     THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe";
 
                     if (THFOpen.ShowDialog() == DialogResult.OK)
@@ -176,6 +177,12 @@ namespace TranslationHelper
                             }
                             else
                             {
+                                //if (THSelectedSourceType == "RPG Maker MV")
+                                //{
+                                //    THMakeRPGMakerMVWorkProjectDir(THFOpen.FileName);
+                                //}
+
+                                Settings.THConfigINI.WriteINI("Paths", "LastPath", THSelectedDir);
                                 THMsg.Show(THSelectedSourceType + " loaded!");
 
                                 editToolStripMenuItem.Enabled = true;
@@ -192,6 +199,60 @@ namespace TranslationHelper
 
                 IsOpeningInProcess = false;
             }
+        }
+
+        private void THMakeRPGMakerMVWorkProjectDir(string sPath)
+        {
+            string outdir = apppath + "\\Work\\RPGMakerMV\\" + Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath));
+
+            if (!Directory.Exists(outdir))
+            {
+                Directory.CreateDirectory(outdir);
+
+
+                foreach (var d in Directory.GetDirectories(THSelectedDir, "*"))
+                {
+                    if (d.Contains("\\www"))
+                    {
+                        continue;
+                    }
+                    if (Directory.Exists(outdir + "\\" + Path.GetFileNameWithoutExtension(d)))
+                    {
+                    }
+                    else
+                    {
+                        THCreateSymlink.Folder(d, outdir + "\\" + Path.GetFileNameWithoutExtension(d));
+                    }
+                }
+                Directory.CreateDirectory(outdir + "\\www");
+                foreach (var d in Directory.GetDirectories(THSelectedDir + "\\www\\", "*"))
+                {
+                    if (d.Contains("www\\data"))
+                    {
+                        continue;
+                    }
+                    if (Directory.Exists(outdir + "\\www\\" + Path.GetFileNameWithoutExtension(d)))
+                    {
+                    }
+                    else
+                    {
+                        THCreateSymlink.Folder(d, outdir + "\\www\\" + Path.GetFileNameWithoutExtension(d));
+                    }
+                }
+                foreach (var f in Directory.GetFiles(THSelectedDir, "*.*"))
+                {
+                    if (File.Exists(outdir + "\\" + Path.GetFileName(f)))
+                    {
+                    }
+                    else
+                    {
+                        THCreateSymlink.File(f, outdir + "\\" + Path.GetFileName(f));
+                    }
+                }
+
+                CopyFolder.Copy(THSelectedDir + "\\www\\data", outdir + "\\www\\data");
+            }
+            THWorkProjectDir = outdir;
         }
 
         private void THCleanupThings()
@@ -231,6 +292,7 @@ namespace TranslationHelper
         }
 
         public DirectoryInfo mvdatadir;
+        public string THWorkProjectDir;
         private string GetSourceType(string sPath)
         {
             DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
@@ -245,29 +307,37 @@ namespace TranslationHelper
             {
                 if (File.Exists(THSelectedDir + "\\www\\data\\system.json"))
                 {
-                    THSelectedDir += "\\www\\data";
-                    //var MVJsonFIles = new List<string>();
-                    mvdatadir = new DirectoryInfo(Path.GetDirectoryName(THSelectedDir + "\\"));
-                    foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
+                    try
                     {
-                        //MessageBox.Show("file.FullName=" + file.FullName);
-                        //MVJsonFIles.Add(file.FullName);
+                        //THSelectedDir += "\\www\\data";
+                        //var MVJsonFIles = new List<string>();
+                        mvdatadir = new DirectoryInfo(Path.GetDirectoryName(THSelectedDir + "\\www\\data\\"));
+                        foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
+                        {
+                            //MessageBox.Show("file.FullName=" + file.FullName);
+                            //MVJsonFIles.Add(file.FullName);
 
-                        if (OpenRPGMakerMVjson(file.FullName))
-                        {
+                            if (OpenRPGMakerMVjson(file.FullName))
+                            {
+                            }
+                            else
+                            {
+                                return "";
+                            }
                         }
-                        else
+
+                        for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
                         {
-                            return "";
+                            //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
+                            THFilesListBox.Invoke((Action)(() => THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName)));
                         }
+
+                        return "RPG Maker MV";
                     }
-
-                    for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
+                    catch
                     {
-                        //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
-                        THFilesListBox.Invoke((Action)(() => THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName)));
+                        return "";
                     }
-                    return "RPG Maker MV";
                 }
                 else
                 {
@@ -1942,13 +2012,13 @@ namespace TranslationHelper
         private bool TryToExtractToRPGMakerTransPatch(string sPath)
         {
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-            string tempdir = apppath + "\\Temp";
-            if (!Directory.Exists(tempdir))
+            string workdir = apppath + "\\Work\\RPGMakerMV\\";
+            if (!Directory.Exists(workdir))
             {
-                Directory.CreateDirectory(tempdir);
+                Directory.CreateDirectory(workdir);
             }
             //MessageBox.Show("tempdir=" + tempdir);
-            string outdir = apppath + "\\Temp\\" + Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath));
+            string outdir = workdir + Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath));
 
             extractedpatchpath = outdir + "_patch";
             bool ret;
@@ -2635,7 +2705,7 @@ namespace TranslationHelper
 
         bool SaveInAction = false;
         bool FIleDataWasChanged = false;
-        private void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SaveInAction)
             {
@@ -2669,7 +2739,7 @@ namespace TranslationHelper
                 else if (THSelectedSourceType == "RPG Maker MV json")
                 {
                     //THMsg.Show(THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                    WriteJson(THFilesListBox.Items[0].ToString(), THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                    WriteJson(THFilesListBox.Items[0].ToString(), THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[0].ToString() + ".json");
                 }
                 else if (THSelectedSourceType == "RPG Maker MV")
                 {
@@ -2695,7 +2765,9 @@ namespace TranslationHelper
                         {
 
                             //THMsg.Show("start writing");
-                            WriteJson(THFilesListBox.Items[f].ToString(), THSelectedDir + "\\" + THFilesListBox.Items[f].ToString() + ".json");
+                            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                            await Task.Run(() => WriteJson(THFilesListBox.Items[f].ToString(), THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json"));
+                            //WriteJson(THFilesListBox.Items[f].ToString(), THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                         }
                     }
                     THMsg.Show("finished");
@@ -3424,7 +3496,16 @@ namespace TranslationHelper
             using (OpenFileDialog THFOpenBD = new OpenFileDialog())
             {
                 THFOpenBD.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
-                THFOpenBD.InitialDirectory = apppath + "\\DB";
+                string projecttypeDBfolder = "\\";
+                if (THSelectedSourceType.Contains("RPG Maker MV"))
+                {
+                    projecttypeDBfolder += "RPGMakerMV\\";
+                }
+                else if (THSelectedSourceType.Contains("RPGMTransPatch"))
+                {
+                    projecttypeDBfolder += "RPGMakerTransPatch\\";
+                }
+                THFOpenBD.InitialDirectory = apppath + "\\DB" + projecttypeDBfolder;
 
                 if (THFOpenBD.ShowDialog() == DialogResult.OK)
                 {
@@ -4254,7 +4335,7 @@ namespace TranslationHelper
                 return false;
             }
             //MessageBox.Show("THSelectedDir=" + THSelectedDir.Replace("\\www\\data", "\\www") + "\r\n, name=" + name + "\r\n, Count=" + Directory.EnumerateFiles(THSelectedDir, name + ".*", SearchOption.AllDirectories).Count());
-            if (Directory.EnumerateFiles(THSelectedDir.Replace("\\www\\data", "\\www"), name + ".*", SearchOption.AllDirectories).Count() > 0)
+            if (Directory.EnumerateFiles(THSelectedDir, name + ".*", SearchOption.AllDirectories).Count() > 0)
             {
                 //MessageBox.Show("GetAnyFileWithTheNameExist Returns True! name="+ name);
                 return true;
@@ -4444,6 +4525,7 @@ namespace TranslationHelper
 
         private bool WriteJson(string Jsonname, string sPath)
         {
+            ProgressInfo(true, "Writing: " + Jsonname + ".json");
             //LogToFile("Jsonname = " + Jsonname);
             try
             {
@@ -4480,10 +4562,11 @@ namespace TranslationHelper
             catch
             {
                 //LogToFile("", true);
+                ProgressInfo(false);
                 return false;
             }
             finally
-            {                
+            {
                 //LogToFile("", true);
                 //MessageBox.Show("sss");
                 //ds.Tables[Jsonname].Columns.Add("Translation");
@@ -4491,6 +4574,7 @@ namespace TranslationHelper
                 //DGV.DataSource = ds.Tables[0];
                 //treeView1.EndUpdate();
             }
+            ProgressInfo(false);
             return true;
 
         }
@@ -4693,40 +4777,43 @@ namespace TranslationHelper
         bool IsTranslating = false;
         private void OnlineTranslateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (IsTranslating)
+            if (THFileElementsDataGridView.SelectedCells.Count > 0)
             {
-                THMsg.Show("Already in process..");
-                return;
+                if (IsTranslating)
+                {
+                    THMsg.Show("Already in process..");
+                    return;
+                }
+                IsTranslating = true;
+
+                //координаты стартовой строк, колонки оригинала и номера таблицы
+                int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
+                int tableindex = THFilesListBox.SelectedIndex;
+                int[] selindexes = new int[THFileElementsDataGridView.SelectedCells.Count];
+                for (int i = 0; i < selindexes.Length; i++)
+                {
+                    selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                }
+
+                //THMsg.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
+
+                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                //почемуто так не переводит, переводчик кидает ошибку при заппуске в другом потоке
+                //await Task.Run(() => OnlineTranslateSelected(cind, tableindex, selindexes));
+
+                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "s")));
+                //
+                //..и фикс ошибки:
+                //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
+                //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
+                trans.SetApartmentState(ApartmentState.STA);
+                //но при выборе только одной строчки почему-то кидает исключение
+                trans.Start();
+
+                //OnlineTranslateSelected(cind, tableindex, selindexes);
+                //ProgressInfo(false);
             }
-            IsTranslating = true;
-
-            //координаты стартовой строк, колонки оригинала и номера таблицы
-            int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
-            int tableindex = THFilesListBox.SelectedIndex;
-            int[] selindexes = new int[THFileElementsDataGridView.SelectedCells.Count];
-            for (int i = 0; i < selindexes.Length; i++)
-            {
-                selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-            }
-
-            //THMsg.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
-            
-            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-            //почемуто так не переводит, переводчик кидает ошибку при заппуске в другом потоке
-            //await Task.Run(() => OnlineTranslateSelected(cind, tableindex, selindexes));
-
-            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "s")));
-            //
-            //..и фикс ошибки:
-            //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
-            //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
-            trans.SetApartmentState(ApartmentState.STA);
-            //но при выборе только одной строчки почему-то кидает исключение
-            trans.Start();
-
-            //OnlineTranslateSelected(cind, tableindex, selindexes);
-            //ProgressInfo(false);
 
         }
 
@@ -4822,6 +4909,8 @@ namespace TranslationHelper
 
         private void THOnlineTranslate(int cind, int tableindex, int[] selindexes, string method="s")
         {
+            translationInteruptToolStripMenuItem.Visible = true;
+            translationInteruptToolStripMenuItem1.Visible = true;
             try
             {
                 using (DataSet THTranslationCache = new DataSet())
@@ -4858,6 +4947,14 @@ namespace TranslationHelper
                         //перебор строк таблицы
                         for (int i = 0; i < rowscount; i++)
                         {
+                            if (InteruptTranslation)
+                            {
+                                translationInteruptToolStripMenuItem.Visible = false;
+                                translationInteruptToolStripMenuItem1.Visible = false;
+                                InteruptTranslation = false;
+                                return;
+                            }
+
                             string progressinfo;
                             if (method == "s")
                             {
@@ -4981,6 +5078,7 @@ namespace TranslationHelper
                     if (THTranslationCache.Tables[0].Rows.Count > 0 && Settings.THOptionEnableTranslationCacheCheckBox.Checked)
                     {
                         WriteDBFile(THTranslationCache, THTranslationCachePath);
+                        THTranslationCache.Reset();
                     }
                 }
             }
@@ -5436,19 +5534,22 @@ namespace TranslationHelper
 
         private void SelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
-            //на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
-            //пока оставлю выполнение в другом потоке, как нибудь проверю без второго потока там, где много исправлять, по крайней мере оставлю для вариантов Таблица и все
-            int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans               
-            int tableindex = THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
+            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            {
+                //эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
+                //на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
+                //пока оставлю выполнение в другом потоке, как нибудь проверю без второго потока там, где много исправлять, по крайней мере оставлю для вариантов Таблица и все
+                int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans               
+                int tableindex = THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
 
-            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("s", cind, tableindex)));
-            //но при выборе только одной строчки почему-то кидает исключение
-            //trans.Start();
+                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("s", cind, tableindex)));
+                //но при выборе только одной строчки почему-то кидает исключение
+                //trans.Start();
 
-            //убрал здесь выполнение во втором потоке, т.к. слишком мало править, не стоит того
-            THFixCells("s", cind, tableindex);
+                //убрал здесь выполнение во втором потоке, т.к. слишком мало править, не стоит того
+                THFixCells("s", cind, tableindex);
+            }
         }
 
         private void TableToolStripMenuItem_Click(object sender, EventArgs e)
@@ -5484,23 +5585,22 @@ namespace TranslationHelper
 
         private void SetOriginalValueToTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
+            if (THFileElementsDataGridView.SelectedCells.Count > 0)
             {
-                for (int i = 0; i < THFileElementsDataGridView.SelectedCells.Count; i++)
+                try
                 {
-                    //координаты ячейки
-                    int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                    int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Original"].Ordinal;//2-поле untrans
-                      
-                    //только для пустой ячейки перевода
-                    if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
+                    for (int i = 0; i < THFileElementsDataGridView.SelectedCells.Count; i++)
                     {
+                        //координаты ячейки
+                        int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                        int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Original"].Ordinal;//2-поле untrans
+
                         THFileElementsDataGridView[cind + 1, rind].Value = THFileElementsDataGridView[cind, rind].Value;
                     }
                 }
-            }
-            catch
-            {
+                catch
+                {
+                }
             }
         }
 
@@ -5836,10 +5936,19 @@ namespace TranslationHelper
             using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
             {
                 dbpath = apppath + "\\DB";
-                string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir.Replace("\\www\\data","")) + "_" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
+                string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir) + "_" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
                 
                 THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
-                THFSaveBDAs.InitialDirectory = apppath + "\\DB";
+                string projecttypeDBfolder = "\\";
+                if (THSelectedSourceType.Contains("RPG Maker MV"))
+                {
+                    projecttypeDBfolder += "RPGMakerMV\\";
+                }
+                else if (THSelectedSourceType.Contains("RPGMTransPatch"))
+                {
+                    projecttypeDBfolder += "RPGMakerTransPatch\\";
+                }
+                THFSaveBDAs.InitialDirectory = apppath + "\\DB" + projecttypeDBfolder;
                 THFSaveBDAs.FileName = dbfilename + GetDBCompressionExt();
 
                 if (THFSaveBDAs.ShowDialog() == DialogResult.OK)
@@ -5862,6 +5971,190 @@ namespace TranslationHelper
                     }
                 }
             }
+        }
+
+        private async void RunTestGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (THSelectedSourceType == "RPG Maker MV")
+            {
+                bool success = false;
+
+                CopyFolder.Copy(THSelectedDir + "\\www\\data", THSelectedDir + "\\www\\data_bak");
+                for (int f = 0; f < THFilesListBox.Items.Count; f++)
+                {
+                    //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
+                    //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
+
+                    bool changed = false;
+                    for (int r = 0; r < THFilesElementsDataset.Tables[f].Rows.Count; r++)
+                    {
+                        if (THFilesElementsDataset.Tables[f].Rows[r]["Translation"] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[f].Rows[r]["Translation"].ToString()))
+                        {
+                        }
+                        else
+                        {
+                            changed = true;
+                            break;
+                        }
+                    }
+                    //THMsg.Show(THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                    if (changed)
+                    {
+
+                        //THMsg.Show("start writing");
+
+                        //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                        success = await Task.Run(() => WriteJson(THFilesListBox.Items[f].ToString(), THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json"));
+                        if (!success)
+                        {
+                            break;
+                        }
+                        //success = WriteJson(THFilesListBox.Items[f].ToString(), THWorkProjectDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
+                    }
+                }
+                if (success)
+                {                   
+                    using (Process Testgame = new Process())
+                    {
+                        //MessageBox.Show("outdir=" + outdir);
+                        Testgame.StartInfo.FileName = THSelectedDir + "\\game.exe";
+                        //RPGMakerTransPatch.StartInfo.Arguments = "";
+                        //Testgame.StartInfo.UseShellExecute = true;
+                        await Task.Run(() => Testgame.Start());
+                        Testgame.WaitForExit();
+                    }
+                }
+                Directory.Delete(THSelectedDir + "\\www\\data", true);
+                Directory.Move(THSelectedDir + "\\www\\data_bak", THSelectedDir + "\\www\\data");
+            }
+        }
+
+        private void ToUPPERCASEToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //asdf For selected cells template
+            //try
+            //{
+            //    for (int i = 0; i < THFileElementsDataGridView.SelectedCells.Count; i++)
+            //    {
+            //        int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+            //        int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
+            //        int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
+            //        if (THFileElementsDataGridView.SelectedCells[i].Value == null)
+            //        {
+            //        }
+            //        else
+            //        {
+            //            if (THFileElementsDataGridView[ctransind, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[ctransind, rind].Value.ToString()))
+            //            {
+            //            }
+            //        }
+
+            //    }
+            //}
+            //catch
+            //{
+            //}
+            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            {
+                try
+                {
+                    for (int i = 0; i < THFileElementsDataGridView.SelectedCells.Count; i++)
+                    {
+                        int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                        //int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
+                        int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
+                        if (THFileElementsDataGridView.SelectedCells[i].Value == null)
+                        {
+                        }
+                        else
+                        {
+                            THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value.ToString().ToUpperInvariant();
+                        }
+
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private void FirstCharacterToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            {
+                try
+                {
+                    for (int i = 0; i < THFileElementsDataGridView.SelectedCells.Count; i++)
+                    {
+                        int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                        //int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
+                        int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
+                        if (THFileElementsDataGridView.SelectedCells[i].Value == null)
+                        {
+                        }
+                        else
+                        {
+                            //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1
+                            string s = THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value.ToString();
+                            THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = char.ToUpper(s[0]) + s.Substring(1);
+                        }
+
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private void ToLOWERCASEToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            {
+                try
+                {
+                    for (int i = 0; i < THFileElementsDataGridView.SelectedCells.Count; i++)
+                    {
+                        int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                        //int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
+                        int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
+                        if (THFileElementsDataGridView.SelectedCells[i].Value == null)
+                        {
+                        }
+                        else
+                        {
+                            THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value.ToString().ToLowerInvariant();
+                        }
+
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        bool InteruptTranslation = false;
+        private void InteruptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InteruptTranslation = true;
+        }
+
+        private void THMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            InteruptTranslation = true;
+        }
+
+        private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //DataRelation dr = new DataRelation("ALL",
+            //     new DataColumn[] { THFilesElementsDataset.Tables[0].Columns["Original"], THFilesElementsDataset.Tables[0].Columns["Translation"] },
+            //     new DataColumn[] { THFilesElementsDataset.Tables[1].Columns["Original"], THFilesElementsDataset.Tables[1].Columns["Translation"] }
+            //                                    );
+
+            //THFilesElementsDataset.Relations.Add(dr);
+            //THFileElementsDataGridView.DataSource = THFilesElementsDataset.Relations["ALL"].ParentTable;
         }
 
 

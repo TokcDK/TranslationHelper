@@ -69,6 +69,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CopyFolder.cs" />
     <Compile Include="ExternalAdditions\DeepL.cs" />
     <Compile Include="ExternalAdditions\GoogleAPI.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="ExternalAdditions\IniFiles.cs" />
     <Compile Include="Old elements\RPGMakerMVjson.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonSystem.cs" />
+    <Compile Include="THCreateSymlink.cs" />
     <Compile Include="THLoadingForm.cs">
       <SubType>Form</SubType>
     </Compile>
