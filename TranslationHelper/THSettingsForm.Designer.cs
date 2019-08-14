@@ -172,6 +172,7 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.TabIndex = 7;
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.Text = "open";
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.UseVisualStyleBackColor = true;
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen.Visible = false;
             // 
             // THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation
             // 
@@ -184,6 +185,7 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.TabIndex = 6;
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.Text = "translation";
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.UseVisualStyleBackColor = true;
+            this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation.Visible = false;
             // 
             // THOptionDBCompressionComboBox
             // 

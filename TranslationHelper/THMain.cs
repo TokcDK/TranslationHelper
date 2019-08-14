@@ -231,9 +231,9 @@ namespace TranslationHelper
         }
 
         public DirectoryInfo mvdatadir;
-        private string GetSourceType(String sPath)
+        private string GetSourceType(string sPath)
         {
-            var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
             THSelectedDir = dir.ToString();
             //MessageBox.Show("sPath=" + sPath);
             if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
@@ -241,13 +241,13 @@ namespace TranslationHelper
                 return RPGMTransPatchPrepare(sPath);
                 //return "RPGMTransPatch";
             }
-            else if (sPath.ToLower().Contains("\\game.exe") || File.Exists(THSelectedDir+"\\game.exe"))
+            else if (sPath.ToLower().Contains("\\game.exe") || File.Exists(THSelectedDir + "\\game.exe"))
             {
                 if (File.Exists(THSelectedDir + "\\www\\data\\system.json"))
                 {
                     THSelectedDir += "\\www\\data";
                     //var MVJsonFIles = new List<string>();
-                    mvdatadir = new DirectoryInfo(Path.GetDirectoryName(THSelectedDir+ "\\"));
+                    mvdatadir = new DirectoryInfo(Path.GetDirectoryName(THSelectedDir + "\\"));
                     foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
                     {
                         //MessageBox.Show("file.FullName=" + file.FullName);
@@ -4290,19 +4290,20 @@ namespace TranslationHelper
                 // treeView1.Nodes.Clear();
                 //var tNode = treeView1.Nodes[treeView1.Nodes.Add(new TreeNode(rootName))];
                 //tNode.Tag = root;
-
+                IsCommonEvents = (Jsonname == "CommonEvents");
                 ProceedJToken(root, Jsonname);
+
 
                 //treeView1.ExpandAll();
             }
             catch
             {
-                //LogToFile("", true);
+                LogToFile("", true);
                 return false;
             }
             finally
             {
-                //LogToFile("", true);
+                LogToFile("", true);
                 //MessageBox.Show("sss");
                 //ds.Tables[Jsonname].Columns.Add("Translation");
                 //ds.Tables[Jsonname].Columns["Original"].ReadOnly = true;
@@ -4319,6 +4320,8 @@ namespace TranslationHelper
         //private string cCode = "";
         private string cName = "";
         //private string cId = "";
+        //private string OldcId = "none";
+        bool IsCommonEvents = false;
         private void ProceedJToken(JToken token, string Jsonname, string propertyname = "")
         {
             if (token == null)
@@ -4334,11 +4337,19 @@ namespace TranslationHelper
                     //cCode = "Code" + curcode;
                     //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                 }
-                //LogToFile("JValue: " + propertyname + "=" + token.ToString());
+                //else if (propertyname == "id")
+                //{
+                //    if (cId != OldcId)
+                //    {
+                //        OldcId = cId;
+                //        cId = "ID" + token.ToString() + ":";
+                //    }
+                //}
+                //LogToFile("JValue: " + propertyname + "=" + token.ToString()+", token path="+token.Path);
                 if (token.Type == JTokenType.String)
                 {
                     string tokenvalue = token.ToString();
-                    if (curcode != "401" && curcode != "405")
+                    if (!IsCommonEvents || (curcode != "401" && curcode != "405"))
                     {
                         if (string.IsNullOrEmpty(textsb.ToString()))
                         {
@@ -4352,7 +4363,13 @@ namespace TranslationHelper
                             else
                             {
                                 THFilesElementsDataset.Tables[Jsonname].Rows.Add(mergedstring);
-                                THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JArray:Object");
+                                //JToken t = token;
+                                //while (!string.IsNullOrEmpty(t.Parent.Path))
+                                //{
+                                //    t = t.Parent;
+                                //    extra += "\\" + t.Path;
+                                //}
+                                THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
                             }
                             textsb.Clear();
                         }
@@ -4361,7 +4378,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            if (curcode == "102")
+                            if (IsCommonEvents && curcode == "102")
                             {
                                 cName = "Choice";
                             }
@@ -4370,7 +4387,14 @@ namespace TranslationHelper
                             //LogToFile("", true);
                             THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
                             //dsinfo.Tables[0].Rows.Add(cType+"\\"+ cId + "\\" + cCode + "\\" + cName);
-                            THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(cType + ":" + cName);
+                            //JToken t = token;
+                            //while (!string.IsNullOrEmpty(t.Parent.Path))
+                            //{
+                            //    t = t.Parent;
+                            //    extra += "\\"+t.Path;
+                            //}
+
+                            THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
                         }
                     }
                     else
@@ -4393,7 +4417,7 @@ namespace TranslationHelper
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 foreach (var property in obj.Properties())
                 {
-                    //LogToFile("JObject propery: " + property.Name + "=" + property.Value);
+                    LogToFile("JObject propery: " + property.Name + "=" + property.Value+ ", token.Path=" + token.Path);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(property.Name))];
                     //childNode.Tag = property;
                     cType = "JObject";
@@ -4405,7 +4429,7 @@ namespace TranslationHelper
             {
                 for (int i = 0; i < array.Count; i++)
                 {
-                    //LogToFile("JArray=\r\n" + array[i]);
+                    LogToFile("JArray=\r\n" + array[i] + "\r\n, token.Path=" + token.Path);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(i.ToString()))];
                     //childNode.Tag = array[i];
                     cType = "JArray";
