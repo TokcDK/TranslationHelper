@@ -112,6 +112,7 @@ namespace TranslationHelper
                     else
                     {
                         FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>" + THsbLog + "\r\n", true);
+                        //File.Move(apppath + "\\TranslationHelper.log", apppath + "\\TranslationHelper" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") + ".log");
                         THsbLog.Clear();
                     }
                 }
@@ -190,6 +191,10 @@ namespace TranslationHelper
                                 loadTranslationToolStripMenuItem.Enabled = true;
                                 loadTrasnlationAsToolStripMenuItem.Enabled = true;
 
+                                if (string.IsNullOrEmpty(FVariant))
+                                {
+                                    FVariant = " * "+THSelectedSourceType;
+                                }
                                 ActiveForm.Text += FVariant;
                             }
 
@@ -2623,6 +2628,10 @@ namespace TranslationHelper
                         THInfoTextBox.Text += THShowLangsOfString(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), "all"); //Show all detected languages count info
                         THInfoTextBox.Text += "\r\n";
                         THInfoTextBox.Text += "rowinfo:\r\n"+THFilesElementsDatasetInfo.Tables[THFilesListBox.SelectedIndex].Rows[e.RowIndex][0];
+                        if (THSelectedSourceType == "RPG Maker MV")
+                        {
+                            THInfoTextBox.Text += "\r\n\r\nSeveral strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.";
+                        }
                     }
                 }
                 //--------Считывание значения ячейки в текстовое поле 1
@@ -2813,7 +2822,7 @@ namespace TranslationHelper
                 else if (THSelectedSourceType == "RPG Maker MV json")
                 {
                     //THMsg.Show(THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                    WriteJson(THFilesListBox.Items[0].ToString(), THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[0].ToString() + ".json");
+                    WriteJson(THFilesListBox.Items[0].ToString(), THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
                 }
                 else if (THSelectedSourceType == "RPG Maker MV")
                 {
@@ -3220,6 +3229,7 @@ namespace TranslationHelper
             THSettings.Show();
         }
 
+        //http://qaru.site/questions/180337/show-row-number-in-row-header-of-a-datagridview
         private void THFileElementsDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
             var grid = sender as DataGridView;
@@ -3385,8 +3395,10 @@ namespace TranslationHelper
             }
             dbpath = apppath + "\\DB" + projecttypeDBfolder;
             lastautosavepath = dbpath + dbfilename + GetDBCompressionExt();
-
-            LoadTranslationFromDB(lastautosavepath);
+            if (File.Exists(lastautosavepath))
+            {
+                LoadTranslationFromDB(lastautosavepath);
+            }
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy = false;
@@ -4513,13 +4525,14 @@ namespace TranslationHelper
                 //DGV.DataSource = ds.Tables[0];
                 //treeView1.EndUpdate();
             }
+            //LogToFile("", true);
             return true;
 
         }
 
         StringBuilder textsb = new StringBuilder();
         private string curcode = "";
-        private string cType;
+        //string cType;
         //private string cCode = "";
         private string cName = "";
         //private string cId = "";
@@ -4534,7 +4547,7 @@ namespace TranslationHelper
 
             if (token is JValue)
             {
-                if (propertyname == "code")
+                if (cName == "code")
                 {
                     curcode = token.ToString();
                     //cCode = "Code" + curcode;
@@ -4549,46 +4562,62 @@ namespace TranslationHelper
                 //    }
                 //}
                 //LogToFile("JValue: " + propertyname + "=" + token.ToString()+", token path="+token.Path);
-                if (token.Type == JTokenType.String)
+                string tokenvalue = token.ToString();
+
+                if (IsCommonEvents && (curcode == "401" || curcode == "405"))
                 {
-                    string tokenvalue = token.ToString();
-                    if (!IsCommonEvents || (curcode != "401" && curcode != "405"))
+                    if (token.Type == JTokenType.String)
                     {
-                        if (IsCommonEvents)
+                        if (string.IsNullOrEmpty(textsb.ToString()))
                         {
-                            if (string.IsNullOrEmpty(textsb.ToString()))
+                        }
+                        else
+                        {
+                            textsb.Append("\r\n");
+                        }
+                        //LogToFile("code 401 adding valur to merge=" + tokenvalue + ", curcode=" + curcode);
+                        textsb.Append(tokenvalue);
+                    }
+                }
+                else
+                {
+                    if (IsCommonEvents)
+                    {
+                        if (string.IsNullOrEmpty(textsb.ToString()))
+                        {
+                        }
+                        else
+                        {
+                            string mergedstring = textsb.ToString();
+                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ SelectedLocalePercentFromStringIsNotValid(mergedstring))
                             {
                             }
                             else
                             {
-                                string mergedstring = textsb.ToString();
-                                if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ SelectedLocalePercentFromStringIsNotValid(mergedstring))
-                                {
-                                }
-                                else
-                                {
-                                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(mergedstring);
-                                    //JToken t = token;
-                                    //while (!string.IsNullOrEmpty(t.Parent.Path))
-                                    //{
-                                    //    t = t.Parent;
-                                    //    extra += "\\" + t.Path;
-                                    //}
-                                    THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
-                                }
-                                textsb.Clear();
+                                //LogToFile("textsb is not empty. add. value=" + mergedstring + ", curcode=" + curcode);
+                                THFilesElementsDataset.Tables[Jsonname].Rows.Add(mergedstring);
+                                //JToken t = token;
+                                //while (!string.IsNullOrEmpty(t.Parent.Path))
+                                //{
+                                //    t = t.Parent;
+                                //    extra += "\\" + t.Path;
+                                //}
+                                THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
                             }
+                            textsb.Clear();
                         }
-
+                    }
+                    if (token.Type == JTokenType.String)
+                    {
                         if (string.IsNullOrEmpty(tokenvalue)/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || SelectedLocalePercentFromStringIsNotValid(tokenvalue) || GetAnyFileWithTheNameExist(tokenvalue))
                         {
                         }
                         else
                         {
-                            if (IsCommonEvents && curcode == "102")
-                            {
-                                cName = "Choice";
-                            }
+                            //if (IsCommonEvents && curcode == "102")
+                            //{
+                            //    cName = "Choice";
+                            //}
 
                             //LogToFile("Jsonname=" + Jsonname);
                             //LogToFile("", true);
@@ -4604,17 +4633,6 @@ namespace TranslationHelper
                             THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
                         }
                     }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(textsb.ToString()))
-                        {
-                        }
-                        else
-                        {
-                            textsb.Append("\r\n");
-                        }
-                        textsb.Append(tokenvalue);
-                    }
                 }
                 //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(token.ToString()))];
                 //childNode.Tag = token;
@@ -4624,15 +4642,34 @@ namespace TranslationHelper
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 foreach (var property in obj.Properties())
                 {
+                    //cType = "JObject";
+                    cName = property.Name;
                     //LogToFile("JObject propery: " + property.Name + "=" + property.Value+ ", token.Path=" + token.Path);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(property.Name))];
                     //childNode.Tag = property;
-                    if (IsCommonEvents && property.Name == "code" && property.Value.ToString() == "108")//asdf
+
+                    if (IsCommonEvents)//asdfg skip code 108,408,356
                     {
-                        continue;
+                        if (skipit)
+                        {
+                            if (property.Name == "parameters")//asdf
+                            {
+                                skipit = false;
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            if (cName == "code")
+                            {
+                                if (property.Value.ToString() == "108" || property.Value.ToString() == "408" || property.Value.ToString() == "356")
+                                {
+                                    skipit = true;
+                                    break;
+                                }
+                            }
+                        }
                     }
-                    cType = "JObject";
-                    cName = property.Name;
                     ProceedJToken(property.Value, Jsonname, property.Name);
                 }
             }
@@ -4643,7 +4680,7 @@ namespace TranslationHelper
                     //LogToFile("JArray=\r\n" + array[i] + "\r\n, token.Path=" + token.Path);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(i.ToString()))];
                     //childNode.Tag = array[i];
-                    cType = "JArray";
+                    //cType = "JArray";
                     ProceedJToken(array[i], Jsonname);
                 }
             }
@@ -4652,6 +4689,7 @@ namespace TranslationHelper
                 //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
             }
         }
+        bool skipit = false;
 
         private bool WriteJson(string Jsonname, string sPath)
         {
@@ -4706,6 +4744,7 @@ namespace TranslationHelper
                 //DGV.DataSource = ds.Tables[0];
                 //treeView1.EndUpdate();
             }
+            //LogToFile("", true);
             ProgressInfo(false);
             return true;
 
@@ -4731,6 +4770,10 @@ namespace TranslationHelper
                     else
                     {
 
+                        //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
+                        //{
+                        //    //LogToFile("tokenvalue=" + tokenvalue);
+                        //}
                         string parameter0value = tokenvalue;
                         if (string.IsNullOrEmpty(parameter0value))
                         {
@@ -4791,9 +4834,30 @@ namespace TranslationHelper
 
                                             transA = THSplit(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
                                         }
+
+                                        //LogToFile("parameter0value=" + parameter0value);
+                                        //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
+                                        //{
+                                        //    //LogToFile("tokenvalue=" + tokenvalue + ", tablevalue=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
+                                        //}
+                                        //Подстраховочная проверка для некоторых значений из нескольких строк, полное сравнение перед построчной
+                                        if (tokenvalue == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
+                                        {
+                                            var t = token as JValue;
+                                            t.Value = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString().Replace("\r", "");//убирает \r, т.к. в json присутствует только \n
+                                            startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                            break;
+                                        }
+
                                         bool br = false; //это чтобы выйти потом из прохода по таблице и перейти к след. элементу json, если перевод был присвоен
                                         for (int i2 = 0; i2 < origALength; i2++)
                                         {
+                                            //LogToFile("parameter0value=" + parameter0value);
+                                            //if (Jsonname == "States" && parameter0value.Contains("自動的に付加されます"))
+                                            //{
+                                            //    //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", "") + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", "")));
+                                            //}
+
                                             //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", "") + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", "")));
                                             if (parameter0value == origA[i2].Replace("\r", "")) //Replace здесь убирает \r из за которой строки считались неравными
                                             {
@@ -4801,6 +4865,7 @@ namespace TranslationHelper
                                                 var t = token as JValue;
                                                 t.Value = transA[i2].Replace("\r", ""); //Replace убирает \r
 
+                                                startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
                                                 //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
                                                 br = true;
                                                 break;
@@ -4814,6 +4879,11 @@ namespace TranslationHelper
                                     }
                                     else
                                     {
+                                        //LogToFile("tokenvalue=" + tokenvalue);
+                                        //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
+                                        //{
+                                        //    //LogToFile("tokenvalue=" + tokenvalue + ", tablevalue=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
+                                        //}
                                         if (tokenvalue == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
                                         {
                                             var t = token as JValue;
@@ -4862,9 +4932,27 @@ namespace TranslationHelper
                     //childNode.Tag = property;
                     //cType = "JObject";
                     //cName = property.Name;
-                    if (IsCommonEvents && property.Name == "code" && property.Value.ToString() == "108")//asdf
+                    if (IsCommonEvents)//asdfg skip code 108,408,356
                     {
-                        continue;
+                        if (skipit)
+                        {
+                            if (property.Name == "parameters")//asdf
+                            {
+                                skipit = false;
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            if (property.Name == "code")
+                            {
+                                if (property.Value.ToString() == "108" || property.Value.ToString() == "408" || property.Value.ToString() == "356")
+                                {
+                                    skipit = true;
+                                    break;
+                                }
+                            }
+                        }
                     }
                     WProceedJToken(property.Value, Jsonname, property.Name);
                 }
@@ -5002,7 +5090,8 @@ namespace TranslationHelper
             int[] selindexes = new int[1];
 
             //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
+            //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
+            Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -5239,6 +5328,128 @@ namespace TranslationHelper
             ProgressInfo(false);
         }
 
+        /// <summary>
+        /// перевод множества строк большим блоком
+        /// </summary>
+        /// <param name="cind"></param>
+        /// <param name="tableindex"></param>
+        /// <param name="selindexes"></param>
+        /// <param name="method"></param>
+        private void THOnlineTranslateByBigBlocks(int cind, int tableindex, int[] selindexes, string method = "a")
+        {
+            int googletextmaxsize = 3000;
+            int googletextcurrentsize = 0;
+            using (DataTable inputtextarrayData = new DataTable())
+            {
+                inputtextarrayData.Columns.Add("Inputstring");
+                StringBuilder inputtextarrayDataSB = new StringBuilder();
+                using (DataTable inputtextarrayInfo = new DataTable())
+                {
+                    //LogToFile("1111");
+                    inputtextarrayInfo.Columns.Add("Inputstring Table Index");
+                    inputtextarrayInfo.Columns.Add("Inputstring Row Index");
+
+                    this.Invoke((Action)(() => translationInteruptToolStripMenuItem.Visible = true));
+                    this.Invoke((Action)(() => translationInteruptToolStripMenuItem1.Visible = true));
+                    try
+                    {
+                        //Формирование массива строк для перевода
+                        for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)//таблицы
+                        {
+                            for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)//строки таблицы
+                            {
+                                if (THFilesElementsDataset.Tables[t].Rows[r][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[r][1].ToString()))
+                                {
+                                    //LogToFile("2222");
+                                    if (t + 1 == THFilesElementsDataset.Tables.Count && r + 1 == THFilesElementsDataset.Tables[t].Rows.Count)
+                                    {
+                                        if (THFilesElementsDataset.Tables[t].Rows[r][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[r][1].ToString()))
+                                        {
+                                            THFilesElementsDataset.Tables[t].Rows[r][1] = GoogleAPI.Translate(THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
+                                        }
+
+                                        if (inputtextarrayData.Rows.Count > 0)
+                                        {
+                                            googletextcurrentsize = 0;
+                                            TranslateArrayAndSetValues(inputtextarrayData, inputtextarrayInfo);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        googletextcurrentsize += THFilesElementsDataset.Tables[t].Rows[r][0].ToString().Length;
+                                        //LogToFile("googletextcurrentsize="+ googletextcurrentsize);
+                                        if (googletextcurrentsize > googletextmaxsize)
+                                        {
+                                            //LogToFile("inputtextarrayData.Rows.Count=" + inputtextarrayData.Rows.Count);
+                                            googletextcurrentsize = 0;
+                                            TranslateArrayAndSetValues(inputtextarrayData, inputtextarrayInfo);
+
+                                            if (THFilesElementsDataset.Tables[t].Rows[r][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[r][1].ToString()))
+                                            {
+                                                THFilesElementsDataset.Tables[t].Rows[r][1] = GoogleAPI.Translate(THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //LogToFile("add line="+ THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
+                                            //добавление строки в таблицувходных данных и индекса таблицы и строки в таблицу информации о добавленной строке, для дальнейшего разбора
+                                            //inputtextarrayData.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
+                                            string addstring = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[r][0].ToString(), @"\r\n|\r|\n","DNTT");
+                                            
+
+                                            //for (int s=0,s<addstring.Replace)
+
+                                            inputtextarrayDataSB.Append(addstring);
+                                            inputtextarrayInfo.Rows.Add(t, r);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //LogToFile("Error: "+ex,true);
+                    }
+                }
+            }
+            //LogToFile("",true);
+            IsTranslating = false;
+            ProgressInfo(false);
+        }
+
+        private void TranslateArrayAndSetValues(DataTable inputtextarrayData, DataTable inputtextarrayInfo)
+        {
+            //LogToFile("TranslateArrayAndSetValues executed!",true);
+            //по таблице в массив
+            //https://stackoverflow.com/questions/37827308/convert-datatable-into-an-array-in-c-sharp
+            string[] outputarray = GoogleAPI.TranslateMultiple(inputtextarrayData.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray());
+            inputtextarrayData.Rows.Clear();
+            //googletextcurrentsize = 0;
+
+            if (outputarray != null && outputarray.Length > 0)
+            {
+                for (int o = 0; o < outputarray.Length; o++)
+                {
+                    if (string.IsNullOrEmpty(outputarray[o]))
+                    {
+                    }
+                    else
+                    {
+                        int targettableindex = int.Parse(inputtextarrayInfo.Rows[o][0].ToString());
+                        int targetrowindex = int.Parse(inputtextarrayInfo.Rows[o][1].ToString());
+
+                        if (THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1].ToString()))
+                        {
+                            THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] = outputarray[o];
+                        }
+                    }
+                }
+            }
+            inputtextarrayInfo.Rows.Clear();
+        }
+
+
         private string TranslateMultilineValue(string[] input, DataSet cacheDS)
         {
             //LogToFile("0 Started multiline array handling");
@@ -5355,9 +5566,19 @@ namespace TranslationHelper
                 }
             }
             //MessageBox.Show(value.ToString());
-            string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\""));
+            //string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\""));
+            string result = string.Format(Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\""));
             //MessageBox.Show(result);
             Process.Start(result);
+
+            //string input = (Regex.Replace(value.ToString(), @"\r\n|\r|\n", "DNTT")).Replace("\"", "\\\"");
+            //LogToFile("input=" + input);
+            //string s = GoogleAPI.Translate(input);
+            ////string[] s = GoogleAPI.Translate(input).Split("\n");
+
+            //LogToFile("Translation s=" + s);
+            ////LogToFile("Translation formatted:\r\n"+s.Replace("  DNTT  ", "\r\n"));
+            //LogToFile("", true);
         }
 
         private void THTargetTextBox_Leave(object sender, EventArgs e)

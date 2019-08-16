@@ -247,7 +247,7 @@ namespace TranslationHelper
         }
 
         // Token: 0x06000EEE RID: 3822 RVA: 0x0006AEFC File Offset: 0x000690FC
-        public static string GetTranslation(string OriginalText, string LanguageFrom, string LanguageTo)
+        public static string GetTranslation(string OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
             string ResultOfTranslation;
             if (OriginalText.Length == 0)
@@ -264,7 +264,8 @@ namespace TranslationHelper
                 {
                     string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "DNTT", RegexOptions.None);
                     string arg = HttpUtility.UrlEncode(str, Encoding.UTF8);
-                    string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
+                    //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
+                    string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, str);
                     using (WebClient webClient = new WebClient())
                     {
                         webClient.Encoding = Encoding.UTF8;
@@ -302,7 +303,7 @@ namespace TranslationHelper
                                         }
                                         else
                                         {
-                                            string text2 = htmlElement.InnerText.Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                            string text2 = htmlElement.InnerText.Replace(" DNTT ", "\r\n").Replace(" DNTT", "\r\n").Replace("DNTT ", "\r\n").Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
                                             myCache[OriginalText] = text2;
                                             return text2;
                                         }
@@ -325,142 +326,134 @@ namespace TranslationHelper
         }
 
         // Token: 0x06000EEF RID: 3823 RVA: 0x0006B160 File Offset: 0x00069360
-        //public static string[] TranslateMultiple(string[] OriginalText, string LanguageFrom, string LanguageTo)
-        //{
-        //    checked
-        //    {
-        //        string[] array = new string[OriginalText.Count<string>() - 1 + 1];
-        //        StringBuilder stringBuilder = new StringBuilder();
-        //        int num = OriginalText.Count<string>() - 1;
-        //        for (int i = 0; i <= num; i++)
-        //        {
-        //            bool flag = OriginalText[i].Length == 0;
-        //            if (flag)
-        //            {
-        //                array[i] = string.Empty;
-        //            }
-        //            else
-        //            {
-        //                bool flag2 = false;// TradPonctuation.isAllPonctuation(OriginalText[i]);
-        //                if (flag2)
-        //                {
-        //                    array[i] = OriginalText[i];
-        //                }
-        //                else
-        //                {
-        //                    bool flag3 = myCache.ContainsKey(OriginalText[i]);
-        //                    if (flag3)
-        //                    {
-        //                        array[i] = myCache[OriginalText[i]];
-        //                    }
-        //                    stringBuilder.Append(string.Concat(new string[]
-        //                    {
-        //                        "##",
-        //                        Conversions.ToString(i),
-        //                        "## ",
-        //                        Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None),
-        //                        " ##",
-        //                        Conversions.ToString(i),
-        //                        "##\r\n"
-        //                    }));
-        //                }
-        //            }
-        //        }
-        //        string arg = HttpUtility.UrlEncode(stringBuilder.ToString(), Encoding.UTF8);
-        //        string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
-        //        using (WebClient webClient = new WebClient())
-        //        {
-        //            webClient.Encoding = Encoding.UTF8;
-        //            webClient.Headers.Add(HttpRequestHeader.UserAgent, "Opera/9.80 (J2ME/MIDP; Opera Mini/5.1.21214/28.2725; U; en) Presto/2.8.119 Version/11.10");
-        //            try
-        //            {
-        //                //Материалы, что помогли
-        //                //http://www.cyberforum.ru/ado-net/thread903701.html
-        //                //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
-        //                //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
-        //                HtmlDocument htmlDocument;
-        //                string text;
-        //                using (WebBrowser WB = new WebBrowser())//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
-        //                {
-        //                    text = webClient.DownloadString(address);
-        //                    WB.ScriptErrorsSuppressed = true;
-        //                    WB.DocumentText = "";
-        //                    htmlDocument = WB.Document.OpenNew(true);
-        //                }
-        //                htmlDocument.Write(text);
-        //                string text2 = string.Empty;
-        //                try
-        //                {
-        //                    foreach (object obj in htmlDocument.Body.Children)
-        //                    {
-        //                        HtmlElement htmlElement = (HtmlElement)obj;
-        //                        bool flag4 = htmlElement.InnerText == null;
-        //                        if (!flag4)
-        //                        {
-        //                            bool flag5 = htmlElement.InnerHtml.StartsWith("<");
-        //                            if (!flag5)
-        //                            {
-        //                                text2 = htmlElement.InnerText.Replace(DNTT, "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-        //                                break;
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //                finally
-        //                {
-        //                    /*IEnumerator enumerator;
-        //                    if (enumerator is IDisposable)
-        //                    {
-        //                        (enumerator as IDisposable).Dispose();
-        //                    }*/
-        //                }
-        //                bool flag6 = text2.Length == 0;
-        //                if (flag6)
-        //                {
-        //                    int num2 = array.Count<string>() - 1;
-        //                    for (int j = 0; j <= num2; j++)
-        //                    {
-        //                        bool flag7 = array[j] == null;
-        //                        if (flag7)
-        //                        {
-        //                            array[j] = string.Empty;
-        //                        }
-        //                    }
-        //                    return array;
-        //                }
-        //                MatchCollection matchCollection = myReg.Matches(text2);
-        //                int num3 = 0;
-        //                int num4 = array.Count<string>() - 1;
-        //                for (int k = 0; k <= num4; k++)
-        //                {
-        //                    bool flag8 = array[k] != null;
-        //                    if (!flag8)
-        //                    {
-        //                        bool flag9 = matchCollection.Count == num3;
-        //                        if (flag9)
-        //                        {
-        //                            array[k] = string.Empty;
-        //                        }
-        //                        else
-        //                        {
-        //                            array[k] = matchCollection[num3].Value;
-        //                            num3++;
-        //                        }
-        //                    }
-        //                }
-        //                return array;
-        //            }
-        //            catch (Exception)
-        //            {
-        //                //Debog.Writeline(ex);
-        //            }
-        //        }
-        //        return null;
-        //    }
-        //}
+        public static string[] TranslateMultiple(string[] OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
+        {
+            checked
+            {
+                string[] array = new string[OriginalText.Count() - 1 + 1];
+                StringBuilder stringBuilder = new StringBuilder();
+                int num = OriginalText.Count() - 1;
+                for (int i = 0; i <= num; i++)
+                {
+                    if (OriginalText[i].Length == 0)
+                    {
+                        array[i] = string.Empty;
+                    }
+                    else
+                    {
+                        bool flag2 = false;// TradPonctuation.isAllPonctuation(OriginalText[i]);
+                        if (flag2)
+                        {
+                            array[i] = OriginalText[i];
+                        }
+                        else
+                        {
+                            bool flag3 = myCache.ContainsKey(OriginalText[i]);
+                            if (flag3)
+                            {
+                                array[i] = myCache[OriginalText[i]];
+                            }
+                            stringBuilder.Append(string.Concat(new string[]
+                            {
+                                "##",
+                                Conversions.ToString(i),
+                                "## ",
+                                Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None),
+                                " ##",
+                                Conversions.ToString(i),
+                                "##\r\n"
+                            }));
+                        }
+                    }
+                }
+                string arg = HttpUtility.UrlEncode(stringBuilder.ToString(), Encoding.UTF8);
+                //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
+                string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, stringBuilder.ToString());
+                using (WebClient webClient = new WebClient())
+                {
+                    webClient.Encoding = Encoding.UTF8;
+                    webClient.Headers.Add(HttpRequestHeader.UserAgent, "Opera/9.80 (J2ME/MIDP; Opera Mini/5.1.21214/28.2725; U; en) Presto/2.8.119 Version/11.10");
+                    try
+                    {
+                        //Материалы, что помогли
+                        //http://www.cyberforum.ru/ado-net/thread903701.html
+                        //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
+                        //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
+                        HtmlDocument htmlDocument;
+                        string text;
+                        using (WebBrowser WB = new WebBrowser())//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
+                        {
+                            text = webClient.DownloadString(address);
+                            WB.ScriptErrorsSuppressed = true;
+                            WB.DocumentText = "";
+                            htmlDocument = WB.Document.OpenNew(true);
+                        }
+                        htmlDocument.Write(text);
+                        string text2 = string.Empty;
+                        try
+                        {
+                            foreach (object obj in htmlDocument.Body.Children)
+                            {
+                                HtmlElement htmlElement = (HtmlElement)obj;
+                                bool flag4 = htmlElement.InnerText == null;
+                                if (!flag4)
+                                {
+                                    bool flag5 = htmlElement.InnerHtml.StartsWith("<");
+                                    if (!flag5)
+                                    {
+                                        text2 = htmlElement.InnerText.Replace(DNTT, "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        finally
+                        {
+                        }
+
+                        if (text2.Length == 0)
+                        {
+                            int num2 = array.Count<string>() - 1;
+                            for (int j = 0; j <= num2; j++)
+                            {
+                                if (array[j] == null)
+                                {
+                                    array[j] = string.Empty;
+                                }
+                            }
+                            return array;
+                        }
+                        MatchCollection matchCollection = myReg.Matches(text2);
+                        int num3 = 0;
+                        int num4 = array.Count<string>() - 1;
+                        for (int k = 0; k <= num4; k++)
+                        {
+                            if (array[k] == null)
+                            {
+                                if (matchCollection.Count == num3)
+                                {
+                                    array[k] = string.Empty;
+                                }
+                                else
+                                {
+                                    array[k] = matchCollection[num3].Value;
+                                    num3++;
+                                }
+                            }
+                        }
+                        return array;
+                    }
+                    catch (Exception)
+                    {
+                        //Debog.Writeline(ex);
+                    }
+                }
+                return null;
+            }
+        }
 
         // Token: 0x04000444 RID: 1092
-        //private const string DNTT = "DNTT";
+        private const string DNTT = "DNTT";
 
         // Token: 0x04000445 RID: 1093
         //private const string SEPARATOR = "\r\n#DONOTTRANSLATE#\r\n";
@@ -475,6 +468,6 @@ namespace TranslationHelper
         private static readonly Dictionary<string, string> myCache = new Dictionary<string, string>(1);
 
         // Token: 0x04000449 RID: 1097
-        //private static readonly Regex myReg = new Regex("(?<=##\\d## ).*?(?=##\\d##)", RegexOptions.Compiled);
+        private static readonly Regex myReg = new Regex("(?<=##\\d## ).*?(?=##\\d##)", RegexOptions.Compiled);
     }
 }
