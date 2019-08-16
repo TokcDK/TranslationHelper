@@ -3172,35 +3172,44 @@ namespace TranslationHelper
 
         private void CheckFilterDGV()
         {
-            //private void DGVFilter()
-            string OverallFilter = string.Empty;
-            for (int c = 0; c < THFiltersDataGridView.Columns.Count; c++)
+            try
             {
-                if (THFiltersDataGridView.Rows[0].Cells[c].Value == null || string.IsNullOrEmpty(THFiltersDataGridView.Rows[0].Cells[c].Value.ToString()))
+                //private void DGVFilter()
+                string OverallFilter = string.Empty;
+                for (int c = 0; c < THFiltersDataGridView.Columns.Count; c++)
                 {
-
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(OverallFilter))
+                    if (THFiltersDataGridView.Rows[0].Cells[c].Value == null || string.IsNullOrEmpty(THFiltersDataGridView.Rows[0].Cells[c].Value.ToString()))
                     {
-                        OverallFilter += THFiltersDataGridView.Columns[c].Name + " Like '%" + THFiltersDataGridView.Rows[0].Cells[c].Value + "%'";
+
                     }
                     else
                     {
-                        OverallFilter += " AND ";
-                        OverallFilter += THFiltersDataGridView.Columns[c].Name + " Like '%" + THFiltersDataGridView.Rows[0].Cells[c].Value + "%'";
+                        //об экранировании спецсимволов
+                        //http://skillcoding.com/Default.aspx?id=159
+                        //https://webcache.googleusercontent.com/search?q=cache:irqjhHKbiFMJ:https://www.syncfusion.com/kb/4492/how-to-filter-special-characters-like-by-typing-it-in-dynamic-filter+&cd=6&hl=ru&ct=clnk&gl=ru
+                        if (string.IsNullOrEmpty(OverallFilter))
+                        {
+                            OverallFilter += "["+THFiltersDataGridView.Columns[c].Name + "] Like '%" + THFiltersDataGridView.Rows[0].Cells[c].Value.ToString().Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";//-QB[BQ- - для исбежания проблем с заменой в операторе .Replace("]", "[]]"), после этого
+                        }
+                        else
+                        {
+                            OverallFilter += " AND ";
+                            OverallFilter += "[" + THFiltersDataGridView.Columns[c].Name + "] Like '%" + THFiltersDataGridView.Rows[0].Cells[c].Value.ToString().Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";//-QB[BQ- - для исбежания проблем с заменой в операторе .Replace("]", "[]]"), после этого
+                        }
                     }
                 }
+                //also about sort:https://docs.microsoft.com/ru-ru/dotnet/api/system.data.dataview.rowfilter?view=netframework-4.8
+                //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.Sort = String.Empty;
+                //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = String.Empty;
+                //MessageBox.Show("\""+OverallFilter+ "\"");
+                //MessageBox.Show(string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value));
+                //https://10tec.com/articles/why-datagridview-slow.aspx
+                //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value);
+                THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = OverallFilter;
             }
-            //also about sort:https://docs.microsoft.com/ru-ru/dotnet/api/system.data.dataview.rowfilter?view=netframework-4.8
-            //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.Sort = String.Empty;
-            //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = String.Empty;
-            //MessageBox.Show("\""+OverallFilter+ "\"");
-            //MessageBox.Show(string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value));
-            //https://10tec.com/articles/why-datagridview-slow.aspx
-            //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value);
-            THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = OverallFilter;
+            catch
+            {
+            }
         }
 
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3322,9 +3331,18 @@ namespace TranslationHelper
         string lastautosavepath;
         private void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            dbpath = apppath + "\\DB";
-            string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
-            lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
+            string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir);
+            string projecttypeDBfolder = "\\";
+            if (THSelectedSourceType.Contains("RPG Maker MV"))
+            {
+                projecttypeDBfolder += "RPGMakerMV\\";
+            }
+            else if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
+            {
+                projecttypeDBfolder += "RPGMakerTransPatch\\";
+            }
+            dbpath = apppath + "\\DB" + projecttypeDBfolder;
+            lastautosavepath = dbpath + dbfilename + GetDBCompressionExt();
 
             ProgressInfo(true);
 
@@ -3336,9 +3354,39 @@ namespace TranslationHelper
             ProgressInfo(false);
         }
 
+        private void Autosave()
+        {
+            //dbpath = apppath + "\\DB";
+            //string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
+            //lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
+
+            //ProgressInfo(true);
+
+            //WriteDBFile(THFilesElementsDataset, lastautosavepath);
+            ////THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
+
+            //Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
+
+            //ProgressInfo(false);
+        }
+
         private void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LoadTranslationFromDB();
+
+            string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir);
+            string projecttypeDBfolder = "\\";
+            if (THSelectedSourceType.Contains("RPG Maker MV"))
+            {
+                projecttypeDBfolder += "RPGMakerMV\\";
+            }
+            else if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
+            {
+                projecttypeDBfolder += "RPGMakerTransPatch\\";
+            }
+            dbpath = apppath + "\\DB" + projecttypeDBfolder;
+            lastautosavepath = dbpath + dbfilename + GetDBCompressionExt();
+
+            LoadTranslationFromDB(lastautosavepath);
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy = false;
@@ -3362,7 +3410,6 @@ namespace TranslationHelper
 
             //THFilesElementsDataset.Reset();
             //THFilesListBox.Items.Clear();
-
 
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
             await Task.Run(() => THLoadDBCompare(sPath));
@@ -4472,7 +4519,7 @@ namespace TranslationHelper
 
         StringBuilder textsb = new StringBuilder();
         private string curcode = "";
-        private string cType = "";
+        private string cType;
         //private string cCode = "";
         private string cName = "";
         //private string cId = "";
@@ -4580,6 +4627,10 @@ namespace TranslationHelper
                     //LogToFile("JObject propery: " + property.Name + "=" + property.Value+ ", token.Path=" + token.Path);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(property.Name))];
                     //childNode.Tag = property;
+                    if (IsCommonEvents && property.Name == "code" && property.Value.ToString() == "108")//asdf
+                    {
+                        continue;
+                    }
                     cType = "JObject";
                     cName = property.Name;
                     ProceedJToken(property.Value, Jsonname, property.Name);
@@ -4632,6 +4683,7 @@ namespace TranslationHelper
                 //tNode.Tag = root;
 
                 startingrow = 0;//сброс начальной строки поиска в табице
+                IsCommonEvents = (Jsonname == "CommonEvents");
                 WProceedJToken(root, Jsonname);
 
                 Regex regex = new Regex(@"^\[null,(.+)\]$");//Корректировка формата записываемого json так, как в файлах RPGMaker MV
@@ -4810,6 +4862,10 @@ namespace TranslationHelper
                     //childNode.Tag = property;
                     //cType = "JObject";
                     //cName = property.Name;
+                    if (IsCommonEvents && property.Name == "code" && property.Value.ToString() == "108")//asdf
+                    {
+                        continue;
+                    }
                     WProceedJToken(property.Value, Jsonname, property.Name);
                 }
             }
@@ -6139,6 +6195,9 @@ namespace TranslationHelper
                             Testgame.WaitForExit();
                         }
                     }
+                }
+                catch (Win32Exception)
+                {
                 }
                 catch
                 {
