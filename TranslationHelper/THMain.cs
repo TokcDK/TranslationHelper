@@ -6676,6 +6676,12 @@ namespace TranslationHelper
             //THFileElementsDataGridView.DataSource = THFilesElementsDataset.Relations["ALL"].ParentTable;
         }
 
+        private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            THSearch search = new THSearch();
+            search.Show();
+        }
+
 
 
 

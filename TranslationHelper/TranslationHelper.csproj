@@ -92,6 +92,12 @@
     <Compile Include="THLoadingForm.Designer.cs">
       <DependentUpon>THLoadingForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="THSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="THSearch.Designer.cs">
+      <DependentUpon>THSearch.cs</DependentUpon>
+    </Compile>
     <Compile Include="THSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,6 +126,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="THLoadingForm.resx">
       <DependentUpon>THLoadingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="THSearch.resx">
+      <DependentUpon>THSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="THSettingsForm.resx">
       <DependentUpon>THSettingsForm.cs</DependentUpon>
