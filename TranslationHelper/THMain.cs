@@ -190,6 +190,7 @@ namespace TranslationHelper
                                 viewToolStripMenuItem.Enabled = true;
                                 loadTranslationToolStripMenuItem.Enabled = true;
                                 loadTrasnlationAsToolStripMenuItem.Enabled = true;
+                                runTestGameToolStripMenuItem.Enabled = true;
 
                                 if (string.IsNullOrEmpty(FVariant))
                                 {
@@ -295,6 +296,35 @@ namespace TranslationHelper
                 saveTranslationAsToolStripMenuItem.Enabled = false;
                 THSourceTextBox.Enabled = false;
                 THTargetTextBox.Enabled = false;
+                openInWebToolStripMenuItem.Enabled = false;
+                selectedToolStripMenuItem1.Enabled = false;
+                tableToolStripMenuItem1.Enabled = false;
+                fixCellsSelectedToolStripMenuItem.Enabled = false;
+                fixCellsTableToolStripMenuItem.Enabled = false;
+                setOriginalValueToTranslationToolStripMenuItem.Enabled = false;
+                cutToolStripMenuItem1.Enabled = false;
+                copyCellValuesToolStripMenuItem.Enabled = false;
+                pasteCellValuesToolStripMenuItem.Enabled = false;
+                clearSelectedCellsToolStripMenuItem.Enabled = false;
+                toUPPERCASEToolStripMenuItem.Enabled = false;
+                firstCharacterToUppercaseToolStripMenuItem.Enabled = false;
+                toLOWERCASEToolStripMenuItem.Enabled = false;
+                setColumnSortingToolStripMenuItem.Enabled = false;
+                OpenInWebContextToolStripMenuItem.Enabled = false;
+                TranslateSelectedContextToolStripMenuItem.Enabled = false;
+                TranslateTableContextToolStripMenuItem.Enabled = false;
+                fixSymbolsContextToolStripMenuItem.Enabled = false;
+                fixSymbolsTableContextToolStripMenuItem.Enabled = false;
+                OriginalToTransalationContextToolStripMenuItem.Enabled = false;
+                CutToolStripMenuItem.Enabled = false;
+                CopyToolStripMenuItem.Enabled = false;
+                pasteToolStripMenuItem.Enabled = false;
+                toolStripMenuItem11.Enabled = false;
+                toolStripMenuItem14.Enabled = false;
+                uppercaseToolStripMenuItem.Enabled = false;
+                lowercaseToolStripMenuItem.Enabled = false;
+
+                runTestGameToolStripMenuItem.Enabled = false;
 
                 //reset vars
                 istpptransfile = false;
@@ -2553,6 +2583,35 @@ namespace TranslationHelper
             THTargetTextBox.Enabled = true;
             THTargetTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
 
+
+            openInWebToolStripMenuItem.Enabled = true;
+            selectedToolStripMenuItem1.Enabled = true;
+            tableToolStripMenuItem1.Enabled = true;
+            fixCellsSelectedToolStripMenuItem.Enabled = true;
+            fixCellsTableToolStripMenuItem.Enabled = true;
+            setOriginalValueToTranslationToolStripMenuItem.Enabled = true;
+            cutToolStripMenuItem1.Enabled = true;
+            copyCellValuesToolStripMenuItem.Enabled = true;
+            pasteCellValuesToolStripMenuItem.Enabled = true;
+            clearSelectedCellsToolStripMenuItem.Enabled = true;
+            toUPPERCASEToolStripMenuItem.Enabled = true;
+            firstCharacterToUppercaseToolStripMenuItem.Enabled = true;
+            toLOWERCASEToolStripMenuItem.Enabled = true;
+            setColumnSortingToolStripMenuItem.Enabled = true;
+            OpenInWebContextToolStripMenuItem.Enabled = true;
+            TranslateSelectedContextToolStripMenuItem.Enabled = true;
+            TranslateTableContextToolStripMenuItem.Enabled = true;
+            fixSymbolsContextToolStripMenuItem.Enabled = true;
+            fixSymbolsTableContextToolStripMenuItem.Enabled = true;
+            OriginalToTransalationContextToolStripMenuItem.Enabled = true;
+            CutToolStripMenuItem.Enabled = true;
+            CopyToolStripMenuItem.Enabled = true;
+            pasteToolStripMenuItem.Enabled = true;
+            toolStripMenuItem11.Enabled = true;
+            toolStripMenuItem14.Enabled = true;
+            uppercaseToolStripMenuItem.Enabled = true;
+            lowercaseToolStripMenuItem.Enabled = true;
+
             //saveToolStripMenuItem.Enabled = true; //эти активируются при внесении изменений
             //saveAsToolStripMenuItem.Enabled = true;
             //saveTranslationToolStripMenuItem.Enabled = true;
@@ -4553,12 +4612,12 @@ namespace TranslationHelper
 
             if (token is JValue)
             {
-                if (cName == "code")
-                {
-                    curcode = token.ToString();
-                    //cCode = "Code" + curcode;
-                    //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
-                }
+                //if (cName == "code")
+                //{
+                //    curcode = token.ToString();
+                //    //cCode = "Code" + curcode;
+                //    //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
+                //}
                 //else if (propertyname == "id")
                 //{
                 //    if (cId != OldcId)
@@ -4567,7 +4626,7 @@ namespace TranslationHelper
                 //        cId = "ID" + token.ToString() + ":";
                 //    }
                 //}
-                LogToFile("JValue: " + propertyname + "=" + token.ToString()+", token path="+token.Path);
+                //LogToFile("JValue: " + propertyname + "=" + token.ToString()+", token path="+token.Path);
                 string tokenvalue = token.ToString();
 
                 if (IsCommonEvents && (curcode == "401" || curcode == "405"))
@@ -4625,7 +4684,7 @@ namespace TranslationHelper
                             //    cName = "Choice";
                             //}
 
-                            LogToFile("Jsonname=" + Jsonname+ ", tokenvalue=" + tokenvalue);
+                            //LogToFile("Jsonname=" + Jsonname+ ", tokenvalue=" + tokenvalue);
                             //LogToFile("", true);
                             THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
                             //dsinfo.Tables[0].Rows.Add(cType+"\\"+ cId + "\\" + cCode + "\\" + cName);
@@ -4650,7 +4709,7 @@ namespace TranslationHelper
                 {
                     //cType = "JObject";
                     cName = property.Name;
-                    LogToFile("JObject propery: " + property.Name + "=" + property.Value+ ", token.Path=" + token.Path);
+                    //LogToFile("JObject propery: " + property.Name + "=" + property.Value+ ", token.Path=" + token.Path);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(property.Name))];
                     //childNode.Tag = property;
 
@@ -5076,20 +5135,32 @@ namespace TranslationHelper
             }
             IsTranslating = true;
 
-            //координаты стартовой строк, колонки оригинала и номера таблицы
-            int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Original"].Ordinal;//-поле untrans
-            int tableindex = THFilesListBox.SelectedIndex;
-            int[] selindexes = new int[1];
+            try
+            {
+                if (THFilesListBox.SelectedItem == null)
+                {
+                    IsTranslating = false;
+                    return;
+                }
+                //координаты стартовой строк, колонки оригинала и номера таблицы
+                int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Original"].Ordinal;//-поле untrans
+                int tableindex = THFilesListBox.SelectedIndex;
+                int[] selindexes = new int[1];
 
-            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "t")));
-            //
-            //..и фикс ошибки:
-            //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
-            //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
-            trans.SetApartmentState(ApartmentState.STA);
-            //но при выборе только одной строчки почему-то кидает исключение
-            trans.Start();
+                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "t")));
+                //
+                //..и фикс ошибки:
+                //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
+                //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
+                trans.SetApartmentState(ApartmentState.STA);
+                //но при выборе только одной строчки почему-то кидает исключение
+                trans.Start();
+            }
+            catch
+            {
+                IsTranslating = false;
+            }
         }
 
         private void OnlineTranslateAllToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -5101,21 +5172,28 @@ namespace TranslationHelper
             }
             IsTranslating = true;
 
-            //координаты стартовой строк, колонки оригинала и номера таблицы
-            int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Original"].Ordinal;//-поле untrans
-            int tableindex = 0;
-            int[] selindexes = new int[1];
+            try
+            {
+                //координаты стартовой строк, колонки оригинала и номера таблицы
+                int cind = THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;//-поле untrans
+                int tableindex = 0;
+                int[] selindexes = new int[1];
 
-            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
-            //
-            //..и фикс ошибки:
-            //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
-            //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
-            trans.SetApartmentState(ApartmentState.STA);
-            //но при выборе только одной строчки почему-то кидает исключение
-            trans.Start();
+                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
+                //
+                //..и фикс ошибки:
+                //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
+                //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
+                trans.SetApartmentState(ApartmentState.STA);
+                //но при выборе только одной строчки почему-то кидает исключение
+                trans.Start();
+            }
+            catch
+            {
+                IsTranslating = false;
+            }
         }
 
         //DataSet THTranslationCache = new DataSet();
@@ -5567,35 +5645,49 @@ namespace TranslationHelper
         
         private void OpenInWebToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //координаты стартовой строк, колонки оригинала и номера таблицы
-            int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
-            int tableindex = THFilesListBox.SelectedIndex;
-            StringBuilder value = new StringBuilder();
-            int selcellscnt = THFileElementsDataGridView.SelectedCells.Count;
-            for (int i = 0; i < selcellscnt; i++)
+            try
             {
-                //MessageBox.Show(THFilesElementsDataset.Tables[tableindex].Rows[THFileElementsDataGridView.SelectedCells[i].RowIndex][cind].ToString());
-                //MessageBox.Show(THFileElementsDataGridView.CurrentCell.Value.ToString());
-                value.Append(THFilesElementsDataset.Tables[tableindex].Rows[THFileElementsDataGridView.SelectedCells[i].RowIndex][cind].ToString());
-                if (i+1 < selcellscnt)
+                if (THFileElementsDataGridView.Rows.Count > 0)
                 {
-                    value.Append("\r\n");
+
                 }
+                else
+                {
+                    return;
+                }
+                //координаты стартовой строк, колонки оригинала и номера таблицы
+                int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
+                int tableindex = THFilesListBox.SelectedIndex;
+                StringBuilder value = new StringBuilder();
+                int selcellscnt = THFileElementsDataGridView.SelectedCells.Count;
+                for (int i = 0; i < selcellscnt; i++)
+                {
+                    //MessageBox.Show(THFilesElementsDataset.Tables[tableindex].Rows[THFileElementsDataGridView.SelectedCells[i].RowIndex][cind].ToString());
+                    //MessageBox.Show(THFileElementsDataGridView.CurrentCell.Value.ToString());
+                    value.Append(THFilesElementsDataset.Tables[tableindex].Rows[THFileElementsDataGridView.SelectedCells[i].RowIndex][cind].ToString());
+                    if (i + 1 < selcellscnt)
+                    {
+                        value.Append("\r\n");
+                    }
+                }
+                //MessageBox.Show(value.ToString());
+                //string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\""));
+                string result = string.Format(Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\""));
+                //MessageBox.Show(result);
+                Process.Start(result);
+
+                //string input = (Regex.Replace(value.ToString(), @"\r\n|\r|\n", "DNTT")).Replace("\"", "\\\"");
+                //LogToFile("input=" + input);
+                //string s = GoogleAPI.Translate(input);
+                ////string[] s = GoogleAPI.Translate(input).Split("\n");
+
+                //LogToFile("Translation s=" + s);
+                ////LogToFile("Translation formatted:\r\n"+s.Replace("  DNTT  ", "\r\n"));
+                //LogToFile("", true);
             }
-            //MessageBox.Show(value.ToString());
-            //string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\""));
-            string result = string.Format(Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\""));
-            //MessageBox.Show(result);
-            Process.Start(result);
-
-            //string input = (Regex.Replace(value.ToString(), @"\r\n|\r|\n", "DNTT")).Replace("\"", "\\\"");
-            //LogToFile("input=" + input);
-            //string s = GoogleAPI.Translate(input);
-            ////string[] s = GoogleAPI.Translate(input).Split("\n");
-
-            //LogToFile("Translation s=" + s);
-            ////LogToFile("Translation formatted:\r\n"+s.Replace("  DNTT  ", "\r\n"));
-            //LogToFile("", true);
+            catch
+            {
+            }
         }
 
         private void THTargetTextBox_Leave(object sender, EventArgs e)
