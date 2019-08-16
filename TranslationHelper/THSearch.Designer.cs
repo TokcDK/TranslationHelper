@@ -42,6 +42,10 @@
             this.button3 = new System.Windows.Forms.Button();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.THSearchPanel.SuspendLayout();
@@ -92,6 +96,10 @@
             // 
             // THSearchPanel
             // 
+            this.THSearchPanel.Controls.Add(this.label4);
+            this.THSearchPanel.Controls.Add(this.label2);
+            this.THSearchPanel.Controls.Add(this.radioButton4);
+            this.THSearchPanel.Controls.Add(this.radioButton3);
             this.THSearchPanel.Controls.Add(this.radioButton2);
             this.THSearchPanel.Controls.Add(this.radioButton1);
             this.THSearchPanel.Controls.Add(this.button3);
@@ -195,12 +203,55 @@
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.Click += new System.EventHandler(this.RadioButton2_CheckedChanged);
             // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Location = new System.Drawing.Point(34, 200);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(215, 17);
+            this.radioButton3.TabIndex = 9;
+            this.radioButton3.Text = "Find in Original and Paste to Translation";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            this.radioButton3.Click += new System.EventHandler(this.RadioButton3_CheckedChanged);
+            // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Checked = true;
+            this.radioButton4.Location = new System.Drawing.Point(34, 177);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(174, 17);
+            this.radioButton4.TabIndex = 10;
+            this.radioButton4.Text = "Find and Replace in Translation";
+            this.radioButton4.UseVisualStyleBackColor = true;
+            this.radioButton4.Click += new System.EventHandler(this.RadioButton4_CheckedChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(34, 161);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(79, 13);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Search method";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(34, 232);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(69, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Search mode";
+            // 
             // THSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(579, 325);
             this.Controls.Add(this.THSearchTabs);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "THSearch";
             this.Text = "Find and Replace";
             this.THSearchTabs.ResumeLayout(false);
@@ -228,5 +279,9 @@
         public System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Label THSearchFindWhatLabel;
         public System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.RadioButton radioButton4;
+        private System.Windows.Forms.RadioButton radioButton3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label2;
     }
 }

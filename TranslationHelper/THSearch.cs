@@ -28,5 +28,17 @@ namespace TranslationHelper
             radioButton1.Checked = false;
             radioButton2.Checked = true;
         }
+
+        private void RadioButton4_CheckedChanged(object sender, EventArgs e)
+        {
+            radioButton3.Checked = false;
+            radioButton4.Checked = true;
+        }
+
+        private void RadioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            radioButton4.Checked = false;
+            radioButton3.Checked = true;
+        }
     }
 }
