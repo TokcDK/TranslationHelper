@@ -195,7 +195,13 @@ namespace TranslationHelper
                                 {
                                     FVariant = " * "+THSelectedSourceType;
                                 }
-                                ActiveForm.Text += FVariant;
+                                try
+                                {
+                                    ActiveForm.Text += FVariant;
+                                }
+                                catch
+                                {
+                                }
                             }
 
                         }
@@ -4525,7 +4531,7 @@ namespace TranslationHelper
                 //DGV.DataSource = ds.Tables[0];
                 //treeView1.EndUpdate();
             }
-            //LogToFile("", true);
+            LogToFile("", true);
             return true;
 
         }
@@ -4561,7 +4567,7 @@ namespace TranslationHelper
                 //        cId = "ID" + token.ToString() + ":";
                 //    }
                 //}
-                //LogToFile("JValue: " + propertyname + "=" + token.ToString()+", token path="+token.Path);
+                LogToFile("JValue: " + propertyname + "=" + token.ToString()+", token path="+token.Path);
                 string tokenvalue = token.ToString();
 
                 if (IsCommonEvents && (curcode == "401" || curcode == "405"))
@@ -4619,7 +4625,7 @@ namespace TranslationHelper
                             //    cName = "Choice";
                             //}
 
-                            //LogToFile("Jsonname=" + Jsonname);
+                            LogToFile("Jsonname=" + Jsonname+ ", tokenvalue=" + tokenvalue);
                             //LogToFile("", true);
                             THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
                             //dsinfo.Tables[0].Rows.Add(cType+"\\"+ cId + "\\" + cCode + "\\" + cName);
@@ -4644,18 +4650,31 @@ namespace TranslationHelper
                 {
                     //cType = "JObject";
                     cName = property.Name;
-                    //LogToFile("JObject propery: " + property.Name + "=" + property.Value+ ", token.Path=" + token.Path);
+                    LogToFile("JObject propery: " + property.Name + "=" + property.Value+ ", token.Path=" + token.Path);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(property.Name))];
                     //childNode.Tag = property;
 
                     if (IsCommonEvents)//asdfg skip code 108,408,356
                     {
+                        if (cName == "code")
+                        {
+                            curcode = property.Value.ToString();
+                            //cCode = "Code" + curcode;
+                            //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
+                        }
                         if (skipit)
                         {
-                            if (property.Name == "parameters")//asdf
+                            if (curcode == "108" || curcode == "408" || curcode == "356")
+                            {
+                                if (property.Name == "parameters")//asdf
+                                {
+                                    skipit = false;
+                                    continue;
+                                }
+                            }
+                            else
                             {
                                 skipit = false;
-                                continue;
                             }
                         }
                         else
@@ -4665,7 +4684,7 @@ namespace TranslationHelper
                                 if (property.Value.ToString() == "108" || property.Value.ToString() == "408" || property.Value.ToString() == "356")
                                 {
                                     skipit = true;
-                                    break;
+                                    continue;
                                 }
                             }
                         }
@@ -4677,7 +4696,7 @@ namespace TranslationHelper
             {
                 for (int i = 0; i < array.Count; i++)
                 {
-                    //LogToFile("JArray=\r\n" + array[i] + "\r\n, token.Path=" + token.Path);
+                    LogToFile("JArray=\r\n" + array[i] + "\r\n, token.Path=" + token.Path);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(i.ToString()))];
                     //childNode.Tag = array[i];
                     //cType = "JArray";
@@ -4722,6 +4741,13 @@ namespace TranslationHelper
 
                 startingrow = 0;//сброс начальной строки поиска в табице
                 IsCommonEvents = (Jsonname == "CommonEvents");
+                if (IsCommonEvents)
+                {
+                    //сброс значений для CommonEvents
+                    curcode = "";
+                    cName = "";
+                    skipit = false;
+                }
                 WProceedJToken(root, Jsonname);
 
                 Regex regex = new Regex(@"^\[null,(.+)\]$");//Корректировка формата записываемого json так, как в файлах RPGMaker MV
@@ -4895,28 +4921,6 @@ namespace TranslationHelper
                                 }
                             }
                         }
-                        /*
-                        for (int i1 = 0; i1 < THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
-                        {
-                            if (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString()))
-                            {
-                            }
-                            else
-                            {
-                                if (tokenvalue == THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString())
-                                {
-                                    var t = token as JValue;
-                                    t.Value = THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString();
-                                    break;
-                                }
-                            }
-                        }
-                        */
-                        //LogToFile("Jsonname=" + Jsonname);
-                        //LogToFile("", true);
-                        //THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
-                        //dsinfo.Tables[0].Rows.Add(cType+"\\"+ cId + "\\" + cCode + "\\" + cName);
-                        //THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(cType + ":" + cName);
                     }
                 }
                 //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(token.ToString()))];
@@ -4931,25 +4935,38 @@ namespace TranslationHelper
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(property.Name))];
                     //childNode.Tag = property;
                     //cType = "JObject";
-                    //cName = property.Name;
+                    cName = property.Name;
                     if (IsCommonEvents)//asdfg skip code 108,408,356
                     {
+                        if (cName == "code")
+                        {
+                            curcode = property.Value.ToString();
+                            //cCode = "Code" + curcode;
+                            //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
+                        }
                         if (skipit)
                         {
-                            if (property.Name == "parameters")//asdf
+                            if (curcode == "108" || curcode == "408" || curcode == "356")
+                            {
+                                if (property.Name == "parameters")//asdf
+                                {
+                                    skipit = false;
+                                    continue;
+                                }
+                            }
+                            else
                             {
                                 skipit = false;
-                                continue;
                             }
                         }
                         else
                         {
-                            if (property.Name == "code")
+                            if (cName == "code")
                             {
                                 if (property.Value.ToString() == "108" || property.Value.ToString() == "408" || property.Value.ToString() == "356")
                                 {
                                     skipit = true;
-                                    break;
+                                    continue;
                                 }
                             }
                         }
