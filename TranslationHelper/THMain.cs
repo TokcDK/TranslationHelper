@@ -97,6 +97,28 @@ namespace TranslationHelper
             //string GitPath = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows", "InstallPath", null).ToString();
         }
 
+        private void THMain_Load(object sender, EventArgs e)
+        {
+            SetTooltips();
+        }
+
+        private void SetTooltips()
+        {
+            //THMainResetTableButton
+            ToolTip THMainResetTableButtonToolTip = new ToolTip
+            {
+
+                // Set up the delays for the ToolTip.
+                AutoPopDelay = 5000,
+                InitialDelay = 1000,
+                ReshowDelay = 500,
+                // Force the ToolTip text to be displayed whether or not the form is active.
+                ShowAlways = false
+            };
+            THMainResetTableButtonToolTip.SetToolTip(THMainResetTableButton, "Resets filters and tab sorting");
+            ////////////////////////////
+        }
+
         bool THdebug = true;
         StringBuilder THsbLog = new StringBuilder();
         public void LogToFile(string s, bool w = false)
@@ -3309,10 +3331,6 @@ namespace TranslationHelper
 
             var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
-        }
-
-        private void THMain_Load(object sender, EventArgs e)
-        {
         }
 
         //Пример виртуального режима
@@ -6680,6 +6698,25 @@ namespace TranslationHelper
         {
             THSearch search = new THSearch();
             search.Show();
+        }
+
+        private void THMainResetTableButton_Click(object sender, EventArgs e)
+        {
+            if (THFiltersDataGridView.Columns.Count > 0)
+            {
+                for (int c = 0; c < THFiltersDataGridView.Columns.Count; c++)
+                {
+                    THFiltersDataGridView.Rows[0].Cells[c].Value = "";
+                }
+                if (THFilesListBox.SelectedItem == null)
+                {
+                }
+                else
+                {
+                    THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = "";
+                    THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.Sort = "";
+                }
+            }
         }
 
 

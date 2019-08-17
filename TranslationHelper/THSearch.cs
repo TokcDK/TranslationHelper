@@ -17,28 +17,45 @@ namespace TranslationHelper
             InitializeComponent();
         }
 
-        private void RadioButton1_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton1_Click(object sender, EventArgs e)
         {
-            radioButton2.Checked = false;
-            radioButton1.Checked = true;
+            SearchModeRegexRadioButton.Checked = false;
+            SearchModeNormalRadioButton.Checked = true;
         }
 
-        private void RadioButton2_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton2_Click(object sender, EventArgs e)
         {
-            radioButton1.Checked = false;
-            radioButton2.Checked = true;
+            SearchModeNormalRadioButton.Checked = false;
+            SearchModeRegexRadioButton.Checked = true;
         }
 
-        private void RadioButton4_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton4_Click(object sender, EventArgs e)
         {
-            radioButton3.Checked = false;
-            radioButton4.Checked = true;
+            SearchMethodTranslationRadioButton.Checked = false;
+            SearchMethodOriginalTranslationRadioButton.Checked = true;
         }
 
-        private void RadioButton3_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton3_Click(object sender, EventArgs e)
         {
-            radioButton4.Checked = false;
-            radioButton3.Checked = true;
+            SearchMethodOriginalTranslationRadioButton.Checked = false;
+            SearchMethodTranslationRadioButton.Checked = true;
+        }
+
+        private void RadioButton5_Click(object sender, EventArgs e)
+        {
+            SearchRangeAllRadioButton.Checked = false;
+            SearchRangeTableRadioButton.Checked = true;
+        }
+
+        private void RadioButton6_Click(object sender, EventArgs e)
+        {
+            SearchRangeTableRadioButton.Checked = false;
+            SearchRangeAllRadioButton.Checked = true;
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
