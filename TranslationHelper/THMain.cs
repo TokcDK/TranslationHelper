@@ -37,6 +37,7 @@ namespace TranslationHelper
         //private BindingList<THRPGMTransPatchFile> THRPGMTransPatchFiles; //Все файлы
         //DataTable fileslistdt = new DataTable();
         public DataSet THFilesElementsDataset;
+        public DataTable THFilesElementsALLDataTable;
         public DataSet THFilesElementsDatasetInfo;
         //DataTable THFilesElementsDatatable;
         //private BindingSource THBS = new BindingSource();
@@ -80,6 +81,7 @@ namespace TranslationHelper
             LangF.THReadLanguageFileToStrings();
 
             THFilesElementsDataset = new DataSet();
+            THFilesElementsALLDataTable = new DataTable();
             THFilesElementsDatasetInfo = new DataSet();
 
             //DataSet THTranslationCache; THTranslationCache = new DataSet();
@@ -207,6 +209,19 @@ namespace TranslationHelper
                                 //{
                                 //    THMakeRPGMakerMVWorkProjectDir(THFOpen.FileName);
                                 //}
+                                
+                                for (int c=0;c< THFilesElementsDataset.Tables[0].Columns.Count;c++)
+                                {
+                                    THFilesElementsALLDataTable.Columns.Add(THFilesElementsDataset.Tables[0].Columns[c].ColumnName);//asdfgh
+                                }
+
+                                for (int t=0;t< THFilesElementsDataset.Tables.Count;t++)
+                                {
+                                    for (int r=0;r< THFilesElementsDataset.Tables[t].Rows.Count;r++)
+                                    {
+                                        THFilesElementsALLDataTable.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r].ItemArray);
+                                    }
+                                }
 
                                 Settings.THConfigINI.WriteINI("Paths", "LastPath", THSelectedDir);
                                 THMsg.Show(THSelectedSourceType + " loaded!");
@@ -305,6 +320,7 @@ namespace TranslationHelper
                 //Clean data
                 THFilesListBox.Items.Clear();
                 THFilesElementsDataset.Reset();
+                THFilesElementsALLDataTable.Reset();
                 THFilesElementsDatasetInfo.Reset();
                 THFileElementsDataGridView.Columns.Clear();
                 //THFileElementsDataGridView.Rows.Clear();
@@ -6576,7 +6592,11 @@ namespace TranslationHelper
                                                     //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
                                                     //LogToFile("result[" + m + "]=" + inputresult);
                                                 }
-                                                THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = inputresult;
+                                                if (THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind].ToString()))
+                                                {
+                                                    THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = inputresult;
+                                                }
+                                                
                                             }
                                         }
                                     }
@@ -6585,7 +6605,10 @@ namespace TranslationHelper
                                 {
                                     if (THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind] == THFilesElementsDataset.Tables[tableind].Rows[rind][cind]) //если поле Untrans елемента равно только что измененному
                                     {
-                                        THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода                                        
+                                        if (THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind].ToString()))
+                                        {
+                                            THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода                                        
+                                        }
                                     }
                                 }
                             }
@@ -6772,7 +6795,7 @@ namespace TranslationHelper
                         if (cbValue.Count > 1 && OrigMaxEqualCurrent)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
                         {
                             //получались двойные значения при использовании с функцией автоподстановки для похожих
-                            if (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()))
+                            if (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()) || !cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
                             {
                                 //LogToFile("value=" + cbValue[rowKey][cellKey], true);
                                 cell.Value += Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
@@ -6781,9 +6804,9 @@ namespace TranslationHelper
                         else
                         {
                             //получались двойные значения при использовании с функцией автоподстановки для похожих
-                            if (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()))
+                            if (cell.Value == null || string.IsNullOrEmpty(cbValue[rowKey][cellKey]) || !cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
                             {
-                                cell.Value += cbValue[rowKey][cellKey];
+                                cell.Value += cbValue[rowKey][cellKey];//asdfg
                             }
                         }
                         //LogToFile("cbValue[rowKey][cellKey]=" + cbValue[rowKey][cellKey]+ ",cell.Value="+ cell.Value);
@@ -7118,6 +7141,8 @@ namespace TranslationHelper
 
         private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            THFileElementsDataGridView.DataSource = THFilesElementsALLDataTable;
+
             //смотрел тут но в данном случае пришел к тому что отображает все также только одну таблицу
             //https://social.msdn.microsoft.com/Forums/en-US/f63f612f-20be-4bad-a91c-474396941800/display-dataset-data-in-gridview-from-multiple-data-tables?forum=adodotnetdataset
             //if (THFilesElementsDataset.Relations.Contains("ALL"))
