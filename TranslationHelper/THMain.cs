@@ -2183,8 +2183,8 @@ namespace TranslationHelper
             string _context = "";           //Комментарий
             string _advice = "";            //Предел длины строки
             string _string;// = "";            //Переменная строки
-            string _untrans = "";           //Непереведенный текст
-            string _trans = "";             //Переведенный текст
+            string _original = "";           //Непереведенный текст
+            string _translation = "";             //Переведенный текст
             int _status = 0;             //Статус
 
             int verok = 0;                  //версия патча
@@ -2211,10 +2211,10 @@ namespace TranslationHelper
                 _file = new StreamReader(ListFiles[i]); //Задаем файл
                 //THRPGMTransPatchFiles.Add(new THRPGMTransPatchFile(Path.GetFileNameWithoutExtension(ListFiles[i]), ListFiles[i].ToString(), ""));    //Добaвляем файл
                 THFilesElementsDataset.Tables.Add(fname);
-                THFilesElementsDataset.Tables[i].Columns.Add("Context");
-                THFilesElementsDataset.Tables[i].Columns.Add("Advice");
                 THFilesElementsDataset.Tables[i].Columns.Add("Original");
                 THFilesElementsDataset.Tables[i].Columns.Add("Translation");
+                THFilesElementsDataset.Tables[i].Columns.Add("Context");
+                THFilesElementsDataset.Tables[i].Columns.Add("Advice");
                 THFilesElementsDataset.Tables[i].Columns.Add("Status");
                 THFilesElementsDatasetInfo.Tables.Add(fname);
                 THFilesElementsDatasetInfo.Tables[i].Columns.Add("Original");
@@ -2241,8 +2241,8 @@ namespace TranslationHelper
                             while (!_string.StartsWith("> CONTEXT:"))  //Ждем начало следующего блока
                             {
                                 if (untranslines > 0)
-                                    _untrans += "\r\n";
-                                _untrans += _string;            //Пишем весь текст
+                                    _original += "\r\n";
+                                _original += _string;            //Пишем весь текст
                                 _string = _file.ReadLine();
                                 untranslines++;
                                 //MessageBox.Show("1.1"+_string);
@@ -2269,8 +2269,8 @@ namespace TranslationHelper
                             while (!_string.StartsWith("> END"))      //Ждем конец блока
                             {
                                 if (translines > 0)
-                                    _trans += "\r\n";
-                                _trans += _string;
+                                    _translation += "\r\n";
+                                _translation += _string;
                                 _string = _file.ReadLine();
                                 translines++;
                                 //MessageBox.Show("_string ='" + _string + "'");
@@ -2301,16 +2301,16 @@ namespace TranslationHelper
                                 _string = _file.ReadLine();
                             }*/
 
-                            if (_untrans != "\r\n")
+                            if (_original != "\r\n")
                             {
                                 //THRPGMTransPatchFiles[i].blocks.Add(new Block(_context, _advice, _untrans, _trans, _status));  //Пишем
-                                THFilesElementsDataset.Tables[i].Rows.Add(_context, _advice, _untrans, _trans, _status);
+                                THFilesElementsDataset.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
                                 THFilesElementsDatasetInfo.Tables[i].Rows.Add(_context);
                             }
 
                             _context = "";  //Чистим
-                            _untrans = "";  //Чистим
-                            _trans = "";    //Чистим
+                            _original = "";  //Чистим
+                            _translation = "";    //Чистим
                         }
                     }
                     if (invalidformat != 2) //если строки не были опознаны, значит формат неверен
@@ -2343,26 +2343,26 @@ namespace TranslationHelper
                                     _string = _file.ReadLine();
                                     while (!_string.StartsWith("# TRANSLATION"))  //Ждем начало следующего блока
                                     {
-                                        _untrans = _untrans + _string + "\r\n";            //Пишем весь текст
+                                        _original = _original + _string + "\r\n";            //Пишем весь текст
                                         _string = _file.ReadLine();
                                     }
-                                    if (_untrans.Length > 0)                    //Если текст есть, ищем перевод
+                                    if (_original.Length > 0)                    //Если текст есть, ищем перевод
                                     {
                                         _string = _file.ReadLine();
                                         while (!_string.StartsWith("# END"))      //Ждем конец блока
                                         {
-                                            _trans = _trans + _string + "\r\n";
+                                            _translation = _translation + _string + "\r\n";
                                             _string = _file.ReadLine();
                                         }
-                                        if (_untrans != "\r\n")
+                                        if (_original != "\r\n")
                                         {
                                             //THRPGMTransPatchFiles[i].blocks.Add(new Block(_context, _advice, _untrans, _trans, _status));//Пишем
-                                            THFilesElementsDataset.Tables[i].Rows.Add(_context, _advice, _untrans, _trans, _status);
+                                            THFilesElementsDataset.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
                                             THFilesElementsDatasetInfo.Tables[i].Rows.Add(_context);
                                         }
                                     }
-                                    _untrans = "";  //Чистим
-                                    _trans = "";    //Чистим
+                                    _original = "";  //Чистим
+                                    _translation = "";    //Чистим
                                 }
                             }
                         }
@@ -3007,6 +3007,12 @@ namespace TranslationHelper
                 //MessageBox.Show(progressBar.Maximum.ToString());
                 //progressBar.Value = 0;
 
+                int originalcolumnindex = THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
+                int translationcolumnindex = THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+                int contextcolumnindex = THFilesElementsDataset.Tables[0].Columns["Context"].Ordinal;
+                int advicecolumnindex = THFilesElementsDataset.Tables[0].Columns["Advice"].Ordinal;
+                int statuscolumnindex = THFilesElementsDataset.Tables[0].Columns["Status"].Ordinal;
+
                 if (patchver == "3")
                 {
                     //запись в файл RPGMKTRANSPATCH строки > RPGMAKER TRANS PATCH V3
@@ -3023,11 +3029,11 @@ namespace TranslationHelper
                         {
                             buffer += "> BEGIN STRING\r\n";
                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Original + "\r\n";
-                            buffer += THFilesElementsDataset.Tables[i].Rows[y][2] + "\r\n";
+                            buffer += THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] + "\r\n";
                             //MessageBox.Show("1: " + ArrayTransFilses[i].blocks[y].Trans);
                             //MessageBox.Show("2: " + ArrayTransFilses[i].blocks[y].Context);
                             //string[] str = THRPGMTransPatchFiles[i].blocks[y].Context.Split('\n');
-                            string[] str = THFilesElementsDataset.Tables[i].Rows[y][0].ToString().Split('\n');
+                            string[] str = THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex].ToString().Split('\n');
                             //string str1 = "";
                             for (int g = 0; g < str.Count(); g++)
                             {
@@ -3040,7 +3046,7 @@ namespace TranslationHelper
                                 {
                                     str[g] = str[g].Replace("\r", "");//очистка от знака переноса в отдельную переменную
                                                                       //if (String.IsNullOrEmpty(THRPGMTransPatchFiles[i].blocks[y].Translation)) //if (ArrayTransFilses[i].blocks[y].Trans == "\r\n")
-                                    if (String.IsNullOrEmpty(THFilesElementsDataset.Tables[i].Rows[y][3].ToString())) //if (ArrayTransFilses[i].blocks[y].Trans == "\r\n")
+                                    if (String.IsNullOrEmpty(THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex].ToString())) //if (ArrayTransFilses[i].blocks[y].Trans == "\r\n")
                                     {
                                         buffer += "> CONTEXT: " + str[g] + " < UNTRANSLATED\r\n";
                                     }
@@ -3052,7 +3058,7 @@ namespace TranslationHelper
                             }
                             //buffer += "\r\n";
                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Translation + "\r\n";
-                            buffer += THFilesElementsDataset.Tables[i].Rows[y][3] + "\r\n";
+                            buffer += THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + "\r\n";
                             buffer += "> END STRING\r\n\r\n";
 
                             //progressBar.Value++;
@@ -3089,17 +3095,19 @@ namespace TranslationHelper
                         {
                             buffer += "# TEXT STRING\r\n";
                             //if (THRPGMTransPatchFiles[i].blocks[y].Translation == "\r\n")
-                            if (THFilesElementsDataset.Tables[i].Rows[y][3].ToString() == "\r\n")
+                            if (THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex].ToString() == "\r\n")
+                            {
                                 buffer += "# UNTRANSLATED\r\n";
+                            }
                             //buffer += "# CONTEXT : " + THRPGMTransPatchFiles[i].blocks[y].Context + "\r\n";
-                            buffer += "# CONTEXT : " + THFilesElementsDataset.Tables[i].Rows[y][0].ToString() + "\r\n";
+                            buffer += "# CONTEXT : " + THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex].ToString() + "\r\n";
                             //buffer += "# ADVICE : " + THRPGMTransPatchFiles[i].blocks[y].Advice + "\r\n";
-                            buffer += "# ADVICE : " + THFilesElementsDataset.Tables[i].Rows[y][1].ToString() + "\r\n";
+                            buffer += "# ADVICE : " + THFilesElementsDataset.Tables[i].Rows[y][advicecolumnindex].ToString() + "\r\n";
                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Original;
-                            buffer += THFilesElementsDataset.Tables[i].Rows[y][2].ToString();
+                            buffer += THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex].ToString();
                             buffer += "# TRANSLATION \r\n";
                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Translation;
-                            buffer += THFilesElementsDataset.Tables[i].Rows[y][3].ToString();
+                            buffer += THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex].ToString();
                             buffer += "# END STRING\r\n\r\n";
                         }
                         if (!String.IsNullOrWhiteSpace(buffer))
@@ -6763,12 +6771,20 @@ namespace TranslationHelper
                         //   (!chkPasteToSelectedCells.Checked))
                         if (cbValue.Count > 1 && OrigMaxEqualCurrent)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
                         {
-                            //LogToFile("value=" + cbValue[rowKey][cellKey], true);
-                            cell.Value += Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
+                            //получались двойные значения при использовании с функцией автоподстановки для похожих
+                            if (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()))
+                            {
+                                //LogToFile("value=" + cbValue[rowKey][cellKey], true);
+                                cell.Value += Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
+                            }
                         }
                         else
                         {
-                            cell.Value += cbValue[rowKey][cellKey];
+                            //получались двойные значения при использовании с функцией автоподстановки для похожих
+                            if (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()))
+                            {
+                                cell.Value += cbValue[rowKey][cellKey];
+                            }
                         }
                         //LogToFile("cbValue[rowKey][cellKey]=" + cbValue[rowKey][cellKey]+ ",cell.Value="+ cell.Value);
                     }
@@ -6777,6 +6793,7 @@ namespace TranslationHelper
                 }
                 if (OrigMaxEqualCurrent)
                 {
+                    THAutoSetValueForSameCells(THFilesListBox.SelectedIndex, iRowIndex, origcolindex);
                     origcellcurlines = 0;
                     iRowIndex++;
                     //LogToFile("next row, iRowIndex="+ iRowIndex);
