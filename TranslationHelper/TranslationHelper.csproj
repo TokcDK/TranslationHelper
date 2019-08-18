@@ -73,6 +73,7 @@
     <Compile Include="ExternalAdditions\DeepL.cs" />
     <Compile Include="ExternalAdditions\GoogleAPI.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
+    <Compile Include="ExternalAdditions\SimpleJSON.cs" />
     <Compile Include="MessageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,6 +164,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

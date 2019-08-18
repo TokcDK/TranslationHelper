@@ -53,7 +53,7 @@ namespace TranslationHelper
             SearchRangeAllRadioButton.Checked = true;
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
 
         }

@@ -9,12 +9,14 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 
 namespace TranslationHelper
@@ -104,6 +106,7 @@ namespace TranslationHelper
 
         private void SetTooltips()
         {
+            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
             //THMainResetTableButton
             ToolTip THMainResetTableButtonToolTip = new ToolTip
             {
@@ -4608,7 +4611,7 @@ namespace TranslationHelper
                 //DGV.DataSource = ds.Tables[0];
                 //treeView1.EndUpdate();
             }
-            LogToFile("", true);
+            //LogToFile("", true);
             return true;
 
         }
@@ -4773,7 +4776,7 @@ namespace TranslationHelper
             {
                 for (int i = 0; i < array.Count; i++)
                 {
-                    LogToFile("JArray=\r\n" + array[i] + "\r\n, token.Path=" + token.Path);
+                    //LogToFile("JArray=\r\n" + array[i] + "\r\n, token.Path=" + token.Path);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(i.ToString()))];
                     //childNode.Tag = array[i];
                     //cType = "JArray";
@@ -5192,14 +5195,32 @@ namespace TranslationHelper
 
             try
             {
+                //int cind = THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;//-поле untrans
+                //int tableindex = 0;
+                //int[] selindexes = new int[1];
+
+                //string[] input = new string[THFilesElementsDataset.Tables[0].Rows.Count];
+                //for (int r = 0; r < THFilesElementsDataset.Tables[0].Rows.Count; r++)
+                //{
+                //    input[r] = THFilesElementsDataset.Tables[0].Rows[r][cind].ToString();
+                //}
+
+                //string[] output = GoogleAPI.TranslateMultiple(input, "jp", "en");
+
+                //for (int r = 0; r < THFilesElementsDataset.Tables[0].Rows.Count; r++)
+                //{
+                //    THFilesElementsDataset.Tables[0].Rows[r][1] = output[r];
+                //}
+
+
                 //координаты стартовой строк, колонки оригинала и номера таблицы
                 int cind = THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;//-поле untrans
                 int tableindex = 0;
                 int[] selindexes = new int[1];
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
-                Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
+                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
                 //
                 //..и фикс ошибки:
                 //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -5450,70 +5471,264 @@ namespace TranslationHelper
         /// <param name="method"></param>
         private void THOnlineTranslateByBigBlocks(int cind, int tableindex, int[] selindexes, string method = "a")
         {
-            int googletextmaxsize = 3000;
+            int rowscount = 0;
+            int googletextmaxsize = 2000;
             int googletextcurrentsize = 0;
             using (DataTable inputtextarrayData = new DataTable())
             {
-                inputtextarrayData.Columns.Add("Inputstring");
+                inputtextarrayData.Columns.Add("Original");
                 StringBuilder inputtextarrayDataSB = new StringBuilder();
                 using (DataTable inputtextarrayInfo = new DataTable())
                 {
                     //LogToFile("1111");
                     inputtextarrayInfo.Columns.Add("Inputstring Table Index");
                     inputtextarrayInfo.Columns.Add("Inputstring Row Index");
+                    inputtextarrayInfo.Columns.Add("Inputstring Extracted Value");
 
+                    string[] splitter = new string[] { "{THSPLIT}" };
+
+                    //отображение кнопки отмены операции перевода
                     this.Invoke((Action)(() => translationInteruptToolStripMenuItem.Visible = true));
                     this.Invoke((Action)(() => translationInteruptToolStripMenuItem1.Visible = true));
                     try
                     {
-                        //Формирование массива строк для перевода
-                        for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)//таблицы
+                        //проход по таблицам
+                        for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
                         {
-                            for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)//строки таблицы
+                            //проход по строкам таблицы
+                            for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
                             {
+                                //Прерывание потока, если отменено нажатием кнопки отмены
+                                if (InteruptTranslation)
+                                {
+                                    //translationInteruptToolStripMenuItem.Visible = false;
+                                    //translationInteruptToolStripMenuItem1.Visible = false;
+                                    this.Invoke((Action)(() => translationInteruptToolStripMenuItem.Visible = false));
+                                    this.Invoke((Action)(() => translationInteruptToolStripMenuItem1.Visible = false));
+                                    InteruptTranslation = false;
+                                    return;
+                                }
+
+                                //если поле перевода выбранной строки r в таблице t пустое
                                 if (THFilesElementsDataset.Tables[t].Rows[r][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[r][1].ToString()))
                                 {
                                     //LogToFile("2222");
+                                    //если жто последняя таблица и последняя строка в ней
                                     if (t + 1 == THFilesElementsDataset.Tables.Count && r + 1 == THFilesElementsDataset.Tables[t].Rows.Count)
                                     {
-                                        if (THFilesElementsDataset.Tables[t].Rows[r][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[r][1].ToString()))
+                                        string translation = GoogleAPI.Translate(THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
+
+                                        //если перевод не пустой
+                                        if (string.IsNullOrEmpty(translation))
                                         {
-                                            THFilesElementsDataset.Tables[t].Rows[r][1] = GoogleAPI.Translate(THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
+                                        }
+                                        else
+                                        {
+                                            //если строка перевода не пустая, доп. проверка на случай, если пользователь ввел в неё значение
+                                            if (THFilesElementsDataset.Tables[t].Rows[r][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[r][1].ToString()))
+                                            {
+                                                //присвоить строке значение перевода
+                                                THFilesElementsDataset.Tables[t].Rows[r][1] = translation;
+
+                                                //автоприсвоение того же значения всем похожим
+                                                THAutoSetValueForSameCells(t, r, 0);
+                                            }
                                         }
 
-                                        if (inputtextarrayData.Rows.Count > 0)
+                                        if (inputtextarrayInfo.Rows.Count > 0)
                                         {
+                                            //LogToFile("1 ENCODED=\r\n"+ GoogleAPI.UrlEncodeForTranslation(inputtextarrayDataSB.ToString()));
                                             googletextcurrentsize = 0;
-                                            TranslateArrayAndSetValues(inputtextarrayData, inputtextarrayInfo);
+                                            TranslateArrayAndSetValues(inputtextarrayDataSB, inputtextarrayData, inputtextarrayInfo);
                                         }
                                     }
                                     else
                                     {
-                                        googletextcurrentsize += THFilesElementsDataset.Tables[t].Rows[r][0].ToString().Length;
+                                        //получение длины текста оригинала
+                                        googletextcurrentsize += THFilesElementsDataset.Tables[t].Rows[r][0].ToString().Length+5;//+5 здесь для учета символа разделителя DNFTT
+
                                         //LogToFile("googletextcurrentsize="+ googletextcurrentsize);
+                                        //если текущий общий размер больше максимального для запроса
                                         if (googletextcurrentsize > googletextmaxsize)
                                         {
                                             //LogToFile("inputtextarrayData.Rows.Count=" + inputtextarrayData.Rows.Count);
+                                            //сброс текущего размера
                                             googletextcurrentsize = 0;
-                                            TranslateArrayAndSetValues(inputtextarrayData, inputtextarrayInfo);
 
+                                            //обработка объединенной строки
+                                            //LogToFile("2 ENCODED=\r\n" + GoogleAPI.UrlEncodeForTranslation(inputtextarrayDataSB.ToString()));
+                                            TranslateArrayAndSetValues(inputtextarrayDataSB, inputtextarrayData, inputtextarrayInfo);
+
+                                            string translation = GoogleAPI.Translate(THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
+
+                                            //перевод последней, с которой размер стал больше
                                             if (THFilesElementsDataset.Tables[t].Rows[r][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[t].Rows[r][1].ToString()))
                                             {
-                                                THFilesElementsDataset.Tables[t].Rows[r][1] = GoogleAPI.Translate(THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
+                                                THFilesElementsDataset.Tables[t].Rows[r][1] = translation;
+
+                                                //автоприсвоение того же значения всем похожим
+                                                THAutoSetValueForSameCells(t, r, 0);
                                             }
                                         }
-                                        else
+                                        else //если текущий размер не больше максимального
                                         {
                                             //LogToFile("add line="+ THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
                                             //добавление строки в таблицувходных данных и индекса таблицы и строки в таблицу информации о добавленной строке, для дальнейшего разбора
                                             //inputtextarrayData.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
-                                            string addstring = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[r][0].ToString(), @"\r\n|\r|\n","DNTT");
-                                            
+                                            //замена переноса символа новой строки в конце на DNFTT
+                                            //string addstring = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[r][0].ToString(), @"\r\n$|\r$|\n$","\r\nDNFTT\r\n");
 
-                                            //for (int s=0,s<addstring.Replace)
+                                            //if (addstring.Contains("DNFTT"))
+                                            //{
+                                            //}
+                                            //else
+                                            //{
+                                            //    addstring += "DNFTT";
+                                            //}
 
-                                            inputtextarrayDataSB.Append(addstring);
-                                            inputtextarrayInfo.Rows.Add(t, r);
+                                            string bufferedvalue = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[r][0].ToString(), @"\r\n$", "{THSPLIT}");
+                                            //LogToFile("translation fixed=" + translation);
+                                            string[] bufferedvaluearray = bufferedvalue.Split(splitter, StringSplitOptions.None);
+
+                                            if (bufferedvaluearray.Length > 1)
+                                            {
+                                                for (int b=0;b< bufferedvaluearray.Length; b++)
+                                                {
+                                                    string addstring = bufferedvaluearray[b];
+                                                    //LogToFile("addstring=" + addstring + ", table=" + t + ", row=" + r);
+
+                                                    if (string.IsNullOrEmpty(addstring))
+                                                    {
+                                                    }
+                                                    else
+                                                    {
+                                                        string extractedvalue = THExtractTextForTranslation(addstring);
+
+                                                        if (string.IsNullOrEmpty(extractedvalue))
+                                                        {
+                                                            bool hasmatch = false;
+                                                            for (int v = 0; v < inputtextarrayData.Rows.Count; v++)
+                                                            {
+                                                                //для последующего сравнения без учета цифр проверить, есть ли уже в добавленных такие же значения с указанными условиями
+                                                                if (Regex.Replace(addstring, @"\d+", "").Trim() == Regex.Replace(inputtextarrayData.Rows[v][0].ToString(), @"\d+", "").Trim())
+                                                                {
+                                                                    hasmatch = true;
+                                                                    break;
+                                                                }
+
+                                                            }
+
+                                                            if (hasmatch)
+                                                            {
+                                                            }
+                                                            else
+                                                            {
+                                                                //for (int s=0,s<addstring.Replace)
+                                                                //добавление строки в кучу для перевода
+                                                                inputtextarrayDataSB.Append(addstring + Environment.NewLine);
+                                                                inputtextarrayData.Rows.Add(addstring);
+                                                                //добавление информации о строке
+                                                                inputtextarrayInfo.Rows.Add(t, r, null);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            bool hasmatch = false;
+                                                            for (int v = 0; v < inputtextarrayData.Rows.Count; v++)
+                                                            {
+                                                                //для последующего сравнения без учета цифр проверить, есть ли уже в добавленных такие же значения с указанными условиями
+                                                                if (Regex.Replace(extractedvalue, @"\d+", "").Trim() == Regex.Replace(inputtextarrayData.Rows[v][0].ToString(), @"\d+", "").Trim())
+                                                                {
+                                                                    hasmatch = true;
+                                                                    break;
+                                                                }
+
+                                                            }
+
+                                                            if (hasmatch)
+                                                            {
+                                                            }
+                                                            else
+                                                            {
+                                                                //for (int s=0,s<addstring.Replace)
+                                                                //добавление строки в кучу для перевода
+                                                                inputtextarrayDataSB.Append(extractedvalue + Environment.NewLine);
+                                                                inputtextarrayData.Rows.Add(extractedvalue);
+                                                                //добавление информации о строке
+                                                                inputtextarrayInfo.Rows.Add(t, r, extractedvalue);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                string addstring = THFilesElementsDataset.Tables[t].Rows[r][0].ToString();
+                                                //LogToFile("addstring=" + addstring + ", table=" + t + ", row=" + r);
+
+                                                if (string.IsNullOrEmpty(addstring))
+                                                {
+                                                }
+                                                else
+                                                {
+                                                    string extractedvalue = THExtractTextForTranslation(addstring);
+
+                                                    if (string.IsNullOrEmpty(extractedvalue))
+                                                    {
+                                                        bool hasmatch = false;
+                                                        for (int v = 0; v < inputtextarrayData.Rows.Count; v++)
+                                                        {
+                                                            //для последующего сравнения без учета цифр проверить, есть ли уже в добавленных такие же значения с указанными условиями
+                                                            if (Regex.Replace(addstring, @"\d+", "").Trim() == Regex.Replace(inputtextarrayData.Rows[v][0].ToString(), @"\d+", "").Trim())
+                                                            {
+                                                                hasmatch = true;
+                                                                break;
+                                                            }
+
+                                                        }
+
+                                                        if (hasmatch)
+                                                        {
+                                                        }
+                                                        else
+                                                        {
+                                                            //for (int s=0,s<addstring.Replace)
+                                                            //добавление строки в кучу для перевода
+                                                            inputtextarrayDataSB.Append(addstring + Environment.NewLine);
+                                                            inputtextarrayData.Rows.Add(addstring);
+                                                            //добавление информации о строке
+                                                            inputtextarrayInfo.Rows.Add(t, r, null);
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        bool hasmatch = false;
+                                                        for (int v = 0; v < inputtextarrayData.Rows.Count; v++)
+                                                        {
+                                                            //для последующего сравнения без учета цифр проверить, есть ли уже в добавленных такие же значения с указанными условиями
+                                                            if (Regex.Replace(extractedvalue, @"\d+", "").Trim() == Regex.Replace(inputtextarrayData.Rows[v][0].ToString(), @"\d+", "").Trim())
+                                                            {
+                                                                hasmatch = true;
+                                                                break;
+                                                            }
+
+                                                        }
+
+                                                        if (hasmatch)
+                                                        {
+                                                        }
+                                                        else
+                                                        {
+                                                            //for (int s=0,s<addstring.Replace)
+                                                            //добавление строки в кучу для перевода
+                                                            inputtextarrayDataSB.Append(extractedvalue + Environment.NewLine);
+                                                            inputtextarrayData.Rows.Add(extractedvalue);
+                                                            //добавление информации о строке
+                                                            inputtextarrayInfo.Rows.Add(t, r, extractedvalue);
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -5524,42 +5739,223 @@ namespace TranslationHelper
                     {
                         //LogToFile("Error: "+ex,true);
                     }
+                    rowscount = inputtextarrayInfo.Rows.Count;
                 }
             }
-            //LogToFile("",true);
+            //LogToFile("rowscount="+ rowscount, true);
             IsTranslating = false;
             ProgressInfo(false);
         }
-
-        private void TranslateArrayAndSetValues(DataTable inputtextarrayData, DataTable inputtextarrayInfo)
+        
+        private void TranslateArrayAndSetValues(StringBuilder inputtextarrayDataSB, DataTable inputtextarrayData, DataTable inputtextarrayInfo)
         {
-            //LogToFile("TranslateArrayAndSetValues executed!",true);
-            //по таблице в массив
-            //https://stackoverflow.com/questions/37827308/convert-datatable-into-an-array-in-c-sharp
-            string[] outputarray = GoogleAPI.TranslateMultiple(inputtextarrayData.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray());
-            inputtextarrayData.Rows.Clear();
-            //googletextcurrentsize = 0;
-
-            if (outputarray != null && outputarray.Length > 0)
+            string[] input = new string[inputtextarrayData.Rows.Count];
+            for (int i=0;i< inputtextarrayData.Rows.Count;i++)
             {
-                for (int o = 0; o < outputarray.Length; o++)
+                input[i] = inputtextarrayData.Rows[i][0].ToString();
+            }
+
+            string[] translationarray = GoogleAPI.TranslateMultiple(input, "jp","en");
+
+            if (translationarray.Length > 0)
+            {
+                for (int resultindex=0; resultindex < translationarray.Length; resultindex++)
                 {
-                    if (string.IsNullOrEmpty(outputarray[o]))
+                    int targettableindex = int.Parse(inputtextarrayInfo.Rows[resultindex][0].ToString());
+                    int targetrowindex = int.Parse(inputtextarrayInfo.Rows[resultindex][1].ToString());
+
+                    if (targetrowindex+1 < inputtextarrayInfo.Rows.Count && targetrowindex == int.Parse(inputtextarrayInfo.Rows[resultindex + 1][1].ToString()))
                     {
+                        string[] targetcellarray = THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0].ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+
+                        int linenum = resultindex;
+                        for (int line= 0; line< targetcellarray.Length; line++)
+                        {
+                            if (inputtextarrayInfo.Rows[resultindex][2] == null)
+                            {
+                                if (targetcellarray[line] == inputtextarrayData.Rows[resultindex][0].ToString())
+                                {
+                                    THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] = translationarray[resultindex];
+
+                                    if (int.Parse(inputtextarrayInfo.Rows[resultindex][1].ToString()) + 1 < inputtextarrayInfo.Rows.Count && int.Parse(inputtextarrayInfo.Rows[resultindex][1].ToString()) == int.Parse(inputtextarrayInfo.Rows[resultindex + 1][1].ToString()))
+                                    {
+                                        resultindex++;
+                                    }
+                                    else
+                                    {   
+                                        ////автоприсвоение того же значения всем похожим
+                                        //THAutoSetValueForSameCells(targettableindex, targetrowindex, 0);
+                                    }
+                                }
+                                ////автоприсвоение того же значения всем похожим
+                                //THAutoSetValueForSameCells(targettableindex, targetrowindex, 0);
+                            }
+                            else
+                            {
+                                if (targetcellarray[line].Contains(inputtextarrayInfo.Rows[resultindex][2].ToString()))
+                                {
+                                    THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] = THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0].ToString()
+                                       .Replace(inputtextarrayInfo.Rows[resultindex][2].ToString(), translationarray[resultindex]);
+
+                                    if (int.Parse(inputtextarrayInfo.Rows[resultindex][1].ToString()) + 1 < inputtextarrayInfo.Rows.Count && int.Parse(inputtextarrayInfo.Rows[resultindex][1].ToString()) == int.Parse(inputtextarrayInfo.Rows[resultindex + 1][1].ToString()))
+                                    {
+                                        resultindex++;
+                                    }
+                                    else
+                                    {   
+                                        ////автоприсвоение того же значения всем похожим
+                                        //THAutoSetValueForSameCells(targettableindex, targetrowindex, 0);
+                                    }
+
+                                }
+                            }
+                        }
+                        //автоприсвоение того же значения всем похожим
+                        THAutoSetValueForSameCells(targettableindex, targetrowindex, 0);
                     }
                     else
                     {
-                        int targettableindex = int.Parse(inputtextarrayInfo.Rows[o][0].ToString());
-                        int targetrowindex = int.Parse(inputtextarrayInfo.Rows[o][1].ToString());
-
-                        if (THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1].ToString()))
+                        if (inputtextarrayInfo.Rows[resultindex][2] == null)
                         {
-                            THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] = outputarray[o];
+                            THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] = translationarray[resultindex];
+                            //автоприсвоение того же значения всем похожим
+                            THAutoSetValueForSameCells(targettableindex, targetrowindex, 0);
+                        }
+                        else
+                        {
+                            THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] = THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0].ToString()
+                               .Replace(inputtextarrayInfo.Rows[resultindex][2].ToString(), translationarray[resultindex]);
+                            //автоприсвоение того же значения всем похожим
+                            THAutoSetValueForSameCells(targettableindex, targetrowindex, 0);
                         }
                     }
+
                 }
             }
             inputtextarrayInfo.Rows.Clear();
+            inputtextarrayData.Rows.Clear();
+
+            //LogToFile("TranslateArrayAndSetValues executed!",true);
+            //по таблице в массив
+            //https://stackoverflow.com/questions/37827308/convert-datatable-into-an-array-in-c-sharp
+            //string[] outputarray = GoogleAPI.TranslateMultiple(inputtextarrayData.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray());
+            //inputtextarrayData.Rows.Clear();
+            //googletextcurrentsize = 0;
+            //LogToFile("input SB=\r\n" + inputtextarrayDataSB.ToString());
+
+            //string translation = GoogleAPI.Translate(inputtextarrayDataSB.ToString());
+
+            //LogToFile("translation=\r\n" + translation);
+            //if (string.IsNullOrEmpty(translation))
+            //{
+            //}
+            //else
+            //{
+            //    //https://stackoverflow.com/questions/3989816/reading-a-string-line-per-line-in-c-sharp
+            //    string[] translationarray = translation.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            //    //LogToFile("\r\ntranslationarray count="+ translationarray.Length+ "\r\ninputtextarrayInfo.Rows.Count="+ inputtextarrayInfo.Rows.Count);
+            //    for (int i = 0; i < translationarray.Length; i++)
+            //    {
+            //        //LogToFile("translationarray["+ i+ "]=" + translationarray[i]);
+            //        int targettableindex = int.Parse(inputtextarrayInfo.Rows[i][0].ToString());
+            //        int targetrowindex = int.Parse(inputtextarrayInfo.Rows[i][1].ToString());
+            //        if (THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1].ToString()))
+            //        {
+            //            string[] targetcellarray = THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0].ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+
+            //            //LogToFile("targetcellarray.Length=" + targetcellarray.Length+",value="+ THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0].ToString());
+            //            if (targetcellarray.Length > 1)
+            //            {
+            //                for (int c=i;c< targetcellarray.Length+i;c++)
+            //                {
+            //                    int targettableindexSUB = int.Parse(inputtextarrayInfo.Rows[i][0].ToString());
+            //                    int targetrowindexSUB = int.Parse(inputtextarrayInfo.Rows[i][1].ToString());
+
+            //                    if (THFilesElementsDataset.Tables[targettableindexSUB].Rows[targetrowindexSUB][1]==null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[targettableindexSUB].Rows[targetrowindexSUB][1].ToString()))
+            //                    {
+            //                        if (THFilesElementsDataset.Tables[targettableindexSUB].Rows[targetrowindexSUB][0].ToString().Contains(inputtextarrayData.Rows[c][0].ToString()))
+            //                        {
+            //                            if (inputtextarrayInfo.Rows[c][2] == null)
+            //                            {
+            //                                THFilesElementsDataset.Tables[targettableindexSUB].Rows[targetrowindexSUB][1] = THFilesElementsDataset.Tables[targettableindexSUB].Rows[targetrowindexSUB][0].ToString().Replace(inputtextarrayData.Rows[c][0].ToString(), translationarray[c]);
+            //                                //LogToFile("Result set value (raw)=" + THFilesElementsDataset.Tables[targettableindexSUB].Rows[targetrowindexSUB][1]);
+            //                            }
+            //                            else
+            //                            {
+            //                                THFilesElementsDataset.Tables[targettableindexSUB].Rows[targetrowindexSUB][1] = THFilesElementsDataset.Tables[targettableindexSUB].Rows[targetrowindexSUB][0].ToString().Replace(inputtextarrayInfo.Rows[c][2].ToString(), translationarray[c]);
+            //                                //LogToFile("Result set value (extracted)=" + THFilesElementsDataset.Tables[targettableindexSUB].Rows[targetrowindexSUB][1]);
+            //                            }
+            //                        }
+            //                    }
+            //                    i = c;
+            //                }
+
+            //                //string celllinevalue = "";
+            //                //for (int c = 0; c < targetcellarray.Length; c++)
+            //                //{
+            //                //    i += c;
+            //                //    if (inputtextarrayInfo.Rows[r][2].ToString() == null)
+            //                //    {
+            //                //        celllinevalue += targetcellarray[c];
+            //                //    }
+            //                //    else
+            //                //    {
+            //                //        celllinevalue += targetcellarray[c].Replace(inputtextarrayInfo.Rows[r][2].ToString(), translationarray[i]) + Environment.NewLine;
+            //                //    }
+            //                //}
+            //                //THFilesElementsDataset.Tables[targettableindex].Rows[r][1] = celllinevalue;
+            //            }
+            //            else
+            //            {
+            //                THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] = THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0].ToString().Replace(inputtextarrayData.Rows[i][0].ToString(), translationarray[i]);
+            //                //LogToFile("Result set value="+ THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1]);
+            //                //автоприсвоение того же значения всем похожим
+            //                THAutoSetValueForSameCells(targettableindex, targetrowindex, 0);
+            //            }
+            //        }
+            //    }
+
+            //LogToFile("translation="+ translation);
+            ////http://qaru.site/questions/31364/how-do-i-split-a-string-by-a-multi-character-delimiter-in-c
+            ////задание разделителя
+            ////\r\n{{BBC}}\r\n
+            //string[] splitter = new string[] { "THBBC" };
+            ////обрезание пробелов вокруг разделителя, образовавшихся при переводе
+            ////translation = translation.Replace("D NFTT", "DNFTT").Replace("DN FTT", "DNFTT").Replace("DNF TT", "DNFTT").Replace("DNFT T", "DNFTT").Replace(" DNFTT ", "DNFTT").Replace(" DNFTT", "DNFTT").Replace("DNFTT ", "DNFTT").Replace("\r\nDNFTT\r\n", "DNFTT\r\n");
+            //translation = FixBBC(translation);
+            ////создание массима по разделителю
+            //LogToFile("translation fixed=" + translation);
+            //string[] result = translation.Split(splitter, StringSplitOptions.None);
+            //LogToFile("result=\r\n" + result);
+            //for (int o = 0; o < result.Length; o++)
+            //{
+            //    if (string.IsNullOrEmpty(result[o]))
+            //    {
+            //    }
+            //    else
+            //    {
+            //        int targettableindex = int.Parse(inputtextarrayInfo.Rows[o][0].ToString());
+            //        int targetrowindex = int.Parse(inputtextarrayInfo.Rows[o][1].ToString());
+
+            //        if (THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1].ToString()))
+            //        {
+            //            //LogToFile("result[o]=" + result[o]);
+            //            THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] = result[o];
+            //        }
+            //    }
+            //}
+            //}
+        }
+
+        private string FixBBC(string input)
+        {
+            return input
+                .Replace("T HBBC", "THBBC")               
+                .Replace("TH BBC", "THBBC")               
+                .Replace("THB BC", "THBBC")               
+                .Replace("THBB C", "THBBC")               
+                .Replace("\r\nTHBBC\r\n", "THBBC")               
+                ;
         }
 
 
@@ -5678,11 +6074,17 @@ namespace TranslationHelper
                 int tableindex = THFilesListBox.SelectedIndex;
                 StringBuilder value = new StringBuilder();
                 int selcellscnt = THFileElementsDataGridView.SelectedCells.Count;
+                int[] selindexes = new int[selcellscnt];
+                for (int i = 0; i < selcellscnt; i++)
+                {
+                    selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                }
+                Array.Sort(selindexes);
                 for (int i = 0; i < selcellscnt; i++)
                 {
                     //MessageBox.Show(THFilesElementsDataset.Tables[tableindex].Rows[THFileElementsDataGridView.SelectedCells[i].RowIndex][cind].ToString());
                     //MessageBox.Show(THFileElementsDataGridView.CurrentCell.Value.ToString());
-                    value.Append(THFilesElementsDataset.Tables[tableindex].Rows[THFileElementsDataGridView.SelectedCells[i].RowIndex][cind].ToString());
+                    value.Append(THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind].ToString());
                     if (i + 1 < selcellscnt)
                     {
                         value.Append("\r\n");
@@ -5690,7 +6092,7 @@ namespace TranslationHelper
                 }
                 //MessageBox.Show(value.ToString());
                 //string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\""));
-                string result = string.Format(Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\""));
+                string result = string.Format(Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", HttpUtility.UrlEncode(value.ToString(), Encoding.UTF8));
                 //MessageBox.Show(result);
                 Process.Start(result);
 
@@ -6310,8 +6712,16 @@ namespace TranslationHelper
             }
         }
 
+        /// <summary>
+        /// МОДИФИЦИРОВАНО
+        /// Вставляет значения из буфера обмена в ячейки.
+        /// Модифицированная функция учитывает количество строк в ячейке оригинала
+        /// и вставляет столько же строк из буфера в ячейку перевода
+        /// </summary>
         private void PasteClipboardValue()
         {
+            
+
             //Show Error if no cell is selected
             if (THFileElementsDataGridView.SelectedCells.Count == 0)
             {
@@ -6320,12 +6730,17 @@ namespace TranslationHelper
                 return;
             }
 
+            int origcolindex = THFileElementsDataGridView.Columns["Original"].Index;
+
             //Get the starting Cell
             DataGridViewCell startCell = GetStartCell(THFileElementsDataGridView);
             //Get the clipboard value in a dictionary
             Dictionary<int, Dictionary<int, string>> cbValue =
                     ClipBoardValues(Clipboard.GetText());
 
+            int origcellmaxlines = 0;
+            int origcellcurlines = 0;
+            bool OrigMaxEqualCurrent = false;
             int iRowIndex = startCell.RowIndex;
             foreach (int rowKey in cbValue.Keys)
             {
@@ -6337,25 +6752,37 @@ namespace TranslationHelper
                     && iRowIndex <= THFileElementsDataGridView.Rows.Count - 1)
                     {
                         DataGridViewCell cell = THFileElementsDataGridView[iColIndex, iRowIndex];
+                        origcellmaxlines = THFileElementsDataGridView[origcolindex, iRowIndex].Value.ToString().Split('\n').Length;
 
+                        origcellcurlines++;
+                        OrigMaxEqualCurrent = origcellcurlines == origcellmaxlines;
+                        //LogToFile("origcellmaxlines=" + origcellmaxlines + ",origcellcurlines=" + origcellcurlines);
                         //Copy to selected cells if 'chkPasteToSelectedCells' is checked
                         // Закомментировал как здесь: https://code.google.com/p/seminary-software-engineering/source/browse/trunk/SystemForResultsEvaluaton/SystemForResultsEvaluaton/Core.cs?spec=svn21&r=21
                         //if ((chkPasteToSelectedCells.Checked && cell.Selected) ||
                         //   (!chkPasteToSelectedCells.Checked))
-                        if (cbValue.Count > 1)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
+                        if (cbValue.Count > 1 && OrigMaxEqualCurrent)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
                         {
                             //LogToFile("value=" + cbValue[rowKey][cellKey], true);
-                            cell.Value = Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
+                            cell.Value += Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
                         }
                         else
                         {
-                            cell.Value = cbValue[rowKey][cellKey];
+                            cell.Value += cbValue[rowKey][cellKey];
                         }
+                        //LogToFile("cbValue[rowKey][cellKey]=" + cbValue[rowKey][cellKey]+ ",cell.Value="+ cell.Value);
                     }
+                    //LogToFile("next col, iColIndex="+ iColIndex);
                     iColIndex++;
                 }
-                iRowIndex++;
+                if (OrigMaxEqualCurrent)
+                {
+                    origcellcurlines = 0;
+                    iRowIndex++;
+                    //LogToFile("next row, iRowIndex="+ iRowIndex);
+                }
             }
+            //LogToFile("",true);
         }
 
         private DataGridViewCell GetStartCell(DataGridView dgView)
@@ -6717,6 +7144,26 @@ namespace TranslationHelper
                     THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.Sort = "";
                 }
             }
+        }
+
+        private void TESTRegexToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string s = "## 0 #># Strike / Physics #<# 0 ## ## 1 #># Strike / Effect #<# 1 ## ## 2 #># Strike / Fire #<# 2 ## ## 3 #># Blow / Ice #<# 3 ## ## 4 #># Strike / Thunder #<# 4 ## ## 5 #># Slash / Physics #<# 5 ## ## 6 #># Slash / Effect #<# 6 ## ## 7 #># Slash / Fire #<# 7 ## ## 8 #># Slash / Ice #<# 8 ## ## 9 #># Slash / Thunder #<# 9 ## ## 10 #># Piercing / Physics #<# 10 ## ## 11 #># Piercing / Effect #<# 11 ## ## 12 #># Piercing / Fire #<# 12 ## ## 13 #># Piercing / Ice #<# 13 ## ## 14 #># Piercing / Thunder #<# 14 ## ## 15 #># Nail / Physical #<# 15 ## ## 16 #># Nail / Effect #<# 16 ## ## 17 #># Nail / Fire #<# 17 ## ## 18 #># Claw / Ice #<# 18 ## ## 19 #># Claw / Thunder #<# 19 ## ## 20 #># Blow / Special Move 1 #<# 20 ## ## 21 #># Blow / Special Move 2 #<# 21 ## ## 22 #># Slash / Skill 1 #<# 22 ## ## 23 #># Slash / Skill 2 ##### ## 24 #># Slash / Skill 3 #<# 24 ## ## 25 #># Piercing / Skills 1 #<# 25 ## ## 26 #># Piercing / Special Move 2 #<# 26 ## ## 27 #># Nail / Special Move #<# 27 ## ## 28 #># Arrow / Special Move #<# 28 ## ## 29 #># General purpose / Special Move 1 #<# 29 ## ## 30 #># General Purpose / Skills 2 #<# 30 ## ## 31 #># Breath #<# 31 ## ## 32 #># Pollen #<# 32 ## ## 33 #># Ultrasound #<# 33 ## ## 34 #># Fog #<# 34 ## ## 35 #># Song #<# 35 ## ## 36 #># 咆哮 #<# 36 ## ## 37 #># Foot payment #<# 37 ## ## 38 #># per body #<# 38 ## ## 39 #># Flash #<# 39 ## ## 40 #># Recovery / Single 1 #<# 40 ## ## 41 #># Recovery / Single 2 #<# 41 ## ## 42 #># Recovery / Whole 1 #<# 42 ## ## 43 #># Recovery / Whole 2 #<# 43 ## ## 44 #># Treatment / Single 1 #<# 44 ## ## 45 #># Treatment / Single 2 #<# 45 ## ## 46 #># Treatment / Whole 1 #<# 46 ## ## 47 #># Treatment / Whole 2 #<# 47 ## ## 48 #># Resuscitation 1 #<# 48 ## ## 49 #># Resuscitation 2 #<# 49 ## ## 50 #># Enhance 1 #<# 50 ## ## 51 #># Enhance 2 #<# 51 ## ## 52 #># Enhance 3 #<# 52 ## ## 53 #># Weak 1 #<# 53 ## ## 54 #># Weak 2 #<# 54 ## ## 55 #># Weak 3 #<# 55 ## ## 56 #># Spell #<# 56 ## ## 57 #># Absorption #<# 57 ## ## 58 #># Poison #<# 58 ## ## 59 #># Darkness #<# 59 ## ## 60 #># Silence #<# 60 ## ## 61 #># Sleep #<# 61 ## ## 62 #># Confused #<# 62 ## ## 63 #># Paralysis #<# 63 ## ## 64 #># Instant death #<# 64 ## ## 65 #># Flame / Single 1 #<# 65 ## ## 66 #># Flame / Single 2 #<# 66 ## ## 67 #># Flame / Whole 1 #<# 67 ## ## 68 #># Flame / Whole 2 #<# 68 ## ## 69 #># Flame / Whole 3 #<# 69 ## ## 70 #># Ice / Single 1 #<# 70 ## ## 71 #># Ice / Single 2 #<# 71 ## ## 72 #># Ice / Whole 1 #<# 72 ## ## 73 #># Ice / Whole 2 #<# 73 ## ## 74 #># Ice / Whole 3 #<# 74 ## ## 75 #># Thunder / Single 1 #<# 75 ## ## 76 #># Lightning / Single 2 #<# 76 ## ## 77 #># Thunder / Whole 1 #<# 77 ## ## 78 #># Thunder / Whole 2 #<# 78 ## ## 79 #># Thunder / Overall 3 #<# 79 ## ## 80 #># Water / Single 1 #<# 80 ## ## 81 #># Water / Single 2 #<# 81 ## ## 82 #># Water / Whole 1 #<# 82 ## ## 83 #># Water / Whole 2 #<# 83 ## ## 84 #># Water / Whole 3 #<# 84 ## ## 85 #># Sat / Single 1 #<# 85 ## ## 86 #># Sat / Single 2 #<# 86 ## ## 87 #># Sat / Whole 1 #<# 87 ## ## 88 #># Sat / Whole 2 #<# 88 ## ## 89 #># Sat / Whole 3 #<# 89 ## ## 90 #># Wind / Single 1 #<# 90 ## ## 91 #># Wind / Single 2 #<# 91 ## ## 92 #># Wind / Whole 1 #<# 92 ## ## 93 #># Wind / Whole 2 #<# 93 ## ## 94 #># Wind / Whole 3 #<# 94 ## ## 95 #># Hikari / Single 1 #<# 95 ## ## 96 #># Hikari / Single 2 #<# 96 ## ## 97 #># Light / Whole 1 #<# 97 ## ## 98 #># Light / Whole 2 #<# 98 ## ## 99 #># Light / Whole 3 #<# 99 ## ## 100 #># Darkness / Single 1 #<# 100 ## ## 101 #># Darkness / Single 2 #<# 101 ## ## 102 #># Darkness / Whole 1 #<# 102 ## ## 103 #># Darkness / Whole 2 #<# 103 ## ## 104 #># Darkness / Overall 3 #<# 104 ## ## 105 #># No Attributes / Single 1 #<# 105 ## ## 106 #># No Attributes / Single 2 #<# 106 ## ## 107 #># No attribute / Whole 1 #<# 107 ## ## 108 #># No attribute / Overall 2 #<# 108 ## ## 109 #># No attribute / Overall 3 #<# 109 ## ## 110 #># Shooting / one shot #<# 110 ## ## 111 #># Shooting / Random #<# 111 ## ## 112 #># Shooting / Whole #<# 112 ## ## 113 #># Shooting / Special Moves #<# 113 ## ## 114 #># Laser / single shot #<# 114 ## ## 115 #># Laser / Whole #<# 115 ## ## 116 #># Pillar of Light 1 #<# 116 ## ## 117 #># Light Column 2 #<# 117 ## ## 118 #># Light bullet #<# 118 ## ## 119 #># Radiation #<# 119 ## ";
+            Regex myReg = new Regex(@"(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\<\# \1 \#\# )|(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\#\#\#\# )", RegexOptions.Compiled);
+
+            MatchCollection matchCollection = myReg.Matches(s);
+
+            string o = "";
+            foreach(var match in matchCollection)
+            {
+                FileWriter.WriteData("c:\\THLogREGEXTest.log", match.ToString()+Environment.NewLine);
+                o += match.ToString() + " AND ";
+                //MessageBox.Show("match="+ match.ToString()+ ", matchCollection count="+ matchCollection.Count);
+            }
+            MessageBox.Show("FOUND=\r\n" + o + "\r\n, matchCollection count=" + matchCollection.Count);
+
+
+
         }
 
 

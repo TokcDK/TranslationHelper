@@ -246,6 +246,23 @@ namespace TranslationHelper
             return ResultOfTranslation;
         }
 
+        /// <summary>
+        /// кодирует некоторые символы в строке, как видно из строки адресу переводчика Гугл
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string UrlEncodeForTranslation(string value)
+        {
+            string[,] encode = { { "%", "%25" }, { "\r\n", "%0A" }, { " ", "%20" }, { ":", "%3A" }, { ",", "%2C" }, { "$", "%24" }, { "&", "%26" }, { "#", "%23" }, { "@", "%40" }, { "`", "%60" }, { "+", "%2B" }, { "^", "%5E" }, { "/", "%2F" } };
+
+            for (int i = 0; i < encode.Length / 2; i++)
+            {
+                value = value.Replace(encode[i,0], encode[i, 1]);
+            }
+
+            return value;
+        }
+
         // Token: 0x06000EEE RID: 3822 RVA: 0x0006AEFC File Offset: 0x000690FC
         public static string GetTranslation(string OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
@@ -262,10 +279,25 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "DNTT", RegexOptions.None);
+                    //https://www.codementor.io/000581/use-the-google-translate-api-for-free-rmxch1s67
+                    //link = 'https://translate.googleapis.com/translate_a/single'.'?client=gtx&sl=auto&tl=ru&dt=t&q='.urlencode(text_part);
+                    //result = go_curl(result = go​curl(link);
+
+                    //string str = WebUtility.UrlEncode(OriginalText);
+                    //string str = UrlEncodeForTranslation(OriginalText);
+                    //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "DNTT", RegexOptions.None);
+                    //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
+                    string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "<code>0</code>", RegexOptions.None);
+                    //string str = OriginalText.Replace(Environment.NewLine, "BBC");
+                    //string str = OriginalText.Replace(Environment.NewLine, "%0A");
+                    //string str = OriginalText;
+                    //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "%0A", RegexOptions.None).Replace("\"", "\\\"");//.Replace("\r\n", "%0A").Replace("\"", "\\\"")
                     string arg = HttpUtility.UrlEncode(str, Encoding.UTF8);
-                    //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
-                    string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, str);
+                    //string arg = UrlEncodeForTranslation(str);
+                    //string arg = str;
+                    //string address = string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, arg);
+                    string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
+                    //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, str);
                     using (WebClient webClient = new WebClient())
                     {
                         webClient.Encoding = Encoding.UTF8;
@@ -280,7 +312,10 @@ namespace TranslationHelper
                             string text;
                             using (WebBrowser WB = new WebBrowser())//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
                             {
+                                //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
+                                //FileWriter.WriteData("c:\\THLog1.log", "\r\ndownloadString:\r\n" + downloadString);
                                 text = webClient.DownloadString(address);
+                                FileWriter.WriteData("c:\\THLog.log", "TEXT:\r\n"+text);
                                 WB.ScriptErrorsSuppressed = true;
                                 WB.DocumentText = "";
                                 htmlDocument = WB.Document.OpenNew(true);
@@ -288,7 +323,6 @@ namespace TranslationHelper
                             htmlDocument.Write(text);
                             try
                             {
-                                THMain main = new THMain();
                                 foreach (object obj in htmlDocument.Body.Children)
                                 {
                                     HtmlElement htmlElement = (HtmlElement)obj;
@@ -297,14 +331,18 @@ namespace TranslationHelper
                                     }
                                     else
                                     {
-                                        main.LogToFile("htmlElement.InnerHtml="+ htmlElement.InnerHtml);
+                                        FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
                                         if (htmlElement.InnerHtml.StartsWith("<"))
                                         {
                                         }
                                         else
                                         {
-                                            string text2 = htmlElement.InnerText.Replace(" DNTT ", "\r\n").Replace(" DNTT", "\r\n").Replace("DNTT ", "\r\n").Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                            //string text2 = htmlElement.InnerText.Replace(" BBC ", "BBC").Replace(" BBC", "BBC").Replace("BBC ", "BBC").Replace("BBC", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                            //string text2 = htmlElement.InnerText.Replace(" DNTT ", "DNTT").Replace(" DNTT", "DNTT").Replace("DNTT ", "DNTT").Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                            string text2 = FixFormat(htmlElement.InnerText);
+                                            //string text2 = htmlElement.InnerText.Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
                                             myCache[OriginalText] = text2;
+                                            FileWriter.WriteData("c:\\THLog.log", "text2:\r\n" + text2);
                                             return text2;
                                         }
                                     }
@@ -325,12 +363,49 @@ namespace TranslationHelper
             return ResultOfTranslation;
         }
 
+        private static string FixFormat(string input)
+        {
+            input = Regex.Replace(input, @"## (\d{1,5}) # > #", "## $1 #>#");
+            input = Regex.Replace(input, @"## (\d{1,5}) #> #", "## $1 #>#");
+            input = Regex.Replace(input, @"## (\d{1,5}) # >#", "## $1 #>#");
+            input = Regex.Replace(input, @"# < # (\d{1,5}) ##", "#<# $1 ##");
+            input = Regex.Replace(input, @"# <# (\d{1,5}) ##", "#<# $1 ##");
+            input = Regex.Replace(input, @"#< # (\d{1,5}) ##", "#<# $1 ##");
+            input = Regex.Replace(input, @" <# (\d{1,5}) ##", " #<# $1 ##");
+            input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ######", "## $1 #># $2 #<# $1 ##");
+            input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) #####", "## $1 #># $2 #<# $1 ##");
+            input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ####", "## $1 #># $2 #<# $1 ##");
+            input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ###", "## $1 #># $2 #<# $1 ##");
+            //\#\# (\d{1,5}) \#\>\# ([^(\#\>\# )]*) \#\#\#\#\#
+            return input
+                //.Replace("<code> 0 </ code>", "<code>0</code>")
+                //.Replace("<code> 0 < / code>", "<code>0</code>")
+                //.Replace("<code> 0 </ code >", "<code>0</code>")
+                //.Replace("< code> 0 </ code>", "<code>0</code>")
+                //.Replace("<Code> 0 </ code>", "<code>0</code>")
+                //.Replace("<code > 0 </ code>", "<code>0</code>")
+                //.Replace("<c ode> 0 </ code>", "<code>0</code>")
+                //.Replace(" <code>0</code> ", "<code>0</code>")
+                //.Replace(" <code>0</code>", "<code>0</code>")
+                //.Replace("<code>0</code> ", "<code>0</code>")
+                //.Replace("<code>0</code>", Environment.NewLine)
+                //.Replace(DNTT, "\r\n")
+                .Replace("</ p> </ font>", " </p></font>")
+                .Replace("</ p>", "</p>")
+                .Replace("</ font>", "</font>")
+                .Replace("<p align = ", "<p align=")
+                .Replace("<img src = ", "<img src=")
+                .Replace("<font size = ", "<font size=")
+                .Replace("<font face = ", "<font face=")
+                ;
+        }
+
         // Token: 0x06000EEF RID: 3823 RVA: 0x0006B160 File Offset: 0x00069360
         public static string[] TranslateMultiple(string[] OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
             checked
             {
-                string[] array = new string[OriginalText.Count() - 1 + 1];
+                string[] array = new string[OriginalText.Count()];
                 StringBuilder stringBuilder = new StringBuilder();
                 int num = OriginalText.Count() - 1;
                 for (int i = 0; i <= num; i++)
@@ -357,18 +432,20 @@ namespace TranslationHelper
                             {
                                 "##",
                                 Conversions.ToString(i),
-                                "## ",
+                                "#># ",
                                 Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None),
-                                " ##",
+                                //Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", "<code>0</code>", RegexOptions.None),
+                                " #<#",
                                 Conversions.ToString(i),
                                 "##\r\n"
                             }));
                         }
                     }
                 }
+                FileWriter.WriteData("c:\\THLog.log", "\r\nstringBuilder.ToString():\r\n" + stringBuilder.ToString());
                 string arg = HttpUtility.UrlEncode(stringBuilder.ToString(), Encoding.UTF8);
-                //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
-                string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, stringBuilder.ToString());
+                string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
+                //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, stringBuilder.ToString());
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.Encoding = Encoding.UTF8;
@@ -384,6 +461,7 @@ namespace TranslationHelper
                         using (WebBrowser WB = new WebBrowser())//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
                         {
                             text = webClient.DownloadString(address);
+                            FileWriter.WriteData("c:\\THLog.log", "\r\nTEXT:\r\n" + text);
                             WB.ScriptErrorsSuppressed = true;
                             WB.DocumentText = "";
                             htmlDocument = WB.Document.OpenNew(true);
@@ -395,13 +473,19 @@ namespace TranslationHelper
                             foreach (object obj in htmlDocument.Body.Children)
                             {
                                 HtmlElement htmlElement = (HtmlElement)obj;
-                                bool flag4 = htmlElement.InnerText == null;
-                                if (!flag4)
+                                if (htmlElement.InnerText == null)
                                 {
-                                    bool flag5 = htmlElement.InnerHtml.StartsWith("<");
-                                    if (!flag5)
+                                }
+                                else
+                                {
+                                    FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
+                                    if (htmlElement.InnerHtml.StartsWith("<"))
                                     {
-                                        text2 = htmlElement.InnerText.Replace(DNTT, "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                    }
+                                    else
+                                    {
+                                        //text2 = htmlElement.InnerText.Replace(DNTT, "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                        text2 = FixFormat(htmlElement.InnerText);
                                         break;
                                     }
                                 }
@@ -411,10 +495,10 @@ namespace TranslationHelper
                         {
                         }
 
+                        FileWriter.WriteData("c:\\THLog.log", "\r\ntext2:\r\n" + text2);
                         if (text2.Length == 0)
                         {
-                            int num2 = array.Count<string>() - 1;
-                            for (int j = 0; j <= num2; j++)
+                            for (int j = 0; j < array.Count(); j++)
                             {
                                 if (array[j] == null)
                                 {
@@ -424,20 +508,22 @@ namespace TranslationHelper
                             return array;
                         }
                         MatchCollection matchCollection = myReg.Matches(text2);
-                        int num3 = 0;
-                        int num4 = array.Count<string>() - 1;
-                        for (int k = 0; k <= num4; k++)
+                        FileWriter.WriteData("c:\\THLog.log", "\r\nmatchCollection cnt:" + matchCollection.Count+ ", array.Count()"+ array.Count());
+                        int matchnum = 0;
+                        for (int k = 0; k < array.Count(); k++)
                         {
+                            FileWriter.WriteData("c:\\THLog.log", "\r\narray[k]=" + array[k]);
                             if (array[k] == null)
                             {
-                                if (matchCollection.Count == num3)
+                                if (matchCollection.Count == matchnum)
                                 {
                                     array[k] = string.Empty;
                                 }
                                 else
                                 {
-                                    array[k] = matchCollection[num3].Value;
-                                    num3++;
+                                    FileWriter.WriteData("c:\\THLog.log", "\r\nSet matchCollection["+matchnum+"].Value" + matchCollection[matchnum].Value);
+                                    array[k] = matchCollection[matchnum].Value.Replace("DNTT",Environment.NewLine);
+                                    matchnum++;
                                 }
                             }
                         }
@@ -465,9 +551,12 @@ namespace TranslationHelper
         private static readonly List<string> _Languages = new List<string>();
 
         // Token: 0x04000448 RID: 1096
-        private static readonly Dictionary<string, string> myCache = new Dictionary<string, string>(1);
+        private static Dictionary<string, string> myCache = new Dictionary<string, string>(1);
 
         // Token: 0x04000449 RID: 1097
-        private static readonly Regex myReg = new Regex("(?<=##\\d## ).*?(?=##\\d##)", RegexOptions.Compiled);
+        //private static readonly Regex myReg = new Regex("(?<=##\\d## ).*?(?=##\\d##)", RegexOptions.Compiled);
+        private static readonly Regex myReg = new Regex(@"(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\<\# \1 \#\# )|(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\#\#\#\# )", RegexOptions.Compiled);
+        //## 27 #># Same sex with this woman _ <# 27 ## 
+        //\#\# \d{1,3} \#\# ?(.*) ?\#\# \d{1,3} \#\# ?
     }
 }

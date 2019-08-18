@@ -277,7 +277,7 @@
             this.SearchFormFindNextButton.TabIndex = 4;
             this.SearchFormFindNextButton.Text = "Find Next";
             this.SearchFormFindNextButton.UseVisualStyleBackColor = true;
-            this.SearchFormFindNextButton.Click += new System.EventHandler(this.Button1_Click);
+            this.SearchFormFindNextButton.Click += new System.EventHandler(this.SearchFormFindNextButton_Click);
             // 
             // SearchFormReplaceButton
             // 
