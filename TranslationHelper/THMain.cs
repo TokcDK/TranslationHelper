@@ -6813,7 +6813,7 @@ namespace TranslationHelper
                         if (cbValue.Count > 1 && OrigMaxEqualCurrent)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
                         {
                             //получались двойные значения при использовании с функцией автоподстановки для похожих
-                            if (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()) || !cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
+                            if (( cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()) ) && !cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
                             {
                                 //LogToFile("value=" + cbValue[rowKey][cellKey], true);
                                 cell.Value += Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
@@ -6822,7 +6822,7 @@ namespace TranslationHelper
                         else
                         {
                             //получались двойные значения при использовании с функцией автоподстановки для похожих
-                            if (cell.Value == null || string.IsNullOrEmpty(cbValue[rowKey][cellKey]) || !cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
+                            if (( cell.Value == null || string.IsNullOrEmpty(cbValue[rowKey][cellKey]) ) && !cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
                             {
                                 cell.Value += cbValue[rowKey][cellKey];//asdfg
                             }
