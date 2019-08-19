@@ -110,7 +110,7 @@ namespace TranslationHelper
         {
             //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
             //THMainResetTableButton
-            ToolTip THMainResetTableButtonToolTip = new ToolTip
+            ToolTip THToolTip = new ToolTip
             {
 
                 // Set up the delays for the ToolTip.
@@ -120,7 +120,8 @@ namespace TranslationHelper
                 // Force the ToolTip text to be displayed whether or not the form is active.
                 ShowAlways = false
             };
-            THMainResetTableButtonToolTip.SetToolTip(THMainResetTableButton, "Resets filters and tab sorting");
+            THToolTip.SetToolTip(THMainResetTableButton, "Resets filters and tab sorting");
+            THToolTip.SetToolTip(THFiltersDataGridView, "Filters for columns of main table");
             ////////////////////////////
         }
 
@@ -6726,25 +6727,27 @@ namespace TranslationHelper
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //LogToFile("Paste Enter");
             if (THFileElementsDataGridView == null)
             {
             }
             else
             {
+                //LogToFile("DGV is not empty");
                 // Determine if there is any text in the Clipboard to paste into the text box. 
                 if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text) == true)
                 {
+                    //LogToFile("GetDataPresent is true");
                     // Determine if any text is selected in the text box. 
                     if (THFileElementsDataGridView.SelectedCells.Count > 0)
                     {
-                        if (!THFileElementsDataGridView.CurrentCell.ReadOnly) //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
-                        {
-                            //Perform paste Operation
-                            PasteClipboardValue();
-                        }
+                        //LogToFile("DGV sel cells > 0");
+                        //Perform paste Operation
+                        PasteClipboardValue();
                     }
                 }
             }
+            //LogToFile("Paste End", true);
         }
 
         //==============вырезать, копировать, вставить, для одной или нескольких ячеек
@@ -6770,7 +6773,7 @@ namespace TranslationHelper
         private void PasteClipboardValue()
         {
             
-
+            //LogToFile("PasteClipboardValue Enter");
             //Show Error if no cell is selected
             if (THFileElementsDataGridView.SelectedCells.Count == 0)
             {
@@ -6779,6 +6782,7 @@ namespace TranslationHelper
                 return;
             }
 
+            //LogToFile("PasteClipboardValue Enter 1");
             int origcolindex = THFileElementsDataGridView.Columns["Original"].Index;
 
             //Get the starting Cell
@@ -6793,9 +6797,11 @@ namespace TranslationHelper
             int iRowIndex = startCell.RowIndex;
             foreach (int rowKey in cbValue.Keys)
             {
+                //LogToFile("PasteClipboardValue rowKey="+ rowKey);
                 int iColIndex = startCell.ColumnIndex;
                 foreach (int cellKey in cbValue[rowKey].Keys)
                 {
+                    //LogToFile("PasteClipboardValue iColIndex=" + iColIndex);
                     //Check if the index is within the limit
                     if (iColIndex <= THFileElementsDataGridView.Columns.Count - 1
                     && iRowIndex <= THFileElementsDataGridView.Rows.Count - 1)
@@ -6805,42 +6811,60 @@ namespace TranslationHelper
 
                         origcellcurlines++;
                         OrigMaxEqualCurrent = origcellcurlines == origcellmaxlines;
-                        //LogToFile("origcellmaxlines=" + origcellmaxlines + ",origcellcurlines=" + origcellcurlines);
+                        //LogToFile("PasteClipboardValue origcellmaxlines=" + origcellmaxlines + ",origcellcurlines=" + origcellcurlines);
                         //Copy to selected cells if 'chkPasteToSelectedCells' is checked
                         // Закомментировал как здесь: https://code.google.com/p/seminary-software-engineering/source/browse/trunk/SystemForResultsEvaluaton/SystemForResultsEvaluaton/Core.cs?spec=svn21&r=21
                         //if ((chkPasteToSelectedCells.Checked && cell.Selected) ||
                         //   (!chkPasteToSelectedCells.Checked))
                         if (cbValue.Count > 1 && OrigMaxEqualCurrent)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
                         {
+                            //LogToFile("PasteClipboardValue cbValue.Count > 1 && OrigMaxEqualCurrent");
                             //получались двойные значения при использовании с функцией автоподстановки для похожих
-                            if (( cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()) ) && !cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
+                            if (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()))
                             {
-                                //LogToFile("value=" + cbValue[rowKey][cellKey], true);
-                                cell.Value += Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
+                                if (cell.ReadOnly && cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
+                                {
+                                }
+                                else
+                                {
+                                    //LogToFile("PasteClipboardValue value=" + Regex.Replace(cbValue[rowKey][cellKey], @"\r$", ""));
+                                    cell.Value += Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
+                                }
+
                             }
                         }
                         else
                         {
+                            //LogToFile("PasteClipboardValue NOT cbValue.Count > 1 && OrigMaxEqualCurrent");
                             //получались двойные значения при использовании с функцией автоподстановки для похожих
-                            if (( cell.Value == null || string.IsNullOrEmpty(cbValue[rowKey][cellKey]) ) && !cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
+                            if (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()))
                             {
-                                cell.Value += cbValue[rowKey][cellKey];//asdfg
+                                if (cell.ReadOnly && cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
+                                {
+                                }
+                                else
+                                {
+                                    //LogToFile("PasteClipboardValue value=" + cbValue[rowKey][cellKey]);
+                                    cell.Value += cbValue[rowKey][cellKey];//asdfg
+                                }
                             }
                         }
                         //LogToFile("cbValue[rowKey][cellKey]=" + cbValue[rowKey][cellKey]+ ",cell.Value="+ cell.Value);
                     }
-                    //LogToFile("next col, iColIndex="+ iColIndex);
+                    //LogToFile("PasteClipboardValue next col, iColIndex=" + iColIndex);
                     iColIndex++;
                 }
+                //LogToFile("PasteClipboardValue check if OrigMaxEqualCurrent is true and it is " + OrigMaxEqualCurrent);
                 if (OrigMaxEqualCurrent)
                 {
                     THAutoSetValueForSameCells(THFilesListBox.SelectedIndex, iRowIndex, origcolindex);
                     origcellcurlines = 0;
+                    //LogToFile("PasteClipboardValue next row, iRowIndex=" + iRowIndex);
                     iRowIndex++;
-                    //LogToFile("next row, iRowIndex="+ iRowIndex);
                 }
             }
             //LogToFile("",true);
+            //LogToFile("PasteClipboardValue Exit");
         }
 
         private DataGridViewCell GetStartCell(DataGridView dgView)
