@@ -6681,49 +6681,67 @@ namespace TranslationHelper
 
         private void CutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Ensure that text is currently selected in the text box.    
-            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            if (THFileElementsDataGridView == null)
             {
-                //Copy to clipboard
-                CopyToClipboard();
+            }
+            else
+            {
+                // Ensure that text is currently selected in the text box.    
+                if (THFileElementsDataGridView.SelectedCells.Count > 0)
+                {
+                    //Copy to clipboard
+                    CopyToClipboard();
 
-                //Clear selected cells                
-                //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
-                if (THFileElementsDataGridView.CurrentCell.ReadOnly)
-                {
-                }
-                else
-                {
-                    foreach (DataGridViewCell dgvCell in THFileElementsDataGridView.SelectedCells)
+                    //Clear selected cells                
+                    //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
+                    if (THFileElementsDataGridView.CurrentCell.ReadOnly)
                     {
-                        dgvCell.Value = string.Empty;
                     }
-                }
+                    else
+                    {
+                        foreach (DataGridViewCell dgvCell in THFileElementsDataGridView.SelectedCells)
+                        {
+                            dgvCell.Value = string.Empty;
+                        }
+                    }
 
+                }
             }
         }
 
         private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Ensure that text is selected in the text box.    
-            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            if (THFileElementsDataGridView == null)
             {
-                CopyToClipboard();
+            }
+            else
+            {
+                // Ensure that text is selected in the text box.    
+                if (THFileElementsDataGridView.SelectedCells.Count > 0)
+                {
+                    CopyToClipboard();
+                }
             }
         }
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Determine if there is any text in the Clipboard to paste into the text box. 
-            if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text) == true)
+            if (THFileElementsDataGridView == null)
             {
-                // Determine if any text is selected in the text box. 
-                if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            }
+            else
+            {
+                // Determine if there is any text in the Clipboard to paste into the text box. 
+                if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text) == true)
                 {
-                    if (!THFileElementsDataGridView.CurrentCell.ReadOnly) //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
+                    // Determine if any text is selected in the text box. 
+                    if (THFileElementsDataGridView.SelectedCells.Count > 0)
                     {
-                        //Perform paste Operation
-                        PasteClipboardValue();
+                        if (!THFileElementsDataGridView.CurrentCell.ReadOnly) //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
+                        {
+                            //Perform paste Operation
+                            PasteClipboardValue();
+                        }
                     }
                 }
             }
@@ -7206,6 +7224,22 @@ namespace TranslationHelper
 
 
 
+        }
+
+        private void THFileElementsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            //отключение действий для ячеек при входе в режим редктирования
+            cutToolStripMenuItem1.ShortcutKeys = Keys.None;
+            copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+            pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+        }
+
+        private void THFileElementsDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            //влючение действий для ячеек при выходе из режима редктирования
+            cutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
+            copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
+            pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
         }
 
 
