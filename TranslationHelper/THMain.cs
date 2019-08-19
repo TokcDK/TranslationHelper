@@ -7208,6 +7208,7 @@ namespace TranslationHelper
         private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             THSearch search = new THSearch();
+            search.oDs = THFilesElementsDataset;
             search.Show();
         }
 
