@@ -6538,7 +6538,9 @@ namespace TranslationHelper
                 {
                     //LogToFile("THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]="+ THFilesElementsDataset.Tables[tableind].Rows[rind][transcind].ToString());
                     //http://www.cyberforum.ru/csharp-beginners/thread244709.html
-                    Regex reg = new Regex(@"\d+"); //reg равняется любым цифрам
+                    string quote = "\"";
+                    string pattern = @"((\d|\!|\?|\.|"+quote+")+)";
+                    Regex reg = new Regex(pattern); //reg равняется любым цифрам
                     string inputorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][cind].ToString());
                     string inputtranscellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][transcind].ToString());
                     MatchCollection mc = reg.Matches(inputorigcellvalue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
@@ -6559,8 +6561,8 @@ namespace TranslationHelper
 
                                     if (mc0.Count > 0) //если количество совпадений в mc0 больше нуля, т.е. цифры были в поле untrans проверяемой на совпадение ячейки
                                     {
-                                        string checkingorigcellvalueNoDigits = Regex.Replace(checkingorigcellvalue, @"\d+", "");
-                                        string inputorigcellvalueNoDigits = Regex.Replace(inputorigcellvalue, @"\d+", "");
+                                        string checkingorigcellvalueNoDigits = Regex.Replace(checkingorigcellvalue, pattern, "");
+                                        string inputorigcellvalueNoDigits = Regex.Replace(inputorigcellvalue, pattern, "");
 
                                         //LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
                                         //если поле перевода равно только что измененному во входной, без учета цифр
@@ -6584,7 +6586,7 @@ namespace TranslationHelper
                                                 //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
                                                 //там же че тести и for, ак у здесь меня - наиболее быстрый вариант
 
-                                                string inputresult = Regex.Replace(inputtranscellvalue, @"(\d+)", "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+                                                string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
                                                 //LogToFile("arraysize=" + arraysize+ ", wrapped inputresult"+ inputresult);
                                                 for (int m = 0; m < arraysize; m++)
                                                 {
