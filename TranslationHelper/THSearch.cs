@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -18,64 +19,150 @@ namespace TranslationHelper
             InitializeComponent();
         }
 
-        private void RadioButton1_Click(object sender, EventArgs e)
+        private void SearchModeNormalRadioButton_Click(object sender, EventArgs e)
         {
             SearchModeRegexRadioButton.Checked = false;
             SearchModeNormalRadioButton.Checked = true;
         }
 
-        private void RadioButton2_Click(object sender, EventArgs e)
+        private void SearchModeRegexRadioButton_Click(object sender, EventArgs e)
         {
             SearchModeNormalRadioButton.Checked = false;
             SearchModeRegexRadioButton.Checked = true;
         }
 
-        private void RadioButton4_Click(object sender, EventArgs e)
+        private void SearchMethodOriginalTranslationRadioButton_Click(object sender, EventArgs e)
         {
             SearchMethodTranslationRadioButton.Checked = false;
             SearchMethodOriginalTranslationRadioButton.Checked = true;
         }
 
-        private void RadioButton3_Click(object sender, EventArgs e)
+        private void SearchMethodTranslationRadioButton_Click(object sender, EventArgs e)
         {
             SearchMethodOriginalTranslationRadioButton.Checked = false;
             SearchMethodTranslationRadioButton.Checked = true;
         }
 
-        private void RadioButton5_Click(object sender, EventArgs e)
+        private void SearchRangeTableRadioButton_Click(object sender, EventArgs e)
         {
             SearchRangeAllRadioButton.Checked = false;
             SearchRangeTableRadioButton.Checked = true;
         }
 
-        private void RadioButton6_Click(object sender, EventArgs e)
+        private void SearchRangeAllRadioButton_Click(object sender, EventArgs e)
         {
             SearchRangeTableRadioButton.Checked = false;
             SearchRangeAllRadioButton.Checked = true;
         }
 
+        int startrowsearchindex;        //Индекс стартовой ячейки для поиска
+        int tableindex;
+        public ListBox THFilesListBox = new ListBox();
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
+            if (!string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) && THFilesListBox.SelectedIndex >= 0)
+            {
+                //MessageBox.Show("srchind1)" + srchind.ToString());
+                /*
+                if (dGTexts.CurrentCell.RowIndex != srchind)
+                {
+                    srchind = dGTexts.CurrentCell.RowIndex;//начальная строка
+                    MessageBox.Show("srchind2)" + srchind.ToString());
+                }*/
+                string searchcolumn = "Translation";
+                if (SearchMethodTranslationRadioButton.Checked)
+                {
+                    searchcolumn = "Original";
+                }
+
+                if (startrowsearchindex == THFilesElementsDataset.Tables[tableindex].Rows.Count)
+                {
+                    startrowsearchindex = 0;
+                }
+
+                for (/*подразумевает стартовое значение startrowsearchindex, присвоеное выше*/; startrowsearchindex < THFilesElementsDataset.Tables[tableindex].Rows.Count; startrowsearchindex++)
+                {
+                    if (IsContainsText(THFilesElementsDataset.Tables[tableindex].Rows[startrowsearchindex][searchcolumn].ToString(), SearchFormFindWhatComboBox.Text))
+                    {
+                        //MessageBox.Show("srchind3)" + srchind.ToString());
+                        //if (tableindex==THFilesListBox.SelectedIndex)
+                        //{
+                        //}
+                        //else
+                        //{
+                        //    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
+                        //}
+
+                        THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, startrowsearchindex];
+                        //THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = THFileElementsDataGridView.SelectedRows[0].Index;
+
+
+                        if (startrowsearchindex < THFilesElementsDataset.Tables[tableindex].Rows.Count)
+                        {
+                            startrowsearchindex++;
+                        }
+                        else
+                        {
+                            if (SearchRangeTableRadioButton.Checked)
+                            {
+                                startrowsearchindex = 0;
+                            }
+                            else
+                            {
+                                if (tableindex < THFilesElementsDataset.Tables.Count)
+                                {
+                                    tableindex++;
+                                }
+                                else
+                                {
+                                    tableindex = 0;
+                                }
+
+                                startrowsearchindex = 0;
+
+                            }
+                        }
+                        //MessageBox.Show("srchind4)" + srchind.ToString());
+                        return;
+
+                    }
+                    //MessageBox.Show("srchind5)" + srchind.ToString());
+                }
+            }
+        }
+
+        private bool IsContainsText(string searchobject, string searchinput)
+        {
+            if (THSearchMatchCaseCheckBox.Checked)
+            {
+                return searchobject.Contains(SearchFormFindWhatComboBox.Text);
+            }
+            else
+            {
+                return searchobject.ToLowerInvariant().Contains(SearchFormFindWhatComboBox.Text.ToLowerInvariant());
+            }
         }
 
         private void PopulateGrid(DataSet oDsResults)
         {
-            if (oDsResults == null)
-            {
-            }
-            else
-            {
-                SearchResultsDatagridview.DataSource = oDsResults.Tables[0];
-                SearchResultsDatagridview.Visible = true;
-            }
+            //if (oDsResults == null)
+            //{
+            //}
+            //else
+            //{
+            //    SearchResultsDatagridview.DataSource = oDsResults.Tables[0];
+            //    SearchResultsDatagridview.Visible = true;
+            //}
         }
 
         //http://mrbool.com/dataset-advance-operations-search-sort-filter-net/24769
         //https://stackoverflow.com/questions/3608388/c-sharp-access-dataset-data-from-another-class
-        public DataSet oDs;
+        //http://qaru.site/questions/236566/how-to-know-the-row-index-from-datatable-object
+        public DataSet THFilesElementsDataset = new DataSet();
+        public DataGridView THFileElementsDataGridView = new DataGridView();
         private void FindAllButton_Click(object sender, EventArgs e)
         {
-            DataSet oDsResults = oDs.Clone();
+            DataSet oDsResults = THFilesElementsDataset.Clone();
 
             DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
 
@@ -117,12 +204,12 @@ namespace TranslationHelper
                 DataRow[] drFilterRows;
                 //MessageBox.Show("tables cnt="+ oDs.Tables.Count);
                 //Check if table exist
-                if (oDs != null && oDs.Tables.Count > 0)
+                if (THFilesElementsDataset != null && THFilesElementsDataset.Tables.Count > 0)
                 {
-                    for (int t=0;t< oDs.Tables.Count; t++)
+                    for (int t=0;t< THFilesElementsDataset.Tables.Count; t++)
                     {
-                        string strQuery = "[" + oDs.Tables[t].Columns[1].ColumnName + "] Like '%" + SearchFormFindWhatComboBox.Text.Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";
-                        drFilterRows = oDs.Tables[t].Select(strQuery);
+                        string strQuery = "[" + THFilesElementsDataset.Tables[t].Columns[1].ColumnName + "] Like '%" + SearchFormFindWhatComboBox.Text.Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";
+                        drFilterRows = THFilesElementsDataset.Tables[t].Select(strQuery);
 
                         if (drFilterRows.Length > 0)
                         {
@@ -138,6 +225,16 @@ namespace TranslationHelper
                 }
             }
             return null;
+        }
+
+        private void LinkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://patreon.com/TranslationHelper");
+        }
+
+        private void THSearch_Load(object sender, EventArgs e)
+        {
+            tableindex = THFilesListBox.SelectedIndex;
         }
     }
 }
