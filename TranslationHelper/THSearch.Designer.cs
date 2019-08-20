@@ -335,6 +335,7 @@
             this.SearchFormReplaceButton.TabIndex = 5;
             this.SearchFormReplaceButton.Text = "Replace";
             this.SearchFormReplaceButton.UseVisualStyleBackColor = true;
+            this.SearchFormReplaceButton.Click += new System.EventHandler(this.SearchFormReplaceButton_Click);
             // 
             // SearchFormReplaceAllButton
             // 

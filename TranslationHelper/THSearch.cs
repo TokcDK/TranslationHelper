@@ -13,10 +13,17 @@ namespace TranslationHelper
 {
     public partial class THSearch : Form
     {
-        private THMain Main = new THMain();
-        public THSearch()
+        private THMain Main;
+        public ListBox THFilesListBox;
+        public DataSet THFilesElementsDataset;
+        public DataGridView THFileElementsDataGridView;
+        public THSearch(THMain MainForm, DataSet DS, ListBox listBox, DataGridView DGV)
         {
             InitializeComponent();
+            Main = MainForm;
+            THFilesListBox = listBox;
+            THFilesElementsDataset = DS;
+            THFileElementsDataGridView = DGV;
         }
 
         private void SearchModeNormalRadioButton_Click(object sender, EventArgs e)
@@ -57,7 +64,7 @@ namespace TranslationHelper
 
         int startrowsearchindex;        //Индекс стартовой ячейки для поиска
         int tableindex;
-        public ListBox THFilesListBox = new ListBox();
+        int tablescnt;
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) && THFilesListBox.SelectedIndex >= 0)
@@ -75,58 +82,92 @@ namespace TranslationHelper
                     searchcolumn = "Original";
                 }
 
-                if (startrowsearchindex == THFilesElementsDataset.Tables[tableindex].Rows.Count)
+                if (SearchRangeTableRadioButton.Checked)
                 {
-                    startrowsearchindex = 0;
+                    if (tableindex== tablescnt)
+                    {
+                        tableindex -= 1;
+                    }
+
+                    tablescnt = tableindex + 1;
+                }
+                else
+                {
+                    tablescnt = THFilesElementsDataset.Tables.Count;
                 }
 
-                for (/*подразумевает стартовое значение startrowsearchindex, присвоеное выше*/; startrowsearchindex < THFilesElementsDataset.Tables[tableindex].Rows.Count; startrowsearchindex++)
+                for (; tableindex < tablescnt; tableindex++)
                 {
-                    if (IsContainsText(THFilesElementsDataset.Tables[tableindex].Rows[startrowsearchindex][searchcolumn].ToString(), SearchFormFindWhatComboBox.Text))
+
+                    FileWriter.WriteData("c:\\logsearch.log", "\r\n0 0 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                    if (startrowsearchindex == THFilesElementsDataset.Tables[tableindex].Rows.Count)
                     {
-                        //MessageBox.Show("srchind3)" + srchind.ToString());
-                        //if (tableindex==THFilesListBox.SelectedIndex)
-                        //{
-                        //}
-                        //else
-                        //{
-                        //    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
-                        //}
-
-                        THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, startrowsearchindex];
-                        //THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = THFileElementsDataGridView.SelectedRows[0].Index;
-
-
-                        if (startrowsearchindex < THFilesElementsDataset.Tables[tableindex].Rows.Count)
+                        FileWriter.WriteData("c:\\logsearch.log", "\r\n0 3 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                        if (SearchRangeTableRadioButton.Checked)
                         {
-                            startrowsearchindex++;
                         }
                         else
                         {
-                            if (SearchRangeTableRadioButton.Checked)
+                            FileWriter.WriteData("c:\\logsearch.log", "\r\n0 4 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                            if (tableindex == THFilesElementsDataset.Tables.Count)
                             {
-                                startrowsearchindex = 0;
+                                tableindex = 0;
+                            }
+
+                            FileWriter.WriteData("c:\\logsearch.log", "\r\n0 5 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                        }
+                        startrowsearchindex = 0;
+                    }
+
+                    for (/*подразумевает стартовое значение startrowsearchindex, присвоеное выше*/; startrowsearchindex < THFilesElementsDataset.Tables[tableindex].Rows.Count; startrowsearchindex++)
+                    {
+                        if (IsContainsText(THFilesElementsDataset.Tables[tableindex].Rows[startrowsearchindex][searchcolumn].ToString(), SearchFormFindWhatComboBox.Text))
+                        {
+                            FileWriter.WriteData("c:\\logsearch.log", "\r\n1 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                            //MessageBox.Show("srchind3)" + srchind.ToString());
+                            if (tableindex == THFilesListBox.SelectedIndex)
+                            {
                             }
                             else
                             {
-                                if (tableindex < THFilesElementsDataset.Tables.Count)
+                                THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
+                            }
+
+                            THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, startrowsearchindex];
+                            //THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = THFileElementsDataGridView.SelectedRows[0].Index;
+
+
+                            FileWriter.WriteData("c:\\logsearch.log", "\r\n2 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                            if (startrowsearchindex < THFilesElementsDataset.Tables[tableindex].Rows.Count)
+                            {
+                                FileWriter.WriteData("c:\\logsearch.log", "\r\n2.1 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                                startrowsearchindex++;
+                            }
+                            else
+                            {
+                                FileWriter.WriteData("c:\\logsearch.log", "\r\n3 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                                if (SearchRangeTableRadioButton.Checked)
                                 {
-                                    tableindex++;
                                 }
                                 else
                                 {
-                                    tableindex = 0;
+                                    FileWriter.WriteData("c:\\logsearch.log", "\r\n4 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                                    if (tableindex == THFilesElementsDataset.Tables.Count)
+                                    {
+                                        tableindex = 0;
+                                    }
+
+                                    FileWriter.WriteData("c:\\logsearch.log", "\r\n5 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
                                 }
-
                                 startrowsearchindex = 0;
-
                             }
+                            //MessageBox.Show("srchind4)" + srchind.ToString());
+                            FileWriter.WriteData("c:\\logsearch.log", "\r\n111 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                            return;
                         }
-                        //MessageBox.Show("srchind4)" + srchind.ToString());
-                        return;
-
+                        FileWriter.WriteData("c:\\logsearch.log", "\r\n222 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
+                        //MessageBox.Show("srchind5)" + srchind.ToString());
                     }
-                    //MessageBox.Show("srchind5)" + srchind.ToString());
                 }
             }
         }
@@ -158,8 +199,6 @@ namespace TranslationHelper
         //http://mrbool.com/dataset-advance-operations-search-sort-filter-net/24769
         //https://stackoverflow.com/questions/3608388/c-sharp-access-dataset-data-from-another-class
         //http://qaru.site/questions/236566/how-to-know-the-row-index-from-datatable-object
-        public DataSet THFilesElementsDataset = new DataSet();
-        public DataGridView THFileElementsDataGridView = new DataGridView();
         private void FindAllButton_Click(object sender, EventArgs e)
         {
             DataSet oDsResults = THFilesElementsDataset.Clone();
@@ -235,6 +274,12 @@ namespace TranslationHelper
         private void THSearch_Load(object sender, EventArgs e)
         {
             tableindex = THFilesListBox.SelectedIndex;
+        }
+
+        private void SearchFormReplaceButton_Click(object sender, EventArgs e)
+        {
+            //Main.BindToDataTableGridView(THFilesElementsDataset.Tables[tableindex]);
+            THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[0];
         }
     }
 }

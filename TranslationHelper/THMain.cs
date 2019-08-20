@@ -2538,15 +2538,16 @@ namespace TranslationHelper
 
                     //THBS.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;
                     //THFileElementsDataGridView.DataSource = THBS;
-                    
+
                     //THFileElementsDataGridView.RowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
                     //THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
                     //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
-                    if (THFilesListBox.SelectedIndex >= 0)//предотвращает исключение "Невозможно найти таблицу -1"
-                    {
-                        THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
-                    }
+                    //if (THFilesListBox.SelectedIndex >= 0)//предотвращает исключение "Невозможно найти таблицу -1"
+                    //{
+                    //    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+                    //}
+                    BindToDataTableGridView(THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex]);
 
 
                     /*
@@ -2612,6 +2613,14 @@ namespace TranslationHelper
                 //THFileElementsDataGridView.RowHeadersVisible = true; // set it to false if not needed
 
                 THFilesListBox_MouseClickBusy = false;
+            }
+        }
+
+        public void BindToDataTableGridView(DataTable DT)
+        {
+            if (THFilesListBox.SelectedIndex >= 0)//предотвращает исключение "Невозможно найти таблицу -1"
+            {
+                THFileElementsDataGridView.DataSource = DT;
             }
         }
 
@@ -7209,7 +7218,7 @@ namespace TranslationHelper
 
         private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            THSearch search = new THSearch();
+            THSearch search = new THSearch(this, THFilesElementsDataset, THFilesListBox, THFileElementsDataGridView);
             search.THFilesElementsDataset = THFilesElementsDataset;
             search.THFileElementsDataGridView = THFileElementsDataGridView;
             search.THFilesListBox = THFilesListBox;
