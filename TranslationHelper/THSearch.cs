@@ -75,43 +75,69 @@ namespace TranslationHelper
         public DataSet oDs;
         private void FindAllButton_Click(object sender, EventArgs e)
         {
-            //Check for user input
-            if (SearchFormFindWhatComboBox.Text.Trim() != "")
+            DataSet oDsResults = oDs.Clone();
+
+            DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
+
+            if (drFoundRowsTable == null)
             {
-                DataSet oDsResults = oDs.Clone();
+            }
+            else
+            {
+                if (drFoundRowsTable.Rows.Count > 0)
+                {
+
+                    oDsResults.AcceptChanges();
+                    PopulateGrid(oDsResults);
+
+                    lblError.Visible = true;
+                    lblError.Text = "Found " + drFoundRowsTable.Rows.Count + " records";
+                }
+                else
+                {
+                    PopulateGrid(null);
+                    lblError.Visible = true;
+                    lblError.Text = "Nothing Found.";
+                }
+            }
+
+
+        }
+
+        private DataTable SelectFromDatatables(DataSet oDsResults)
+        {
+            //Check for user input
+            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text.Trim()))
+            {
+                //lblError.Visible = true;
+                //lblError.Text = "Please fill criteria before search";
+            }
+            else
+            {
+                DataRow[] drFilterRows;
                 //MessageBox.Show("tables cnt="+ oDs.Tables.Count);
                 //Check if table exist
                 if (oDs != null && oDs.Tables.Count > 0)
                 {
-                    string strQuery = "[" + oDs.Tables[2].Columns[1].ColumnName + "] Like '%" + SearchFormFindWhatComboBox.Text.Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";
-                    DataRow[] drFilterRows = oDs.Tables[2].Select(strQuery);
+                    for (int t=0;t< oDs.Tables.Count; t++)
+                    {
+                        string strQuery = "[" + oDs.Tables[t].Columns[1].ColumnName + "] Like '%" + SearchFormFindWhatComboBox.Text.Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";
+                        drFilterRows = oDs.Tables[t].Select(strQuery);
 
-                    foreach (DataRow dr in drFilterRows)
-                        oDsResults.Tables[0].ImportRow(dr);
+                        if (drFilterRows.Length > 0)
+                        {
+                            foreach (DataRow dr in drFilterRows)
+                            {
+                                oDsResults.Tables[0].ImportRow(dr);
+                            }
+                        }
+                    }
+
                     //MessageBox.Show(oDsResults.Tables[0].Rows[0][1].ToString());
-
-                    if (drFilterRows.Length > 0)
-                    {
-                        oDsResults.AcceptChanges();
-                        PopulateGrid(oDsResults);
-
-                        lblError.Visible = true;
-                        lblError.Text = "One Record Found.";
-                    }
-                    else
-                    {
-                        PopulateGrid(null);
-                        lblError.Visible = true;
-                        lblError.Text = "No Record Found.";
-                    }
+                    return oDsResults.Tables[0];
                 }
             }
-            else
-            {
-                lblError.Visible = true;
-                lblError.Text = "Please fill criteria before search";
-            }
-
+            return null;
         }
     }
 }
