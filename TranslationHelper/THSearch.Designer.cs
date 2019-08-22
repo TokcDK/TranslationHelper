@@ -59,6 +59,8 @@
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.SearchResultsDatagridview = new System.Windows.Forms.DataGridView();
+            this.SearchResultsPanel = new System.Windows.Forms.Panel();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.THSearchPanel.SuspendLayout();
@@ -69,6 +71,8 @@
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SearchResultsDatagridview)).BeginInit();
+            this.SearchResultsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // THSearchTabs
@@ -78,11 +82,12 @@
             this.THSearchTabs.Location = new System.Drawing.Point(0, 0);
             this.THSearchTabs.Name = "THSearchTabs";
             this.THSearchTabs.SelectedIndex = 0;
-            this.THSearchTabs.Size = new System.Drawing.Size(580, 334);
+            this.THSearchTabs.Size = new System.Drawing.Size(580, 555);
             this.THSearchTabs.TabIndex = 2;
             // 
             // THSearch1st
             // 
+            this.THSearch1st.Controls.Add(this.SearchResultsPanel);
             this.THSearch1st.Controls.Add(this.linkLabel2);
             this.THSearch1st.Controls.Add(this.label3);
             this.THSearch1st.Controls.Add(this.lblError);
@@ -90,7 +95,7 @@
             this.THSearch1st.Location = new System.Drawing.Point(4, 22);
             this.THSearch1st.Name = "THSearch1st";
             this.THSearch1st.Padding = new System.Windows.Forms.Padding(3);
-            this.THSearch1st.Size = new System.Drawing.Size(572, 308);
+            this.THSearch1st.Size = new System.Drawing.Size(572, 529);
             this.THSearch1st.TabIndex = 0;
             this.THSearch1st.Text = "Find and Replace";
             this.THSearch1st.UseVisualStyleBackColor = true;
@@ -128,13 +133,15 @@
             // 
             // THSearchPanel
             // 
+            this.THSearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.THSearchPanel.Controls.Add(this.SearchModeGroupBox);
             this.THSearchPanel.Controls.Add(this.THSearchMatchCaseCheckBox);
             this.THSearchPanel.Controls.Add(this.panel4);
             this.THSearchPanel.Controls.Add(this.panel3);
             this.THSearchPanel.Location = new System.Drawing.Point(3, 3);
             this.THSearchPanel.Name = "THSearchPanel";
-            this.THSearchPanel.Size = new System.Drawing.Size(565, 293);
+            this.THSearchPanel.Size = new System.Drawing.Size(565, 304);
             this.THSearchPanel.TabIndex = 7;
             // 
             // SearchModeGroupBox
@@ -142,7 +149,7 @@
             this.SearchModeGroupBox.Controls.Add(this.panel6);
             this.SearchModeGroupBox.Location = new System.Drawing.Point(0, 208);
             this.SearchModeGroupBox.Name = "SearchModeGroupBox";
-            this.SearchModeGroupBox.Size = new System.Drawing.Size(565, 85);
+            this.SearchModeGroupBox.Size = new System.Drawing.Size(565, 80);
             this.SearchModeGroupBox.TabIndex = 20;
             this.SearchModeGroupBox.TabStop = false;
             this.SearchModeGroupBox.Text = "Search Mode";
@@ -395,15 +402,44 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
             // 
+            // SearchResultsDatagridview
+            // 
+            this.SearchResultsDatagridview.AllowUserToAddRows = false;
+            this.SearchResultsDatagridview.AllowUserToDeleteRows = false;
+            this.SearchResultsDatagridview.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.SearchResultsDatagridview.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            this.SearchResultsDatagridview.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
+            this.SearchResultsDatagridview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.SearchResultsDatagridview.Location = new System.Drawing.Point(0, 3);
+            this.SearchResultsDatagridview.Name = "SearchResultsDatagridview";
+            this.SearchResultsDatagridview.ReadOnly = true;
+            this.SearchResultsDatagridview.RowTemplate.Height = 23;
+            this.SearchResultsDatagridview.Size = new System.Drawing.Size(565, 216);
+            this.SearchResultsDatagridview.TabIndex = 19;
+            this.SearchResultsDatagridview.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SearchResultsDatagridview_CellClick);
+            // 
+            // SearchResultsPanel
+            // 
+            this.SearchResultsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.SearchResultsPanel.Controls.Add(this.SearchResultsDatagridview);
+            this.SearchResultsPanel.Location = new System.Drawing.Point(3, 310);
+            this.SearchResultsPanel.Name = "SearchResultsPanel";
+            this.SearchResultsPanel.Size = new System.Drawing.Size(566, 218);
+            this.SearchResultsPanel.TabIndex = 20;
+            this.SearchResultsPanel.Visible = false;
+            // 
             // THSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(580, 334);
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(580, 555);
             this.Controls.Add(this.THSearchTabs);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(596, 368);
             this.Name = "THSearch";
             this.Text = "Find and Replace";
             this.Load += new System.EventHandler(this.THSearch_Load);
@@ -423,6 +459,8 @@
             this.panel4.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SearchResultsDatagridview)).EndInit();
+            this.SearchResultsPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -460,5 +498,7 @@
         private System.Windows.Forms.Button FindAllButton;
         private System.Windows.Forms.CheckBox THSearchMatchCaseCheckBox;
         private System.Windows.Forms.GroupBox SearchModeGroupBox;
+        private System.Windows.Forms.DataGridView SearchResultsDatagridview;
+        private System.Windows.Forms.Panel SearchResultsPanel;
     }
 }

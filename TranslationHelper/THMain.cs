@@ -7218,11 +7218,17 @@ namespace TranslationHelper
 
         private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            THSearch search = new THSearch(this, THFilesElementsDataset, THFilesListBox, THFileElementsDataGridView);
-            search.THFilesElementsDataset = THFilesElementsDataset;
-            search.THFileElementsDataGridView = THFileElementsDataGridView;
-            search.THFilesListBox = THFilesListBox;
-            search.Show();
+            if (THFilesListBox.SelectedIndex==-1)
+            {
+            }
+            else
+            {
+                THSearch search = new THSearch(this, THFilesElementsDataset, THFilesListBox, THFileElementsDataGridView);
+                search.THFilesElementsDataset = THFilesElementsDataset;
+                search.THFileElementsDataGridView = THFileElementsDataGridView;
+                search.THFilesListBox = THFilesListBox;
+                search.Show();
+            }
         }
 
         private void THMainResetTableButton_Click(object sender, EventArgs e)
