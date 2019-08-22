@@ -324,22 +324,40 @@ namespace TranslationHelper
             int SelectedIndex;
             for (int t=0;t< THFilesElementsDataset.Tables.Count; t++)
             {
-                //http://qaru.site/questions/236566/how-to-know-the-row-index-from-datatable-object
-                SelectedIndex = THFilesElementsDataset.Tables[t].Rows.IndexOf(oDsResults.Tables[0].Rows[e.RowIndex]);
-                FileWriter.WriteData(@"c:\\Search1.log", "\r\nSelectedIndex="+ SelectedIndex+"\r\nValue="+ oDsResults.Tables[0].Rows[e.RowIndex][0].ToString());
-                if (SelectedIndex >= 0)
+                for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
                 {
-                    if (t == THFilesListBox.SelectedIndex)
+                    if (THFilesElementsDataset.Tables[t].Rows[r][0].ToString()== oDsResults.Tables[0].Rows[e.RowIndex][0].ToString())
                     {
+                        if (t == THFilesListBox.SelectedIndex)
+                        {
+                        }
+                        else
+                        {
+                            THFilesListBox.SelectedIndex = t;
+                            THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[t];
+                        }
+                        THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[0, r];
+                        return;
                     }
-                    else
-                    {
-                        THFilesListBox.SelectedIndex = t;
-                        THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[t];
-                    }
-                    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[0, SelectedIndex];
-                    return;
                 }
+
+
+                ////http://qaru.site/questions/236566/how-to-know-the-row-index-from-datatable-object
+                //SelectedIndex = THFilesElementsDataset.Tables[t].Rows.IndexOf(oDsResults.Tables[0].Rows[e.RowIndex]);
+                //FileWriter.WriteData(@"c:\\Search1.log", "\r\nSelectedIndex="+ SelectedIndex+"\r\nValue="+ oDsResults.Tables[0].Rows[e.RowIndex][0].ToString());
+                //if (SelectedIndex >= 0)
+                //{
+                //    if (t == THFilesListBox.SelectedIndex)
+                //    {
+                //    }
+                //    else
+                //    {
+                //        THFilesListBox.SelectedIndex = t;
+                //        THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[t];
+                //    }
+                //    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[0, SelectedIndex];
+                //    return;
+                //}
             }
             
         }
