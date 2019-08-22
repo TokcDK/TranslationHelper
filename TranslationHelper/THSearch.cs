@@ -11,13 +11,13 @@ using System.Windows.Forms;
 
 namespace TranslationHelper
 {
-    public partial class THSearch : Form
+    public partial class c : Form
     {
         private THMain Main;
         public ListBox THFilesListBox;
         public DataSet THFilesElementsDataset;
         public DataGridView THFileElementsDataGridView;
-        public THSearch(THMain MainForm, DataSet DS, ListBox listBox, DataGridView DGV)
+        public c(THMain MainForm, DataSet DS, ListBox listBox, DataGridView DGV)
         {
             InitializeComponent();
             Main = MainForm;
@@ -66,7 +66,7 @@ namespace TranslationHelper
         int tableindex;
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) && THFilesListBox.SelectedIndex >= 0)
+            if (!string.IsNullOrEmpty(SearchFormFindWhatTextBox.Text) && THFilesListBox.SelectedIndex >= 0)
             {
 
                 string searchcolumn = "Translation";
@@ -85,7 +85,7 @@ namespace TranslationHelper
 
                     for (/*подразумевает стартовое значение startrowsearchindex, присвоеное выше*/; startrowsearchindex < THFilesElementsDataset.Tables[tableindex].Rows.Count; startrowsearchindex++)
                     {
-                        if (IsContainsText(THFilesElementsDataset.Tables[tableindex].Rows[startrowsearchindex][searchcolumn].ToString(), SearchFormFindWhatComboBox.Text))
+                        if (IsContainsText(THFilesElementsDataset.Tables[tableindex].Rows[startrowsearchindex][searchcolumn].ToString(), SearchFormFindWhatTextBox.Text))
                         {
                             //FileWriter.WriteData("c:\\logsearch.log", "\r\n1 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
                             //MessageBox.Show("srchind3)" + srchind.ToString());
@@ -134,7 +134,7 @@ namespace TranslationHelper
 
                         for (/*подразумевает стартовое значение startrowsearchindex, присвоеное выше*/; startrowsearchindex < THFilesElementsDataset.Tables[tableindex].Rows.Count; startrowsearchindex++)
                         {
-                            if (IsContainsText(THFilesElementsDataset.Tables[tableindex].Rows[startrowsearchindex][searchcolumn].ToString(), SearchFormFindWhatComboBox.Text))
+                            if (IsContainsText(THFilesElementsDataset.Tables[tableindex].Rows[startrowsearchindex][searchcolumn].ToString(), SearchFormFindWhatTextBox.Text))
                             {
                                 //FileWriter.WriteData("c:\\logsearch.log", "\r\n1 tableindex=" + tableindex + ", startrowsearchindex" + startrowsearchindex);
                                 //MessageBox.Show("srchind3)" + srchind.ToString());
@@ -177,15 +177,20 @@ namespace TranslationHelper
             }
         }
 
+        private void StoryFoundValueToComboBox(string foundvalue)
+        {
+            SearchFormFindWhatComboBox.Items.Add(foundvalue);
+        }
+
         private bool IsContainsText(string searchobject, string searchinput)
         {
             if (THSearchMatchCaseCheckBox.Checked)
             {
-                return searchobject.Contains(SearchFormFindWhatComboBox.Text);
+                return searchobject.Contains(SearchFormFindWhatTextBox.Text);
             }
             else
             {
-                return searchobject.ToLowerInvariant().Contains(SearchFormFindWhatComboBox.Text.ToLowerInvariant());
+                return searchobject.ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant());
             }
         }
 
@@ -228,6 +233,7 @@ namespace TranslationHelper
             {
                 if (drFoundRowsTable.Rows.Count > 0)
                 {
+                    StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
 
                     oDsResults.AcceptChanges();
                     PopulateGrid(oDsResults);
@@ -246,10 +252,12 @@ namespace TranslationHelper
             }
         }
 
+        //Dictionary<int, int> oDsResultsCoordinates = new Dictionary<int, int>();
+        DataTable oDsResultsCoordinates = new DataTable();
         private DataTable SelectFromDatatables(DataSet oDsResults)
         {
             //Check for user input
-            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text.Trim()) || THFilesElementsDataset == null)
+            if (string.IsNullOrEmpty(SearchFormFindWhatTextBox.Text.Trim()) || THFilesElementsDataset == null)
             {
                 //lblError.Visible = true;
                 //lblError.Text = "Please fill criteria before search";
@@ -262,7 +270,7 @@ namespace TranslationHelper
                 {
                     searchcolumn = "Original";
                 }
-                string strQuery = "[" + THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName + "] Like '%" + SearchFormFindWhatComboBox.Text.Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";
+                string strQuery = "[" + THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName + "] Like '%" + SearchFormFindWhatTextBox.Text.Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";
 
                 if (SearchRangeTableRadioButton.Checked)
                 {
@@ -270,9 +278,11 @@ namespace TranslationHelper
 
                     if (drFilterRows.Length > 0)
                     {
+                        oDsResultsCoordinates.Clear();
                         foreach (DataRow dr in drFilterRows)
                         {
                             oDsResults.Tables[0].ImportRow(dr);
+                            oDsResultsCoordinates.Rows.Add(THFilesListBox.SelectedIndex, THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Rows.IndexOf(dr));                            
                         }
                     }
 
@@ -281,6 +291,7 @@ namespace TranslationHelper
                 }
                 else
                 {
+                    oDsResultsCoordinates.Clear();
                     for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
                     {
                         drFilterRows = THFilesElementsDataset.Tables[t].Select(strQuery);
@@ -290,6 +301,7 @@ namespace TranslationHelper
                             foreach (DataRow dr in drFilterRows)
                             {
                                 oDsResults.Tables[0].ImportRow(dr);
+                                oDsResultsCoordinates.Rows.Add(t, THFilesElementsDataset.Tables[t].Rows.IndexOf(dr));
                             }
                         }
                     }
@@ -306,11 +318,15 @@ namespace TranslationHelper
             Process.Start("https://patreon.com/TranslationHelper");
         }
 
+        DataTable SearchFormFindWhatComboBoxCustomeSource = new DataTable();
         private void THSearch_Load(object sender, EventArgs e)
         {
             //some other info: https://stackoverflow.com/questions/20893725/how-to-hide-and-show-panels-on-a-form-and-have-it-resize-to-take-up-slack
             this.Height = 368;
             tableindex = THFilesListBox.SelectedIndex;
+            oDsResultsCoordinates.Columns.Add("t");
+            oDsResultsCoordinates.Columns.Add("r");
+            //SearchFormFindWhatComboBox.AutoCompleteCustomSource = SearchFormFindWhatComboBoxCustomeSource.Rows.
         }
 
         private void SearchFormReplaceButton_Click(object sender, EventArgs e)
@@ -321,44 +337,63 @@ namespace TranslationHelper
 
         private void SearchResultsDatagridview_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            int SelectedIndex;
-            for (int t=0;t< THFilesElementsDataset.Tables.Count; t++)
+            string searchcolumn = "Translation";
+            if (SearchMethodTranslationRadioButton.Checked)
             {
-                for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
-                {
-                    if (THFilesElementsDataset.Tables[t].Rows[r][0].ToString()== oDsResults.Tables[0].Rows[e.RowIndex][0].ToString())
-                    {
-                        if (t == THFilesListBox.SelectedIndex)
-                        {
-                        }
-                        else
-                        {
-                            THFilesListBox.SelectedIndex = t;
-                            THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[t];
-                        }
-                        THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[0, r];
-                        return;
-                    }
-                }
-
-
-                ////http://qaru.site/questions/236566/how-to-know-the-row-index-from-datatable-object
-                //SelectedIndex = THFilesElementsDataset.Tables[t].Rows.IndexOf(oDsResults.Tables[0].Rows[e.RowIndex]);
-                //FileWriter.WriteData(@"c:\\Search1.log", "\r\nSelectedIndex="+ SelectedIndex+"\r\nValue="+ oDsResults.Tables[0].Rows[e.RowIndex][0].ToString());
-                //if (SelectedIndex >= 0)
-                //{
-                //    if (t == THFilesListBox.SelectedIndex)
-                //    {
-                //    }
-                //    else
-                //    {
-                //        THFilesListBox.SelectedIndex = t;
-                //        THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[t];
-                //    }
-                //    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[0, SelectedIndex];
-                //    return;
-                //}
+                searchcolumn = "Original";
             }
+            int tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString());
+            int rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString());
+
+            if (tableindex == THFilesListBox.SelectedIndex)
+            {
+            }
+            else
+            {
+                THFilesListBox.SelectedIndex = tableindex;
+                THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
+            }
+            THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+
+
+            //int SelectedIndex;
+            //for (int t=0;t< THFilesElementsDataset.Tables.Count; t++)
+            //{
+            //    for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+            //    {
+            //        if (THFilesElementsDataset.Tables[t].Rows[r][0].ToString()== oDsResults.Tables[0].Rows[e.RowIndex][0].ToString())
+            //        {
+            //            if (t == THFilesListBox.SelectedIndex)
+            //            {
+            //            }
+            //            else
+            //            {
+            //                THFilesListBox.SelectedIndex = t;
+            //                THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[t];
+            //            }
+            //            THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[0, r];
+            //            return;
+            //        }
+            //    }
+
+
+            //    ////http://qaru.site/questions/236566/how-to-know-the-row-index-from-datatable-object
+            //    //SelectedIndex = THFilesElementsDataset.Tables[t].Rows.IndexOf(oDsResults.Tables[0].Rows[e.RowIndex]);
+            //    //FileWriter.WriteData(@"c:\\Search1.log", "\r\nSelectedIndex="+ SelectedIndex+"\r\nValue="+ oDsResults.Tables[0].Rows[e.RowIndex][0].ToString());
+            //    //if (SelectedIndex >= 0)
+            //    //{
+            //    //    if (t == THFilesListBox.SelectedIndex)
+            //    //    {
+            //    //    }
+            //    //    else
+            //    //    {
+            //    //        THFilesListBox.SelectedIndex = t;
+            //    //        THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[t];
+            //    //    }
+            //    //    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[0, SelectedIndex];
+            //    //    return;
+            //    //}
+            //}
             
         }
     }

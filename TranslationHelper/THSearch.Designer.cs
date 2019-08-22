@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper
 {
-    partial class THSearch
+    partial class c
     {
         /// <summary>
         /// Required designer variable.
@@ -30,6 +30,8 @@
         {
             this.THSearchTabs = new System.Windows.Forms.TabControl();
             this.THSearch1st = new System.Windows.Forms.TabPage();
+            this.SearchResultsPanel = new System.Windows.Forms.Panel();
+            this.SearchResultsDatagridview = new System.Windows.Forms.DataGridView();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.lblError = new System.Windows.Forms.Label();
@@ -59,10 +61,12 @@
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.SearchResultsDatagridview = new System.Windows.Forms.DataGridView();
-            this.SearchResultsPanel = new System.Windows.Forms.Panel();
+            this.SearchFormFindWhatTextBox = new System.Windows.Forms.TextBox();
+            this.SearchFormReplaceWithTextBox = new System.Windows.Forms.TextBox();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
+            this.SearchResultsPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SearchResultsDatagridview)).BeginInit();
             this.THSearchPanel.SuspendLayout();
             this.SearchModeGroupBox.SuspendLayout();
             this.panel6.SuspendLayout();
@@ -71,8 +75,6 @@
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SearchResultsDatagridview)).BeginInit();
-            this.SearchResultsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // THSearchTabs
@@ -99,6 +101,34 @@
             this.THSearch1st.TabIndex = 0;
             this.THSearch1st.Text = "Find and Replace";
             this.THSearch1st.UseVisualStyleBackColor = true;
+            // 
+            // SearchResultsPanel
+            // 
+            this.SearchResultsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.SearchResultsPanel.Controls.Add(this.SearchResultsDatagridview);
+            this.SearchResultsPanel.Location = new System.Drawing.Point(3, 310);
+            this.SearchResultsPanel.Name = "SearchResultsPanel";
+            this.SearchResultsPanel.Size = new System.Drawing.Size(566, 218);
+            this.SearchResultsPanel.TabIndex = 20;
+            this.SearchResultsPanel.Visible = false;
+            // 
+            // SearchResultsDatagridview
+            // 
+            this.SearchResultsDatagridview.AllowUserToAddRows = false;
+            this.SearchResultsDatagridview.AllowUserToDeleteRows = false;
+            this.SearchResultsDatagridview.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.SearchResultsDatagridview.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            this.SearchResultsDatagridview.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
+            this.SearchResultsDatagridview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.SearchResultsDatagridview.ColumnHeadersVisible = false;
+            this.SearchResultsDatagridview.Location = new System.Drawing.Point(0, 3);
+            this.SearchResultsDatagridview.Name = "SearchResultsDatagridview";
+            this.SearchResultsDatagridview.ReadOnly = true;
+            this.SearchResultsDatagridview.RowTemplate.Height = 23;
+            this.SearchResultsDatagridview.Size = new System.Drawing.Size(565, 216);
+            this.SearchResultsDatagridview.TabIndex = 19;
+            this.SearchResultsDatagridview.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SearchResultsDatagridview_CellClick);
             // 
             // linkLabel2
             // 
@@ -355,6 +385,8 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.SearchFormReplaceWithTextBox);
+            this.panel3.Controls.Add(this.SearchFormFindWhatTextBox);
             this.panel3.Controls.Add(this.THSearchFindWhatLabel);
             this.panel3.Controls.Add(this.SearchFormFindWhatComboBox);
             this.panel3.Controls.Add(this.SearchFormReplaceWithComboBox);
@@ -375,9 +407,8 @@
             // 
             // SearchFormFindWhatComboBox
             // 
-            this.SearchFormFindWhatComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.SearchFormFindWhatComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
             this.SearchFormFindWhatComboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.SearchFormFindWhatComboBox.FormattingEnabled = true;
             this.SearchFormFindWhatComboBox.Location = new System.Drawing.Point(81, 2);
             this.SearchFormFindWhatComboBox.Name = "SearchFormFindWhatComboBox";
             this.SearchFormFindWhatComboBox.Size = new System.Drawing.Size(278, 21);
@@ -385,8 +416,6 @@
             // 
             // SearchFormReplaceWithComboBox
             // 
-            this.SearchFormReplaceWithComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.SearchFormReplaceWithComboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.SearchFormReplaceWithComboBox.FormattingEnabled = true;
             this.SearchFormReplaceWithComboBox.Location = new System.Drawing.Point(81, 29);
             this.SearchFormReplaceWithComboBox.Name = "SearchFormReplaceWithComboBox";
@@ -402,34 +431,23 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
             // 
-            // SearchResultsDatagridview
+            // SearchFormFindWhatTextBox
             // 
-            this.SearchResultsDatagridview.AllowUserToAddRows = false;
-            this.SearchResultsDatagridview.AllowUserToDeleteRows = false;
-            this.SearchResultsDatagridview.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.SearchResultsDatagridview.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
-            this.SearchResultsDatagridview.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
-            this.SearchResultsDatagridview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.SearchResultsDatagridview.Location = new System.Drawing.Point(0, 3);
-            this.SearchResultsDatagridview.Name = "SearchResultsDatagridview";
-            this.SearchResultsDatagridview.ReadOnly = true;
-            this.SearchResultsDatagridview.RowTemplate.Height = 23;
-            this.SearchResultsDatagridview.Size = new System.Drawing.Size(565, 216);
-            this.SearchResultsDatagridview.TabIndex = 19;
-            this.SearchResultsDatagridview.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SearchResultsDatagridview_CellClick);
+            this.SearchFormFindWhatTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
+            this.SearchFormFindWhatTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.SearchFormFindWhatTextBox.Location = new System.Drawing.Point(81, 2);
+            this.SearchFormFindWhatTextBox.Name = "SearchFormFindWhatTextBox";
+            this.SearchFormFindWhatTextBox.Size = new System.Drawing.Size(260, 21);
+            this.SearchFormFindWhatTextBox.TabIndex = 4;
             // 
-            // SearchResultsPanel
+            // SearchFormReplaceWithTextBox
             // 
-            this.SearchResultsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.SearchResultsPanel.Controls.Add(this.SearchResultsDatagridview);
-            this.SearchResultsPanel.Location = new System.Drawing.Point(3, 310);
-            this.SearchResultsPanel.Name = "SearchResultsPanel";
-            this.SearchResultsPanel.Size = new System.Drawing.Size(566, 218);
-            this.SearchResultsPanel.TabIndex = 20;
-            this.SearchResultsPanel.Visible = false;
+            this.SearchFormReplaceWithTextBox.Location = new System.Drawing.Point(81, 29);
+            this.SearchFormReplaceWithTextBox.Name = "SearchFormReplaceWithTextBox";
+            this.SearchFormReplaceWithTextBox.Size = new System.Drawing.Size(260, 21);
+            this.SearchFormReplaceWithTextBox.TabIndex = 5;
             // 
-            // THSearch
+            // c
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -440,12 +458,14 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(596, 368);
-            this.Name = "THSearch";
+            this.Name = "c";
             this.Text = "Find and Replace";
             this.Load += new System.EventHandler(this.THSearch_Load);
             this.THSearchTabs.ResumeLayout(false);
             this.THSearch1st.ResumeLayout(false);
             this.THSearch1st.PerformLayout();
+            this.SearchResultsPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.SearchResultsDatagridview)).EndInit();
             this.THSearchPanel.ResumeLayout(false);
             this.THSearchPanel.PerformLayout();
             this.SearchModeGroupBox.ResumeLayout(false);
@@ -459,8 +479,6 @@
             this.panel4.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SearchResultsDatagridview)).EndInit();
-            this.SearchResultsPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -500,5 +518,7 @@
         private System.Windows.Forms.GroupBox SearchModeGroupBox;
         private System.Windows.Forms.DataGridView SearchResultsDatagridview;
         private System.Windows.Forms.Panel SearchResultsPanel;
+        private System.Windows.Forms.TextBox SearchFormReplaceWithTextBox;
+        private System.Windows.Forms.TextBox SearchFormFindWhatTextBox;
     }
 }

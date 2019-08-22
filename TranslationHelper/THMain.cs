@@ -7223,7 +7223,7 @@ namespace TranslationHelper
             }
             else
             {
-                THSearch search = new THSearch(this, THFilesElementsDataset, THFilesListBox, THFileElementsDataGridView);
+                c search = new c(this, THFilesElementsDataset, THFilesListBox, THFileElementsDataGridView);
                 search.THFilesElementsDataset = THFilesElementsDataset;
                 search.THFileElementsDataGridView = THFileElementsDataGridView;
                 search.THFilesListBox = THFilesListBox;
