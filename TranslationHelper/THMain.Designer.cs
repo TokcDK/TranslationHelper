@@ -1026,8 +1026,6 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.SplitContainer THsplitContainerFilesElements;
         private System.Windows.Forms.SplitContainer THEditElementsSplitContainer;
-        private System.Windows.Forms.TextBox THSourceTextBox;
-        private System.Windows.Forms.TextBox THTargetTextBox;
         private System.Windows.Forms.SplitContainer THWorkSpaceSplitContainer;
         private System.Windows.Forms.SplitContainer THInfoEditSplitContainer;
         public System.Windows.Forms.DataGridView THFileElementsDataGridView;
@@ -1095,6 +1093,8 @@
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
         private System.Windows.Forms.Button THMainResetTableButton;
         private System.Windows.Forms.ToolStripMenuItem tESTRegexToolStripMenuItem;
+        public System.Windows.Forms.TextBox THSourceTextBox;
+        public System.Windows.Forms.TextBox THTargetTextBox;
     }
 }
 

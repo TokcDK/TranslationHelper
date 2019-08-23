@@ -57,12 +57,12 @@
             this.SearchFormReplaceButton = new System.Windows.Forms.Button();
             this.SearchFormReplaceAllButton = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.SearchFormReplaceWithTextBox = new System.Windows.Forms.TextBox();
+            this.SearchFormFindWhatTextBox = new System.Windows.Forms.TextBox();
             this.THSearchFindWhatLabel = new System.Windows.Forms.Label();
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.SearchFormFindWhatTextBox = new System.Windows.Forms.TextBox();
-            this.SearchFormReplaceWithTextBox = new System.Windows.Forms.TextBox();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.SearchResultsPanel.SuspendLayout();
@@ -396,6 +396,22 @@
             this.panel3.Size = new System.Drawing.Size(364, 54);
             this.panel3.TabIndex = 15;
             // 
+            // SearchFormReplaceWithTextBox
+            // 
+            this.SearchFormReplaceWithTextBox.Location = new System.Drawing.Point(81, 29);
+            this.SearchFormReplaceWithTextBox.Name = "SearchFormReplaceWithTextBox";
+            this.SearchFormReplaceWithTextBox.Size = new System.Drawing.Size(260, 21);
+            this.SearchFormReplaceWithTextBox.TabIndex = 5;
+            // 
+            // SearchFormFindWhatTextBox
+            // 
+            this.SearchFormFindWhatTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
+            this.SearchFormFindWhatTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.SearchFormFindWhatTextBox.Location = new System.Drawing.Point(81, 2);
+            this.SearchFormFindWhatTextBox.Name = "SearchFormFindWhatTextBox";
+            this.SearchFormFindWhatTextBox.Size = new System.Drawing.Size(260, 21);
+            this.SearchFormFindWhatTextBox.TabIndex = 4;
+            // 
             // THSearchFindWhatLabel
             // 
             this.THSearchFindWhatLabel.AutoSize = true;
@@ -413,6 +429,7 @@
             this.SearchFormFindWhatComboBox.Name = "SearchFormFindWhatComboBox";
             this.SearchFormFindWhatComboBox.Size = new System.Drawing.Size(278, 21);
             this.SearchFormFindWhatComboBox.TabIndex = 0;
+            this.SearchFormFindWhatComboBox.SelectedValueChanged += new System.EventHandler(this.SearchFormFindWhatComboBox_SelectedValueChanged);
             // 
             // SearchFormReplaceWithComboBox
             // 
@@ -430,22 +447,6 @@
             this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
-            // 
-            // SearchFormFindWhatTextBox
-            // 
-            this.SearchFormFindWhatTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
-            this.SearchFormFindWhatTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.SearchFormFindWhatTextBox.Location = new System.Drawing.Point(81, 2);
-            this.SearchFormFindWhatTextBox.Name = "SearchFormFindWhatTextBox";
-            this.SearchFormFindWhatTextBox.Size = new System.Drawing.Size(260, 21);
-            this.SearchFormFindWhatTextBox.TabIndex = 4;
-            // 
-            // SearchFormReplaceWithTextBox
-            // 
-            this.SearchFormReplaceWithTextBox.Location = new System.Drawing.Point(81, 29);
-            this.SearchFormReplaceWithTextBox.Name = "SearchFormReplaceWithTextBox";
-            this.SearchFormReplaceWithTextBox.Size = new System.Drawing.Size(260, 21);
-            this.SearchFormReplaceWithTextBox.TabIndex = 5;
             // 
             // c
             // 

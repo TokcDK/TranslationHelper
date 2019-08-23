@@ -7223,10 +7223,12 @@ namespace TranslationHelper
             }
             else
             {
-                c search = new c(this, THFilesElementsDataset, THFilesListBox, THFileElementsDataGridView);
-                search.THFilesElementsDataset = THFilesElementsDataset;
-                search.THFileElementsDataGridView = THFileElementsDataGridView;
-                search.THFilesListBox = THFilesListBox;
+                c search = new c(this, THFilesElementsDataset, THFilesListBox, THFileElementsDataGridView, THTargetTextBox)
+                {
+                    THFilesElementsDataset = THFilesElementsDataset,
+                    THFileElementsDataGridView = THFileElementsDataGridView,
+                    THFilesListBox = THFilesListBox
+                };
                 search.Show();
             }
         }
