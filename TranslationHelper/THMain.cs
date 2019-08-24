@@ -7275,17 +7275,58 @@ namespace TranslationHelper
         private void THFileElementsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             //отключение действий для ячеек при входе в режим редктирования
-            cutToolStripMenuItem1.ShortcutKeys = Keys.None;
-            copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
-            pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+            ControlsSwitch();
         }
 
         private void THFileElementsDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             //влючение действий для ячеек при выходе из режима редктирования
-            cutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
-            copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
-            pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
+            ControlsSwitch(true);
+        }
+
+        private void THSourceRichTextBox_MouseEnter(object sender, EventArgs e)
+        {
+            //отключение действий для ячеек при входе
+            ControlsSwitch();
+            //https://stackoverflow.com/questions/12780961/disable-copy-and-paste-in-datagridview
+            THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable;
+
+        }
+
+        private void THSourceRichTextBox_MouseLeave(object sender, EventArgs e)
+        {
+            //влючение действий для ячеек при выходе из режима редктирования
+            ControlsSwitch(true);
+            THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+        }
+
+        private void THTargetRichTextBox_MouseEnter(object sender, EventArgs e)
+        {
+            //отключение действий для ячеек при входе в текстбокс
+            ControlsSwitch();
+
+        }
+
+        private void THTargetRichTextBox_MouseLeave(object sender, EventArgs e)
+        {
+            //влючение действий для ячеек при выходе из текстбокса
+            ControlsSwitch(true);
+        }
+
+        private void ControlsSwitch(bool switchon=false)
+        {
+            if (switchon)
+            {
+                cutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
+                copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
+                pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
+            }
+            else
+            {
+                cutToolStripMenuItem1.ShortcutKeys = Keys.None;
+                copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+                pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+            }
         }
 
 
