@@ -494,8 +494,8 @@ namespace TranslationHelper
 
         private void SelectTextinTextBox(string input)
         {
-            //https://www.google.com/search?ei=VShgXcHAEZjfz7sP8rOEkA8&q=c%23+select+found+text+in+textbox&oq=c%23+select+found+text+in+textbox&gs_l=psy-ab.3..33i22i29i30l6.138636.149771..151070...2.2..0.462.11327.3-4j23......0....1..gws-wiz.......0i71j0j0i22i30.3S72oBLUidA&ved=0ahUKEwiBv737x5nkAhWY73MBHfIZAfIQ4dUDCAo&uact=5#kpvalbx=_7ShgXenmLdrXz7sP7pSusAg19
-            //https://stackoverflow.com/questions/9682800/search-specified-string-inside-textbox
+            ////https://www.google.com/search?ei=VShgXcHAEZjfz7sP8rOEkA8&q=c%23+select+found+text+in+textbox&oq=c%23+select+found+text+in+textbox&gs_l=psy-ab.3..33i22i29i30l6.138636.149771..151070...2.2..0.462.11327.3-4j23......0....1..gws-wiz.......0i71j0j0i22i30.3S72oBLUidA&ved=0ahUKEwiBv737x5nkAhWY73MBHfIZAfIQ4dUDCAo&uact=5#kpvalbx=_7ShgXenmLdrXz7sP7pSusAg19
+            ////https://stackoverflow.com/questions/9682800/search-specified-string-inside-textbox
             //Thread.Sleep(100);
             //if (string.IsNullOrEmpty(THTargetTextBox.Text))
             //{
@@ -503,6 +503,7 @@ namespace TranslationHelper
             //}
             //else
             //{
+            ////    https://stackoverflow.com/questions/9682800/search-specified-string-inside-textbox
             //    int pos = 0;
             //    Main.Invoke((Action)(() => pos = THTargetTextBox.Text.IndexOf(input)));
             //    if (pos != -1)

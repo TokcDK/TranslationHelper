@@ -107,12 +107,13 @@
             this.lowercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THEditElementsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THSourceTextBox = new System.Windows.Forms.TextBox();
-            this.THTargetTextBox = new System.Windows.Forms.TextBox();
+            this.THTargetRichTextBox = new System.Windows.Forms.TextBox();
             this.THWorkSpaceSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THInfoEditSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THInfoTextBox = new System.Windows.Forms.TextBox();
             this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
             this.THInfolabel = new System.Windows.Forms.Label();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -864,7 +865,8 @@
             // 
             // THEditElementsSplitContainer.Panel2
             // 
-            this.THEditElementsSplitContainer.Panel2.Controls.Add(this.THTargetTextBox);
+            this.THEditElementsSplitContainer.Panel2.Controls.Add(this.richTextBox1);
+            this.THEditElementsSplitContainer.Panel2.Controls.Add(this.THTargetRichTextBox);
             this.THEditElementsSplitContainer.Size = new System.Drawing.Size(639, 98);
             this.THEditElementsSplitContainer.SplitterDistance = 291;
             this.THEditElementsSplitContainer.TabIndex = 4;
@@ -882,20 +884,19 @@
             this.THSourceTextBox.Size = new System.Drawing.Size(291, 98);
             this.THSourceTextBox.TabIndex = 1;
             // 
-            // THTargetTextBox
+            // THTargetRichTextBox
             // 
-            this.THTargetTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.THTargetTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.RecentlyUsedList;
-            this.THTargetTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THTargetTextBox.Enabled = false;
-            this.THTargetTextBox.Location = new System.Drawing.Point(0, 0);
-            this.THTargetTextBox.Multiline = true;
-            this.THTargetTextBox.Name = "THTargetTextBox";
-            this.THTargetTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.THTargetTextBox.Size = new System.Drawing.Size(344, 98);
-            this.THTargetTextBox.TabIndex = 0;
-            this.THTargetTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
-            this.THTargetTextBox.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
+            this.THTargetRichTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.THTargetRichTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.RecentlyUsedList;
+            this.THTargetRichTextBox.Enabled = false;
+            this.THTargetRichTextBox.Location = new System.Drawing.Point(0, 0);
+            this.THTargetRichTextBox.Multiline = true;
+            this.THTargetRichTextBox.Name = "THTargetRichTextBox";
+            this.THTargetRichTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.THTargetRichTextBox.Size = new System.Drawing.Size(340, 48);
+            this.THTargetRichTextBox.TabIndex = 0;
+            this.THTargetRichTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
+            this.THTargetRichTextBox.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
             // 
             // THWorkSpaceSplitContainer
             // 
@@ -968,6 +969,17 @@
             this.THInfolabel.TabIndex = 7;
             this.THInfolabel.Text = "...";
             this.THInfolabel.Visible = false;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Enabled = false;
+            this.richTextBox1.Location = new System.Drawing.Point(0, 47);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(341, 48);
+            this.richTextBox1.TabIndex = 1;
+            this.richTextBox1.Text = "";
+            this.richTextBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
+            this.richTextBox1.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
             // 
             // THMain
             // 
@@ -1094,7 +1106,8 @@
         private System.Windows.Forms.Button THMainResetTableButton;
         private System.Windows.Forms.ToolStripMenuItem tESTRegexToolStripMenuItem;
         public System.Windows.Forms.TextBox THSourceTextBox;
-        public System.Windows.Forms.TextBox THTargetTextBox;
+        public System.Windows.Forms.TextBox THTargetRichTextBox;
+        public System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
 

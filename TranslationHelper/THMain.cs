@@ -316,7 +316,7 @@ namespace TranslationHelper
                 ActiveForm.Text = "Translation Helper by DenisK";
                 THInfoTextBox.Text = string.Empty;
                 THSourceTextBox.Text = string.Empty;
-                THTargetTextBox.Text = string.Empty;
+                THTargetRichTextBox.Text = string.Empty;
 
                 //Clean data
                 THFilesListBox.Items.Clear();
@@ -337,7 +337,7 @@ namespace TranslationHelper
                 loadTrasnlationAsToolStripMenuItem.Enabled = false;
                 saveTranslationAsToolStripMenuItem.Enabled = false;
                 THSourceTextBox.Enabled = false;
-                THTargetTextBox.Enabled = false;
+                THTargetRichTextBox.Enabled = false;
                 openInWebToolStripMenuItem.Enabled = false;
                 selectedToolStripMenuItem1.Enabled = false;
                 tableToolStripMenuItem1.Enabled = false;
@@ -2631,8 +2631,8 @@ namespace TranslationHelper
             THFileElementsDataGridView.Columns[THMainDGVOriginalColumnName].ReadOnly = true;
             THFiltersDataGridView.Enabled = true;
             THSourceTextBox.Enabled = true;
-            THTargetTextBox.Enabled = true;
-            THTargetTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            THTargetRichTextBox.Enabled = true;
+            THTargetRichTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
 
 
             openInWebToolStripMenuItem.Enabled = true;
@@ -2704,7 +2704,7 @@ namespace TranslationHelper
                 //Считывание значения ячейки в текстовое поле 1, вариант 2, для DataSet, ds.Tables[0]
                 if (THSourceTextBox.Enabled && THFileElementsDataGridView.Rows.Count > 0 && e.RowIndex >= 0 && e.ColumnIndex >= 0) //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
                 {
-                    THTargetTextBox.Clear();
+                    THTargetRichTextBox.Clear();
 
                     if (!String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString())) //проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
@@ -2724,10 +2724,10 @@ namespace TranslationHelper
                     {
                         if (String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value.ToString()))
                         {
-                            THTargetTextBox.Clear();
+                            THTargetRichTextBox.Clear();
                         }
 
-                        THTargetTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value.ToString().Replace("\n", Environment.NewLine); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        THTargetRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value.ToString().Replace("\n", Environment.NewLine); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
                     }
 
                     THInfoTextBox.Text = "";
@@ -3191,18 +3191,18 @@ namespace TranslationHelper
                 if (e.KeyCode == Keys.Back)
                 {
                     e.SuppressKeyPress = true;
-                    int selStart = THTargetTextBox.SelectionStart;
-                    while (selStart > 0 && THTargetTextBox.Text.Substring(selStart - 1, 1) == " ")
+                    int selStart = THTargetRichTextBox.SelectionStart;
+                    while (selStart > 0 && THTargetRichTextBox.Text.Substring(selStart - 1, 1) == " ")
                     {
                         selStart--;
                     }
                     int prevSpacePos = -1;
                     if (selStart != 0)
                     {
-                        prevSpacePos = THTargetTextBox.Text.LastIndexOf(' ', selStart - 1);
+                        prevSpacePos = THTargetRichTextBox.Text.LastIndexOf(' ', selStart - 1);
                     }
-                    THTargetTextBox.Select(prevSpacePos + 1, THTargetTextBox.SelectionStart - prevSpacePos - 1);
-                    THTargetTextBox.SelectedText = "";
+                    THTargetRichTextBox.Select(prevSpacePos + 1, THTargetRichTextBox.SelectionStart - prevSpacePos - 1);
+                    THTargetRichTextBox.SelectedText = "";
                 }
             }
         }
@@ -6149,7 +6149,7 @@ namespace TranslationHelper
             //int sel = dataGridView1.CurrentRow.Index; //присвоить перевенной номер выбранной строки в таблице
             if (!String.IsNullOrEmpty(THSourceTextBox.Text)) //если текстовое поле 2 не пустое
             {
-                THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                
+                THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                
             }
         }
 
@@ -7223,7 +7223,7 @@ namespace TranslationHelper
             }
             else
             {
-                c search = new c(this, THFilesElementsDataset, THFilesListBox, THFileElementsDataGridView, THTargetTextBox)
+                c search = new c(this, THFilesElementsDataset, THFilesListBox, THFileElementsDataGridView, THTargetRichTextBox)
                 {
                     THFilesElementsDataset = THFilesElementsDataset,
                     THFileElementsDataGridView = THFileElementsDataGridView,
