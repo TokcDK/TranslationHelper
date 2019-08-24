@@ -18,15 +18,15 @@ namespace TranslationHelper
         public ListBox THFilesListBox;
         public DataSet THFilesElementsDataset;
         public DataGridView THFileElementsDataGridView;
-        TextBox THTargetTextBox;
-        public c(THMain MainForm, DataSet DS, ListBox listBox, DataGridView DGV, TextBox TTB)
+        RichTextBox THTargetRichTextBox;
+        public c(THMain MainForm, DataSet DS, ListBox listBox, DataGridView DGV, RichTextBox TTB)
         {
             InitializeComponent();
             Main = MainForm;
             THFilesListBox = listBox;
             THFilesElementsDataset = DS;
             THFileElementsDataGridView = DGV;
-            THTargetTextBox = TTB;
+            THTargetRichTextBox = TTB;
         }
 
         private void SearchModeNormalRadioButton_Click(object sender, EventArgs e)
@@ -494,6 +494,123 @@ namespace TranslationHelper
 
         private void SelectTextinTextBox(string input)
         {
+
+            _ = Invoke(new MethodInvoker(delegate ()
+            {
+                Thread.Sleep(200);
+                if (string.IsNullOrEmpty(THTargetRichTextBox.Text))
+                {
+                    //MessageBox.Show("THTargetRichTextBox.Text="+ THTargetRichTextBox.Text);
+                }
+                else
+                {
+                    //https://www.c-sharpcorner.com/article/search-and-highlight-text-in-rich-textbox/
+                    //распознает лучше, чем код ниже, но не выделяет слово TEST
+                    //string[] words = SearchFormFindWhatTextBox.Text.Split(' ');
+                    //foreach (string word in words)
+                    //{
+                    //    string word = SearchFormFindWhatTextBox.Text;
+                    //    int startindex = 0;
+                    //    while (startindex < THTargetRichTextBox.TextLength)
+                    //    {
+                    //        //int wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
+                    //        int wordstartIndex;
+                    //        if (THSearchMatchCaseCheckBox.Checked)
+                    //        {
+                    //            wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.MatchCase);
+                    //        }
+                    //        else
+                    //        {
+                    //            wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
+                    //        }
+                    //        if (wordstartIndex == -1)
+                    //        {
+                    //            break;
+                    //        }
+                    //        else
+                    //        {
+                    //            THTargetRichTextBox.SelectionStart = wordstartIndex;
+                    //            THTargetRichTextBox.SelectionLength = word.Length;
+                    //            THTargetRichTextBox.SelectionBackColor = Color.Yellow;
+                    //        }
+
+                    //        startindex += wordstartIndex + word.Length;
+                    //    }
+                    //}
+                    string word = SearchFormFindWhatTextBox.Text;
+                    int startindex = 0;
+                    while (startindex < THTargetRichTextBox.TextLength)
+                    {
+                        int wordstartIndex;
+                        if (THSearchMatchCaseCheckBox.Checked)
+                        {
+                            wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.MatchCase);
+                        }
+                        else
+                        {
+                            wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
+                        }
+                        if (wordstartIndex == -1)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            THTargetRichTextBox.SelectionStart = wordstartIndex;
+                            THTargetRichTextBox.SelectionLength = word.Length;
+                            THTargetRichTextBox.SelectionBackColor = Color.Yellow;
+                        }
+
+                        startindex += wordstartIndex + word.Length;
+                    }
+
+
+                    ////FileWriter.WriteData(@"c:\\ddd.log", "THTargetRichTextBox.Text=" + THTargetRichTextBox.Text+ ", input="+ input);
+                    ////https://1bestcsharp.blogspot.com/2016/09/c-search-and-highlight-text-in-richtextbox.html
+                    ////странное поведение с выборочным выделением
+                    //string text;
+                    //string selectedtext;
+                    //text = THTargetRichTextBox.Text;
+                    //selectedtext = SearchFormFindWhatTextBox.Text;
+                    //text = THTargetRichTextBox.Text;
+                    //selectedtext = SearchFormFindWhatTextBox.Text;
+                    ////if (THSearchMatchCaseCheckBox.Checked)
+                    ////{
+                    ////    text = THTargetRichTextBox.Text;
+                    ////    selectedtext = SearchFormFindWhatTextBox.Text;
+                    ////}
+                    ////else
+                    ////{
+                    ////    text = THTargetRichTextBox.Text.ToLowerInvariant();
+                    ////    selectedtext = SearchFormFindWhatTextBox.Text.ToLowerInvariant();
+                    ////}
+
+                    //int start = 0;
+                    //int end = THTargetRichTextBox.Text.LastIndexOf(selectedtext);
+
+                    //THTargetRichTextBox.SelectAll();
+                    //THTargetRichTextBox.SelectionBackColor = Color.White;
+                    ////FileWriter.WriteData(@"c:\\ddd.log", "\r\ntext=" + text + ", selectedtext=" + selectedtext);
+                    //while (start < end)
+                    //{
+                    //    if (THSearchMatchCaseCheckBox.Checked)
+                    //    {
+                    //        THTargetRichTextBox.Find(selectedtext, start, THTargetRichTextBox.TextLength, RichTextBoxFinds.MatchCase);
+                    //    }
+                    //    else
+                    //    {
+                    //        THTargetRichTextBox.Find(selectedtext, start, THTargetRichTextBox.TextLength, RichTextBoxFinds.None);
+                    //    }
+
+                    //    THTargetRichTextBox.SelectionBackColor = Color.Yellow;
+
+                    //    start = THTargetRichTextBox.Text.IndexOf(selectedtext, start) + 1;
+                    //}
+                }
+
+            }));
+
+
             ////https://www.google.com/search?ei=VShgXcHAEZjfz7sP8rOEkA8&q=c%23+select+found+text+in+textbox&oq=c%23+select+found+text+in+textbox&gs_l=psy-ab.3..33i22i29i30l6.138636.149771..151070...2.2..0.462.11327.3-4j23......0....1..gws-wiz.......0i71j0j0i22i30.3S72oBLUidA&ved=0ahUKEwiBv737x5nkAhWY73MBHfIZAfIQ4dUDCAo&uact=5#kpvalbx=_7ShgXenmLdrXz7sP7pSusAg19
             ////https://stackoverflow.com/questions/9682800/search-specified-string-inside-textbox
             //Thread.Sleep(100);

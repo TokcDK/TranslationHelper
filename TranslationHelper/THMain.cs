@@ -315,7 +315,7 @@ namespace TranslationHelper
                 //Reset strings
                 ActiveForm.Text = "Translation Helper by DenisK";
                 THInfoTextBox.Text = string.Empty;
-                THSourceTextBox.Text = string.Empty;
+                THSourceRichTextBox.Text = string.Empty;
                 THTargetRichTextBox.Text = string.Empty;
 
                 //Clean data
@@ -336,7 +336,7 @@ namespace TranslationHelper
                 loadTranslationToolStripMenuItem.Enabled = false;
                 loadTrasnlationAsToolStripMenuItem.Enabled = false;
                 saveTranslationAsToolStripMenuItem.Enabled = false;
-                THSourceTextBox.Enabled = false;
+                THSourceRichTextBox.Enabled = false;
                 THTargetRichTextBox.Enabled = false;
                 openInWebToolStripMenuItem.Enabled = false;
                 selectedToolStripMenuItem1.Enabled = false;
@@ -2630,9 +2630,9 @@ namespace TranslationHelper
             THFileElementsDataGridView.Columns["Translation"].HeaderText = "Перевод";//THMainDGVTranslationColumnName;
             THFileElementsDataGridView.Columns[THMainDGVOriginalColumnName].ReadOnly = true;
             THFiltersDataGridView.Enabled = true;
-            THSourceTextBox.Enabled = true;
+            THSourceRichTextBox.Enabled = true;
             THTargetRichTextBox.Enabled = true;
-            THTargetRichTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            //THTargetRichTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
 
 
             openInWebToolStripMenuItem.Enabled = true;
@@ -2702,14 +2702,14 @@ namespace TranslationHelper
             try
             {
                 //Считывание значения ячейки в текстовое поле 1, вариант 2, для DataSet, ds.Tables[0]
-                if (THSourceTextBox.Enabled && THFileElementsDataGridView.Rows.Count > 0 && e.RowIndex >= 0 && e.ColumnIndex >= 0) //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
+                if (THSourceRichTextBox.Enabled && THFileElementsDataGridView.Rows.Count > 0 && e.RowIndex >= 0 && e.ColumnIndex >= 0) //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
                 {
                     THTargetRichTextBox.Clear();
 
                     if (!String.IsNullOrEmpty(THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString())) //проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
                         //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
-                        THSourceTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString().Replace("\n", Environment.NewLine); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        THSourceRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value.ToString().Replace("\n", Environment.NewLine); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
                         //https://github.com/caguiclajmg/WanaKanaSharp
                         //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
                         //{
@@ -6147,7 +6147,7 @@ namespace TranslationHelper
         private void THTargetTextBox_Leave(object sender, EventArgs e)
         {
             //int sel = dataGridView1.CurrentRow.Index; //присвоить перевенной номер выбранной строки в таблице
-            if (!String.IsNullOrEmpty(THSourceTextBox.Text)) //если текстовое поле 2 не пустое
+            if (!String.IsNullOrEmpty(THSourceRichTextBox.Text)) //если текстовое поле 2 не пустое
             {
                 THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                
             }
