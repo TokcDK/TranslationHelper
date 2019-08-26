@@ -6579,7 +6579,6 @@ namespace TranslationHelper
                                         {
                                             int arraysize = mc.Count;
 
-                                            //только если ячейка пустая
                                             if (THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind].ToString()))
                                             {
                                                 //инициализация основных целевого и входного массивов
@@ -6604,6 +6603,7 @@ namespace TranslationHelper
                                                     //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
                                                     //LogToFile("result[" + m + "]=" + inputresult);
                                                 }
+                                                //только если ячейка пустая
                                                 if (THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind].ToString()))
                                                 {
                                                     THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = inputresult;
@@ -6738,7 +6738,7 @@ namespace TranslationHelper
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //LogToFile("Paste Enter");
+            LogToFile("Paste Enter");
             if (THFileElementsDataGridView == null)
             {
             }
@@ -6758,7 +6758,7 @@ namespace TranslationHelper
                     }
                 }
             }
-            //LogToFile("Paste End", true);
+            LogToFile("Paste End", true);
         }
 
         //==============вырезать, копировать, вставить, для одной или нескольких ячеек
@@ -6802,61 +6802,56 @@ namespace TranslationHelper
             Dictionary<int, Dictionary<int, string>> cbValue =
                     ClipBoardValues(Clipboard.GetText());
 
-            int origcellmaxlines = 0;
+            int origcellmaxlines;
             int origcellcurlines = 0;
             bool OrigMaxEqualCurrent = false;
             int iRowIndex = startCell.RowIndex;
+            StringBuilder cellvalue = new StringBuilder();
+            DataGridViewCell cell = null;
             foreach (int rowKey in cbValue.Keys)
             {
-                //LogToFile("PasteClipboardValue rowKey="+ rowKey);
+                LogToFile("PasteClipboardValue rowKey="+ rowKey);
                 int iColIndex = startCell.ColumnIndex;
                 foreach (int cellKey in cbValue[rowKey].Keys)
                 {
-                    //LogToFile("PasteClipboardValue iColIndex=" + iColIndex);
+                    LogToFile("PasteClipboardValue iColIndex=" + iColIndex);
                     //Check if the index is within the limit
                     if (iColIndex <= THFileElementsDataGridView.Columns.Count - 1
                     && iRowIndex <= THFileElementsDataGridView.Rows.Count - 1)
                     {
-                        DataGridViewCell cell = THFileElementsDataGridView[iColIndex, iRowIndex];
+                        cell = THFileElementsDataGridView[iColIndex, iRowIndex];
                         origcellmaxlines = THFileElementsDataGridView[origcolindex, iRowIndex].Value.ToString().Split('\n').Length;
 
                         origcellcurlines++;
                         OrigMaxEqualCurrent = origcellcurlines == origcellmaxlines;
-                        //LogToFile("PasteClipboardValue origcellmaxlines=" + origcellmaxlines + ",origcellcurlines=" + origcellcurlines);
-                        //Copy to selected cells if 'chkPasteToSelectedCells' is checked
-                        // Закомментировал как здесь: https://code.google.com/p/seminary-software-engineering/source/browse/trunk/SystemForResultsEvaluaton/SystemForResultsEvaluaton/Core.cs?spec=svn21&r=21
-                        //if ((chkPasteToSelectedCells.Checked && cell.Selected) ||
-                        //   (!chkPasteToSelectedCells.Checked))
-                        if (cbValue.Count > 1 && OrigMaxEqualCurrent)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
-                        {
-                            //LogToFile("PasteClipboardValue cbValue.Count > 1 && OrigMaxEqualCurrent");
-                            //получались двойные значения при использовании с функцией автоподстановки для похожих
-                            if (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()))
-                            {
-                                if (cell.ReadOnly && cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
-                                {
-                                }
-                                else
-                                {
-                                    //LogToFile("PasteClipboardValue value=" + Regex.Replace(cbValue[rowKey][cellKey], @"\r$", ""));
-                                    cell.Value += Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
-                                }
 
-                            }
+                        if (cell.ReadOnly)
+                        {
                         }
                         else
                         {
-                            //LogToFile("PasteClipboardValue NOT cbValue.Count > 1 && OrigMaxEqualCurrent");
-                            //получались двойные значения при использовании с функцией автоподстановки для похожих
-                            if (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString()))
+                            if (string.IsNullOrEmpty(cell.Value.ToString()))
                             {
-                                if (cell.ReadOnly && cell.Value.ToString().EndsWith(cbValue[rowKey][cellKey]))
+                               // LogToFile("PasteClipboardValue origcellmaxlines=" + origcellmaxlines + ",origcellcurlines=" + origcellcurlines);
+                                //Copy to selected cells if 'chkPasteToSelectedCells' is checked
+                                // Закомментировал как здесь: https://code.google.com/p/seminary-software-engineering/source/browse/trunk/SystemForResultsEvaluaton/SystemForResultsEvaluaton/Core.cs?spec=svn21&r=21
+                                //if ((chkPasteToSelectedCells.Checked && cell.Selected) ||
+                                //   (!chkPasteToSelectedCells.Checked))
+                                if (cbValue.Count > 1 && OrigMaxEqualCurrent)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
                                 {
+                                    //LogToFile("PasteClipboardValue cbValue.Count > 1 && OrigMaxEqualCurrent");
+                                    //получались двойные значения при использовании с функцией автоподстановки для похожих
+                                        //LogToFile("PasteClipboardValue value=" + Regex.Replace(cbValue[rowKey][cellKey], @"\r$", ""));
+                                        //cell.Value += Regex.Replace(cbValue[rowKey][cellKey], @"\r$", "");
+                                        cellvalue.Append(Regex.Replace(cbValue[rowKey][cellKey], @"\r$", ""));
                                 }
                                 else
                                 {
+                                    //LogToFile("PasteClipboardValue NOT cbValue.Count > 1 && OrigMaxEqualCurrent");
+                                    //получались двойные значения при использовании с функцией автоподстановки для похожих
                                     //LogToFile("PasteClipboardValue value=" + cbValue[rowKey][cellKey]);
-                                    cell.Value += cbValue[rowKey][cellKey];//asdfg
+                                    //cell.Value += cbValue[rowKey][cellKey];//asdfg
+                                    cellvalue.Append(cbValue[rowKey][cellKey]);//asdfg
                                 }
                             }
                         }
@@ -6868,6 +6863,14 @@ namespace TranslationHelper
                 //LogToFile("PasteClipboardValue check if OrigMaxEqualCurrent is true and it is " + OrigMaxEqualCurrent);
                 if (OrigMaxEqualCurrent)
                 {
+                    if (cell != null)
+                    {
+                        if (string.IsNullOrEmpty(cell.Value.ToString()))
+                        {
+                            cell.Value = cellvalue.ToString();
+                        }
+                    }
+                    cellvalue.Clear();
                     THAutoSetValueForSameCells(THFilesListBox.SelectedIndex, iRowIndex, origcolindex);
                     origcellcurlines = 0;
                     //LogToFile("PasteClipboardValue next row, iRowIndex=" + iRowIndex);

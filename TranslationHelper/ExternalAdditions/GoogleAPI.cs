@@ -279,6 +279,7 @@ namespace TranslationHelper
                 }
                 else
                 {
+                    FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nOriginalText:\r\n" + OriginalText);
                     //https://www.codementor.io/000581/use-the-google-translate-api-for-free-rmxch1s67
                     //link = 'https://translate.googleapis.com/translate_a/single'.'?client=gtx&sl=auto&tl=ru&dt=t&q='.urlencode(text_part);
                     //result = go_curl(result = go​curl(link);
@@ -288,6 +289,7 @@ namespace TranslationHelper
                     //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "DNTT", RegexOptions.None);
                     //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
                     string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "<code>0</code>", RegexOptions.None);
+                    FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nSTR:\r\n" + str);
                     //string str = OriginalText.Replace(Environment.NewLine, "BBC");
                     //string str = OriginalText.Replace(Environment.NewLine, "%0A");
                     //string str = OriginalText;
@@ -315,7 +317,7 @@ namespace TranslationHelper
                                 //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
                                 //FileWriter.WriteData("c:\\THLog1.log", "\r\ndownloadString:\r\n" + downloadString);
                                 text = webClient.DownloadString(address);
-                                FileWriter.WriteData("c:\\THLog.log", "TEXT:\r\n"+text);
+                                FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nTEXT:\r\n" + text);
                                 WB.ScriptErrorsSuppressed = true;
                                 WB.DocumentText = "";
                                 htmlDocument = WB.Document.OpenNew(true);
@@ -331,7 +333,7 @@ namespace TranslationHelper
                                     }
                                     else
                                     {
-                                        FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
+                                        FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
                                         if (htmlElement.InnerHtml.StartsWith("<"))
                                         {
                                         }
@@ -342,7 +344,7 @@ namespace TranslationHelper
                                             string text2 = FixFormat(htmlElement.InnerText);
                                             //string text2 = htmlElement.InnerText.Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
                                             myCache[OriginalText] = text2;
-                                            FileWriter.WriteData("c:\\THLog.log", "text2:\r\n" + text2);
+                                            FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\ntext2:\r\n" + text2);
                                             return text2;
                                         }
                                     }
