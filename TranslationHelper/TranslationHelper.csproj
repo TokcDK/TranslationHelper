@@ -70,8 +70,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CopyFolder.cs" />
-    <Compile Include="ExternalAdditions\DeepL.cs" />
-    <Compile Include="ExternalAdditions\GoogleAPI.cs" />
+    <Compile Include="Translators\DeepL.cs" />
+    <Compile Include="Translators\GoogleAPI.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
     <Compile Include="ExternalAdditions\SimpleJSON.cs" />
     <Compile Include="MessageForm.cs">

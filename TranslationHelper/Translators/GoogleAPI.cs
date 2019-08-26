@@ -436,7 +436,6 @@ namespace TranslationHelper
                                 Conversions.ToString(i),
                                 "#># ",
                                 Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None),
-                                //Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", "<code>0</code>", RegexOptions.None),
                                 " #<#",
                                 Conversions.ToString(i),
                                 "##\r\n"
@@ -444,7 +443,7 @@ namespace TranslationHelper
                         }
                     }
                 }
-                FileWriter.WriteData("c:\\THLog.log", "\r\nstringBuilder.ToString():\r\n" + stringBuilder.ToString());
+                //FileWriter.WriteData("c:\\THLog.log", "\r\nstringBuilder.ToString():\r\n" + stringBuilder.ToString());
                 string arg = HttpUtility.UrlEncode(stringBuilder.ToString(), Encoding.UTF8);
                 string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
                 //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, stringBuilder.ToString());
@@ -472,6 +471,7 @@ namespace TranslationHelper
                         string text2 = string.Empty;
                         try
                         {
+                            //FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlDocument.Body.Children:\r\n" + htmlDocument.Body.Children);
                             foreach (object obj in htmlDocument.Body.Children)
                             {
                                 HtmlElement htmlElement = (HtmlElement)obj;
@@ -480,7 +480,7 @@ namespace TranslationHelper
                                 }
                                 else
                                 {
-                                    FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
+                                    //FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
                                     if (htmlElement.InnerHtml.StartsWith("<"))
                                     {
                                     }
@@ -497,7 +497,7 @@ namespace TranslationHelper
                         {
                         }
 
-                        FileWriter.WriteData("c:\\THLog.log", "\r\ntext2:\r\n" + text2);
+                        //FileWriter.WriteData("c:\\THLog.log", "\r\ntext2:\r\n" + text2);
                         if (text2.Length == 0)
                         {
                             for (int j = 0; j < array.Count(); j++)
@@ -510,11 +510,11 @@ namespace TranslationHelper
                             return array;
                         }
                         MatchCollection matchCollection = myReg.Matches(text2);
-                        FileWriter.WriteData("c:\\THLog.log", "\r\nmatchCollection cnt:" + matchCollection.Count+ ", array.Count()"+ array.Count());
+                        //FileWriter.WriteData("c:\\THLog.log", "\r\nmatchCollection cnt:" + matchCollection.Count+ ", array.Count()"+ array.Count());
                         int matchnum = 0;
                         for (int k = 0; k < array.Count(); k++)
                         {
-                            FileWriter.WriteData("c:\\THLog.log", "\r\narray[k]=" + array[k]);
+                            //FileWriter.WriteData("c:\\THLog.log", "\r\narray[k]=" + array[k]);
                             if (array[k] == null)
                             {
                                 if (matchCollection.Count == matchnum)
@@ -523,7 +523,7 @@ namespace TranslationHelper
                                 }
                                 else
                                 {
-                                    FileWriter.WriteData("c:\\THLog.log", "\r\nSet matchCollection["+matchnum+"].Value" + matchCollection[matchnum].Value);
+                                    //FileWriter.WriteData("c:\\THLog.log", "\r\nSet matchCollection["+matchnum+"].Value" + matchCollection[matchnum].Value);
                                     array[k] = matchCollection[matchnum].Value.Replace("DNTT",Environment.NewLine);
                                     matchnum++;
                                 }
@@ -542,6 +542,7 @@ namespace TranslationHelper
 
         // Token: 0x04000444 RID: 1092
         private const string DNTT = "DNTT";
+        //private const string DNTT = "<code>0</code>";
 
         // Token: 0x04000445 RID: 1093
         //private const string SEPARATOR = "\r\n#DONOTTRANSLATE#\r\n";

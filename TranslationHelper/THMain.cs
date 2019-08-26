@@ -5253,8 +5253,8 @@ namespace TranslationHelper
                 int[] selindexes = new int[1];
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
-                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
+                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
                 //
                 //..и фикс ошибки:
                 //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -5265,8 +5265,9 @@ namespace TranslationHelper
             }
             catch
             {
-                IsTranslating = false;
+                //IsTranslating = false;
             }
+            IsTranslating = false;
         }
 
         //DataSet THTranslationCache = new DataSet();
@@ -5767,6 +5768,13 @@ namespace TranslationHelper
                                     }
                                 }
                             }
+                        }
+
+                        if (inputtextarrayInfo.Rows.Count > 0)
+                        {
+                            //LogToFile("1 ENCODED=\r\n"+ GoogleAPI.UrlEncodeForTranslation(inputtextarrayDataSB.ToString()));
+                            googletextcurrentsize = 0;
+                            TranslateArrayAndSetValues(inputtextarrayDataSB, inputtextarrayData, inputtextarrayInfo);
                         }
                     }
                     catch
