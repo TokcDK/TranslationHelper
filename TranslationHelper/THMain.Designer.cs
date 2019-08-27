@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,6 +42,7 @@
             this.toXmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTranslationFromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rPGMakerTransPatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveTranslationAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,13 +107,13 @@
             this.uppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lowercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THEditElementsSplitContainer = new System.Windows.Forms.SplitContainer();
+            this.THSourceRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.THTargetRichTextBox = new System.Windows.Forms.RichTextBox();
             this.THWorkSpaceSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THInfoEditSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THInfoTextBox = new System.Windows.Forms.TextBox();
             this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
             this.THInfolabel = new System.Windows.Forms.Label();
-            this.THTargetRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.THSourceRichTextBox = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -213,32 +214,38 @@
             this.exportToolStripMenuItem.Enabled = false;
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.exportToolStripMenuItem.Text = "Export translation to";
+            this.exportToolStripMenuItem.Text = "Save translation to";
             this.exportToolStripMenuItem.Visible = false;
             // 
             // toXmlToolStripMenuItem
             // 
             this.toXmlToolStripMenuItem.Name = "toXmlToolStripMenuItem";
-            this.toXmlToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
-            this.toXmlToolStripMenuItem.Text = "Xml";
-            this.toXmlToolStripMenuItem.Click += new System.EventHandler(this.ToXmlToolStripMenuItem_Click);
+            this.toXmlToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.toXmlToolStripMenuItem.Text = "xml/cmx/cmz";
+            this.toXmlToolStripMenuItem.Click += new System.EventHandler(this.SaveTranslationAsToolStripMenuItem_Click);
             // 
             // loadTranslationFromToolStripMenuItem
             // 
             this.loadTranslationFromToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.xmlToolStripMenuItem});
-            this.loadTranslationFromToolStripMenuItem.Enabled = false;
+            this.xmlToolStripMenuItem,
+            this.rPGMakerTransPatchToolStripMenuItem});
             this.loadTranslationFromToolStripMenuItem.Name = "loadTranslationFromToolStripMenuItem";
             this.loadTranslationFromToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.loadTranslationFromToolStripMenuItem.Text = "Import translation from";
-            this.loadTranslationFromToolStripMenuItem.Visible = false;
+            this.loadTranslationFromToolStripMenuItem.Text = "Load translation from";
             // 
             // xmlToolStripMenuItem
             // 
             this.xmlToolStripMenuItem.Name = "xmlToolStripMenuItem";
-            this.xmlToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
-            this.xmlToolStripMenuItem.Text = "Xml";
-            this.xmlToolStripMenuItem.Click += new System.EventHandler(this.XmlToolStripMenuItem_Click);
+            this.xmlToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.xmlToolStripMenuItem.Text = "xml/cmx/cmz";
+            this.xmlToolStripMenuItem.Click += new System.EventHandler(this.LoadTrasnlationAsToolStripMenuItem_Click);
+            // 
+            // rPGMakerTransPatchToolStripMenuItem
+            // 
+            this.rPGMakerTransPatchToolStripMenuItem.Name = "rPGMakerTransPatchToolStripMenuItem";
+            this.rPGMakerTransPatchToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.rPGMakerTransPatchToolStripMenuItem.Text = "Translated compatible source";
+            this.rPGMakerTransPatchToolStripMenuItem.Click += new System.EventHandler(this.LoadTranslationFromCompatibleSourceToolStripMenuItem_Click);
             // 
             // saveTranslationToolStripMenuItem
             // 
@@ -634,8 +641,8 @@
             this.THFileElementsDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle22.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 351);
             this.THFileElementsDataGridView.TabIndex = 2;
@@ -662,26 +669,26 @@
             this.THFiltersDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFiltersDataGridView.ColumnHeadersVisible = false;
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle23.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle23.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle23.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle23.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle23.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle23.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
             this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.THFiltersDataGridView.Enabled = false;
             this.THFiltersDataGridView.Location = new System.Drawing.Point(0, 0);
             this.THFiltersDataGridView.Name = "THFiltersDataGridView";
-            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle24.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle24.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle24.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle24.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle24.SelectionForeColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle24.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.THFiltersDataGridView.RowTemplate.Height = 23;
             this.THFiltersDataGridView.Size = new System.Drawing.Size(625, 18);
             this.THFiltersDataGridView.TabIndex = 3;
@@ -869,6 +876,32 @@
             this.THEditElementsSplitContainer.SplitterDistance = 291;
             this.THEditElementsSplitContainer.TabIndex = 4;
             // 
+            // THSourceRichTextBox
+            // 
+            this.THSourceRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.THSourceRichTextBox.Location = new System.Drawing.Point(0, 0);
+            this.THSourceRichTextBox.Name = "THSourceRichTextBox";
+            this.THSourceRichTextBox.ReadOnly = true;
+            this.THSourceRichTextBox.Size = new System.Drawing.Size(291, 98);
+            this.THSourceRichTextBox.TabIndex = 2;
+            this.THSourceRichTextBox.Text = "";
+            this.THSourceRichTextBox.MouseEnter += new System.EventHandler(this.THSourceRichTextBox_MouseEnter);
+            this.THSourceRichTextBox.MouseLeave += new System.EventHandler(this.THSourceRichTextBox_MouseLeave);
+            // 
+            // THTargetRichTextBox
+            // 
+            this.THTargetRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.THTargetRichTextBox.Enabled = false;
+            this.THTargetRichTextBox.Location = new System.Drawing.Point(0, 0);
+            this.THTargetRichTextBox.Name = "THTargetRichTextBox";
+            this.THTargetRichTextBox.Size = new System.Drawing.Size(344, 98);
+            this.THTargetRichTextBox.TabIndex = 1;
+            this.THTargetRichTextBox.Text = "";
+            this.THTargetRichTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
+            this.THTargetRichTextBox.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
+            this.THTargetRichTextBox.MouseEnter += new System.EventHandler(this.THTargetRichTextBox_MouseEnter);
+            this.THTargetRichTextBox.MouseLeave += new System.EventHandler(this.THTargetRichTextBox_MouseLeave);
+            // 
             // THWorkSpaceSplitContainer
             // 
             this.THWorkSpaceSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -940,32 +973,6 @@
             this.THInfolabel.TabIndex = 7;
             this.THInfolabel.Text = "...";
             this.THInfolabel.Visible = false;
-            // 
-            // THTargetRichTextBox
-            // 
-            this.THTargetRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THTargetRichTextBox.Enabled = false;
-            this.THTargetRichTextBox.Location = new System.Drawing.Point(0, 0);
-            this.THTargetRichTextBox.Name = "THTargetRichTextBox";
-            this.THTargetRichTextBox.Size = new System.Drawing.Size(344, 98);
-            this.THTargetRichTextBox.TabIndex = 1;
-            this.THTargetRichTextBox.Text = "";
-            this.THTargetRichTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
-            this.THTargetRichTextBox.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
-            this.THTargetRichTextBox.MouseEnter += new System.EventHandler(this.THTargetRichTextBox_MouseEnter);
-            this.THTargetRichTextBox.MouseLeave += new System.EventHandler(this.THTargetRichTextBox_MouseLeave);
-            // 
-            // THSourceRichTextBox
-            // 
-            this.THSourceRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THSourceRichTextBox.Location = new System.Drawing.Point(0, 0);
-            this.THSourceRichTextBox.Name = "THSourceRichTextBox";
-            this.THSourceRichTextBox.ReadOnly = true;
-            this.THSourceRichTextBox.Size = new System.Drawing.Size(291, 98);
-            this.THSourceRichTextBox.TabIndex = 2;
-            this.THSourceRichTextBox.Text = "";
-            this.THSourceRichTextBox.MouseEnter += new System.EventHandler(this.THSourceRichTextBox_MouseEnter);
-            this.THSourceRichTextBox.MouseLeave += new System.EventHandler(this.THSourceRichTextBox_MouseLeave);
             // 
             // THMain
             // 
@@ -1091,6 +1098,7 @@
         private System.Windows.Forms.ToolStripMenuItem tESTRegexToolStripMenuItem;
         public System.Windows.Forms.RichTextBox THTargetRichTextBox;
         public System.Windows.Forms.RichTextBox THSourceRichTextBox;
+        private System.Windows.Forms.ToolStripMenuItem rPGMakerTransPatchToolStripMenuItem;
     }
 }
 
