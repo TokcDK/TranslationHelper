@@ -273,7 +273,7 @@ namespace TranslationHelper
             //}
         }
 
-        string lastfoundvalue = "";
+        string lastfoundvalue = string.Empty;
         private void StoryFoundValueToComboBox(string foundvalue)
         {
             lastfoundvalue = foundvalue;

@@ -253,7 +253,7 @@ namespace TranslationHelper
         /// <returns></returns>
         public static string UrlEncodeForTranslation(string value)
         {
-            string[,] encode = { { "%", "%25" }, { "\r\n", "%0A" }, { " ", "%20" }, { ":", "%3A" }, { ",", "%2C" }, { "$", "%24" }, { "&", "%26" }, { "#", "%23" }, { "@", "%40" }, { "`", "%60" }, { "+", "%2B" }, { "^", "%5E" }, { "/", "%2F" } };
+            string[,] encode = { { "%", "%25" }, { Environment.NewLine, "%0A" }, { " ", "%20" }, { ":", "%3A" }, { ",", "%2C" }, { "$", "%24" }, { "&", "%26" }, { "#", "%23" }, { "@", "%40" }, { "`", "%60" }, { "+", "%2B" }, { "^", "%5E" }, { "/", "%2F" } };
 
             for (int i = 0; i < encode.Length / 2; i++)
             {
@@ -319,7 +319,7 @@ namespace TranslationHelper
                                 text = webClient.DownloadString(address);
                                 FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nTEXT:\r\n" + text);
                                 WB.ScriptErrorsSuppressed = true;
-                                WB.DocumentText = "";
+                                WB.DocumentText = string.Empty;
                                 htmlDocument = WB.Document.OpenNew(true);
                             }
                             htmlDocument.Write(text);
@@ -464,7 +464,7 @@ namespace TranslationHelper
                             text = webClient.DownloadString(address);
                             FileWriter.WriteData("c:\\THLog.log", "\r\nTEXT:\r\n" + text);
                             WB.ScriptErrorsSuppressed = true;
-                            WB.DocumentText = "";
+                            WB.DocumentText = string.Empty;
                             htmlDocument = WB.Document.OpenNew(true);
                         }
                         htmlDocument.Write(text);

@@ -83,7 +83,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THsplitContainerFilesElements = new System.Windows.Forms.SplitContainer();
-            this.THFilesListBox = new System.Windows.Forms.ListBox();
+            this.THFilesList = new System.Windows.Forms.ListBox();
             this.THMainResetTableButton = new System.Windows.Forms.Button();
             this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
             this.THFiltersDataGridView = new System.Windows.Forms.DataGridView();
@@ -114,6 +114,7 @@
             this.THInfoTextBox = new System.Windows.Forms.TextBox();
             this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
             this.THInfolabel = new System.Windows.Forms.Label();
+            this.testTimingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -166,7 +167,8 @@
             this.testWruteJsonToolStripMenuItem,
             this.testSplitToolStripMenuItem,
             this.runTestGameToolStripMenuItem,
-            this.tESTRegexToolStripMenuItem});
+            this.tESTRegexToolStripMenuItem,
+            this.testTimingsToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -593,7 +595,7 @@
             // 
             // THsplitContainerFilesElements.Panel1
             // 
-            this.THsplitContainerFilesElements.Panel1.Controls.Add(this.THFilesListBox);
+            this.THsplitContainerFilesElements.Panel1.Controls.Add(this.THFilesList);
             // 
             // THsplitContainerFilesElements.Panel2
             // 
@@ -604,17 +606,18 @@
             this.THsplitContainerFilesElements.SplitterDistance = 125;
             this.THsplitContainerFilesElements.TabIndex = 3;
             // 
-            // THFilesListBox
+            // THFilesList
             // 
-            this.THFilesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.THFilesList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.THFilesListBox.FormattingEnabled = true;
-            this.THFilesListBox.Location = new System.Drawing.Point(0, 0);
-            this.THFilesListBox.Name = "THFilesListBox";
-            this.THFilesListBox.Size = new System.Drawing.Size(125, 368);
-            this.THFilesListBox.TabIndex = 0;
-            this.THFilesListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.THFilesListBox_MouseClick);
+            this.THFilesList.FormattingEnabled = true;
+            this.THFilesList.Location = new System.Drawing.Point(0, 0);
+            this.THFilesList.Name = "THFilesList";
+            this.THFilesList.Size = new System.Drawing.Size(125, 368);
+            this.THFilesList.TabIndex = 0;
+            this.THFilesList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.THFilesListBox_MouseClick);
+            this.THFilesList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.THFilesList_DrawItem);
             // 
             // THMainResetTableButton
             // 
@@ -974,6 +977,13 @@
             this.THInfolabel.Text = "...";
             this.THInfolabel.Visible = false;
             // 
+            // testTimingsToolStripMenuItem
+            // 
+            this.testTimingsToolStripMenuItem.Name = "testTimingsToolStripMenuItem";
+            this.testTimingsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.testTimingsToolStripMenuItem.Text = "Test timings";
+            this.testTimingsToolStripMenuItem.Click += new System.EventHandler(this.TestTimingsToolStripMenuItem_Click);
+            // 
             // THMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1032,7 +1042,7 @@
         private System.Windows.Forms.SplitContainer THWorkSpaceSplitContainer;
         private System.Windows.Forms.SplitContainer THInfoEditSplitContainer;
         public System.Windows.Forms.DataGridView THFileElementsDataGridView;
-        public System.Windows.Forms.ListBox THFilesListBox;
+        public System.Windows.Forms.ListBox THFilesList;
         private System.Windows.Forms.TextBox THInfoTextBox;
         private System.Windows.Forms.ContextMenuStrip THFileElementsDataGridViewContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem writeTranslationInGameToolStripMenuItem;
@@ -1099,6 +1109,7 @@
         public System.Windows.Forms.RichTextBox THTargetRichTextBox;
         public System.Windows.Forms.RichTextBox THSourceRichTextBox;
         private System.Windows.Forms.ToolStripMenuItem rPGMakerTransPatchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testTimingsToolStripMenuItem;
     }
 }
 
