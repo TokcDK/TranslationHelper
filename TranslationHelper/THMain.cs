@@ -5455,9 +5455,10 @@ namespace TranslationHelper
             //MessageBox.Show("TranslationCache Rows.Count=" + THTranslationCache.Tables["TranslationCache"].Rows.Count+ "TranslationCache Columns.Count=" + THTranslationCache.Tables["TranslationCache"].Columns.Count);
         }
 
-        public static string TranslationCacheFind(DataSet DS, string Input)
+        bool TranslationCacheChecked = false;
+        public string TranslationCacheFind(DataSet DS, string Input)
         {
-            if (DS.Tables[0].Rows.Count > 0)
+            if (TranslationCacheChecked && DS.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < DS.Tables[0].Rows.Count; i++)
                 {
@@ -5484,6 +5485,7 @@ namespace TranslationHelper
             this.Invoke((Action)(() => translationInteruptToolStripMenuItem1.Visible = true));
             //translationInteruptToolStripMenuItem.Visible = true;
             //translationInteruptToolStripMenuItem1.Visible = true;
+            TranslationCacheChecked = Settings.THOptionEnableTranslationCacheCheckBox.Checked;
             try
             {
                 using (DataSet THTranslationCache = new DataSet())
@@ -5494,28 +5496,30 @@ namespace TranslationHelper
                     int tablescount;
                     int rowscount;
                     int rowindex;
-                    if (method == "a")
-                    {
-                        tablescount = THFilesElementsDataset.Tables.Count;//все таблицы в dataset
-                    }
-                    else
-                    {
-                        tablescount = tableindex + 1;//одна таблица с индексом на один больше индекса стартовой
-                    }
+                    tablescount = (method == "a") ? THFilesElementsDataset.Tables.Count : tablescount = tableindex + 1;
+                    //if (method == "a")
+                    //{
+                    //    tablescount = THFilesElementsDataset.Tables.Count;//все таблицы в dataset
+                    //}
+                    //else
+                    //{
+                    //    tablescount = tableindex + 1;//одна таблица с индексом на один больше индекса стартовой
+                    //}
 
                     //перебор таблиц dataset
                     for (int t = tableindex; t < tablescount; t++)
                     {
-                        if (method == "a" || method == "t")
-                        {
-                            //все строки в выбранной таблице
-                            rowscount = THFilesElementsDataset.Tables[t].Rows.Count;
-                        }
-                        else
-                        {
-                            //все выделенные строки в выбранной таблице
-                            rowscount = selindexes.Length;
-                        }
+                        rowscount = (method == "a" || method == "t") ? THFilesElementsDataset.Tables[t].Rows.Count : selindexes.Length;
+                        //if (method == "a" || method == "t")
+                        //{
+                        //    //все строки в выбранной таблице
+                        //    rowscount = THFilesElementsDataset.Tables[t].Rows.Count;
+                        //}
+                        //else
+                        //{
+                        //    //все выделенные строки в выбранной таблице
+                        //    rowscount = selindexes.Length;
+                        //}
 
                         //перебор строк таблицы
                         for (int i = 0; i < rowscount; i++)
@@ -5567,7 +5571,7 @@ namespace TranslationHelper
                                 {
                                     string resultvalue = TranslationCacheFind(THTranslationCache, inputvalue);
 
-                                    if (resultvalue.Length == 0 || !Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                    if (resultvalue.Length == 0)
                                     {
                                         //LogToFile("resultvalue from cache is empty. resultvalue=" + resultvalue, true);
                                         string[] inputvaluearray = inputvalue.Split('\n');
@@ -5583,12 +5587,12 @@ namespace TranslationHelper
                                             {
                                                 string cachedvalue = TranslationCacheFind(THTranslationCache, inputvalue);
                                                 //LogToFile("cachedvalue=" + cachedvalue, true);
-                                                if (cachedvalue.Length == 0 || !Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                                if (cachedvalue.Length == 0)
                                                 {
                                                     string onlinevalue = GoogleAPI.Translate(inputvalue);//из исходников ESPTranslator 
                                                     resultvalue = inputvalue.Replace(inputvalue, onlinevalue);
                                                     //LogToFile("resultvalue=" + resultvalue, true);
-                                                    if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                                    if (TranslationCacheChecked)
                                                     {
                                                         THTranslationCache.Tables[0].Rows.Add(inputvalue, resultvalue);
                                                     }
@@ -5604,12 +5608,12 @@ namespace TranslationHelper
                                             {
                                                 string cachedvalue = TranslationCacheFind(THTranslationCache, extractedvalue);
                                                 //LogToFile("cachedvalue=" + cachedvalue, true);
-                                                if (cachedvalue.Length == 0 || !Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                                if (cachedvalue.Length == 0)
                                                 {
                                                     string onlinevalue = GoogleAPI.Translate(extractedvalue);//из исходников ESPTranslator 
                                                     resultvalue = inputvalue.Replace(extractedvalue, onlinevalue);
                                                     //LogToFile("resultvalue=" + resultvalue, true);
-                                                    if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                                    if (TranslationCacheChecked)
                                                     {
                                                         THTranslationCache.Tables[0].Rows.Add(inputvalue, resultvalue);
                                                     }
@@ -5626,26 +5630,33 @@ namespace TranslationHelper
                                         //LogToFile("Result onlinetranslation=" + onlinetranslation, true);
                                         //проверка наличия результата и вторичная проверка пустого значения поля для перевода перед записью
                                         //if (!string.IsNullOrEmpty(onlinetranslation) && (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString())))
-                                        if (resultvalue.Length != 0 && ((THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] + string.Empty).Length == 0))
+                                        if (resultvalue.Length == 0)
                                         {
-                                            //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
-                                            if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                        }
+                                        else
+                                        {
+                                            if ((THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] as string).Length == 0)
                                             {
-                                                THTranslationCache.Tables[0].Rows.Add(inputvalue, resultvalue);
-                                            }
-                                            //THTranslationCacheAdd(inputvalue, onlinetranslation);                                    
+                                                //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
+                                                if (TranslationCacheChecked)
+                                                {
+                                                    THTranslationCache.Tables[0].Rows.Add(inputvalue, resultvalue);
+                                                }
+                                                //THTranslationCacheAdd(inputvalue, onlinetranslation);                                    
 
-                                            //запись перевода
-                                            //THFileElementsDataGridView[cind + 1, rind].Value = onlinetranslation;
-                                            THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] = resultvalue;
-                                            THAutoSetValueForSameCells(t, rowindex, cind);
+                                                //запись перевода
+                                                //THFileElementsDataGridView[cind + 1, rind].Value = onlinetranslation;
+                                                THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] = resultvalue;
+                                                //THAutoSetValueForSameCells(t, rowindex, cind);
+                                            }
                                         }
                                     }
                                     else
                                     {
                                         THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] = resultvalue;
-                                        THAutoSetValueForSameCells(t, rowindex, cind);
+                                        //THAutoSetValueForSameCells(t, rowindex, cind);
                                     }
+                                    THAutoSetValueForSameCells(t, rowindex, cind);
                                 }
                             }
                         }
@@ -6192,7 +6203,7 @@ namespace TranslationHelper
                         //LogToFile("2 extractedvalue is empty or has small count of");
                         string valuefromcache = TranslationCacheFind(cacheDS, extractedvalue);
                         //LogToFile("2.1 valuefromcache=" + valuefromcache);
-                        if (valuefromcache.Length == 0 || !Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                        if (valuefromcache.Length == 0)
                         {
                             string onlinevalue = GoogleAPI.Translate(extractedvalue);
                             //LogToFile("2.1.1 onlinevalue=" + onlinevalue);
@@ -6205,7 +6216,7 @@ namespace TranslationHelper
                             {
                                 string resultwithonline = inputlinevalue.Replace(extractedvalue, onlinevalue);
                                 resultvalue += resultwithonline;
-                                if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                if (TranslationCacheChecked)
                                 {
                                     cacheDS.Tables[0].Rows.Add(inputlinevalue, resultwithonline);
                                 }
@@ -6229,7 +6240,7 @@ namespace TranslationHelper
                         {
                             string valuefromcache = TranslationCacheFind(cacheDS, extractedvalue);
                             //LogToFile("3 valuefromcache=" + valuefromcache);
-                            if (valuefromcache.Length == 0 || !Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                            if (valuefromcache.Length == 0)
                             {
                                 string onlinevalue = GoogleAPI.Translate(extractedvalue);
                                 //LogToFile("4 onlinevalue=" + onlinevalue);
@@ -6242,7 +6253,7 @@ namespace TranslationHelper
                                 {
                                     string resultwithonline = inputlinevalue.Replace(extractedvalue, onlinevalue);
                                     resultvalue += resultwithonline;
-                                    if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+                                    if (TranslationCacheChecked)
                                     {
                                         cacheDS.Tables[0].Rows.Add(inputlinevalue, resultwithonline);
                                     }
@@ -6716,6 +6727,42 @@ namespace TranslationHelper
             }
         }
 
+        private bool IsAllMatchesInIdenticalPlaces(string first, string second, MatchCollection mc, MatchCollection mc0)
+        {
+            try
+            {
+                int startindex = 0;
+                int overallength = 0;
+                int startindex0 = 0;
+                int overallength0 = 0;
+                for (int m = 0; m < mc.Count; m++)
+                {
+                    string mvalue = mc[m].Value;
+                    string mvalue0 = mc0[m].Value;
+                    int i = first.IndexOf(mvalue, startindex);
+                    int i0 = second.IndexOf(mvalue0, startindex0);
+                    if (i - overallength == i0 - overallength0)
+                    {
+                        int l = mvalue.Length;
+                        startindex = i+ l;
+                        overallength+= l;
+                        int l0 = mvalue0.Length;
+                        startindex0 = i0 + l0;
+                        overallength0 += l0;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         bool cellchanged = false;
         private void THAutoSetValueForSameCells(int tableind, int rind, int cind, bool forcerun = true)
         {
@@ -6730,13 +6777,14 @@ namespace TranslationHelper
                     //LogToFile("THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]="+ THFilesElementsDataset.Tables[tableind].Rows[rind][transcind].ToString());
                     //http://www.cyberforum.ru/csharp-beginners/thread244709.html
                     string quote = "\"";
-                    string pattern = @"((\d|\!|\?|\.|"+quote+")+)$";
+                    string pattern = @"((\d|\!|\?|\.|"+quote+")+)";
                     Regex reg = new Regex(pattern); //reg равняется любым цифрам
-                    string inputorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][cind] + string.Empty);
-                    string inputtranscellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][transcind] + string.Empty);
+                    string inputorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][cind] as string);
+                    string inputtranscellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][transcind] as string);
                     MatchCollection mc = reg.Matches(inputorigcellvalue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
-                    bool digitalsexist = (mc.Count > 0);
-                    
+                    int mccount = mc.Count;
+
+
                     for (int Tindx = 0; Tindx < THFilesElementsDataset.Tables.Count; Tindx++) //количество файлов
                     {
                         //LogToFile("Table "+Tindx+" proceed");
@@ -6745,29 +6793,27 @@ namespace TranslationHelper
                             if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] as string).Length==0) //Проверять только для пустых ячеек перевода
                             {
                                 //LogToFile("THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString()=" + THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString());
-                                if (digitalsexist) //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
+                                if (mccount > 0) //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
                                 {
                                     string checkingorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind] as string);
                                     MatchCollection mc0 = reg.Matches(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind] as string); //mc0 равно значениям цифр ячейки под номером y в файле i
-
-                                    if (mc0.Count > 0) //если количество совпадений в mc0 больше нуля, т.е. цифры были в поле untrans проверяемой на совпадение ячейки
+                                    int mc0Count = mc0.Count;
+                                    if (mc0Count > 0) //если количество совпадений в mc0 больше нуля, т.е. цифры были в поле untrans проверяемой на совпадение ячейки
                                     {
                                         string checkingorigcellvalueNoDigits = Regex.Replace(checkingorigcellvalue, pattern, string.Empty);
                                         string inputorigcellvalueNoDigits = Regex.Replace(inputorigcellvalue, pattern, string.Empty);
 
                                         //LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
                                         //если поле перевода равно только что измененному во входной, без учета цифр
-                                        if (Equals(checkingorigcellvalueNoDigits,inputorigcellvalueNoDigits) && mc.Count == mc0.Count)
+                                        if (Equals(checkingorigcellvalueNoDigits,inputorigcellvalueNoDigits) && mccount == mc0Count && IsAllMatchesInIdenticalPlaces(inputorigcellvalue, checkingorigcellvalue, mc, mc0))
                                         {
-                                            int arraysize = mc.Count;
-
                                             if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] as string).Length == 0)
                                             {
                                                 //инициализация основных целевого и входного массивов
-                                                string[] inputorigmatches = new string[arraysize];
-                                                string[] targetorigmatches = new string[arraysize];
+                                                string[] inputorigmatches = new string[mccount];
+                                                string[] targetorigmatches = new string[mccount];
                                                 //присваивание цифр из совпадений в массивы, в основной входного и во временный целевого
-                                                for (int r = 0; r < arraysize; r++)
+                                                for (int r = 0; r < mccount; r++)
                                                 {
                                                     inputorigmatches[r] = THFixDigits(mc[r].Value.Replace(mc[r].Value, mc[r].Value));
                                                     targetorigmatches[r] = THFixDigits(mc0[r].Value.Replace(mc0[r].Value, mc0[r].Value));
@@ -6777,14 +6823,28 @@ namespace TranslationHelper
                                                 //там же че тести и for, ак у здесь меня - наиболее быстрый вариант
 
                                                 //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет пеерведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменется, т.к. 万 [man] переводится как 10000.
-                                                if (reg.Matches(inputtranscellvalue).Count == mc.Count)
+                                                if (reg.Matches(inputtranscellvalue).Count == mccount)
                                                 {
-                                                    string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+                                                    //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+                                                    string inputresult = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+
+                                                    MatchCollection tm = reg.Matches(inputresult);
+                                                    int startindex;
+                                                    int stringoverallength=0;
+                                                    int stringlength=0;
+                                                    int stringoverallength0=0;
                                                     //LogToFile("arraysize=" + arraysize + ", wrapped inputresult" + inputresult);
-                                                    for (int m = 0; m < arraysize; m++)
+                                                    for (int m = 0; m < mccount; m++)
                                                     {
                                                         //LogToFile("inputorigmatches[" + m + "]=" + inputorigmatches[m] + ", targetorigmatches[" + m + "]=" + targetorigmatches[m] + ", pre result[" + m + "]=" + inputresult);
-                                                        inputresult = inputresult.Replace("{{" + inputorigmatches[m] + "}}", targetorigmatches[m]);
+                                                        //inputresult = inputresult.Replace("{{" + inputorigmatches[m] + "}}", targetorigmatches[m]);
+
+                                                        //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
+                                                        startindex = tm[m].Index- stringoverallength+ stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
+                                                        stringlength = inputorigmatches[m].Length;
+                                                        stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
+                                                        inputresult = inputresult.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);
+                                                        stringoverallength0 += targetorigmatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
                                                         //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
                                                         //LogToFile("result[" + m + "]=" + inputresult);
                                                     }
