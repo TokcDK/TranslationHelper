@@ -6731,29 +6731,38 @@ namespace TranslationHelper
         {
             try
             {
-                int startindex = 0;
+                //int startindex;
                 int overallength = 0;
-                int startindex0 = 0;
+                //int startindex0;
                 int overallength0 = 0;
                 for (int m = 0; m < mc.Count; m++)
                 {
-                    string mvalue = mc[m].Value;
-                    string mvalue0 = mc0[m].Value;
-                    int i = first.IndexOf(mvalue, startindex);
-                    int i0 = second.IndexOf(mvalue0, startindex0);
-                    if (i - overallength == i0 - overallength0)
+                    if (mc[m].Index - overallength == mc0[m].Index - overallength0)
                     {
-                        int l = mvalue.Length;
-                        startindex = i+ l;
-                        overallength+= l;
-                        int l0 = mvalue0.Length;
-                        startindex0 = i0 + l0;
-                        overallength0 += l0;
+                        overallength += mc[m].Length;
+                        overallength0 += mc0[m].Length;
                     }
                     else
                     {
                         return false;
                     }
+                    //string mvalue = mc[m].Value;
+                    //string mvalue0 = mc0[m].Value;
+                    //int i = first.IndexOf(mvalue, startindex);
+                    //int i0 = second.IndexOf(mvalue0, startindex0);
+                    //if (i - overallength == i0 - overallength0)
+                    //{
+                    //    int l = mvalue.Length;
+                    //    startindex = i+ l;
+                    //    overallength+= l;
+                    //    int l0 = mvalue0.Length;
+                    //    startindex0 = i0 + l0;
+                    //    overallength0 += l0;
+                    //}
+                    //else
+                    //{
+                    //    return false;
+                    //}
                 }
                 return true;
             }
