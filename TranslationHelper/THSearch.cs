@@ -6,20 +6,21 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TranslationHelper
 {
-    public partial class c : Form
+    public partial class C : Form
     {
         private THMain Main;
         public ListBox THFilesListBox;
         public DataSet THFilesElementsDataset;
         public DataGridView THFileElementsDataGridView;
         RichTextBox THTargetRichTextBox;
-        public c(THMain MainForm, DataSet DS, ListBox listBox, DataGridView DGV, RichTextBox TTB)
+        public C(THMain MainForm, DataSet DS, ListBox listBox, DataGridView DGV, RichTextBox TTB)
         {
             InitializeComponent();
             Main = MainForm;
@@ -101,6 +102,11 @@ namespace TranslationHelper
                         THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
                     }
                     THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+                    
+                    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                    Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(SearchFormFindWhatTextBox.Text)));
+                    selectstring.Start();
+
                     startrowsearchindex++;
                     if (startrowsearchindex == oDsResults.Tables[0].Rows.Count)
                     {
@@ -113,7 +119,8 @@ namespace TranslationHelper
                     startrowsearchindex = 0;
                     lblError.Visible = false;
                     oDsResults = THFilesElementsDataset.Clone();
-                    DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
+                    //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
+                    DataTable drFoundRowsTable = SearchNew(oDsResults);
 
                     if (drFoundRowsTable == null)
                     {
@@ -335,15 +342,15 @@ namespace TranslationHelper
         DataSet oDsResults;
         private void FindAllButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SearchFormFindWhatTextBox.Text.Trim()) || SearchFormFindWhatTextBox.Text == lastfoundvalue || THFilesElementsDataset == null)
+            if (SearchFormFindWhatTextBox.Text.Length==0 || THFilesElementsDataset == null)
             {
-
             }
             else
             {
                 lblError.Visible = false;
                 oDsResults = THFilesElementsDataset.Clone();
-                DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
+                //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
+                DataTable drFoundRowsTable = SearchNew(oDsResults);
 
                 if (drFoundRowsTable == null)
                 {
@@ -383,14 +390,7 @@ namespace TranslationHelper
                 string searchcolumn = GetSearchColumn();
 
                 //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
-                if (THSearchMatchCaseCheckBox.Checked)
-                {
-                    THFilesElementsDataset.Tables[0].CaseSensitive = true;
-                }
-                else
-                {
-                    THFilesElementsDataset.Tables[0].CaseSensitive = false;
-                }
+                //THFilesElementsDataset.Tables[0].CaseSensitive = THSearchMatchCaseCheckBox.Checked;
 
                 string strQuery = "[" + THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName + "] Like '%" + SearchFormFindWhatTextBox.Text.Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";
 
@@ -433,7 +433,7 @@ namespace TranslationHelper
                     oDsResultsCoordinates.Clear();
                     for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
                     {                        
-                        drFilterRows = GetDTRowsWithFoundValue(THFilesElementsDataset.Tables[t], strQuery);
+                        drFilterRows = GetDTRowsWithFoundValue(THFilesElementsDataset.Tables[t], strQuery, searchcolumn);
 
                         if (drFilterRows.Length > 0)
                         {
@@ -453,21 +453,106 @@ namespace TranslationHelper
             return null;
         }
 
-        private DataRow[] GetDTRowsWithFoundValue(DataTable DT, string strQuery)
+
+        private DataTable SearchNew(DataSet DS)
         {
-            return DT.Select(strQuery);
-            //if (THSearchMatchCaseCheckBox.Checked)
-            //{
-            //    //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
-            //    drFilterRows = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
-            //                    .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).Contains(SearchFormFindWhatTextBox.Text)).ToArray();
-            //}
-            //else
-            //{
-            //    //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
-            //    drFilterRows = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
-            //                    .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant())).ToArray();
-            //}
+            if (THFilesElementsDataset.Tables.Count > 0)
+            {
+                string searchcolumn = GetSearchColumn();
+                string strQuery = SearchFormFindWhatTextBox.Text;
+                oDsResultsCoordinates.Rows.Clear();
+                int DatatablesCount = SearchRangeTableRadioButton.Checked ? THFilesListBox.SelectedIndex + 1 : THFilesElementsDataset.Tables.Count;
+                int StartTableIndex = SearchRangeTableRadioButton.Checked ? THFilesListBox.SelectedIndex : 0;
+                for (int t = StartTableIndex; t < DatatablesCount; t++)
+                {
+                    for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                    {
+                        if ((THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] as string).Length == 0)
+                        {
+
+                        }
+                        else
+                        {
+                            DataRow Row = THFilesElementsDataset.Tables[t].Rows[r];
+                            string SelectedCellValue = THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] as string;
+                            if (SearchModeRegexRadioButton.Checked)
+                            {
+                                try
+                                {
+                                    if (THSearchMatchCaseCheckBox.Checked)
+                                    {
+                                        if (Regex.IsMatch(SelectedCellValue, strQuery))
+                                        {
+                                            DS.Tables[0].ImportRow(Row);
+                                            oDsResultsCoordinates.Rows.Add(t, r);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (Regex.IsMatch(SelectedCellValue, strQuery, RegexOptions.IgnoreCase))
+                                        {
+                                            DS.Tables[0].ImportRow(Row);
+                                            oDsResultsCoordinates.Rows.Add(t, r);
+                                        }
+                                    }
+                                }
+                                catch
+                                {
+
+                                }
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    if (THSearchMatchCaseCheckBox.Checked)
+                                    {
+                                        if (SelectedCellValue.Contains(strQuery))
+                                        {
+                                            DS.Tables[0].ImportRow(Row);
+                                            oDsResultsCoordinates.Rows.Add(t, r);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (SelectedCellValue.ToLowerInvariant().Contains(strQuery.ToLowerInvariant()))
+                                        {
+                                            DS.Tables[0].ImportRow(Row);
+                                            oDsResultsCoordinates.Rows.Add(t, r);
+                                        }
+                                    }
+                                }
+                                catch
+                                {
+
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            return DS.Tables[0];
+        }
+
+        private DataRow[] GetDTRowsWithFoundValue(DataTable DT, string strQuery, string searchcolumn)
+        {
+            //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
+            //DT.CaseSensitive = THSearchMatchCaseCheckBox.Checked;
+
+            //return DT.Select(strQuery);
+            if (THSearchMatchCaseCheckBox.Checked)
+            {
+                //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
+                return THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
+                                .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).Contains(strQuery)).ToArray();
+            }
+            else
+            {
+                //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
+                return THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
+                                .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).ToLowerInvariant().Contains(strQuery.ToLowerInvariant())).ToArray();
+            }
         }
 
         private void LinkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -498,70 +583,80 @@ namespace TranslationHelper
             _ = Invoke(new MethodInvoker(delegate ()
             {
                 Thread.Sleep(200);
-                if (string.IsNullOrEmpty(THTargetRichTextBox.Text))
+                if (THTargetRichTextBox.Text.Length==0)
                 {
                     //MessageBox.Show("THTargetRichTextBox.Text="+ THTargetRichTextBox.Text);
                 }
                 else
                 {
-                    //https://www.c-sharpcorner.com/article/search-and-highlight-text-in-rich-textbox/
-                    //распознает лучше, чем код ниже, но не выделяет слово TEST
-                    //string[] words = SearchFormFindWhatTextBox.Text.Split(' ');
-                    //foreach (string word in words)
-                    //{
-                    //    string word = SearchFormFindWhatTextBox.Text;
-                    //    int startindex = 0;
-                    //    while (startindex < THTargetRichTextBox.TextLength)
-                    //    {
-                    //        //int wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
-                    //        int wordstartIndex;
-                    //        if (THSearchMatchCaseCheckBox.Checked)
-                    //        {
-                    //            wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.MatchCase);
-                    //        }
-                    //        else
-                    //        {
-                    //            wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
-                    //        }
-                    //        if (wordstartIndex == -1)
-                    //        {
-                    //            break;
-                    //        }
-                    //        else
-                    //        {
-                    //            THTargetRichTextBox.SelectionStart = wordstartIndex;
-                    //            THTargetRichTextBox.SelectionLength = word.Length;
-                    //            THTargetRichTextBox.SelectionBackColor = Color.Yellow;
-                    //        }
-
-                    //        startindex += wordstartIndex + word.Length;
-                    //    }
-                    //}
-                    string word = SearchFormFindWhatTextBox.Text;
-                    int startindex = 0;
-                    while (startindex < THTargetRichTextBox.TextLength)
+                    if (SearchModeRegexRadioButton.Checked)
                     {
-                        int wordstartIndex;
-                        if (THSearchMatchCaseCheckBox.Checked)
+                        //https://www.c-sharpcorner.com/article/search-and-highlight-text-in-rich-textbox/
+                        //распознает лучше, чем код ниже, но не выделяет слово TEST
+                        //string[] words = SearchFormFindWhatTextBox.Text.Split(' ');
+                        bool MatchCase = THSearchMatchCaseCheckBox.Checked;
+                        MatchCollection mc = Regex.Matches(THTargetRichTextBox.Text, SearchFormFindWhatTextBox.Text, MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);
+                        int c = mc.Count;
+                        string m = mc[0].Value;
+                        foreach (Match word in mc)
                         {
-                            wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.MatchCase);
-                        }
-                        else
-                        {
-                            wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
-                        }
-                        if (wordstartIndex == -1)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            THTargetRichTextBox.SelectionStart = wordstartIndex;
-                            THTargetRichTextBox.SelectionLength = word.Length;
-                            THTargetRichTextBox.SelectionBackColor = Color.Yellow;
-                        }
+                            //string word = SearchFormFindWhatTextBox.Text;
+                            int startindex = 0;
+                            while (startindex < THTargetRichTextBox.TextLength)
+                            {
+                                //int wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
+                                int wordstartIndex;
+                                if (MatchCase)
+                                {
+                                    wordstartIndex = THTargetRichTextBox.Find(word.Value, startindex, RichTextBoxFinds.MatchCase);
+                                }
+                                else
+                                {
+                                    wordstartIndex = THTargetRichTextBox.Find(word.Value, startindex, RichTextBoxFinds.None);
+                                }
+                                if (wordstartIndex == -1)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    THTargetRichTextBox.SelectionStart = wordstartIndex;
+                                    THTargetRichTextBox.SelectionLength = word.Length;
+                                    THTargetRichTextBox.SelectionBackColor = Color.Yellow;
+                                }
 
-                        startindex += wordstartIndex + word.Length;
+                                startindex += wordstartIndex + word.Length;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string word = SearchFormFindWhatTextBox.Text;
+                        int startindex = 0;
+                        while (startindex < THTargetRichTextBox.TextLength)
+                        {
+                            int wordstartIndex;
+                            if (THSearchMatchCaseCheckBox.Checked)
+                            {
+                                wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.MatchCase);
+                            }
+                            else
+                            {
+                                wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
+                            }
+                            if (wordstartIndex == -1)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                THTargetRichTextBox.SelectionStart = wordstartIndex;
+                                THTargetRichTextBox.SelectionLength = word.Length;
+                                THTargetRichTextBox.SelectionBackColor = Color.Yellow;
+                            }
+
+                            startindex += wordstartIndex + word.Length;
+                        }
                     }
 
 

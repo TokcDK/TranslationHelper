@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper
 {
-    partial class THSettingsForm
+    partial class THSettings
     {
         /// <summary>
         /// Required designer variable.

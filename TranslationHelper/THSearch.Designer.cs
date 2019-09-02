@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper
 {
-    partial class c
+    partial class C
     {
         /// <summary>
         /// Required designer variable.

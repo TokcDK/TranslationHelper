@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace TranslationHelper
 {
-    public partial class THSettingsForm : Form
+    public partial class THSettings : Form
     {
         //Defaults
         public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
@@ -13,7 +13,7 @@ namespace TranslationHelper
         public bool THOptionDBCompressionCheckBoxChecked = true;
         public string THOptionDBCompressionComboBoxSelectedItemValue = "XML (None)";
 
-        public THSettingsForm()
+        public THSettings()
         {
             InitializeComponent();
         }

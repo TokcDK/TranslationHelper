@@ -25,7 +25,7 @@ namespace TranslationHelper
     {
         //string THLog;
         //public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
-        public THSettingsForm Settings;
+        public THSettings Settings;
         //public const string THStrDGTranslationColumnName = "Translation";
         //public const string THStrDGOriginalColumnName = "Original";
         private readonly THLang LangF;
@@ -63,7 +63,7 @@ namespace TranslationHelper
         {
             InitializeComponent();
             LangF = new THLang();
-            Settings = new THSettingsForm();
+            Settings = new THSettings();
 
             Settings.GetSettings();
 
@@ -3455,7 +3455,7 @@ namespace TranslationHelper
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 #pragma warning disable IDE0067 // Ликвидировать объекты перед потерей области //игнор, т.к. закрывает сразу второе окно
-            THSettingsForm THSettings = new THSettingsForm();
+            THSettings THSettings = new THSettings();
 #pragma warning restore IDE0067 // Ликвидировать объекты перед потерей области
             THSettings.Show();
         }
@@ -7480,7 +7480,7 @@ namespace TranslationHelper
             }
             else
             {
-                c search = new c(this, THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox)
+                C search = new C(this, THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox)
                 {
                     THFilesElementsDataset = THFilesElementsDataset,
                     THFileElementsDataGridView = THFileElementsDataGridView,

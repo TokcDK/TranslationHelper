@@ -100,11 +100,11 @@
     <Compile Include="THSearch.Designer.cs">
       <DependentUpon>THSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="THSettingsForm.cs">
+    <Compile Include="THSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="THSettingsForm.Designer.cs">
-      <DependentUpon>THSettingsForm.cs</DependentUpon>
+    <Compile Include="THSettings.Designer.cs">
+      <DependentUpon>THSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="THAbout.cs">
       <SubType>Form</SubType>
@@ -132,8 +132,8 @@
     <EmbeddedResource Include="THSearch.resx">
       <DependentUpon>THSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="THSettingsForm.resx">
-      <DependentUpon>THSettingsForm.cs</DependentUpon>
+    <EmbeddedResource Include="THSettings.resx">
+      <DependentUpon>THSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="THAbout.resx">
       <DependentUpon>THAbout.cs</DependentUpon>
