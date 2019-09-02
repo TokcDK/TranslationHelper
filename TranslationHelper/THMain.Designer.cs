@@ -51,6 +51,7 @@
             this.testSplitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runTestGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tESTRegexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testTimingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openInWebToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tryToTranslateOnlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -114,7 +115,6 @@
             this.THInfoTextBox = new System.Windows.Forms.TextBox();
             this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
             this.THInfolabel = new System.Windows.Forms.Label();
-            this.testTimingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -234,6 +234,7 @@
             this.loadTranslationFromToolStripMenuItem.Name = "loadTranslationFromToolStripMenuItem";
             this.loadTranslationFromToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.loadTranslationFromToolStripMenuItem.Text = "Load translation from";
+            this.loadTranslationFromToolStripMenuItem.Visible = false;
             // 
             // xmlToolStripMenuItem
             // 
@@ -314,6 +315,14 @@
             this.tESTRegexToolStripMenuItem.Text = "TEST regex";
             this.tESTRegexToolStripMenuItem.Visible = false;
             this.tESTRegexToolStripMenuItem.Click += new System.EventHandler(this.TESTRegexToolStripMenuItem_Click);
+            // 
+            // testTimingsToolStripMenuItem
+            // 
+            this.testTimingsToolStripMenuItem.Name = "testTimingsToolStripMenuItem";
+            this.testTimingsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.testTimingsToolStripMenuItem.Text = "Test timings";
+            this.testTimingsToolStripMenuItem.Visible = false;
+            this.testTimingsToolStripMenuItem.Click += new System.EventHandler(this.TestTimingsToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -566,7 +575,7 @@
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
             // 
@@ -976,13 +985,6 @@
             this.THInfolabel.TabIndex = 7;
             this.THInfolabel.Text = "...";
             this.THInfolabel.Visible = false;
-            // 
-            // testTimingsToolStripMenuItem
-            // 
-            this.testTimingsToolStripMenuItem.Name = "testTimingsToolStripMenuItem";
-            this.testTimingsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.testTimingsToolStripMenuItem.Text = "Test timings";
-            this.testTimingsToolStripMenuItem.Click += new System.EventHandler(this.TestTimingsToolStripMenuItem_Click);
             // 
             // THMain
             // 

@@ -108,6 +108,7 @@ namespace TranslationHelper
         private void THMain_Load(object sender, EventArgs e)
         {
             SetTooltips();
+            search = new THSearch(this, THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
         }
 
         private void SetTooltips()
@@ -3451,13 +3452,14 @@ namespace TranslationHelper
             {
             }
         }
-
+        THSettings THSettings = new THSettings();
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-#pragma warning disable IDE0067 // Ликвидировать объекты перед потерей области //игнор, т.к. закрывает сразу второе окно
-            THSettings THSettings = new THSettings();
-#pragma warning restore IDE0067 // Ликвидировать объекты перед потерей области
             THSettings.Show();
+
+            //поместить на передний план
+            THSettings.TopMost = true;
+            THSettings.TopMost = false;
         }
 
         //http://qaru.site/questions/180337/show-row-number-in-row-header-of-a-datagridview
@@ -7473,6 +7475,7 @@ namespace TranslationHelper
             //THFileElementsDataGridView.DataSource = THFilesElementsDataset.Relations["ALL"].ParentTable;
         }
 
+        THSearch search;
         private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (THFilesList.SelectedIndex==-1)
@@ -7480,13 +7483,17 @@ namespace TranslationHelper
             }
             else
             {
-                C search = new C(this, THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox)
-                {
-                    THFilesElementsDataset = THFilesElementsDataset,
-                    THFileElementsDataGridView = THFileElementsDataGridView,
-                    THFilesListBox = THFilesList
-                };
+                //THSearch search = new THSearch(this, THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox)
+                //{
+                //    THFilesElementsDataset = THFilesElementsDataset,
+                //    THFileElementsDataGridView = THFileElementsDataGridView,
+                //    THFilesListBox = THFilesList
+                //};
                 search.Show();
+
+                //поместить на передний план
+                search.TopMost = true;
+                search.TopMost = false;
             }
         }
 

@@ -13,14 +13,14 @@ using System.Windows.Forms;
 
 namespace TranslationHelper
 {
-    public partial class C : Form
+    public partial class THSearch : Form
     {
         private THMain Main;
         public ListBox THFilesListBox;
         public DataSet THFilesElementsDataset;
         public DataGridView THFileElementsDataGridView;
         RichTextBox THTargetRichTextBox;
-        public C(THMain MainForm, DataSet DS, ListBox listBox, DataGridView DGV, RichTextBox TTB)
+        public THSearch(THMain MainForm, DataSet DS, ListBox listBox, DataGridView DGV, RichTextBox TTB)
         {
             InitializeComponent();
             Main = MainForm;
@@ -44,14 +44,14 @@ namespace TranslationHelper
 
         private void SearchMethodOriginalTranslationRadioButton_Click(object sender, EventArgs e)
         {
-            SearchMethodTranslationRadioButton.Checked = false;
-            SearchMethodOriginalTranslationRadioButton.Checked = true;
+            SearchMethodOriginalToTranslationRadioButton.Checked = false;
+            SearchMethodTranslationRadioButton.Checked = true;
         }
 
         private void SearchMethodTranslationRadioButton_Click(object sender, EventArgs e)
         {
-            SearchMethodOriginalTranslationRadioButton.Checked = false;
-            SearchMethodTranslationRadioButton.Checked = true;
+            SearchMethodTranslationRadioButton.Checked = false;
+            SearchMethodOriginalToTranslationRadioButton.Checked = true;
         }
 
         private void SearchRangeTableRadioButton_Click(object sender, EventArgs e)
@@ -68,26 +68,20 @@ namespace TranslationHelper
 
         private string GetSearchColumn()
         {
-            if (SearchMethodTranslationRadioButton.Checked)
-            {
-                return "Original";
-            }
-            else
-            {
-                return "Translation";
-            }
+            return SearchMethodTranslationRadioButton.Checked ? "Translation" : "Original";
         }
 
         int startrowsearchindex=0;        //Индекс стартовой ячейки для поиска
         int tableindex;
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SearchFormFindWhatTextBox.Text.Trim()) /*|| SearchFormFindWhatTextBox.Text == lastfoundvalue*/ || THFilesElementsDataset == null)
+            if (SearchFormFindWhatTextBox.Text.Length==0 || THFilesElementsDataset == null)
             {
             }
             else
             {
-                if (SearchFormFindWhatTextBox.Text == lastfoundvalue)
+                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : SearchFormFindWhatTextBox.Text.ToLowerInvariant() == lastfoundvalue.ToLowerInvariant();
+                if (inputqualwithlatest)
                 {
                     string searchcolumn = GetSearchColumn();
                     int tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
@@ -103,6 +97,7 @@ namespace TranslationHelper
                     }
                     THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
                     
+                    //подсвечивание найденного
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                     Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(SearchFormFindWhatTextBox.Text)));
                     selectstring.Start();
@@ -146,6 +141,11 @@ namespace TranslationHelper
                                 THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
                             }
                             THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+
+                            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                            Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(SearchFormFindWhatTextBox.Text)));
+                            selectstring.Start();
+
                             startrowsearchindex++;
                             if (startrowsearchindex == oDsResults.Tables[0].Rows.Count)
                             {
@@ -284,22 +284,14 @@ namespace TranslationHelper
         private void StoryFoundValueToComboBox(string foundvalue)
         {
             lastfoundvalue = foundvalue;
-            bool found = false;
             for (int i=0;i< SearchFormFindWhatComboBox.Items.Count;i++)
             {
                 if (SearchFormFindWhatComboBox.Items[i].ToString() == foundvalue)
                 {
-                    found = true;
-                    break;
+                    return;
                 }
             }
-            if (found)
-            {
-            }
-            else
-            {
-                SearchFormFindWhatComboBox.Items.Add(foundvalue);
-            }
+            SearchFormFindWhatComboBox.Items.Add(foundvalue);
         }
 
         private bool IsContainsText(string searchobject, string searchinput)

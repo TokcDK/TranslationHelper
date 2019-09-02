@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper
 {
-    partial class C
+    partial class THSearch
     {
         /// <summary>
         /// Required designer variable.
@@ -48,8 +48,8 @@
             this.SearchRangeAllRadioButton = new System.Windows.Forms.RadioButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
+            this.SearchMethodOriginalToTranslationRadioButton = new System.Windows.Forms.RadioButton();
             this.SearchMethodTranslationRadioButton = new System.Windows.Forms.RadioButton();
-            this.SearchMethodOriginalTranslationRadioButton = new System.Windows.Forms.RadioButton();
             this.THSearchMatchCaseCheckBox = new System.Windows.Forms.CheckBox();
             this.panel4 = new System.Windows.Forms.Panel();
             this.FindAllButton = new System.Windows.Forms.Button();
@@ -283,8 +283,8 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.SearchMethodOriginalToTranslationRadioButton);
             this.panel1.Controls.Add(this.SearchMethodTranslationRadioButton);
-            this.panel1.Controls.Add(this.SearchMethodOriginalTranslationRadioButton);
             this.panel1.Location = new System.Drawing.Point(114, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(232, 61);
@@ -299,29 +299,29 @@
             this.label2.TabIndex = 11;
             this.label2.Text = "Method";
             // 
+            // SearchMethodOriginalToTranslationRadioButton
+            // 
+            this.SearchMethodOriginalToTranslationRadioButton.AutoSize = true;
+            this.SearchMethodOriginalToTranslationRadioButton.Location = new System.Drawing.Point(3, 39);
+            this.SearchMethodOriginalToTranslationRadioButton.Name = "SearchMethodOriginalToTranslationRadioButton";
+            this.SearchMethodOriginalToTranslationRadioButton.Size = new System.Drawing.Size(215, 17);
+            this.SearchMethodOriginalToTranslationRadioButton.TabIndex = 9;
+            this.SearchMethodOriginalToTranslationRadioButton.Text = "Find in Original and Paste to Translation";
+            this.SearchMethodOriginalToTranslationRadioButton.UseVisualStyleBackColor = true;
+            this.SearchMethodOriginalToTranslationRadioButton.Click += new System.EventHandler(this.SearchMethodTranslationRadioButton_Click);
+            // 
             // SearchMethodTranslationRadioButton
             // 
             this.SearchMethodTranslationRadioButton.AutoSize = true;
-            this.SearchMethodTranslationRadioButton.Location = new System.Drawing.Point(3, 39);
+            this.SearchMethodTranslationRadioButton.Checked = true;
+            this.SearchMethodTranslationRadioButton.Location = new System.Drawing.Point(3, 16);
             this.SearchMethodTranslationRadioButton.Name = "SearchMethodTranslationRadioButton";
-            this.SearchMethodTranslationRadioButton.Size = new System.Drawing.Size(215, 17);
-            this.SearchMethodTranslationRadioButton.TabIndex = 9;
-            this.SearchMethodTranslationRadioButton.Text = "Find in Original and Paste to Translation";
+            this.SearchMethodTranslationRadioButton.Size = new System.Drawing.Size(174, 17);
+            this.SearchMethodTranslationRadioButton.TabIndex = 10;
+            this.SearchMethodTranslationRadioButton.TabStop = true;
+            this.SearchMethodTranslationRadioButton.Text = "Find and Replace in Translation";
             this.SearchMethodTranslationRadioButton.UseVisualStyleBackColor = true;
-            this.SearchMethodTranslationRadioButton.Click += new System.EventHandler(this.SearchMethodTranslationRadioButton_Click);
-            // 
-            // SearchMethodOriginalTranslationRadioButton
-            // 
-            this.SearchMethodOriginalTranslationRadioButton.AutoSize = true;
-            this.SearchMethodOriginalTranslationRadioButton.Checked = true;
-            this.SearchMethodOriginalTranslationRadioButton.Location = new System.Drawing.Point(3, 16);
-            this.SearchMethodOriginalTranslationRadioButton.Name = "SearchMethodOriginalTranslationRadioButton";
-            this.SearchMethodOriginalTranslationRadioButton.Size = new System.Drawing.Size(174, 17);
-            this.SearchMethodOriginalTranslationRadioButton.TabIndex = 10;
-            this.SearchMethodOriginalTranslationRadioButton.TabStop = true;
-            this.SearchMethodOriginalTranslationRadioButton.Text = "Find and Replace in Translation";
-            this.SearchMethodOriginalTranslationRadioButton.UseVisualStyleBackColor = true;
-            this.SearchMethodOriginalTranslationRadioButton.Click += new System.EventHandler(this.SearchMethodOriginalTranslationRadioButton_Click);
+            this.SearchMethodTranslationRadioButton.Click += new System.EventHandler(this.SearchMethodOriginalTranslationRadioButton_Click);
             // 
             // THSearchMatchCaseCheckBox
             // 
@@ -448,7 +448,7 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
             // 
-            // c
+            // C
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -459,7 +459,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(596, 368);
-            this.Name = "c";
+            this.Name = "C";
             this.Text = "Find and Replace";
             this.Load += new System.EventHandler(this.THSearch_Load);
             this.THSearchTabs.ResumeLayout(false);
@@ -500,8 +500,8 @@
         public System.Windows.Forms.ComboBox SearchFormReplaceWithComboBox;
         private System.Windows.Forms.Label THSearchFindWhatLabel;
         public System.Windows.Forms.ComboBox SearchFormFindWhatComboBox;
-        private System.Windows.Forms.RadioButton SearchMethodOriginalTranslationRadioButton;
         private System.Windows.Forms.RadioButton SearchMethodTranslationRadioButton;
+        private System.Windows.Forms.RadioButton SearchMethodOriginalToTranslationRadioButton;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel3;
