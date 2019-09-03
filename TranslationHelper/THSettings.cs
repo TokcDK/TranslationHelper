@@ -16,6 +16,41 @@ namespace TranslationHelper
         public THSettings()
         {
             InitializeComponent();
+            SetTooltips();
+        }
+
+        private void SetTooltips()
+        {
+            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
+            //THMainResetTableButton
+            ToolTip THToolTip = new ToolTip
+            {
+
+                // Set up the delays for the ToolTip.
+                AutoPopDelay = 10000,
+                InitialDelay = 1000,
+                ReshowDelay = 500,
+                UseAnimation = true,
+                UseFading = true,
+                // Force the ToolTip text to be displayed whether or not the form is active.
+                ShowAlways = true
+            };
+
+            //Settings
+            //Optimization
+            THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBox, "String will not be loaded for translation if this string contains romaji characters in text more of specified percent.");
+            THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen, "Is true while opening. Always true for RPGMaker MV files or jsons for strings filtering purposes.");
+            THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation, "Is true while online translating. Will be used both with other chars like .!/? and other same");
+            THToolTip.SetToolTip(THOptionDBCompressionCheckBox, "Format for DB files: standard not compressed xml and compressed xml for both other");
+            //Tools
+            THToolTip.SetToolTip(THOptionAutotranslationForIdenticalCheckBox, "Automatically will be translated all almost identical cells with same original.");
+            THToolTip.SetToolTip(THOptionEnableTranslationCacheCheckBox, "Will save online translation result in cache db to use it in next time for same values instead of attemp to connect to service.");
+            THToolTip.SetToolTip(THSettingsWebTransLinkTextBox, "Web site which wil be opened by pressing F12 key with added selected table cells values. Can be any here Google, Yandex, DeepL or other.");
+            //support links
+            THToolTip.SetToolTip(linkLabel1, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
+            THToolTip.SetToolTip(linkLabel2, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
+            THToolTip.SetToolTip(linkLabel4, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
+            ////////////////////////////
         }
 
         public void GetSettings()

@@ -119,12 +119,16 @@ namespace TranslationHelper
             {
 
                 // Set up the delays for the ToolTip.
-                AutoPopDelay = 5000,
+                AutoPopDelay = 10000,
                 InitialDelay = 1000,
                 ReshowDelay = 500,
+                UseAnimation = true,
+                UseFading = true,
                 // Force the ToolTip text to be displayed whether or not the form is active.
-                ShowAlways = false
+                ShowAlways = true
             };
+
+            //Main
             THToolTip.SetToolTip(THMainResetTableButton, "Resets filters and tab sorting");
             THToolTip.SetToolTip(THFiltersDataGridView, "Filters for columns of main table");
             ////////////////////////////
