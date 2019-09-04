@@ -382,6 +382,7 @@
             this.SearchFormReplaceAllButton.TabIndex = 6;
             this.SearchFormReplaceAllButton.Text = "Replace All";
             this.SearchFormReplaceAllButton.UseVisualStyleBackColor = true;
+            this.SearchFormReplaceAllButton.Click += new System.EventHandler(this.SearchFormReplaceAllButton_Click);
             // 
             // panel3
             // 
@@ -448,7 +449,7 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
             // 
-            // C
+            // THSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -459,7 +460,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(596, 368);
-            this.Name = "C";
+            this.Name = "THSearch";
             this.Text = "Find and Replace";
             this.Load += new System.EventHandler(this.THSearch_Load);
             this.THSearchTabs.ResumeLayout(false);

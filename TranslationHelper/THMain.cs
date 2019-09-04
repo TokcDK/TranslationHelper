@@ -107,8 +107,7 @@ namespace TranslationHelper
 
         private void THMain_Load(object sender, EventArgs e)
         {
-            SetTooltips();
-            search = new THSearch(this, THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
+            SetTooltips();            
         }
 
         private void SetTooltips()
@@ -2270,6 +2269,11 @@ namespace TranslationHelper
 
         public bool OpenRPGMTransPatchFiles(List<string> ListFiles, string patchver, DataSet DS, DataSet DSInfo)
         {
+            //измерение времени выполнения
+            //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
+            System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
+            swatch.Start();
+
             //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
             //MessageBox.Show("ListFiles=" + ListFiles);
             //MessageBox.Show("ListFiles[0]=" + ListFiles[0]);
@@ -2296,11 +2300,6 @@ namespace TranslationHelper
             //Читаем все файлы
             for (int i = 0; i < ListFiles.Count; i++)   //Обрабатываем всю строку
             {
-                //измерение времени выполнения
-                //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
-                //System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
-                //swatch.Start();
-
                 string fname = Path.GetFileNameWithoutExtension(ListFiles[i]);
                 ProgressInfo(true, "opening file: "+ fname+".txt");
                 _file = new StreamReader(ListFiles[i]); //Задаем файл
@@ -2320,11 +2319,6 @@ namespace TranslationHelper
                     DSInfo.Tables[i].Columns.Add("Original");
                 }
 
-                //swatch.Stop();
-                //string time = swatch.Elapsed.ToString();
-                //LogToFile("time=" + time);//asdf
-                //THMsg.Show("time=" + time);
-
                 if (patchver == "3")
                 {
                     verok = 1; //Версия опознана
@@ -2338,7 +2332,7 @@ namespace TranslationHelper
                             _string = _file.ReadLine();
 
                             int untranslines = 0; //счетчик количества проходов по строкам текста для перевода, для записи переносов, если строк больше одной
-                            //MessageBox.Show("1.0" + _string);
+                            
                             while (!_string.StartsWith("> CONTEXT:"))  //Ждем начало следующего блока
                             {
                                 if (untranslines > 0)
@@ -2346,9 +2340,7 @@ namespace TranslationHelper
                                 _original += _string;            //Пишем весь текст
                                 _string = _file.ReadLine();
                                 untranslines++;
-                                //MessageBox.Show("1.1"+_string);
                             }
-                            //MessageBox.Show("2.1"+_untrans);
 
                             int contextlines = 0;
                             while (_string.StartsWith("> CONTEXT:"))
@@ -2356,15 +2348,10 @@ namespace TranslationHelper
                                 if (contextlines > 0)
                                     _context += Environment.NewLine;
                                 _context += _string.Replace("> CONTEXT: ", string.Empty).Replace(" < UNTRANSLATED", string.Empty);// +"\r\n";//Убрал символ переноса, так как он остается при сохранении //Сохраняем коментарий
-                                //MessageBox.Show("_context ='" + _context + "'");
+                                
                                 _string = _file.ReadLine();
                                 contextlines++;
-
-                                //MessageBox.Show("3"+_string);
                             }
-                            //MessageBox.Show("4" + _context);
-
-                            //MessageBox.Show("7.0" + _untrans);
 
                             int translines = 0; //счетчик количества проходов по строкам текста для перевода, для записи переносов, если строк больше одной
                             while (!_string.StartsWith("> END"))      //Ждем конец блока
@@ -2376,33 +2363,7 @@ namespace TranslationHelper
                                 _translation += _string;
                                 _string = _file.ReadLine();
                                 translines++;
-                                //MessageBox.Show("_string ='" + _string + "'");
-                                //MessageBox.Show("5" + _string);
                             }
-                            //MessageBox.Show("6" + _trans);
-
-                            //MessageBox.Show("7.1" + _untrans);
-                            //_string = _file.ReadLine();
-
-                            /*С условием проверки длины строки просто не загружался перевод, где первая строка была пустая
-                            if (_string.Length > 0)                    //Если текст есть, ищем перевод
-                            {
-                                int translines = 0; //счетчик количества проходов по строкам текста для перевода, для записи переносов, если строк больше одной
-                                while (!_string.StartsWith("> END"))      //Ждем конец блока
-                                {
-                                    if (translines > 0)
-                                        _trans += "\r\n";
-                                    _trans += _string;
-                                    _string = _file.ReadLine();
-                                    translines++;
-                                    //MessageBox.Show("_string ='" + _string + "'");
-                                    //MessageBox.Show("5" + _string);
-                                }
-                                //MessageBox.Show("6" + _trans);
-
-                                //MessageBox.Show("7.1" + _untrans);
-                                _string = _file.ReadLine();
-                            }*/
 
                             if (_original != Environment.NewLine)
                             {
@@ -2452,7 +2413,7 @@ namespace TranslationHelper
                                     _string = _file.ReadLine();
                                     while (!_string.StartsWith("# TRANSLATION"))  //Ждем начало следующего блока
                                     {
-                                        _original = _original + _string + Environment.NewLine;            //Пишем весь текст
+                                        _original += _string + Environment.NewLine;            //Пишем весь текст
                                         _string = _file.ReadLine();
                                     }
                                     if (_original.Length > 0)                    //Если текст есть, ищем перевод
@@ -2530,6 +2491,12 @@ namespace TranslationHelper
 
             //MessageBox.Show("111");
             //progressBar.Value = 0;
+
+            //остановка таймера и запись времени
+            swatch.Stop();
+            LogToFile("time=" + swatch.Elapsed.ToString(), true);//asdf
+            //THMsg.Show("time=" + time);
+
             return true;
         }
 
@@ -3456,14 +3423,32 @@ namespace TranslationHelper
             {
             }
         }
-        THSettings THSettings = new THSettings();
+
+        THSettings THSettings;
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            THSettings.Show();
+            try
+            {
+                if (THSettings == null || THSettings.IsDisposed)
+                {
+                    THSettings = new THSettings();
+                }
 
-            //поместить на передний план
-            THSettings.TopMost = true;
-            THSettings.TopMost = false;
+                if (THSettings.Visible)
+                {
+                    THSettings.Activate();
+                }
+                else
+                {
+                    THSettings.Show();
+                    //поместить на передний план
+                    //THSettings.TopMost = true;
+                    //THSettings.TopMost = false;
+                }
+            }
+            catch
+            {
+            }
         }
 
         //http://qaru.site/questions/180337/show-row-number-in-row-header-of-a-datagridview
@@ -7487,17 +7472,28 @@ namespace TranslationHelper
             }
             else
             {
-                //THSearch search = new THSearch(this, THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox)
-                //{
-                //    THFilesElementsDataset = THFilesElementsDataset,
-                //    THFileElementsDataGridView = THFileElementsDataGridView,
-                //    THFilesListBox = THFilesList
-                //};
-                search.Show();
+                try
+                {
+                    if (search == null || search.IsDisposed)
+                    {
+                        search = new THSearch(this, THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
+                    }
 
-                //поместить на передний план
-                search.TopMost = true;
-                search.TopMost = false;
+                    if (search.Visible)
+                    {
+                        search.Activate();
+                    }
+                    else
+                    {
+                        search.Show();
+                        //поместить на передний план
+                        //search.TopMost = true;
+                        //search.TopMost = false;
+                    }
+                }
+                catch
+                {
+                }
             }
         }
 

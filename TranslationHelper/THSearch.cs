@@ -73,6 +73,7 @@ namespace TranslationHelper
 
         int startrowsearchindex=0;        //Индекс стартовой ячейки для поиска
         int tableindex;
+        int rowindex;
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
             if (SearchFormFindWhatTextBox.Text.Length==0 || THFilesElementsDataset == null)
@@ -84,8 +85,8 @@ namespace TranslationHelper
                 if (inputqualwithlatest)
                 {
                     string searchcolumn = GetSearchColumn();
-                    int tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
-                    int rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString());
+                    tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
+                    rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString());
 
                     if (tableindex == THFilesListBox.SelectedIndex)
                     {
@@ -129,8 +130,8 @@ namespace TranslationHelper
                             oDsResults.AcceptChanges();
                             
                             string searchcolumn = GetSearchColumn();
-                            int tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
-                            int rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString());
+                            tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
+                            rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString());
 
                             if (tableindex == THFilesListBox.SelectedIndex)
                             {
@@ -563,12 +564,6 @@ namespace TranslationHelper
             //SearchFormFindWhatComboBox.AutoCompleteCustomSource = SearchFormFindWhatComboBoxCustomeSource.Rows.
         }
 
-        private void SearchFormReplaceButton_Click(object sender, EventArgs e)
-        {
-            //Main.BindToDataTableGridView(THFilesElementsDataset.Tables[tableindex]);
-            THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[0];
-        }
-
         private void SelectTextinTextBox(string input)
         {
 
@@ -588,36 +583,38 @@ namespace TranslationHelper
                         //string[] words = SearchFormFindWhatTextBox.Text.Split(' ');
                         bool MatchCase = THSearchMatchCaseCheckBox.Checked;
                         MatchCollection mc = Regex.Matches(THTargetRichTextBox.Text, SearchFormFindWhatTextBox.Text, MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);
-                        int c = mc.Count;
-                        string m = mc[0].Value;
-                        foreach (Match word in mc)
+                        if (mc.Count > 0)
                         {
-                            //string word = SearchFormFindWhatTextBox.Text;
-                            int startindex = 0;
-                            while (startindex < THTargetRichTextBox.TextLength)
+                            string m = mc[0].Value;
+                            foreach (Match word in mc)
                             {
-                                //int wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
-                                int wordstartIndex;
-                                if (MatchCase)
+                                //string word = SearchFormFindWhatTextBox.Text;
+                                int startindex = 0;
+                                while (startindex < THTargetRichTextBox.TextLength)
                                 {
-                                    wordstartIndex = THTargetRichTextBox.Find(word.Value, startindex, RichTextBoxFinds.MatchCase);
-                                }
-                                else
-                                {
-                                    wordstartIndex = THTargetRichTextBox.Find(word.Value, startindex, RichTextBoxFinds.None);
-                                }
-                                if (wordstartIndex == -1)
-                                {
-                                    break;
-                                }
-                                else
-                                {
-                                    THTargetRichTextBox.SelectionStart = wordstartIndex;
-                                    THTargetRichTextBox.SelectionLength = word.Length;
-                                    THTargetRichTextBox.SelectionBackColor = Color.Yellow;
-                                }
+                                    //int wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
+                                    int wordstartIndex;
+                                    if (MatchCase)
+                                    {
+                                        wordstartIndex = THTargetRichTextBox.Find(word.Value, startindex, RichTextBoxFinds.MatchCase);
+                                    }
+                                    else
+                                    {
+                                        wordstartIndex = THTargetRichTextBox.Find(word.Value, startindex, RichTextBoxFinds.None);
+                                    }
+                                    if (wordstartIndex == -1)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        THTargetRichTextBox.SelectionStart = wordstartIndex;
+                                        THTargetRichTextBox.SelectionLength = word.Length;
+                                        THTargetRichTextBox.SelectionBackColor = Color.Yellow;
+                                    }
 
-                                startindex += wordstartIndex + word.Length;
+                                    startindex += wordstartIndex + word.Length;
+                                }
                             }
                         }
                     }
@@ -721,8 +718,8 @@ namespace TranslationHelper
         private void SearchResultsDatagridview_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             string searchcolumn = GetSearchColumn();
-            int tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString());
-            int rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString());
+            tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString());
+            rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString());
 
             if (tableindex == THFilesListBox.SelectedIndex)
             {
@@ -783,6 +780,141 @@ namespace TranslationHelper
         private void SearchFormFindWhatComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
             SearchFormFindWhatTextBox.Text = SearchFormFindWhatComboBox.SelectedItem.ToString();
+        }
+
+        private void SearchFormReplaceButton_Click(object sender, EventArgs e)
+        {
+            if (SearchFormFindWhatTextBox.Text.Length == 0 || SearchFormReplaceWithTextBox.Text.Length == 0 || THFilesElementsDataset == null)
+            {
+            }
+            else
+            {
+                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : SearchFormFindWhatTextBox.Text.ToLowerInvariant() == lastfoundvalue.ToLowerInvariant();
+                if (inputqualwithlatest)
+                {
+                    string searchcolumn = GetSearchColumn();
+                    
+                    if (startrowsearchindex == 0)
+                    {
+                    }
+                    else
+                    {
+                        if (tableindex >= 0 && tableindex < THFilesListBox.Items.Count && rowindex >= 0 && rowindex < THFileElementsDataGridView.Rows.Count)
+                        {
+                            string value = THFileElementsDataGridView[searchcolumn, rowindex].Value as string;
+                            if (value.Length == 0)
+                            {
+                            }
+                            else
+                            {
+                                if (SearchModeRegexRadioButton.Checked)
+                                {
+                                    if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
+                                    {
+                                        THFileElementsDataGridView[searchcolumn, rowindex].Value = Regex.Replace(value, SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
+                                    }
+                                }
+                                else
+                                {
+                                    if (value.ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant()))
+                                    {
+                                        THFileElementsDataGridView[searchcolumn, rowindex].Value = ReplaceEx.Replace(value, SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (startrowsearchindex == oDsResults.Tables[0].Rows.Count)
+                    {
+                        startrowsearchindex = 0;
+                    }
+
+                    tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
+                    rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString());
+
+
+                    if (tableindex == THFilesListBox.SelectedIndex)
+                    {
+                    }
+                    else
+                    {
+                        THFilesListBox.SelectedIndex = tableindex;
+                        THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
+                    }
+                    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+
+                    //подсвечивание найденного
+                    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                    Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(SearchFormFindWhatTextBox.Text)));
+                    selectstring.Start();
+
+                    startrowsearchindex++;
+                }
+                else
+                {
+                    startrowsearchindex = 0;
+                    lblError.Visible = false;
+                    oDsResults = THFilesElementsDataset.Clone();
+                    //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
+                    DataTable drFoundRowsTable = SearchNew(oDsResults);
+
+                    if (drFoundRowsTable == null)
+                    {
+                    }
+                    else
+                    {
+                        if (drFoundRowsTable.Rows.Count > 0)
+                        {
+                            StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
+
+                            oDsResults.AcceptChanges();
+
+                            string searchcolumn = GetSearchColumn();
+                            tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
+                            rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString());
+
+                            if (tableindex == THFilesListBox.SelectedIndex)
+                            {
+                            }
+                            else
+                            {
+                                THFilesListBox.SelectedIndex = tableindex;
+                                THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
+                            }
+                            THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+
+                            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                            Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(SearchFormFindWhatTextBox.Text)));
+                            selectstring.Start();
+
+                            startrowsearchindex++;
+                            if (startrowsearchindex == oDsResults.Tables[0].Rows.Count)
+                            {
+                                startrowsearchindex = 0;
+                            }
+                            //PopulateGrid(oDsResults);
+
+                            //lblError.Visible = true;
+                            //lblError.Text = "Found " + drFoundRowsTable.Rows.Count + " records";
+                            //this.Height = 589;
+                        }
+                        else
+                        {
+                            //PopulateGrid(null);
+                            lblError.Visible = true;
+                            lblError.Text = "Nothing Found.";
+                            this.Height = 368;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        private void SearchFormReplaceAllButton_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

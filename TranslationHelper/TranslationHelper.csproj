@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="CopyFolder.cs" />
     <Compile Include="ExternalAdditions\GDI.cs" />
+    <Compile Include="ExternalAdditions\ReplaceEx.cs" />
     <Compile Include="Translators\DeepL.cs" />
     <Compile Include="Translators\Google.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
