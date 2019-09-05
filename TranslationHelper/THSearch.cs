@@ -81,7 +81,7 @@ namespace TranslationHelper
             }
             else
             {
-                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : SearchFormFindWhatTextBox.Text.ToLowerInvariant() == lastfoundvalue.ToLowerInvariant();
+                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true) == 0;
                 if (inputqualwithlatest)
                 {
                     string searchcolumn = GetSearchColumn();
@@ -789,7 +789,7 @@ namespace TranslationHelper
             }
             else
             {
-                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : SearchFormFindWhatTextBox.Text.ToLowerInvariant() == lastfoundvalue.ToLowerInvariant();
+                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true) == 0;
                 if (inputqualwithlatest)
                 {
                     string searchcolumn = GetSearchColumn();

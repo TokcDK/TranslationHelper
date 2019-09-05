@@ -45,6 +45,7 @@ namespace TranslationHelper
         //private BindingSource THBS = new BindingSource();
 
         public string THSelectedDir;
+        public string THSelectedGameDir;
         public string THRPGMTransPatchver;
         public string THSelectedSourceType;
 
@@ -210,7 +211,7 @@ namespace TranslationHelper
 
                             if (THSelectedSourceType.Length == 0)
                             {
-                                THMsg.Show("Still can't open the source or was error in open. Try to report about this to devs.");
+                                THMsg.Show("Problem with source opening. Try to report to devs about it.");
                             }
                             else
                             {
@@ -231,8 +232,14 @@ namespace TranslationHelper
                                         THFilesElementsALLDataTable.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r].ItemArray);
                                     }
                                 }
-
-                                Settings.THConfigINI.WriteINI("Paths", "LastPath", THSelectedDir);
+                                if (THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch"))
+                                {
+                                    Settings.THConfigINI.WriteINI("Paths", "LastPath", THSelectedGameDir);
+                                }
+                                else
+                                {
+                                    Settings.THConfigINI.WriteINI("Paths", "LastPath", THSelectedDir);
+                                }
                                 THMsg.Show(THSelectedSourceType + " loaded!");
 
                                 editToolStripMenuItem.Enabled = true;
@@ -492,7 +499,7 @@ namespace TranslationHelper
 
                         var vRPGMTransPatchFiles = new List<string>();
 
-                        foreach (FileInfo file in dir.GetFiles("*.txt"))
+                        foreach (FileInfo file in (new DirectoryInfo(extractedpatchpath)).GetFiles("*.txt"))
                         {
                             //MessageBox.Show("file.FullName=" + file.FullName);
                             vRPGMTransPatchFiles.Add(file.FullName);
@@ -520,6 +527,7 @@ namespace TranslationHelper
                                 //dGFiles.Rows[i].Cells[0].Value = THRPGMTransPatchFiles[i].Name;
                             }
 
+                            THSelectedGameDir = THSelectedDir;
                             THSelectedDir = extractedpatchpath.Replace("\\patch", string.Empty);
                             //MessageBox.Show(THSelectedSourceType + " loaded!");
                             //ProgressInfo(false, string.Empty);
@@ -2243,14 +2251,52 @@ namespace TranslationHelper
             {
                 Directory.CreateDirectory(outdir);
 
-                using (Process RPGMakerTransPatch = new Process())
+                string rpgmakertranscli = apppath + @"\Res\rpgmakertrans\rpgmt.exe";
+
+                //параметры
+                //parser.add_argument("input", help = "Path of input game to patch")
+                //parser.add_argument("-p", "--patch", help = "Path of patch (directory or zip)"
+                //        "(Defaults to input_directory_patch")
+                //parser.add_argument("-o", "--output", help = "Path to output directory "
+                //        "(will create) (Defaults to input_directory_translated)")
+                //parser.add_argument('-q', '--quiet', help = 'Suppress all output',
+                //        action = 'store_true')
+                //parser.add_argument('-b', '--use-bom', help = 'Use UTF-8 BOM in Patch'
+                //        'files', action = 'store_true')
+                //parser.add_argument('-r', '--rebuild', help = "Rebuild patch against game",
+                //        action = "store_true")
+                //parser.add_argument('-s', '--socket', type = int, default = 27899,
+                //        help = 'Socket to use for XP/VX/VX Ace patching'
+                //        '(default: 27899)')
+                //parser.add_argument('-l', '--dump-labels', action = "store_true",
+                //        help = "Dump labels to patch file")
+                //parser.add_argument('--dump-scripts', type = str, default = None,
+                //        help = "Dump scripts to given directory")
+                string rpgmakertranscliargs = "\"" + dir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
+
+                ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+
+                if (ret)
                 {
-                    //MessageBox.Show("outdir=" + outdir);
-                    RPGMakerTransPatch.StartInfo.FileName = apppath + @"\\Res\\rpgmakertrans\\rpgmt.exe";
-                    RPGMakerTransPatch.StartInfo.Arguments = "\"" + dir + "\" -p \"" + outdir + "_patch\"" + "\" -o \"" + outdir + "_translated\"";
-                    ret = RPGMakerTransPatch.Start();
-                    RPGMakerTransPatch.WaitForExit();
                 }
+                else
+                {
+                    //чистка папок 
+                    Directory.Delete(outdir + "_patch", true);
+                    Directory.Delete(outdir + "_translated", true);
+
+                    //попытка с параметром -b - Use UTF-8 BOM in Patch files
+                    ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
+                }
+
+                //using (Process RPGMakerTransPatch = new Process())
+                //{
+                //    //MessageBox.Show("outdir=" + outdir);
+                //    RPGMakerTransPatch.StartInfo.FileName = apppath + @"\\Res\\rpgmakertrans\\rpgmt.exe";
+                //    RPGMakerTransPatch.StartInfo.Arguments = "\"" + dir + "\" -p \"" + outdir + "_patch\"" + "\" -o \"" + outdir + "_translated\"";
+                //    ret = RPGMakerTransPatch.Start();
+                //    RPGMakerTransPatch.WaitForExit();
+                //}
                 /*MessageBox.Show(
                       "INFO: apppath=" + apppath
                     + "\r\nRPGMakerTransPatch.StartInfo.FileName=" + RPGMakerTransPatch.StartInfo.FileName
@@ -2262,6 +2308,31 @@ namespace TranslationHelper
             {
                 return true;
             }
+
+            if (ret)
+            {
+            }
+            else
+            {
+                //чистка папок 
+                Directory.Delete(outdir, true);
+            }
+
+            return ret;
+        }
+
+        private bool RunProgram(string ProgramPath, string Arguments)
+        {
+            bool ret = false;
+            using (Process Program = new Process())
+            {
+                //MessageBox.Show("outdir=" + outdir);
+                Program.StartInfo.FileName = ProgramPath;
+                Program.StartInfo.Arguments = Arguments;
+                ret = Program.Start();
+                Program.WaitForExit();
+            }
+
             return ret;
         }
 
@@ -2590,7 +2661,7 @@ namespace TranslationHelper
                 // Поменял List на BindingList и вроде чуть быстрее стало загружаться
                 try
                 {
-                    ProgressInfo(true);
+                    //ProgressInfo(true);
 
                     /*
                     if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
@@ -2680,7 +2751,7 @@ namespace TranslationHelper
                     //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
                     //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
 
-                    if (THSelectedSourceType.Contains("RPGMakerTransPatch")) //Additional tweaks for RPGMTransPatch table
+                    if (THSelectedSourceType.Contains("RPGMakerTransPatch") || THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch")) //Additional tweaks for RPGMTransPatch table
                     {
                         THFileElementsDataGridView.Columns["Context"].Visible = false;
                         THFileElementsDataGridView.Columns["Status"].Visible = false;
@@ -2701,7 +2772,7 @@ namespace TranslationHelper
 
                     CheckFilterDGV(); //Apply filters if they is not empty
 
-                    ProgressInfo(false, string.Empty);
+                    //ProgressInfo(false, string.Empty);
                 }
                 catch (Exception)
                 {
@@ -2910,23 +2981,23 @@ namespace TranslationHelper
                     ret += ("       other:" + (GetLocaleLangCount(target, "other")) + Environment.NewLine);
                 }
             }
-            else if (langlocale.ToLower() == "romaji")
+            else if (string.Compare(langlocale, "romaji", true) == 0) //asdf оптимизация, сравнение с игнором регистра: http://www.vcskicks.com/optimize_csharp_code.php
             {
                 return ("       romaji:" + GetLocaleLangCount(target, "romaji") + Environment.NewLine);
             }
-            else if (langlocale.ToLower() == "kanji")
+            else if (string.Compare(langlocale, "kanji", true) == 0)
             {
                 return ("       kanji:" + GetLocaleLangCount(target, "kanji") + Environment.NewLine);
             }
-            else if (langlocale.ToLower() == "hiragana")
+            else if (string.Compare(langlocale, "hiragana", true) == 0)
             {
                 return ("       hiragana:" + GetLocaleLangCount(target, "hiragana") + Environment.NewLine);
             }
-            else if (langlocale.ToLower() == "katakana")
+            else if (string.Compare(langlocale, "katakana", true) == 0)
             {
                 return ("       katakana:" + GetLocaleLangCount(target, "katakana") + Environment.NewLine);
             }
-            else if (langlocale.ToLower() == "other")
+            else if (string.Compare(langlocale, "other", true) == 0)
             {
                 return ("       other:" + (GetLocaleLangCount(target, "other")) + Environment.NewLine);
             }
@@ -2947,27 +3018,27 @@ namespace TranslationHelper
             int katakana = (GetCharsInRange(target, 0x30A0, 0x30FF)).Count();
 
             int all = (romaji + kanji + hiragana + katakana);
-            if (langlocale.ToLower() == "all")
+            if (string.Compare(langlocale, "all", true) == 0)
             {
                 return all + (target.Length - all);
             }
-            else if (langlocale.ToLower() == "romaji")
+            else if (string.Compare(langlocale, "romaji", true) == 0)
             {
                 return (romaji);
             }
-            else if (langlocale.ToLower() == "kanji")
+            else if (string.Compare(langlocale, "kanji", true) == 0)
             {
                 return (kanji);
             }
-            else if (langlocale.ToLower() == "hiragana")
+            else if (string.Compare(langlocale, "hiragana", true) == 0)
             {
                 return (hiragana);
             }
-            else if (langlocale.ToLower() == "katakana")
+            else if (string.Compare(langlocale, "katakana", true) == 0)
             {
                 return (katakana);
             }
-            else if (langlocale.ToLower() == "other")
+            else if (string.Compare(langlocale, "other", true) == 0)
             {
                 return (target.Length - all);
             }
@@ -3038,6 +3109,43 @@ namespace TranslationHelper
                     //THInfoTextBox.Text = string.Empty;
 
                     //THActionProgressBar.Visible = false;
+
+                    if (THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
+                    {
+                        DialogResult result = MessageBox.Show("Write in _translated variant of the game? This will not overwrite original game folder but can be used for test game.", "Write in translated variant", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        if (result == DialogResult.Yes)
+                        {
+                            string rpgmakertranscli = apppath + @"\Res\rpgmakertrans\rpgmt.exe";
+
+                            //параметры
+                            //parser.add_argument("input", help = "Path of input game to patch")
+                            //parser.add_argument("-p", "--patch", help = "Path of patch (directory or zip)"
+                            //        "(Defaults to input_directory_patch")
+                            //parser.add_argument("-o", "--output", help = "Path to output directory "
+                            //        "(will create) (Defaults to input_directory_translated)")
+                            //parser.add_argument('-q', '--quiet', help = 'Suppress all output',
+                            //        action = 'store_true')
+                            //parser.add_argument('-b', '--use-bom', help = 'Use UTF-8 BOM in Patch'
+                            //        'files', action = 'store_true')
+                            //parser.add_argument('-r', '--rebuild', help = "Rebuild patch against game",
+                            //        action = "store_true")
+                            //parser.add_argument('-s', '--socket', type = int, default = 27899,
+                            //        help = 'Socket to use for XP/VX/VX Ace patching'
+                            //        '(default: 27899)')
+                            //parser.add_argument('-l', '--dump-labels', action = "store_true",
+                            //        help = "Dump labels to patch file")
+                            //parser.add_argument('--dump-scripts', type = str, default = None,
+                            //        help = "Dump scripts to given directory")
+                            string rpgmakertranscliargs = "\"" + THSelectedGameDir + "\" -p \"" + THSelectedDir + "\"" + " -o \"" + THSelectedDir.Remove(THSelectedDir.Length - "_patch".Length, "_patch".Length) + "_translated\"";
+
+                            RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+                        }
+                        else if (result == DialogResult.No)
+                        {
+                            //code for No
+                        }
+                    }
+
                     SaveInAction = false;
                 }
                 else if (istpptransfile)
@@ -3998,10 +4106,11 @@ namespace TranslationHelper
                     {
                         projecttypeDBfolder += "RPGMakerMV\\";
                     }
-                    else if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
+                    else if (THSelectedSourceType.Contains("TransPatch"))
                     {
                         projecttypeDBfolder += "RPGMakerTransPatch\\";
                     }
+
                     THFOpenBD.InitialDirectory = apppath + "\\DB" + projecttypeDBfolder;
 
                     if (THFOpenBD.ShowDialog() == DialogResult.OK)
@@ -7508,7 +7617,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = (THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).ToLowerInvariant();
+                            THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = (THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value as string).ToLowerInvariant();
                         }
 
                     }
@@ -8092,6 +8201,8 @@ namespace TranslationHelper
 
         //Материалы
         //по оптимизации кода
+        //https://cc.davelozinski.com/c-sharp/fastest-way-to-compare-strings
+        //http://www.vcskicks.com/optimize_csharp_code.php
         //https://stackoverflow.com/questions/7872633/most-advisable-way-of-checking-empty-strings-in-c-sharp
         //https://social.msdn.microsoft.com/Forums/en-US/9977e45f-c8c5-4a8f-9e02-12f74c1c4579/what-is-the-difference-between-stringempty-and-quotquot-?forum=csharplanguage
         //Сортировка при виртуальном режиме DatagridView
