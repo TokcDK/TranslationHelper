@@ -2959,7 +2959,7 @@ namespace TranslationHelper
                 var hiragana = GetCharsInRange(target, 0x3040, 0x309F);
                 var katakana = GetCharsInRange(target, 0x30A0, 0x30FF);
 
-                ret += "contains: \r\n";
+                ret += "contains: " + Environment.NewLine;
                 if (romaji.Any())
                 {
                     ret += ("       romaji:" + GetLocaleLangCount(target, "romaji") + Environment.NewLine);
@@ -2978,7 +2978,7 @@ namespace TranslationHelper
                 }
                 if (GetLocaleLangCount(target, "other") > 0)
                 {
-                    ret += ("       other:" + (GetLocaleLangCount(target, "other")) + Environment.NewLine);
+                    ret += ("       other:" + GetLocaleLangCount(target, "other") + Environment.NewLine);
                 }
             }
             else if (string.Compare(langlocale, "romaji", true) == 0) //asdf оптимизация, сравнение с игнором регистра: http://www.vcskicks.com/optimize_csharp_code.php
@@ -3138,7 +3138,13 @@ namespace TranslationHelper
                             //        help = "Dump scripts to given directory")
                             string rpgmakertranscliargs = "\"" + THSelectedGameDir + "\" -p \"" + THSelectedDir + "\"" + " -o \"" + THSelectedDir.Remove(THSelectedDir.Length - "_patch".Length, "_patch".Length) + "_translated\"";
 
-                            RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+                            if (RunProgram(rpgmakertranscli, rpgmakertranscliargs))
+                            {
+                            }
+                            else
+                            {
+                                RunProgram(rpgmakertranscli, rpgmakertranscliargs+" -b");// попытка с параметром -b
+                            }
                         }
                         else if (result == DialogResult.No)
                         {
