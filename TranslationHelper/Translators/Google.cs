@@ -257,7 +257,7 @@ namespace TranslationHelper
 
             for (int i = 0; i < encode.Length / 2; i++)
             {
-                value = value.Replace(encode[i,0], encode[i, 1]);
+                value = value.Replace(encode[i, 0], encode[i, 1]);
             }
 
             return value;
@@ -524,7 +524,7 @@ namespace TranslationHelper
                                 else
                                 {
                                     //FileWriter.WriteData("c:\\THLog.log", "\r\nSet matchCollection["+matchnum+"].Value" + matchCollection[matchnum].Value);
-                                    array[k] = matchCollection[matchnum].Value.Replace("DNTT",Environment.NewLine);
+                                    array[k] = matchCollection[matchnum].Value.Replace("DNTT", Environment.NewLine);
                                     matchnum++;
                                 }
                             }

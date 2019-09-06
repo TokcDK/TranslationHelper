@@ -69,18 +69,18 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CopyFolder.cs" />
+    <Compile Include="ExternalAdditions\CopyFolder.cs" />
     <Compile Include="ExternalAdditions\GDI.cs" />
     <Compile Include="ExternalAdditions\ReplaceEx.cs" />
     <Compile Include="Translators\DeepL.cs" />
     <Compile Include="Translators\Google.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
     <Compile Include="ExternalAdditions\SimpleJSON.cs" />
-    <Compile Include="MessageForm.cs">
+    <Compile Include="Main\THMessage.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MessageForm.Designer.cs">
-      <DependentUpon>MessageForm.cs</DependentUpon>
+    <Compile Include="Main\THMessage.Designer.cs">
+      <DependentUpon>THMessage.cs</DependentUpon>
     </Compile>
     <Compile Include="Old elements\RPGMakerMVjsonActors.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonCommonEvents.cs" />
@@ -88,58 +88,57 @@
     <Compile Include="ExternalAdditions\IniFiles.cs" />
     <Compile Include="Old elements\RPGMakerMVjson.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonSystem.cs" />
-    <Compile Include="THCreateSymlink.cs" />
-    <Compile Include="THLoadingForm.cs">
+    <Compile Include="ExternalAdditions\THCreateSymlink.cs" />
+    <Compile Include="Old elements\THLoading.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="THLoadingForm.Designer.cs">
-      <DependentUpon>THLoadingForm.cs</DependentUpon>
+    <Compile Include="Old elements\THLoading.Designer.cs">
+      <DependentUpon>THLoading.cs</DependentUpon>
     </Compile>
-    <Compile Include="THSearch.cs">
+    <Compile Include="Main\THSearch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="THSearch.Designer.cs">
+    <Compile Include="Main\THSearch.Designer.cs">
       <DependentUpon>THSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="THSettings.cs">
+    <Compile Include="Main\THSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="THSettings.Designer.cs">
+    <Compile Include="Main\THSettings.Designer.cs">
       <DependentUpon>THSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="THAbout.cs">
+    <Compile Include="Main\THAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="THAbout.Designer.cs">
+    <Compile Include="Main\THAbout.Designer.cs">
       <DependentUpon>THAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="THMain.cs">
+    <Compile Include="Main\THMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="THMain.Designer.cs">
+    <Compile Include="Main\THMain.Designer.cs">
       <DependentUpon>THMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="THRPGMTransPatchFile.cs" />
-    <Compile Include="THDetectSource.cs" />
-    <Compile Include="THLang.cs" />
-    <EmbeddedResource Include="MessageForm.resx">
-      <DependentUpon>MessageForm.cs</DependentUpon>
+    <Compile Include="Old elements\THRPGMTransPatchFile.cs" />
+    <Compile Include="Main\THLang.cs" />
+    <EmbeddedResource Include="Main\THMessage.resx">
+      <DependentUpon>THMessage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="THLoadingForm.resx">
-      <DependentUpon>THLoadingForm.cs</DependentUpon>
+    <EmbeddedResource Include="Old elements\THLoading.resx">
+      <DependentUpon>THLoading.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="THSearch.resx">
+    <EmbeddedResource Include="Main\THSearch.resx">
       <DependentUpon>THSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="THSettings.resx">
+    <EmbeddedResource Include="Main\THSettings.resx">
       <DependentUpon>THSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="THAbout.resx">
+    <EmbeddedResource Include="Main\THAbout.resx">
       <DependentUpon>THAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="THMain.resx">
+    <EmbeddedResource Include="Main\THMain.resx">
       <DependentUpon>THMain.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>

@@ -9,9 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -30,7 +28,7 @@ namespace TranslationHelper
         //public const string THStrDGOriginalColumnName = "Original";
         private readonly THLang LangF;
 
-        public static string apppath = Application.StartupPath + string.Empty;
+        public readonly static string apppath = Application.StartupPath;
         //о разнице между "" и string.Empty и использовании string.lenght==0 вместо ==string.Empty
         //https://stackoverflow.com/a/7872957
         private string extractedpatchpath = string.Empty;
@@ -164,7 +162,7 @@ namespace TranslationHelper
         {
             try
             {
-                Application.Run(new THLoadingForm());
+                Application.Run(new THLoading());
             }
             catch (ThreadAbortException)
             {
@@ -7932,7 +7930,7 @@ namespace TranslationHelper
 
         public DirectoryInfo mvdatadirTranslated;
         public string THWorkProjectDirTranslated;
-        bool istpptransfileTranslated;
+        private bool istpptransfileTranslated;
         DataSet THFilesElementsDatasetTranslated = new DataSet();
         public string THSelectedDirTranslated;
         public string THRPGMTransPatchverTranslated;

@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper
 {
-    partial class THLoadingForm
+    partial class THLoading
     {
         /// <summary>
         /// Required designer variable.

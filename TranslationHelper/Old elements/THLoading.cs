@@ -4,9 +4,9 @@ using System.Windows.Forms;
 
 namespace TranslationHelper
 {
-    public partial class THLoadingForm : Form
+    public partial class THLoading : Form
     {
-        public THLoadingForm()
+        public THLoading()
         {
             InitializeComponent();
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
