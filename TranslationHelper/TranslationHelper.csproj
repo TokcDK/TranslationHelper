@@ -72,6 +72,15 @@
     <Compile Include="ExternalAdditions\CopyFolder.cs" />
     <Compile Include="ExternalAdditions\GDI.cs" />
     <Compile Include="ExternalAdditions\ReplaceEx.cs" />
+    <Compile Include="Formats\ISaveFormats.cs" />
+    <Compile Include="Formats\IOpenFormats.cs" />
+    <Compile Include="Formats\RPGMakerMVGame.cs" />
+    <Compile Include="Formats\RPGMakerMVJson.cs" />
+    <Compile Include="Formats\RPGMakerTransGame.cs" />
+    <Compile Include="Formats\RPGMakerTransPatch.cs" />
+    <Compile Include="Main\DoubleBufferedListBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Translators\DeepL.cs" />
     <Compile Include="Translators\Google.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
