@@ -2375,19 +2375,19 @@ namespace TranslationHelper
                 ProgressInfo(true, "opening file: "+ fname+".txt");
                 _file = new StreamReader(ListFiles[i]); //Задаем файл
                 //THRPGMTransPatchFiles.Add(new THRPGMTransPatchFile(Path.GetFileNameWithoutExtension(ListFiles[i]), ListFiles[i].ToString(), string.Empty));    //Добaвляем файл
-                DS.Tables.Add(fname);
-                DS.Tables[i].Columns.Add("Original");
-                DS.Tables[i].Columns.Add("Translation");
-                DS.Tables[i].Columns.Add("Context");
-                DS.Tables[i].Columns.Add("Advice");
-                DS.Tables[i].Columns.Add("Status");
+                _ = DS.Tables.Add(fname);
+                _ = DS.Tables[i].Columns.Add("Original");
+                _ = DS.Tables[i].Columns.Add("Translation");
+                _ = DS.Tables[i].Columns.Add("Context");
+                _ = DS.Tables[i].Columns.Add("Advice");
+                _ = DS.Tables[i].Columns.Add("Status");
                 if (DSInfo == null)
                 {
                 }
                 else
                 {
-                    DSInfo.Tables.Add(fname);
-                    DSInfo.Tables[i].Columns.Add("Original");
+                    _ = DSInfo.Tables.Add(fname);
+                    _ = DSInfo.Tables[i].Columns.Add("Original");
                 }
 
                 if (patchver == "3")
@@ -2440,16 +2440,19 @@ namespace TranslationHelper
                                 translines++;
                             }
 
-                            if (_original != Environment.NewLine)
+                            if (_original == Environment.NewLine)
+                            {
+                            }
+                            else
                             {
                                 //THRPGMTransPatchFiles[i].blocks.Add(new Block(_context, _advice, _untrans, _trans, _status));  //Пишем
-                                DS.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
+                                _ = DS.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
                                 if (DSInfo == null)
                                 {
                                 }
                                 else
                                 {
-                                    DSInfo.Tables[i].Rows.Add(_context);
+                                    _ = DSInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
                                 }
                             }
 
@@ -2535,13 +2538,13 @@ namespace TranslationHelper
                                     if (_original != Environment.NewLine)
                                     {
                                         //THRPGMTransPatchFiles[i].blocks.Add(new Block(_context, _advice, _untrans, _trans, _status));//Пишем
-                                        DS.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
+                                        _ = DS.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
                                         if (DSInfo == null)
                                         {
                                         }
                                         else
                                         {
-                                            DSInfo.Tables[i].Rows.Add("Context:\r\n" + _context + "\r\nAdvice:\r\n" + _advice);
+                                            _ = DSInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
                                         }
                                     }
                                 }
@@ -3786,20 +3789,96 @@ namespace TranslationHelper
             ProgressInfo(false);
         }
 
+        bool AutosaveActivated = false;
         private void Autosave()
         {
-            //dbpath = apppath + "\\DB";
-            //string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
-            //lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
+            if (AutosaveActivated || THFilesElementsDataset == null)
+            {
+            }
+            else
+            {
+                AutosaveActivated = true;
 
-            //ProgressInfo(true);
+                dbpath = apppath + "\\DB";
+                string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir)+"_autosave";
+                string autosavepath = dbpath + "\\Auto\\" + dbfilename + ".cmx";
 
-            //WriteDBFile(THFilesElementsDataset, lastautosavepath);
-            ////THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
+                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => SaveLoop(THFilesElementsDataset, autosavepath) ));
+                trans.Start();
 
-            //Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
+                //ProgressInfo(true);
 
-            //ProgressInfo(false);
+                //WriteDBFile(THFilesElementsDataset, lastautosavepath);
+                ////THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
+
+                //Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
+
+                //ProgressInfo(false);
+            }
+        }
+
+        /// <summary>
+        /// Background autosave
+        /// </summary>
+        /// <param name="Data"></param>
+        /// <param name="Path"></param>
+        private void SaveLoop(DataSet Data, string Path)
+        {
+            //asdf autosave
+            while (AutosaveActivated && Data != null && Path.Length > 0)
+            {
+                if (TheDataSetIsNotEmpty(Data))
+                {
+                }
+                else//если dataset пустой, нет смысла его сохранять
+                {
+                    return;
+                }
+
+                int i = 0;
+                while (i<60)
+                {
+                    Thread.Sleep(1000);
+                    if (MainIsClosing || this == null || IsDisposed || Data == null || Path.Length == 0)
+                    {
+                        AutosaveActivated = false;
+                        return;
+                    }
+                    i++;
+                }
+                while (IsOpeningInProcess || SaveInAction)//не запускать автосохранение, пока утилита занята
+                {
+                    Thread.Sleep(10000);
+                }
+                WriteDBFile(Data, Path);
+            }
+        }
+
+        /// <summary>
+        /// True if Translation cell of any row has value
+        /// </summary>
+        /// <param name="DS"></param>
+        /// <returns></returns>
+        private bool TheDataSetIsNotEmpty(DataSet DS)
+        {
+            if (DS == null)
+            {
+                return false;
+            }
+
+            for (int t = 0; t < DS.Tables.Count; t++)
+            {
+                for (int r = 0; r < DS.Tables[t].Rows.Count; r++)
+                {
+                    if ((DS.Tables[t].Rows[r][1] as string).Length > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
@@ -5496,6 +5575,9 @@ namespace TranslationHelper
                 //{
                 //    //asdfg
                 //}
+
+                //Запуск автосохранения
+                Autosave();
             }
             catch
             {
@@ -7640,8 +7722,10 @@ namespace TranslationHelper
             InteruptTranslation = true;
         }
 
+        bool MainIsClosing = false;
         private void THMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            MainIsClosing = true;
             InteruptTranslation = true;
         }
 
@@ -8194,6 +8278,36 @@ namespace TranslationHelper
 
             swatch.Stop();
             LogToFile("Time="+ swatch.Elapsed,true);
+        }
+
+        private void THFiltersDataGridView_MouseEnter(object sender, EventArgs e)
+        {
+            ControlsSwitch();
+        }
+
+        private void THFiltersDataGridView_MouseLeave(object sender, EventArgs e)
+        {
+            ControlsSwitch(true);
+        }
+
+        private void THFileElementsDataGridView_MouseEnter(object sender, EventArgs e)
+        {
+            ControlsSwitch(true);
+        }
+
+        private void THFileElementsDataGridView_MouseLeave(object sender, EventArgs e)
+        {
+            ControlsSwitch();
+        }
+
+        private void THSourceRichTextBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            ControlsSwitch();
+        }
+
+        private void THFiltersDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            ControlsSwitch();
         }
 
 
