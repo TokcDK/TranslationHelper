@@ -28,7 +28,7 @@ namespace TranslationHelper
         //public const string THStrDGOriginalColumnName = "Original";
         private readonly THLang LangF;
 
-        public readonly static string apppath = Application.StartupPath;
+        //public readonly static string apppath = Application.StartupPath;
         //о разнице между "" и string.Empty и использовании string.lenght==0 вместо ==string.Empty
         //https://stackoverflow.com/a/7872957
         private string extractedpatchpath = string.Empty;
@@ -88,16 +88,16 @@ namespace TranslationHelper
             THFilesList.DrawMode = DrawMode.OwnerDrawFixed;
 
             //DataSet THTranslationCache; THTranslationCache = new DataSet();
-            THTranslationCachePath = apppath + "\\DB\\THTranslationCache.cmx";
+            THTranslationCachePath = Path.Combine(Application.StartupPath,"DB","THTranslationCache.cmx");
 
             //THRPGMTransPatchFiles = new BindingList<THRPGMTransPatchFile>();
             //dt = new DataTable();
 
             //THFileElementsDataGridView set doublebuffered to true
             SetDoublebuffered(true);
-            if (File.Exists(apppath + "\\TranslationHelper.log"))
+            if (File.Exists(Path.Combine(Application.StartupPath,"TranslationHelper.log")))
             {
-                File.Delete(apppath + "\\TranslationHelper.log");
+                File.Delete(Path.Combine(Application.StartupPath, "TranslationHelper.log"));
             }
 
             //Test Проверка ключа Git для планируемой функции использования Git
@@ -142,12 +142,12 @@ namespace TranslationHelper
                 {
                     if (THsbLog.Length == 0)
                     {
-                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>" + s + Environment.NewLine, true);
+                        FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", DateTime.Now + " >>" + s + Environment.NewLine, true);
                     }
                     else
                     {
-                        FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>" + THsbLog + Environment.NewLine, true);
-                        //File.Move(apppath + "\\TranslationHelper.log", apppath + "\\TranslationHelper" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") + ".log");
+                        FileWriter.WriteData(Path.Combine(Application.StartupPath,"TranslationHelper.log"), DateTime.Now + " >>" + THsbLog + Environment.NewLine, true);
+                        //File.Move(Application.StartupPath + "\\TranslationHelper.log", Application.StartupPath + "\\TranslationHelper" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") + ".log");
                         THsbLog.Clear();
                     }
                 }
@@ -269,7 +269,7 @@ namespace TranslationHelper
 
         private void THMakeRPGMakerMVWorkProjectDir(string sPath)
         {
-            string outdir = apppath + "\\Work\\RPGMakerMV\\" + Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath));
+            string outdir = Path.Combine(Application.StartupPath, "Work", "RPGMakerMV", Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath)));
 
             if (!Directory.Exists(outdir))
             {
@@ -282,41 +282,41 @@ namespace TranslationHelper
                     {
                         continue;
                     }
-                    if (Directory.Exists(outdir + "\\" + Path.GetFileNameWithoutExtension(d)))
+                    if (Directory.Exists(Path.Combine(outdir,Path.GetFileNameWithoutExtension(d))))
                     {
                     }
                     else
                     {
-                        THCreateSymlink.Folder(d, outdir + "\\" + Path.GetFileNameWithoutExtension(d));
+                        THCreateSymlink.Folder(d, Path.Combine(outdir,Path.GetFileNameWithoutExtension(d)));
                     }
                 }
-                Directory.CreateDirectory(outdir + "\\www");
-                foreach (var d in Directory.GetDirectories(THSelectedDir + "\\www\\", "*"))
+                Directory.CreateDirectory(Path.Combine(outdir,"www"));
+                foreach (var d in Directory.GetDirectories(Path.Combine(THSelectedDir,"www"), "*"))
                 {
                     if (d.Contains("www\\data"))
                     {
                         continue;
                     }
-                    if (Directory.Exists(outdir + "\\www\\" + Path.GetFileNameWithoutExtension(d)))
+                    if (Directory.Exists(Path.Combine(outdir,"www",Path.GetFileNameWithoutExtension(d))))
                     {
                     }
                     else
                     {
-                        THCreateSymlink.Folder(d, outdir + "\\www\\" + Path.GetFileNameWithoutExtension(d));
+                        THCreateSymlink.Folder(d, Path.Combine(outdir,"www",Path.GetFileNameWithoutExtension(d)));
                     }
                 }
                 foreach (var f in Directory.GetFiles(THSelectedDir, "*.*"))
                 {
-                    if (File.Exists(outdir + "\\" + Path.GetFileName(f)))
+                    if (File.Exists(Path.Combine(outdir,Path.GetFileName(f))))
                     {
                     }
                     else
                     {
-                        THCreateSymlink.File(f, outdir + "\\" + Path.GetFileName(f));
+                        THCreateSymlink.File(f, Path.Combine(outdir,Path.GetFileName(f)));
                     }
                 }
 
-                CopyFolder.Copy(THSelectedDir + "\\www\\data", outdir + "\\www\\data");
+                CopyFolder.Copy(Path.Combine(THSelectedDir,"www","data"), Path.Combine(outdir,"www","data"));
             }
             THWorkProjectDir = outdir;
         }
@@ -430,13 +430,13 @@ namespace TranslationHelper
             }
             else if (sPath.ToLower().Contains("\\game.exe") || dir.GetFiles("*.exe").Length > 0)
             {
-                if (File.Exists(THSelectedDir + "\\www\\data\\system.json"))
+                if (File.Exists(Path.Combine(THSelectedDir,"www","data","system.json")))
                 {
                     try
                     {
                         //THSelectedDir += "\\www\\data";
                         //var MVJsonFIles = new List<string>();
-                        mvdatadir = new DirectoryInfo(Path.GetDirectoryName(THSelectedDir + "\\www\\data\\"));
+                        mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(THSelectedDir,"www","data/")));
                         foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
                         {
                             //MessageBox.Show("file.FullName=" + file.FullName);
@@ -561,10 +561,10 @@ namespace TranslationHelper
             var patchdir = dir;
             StreamReader patchfile = new StreamReader(sPath);
             //MessageBox.Show(patchfile.ReadLine());
-            if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(THSelectedDir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3
+            if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(Path.Combine(THSelectedDir,"patch"))) //если есть подпапка patch, тогда это версия патча 3
             {
                 THRPGMTransPatchver = "3";
-                patchdir = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\patch");
+                patchdir = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(sPath),"patch"));
             }
             else //иначе это версия 2
             {
@@ -622,7 +622,7 @@ namespace TranslationHelper
             if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(dir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3
             {
                 THRPGMTransPatchverTranslated = "3";
-                patchdir = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\patch");
+                patchdir = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(sPath),"patch"));
             }
             else //иначе это версия 2
             {
@@ -1124,7 +1124,7 @@ namespace TranslationHelper
 
         //        for (int i = 1; i < commoneventsdata.Count; i++)
         //        {
-        //            //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
+        //            //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
 
         //            //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
         //            //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
@@ -1541,7 +1541,7 @@ namespace TranslationHelper
         //                THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message.Value);
         //            }
         //        }
-        //        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+        //        //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", THLog, true);
         //        //THLog = string.Empty;
 
         //        return true;
@@ -1757,7 +1757,7 @@ namespace TranslationHelper
 
         //            for (int i = 1; i < commoneventsdata.Count; i++)
         //            {
-        //                //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
+        //                //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
 
         //                //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
         //                //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
@@ -1902,7 +1902,7 @@ namespace TranslationHelper
         //                        }
         //                    }
         //                }
-        //                //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+        //                //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", THLog, true);
         //                //THLog = string.Empty;
         //            }
 
@@ -2174,7 +2174,7 @@ namespace TranslationHelper
         //                    THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message.Value);
         //                }
         //            }
-        //            //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+        //            //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", THLog, true);
         //            //THLog = string.Empty;
         //        }
 
@@ -2183,7 +2183,7 @@ namespace TranslationHelper
         //    }
         //    catch (Exception ex)
         //    {
-        //        FileWriter.WriteData(apppath + "\\TranslationHelper.log", ex.Message, true);
+        //        FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", ex.Message, true);
         //        return false;
         //    }
         //}
@@ -2231,7 +2231,7 @@ namespace TranslationHelper
         private bool TryToExtractToRPGMakerTransPatch(string sPath, string extractdir="Work")
         {
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-            string workdir = apppath + "\\" + extractdir + "\\RPGMakerTrans\\";
+            string workdir = Path.Combine(Application.StartupPath,extractdir,"RPGMakerTrans/");
             if (!Directory.Exists(workdir))
             {
                 Directory.CreateDirectory(workdir);
@@ -2249,7 +2249,7 @@ namespace TranslationHelper
             {
                 Directory.CreateDirectory(outdir);
 
-                string rpgmakertranscli = apppath + @"\Res\rpgmakertrans\rpgmt.exe";
+                string rpgmakertranscli = Path.Combine(Application.StartupPath,"Res","rpgmakertrans","rpgmt.exe");
 
                 //параметры
                 //parser.add_argument("input", help = "Path of input game to patch")
@@ -2290,13 +2290,13 @@ namespace TranslationHelper
                 //using (Process RPGMakerTransPatch = new Process())
                 //{
                 //    //MessageBox.Show("outdir=" + outdir);
-                //    RPGMakerTransPatch.StartInfo.FileName = apppath + @"\\Res\\rpgmakertrans\\rpgmt.exe";
+                //    RPGMakerTransPatch.StartInfo.FileName = Application.StartupPath + @"\\Res\\rpgmakertrans\\rpgmt.exe";
                 //    RPGMakerTransPatch.StartInfo.Arguments = "\"" + dir + "\" -p \"" + outdir + "_patch\"" + "\" -o \"" + outdir + "_translated\"";
                 //    ret = RPGMakerTransPatch.Start();
                 //    RPGMakerTransPatch.WaitForExit();
                 //}
                 /*MessageBox.Show(
-                      "INFO: apppath=" + apppath
+                      "INFO: Application.StartupPath=" + Application.StartupPath
                     + "\r\nRPGMakerTransPatch.StartInfo.FileName=" + RPGMakerTransPatch.StartInfo.FileName
                     + "\r\nRPGMakerTransPatch.StartInfo.Arguments=" + RPGMakerTransPatch.StartInfo.Arguments
                     + "\r\nsPath=" + sPath
@@ -2749,7 +2749,7 @@ namespace TranslationHelper
 
                     //swatch.Stop();
                     //string time = swatch.Elapsed.ToString();
-                    //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
+                    //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
                     //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
 
                     if (THSelectedSourceType.Contains("RPGMakerTransPatch") || THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch")) //Additional tweaks for RPGMTransPatch table
@@ -3116,7 +3116,7 @@ namespace TranslationHelper
                         DialogResult result = MessageBox.Show("Write in _translated variant of the game? This will not overwrite original game folder but can be used for test game.", "Write in translated variant", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (result == DialogResult.Yes)
                         {
-                            string rpgmakertranscli = apppath + @"\Res\rpgmakertrans\rpgmt.exe";
+                            string rpgmakertranscli = Application.StartupPath + @"\Res\rpgmakertrans\rpgmt.exe";
 
                             //параметры
                             //parser.add_argument("input", help = "Path of input game to patch")
@@ -3344,12 +3344,12 @@ namespace TranslationHelper
                     }
 
                     //Запись самого файла патча, если вдруг сохраняется в произвольную папку
-                    if (File.Exists(SelectedDir + "\\RPGMKTRANSPATCH"))
+                    if (File.Exists(Path.Combine(SelectedDir,"RPGMKTRANSPATCH")))
                     {
                     }
                     else
                     {
-                        File.WriteAllText(SelectedDir+ "\\RPGMKTRANSPATCH", "> RPGMAKER TRANS PATCH V3");
+                        File.WriteAllText(Path.Combine(SelectedDir,"RPGMKTRANSPATCH"), "> RPGMAKER TRANS PATCH V3");
                     }
                 }
                 else if (patchver == "2")
@@ -3405,7 +3405,7 @@ namespace TranslationHelper
                         {
                             buffer.Remove(buffer.Length-2,2);//удаление лишнего символа \r\n с конца строки
                             //String _path = SelectedDir + "\\" + THRPGMTransPatchFiles[i].Name + ".txt";
-                            string _path = SelectedDir + "\\" + THFilesElementsDataset.Tables[i].TableName + ".txt";
+                            string _path = Path.Combine(SelectedDir,THFilesElementsDataset.Tables[i].TableName,".txt");
                             File.WriteAllText(_path, buffer.ToString());
                             //buffer = string.Empty;
                         }
@@ -3414,12 +3414,12 @@ namespace TranslationHelper
 
 
                     //Запись самого файла патча, если вдруг сохраняется в произвольную папку
-                    if (File.Exists(SelectedDir + "\\RPGMKTRANSPATCH"))
+                    if (File.Exists(Path.Combine(SelectedDir,"RPGMKTRANSPATCH")))
                     {
                     }
                     else
                     {
-                        File.WriteAllText(SelectedDir + "\\RPGMKTRANSPATCH", string.Empty); ;
+                        File.WriteAllText(Path.Combine(SelectedDir, "RPGMKTRANSPATCH"), string.Empty); ;
                     }
                 }
                 //pbstatuslabel.Visible = false;
@@ -3774,7 +3774,7 @@ namespace TranslationHelper
             {
                 projecttypeDBfolder += "RPGMakerTransPatch\\";
             }
-            dbpath = apppath + "\\DB" + projecttypeDBfolder;
+            dbpath = Application.StartupPath + "\\DB" + projecttypeDBfolder;
             lastautosavepath = dbpath + dbfilename + GetDBCompressionExt();
 
             ProgressInfo(true);
@@ -3797,7 +3797,7 @@ namespace TranslationHelper
             {
                 AutosaveActivated = true;
 
-                dbpath = apppath + "\\DB";
+                dbpath = Application.StartupPath + "\\DB";
                 string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir)+"_autosave";
                 string autosavepath = dbpath + "\\Auto\\" + dbfilename + ".cmx";
 
@@ -3898,8 +3898,8 @@ namespace TranslationHelper
                 {
                     projecttypeDBfolder += "RPGMakerTransPatch\\";
                 }
-                dbpath = apppath + "\\DB" + projecttypeDBfolder;
-                lastautosavepath = dbpath + dbfilename + GetDBCompressionExt();
+                dbpath = Application.StartupPath + "\\DB" + projecttypeDBfolder;
+                lastautosavepath = Path.Combine(dbpath,dbfilename,GetDBCompressionExt());
                 if (File.Exists(lastautosavepath))
                 {
                     LoadTranslationFromDB(lastautosavepath);
@@ -3918,7 +3918,7 @@ namespace TranslationHelper
             }
             LoadTranslationToolStripMenuItem_ClickIsBusy = true;
 
-            //dbpath = apppath + "\\DB";
+            //dbpath = Application.StartupPath + "\\DB";
             //string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
 
             ProgressInfo(true);
@@ -3945,7 +3945,7 @@ namespace TranslationHelper
             foreach (DataTable t in THFilesElementsDataset.Tables)
             {
                 THFilesListBox.Items.Add(t.TableName);
-                //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: \"" + t.TableName + "\"\r\n", true);
+                //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", DateTime.Now + " >>: \"" + t.TableName + "\"\r\n", true);
             }
             //THFileElementsDataGridView.Refresh();
             if (THFilesListBox.SelectedIndex > -1)
@@ -4194,7 +4194,7 @@ namespace TranslationHelper
                         projecttypeDBfolder += "RPGMakerTransPatch\\";
                     }
 
-                    THFOpenBD.InitialDirectory = apppath + "\\DB" + projecttypeDBfolder;
+                    THFOpenBD.InitialDirectory = Application.StartupPath + "\\DB" + projecttypeDBfolder;
 
                     if (THFOpenBD.ShowDialog() == DialogResult.OK)
                     {
@@ -4623,7 +4623,7 @@ namespace TranslationHelper
         //                //THFilesElementsDataset.Tables[Jsonname].Rows.Add(Message.Value);
         //            }
         //        }
-        //        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", THLog, true);
+        //        //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", THLog, true);
         //        //THLog = string.Empty;
 
         //        //var systemdata = RPGMakerMVjsonSystem.FromJson(jsondata);
@@ -4767,7 +4767,7 @@ namespace TranslationHelper
 
         //    for (int i = 1; i < commoneventsdata.Count; i++)
         //    {
-        //        //FileWriter.WriteData(apppath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
+        //        //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", DateTime.Now + " >>: p=\"" + p + "\"\r\n", true);
 
         //        //THLog += DateTime.Now + " >>: event id=\"" + commoneventsdata[i].Id + "\"\r\n";
         //        //THLog += DateTime.Now + " >>: added event name=\"" + commoneventsdata[i].Name + "\"\r\n";
@@ -6662,10 +6662,10 @@ namespace TranslationHelper
             THIsFixingCells = true;
 
             //если файл с правилами существует
-            if (File.Exists(apppath + "\\TranslationHelperCellFixesRegexRules.txt"))
+            if (File.Exists(Path.Combine(Application.StartupPath,"TranslationHelperCellFixesRegexRules.txt")))
             {
                 //читать файл с правилами
-                using (StreamReader rules = new StreamReader(apppath + "\\TranslationHelperCellFixesRegexRules.txt"))
+                using (StreamReader rules = new StreamReader(Path.Combine(Application.StartupPath,"TranslationHelperCellFixesRegexRules.txt")))
                 {
                     try
                     {
@@ -6873,10 +6873,10 @@ namespace TranslationHelper
 
             string ret = input;
             //если файл с правилами существует
-            if (File.Exists(apppath + "\\TranslationHelperTranslationRegexRules.txt"))
+            if (File.Exists(Path.Combine(Application.StartupPath,"TranslationHelperTranslationRegexRules.txt")))
             {
                 //читать файл с правилами
-                using (StreamReader rules = new StreamReader(apppath + "\\TranslationHelperTranslationRegexRules.txt"))
+                using (StreamReader rules = new StreamReader(Path.Combine(Application.StartupPath,"TranslationHelperTranslationRegexRules.txt")))
                 {
                     try
                     {
@@ -7506,7 +7506,7 @@ namespace TranslationHelper
         {
             using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
             {
-                dbpath = apppath + "\\DB";
+                dbpath = Application.StartupPath + "\\DB";
                 string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir) + "_" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
                 
                 THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
@@ -7519,7 +7519,7 @@ namespace TranslationHelper
                 {
                     projecttypeDBfolder += "RPGMakerTransPatch\\";
                 }
-                THFSaveBDAs.InitialDirectory = apppath + "\\DB" + projecttypeDBfolder;
+                THFSaveBDAs.InitialDirectory = Path.Combine(Application.StartupPath,"DB",projecttypeDBfolder);
                 THFSaveBDAs.FileName = dbfilename + GetDBCompressionExt();
 
                 if (THFSaveBDAs.ShowDialog() == DialogResult.OK)
@@ -7548,7 +7548,7 @@ namespace TranslationHelper
         {
             if (THSelectedSourceType == "RPG Maker MV")
             {
-                CopyFolder.Copy(THSelectedDir + "\\www\\data", THSelectedDir + "\\www\\data_bak");
+                CopyFolder.Copy(Path.Combine(THSelectedDir,"www","data"), Path.Combine(THSelectedDir,"www","data_bak"));
                 try
                 {
                     bool success = false;
@@ -7576,7 +7576,7 @@ namespace TranslationHelper
                             //THMsg.Show("start writing");
 
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            success = await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, THSelectedDir + "\\www\\data\\" + THFilesList.Items[f] + ".json"));
+                            success = await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(THSelectedDir,"www","data",THFilesList.Items[f]+".json")));
                             if (!success)
                             {
                                 break;
@@ -7589,7 +7589,7 @@ namespace TranslationHelper
                         using (Process Testgame = new Process())
                         {
                             //MessageBox.Show("outdir=" + outdir);
-                            Testgame.StartInfo.FileName = THSelectedDir + "\\game.exe";
+                            Testgame.StartInfo.FileName = Path.Combine(THSelectedDir,"game.exe");
                             //RPGMakerTransPatch.StartInfo.Arguments = string.Empty;
                             //Testgame.StartInfo.UseShellExecute = true;
                             await Task.Run(() => Testgame.Start());
@@ -7603,8 +7603,8 @@ namespace TranslationHelper
                 catch
                 {
                 }
-                Directory.Delete(THSelectedDir + "\\www\\data", true);
-                Directory.Move(THSelectedDir + "\\www\\data_bak", THSelectedDir + "\\www\\data");
+                Directory.Delete(Path.Combine(THSelectedDir,"www","data"), true);
+                Directory.Move(Path.Combine(THSelectedDir, "www", "data_bak"), Path.Combine(THSelectedDir, "www", "data"));
             }
         }
 
@@ -7976,13 +7976,13 @@ namespace TranslationHelper
             }
             else if (sPath.ToLower().Contains("\\game.exe") || dir.GetFiles("*.exe").Length > 0)
             {
-                if (File.Exists(THSelectedDir + "\\www\\data\\system.json"))//RPGMakerMV
+                if (File.Exists(Path.Combine(THSelectedDir,"www","data","system.json")))//RPGMakerMV
                 {
                     try
                     {
                         //THSelectedDir += "\\www\\data";
                         //var MVJsonFIles = new List<string>();
-                        mvdatadirTranslated = new DirectoryInfo(Path.GetDirectoryName(THSelectedDir + "\\www\\data\\"));
+                        mvdatadirTranslated = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(THSelectedDir,"www","data/")));
                         foreach (FileInfo file in mvdatadirTranslated.GetFiles("*.json"))
                         {
                             //MessageBox.Show("file.FullName=" + file.FullName);
