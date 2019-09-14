@@ -57,6 +57,7 @@
             this.THMessageFormInfoLinkLabel.TabIndex = 1;
             this.THMessageFormInfoLinkLabel.TabStop = true;
             this.THMessageFormInfoLinkLabel.Text = "https://patreon.com/TranslationHelper";
+            this.THMessageFormInfoLinkLabel.Visible = false;
             this.THMessageFormInfoLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.THMessageFormInfoLinkLabel_LinkClicked);
             // 
             // THMessageFormInfoLabel
@@ -67,6 +68,7 @@
             this.THMessageFormInfoLabel.Size = new System.Drawing.Size(128, 13);
             this.THMessageFormInfoLabel.TabIndex = 2;
             this.THMessageFormInfoLabel.Text = "Translation  Helper 2019:";
+            this.THMessageFormInfoLabel.Visible = false;
             // 
             // THMessageFormMessageLabel
             // 

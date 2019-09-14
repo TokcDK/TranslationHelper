@@ -45,12 +45,12 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsToolsTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.THOptionAutotranslationForIdenticalCheckBox = new System.Windows.Forms.CheckBox();
+            this.THOptionEnableTranslationCacheCheckBox = new System.Windows.Forms.CheckBox();
             this.linkLabel4 = new System.Windows.Forms.LinkLabel();
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTransLinkTextBox = new System.Windows.Forms.TextBox();
-            this.THOptionEnableTranslationCacheCheckBox = new System.Windows.Forms.CheckBox();
-            this.THOptionAutotranslationForIdenticalCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.THSettingsOptimizationsTabPage.SuspendLayout();
@@ -94,6 +94,7 @@
             this.linkLabel2.TabIndex = 13;
             this.linkLabel2.TabStop = true;
             this.linkLabel2.Text = "https://patreon.com/TranslationHelper";
+            this.linkLabel2.Visible = false;
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
             // 
             // label3
@@ -104,6 +105,7 @@
             this.label3.Size = new System.Drawing.Size(141, 13);
             this.label3.TabIndex = 12;
             this.label3.Text = "Translation  Helper support:";
+            this.label3.Visible = false;
             // 
             // panel1
             // 
@@ -136,6 +138,7 @@
             this.linkLabel1.TabIndex = 9;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "https://patreon.com/TranslationHelper";
+            this.linkLabel1.Visible = false;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
             // 
             // label2
@@ -146,6 +149,7 @@
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 8;
             this.label2.Text = "Translation  Helper support:";
+            this.label2.Visible = false;
             // 
             // THProgramSettingsReadOptionsPanel
             // 
@@ -264,6 +268,32 @@
             this.panel2.Size = new System.Drawing.Size(524, 379);
             this.panel2.TabIndex = 8;
             // 
+            // THOptionAutotranslationForIdenticalCheckBox
+            // 
+            this.THOptionAutotranslationForIdenticalCheckBox.AutoSize = true;
+            this.THOptionAutotranslationForIdenticalCheckBox.Checked = true;
+            this.THOptionAutotranslationForIdenticalCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionAutotranslationForIdenticalCheckBox.Location = new System.Drawing.Point(9, 267);
+            this.THOptionAutotranslationForIdenticalCheckBox.Name = "THOptionAutotranslationForIdenticalCheckBox";
+            this.THOptionAutotranslationForIdenticalCheckBox.Size = new System.Drawing.Size(159, 17);
+            this.THOptionAutotranslationForIdenticalCheckBox.TabIndex = 13;
+            this.THOptionAutotranslationForIdenticalCheckBox.Text = "Autotranslation for identical";
+            this.THOptionAutotranslationForIdenticalCheckBox.UseVisualStyleBackColor = true;
+            this.THOptionAutotranslationForIdenticalCheckBox.CheckedChanged += new System.EventHandler(this.THOptionAutotranslationForIdenticalCheckBox_CheckedChanged);
+            // 
+            // THOptionEnableTranslationCacheCheckBox
+            // 
+            this.THOptionEnableTranslationCacheCheckBox.AutoSize = true;
+            this.THOptionEnableTranslationCacheCheckBox.Checked = true;
+            this.THOptionEnableTranslationCacheCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionEnableTranslationCacheCheckBox.Location = new System.Drawing.Point(9, 290);
+            this.THOptionEnableTranslationCacheCheckBox.Name = "THOptionEnableTranslationCacheCheckBox";
+            this.THOptionEnableTranslationCacheCheckBox.Size = new System.Drawing.Size(178, 17);
+            this.THOptionEnableTranslationCacheCheckBox.TabIndex = 12;
+            this.THOptionEnableTranslationCacheCheckBox.Text = "Enable online translation cache.";
+            this.THOptionEnableTranslationCacheCheckBox.UseVisualStyleBackColor = true;
+            this.THOptionEnableTranslationCacheCheckBox.CheckedChanged += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_CheckedChanged);
+            // 
             // linkLabel4
             // 
             this.linkLabel4.AutoSize = true;
@@ -274,6 +304,7 @@
             this.linkLabel4.TabIndex = 11;
             this.linkLabel4.TabStop = true;
             this.linkLabel4.Text = "https://patreon.com/TranslationHelper";
+            this.linkLabel4.Visible = false;
             this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
             // 
             // label4
@@ -284,6 +315,7 @@
             this.label4.Size = new System.Drawing.Size(141, 13);
             this.label4.TabIndex = 10;
             this.label4.Text = "Translation  Helper support:";
+            this.label4.Visible = false;
             // 
             // label1
             // 
@@ -303,39 +335,13 @@
             this.THSettingsWebTransLinkTextBox.TabIndex = 7;
             this.THSettingsWebTransLinkTextBox.Text = "https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}";
             // 
-            // THOptionEnableTranslationCacheCheckBox
-            // 
-            this.THOptionEnableTranslationCacheCheckBox.AutoSize = true;
-            this.THOptionEnableTranslationCacheCheckBox.Checked = true;
-            this.THOptionEnableTranslationCacheCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.THOptionEnableTranslationCacheCheckBox.Location = new System.Drawing.Point(9, 290);
-            this.THOptionEnableTranslationCacheCheckBox.Name = "THOptionEnableTranslationCacheCheckBox";
-            this.THOptionEnableTranslationCacheCheckBox.Size = new System.Drawing.Size(178, 17);
-            this.THOptionEnableTranslationCacheCheckBox.TabIndex = 12;
-            this.THOptionEnableTranslationCacheCheckBox.Text = "Enable online translation cache.";
-            this.THOptionEnableTranslationCacheCheckBox.UseVisualStyleBackColor = true;
-            this.THOptionEnableTranslationCacheCheckBox.CheckedChanged += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_CheckedChanged);
-            // 
-            // THOptionAutotranslationForIdenticalCheckBox
-            // 
-            this.THOptionAutotranslationForIdenticalCheckBox.AutoSize = true;
-            this.THOptionAutotranslationForIdenticalCheckBox.Checked = true;
-            this.THOptionAutotranslationForIdenticalCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.THOptionAutotranslationForIdenticalCheckBox.Location = new System.Drawing.Point(9, 267);
-            this.THOptionAutotranslationForIdenticalCheckBox.Name = "THOptionAutotranslationForIdenticalCheckBox";
-            this.THOptionAutotranslationForIdenticalCheckBox.Size = new System.Drawing.Size(159, 17);
-            this.THOptionAutotranslationForIdenticalCheckBox.TabIndex = 13;
-            this.THOptionAutotranslationForIdenticalCheckBox.Text = "Autotranslation for identical";
-            this.THOptionAutotranslationForIdenticalCheckBox.UseVisualStyleBackColor = true;
-            this.THOptionAutotranslationForIdenticalCheckBox.CheckedChanged += new System.EventHandler(this.THOptionAutotranslationForIdenticalCheckBox_CheckedChanged);
-            // 
-            // THSettingsForm
+            // THSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(532, 405);
             this.Controls.Add(this.THSettingsTabControl);
-            this.Name = "THSettingsForm";
+            this.Name = "THSettings";
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.THProgramSettingsForm_Load);
             this.THSettingsTabControl.ResumeLayout(false);

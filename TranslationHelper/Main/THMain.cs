@@ -3405,7 +3405,7 @@ namespace TranslationHelper
                         {
                             buffer.Remove(buffer.Length-2,2);//удаление лишнего символа \r\n с конца строки
                             //String _path = SelectedDir + "\\" + THRPGMTransPatchFiles[i].Name + ".txt";
-                            string _path = Path.Combine(SelectedDir,THFilesElementsDataset.Tables[i].TableName,".txt");
+                            string _path = Path.Combine(SelectedDir,THFilesElementsDataset.Tables[i].TableName + ".txt");
                             File.WriteAllText(_path, buffer.ToString());
                             //buffer = string.Empty;
                         }

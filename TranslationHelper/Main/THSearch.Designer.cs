@@ -140,6 +140,7 @@
             this.linkLabel2.TabIndex = 13;
             this.linkLabel2.TabStop = true;
             this.linkLabel2.Text = "https://patreon.com/TranslationHelper";
+            this.linkLabel2.Visible = false;
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel2_LinkClicked);
             // 
             // label3
@@ -150,6 +151,7 @@
             this.label3.Size = new System.Drawing.Size(141, 13);
             this.label3.TabIndex = 12;
             this.label3.Text = "Translation  Helper support:";
+            this.label3.Visible = false;
             // 
             // lblError
             // 
