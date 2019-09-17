@@ -11,12 +11,26 @@ namespace TranslationHelper
         public int THOptionDontLoadStringIfRomajiPercentValue = 90;
         public bool THOptionDontLoadStringIfRomajiPercentCheckBoxChecked = true;
         public bool THOptionDBCompressionCheckBoxChecked = true;
-        public string THOptionDBCompressionComboBoxSelectedItemValue = "XML (None)";
+        public string THOptionDBCompressionComboBoxSelectedItemValue = "XML (none)";
 
         public THSettings()
         {
             InitializeComponent();
             SetTooltips();
+
+            //translation
+            this.THSettingsMainTabPage.Text = T._("General");
+            this.label3.Text = T._("Translation  Helper support:");
+            this.THSettingsOptimizationsTabPage.Text = T._("Optimizations");
+            this.label2.Text = T._("Translation  Helper support:");
+            this.THOptionDBCompressionCheckBox.Text = T._("Compression for DB files:");
+            this.THOptionDontLoadStringIfRomajiPercentCheckBox.Text = T._("Do not load string if it has more of next romaji percent - ");
+            this.THSettingsToolsTabPage.Text = T._("Tools");
+            this.THOptionAutotranslationForIdenticalCheckBox.Text = T._("Autotranslation for identical");
+            this.THOptionEnableTranslationCacheCheckBox.Text = T._("Enable online translation cache.");
+            this.label4.Text = T._("Translation  Helper support:");
+            this.label1.Text = T._("Web service link for manual translation (F12):");
+            this.Text = T._("Settings");
         }
 
         private void SetTooltips()
@@ -40,12 +54,12 @@ namespace TranslationHelper
             //Optimization
             THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBox, "String will not be loaded for translation if this string contains romaji characters in text more of specified percent.");
             THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen, "Is true while opening. Always true for RPGMaker MV files or jsons for strings filtering purposes.");
-            THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation, "Is true while online translating. Will be used both with other chars like .!/? and other same");
-            THToolTip.SetToolTip(THOptionDBCompressionCheckBox, "Format for DB files: standard not compressed xml and compressed xml for both other");
+            THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation, T._("Is true while online translating. Will be used both with other chars like .!/? and other same"));
+            THToolTip.SetToolTip(THOptionDBCompressionCheckBox, T._("Format for DB files: standard not compressed xml and compressed xml for both other"));
             //Tools
-            THToolTip.SetToolTip(THOptionAutotranslationForIdenticalCheckBox, "Automatically will be translated all almost identical cells with same original.");
-            THToolTip.SetToolTip(THOptionEnableTranslationCacheCheckBox, "Will save online translation result in cache db to use it in next time for same values instead of attemp to connect to service.");
-            THToolTip.SetToolTip(THSettingsWebTransLinkTextBox, "Web site which wil be opened by pressing F12 key with added selected table cells values. Can be any here Google, Yandex, DeepL or other.");
+            THToolTip.SetToolTip(THOptionAutotranslationForIdenticalCheckBox, T._("Automatically will be translated all almost identical cells with same original."));
+            THToolTip.SetToolTip(THOptionEnableTranslationCacheCheckBox, T._("Will save online translation result in cache db to use it in next time for same values instead of attemp to connect to service."));
+            THToolTip.SetToolTip(THSettingsWebTransLinkTextBox, T._("Web site which wil be opened by pressing F12 key with added selected table cells values. Can be any here Google, Yandex, DeepL or other."));
             //support links
             THToolTip.SetToolTip(linkLabel1, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
             THToolTip.SetToolTip(linkLabel2, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");

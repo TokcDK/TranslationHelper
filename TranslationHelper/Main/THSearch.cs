@@ -28,6 +28,26 @@ namespace TranslationHelper
             THFilesElementsDataset = DS;
             THFileElementsDataGridView = DGV;
             THTargetRichTextBox = TTB;
+
+            //translation
+            this.THSearch1st.Text = T._("Find and Replace");
+            this.label3.Text = T._("Translation  Helper support:");
+            this.SearchModeGroupBox.Text = T._("Search Mode");
+            this.SearchModeNormalRadioButton.Text = T._("Normal");
+            this.label5.Text = T._("Range");
+            this.SearchRangeTableRadioButton.Text = T._("Table");
+            this.SearchRangeAllRadioButton.Text = T._("Anywhere");
+            this.label2.Text = T._("Method");
+            this.SearchMethodOriginalToTranslationRadioButton.Text = T._("Find in Original and Paste to Translation");
+            this.SearchMethodTranslationRadioButton.Text = T._("Find and Replace in Translation");
+            this.THSearchMatchCaseCheckBox.Text = T._("Match Case");
+            this.FindAllButton.Text = T._("Find All");
+            this.SearchFormFindNextButton.Text = T._("Find Next");
+            this.SearchFormReplaceButton.Text = T._("Replace");
+            this.SearchFormReplaceAllButton.Text = T._("Replace All");
+            this.THSearchFindWhatLabel.Text = T._("Find what:");
+            this.label1.Text = T._("Replace with:");
+            this.Text = T._("Find and Replace");
         }
 
         private void SearchModeNormalRadioButton_Click(object sender, EventArgs e)

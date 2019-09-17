@@ -16,7 +16,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
-using SecondLanguage;
 
 namespace TranslationHelper
 {
@@ -70,15 +69,59 @@ namespace TranslationHelper
             //language strings setup
             //THMainDGVOriginalColumnName = LangF.THStrDGOriginalColumnName;
             //THMainDGVTranslationColumnName = LangF.THStrDGTranslationColumnName;
-            //fileToolStripMenuItem.Text = T._("FIle");
-            //openToolStripMenuItem.Text = T._("Open");
-            //saveToolStripMenuItem.Text = T._("Save");
-            //saveAsToolStripMenuItem.Text = T._("Save As");
-            //editToolStripMenuItem.Text = T._("Edit");
-            //viewToolStripMenuItem.Text = T._("View");
-            //optionsToolStripMenuItem.Text = T._("Options");
-            //helpToolStripMenuItem.Text = T._("Help");
-            //aboutToolStripMenuItem.Text = T._("About");
+            this.fileToolStripMenuItem.Text = T._("File");
+            this.openToolStripMenuItem.Text = T._("Open");
+            this.saveToolStripMenuItem.Text = T._("Save");
+            this.saveAsToolStripMenuItem.Text = T._("Save As");
+            this.writeTranslationInGameToolStripMenuItem.Text = T._("Write translation");
+            this.saveTranslationToolStripMenuItem.Text = T._("Save translation");
+            this.saveTranslationAsToolStripMenuItem.Text = T._("Save Translation as");
+            this.loadTranslationToolStripMenuItem.Text = T._("Load Translation");
+            this.loadTrasnlationAsToolStripMenuItem.Text = T._("Load Translation as");
+            this.editToolStripMenuItem.Text = T._("Edit");
+            this.openInWebToolStripMenuItem.Text = T._("Open in Web");
+            this.tryToTranslateOnlineToolStripMenuItem.Text = T._("Translate Online");
+            this.selectedToolStripMenuItem1.Text = T._("Selected");
+            this.tableToolStripMenuItem1.Text = T._("Table");
+            this.allToolStripMenuItem1.Text = T._("All");
+            this.translationInteruptToolStripMenuItem.Text = T._("Interupt");
+            this.fixCellSpecialSymbolsToolStripMenuItem.Text = T._("Fix cell special symbols");
+            this.fixCellsSelectedToolStripMenuItem.Text = T._("Selected");
+            this.fixCellsTableToolStripMenuItem.Text = T._("Table");
+            this.allToolStripMenuItem.Text = T._("All");
+            this.setOriginalValueToTranslationToolStripMenuItem.Text = T._("Original=Translation");
+            this.cutToolStripMenuItem1.Text = T._("Cut");
+            this.copyCellValuesToolStripMenuItem.Text = T._("Copy");
+            this.pasteCellValuesToolStripMenuItem.Text = T._("Paste");
+            this.clearSelectedCellsToolStripMenuItem.Text = T._("Clear selected cells");
+            this.toUPPERCASEToolStripMenuItem.Text = T._("UPPERCASE");
+            this.firstCharacterToUppercaseToolStripMenuItem.Text = T._("Uppercase");
+            this.toLOWERCASEToolStripMenuItem.Text = T._("lowercase");
+            this.searchToolStripMenuItem.Text = T._("Search");
+            this.viewToolStripMenuItem.Text = T._("View");
+            this.setColumnSortingToolStripMenuItem.Text = T._("Reset column sorting");
+            this.optionsToolStripMenuItem.Text = T._("Options");
+            this.settingsToolStripMenuItem.Text = T._("Settings");
+            this.helpToolStripMenuItem.Text = T._("Help");
+            this.aboutToolStripMenuItem.Text = T._("About");
+            this.OpenInWebContextToolStripMenuItem.Text = T._("Open in web");
+            this.toolStripMenuItem6.Text = T._("Translate Online");
+            this.TranslateSelectedContextToolStripMenuItem.Text = T._("Selected");
+            this.TranslateTableContextToolStripMenuItem.Text = T._("Table");
+            this.toolStripMenuItem9.Text = T._("All");
+            this.translationInteruptToolStripMenuItem1.Text = T._("Interupt");
+            this.toolStripMenuItem2.Text = T._("Fix cell special symbols");
+            this.fixSymbolsContextToolStripMenuItem.Text = T._("Selected");
+            this.fixSymbolsTableContextToolStripMenuItem.Text = T._("Table");
+            this.toolStripMenuItem5.Text = T._("All");
+            this.OriginalToTransalationContextToolStripMenuItem.Text = T._("Original=Translation");
+            this.CutToolStripMenuItem.Text = T._("Cut");
+            this.CopyToolStripMenuItem.Text = T._("Copy");
+            this.pasteToolStripMenuItem.Text = T._("Paste");
+            this.toolStripMenuItem11.Text = T._("Clear selected cells");
+            this.toolStripMenuItem14.Text = T._("UPPERCASE");
+            this.uppercaseToolStripMenuItem.Text = T._("Uppercase");
+            this.lowercaseToolStripMenuItem.Text = T._("lowercase");
 
             //LangF.THReadLanguageFileToStrings();
 
