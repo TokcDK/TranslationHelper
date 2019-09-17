@@ -99,7 +99,7 @@
             this.THSearch1st.Padding = new System.Windows.Forms.Padding(3);
             this.THSearch1st.Size = new System.Drawing.Size(572, 529);
             this.THSearch1st.TabIndex = 0;
-            this.THSearch1st.Text = "Find and Replace";
+            this.THSearch1st.Text = T._("Find and Replace");
             this.THSearch1st.UseVisualStyleBackColor = true;
             // 
             // SearchResultsPanel
@@ -150,7 +150,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(141, 13);
             this.label3.TabIndex = 12;
-            this.label3.Text = "Translation  Helper support:";
+            this.label3.Text = T._("Translation  Helper support:");
             this.label3.Visible = false;
             // 
             // lblError
@@ -184,7 +184,7 @@
             this.SearchModeGroupBox.Size = new System.Drawing.Size(565, 80);
             this.SearchModeGroupBox.TabIndex = 20;
             this.SearchModeGroupBox.TabStop = false;
-            this.SearchModeGroupBox.Text = "Search Mode";
+            this.SearchModeGroupBox.Text = T._("Search Mode");
             // 
             // panel6
             // 
@@ -224,7 +224,7 @@
             this.SearchModeNormalRadioButton.Size = new System.Drawing.Size(58, 17);
             this.SearchModeNormalRadioButton.TabIndex = 7;
             this.SearchModeNormalRadioButton.TabStop = true;
-            this.SearchModeNormalRadioButton.Text = "Normal";
+            this.SearchModeNormalRadioButton.Text = T._("Normal");
             this.SearchModeNormalRadioButton.UseVisualStyleBackColor = true;
             this.SearchModeNormalRadioButton.Click += new System.EventHandler(this.SearchModeNormalRadioButton_Click);
             // 
@@ -256,7 +256,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(38, 13);
             this.label5.TabIndex = 12;
-            this.label5.Text = "Range";
+            this.label5.Text = T._("Range");
             // 
             // SearchRangeTableRadioButton
             // 
@@ -267,7 +267,7 @@
             this.SearchRangeTableRadioButton.Size = new System.Drawing.Size(51, 17);
             this.SearchRangeTableRadioButton.TabIndex = 7;
             this.SearchRangeTableRadioButton.TabStop = true;
-            this.SearchRangeTableRadioButton.Text = "Table";
+            this.SearchRangeTableRadioButton.Text = T._("Table");
             this.SearchRangeTableRadioButton.UseVisualStyleBackColor = true;
             this.SearchRangeTableRadioButton.Click += new System.EventHandler(this.SearchRangeTableRadioButton_Click);
             // 
@@ -278,7 +278,7 @@
             this.SearchRangeAllRadioButton.Name = "SearchRangeAllRadioButton";
             this.SearchRangeAllRadioButton.Size = new System.Drawing.Size(36, 17);
             this.SearchRangeAllRadioButton.TabIndex = 8;
-            this.SearchRangeAllRadioButton.Text = "All";
+            this.SearchRangeAllRadioButton.Text = T._("Anywhere");
             this.SearchRangeAllRadioButton.UseVisualStyleBackColor = true;
             this.SearchRangeAllRadioButton.Click += new System.EventHandler(this.SearchRangeAllRadioButton_Click);
             // 
@@ -299,7 +299,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(43, 13);
             this.label2.TabIndex = 11;
-            this.label2.Text = "Method";
+            this.label2.Text = T._("Method");
             // 
             // SearchMethodOriginalToTranslationRadioButton
             // 
@@ -308,7 +308,7 @@
             this.SearchMethodOriginalToTranslationRadioButton.Name = "SearchMethodOriginalToTranslationRadioButton";
             this.SearchMethodOriginalToTranslationRadioButton.Size = new System.Drawing.Size(215, 17);
             this.SearchMethodOriginalToTranslationRadioButton.TabIndex = 9;
-            this.SearchMethodOriginalToTranslationRadioButton.Text = "Find in Original and Paste to Translation";
+            this.SearchMethodOriginalToTranslationRadioButton.Text = T._("Find in Original and Paste to Translation");
             this.SearchMethodOriginalToTranslationRadioButton.UseVisualStyleBackColor = true;
             this.SearchMethodOriginalToTranslationRadioButton.Click += new System.EventHandler(this.SearchMethodTranslationRadioButton_Click);
             // 
@@ -321,7 +321,7 @@
             this.SearchMethodTranslationRadioButton.Size = new System.Drawing.Size(174, 17);
             this.SearchMethodTranslationRadioButton.TabIndex = 10;
             this.SearchMethodTranslationRadioButton.TabStop = true;
-            this.SearchMethodTranslationRadioButton.Text = "Find and Replace in Translation";
+            this.SearchMethodTranslationRadioButton.Text = T._("Find and Replace in Translation");
             this.SearchMethodTranslationRadioButton.UseVisualStyleBackColor = true;
             this.SearchMethodTranslationRadioButton.Click += new System.EventHandler(this.SearchMethodOriginalTranslationRadioButton_Click);
             // 
@@ -332,7 +332,7 @@
             this.THSearchMatchCaseCheckBox.Name = "THSearchMatchCaseCheckBox";
             this.THSearchMatchCaseCheckBox.Size = new System.Drawing.Size(82, 17);
             this.THSearchMatchCaseCheckBox.TabIndex = 19;
-            this.THSearchMatchCaseCheckBox.Text = "Match Case";
+            this.THSearchMatchCaseCheckBox.Text = T._("Match Case");
             this.THSearchMatchCaseCheckBox.UseVisualStyleBackColor = true;
             // 
             // panel4
@@ -352,7 +352,7 @@
             this.FindAllButton.Name = "FindAllButton";
             this.FindAllButton.Size = new System.Drawing.Size(108, 23);
             this.FindAllButton.TabIndex = 7;
-            this.FindAllButton.Text = "Find All";
+            this.FindAllButton.Text = T._("Find All");
             this.FindAllButton.UseVisualStyleBackColor = true;
             this.FindAllButton.Click += new System.EventHandler(this.FindAllButton_Click);
             // 
@@ -362,7 +362,7 @@
             this.SearchFormFindNextButton.Name = "SearchFormFindNextButton";
             this.SearchFormFindNextButton.Size = new System.Drawing.Size(108, 23);
             this.SearchFormFindNextButton.TabIndex = 4;
-            this.SearchFormFindNextButton.Text = "Find Next";
+            this.SearchFormFindNextButton.Text = T._("Find Next");
             this.SearchFormFindNextButton.UseVisualStyleBackColor = true;
             this.SearchFormFindNextButton.Click += new System.EventHandler(this.SearchFormFindNextButton_Click);
             // 
@@ -372,7 +372,7 @@
             this.SearchFormReplaceButton.Name = "SearchFormReplaceButton";
             this.SearchFormReplaceButton.Size = new System.Drawing.Size(108, 23);
             this.SearchFormReplaceButton.TabIndex = 5;
-            this.SearchFormReplaceButton.Text = "Replace";
+            this.SearchFormReplaceButton.Text = T._("Replace");
             this.SearchFormReplaceButton.UseVisualStyleBackColor = true;
             this.SearchFormReplaceButton.Click += new System.EventHandler(this.SearchFormReplaceButton_Click);
             // 
@@ -382,7 +382,7 @@
             this.SearchFormReplaceAllButton.Name = "SearchFormReplaceAllButton";
             this.SearchFormReplaceAllButton.Size = new System.Drawing.Size(108, 26);
             this.SearchFormReplaceAllButton.TabIndex = 6;
-            this.SearchFormReplaceAllButton.Text = "Replace All";
+            this.SearchFormReplaceAllButton.Text = T._("Replace All");
             this.SearchFormReplaceAllButton.UseVisualStyleBackColor = true;
             this.SearchFormReplaceAllButton.Click += new System.EventHandler(this.SearchFormReplaceAllButton_Click);
             // 
@@ -422,7 +422,7 @@
             this.THSearchFindWhatLabel.Name = "THSearchFindWhatLabel";
             this.THSearchFindWhatLabel.Size = new System.Drawing.Size(58, 13);
             this.THSearchFindWhatLabel.TabIndex = 1;
-            this.THSearchFindWhatLabel.Text = "Find what:";
+            this.THSearchFindWhatLabel.Text = T._("Find what:");
             // 
             // SearchFormFindWhatComboBox
             // 
@@ -449,7 +449,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Replace with:";
+            this.label1.Text = T._("Replace with:");
             // 
             // THSearch
             // 
@@ -463,7 +463,7 @@
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(596, 368);
             this.Name = "THSearch";
-            this.Text = "Find and Replace";
+            this.Text = T._("Find and Replace");
             this.Load += new System.EventHandler(this.THSearch_Load);
             this.THSearchTabs.ResumeLayout(false);
             this.THSearch1st.ResumeLayout(false);

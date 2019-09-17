@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
+using SecondLanguage;
 
 namespace TranslationHelper
 {
@@ -26,7 +27,7 @@ namespace TranslationHelper
         public THSettings Settings;
         //public const string THStrDGTranslationColumnName = "Translation";
         //public const string THStrDGOriginalColumnName = "Original";
-        private readonly THLang LangF;
+        //private readonly THLang LangF;
 
         //public readonly static string apppath = Application.StartupPath;
         //о разнице между "" и string.Empty и использовании string.lenght==0 вместо ==string.Empty
@@ -48,8 +49,8 @@ namespace TranslationHelper
         public string THSelectedSourceType;
 
         //Language strings
-        public string THMainDGVOriginalColumnName;
-        public string THMainDGVTranslationColumnName;
+        //public string THMainDGVOriginalColumnName;
+        //public string THMainDGVTranslationColumnName;
 
         //про primary key взял отсюда: https://stackoverflow.com/questions/3567552/table-doesnt-have-a-primary-key
         DataColumn[] keyColumns = new DataColumn[1];
@@ -61,25 +62,25 @@ namespace TranslationHelper
         public THMain()
         {
             InitializeComponent();
-            LangF = new THLang();
+            //LangF = new THLang();
             Settings = new THSettings();
 
             Settings.GetSettings();
 
-            //anguage strings setup
-            THMainDGVOriginalColumnName = LangF.THStrDGOriginalColumnName;
-            THMainDGVTranslationColumnName = LangF.THStrDGTranslationColumnName;
-            fileToolStripMenuItem.Text = LangF.THStrfileToolStripMenuItemName;
-            openToolStripMenuItem.Text = LangF.THStropenToolStripMenuItemName;
-            saveToolStripMenuItem.Text = LangF.THStrsaveToolStripMenuItemName;
-            saveAsToolStripMenuItem.Text = LangF.THStrsaveAsToolStripMenuItemName;
-            editToolStripMenuItem.Text = LangF.THStreditToolStripMenuItemName;
-            viewToolStripMenuItem.Text = LangF.THStrviewToolStripMenuItemName;
-            optionsToolStripMenuItem.Text = LangF.THStroptionsToolStripMenuItemName;
-            helpToolStripMenuItem.Text = LangF.THStrhelpToolStripMenuItemName;
-            aboutToolStripMenuItem.Text = LangF.THStraboutToolStripMenuItemName;
+            //language strings setup
+            //THMainDGVOriginalColumnName = LangF.THStrDGOriginalColumnName;
+            //THMainDGVTranslationColumnName = LangF.THStrDGTranslationColumnName;
+            //fileToolStripMenuItem.Text = T._("FIle");
+            //openToolStripMenuItem.Text = T._("Open");
+            //saveToolStripMenuItem.Text = T._("Save");
+            //saveAsToolStripMenuItem.Text = T._("Save As");
+            //editToolStripMenuItem.Text = T._("Edit");
+            //viewToolStripMenuItem.Text = T._("View");
+            //optionsToolStripMenuItem.Text = T._("Options");
+            //helpToolStripMenuItem.Text = T._("Help");
+            //aboutToolStripMenuItem.Text = T._("About");
 
-            LangF.THReadLanguageFileToStrings();
+            //LangF.THReadLanguageFileToStrings();
 
             THFilesElementsDataset = new DataSet();
             THFilesElementsALLDataTable = new DataTable();
@@ -127,8 +128,8 @@ namespace TranslationHelper
             };
 
             //Main
-            THToolTip.SetToolTip(THMainResetTableButton, "Resets filters and tab sorting");
-            THToolTip.SetToolTip(THFiltersDataGridView, "Filters for columns of main table");
+            THToolTip.SetToolTip(THMainResetTableButton, T._("Resets filters and tab sorting"));
+            THToolTip.SetToolTip(THFiltersDataGridView, T._("Filters for columns of main table"));
             ////////////////////////////
         }
 
@@ -191,7 +192,7 @@ namespace TranslationHelper
                         if (THFOpen.OpenFile() != null)
                         {
                             //THActionProgressBar.Visible = true;
-                            ProgressInfo(true, "opening..");
+                            ProgressInfo(true, T._("opening.."));
 
                             THCleanupThings();
 
@@ -209,7 +210,7 @@ namespace TranslationHelper
 
                             if (THSelectedSourceType.Length == 0)
                             {
-                                THMsg.Show("Problem with source opening. Try to report to devs about it.");
+                                THMsg.Show(T._("Problem with source opening. Try to report to devs about it."));
                             }
                             else
                             {
@@ -657,7 +658,7 @@ namespace TranslationHelper
                 {
                     return true;
                 }
-                ProgressInfo(true, "opening file: " + filename + ".trans");
+                ProgressInfo(true, T._("opening file: ") + filename + ".trans");
                 string jsondata = File.ReadAllText(sPath); // get json data
 
                 THFilesElementsDataset.Tables.Add(filename); // create table with json name
@@ -725,7 +726,7 @@ namespace TranslationHelper
                     //MessageBox.Show("true!");
                     return true;
                 }
-                ProgressInfo(true, "opening file: " + Jsonname + ".json");
+                ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
                 string jsondata = File.ReadAllText(sPath); // get json data
 
                 THFilesElementsDataset.Tables.Add(Jsonname); // create table with json name
@@ -2370,7 +2371,7 @@ namespace TranslationHelper
             for (int i = 0; i < ListFiles.Count; i++)   //Обрабатываем всю строку
             {
                 string fname = Path.GetFileNameWithoutExtension(ListFiles[i]);
-                ProgressInfo(true, "opening file: "+ fname+".txt");
+                ProgressInfo(true, T._("opening file: ") + fname+".txt");
                 _file = new StreamReader(ListFiles[i]); //Задаем файл
                 //THRPGMTransPatchFiles.Add(new THRPGMTransPatchFile(Path.GetFileNameWithoutExtension(ListFiles[i]), ListFiles[i].ToString(), string.Empty));    //Добaвляем файл
                 _ = DS.Tables.Add(fname);
@@ -2795,9 +2796,9 @@ namespace TranslationHelper
 
         private void SetOnTHFileElementsDataGridViewWasLoaded()
         {
-            THFileElementsDataGridView.Columns["Original"].HeaderText = "Оригинал";//THMainDGVOriginalColumnName;
-            THFileElementsDataGridView.Columns["Translation"].HeaderText = "Перевод";//THMainDGVTranslationColumnName;
-            THFileElementsDataGridView.Columns[THMainDGVOriginalColumnName].ReadOnly = true;
+            THFileElementsDataGridView.Columns["Original"].HeaderText = T._("Original");//THMainDGVOriginalColumnName;
+            THFileElementsDataGridView.Columns["Translation"].HeaderText = T._("Translation");//THMainDGVTranslationColumnName;
+            THFileElementsDataGridView.Columns["Original"].ReadOnly = true;
             THFiltersDataGridView.Enabled = true;
             THSourceRichTextBox.Enabled = true;
             THTargetRichTextBox.Enabled = true;
@@ -2875,14 +2876,14 @@ namespace TranslationHelper
                 {
                     THTargetRichTextBox.Clear();
 
-                    if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value + string.Empty).Length == 0)
+                    if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty).Length == 0)
                     {
 
                     }
-                    else//проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
+                    else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
                     {
                         //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
-                        THSourceRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[THMainDGVOriginalColumnName].Value + string.Empty; //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        THSourceRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty; //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
                         //https://github.com/caguiclajmg/WanaKanaSharp
                         //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
                         //{
@@ -2893,18 +2894,18 @@ namespace TranslationHelper
                         //также по японо ыфуригане
                         //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
                     }
-                    if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value + string.Empty).Length == 0)
+                    if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value + string.Empty).Length == 0)
                     {
 
                     }
                     else//проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
-                        if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value + string.Empty).Length == 0)
+                        if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value + string.Empty).Length == 0)
                         {
                             THTargetRichTextBox.Clear();
                         }
 
-                        THTargetRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[LangF.THStrDGTranslationColumnName].Value + string.Empty; //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        THTargetRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value + string.Empty; //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
                     }
 
                     THInfoTextBox.Text = string.Empty;
@@ -2924,10 +2925,10 @@ namespace TranslationHelper
                         //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
                         THInfoTextBox.Text += THShowLangsOfString(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty, "all"); //Show all detected languages count info
                         THInfoTextBox.Text += Environment.NewLine;
-                        THInfoTextBox.Text += "rowinfo:\r\n"+THFilesElementsDatasetInfo.Tables[THFilesList.SelectedIndex].Rows[e.RowIndex][0];
+                        THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + THFilesElementsDatasetInfo.Tables[THFilesList.SelectedIndex].Rows[e.RowIndex][0];
                         if (THSelectedSourceType == "RPG Maker MV")
                         {
-                            THInfoTextBox.Text += "\r\n\r\nSeveral strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.";
+                            THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
                         }
                     }
                 }
@@ -2960,7 +2961,7 @@ namespace TranslationHelper
                 var hiragana = GetCharsInRange(target, 0x3040, 0x309F);
                 var katakana = GetCharsInRange(target, 0x30A0, 0x30FF);
 
-                ret += "contains: " + Environment.NewLine;
+                ret += T._("contains: ") + Environment.NewLine;
                 if (romaji.Any())
                 {
                     ret += ("       romaji:" + GetLocaleLangCount(target, "romaji") + Environment.NewLine);
@@ -3194,14 +3195,15 @@ namespace TranslationHelper
                             //WriteJson(THFilesListBox.Items[f].ToString(), THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                         }
                     }
-                    THMsg.Show("finished");
+                    THMsg.Show(T._("finished"));
                 }
             }
             SaveInAction = false;
         }
 
-        private void ProgressInfo(bool status, string statustext = "working..")
+        private void ProgressInfo(bool status, string statustext = "")
         {
+            statustext = statustext.Length == 0 ? T._("working..") : statustext;
             try
             {
                 THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = status));
@@ -3235,7 +3237,7 @@ namespace TranslationHelper
                         {
                             THSelectedDir = THSaveFolderBrowser.SelectedPath;
                             //MessageBox.Show("Сохранение завершено!");
-                            THMsg.Show("Сохранение завершено!");
+                            THMsg.Show(T._("Save complete!"));
                         }
                     }
                 }
@@ -3246,8 +3248,8 @@ namespace TranslationHelper
         {
             //измерение времени выполнения
             //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
-            Stopwatch swatch = new Stopwatch();
-            swatch.Start();
+            //Stopwatch swatch = new Stopwatch();
+            //swatch.Start();
 
             try
             {
@@ -3279,7 +3281,7 @@ namespace TranslationHelper
                     //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
                     for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
                     {
-                        ProgressInfo(true, "saving file: "+ THFilesElementsDataset.Tables[i].TableName);
+                        ProgressInfo(true, T._("saving file: ") + THFilesElementsDataset.Tables[i].TableName);
 
                         buffer.AppendLine("> RPGMAKER TRANS PATCH FILE VERSION 3.2");// + Environment.NewLine);
                         //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
@@ -3357,7 +3359,7 @@ namespace TranslationHelper
                     //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
                     for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
                     {
-                        ProgressInfo(true, "saving file: " + THFilesElementsDataset.Tables[i].TableName);
+                        ProgressInfo(true, T._("saving file: ") + THFilesElementsDataset.Tables[i].TableName);
 
                         bool unusednotfound = true;//для проверки начала неиспользуемых строк, в целях оптимизации
 
@@ -3448,8 +3450,8 @@ namespace TranslationHelper
 
 
             //остановка таймера и запись времени
-            swatch.Stop();
-            LogToFile("time=" + swatch.Elapsed.ToString(), true);//asdf
+            //swatch.Stop();
+            //LogToFile("time=" + swatch.Elapsed.ToString(), true);//asdf
             //THMsg.Show("time=" + time);
 
             return true;
@@ -4028,7 +4030,7 @@ namespace TranslationHelper
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
             {
-                ProgressInfo(true, "loading translation: " + t + @" \ " + THFilesElementsDataset.Tables.Count);
+                ProgressInfo(true, T._("loading translation: ") + t + @" \ " + THFilesElementsDataset.Tables.Count);
                 //if (THFilesElementsDataset.Tables[t].Columns.Count == 1)
                 //{
                 //    //LogToFile("ocol=0! creating second");
@@ -5263,7 +5265,7 @@ namespace TranslationHelper
 
         private bool WriteJson(string Jsonname, string sPath)
         {
-            ProgressInfo(true, "Writing: " + Jsonname + ".json");
+            ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
             //LogToFile("Jsonname = " + Jsonname);
             try
             {
@@ -5589,7 +5591,7 @@ namespace TranslationHelper
             {
                 if (IsTranslating)
                 {
-                    THMsg.Show("Already in process..");
+                    THMsg.Show(T._("Already in process.."));
                     return;
                 }
                 IsTranslating = true;
@@ -5629,7 +5631,7 @@ namespace TranslationHelper
         {
             if (IsTranslating)
             {
-                THMsg.Show("Already in process..");
+                THMsg.Show(T._("Already in process.."));
                 return;
             }
             IsTranslating = true;
@@ -5666,7 +5668,7 @@ namespace TranslationHelper
         {
             if (IsTranslating)
             {
-                THMsg.Show("Already in process..");
+                THMsg.Show(T._("Already in process.."));
                 return;
             }
             IsTranslating = true;
@@ -5813,19 +5815,19 @@ namespace TranslationHelper
                             string progressinfo;
                             if (method == "s")
                             {
-                                progressinfo = "Getting translation: " + (i + 1) + "/" + rowscount;
+                                progressinfo = T._("getting translation: ") + (i + 1) + "/" + rowscount;
                                 //индекс = первому из заданного списка выбранных индексов
                                 rowindex = selindexes[i];
                             }
                             else if (method == "t")
                             {
-                                progressinfo = "Getting translation: " + (i + 1) + "/" + rowscount;
+                                progressinfo = T._("getting translation: ") + (i + 1) + "/" + rowscount;
                                 //индекс с нуля и до последней строки
                                 rowindex = i;
                             }
                             else
                             {
-                                progressinfo = "Getting translation: "+ t+"/"+ tablescount+"::" + (i + 1) + "/" + rowscount;
+                                progressinfo = T._("getting translation: ") + t+"/"+ tablescount+"::" + (i + 1) + "/" + rowscount;
                                 //индекс с нуля и до последней строки
                                 rowindex = i;
                             }
@@ -7318,7 +7320,7 @@ namespace TranslationHelper
             //Show Error if no cell is selected
             if (THFileElementsDataGridView.SelectedCells.Count == 0)
             {
-                MessageBox.Show("Select cell first", "Paste",
+                MessageBox.Show(T._("Select cell first"), T._("Paste"),
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -7902,7 +7904,7 @@ namespace TranslationHelper
                         if (THFOpen.OpenFile() != null)
                         {
                             //THActionProgressBar.Visible = true;
-                            ProgressInfo(true, "loading..");
+                            ProgressInfo(true, T._("loading.."));
 
                             //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                             //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
@@ -7918,7 +7920,7 @@ namespace TranslationHelper
 
                             if (THSelectedSourceTypeTranslated.Length == 0)
                             {
-                                THMsg.Show("Problem with loading");
+                                THMsg.Show(T._("Problem with loading"));
                             }
                         }
                     }

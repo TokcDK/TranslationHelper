@@ -81,7 +81,7 @@
             this.THSettingsMainTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.THSettingsMainTabPage.Size = new System.Drawing.Size(524, 379);
             this.THSettingsMainTabPage.TabIndex = 0;
-            this.THSettingsMainTabPage.Text = "Main";
+            this.THSettingsMainTabPage.Text = T._("General");
             this.THSettingsMainTabPage.UseVisualStyleBackColor = true;
             // 
             // linkLabel2
@@ -104,7 +104,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(141, 13);
             this.label3.TabIndex = 12;
-            this.label3.Text = "Translation  Helper support:";
+            this.label3.Text = T._("Translation  Helper support:");
             this.label3.Visible = false;
             // 
             // panel1
@@ -125,7 +125,7 @@
             this.THSettingsOptimizationsTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.THSettingsOptimizationsTabPage.Size = new System.Drawing.Size(524, 379);
             this.THSettingsOptimizationsTabPage.TabIndex = 1;
-            this.THSettingsOptimizationsTabPage.Text = "Optimizations";
+            this.THSettingsOptimizationsTabPage.Text = T._("Optimizations");
             this.THSettingsOptimizationsTabPage.UseVisualStyleBackColor = true;
             // 
             // linkLabel1
@@ -148,7 +148,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 8;
-            this.label2.Text = "Translation  Helper support:";
+            this.label2.Text = T._("Translation  Helper support:");
             this.label2.Visible = false;
             // 
             // THProgramSettingsReadOptionsPanel
@@ -193,6 +193,7 @@
             // 
             // THOptionDBCompressionComboBox
             // 
+            this.THOptionDBCompressionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.THOptionDBCompressionComboBox.FormattingEnabled = true;
             this.THOptionDBCompressionComboBox.Items.AddRange(new object[] {
             "XML (none)",
@@ -203,7 +204,6 @@
             this.THOptionDBCompressionComboBox.Name = "THOptionDBCompressionComboBox";
             this.THOptionDBCompressionComboBox.Size = new System.Drawing.Size(121, 21);
             this.THOptionDBCompressionComboBox.TabIndex = 5;
-            this.THOptionDBCompressionComboBox.Text = "XML (None)";
             this.THOptionDBCompressionComboBox.SelectionChangeCommitted += new System.EventHandler(this.THOptionDBCompressionComboBox_SelectionChangeCommitted);
             // 
             // THOptionDBCompressionCheckBox
@@ -215,7 +215,7 @@
             this.THOptionDBCompressionCheckBox.Name = "THOptionDBCompressionCheckBox";
             this.THOptionDBCompressionCheckBox.Size = new System.Drawing.Size(146, 17);
             this.THOptionDBCompressionCheckBox.TabIndex = 4;
-            this.THOptionDBCompressionCheckBox.Text = "Compression for DB files:";
+            this.THOptionDBCompressionCheckBox.Text = T._("Compression for DB files:");
             this.THOptionDBCompressionCheckBox.UseVisualStyleBackColor = true;
             this.THOptionDBCompressionCheckBox.CheckedChanged += new System.EventHandler(this.THOptionDBCompressionCheckBox_CheckedChanged);
             // 
@@ -240,7 +240,7 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Name = "THOptionDontLoadStringIfRomajiPercentCheckBox";
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Size = new System.Drawing.Size(296, 17);
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.TabIndex = 1;
-            this.THOptionDontLoadStringIfRomajiPercentCheckBox.Text = "Do not load string if it has more of next romaji percent - ";
+            this.THOptionDontLoadStringIfRomajiPercentCheckBox.Text = T._("Do not load string if it has more of next romaji percent - ");
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.UseVisualStyleBackColor = true;
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.CheckedChanged += new System.EventHandler(this.THOptionDontLoadStringIfRomajiPercentCheckBox_CheckedChanged);
             // 
@@ -251,7 +251,7 @@
             this.THSettingsToolsTabPage.Name = "THSettingsToolsTabPage";
             this.THSettingsToolsTabPage.Size = new System.Drawing.Size(524, 379);
             this.THSettingsToolsTabPage.TabIndex = 2;
-            this.THSettingsToolsTabPage.Text = "Tools";
+            this.THSettingsToolsTabPage.Text = T._("Tools");
             this.THSettingsToolsTabPage.UseVisualStyleBackColor = true;
             // 
             // panel2
@@ -277,7 +277,7 @@
             this.THOptionAutotranslationForIdenticalCheckBox.Name = "THOptionAutotranslationForIdenticalCheckBox";
             this.THOptionAutotranslationForIdenticalCheckBox.Size = new System.Drawing.Size(159, 17);
             this.THOptionAutotranslationForIdenticalCheckBox.TabIndex = 13;
-            this.THOptionAutotranslationForIdenticalCheckBox.Text = "Autotranslation for identical";
+            this.THOptionAutotranslationForIdenticalCheckBox.Text = T._("Autotranslation for identical");
             this.THOptionAutotranslationForIdenticalCheckBox.UseVisualStyleBackColor = true;
             this.THOptionAutotranslationForIdenticalCheckBox.CheckedChanged += new System.EventHandler(this.THOptionAutotranslationForIdenticalCheckBox_CheckedChanged);
             // 
@@ -290,7 +290,7 @@
             this.THOptionEnableTranslationCacheCheckBox.Name = "THOptionEnableTranslationCacheCheckBox";
             this.THOptionEnableTranslationCacheCheckBox.Size = new System.Drawing.Size(178, 17);
             this.THOptionEnableTranslationCacheCheckBox.TabIndex = 12;
-            this.THOptionEnableTranslationCacheCheckBox.Text = "Enable online translation cache.";
+            this.THOptionEnableTranslationCacheCheckBox.Text = T._("Enable online translation cache.");
             this.THOptionEnableTranslationCacheCheckBox.UseVisualStyleBackColor = true;
             this.THOptionEnableTranslationCacheCheckBox.CheckedChanged += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_CheckedChanged);
             // 
@@ -314,7 +314,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(141, 13);
             this.label4.TabIndex = 10;
-            this.label4.Text = "Translation  Helper support:";
+            this.label4.Text = T._("Translation  Helper support:");
             this.label4.Visible = false;
             // 
             // label1
@@ -324,7 +324,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(225, 13);
             this.label1.TabIndex = 8;
-            this.label1.Text = "Web service link for manual translation (F12):";
+            this.label1.Text = T._("Web service link for manual translation (F12):");
             // 
             // THSettingsWebTransLinkTextBox
             // 
@@ -342,7 +342,7 @@
             this.ClientSize = new System.Drawing.Size(532, 405);
             this.Controls.Add(this.THSettingsTabControl);
             this.Name = "THSettings";
-            this.Text = "Settings";
+            this.Text = T._("Settings");
             this.Load += new System.EventHandler(this.THProgramSettingsForm_Load);
             this.THSettingsTabControl.ResumeLayout(false);
             this.THSettingsMainTabPage.ResumeLayout(false);
