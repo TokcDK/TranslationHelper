@@ -228,7 +228,7 @@ namespace TranslationHelper
                 using (OpenFileDialog THFOpen = new OpenFileDialog())
                 {
                     THFOpen.InitialDirectory = Settings.THConfigINI.ReadINI("Paths","LastPath");
-                    THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|Other|*.trans";
+                    THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|Other|*.scn";
 
                     if (THFOpen.ShowDialog() == DialogResult.OK)
                     {
@@ -442,6 +442,11 @@ namespace TranslationHelper
             DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
             THSelectedDir = dir + string.Empty;
             //MessageBox.Show("sPath=" + sPath);
+            if (sPath.ToLower().EndsWith(".scn"))
+            {
+                return KiriKiriScenarioOpen(sPath);
+                //return "RPGMakerTransPatch";
+            }
             if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
             {
                 return RPGMTransPatchPrepare(sPath);
@@ -581,6 +586,70 @@ namespace TranslationHelper
             }
 
             //MessageBox.Show("Uncompatible source or problem with opening.");
+            return string.Empty;
+        }
+
+        private string KiriKiriScenarioOpen(string sPath)
+        {
+            try
+            {
+                using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
+                {
+                    string line;
+                    string original = string.Empty;
+                    string filename = Path.GetFileNameWithoutExtension(sPath);
+                    _ = THFilesElementsDataset.Tables.Add(filename);
+                    _ = THFilesElementsDataset.Tables[0].Columns.Add("Original");
+                    while (!file.EndOfStream)
+                    {
+                        line = file.ReadLine();
+
+                        if (line.EndsWith("[k]"))
+                        {
+                            THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length-3,3));
+
+                            //int i = 0;
+                            //while (line.EndsWith("[k]"))
+                            //{
+                            //    if (i > 0)
+                            //    {
+                            //        original += Environment.NewLine;
+                            //    }
+
+                            //    original = original + line.Replace("[k]", string.Empty);
+
+                            //    line = file.ReadLine();
+
+                            //    if (line.EndsWith("[k]") && line.StartsWith("["))
+                            //    {
+                            //        THFilesElementsDataset.Tables[0].Rows.Add(original);
+                            //        original = string.Empty;
+                            //        i = 0;
+                            //    }
+                            //    else
+                            //    {
+                            //        i++;
+                            //    }
+                            //}
+                            //if (original.Length > 0)
+                            //{
+                            //    THFilesElementsDataset.Tables[0].Rows.Add(original);
+                            //    original = string.Empty;
+                            //}
+                        }
+                    }
+
+                    _ = THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                    THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
+                }
+
+                return "KiriKiri scenario";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
             return string.Empty;
         }
 
@@ -3239,9 +3308,57 @@ namespace TranslationHelper
                         }
                     }
                     THMsg.Show(T._("finished"));
+                }else if (THSelectedSourceType == "KiriKiri scenario")
+                {
+                    //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                    await Task.Run(() => WriteKiriKiriScenario(THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
                 }
             }
             SaveInAction = false;
+        }
+
+        private void WriteKiriKiriScenario(string sPath)
+        {
+            try
+            {
+                StringBuilder buffer = new StringBuilder();
+
+                using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
+                {
+                    string line;
+                    string original = string.Empty;
+                    string filename = Path.GetFileNameWithoutExtension(sPath);
+                    int elementnumber = 0;
+                    while (!file.EndOfStream)
+                    {
+                        line = file.ReadLine();
+
+                        if (line.EndsWith("[k]"))
+                        {
+                            if (
+                                (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
+                                && Equals(line.Remove(line.Length - 3, 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
+                                && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
+                               )
+                            {
+                                line = THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + "[k]";
+                            }
+
+                            elementnumber++;
+                        }
+
+                        buffer.AppendLine(line);
+                    }
+                }
+
+                File.WriteAllText(sPath, buffer.ToString(), Encoding.GetEncoding(932));
+
+                MessageBox.Show("Finished!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void ProgressInfo(bool status, string statustext = "")
@@ -3332,13 +3449,13 @@ namespace TranslationHelper
                         {
                             buffer.AppendLine("> BEGIN STRING");// + Environment.NewLine);
                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Original + Environment.NewLine;
-                            buffer.AppendLine(THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] as string);// + Environment.NewLine);
+                            buffer.AppendLine(THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] + string.Empty);// + Environment.NewLine);
                             //MessageBox.Show("1: " + ArrayTransFilses[i].blocks[y].Trans);
                             //MessageBox.Show("2: " + ArrayTransFilses[i].blocks[y].Context);
                             //string[] str = THRPGMTransPatchFiles[i].blocks[y].Context.Split('\n');
-                            string[] CONTEXT = (THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex] as string).Split('\n');
+                            string[] CONTEXT = (THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex] + string.Empty).Split('\n');
                             //string str1 = string.Empty;
-                            string TRANSLATION = THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] as string;
+                            string TRANSLATION = THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + string.Empty;
                             for (int g = 0; g < CONTEXT.Count(); g++)
                             {
                                 CONTEXT[g] = CONTEXT[g].Replace("\r", string.Empty);//очистка от знака переноса, возникающего после разбития на строки по \n
@@ -3410,7 +3527,7 @@ namespace TranslationHelper
                         //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
                         for (int y = 0; y < THFilesElementsDataset.Tables[i].Rows.Count; y++)
                         {
-                            string ADVICE = THFilesElementsDataset.Tables[i].Rows[y][advicecolumnindex] as string;
+                            string ADVICE = THFilesElementsDataset.Tables[i].Rows[y][advicecolumnindex] + string.Empty;
                             //Если в advice была информация о начале блоков неиспользуемых, то вставить эту строчку
                             if (unusednotfound && ADVICE.Contains("# UNUSED TRANSLATABLES"))
                             {
@@ -3420,7 +3537,7 @@ namespace TranslationHelper
                             }
                             buffer.AppendLine("# TEXT STRING");// + Environment.NewLine;
                             //if (THRPGMTransPatchFiles[i].blocks[y].Translation == "\r\n")
-                            string TRANSLATION = THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] as string;
+                            string TRANSLATION = THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + string.Empty;
                             if (TRANSLATION.Length == 0)
                             {
                                 buffer.AppendLine("# UNTRANSLATED");// + Environment.NewLine;
@@ -3437,7 +3554,7 @@ namespace TranslationHelper
                                 buffer.AppendLine("# ADVICE : " + ADVICE);// + Environment.NewLine;
                             }
                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Original;
-                            buffer.AppendLine(THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] as string);// + Environment.NewLine;
+                            buffer.AppendLine(THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] + string.Empty);// + Environment.NewLine;
                             buffer.AppendLine("# TRANSLATION ");// + Environment.NewLine;
                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Translation;
                             buffer.AppendLine(TRANSLATION);// + Environment.NewLine;
@@ -3910,15 +4027,22 @@ namespace TranslationHelper
                 return false;
             }
 
-            for (int t = 0; t < DS.Tables.Count; t++)
+            try
             {
-                for (int r = 0; r < DS.Tables[t].Rows.Count; r++)
+                for (int t = 0; t < DS.Tables.Count; t++)
                 {
-                    if ((DS.Tables[t].Rows[r][1] as string).Length > 0)
+                    for (int r = 0; r < DS.Tables[t].Rows.Count; r++)
                     {
-                        return true;
+                        if ((DS.Tables[t].Rows[r][1] + string.Empty).Length > 0)
+                        {
+                            return true;
+                        }
                     }
                 }
+            }
+            catch
+            {
+
             }
 
             return false;
@@ -4085,7 +4209,7 @@ namespace TranslationHelper
                 //проход по всем строкам таблицы рабочего dataset
                 for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
                 {
-                    if ((THFilesElementsDataset.Tables[t].Rows[r][otranscol] as string).Length == 0)
+                    if ((THFilesElementsDataset.Tables[t].Rows[r][otranscol] + string.Empty).Length == 0)
                     {
                         //LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][" + ocol + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[r][ocol].ToString());
                         bool TranslationWasSet = false;
@@ -4097,7 +4221,7 @@ namespace TranslationHelper
                                 //проход по всем строкам таблицы dataset с переводом
                                 for (int r1 = trowstartindex; r1 < THTempDS.Tables[t1].Rows.Count; r1++)
                                 {
-                                    if ((THTempDS.Tables[t1].Rows[r1][ttranscol] as string).Length == 0)
+                                    if ((THTempDS.Tables[t1].Rows[r1][ttranscol] + string.Empty).Length == 0)
                                     {
                                     }
                                     else
@@ -4112,7 +4236,7 @@ namespace TranslationHelper
                                             if (Equals(THFilesElementsDataset.Tables[t].Rows[r][0], THTempDS.Tables[t1].Rows[r1][0]))
                                             {
                                                 //дополнительная проверка для предотвращения перезаписи ячейки, если она была заполнена значением пользователем или другой функцией
-                                                if ((THFilesElementsDataset.Tables[t].Rows[r][otranscol] as string).Length == 0)
+                                                if ((THFilesElementsDataset.Tables[t].Rows[r][otranscol] + string.Empty).Length == 0)
                                                 {
                                                     THFilesElementsDataset.Tables[t].Rows[r][otranscol] = THTempDS.Tables[t1].Rows[r1][ttranscol];
                                                     TranslationWasSet = true;
@@ -5910,8 +6034,15 @@ namespace TranslationHelper
                                                 //LogToFile("cachedvalue=" + cachedvalue, true);
                                                 if (cachedvalue.Length == 0)
                                                 {
-                                                    string onlinevalue = GoogleAPI.Translate(inputvalue);//из исходников ESPTranslator 
-                                                    resultvalue = inputvalue.Replace(inputvalue, onlinevalue);
+                                                    string onlinevalue = GoogleAPI.Translate(inputvalue);//из исходников ESPTranslator
+
+                                                    //переделано через удаление и вставку строки, чтобы точно вставлялась нужная
+                                                    //строка в нужное место и с рассчетом на будущее, когда возможно строки будут выдираться из исходной
+                                                    //, а потом вставляться обратно
+                                                    int IndexOfTheString = inputvalue.IndexOf(inputvalue);
+                                                    resultvalue = inputvalue.Remove(IndexOfTheString, inputvalue.Length).Insert(IndexOfTheString, onlinevalue);
+                                                    //resultvalue = inputvalue.Replace(inputvalue, onlinevalue);
+
                                                     //LogToFile("resultvalue=" + resultvalue, true);
                                                     if (TranslationCacheChecked)
                                                     {
@@ -5956,7 +6087,7 @@ namespace TranslationHelper
                                         }
                                         else
                                         {
-                                            if ((THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] as string).Length == 0)
+                                            if ((THFilesElementsDataset.Tables[t].Rows[rowindex][cind + 1] + string.Empty).Length == 0)
                                             {
                                                 //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
                                                 if (TranslationCacheChecked)
@@ -7099,7 +7230,7 @@ namespace TranslationHelper
             if ((cellchanged || forcerun) && Settings.THOptionAutotranslationForIdenticalCheckBox.Checked) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
                 int transcind = cind + 1;
-                if ((THFilesElementsDataset.Tables[tableind].Rows[rind][transcind] as string).Length == 0)
+                if ((THFilesElementsDataset.Tables[tableind].Rows[rind][transcind] + string.Empty).Length == 0)
                 {
                 }
                 else//Запускать сравнение только если ячейка имеет значение
@@ -7109,8 +7240,8 @@ namespace TranslationHelper
                     string quote = "\"";
                     string pattern = @"((\d|\!|\?|\.|"+quote+")+)";
                     Regex reg = new Regex(pattern); //reg равняется любым цифрам
-                    string inputorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][cind] as string);
-                    string inputtranscellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][transcind] as string);
+                    string inputorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][cind] + string.Empty);
+                    string inputtranscellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][transcind] + string.Empty);
                     MatchCollection mc = reg.Matches(inputorigcellvalue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
                     int mccount = mc.Count;
 
@@ -7120,13 +7251,13 @@ namespace TranslationHelper
                         //LogToFile("Table "+Tindx+" proceed");
                         for (int Rindx = 0; Rindx < THFilesElementsDataset.Tables[Tindx].Rows.Count; Rindx++) //количество строк в каждом файле
                         {
-                            if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] as string).Length==0) //Проверять только для пустых ячеек перевода
+                            if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] + string.Empty).Length==0) //Проверять только для пустых ячеек перевода
                             {
                                 //LogToFile("THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString()=" + THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString());
                                 if (mccount > 0) //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
                                 {
-                                    string checkingorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind] as string);
-                                    MatchCollection mc0 = reg.Matches(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind] as string); //mc0 равно значениям цифр ячейки под номером y в файле i
+                                    string checkingorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind] + string.Empty);
+                                    MatchCollection mc0 = reg.Matches(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind] + string.Empty); //mc0 равно значениям цифр ячейки под номером y в файле i
                                     int mc0Count = mc0.Count;
                                     if (mc0Count > 0) //если количество совпадений в mc0 больше нуля, т.е. цифры были в поле untrans проверяемой на совпадение ячейки
                                     {
@@ -7137,7 +7268,7 @@ namespace TranslationHelper
                                         //если поле перевода равно только что измененному во входной, без учета цифр
                                         if (Equals(checkingorigcellvalueNoDigits,inputorigcellvalueNoDigits) && mccount == mc0Count && IsAllMatchesInIdenticalPlaces(inputorigcellvalue, checkingorigcellvalue, mc, mc0))
                                         {
-                                            if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] as string).Length == 0)
+                                            if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] + string.Empty).Length == 0)
                                             {
                                                 //инициализация основных целевого и входного массивов
                                                 string[] inputorigmatches = new string[mccount];
@@ -7179,7 +7310,7 @@ namespace TranslationHelper
                                                         //LogToFile("result[" + m + "]=" + inputresult);
                                                     }
                                                     //только если ячейка пустая
-                                                    if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] as string).Length == 0)
+                                                    if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] + string.Empty).Length == 0)
                                                     {
                                                         THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = inputresult;
                                                     }
@@ -7192,7 +7323,7 @@ namespace TranslationHelper
                                 {
                                     if (Equals(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind],THFilesElementsDataset.Tables[tableind].Rows[rind][cind])) //если поле Untrans елемента равно только что измененному
                                     {
-                                        if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] as string).Length == 0)
+                                        if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] + string.Empty).Length == 0)
                                         {
                                             THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода                                        
                                         }
@@ -7748,7 +7879,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = (THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value as string).ToLowerInvariant();
+                            THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = (THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).ToLowerInvariant();
                         }
 
                     }
@@ -8167,7 +8298,7 @@ namespace TranslationHelper
             for (int r = 0; r < DT.Rows.Count; r++)
             {
                 //LogToFile("\r\nIsTableRowsCompleted Value =\"" + DT.Rows[r][column] +"\", Length=" + ((DT.Rows[r][column] + string.Empty).Length));
-                if ((DT.Rows[r][column] as string).Length == 0)
+                if ((DT.Rows[r][column] + string.Empty).Length == 0)
                 {
                     //LogToFile("\r\nIsTableRowsCompleted=false");
                     return false;
@@ -8204,7 +8335,7 @@ namespace TranslationHelper
             if (index >= 0 && index < THFilesList.Items.Count)
             {
                 bool selected = ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
-                string text = THFilesList.Items[index] as string;
+                string text = THFilesList.Items[index] + string.Empty;
                 Graphics g = e.Graphics;
 
                 //background:
