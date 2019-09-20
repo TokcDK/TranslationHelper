@@ -633,7 +633,7 @@ namespace TranslationHelper
                                 //_ = THFilesElementsDataset.Tables[0].Rows.Add(value.Remove(value.Length - 3, 3));
                                 _ = THFilesElementsDataset.Tables[0].Rows.Add(line);
                             }
-                            else if (Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.") || Regex.IsMatch(line, @"^o\..+")) //variable, which is using even for displaing and should be translated in all files
+                            else if (Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.")) //variable, which is using even for displaing and should be translated in all files
                             {
                                 MatchCollection matches = Regex.Matches(line, @"( |'|\(|\[|,|\.)o.([^\.|\s|'|\)|,]+)");
 
@@ -3403,7 +3403,7 @@ namespace TranslationHelper
                             //WriteJson(THFilesListBox.Items[f].ToString(), THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                         }
                     }
-                    THMsg.Show(T._("finished"));
+                    THMsg.Show(T._("finished") + "!");
                 }
                 else if (THSelectedSourceType == "KiriKiri scenario")
                 {
@@ -3465,7 +3465,7 @@ namespace TranslationHelper
                                 }
                                 elementnumber++;
                             }
-                            else if (Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.") || Regex.IsMatch(line, @"^o\..+")) //variable, which is using even for displaing and should be translated in all files
+                            else if (Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.")) //variable, which is using even for displaing and should be translated in all files
                             {
                                 MatchCollection matches = Regex.Matches(line, @"( |'|\(|\[|,|\.)o\.([^\.|\s|'|\)|,]+)");
 

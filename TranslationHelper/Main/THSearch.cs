@@ -378,14 +378,16 @@ namespace TranslationHelper
                         PopulateGrid(oDsResults);
 
                         lblError.Visible = true;
-                        lblError.Text = "Found " + drFoundRowsTable.Rows.Count + " records";
+                        lblError.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
                         this.Height = 589;
+
+
                     }
                     else
                     {
                         //PopulateGrid(null);
                         lblError.Visible = true;
-                        lblError.Text = "Nothing Found.";
+                        lblError.Text = T._("Nothing Found");
                         this.Height = 368;
                     }
                 }
@@ -934,7 +936,70 @@ namespace TranslationHelper
 
         private void SearchFormReplaceAllButton_Click(object sender, EventArgs e)
         {
+            if (SearchFormFindWhatTextBox.Text.Length == 0 || THFilesElementsDataset == null)
+            {
+            }
+            else
+            {
+                lblError.Visible = false;
+                oDsResults = THFilesElementsDataset.Clone();
+                //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
+                DataTable drFoundRowsTable = SearchNew(oDsResults);
 
+                if (drFoundRowsTable == null)
+                {
+                }
+                else
+                {
+                    if (drFoundRowsTable.Rows.Count > 0)
+                    {
+                        StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
+
+                        oDsResults.AcceptChanges();
+                        PopulateGrid(oDsResults);
+
+                        lblError.Visible = true;
+                        lblError.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
+                        this.Height = 589;
+
+                        string searchcolumn = GetSearchColumn();
+                        for (int r=0; r< oDsResults.Tables[0].Rows.Count; r++)
+                        {
+                            tableindex = int.Parse(oDsResultsCoordinates.Rows[r][0] + string.Empty);
+                            rowindex = int.Parse(oDsResultsCoordinates.Rows[r][1] + string.Empty);
+
+                            string value = THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] + string.Empty;
+                            if (value.Length == 0)
+                            {
+                            }
+                            else
+                            {
+                                if (SearchModeRegexRadioButton.Checked)
+                                {
+                                    if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
+                                    {
+                                        THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] = Regex.Replace(value, SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
+                                    }
+                                }
+                                else
+                                {
+                                    if (value.ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant()))
+                                    {
+                                        THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] = ReplaceEx.Replace(value, SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //PopulateGrid(null);
+                        lblError.Visible = true;
+                        lblError.Text = T._("Nothing Found");
+                        this.Height = 368;
+                    }
+                }
+            }
         }
     }
 }
