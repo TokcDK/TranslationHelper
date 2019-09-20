@@ -228,7 +228,7 @@ namespace TranslationHelper
                 using (OpenFileDialog THFOpen = new OpenFileDialog())
                 {
                     THFOpen.InitialDirectory = Settings.THConfigINI.ReadINI("Paths","LastPath");
-                    THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|Other|*.scn";
+                    THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json;*.scn;*.ks|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks";
 
                     if (THFOpen.ShowDialog() == DialogResult.OK)
                     {
@@ -442,12 +442,17 @@ namespace TranslationHelper
             DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
             THSelectedDir = dir + string.Empty;
             //MessageBox.Show("sPath=" + sPath);
-            if (sPath.ToLower().EndsWith(".scn"))
+            if (sPath.ToLower().EndsWith(".ks"))
+            {
+                return KiriKiriScriptOpen(sPath);
+                //return "RPGMakerTransPatch";
+            }
+            else if (sPath.ToLower().EndsWith(".scn"))
             {
                 return KiriKiriScenarioOpen(sPath);
                 //return "RPGMakerTransPatch";
             }
-            if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
+            else if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
             {
                 return RPGMTransPatchPrepare(sPath);
                 //return "RPGMakerTransPatch";
@@ -589,6 +594,83 @@ namespace TranslationHelper
             return string.Empty;
         }
 
+        private string KiriKiriScriptOpen(string sPath)
+        {
+            try
+            {
+                using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
+                {
+                    string line;
+                    //string original = string.Empty;
+                    string filename = Path.GetFileNameWithoutExtension(sPath);
+                    _ = THFilesElementsDataset.Tables.Add(filename);
+                    _ = THFilesElementsDataset.Tables[0].Columns.Add("Original");
+                    _ = THFilesElementsDatasetInfo.Tables.Add(filename);
+                    _ = THFilesElementsDatasetInfo.Tables[0].Columns.Add("Original");
+                    while (!file.EndOfStream)
+                    {
+                        line = file.ReadLine();
+
+                        if (line.StartsWith(";") || Equals(line, string.Empty))
+                        {
+                        }
+                        else
+                        {
+                            if (line.EndsWith("[k]")) // text
+                            {
+                                _ = THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
+                            }
+                            else if (line.EndsWith("[r]")) //text, first line
+                            {
+                                //string value = string.Empty;
+                                //while (!line.EndsWith("[k]"))
+                                //{
+                                //    value += line + Environment.NewLine;
+
+                                //    line = file.ReadLine();
+                                //}
+                                //value += line;
+                                //_ = THFilesElementsDataset.Tables[0].Rows.Add(value.Remove(value.Length - 3, 3));
+                                _ = THFilesElementsDataset.Tables[0].Rows.Add(line);
+                            }
+                            else if (Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.") || Regex.IsMatch(line, @"^o\..+")) //variable, which is using even for displaing and should be translated in all files
+                            {
+                                MatchCollection matches = Regex.Matches(line, @"( |'|\(|\[|,|\.)o.([^\.|\s|'|\)|,]+)");
+
+                                for (int m = 0; m < matches.Count; m++)
+                                {
+                                    _ = THFilesElementsDataset.Tables[0].Rows.Add(matches[m].Value.Remove(0, 3));
+                                    _ = THFilesElementsDatasetInfo.Tables[0].Rows.Add(T._("Variable>Must be Identical in all files>Only A-Za-z0-9"));
+                                }
+                            }
+                            else if (line.StartsWith("@notice text="))
+                            {
+                                _ = THFilesElementsDataset.Tables[0].Rows.Add(line.Replace("@notice text=", string.Empty));
+                            }
+
+                        }
+                    }
+
+                    if (THFilesElementsDataset.Tables[0].Rows.Count > 0)
+                    {
+                        _ = THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                        THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
+                    }
+                    else
+                    {
+                        THMsg.Show(T._("Nothing to add"));
+                        return string.Empty;
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+
+            return "KiriKiri script";
+        }
+
         private string KiriKiriScenarioOpen(string sPath)
         {
             try
@@ -596,7 +678,7 @@ namespace TranslationHelper
                 using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
                 {
                     string line;
-                    string original = string.Empty;
+                    //string original = string.Empty;
                     string filename = Path.GetFileNameWithoutExtension(sPath);
                     _ = THFilesElementsDataset.Tables.Add(filename);
                     _ = THFilesElementsDataset.Tables[0].Columns.Add("Original");
@@ -604,43 +686,57 @@ namespace TranslationHelper
                     {
                         line = file.ReadLine();
 
-                        if (line.EndsWith("[k]"))
+                        if (line.StartsWith(";") || line.StartsWith("@") || Equals(line, string.Empty))
                         {
-                            THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length-3,3));
+                        }
+                        else
+                        {
+                            if (line.EndsWith("[k]"))
+                            {
+                                THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
 
-                            //int i = 0;
-                            //while (line.EndsWith("[k]"))
-                            //{
-                            //    if (i > 0)
-                            //    {
-                            //        original += Environment.NewLine;
-                            //    }
+                                //int i = 0;
+                                //while (line.EndsWith("[k]"))
+                                //{
+                                //    if (i > 0)
+                                //    {
+                                //        original += Environment.NewLine;
+                                //    }
 
-                            //    original = original + line.Replace("[k]", string.Empty);
+                                //    original = original + line.Replace("[k]", string.Empty);
 
-                            //    line = file.ReadLine();
+                                //    line = file.ReadLine();
 
-                            //    if (line.EndsWith("[k]") && line.StartsWith("["))
-                            //    {
-                            //        THFilesElementsDataset.Tables[0].Rows.Add(original);
-                            //        original = string.Empty;
-                            //        i = 0;
-                            //    }
-                            //    else
-                            //    {
-                            //        i++;
-                            //    }
-                            //}
-                            //if (original.Length > 0)
-                            //{
-                            //    THFilesElementsDataset.Tables[0].Rows.Add(original);
-                            //    original = string.Empty;
-                            //}
+                                //    if (line.EndsWith("[k]") && line.StartsWith("["))
+                                //    {
+                                //        THFilesElementsDataset.Tables[0].Rows.Add(original);
+                                //        original = string.Empty;
+                                //        i = 0;
+                                //    }
+                                //    else
+                                //    {
+                                //        i++;
+                                //    }
+                                //}
+                                //if (original.Length > 0)
+                                //{
+                                //    THFilesElementsDataset.Tables[0].Rows.Add(original);
+                                //    original = string.Empty;
+                                //}
+                            }
                         }
                     }
 
-                    _ = THFilesElementsDataset.Tables[0].Columns.Add("Translation");
-                    THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
+                    if (THFilesElementsDataset.Tables[0].Rows.Count > 0)
+                    {
+                        _ = THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                        THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
+                    }
+                    else
+                    {
+                        THMsg.Show(T._("Nothing to add"));
+                        return string.Empty;
+                    }
                 }
 
                 return "KiriKiri scenario";
@@ -3035,13 +3131,13 @@ namespace TranslationHelper
                         //THInfoTextBox.Text += furigana.Expression + "\r\n";
                         //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
                         //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
-                        THInfoTextBox.Text += THShowLangsOfString(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty, "all"); //Show all detected languages count info
-                        THInfoTextBox.Text += Environment.NewLine;
                         THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + THFilesElementsDatasetInfo.Tables[THFilesList.SelectedIndex].Rows[e.RowIndex][0];
                         if (THSelectedSourceType == "RPG Maker MV")
                         {
                             THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
                         }
+                        THInfoTextBox.Text += Environment.NewLine+ Environment.NewLine;
+                        THInfoTextBox.Text += THShowLangsOfString(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty, "all"); //Show all detected languages count info
                     }
                 }
                 //--------Считывание значения ячейки в текстовое поле 1
@@ -3308,16 +3404,112 @@ namespace TranslationHelper
                         }
                     }
                     THMsg.Show(T._("finished"));
-                }else if (THSelectedSourceType == "KiriKiri scenario")
+                }
+                else if (THSelectedSourceType == "KiriKiri scenario")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => WriteKiriKiriScenario(THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
+                    await Task.Run(() => KiriKiriScenarioWrite(THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
+                }
+                else if (THSelectedSourceType == "KiriKiri script")
+                {
+                    //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                    await Task.Run(() => KiriKiriScriptWrite(THSelectedDir + "\\" + THFilesList.Items[0] + ".ks"));
                 }
             }
             SaveInAction = false;
         }
 
-        private void WriteKiriKiriScenario(string sPath)
+        private void KiriKiriScriptWrite(string sPath)
+        {
+            try
+            {
+                StringBuilder buffer = new StringBuilder();
+
+                using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
+                {
+                    string line;
+                    //string original = string.Empty;
+                    string filename = Path.GetFileNameWithoutExtension(sPath);
+                    int elementnumber = 0;
+                    while (!file.EndOfStream)
+                    {
+                        line = file.ReadLine();
+
+                        if (line.StartsWith(";") || Equals(line, string.Empty))
+                        {
+
+                        }
+                        else
+                        {
+                            if (line.EndsWith("[k]")) // text
+                            {
+                                if (
+                                    (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
+                                    && Equals(line.Remove(line.Length - 3, 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
+                                    && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
+                                   )
+                                {
+                                    line = THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + "[k]";
+                                }
+                                elementnumber++;
+                            }
+                            else if (line.EndsWith("[r]")) //text, first line
+                            {
+                                if (
+                                    (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
+                                    && Equals(line, THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
+                                    && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
+                                   )
+                                {
+                                    line = THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty;
+                                }
+                                elementnumber++;
+                            }
+                            else if (Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.") || Regex.IsMatch(line, @"^o\..+")) //variable, which is using even for displaing and should be translated in all files
+                            {
+                                MatchCollection matches = Regex.Matches(line, @"( |'|\(|\[|,|\.)o\.([^\.|\s|'|\)|,]+)");
+
+                                for (int m = 0; m < matches.Count; m++)
+                                {
+                                    if (
+                                        (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
+                                        && Equals(matches[m].Value.Remove(0, 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
+                                        && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
+                                       )
+                                    {
+                                        line = line.Remove(matches[m].Index, matches[m].Value.Length).Insert(matches[m].Index, matches[m].Value.Replace(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty));
+                                    }
+                                    elementnumber++;
+                                }
+                            }
+                            else if (line.StartsWith("@notice text="))
+                            {
+                                if (
+                                    (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
+                                    && Equals(line, "@notice text=" + THFilesElementsDataset.Tables[0].Rows[elementnumber][0])
+                                    && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
+                                   )
+                                {
+                                    line = "@notice text=" + THFilesElementsDataset.Tables[0].Rows[elementnumber][1];
+                                }
+                                elementnumber++;
+                            }
+                        }
+
+                        buffer.AppendLine(line);
+                    }
+                }
+
+                File.WriteAllText(sPath, buffer.ToString(), Encoding.GetEncoding(932));
+
+                _ = MessageBox.Show(T._("finished") + "!");
+            }
+            catch
+            {
+            }
+        }
+
+        private void KiriKiriScenarioWrite(string sPath)
         {
             try
             {
@@ -3333,18 +3525,24 @@ namespace TranslationHelper
                     {
                         line = file.ReadLine();
 
-                        if (line.EndsWith("[k]"))
+                        if (line.StartsWith(";") || line.StartsWith("@") || Equals(line, string.Empty))
                         {
-                            if (
-                                (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
-                                && Equals(line.Remove(line.Length - 3, 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
-                                && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
-                               )
+                        }
+                        else
+                        {
+                            if (line.EndsWith("[k]"))
                             {
-                                line = THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + "[k]";
-                            }
+                                if (
+                                    (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
+                                    && Equals(line.Remove(line.Length - 3, 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
+                                    && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
+                                   )
+                                {
+                                    line = THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + "[k]";
+                                }
 
-                            elementnumber++;
+                                elementnumber++;
+                            }
                         }
 
                         buffer.AppendLine(line);
@@ -3353,11 +3551,11 @@ namespace TranslationHelper
 
                 File.WriteAllText(sPath, buffer.ToString(), Encoding.GetEncoding(932));
 
-                MessageBox.Show("Finished!");
+                _ = MessageBox.Show(T._("finished") + "!");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                _ = MessageBox.Show(ex.ToString());
             }
         }
 

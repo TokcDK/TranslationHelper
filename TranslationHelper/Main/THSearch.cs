@@ -480,14 +480,14 @@ namespace TranslationHelper
                 {
                     for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
                     {
-                        if ((THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] as string).Length == 0)
+                        if ((THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty).Length == 0)
                         {
 
                         }
                         else
                         {
                             DataRow Row = THFilesElementsDataset.Tables[t].Rows[r];
-                            string SelectedCellValue = THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] as string;
+                            string SelectedCellValue = THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty;
                             if (SearchModeRegexRadioButton.Checked)
                             {
                                 try
@@ -821,7 +821,7 @@ namespace TranslationHelper
                     {
                         if (tableindex >= 0 && tableindex < THFilesListBox.Items.Count && rowindex >= 0 && rowindex < THFileElementsDataGridView.Rows.Count)
                         {
-                            string value = THFileElementsDataGridView[searchcolumn, rowindex].Value as string;
+                            string value = THFileElementsDataGridView[searchcolumn, rowindex].Value + string.Empty;
                             if (value.Length == 0)
                             {
                             }
