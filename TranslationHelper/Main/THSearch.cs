@@ -833,14 +833,14 @@ namespace TranslationHelper
                                 {
                                     if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                                     {
-                                        THFileElementsDataGridView[searchcolumn, rowindex].Value = Regex.Replace(value, SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
+                                        THFileElementsDataGridView["Translation", rowindex].Value = Regex.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView["Translation", rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
                                     }
                                 }
                                 else
                                 {
                                     if (value.ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant()))
                                     {
-                                        THFileElementsDataGridView[searchcolumn, rowindex].Value = ReplaceEx.Replace(value, SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                        THFileElementsDataGridView["Translation", rowindex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView["Translation", rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                                     }
                                 }
                             }
@@ -934,6 +934,11 @@ namespace TranslationHelper
             }
         }
 
+        private string GetFirstIfNotEmpty(string first, string defaultvalue)
+        {
+            return first.Length == 0 ? defaultvalue : first;
+        }
+
         private void SearchFormReplaceAllButton_Click(object sender, EventArgs e)
         {
             if (SearchFormFindWhatTextBox.Text.Length == 0 || THFilesElementsDataset == null)
@@ -978,14 +983,14 @@ namespace TranslationHelper
                                 {
                                     if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                                     {
-                                        THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] = Regex.Replace(value, SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
+                                        THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = Regex.Replace(GetFirstIfNotEmpty(THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
                                     }
                                 }
                                 else
                                 {
                                     if (value.ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant()))
                                     {
-                                        THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] = ReplaceEx.Replace(value, SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                        THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = ReplaceEx.Replace(GetFirstIfNotEmpty(THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                                     }
                                 }
                             }

@@ -442,9 +442,9 @@ namespace TranslationHelper
             DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
             THSelectedDir = dir + string.Empty;
             //MessageBox.Show("sPath=" + sPath);
-            if (sPath.ToLower().EndsWith(".ks"))
+            if (sPath.ToLower().EndsWith(".ks") || sPath.ToLower().EndsWith(".scn"))
             {
-                return KiriKiriScriptOpen(sPath);
+                return KiriKiriScriptScenarioOpen(sPath);
                 //return "RPGMakerTransPatch";
             }
             else if (sPath.ToLower().EndsWith(".scn"))
@@ -594,7 +594,7 @@ namespace TranslationHelper
             return string.Empty;
         }
 
-        private string KiriKiriScriptOpen(string sPath)
+        private string KiriKiriScriptScenarioOpen(string sPath)
         {
             try
             {
@@ -603,6 +603,7 @@ namespace TranslationHelper
                     string line;
                     //string original = string.Empty;
                     string filename = Path.GetFileNameWithoutExtension(sPath);
+                    string extension = Path.GetExtension(sPath);
                     _ = THFilesElementsDataset.Tables.Add(filename);
                     _ = THFilesElementsDataset.Tables[0].Columns.Add("Original");
                     _ = THFilesElementsDatasetInfo.Tables.Add(filename);
@@ -619,6 +620,7 @@ namespace TranslationHelper
                             if (line.EndsWith("[k]")) // text
                             {
                                 _ = THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
+                                _ = THFilesElementsDatasetInfo.Tables[0].Rows.Add("[k] = end of line");
                             }
                             else if (line.EndsWith("[r]")) //text, first line
                             {
@@ -632,22 +634,23 @@ namespace TranslationHelper
                                 //value += line;
                                 //_ = THFilesElementsDataset.Tables[0].Rows.Add(value.Remove(value.Length - 3, 3));
                                 _ = THFilesElementsDataset.Tables[0].Rows.Add(line);
+                                _ = THFilesElementsDatasetInfo.Tables[0].Rows.Add("[r] = carriage return");
                             }
-                            else if (Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.")) //variable, which is using even for displaing and should be translated in all files
+                            else if (line.StartsWith("o.") || Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.")) //variable, which is using even for displaing and should be translated in all files
                             {
-                                MatchCollection matches = Regex.Matches(line, @"( |'|\(|\[|,|\.)o.([^\.|\s|'|\)|,]+)");
+                                MatchCollection matches = Regex.Matches(line, @"((^o.)|(( |'|\(|\[|,|\.)o.))([^\.|\s|'|\)|,]+)");
 
                                 for (int m = 0; m < matches.Count; m++)
                                 {
-                                    _ = THFilesElementsDataset.Tables[0].Rows.Add(matches[m].Value.Remove(0, 3));
+                                    _ = THFilesElementsDataset.Tables[0].Rows.Add(matches[m].Value.Remove(0, m == 0 ? 2 : 3));
                                     _ = THFilesElementsDatasetInfo.Tables[0].Rows.Add(T._("Variable>Must be Identical in all files>Only A-Za-z0-9"));
                                 }
                             }
                             else if (line.StartsWith("@notice text="))
                             {
                                 _ = THFilesElementsDataset.Tables[0].Rows.Add(line.Replace("@notice text=", string.Empty));
+                                _ = THFilesElementsDatasetInfo.Tables[0].Rows.Add("@notice text=");
                             }
-
                         }
                     }
 
@@ -659,7 +662,16 @@ namespace TranslationHelper
                     else
                     {
                         THMsg.Show(T._("Nothing to add"));
-                        return string.Empty;
+                        //return string.Empty;
+                    }
+
+                    if (extension == ".ks")
+                    {
+                        return "KiriKiri script";
+                    }
+                    else if (extension == ".scn")
+                    {
+                        return "KiriKiri script";
                     }
                 }
             }
@@ -668,7 +680,7 @@ namespace TranslationHelper
 
             }
 
-            return "KiriKiri script";
+            return string.Empty;
         }
 
         private string KiriKiriScenarioOpen(string sPath)
@@ -3408,18 +3420,19 @@ namespace TranslationHelper
                 else if (THSelectedSourceType == "KiriKiri scenario")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => KiriKiriScenarioWrite(THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
+                    //await Task.Run(() => KiriKiriScenarioWrite(THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
+                    await Task.Run(() => KiriKiriScriptScenarioWrite(THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
                 }
                 else if (THSelectedSourceType == "KiriKiri script")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => KiriKiriScriptWrite(THSelectedDir + "\\" + THFilesList.Items[0] + ".ks"));
+                    await Task.Run(() => KiriKiriScriptScenarioWrite(THSelectedDir + "\\" + THFilesList.Items[0] + ".ks"));
                 }
             }
             SaveInAction = false;
         }
 
-        private void KiriKiriScriptWrite(string sPath)
+        private void KiriKiriScriptScenarioWrite(string sPath)
         {
             try
             {
@@ -3465,15 +3478,15 @@ namespace TranslationHelper
                                 }
                                 elementnumber++;
                             }
-                            else if (Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.")) //variable, which is using even for displaing and should be translated in all files
+                            else if (line.StartsWith("o.") || Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.")) //variable, which is using even for displaing and should be translated in all files
                             {
-                                MatchCollection matches = Regex.Matches(line, @"( |'|\(|\[|,|\.)o\.([^\.|\s|'|\)|,]+)");
+                                MatchCollection matches = Regex.Matches(line, @"((^o.)|(( |'|\(|\[|,|\.)o.))([^\.|\s|'|\)|,]+)");
 
                                 for (int m = 0; m < matches.Count; m++)
                                 {
                                     if (
                                         (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
-                                        && Equals(matches[m].Value.Remove(0, 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
+                                        && Equals(matches[m].Value.Remove(0, m == 0 ? 2 : 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
                                         && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
                                        )
                                     {
@@ -3549,6 +3562,7 @@ namespace TranslationHelper
                     }
                 }
 
+                File.Move(sPath, sPath + ".bak");
                 File.WriteAllText(sPath, buffer.ToString(), Encoding.GetEncoding(932));
 
                 _ = MessageBox.Show(T._("finished") + "!");
