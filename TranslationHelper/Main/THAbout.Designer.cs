@@ -55,6 +55,7 @@
             this.linkLabel4.TabIndex = 12;
             this.linkLabel4.TabStop = true;
             this.linkLabel4.Text = "https://patreon.com/TranslationHelper";
+            this.linkLabel4.Visible = false;
             this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
             // 
             // THAboutForm

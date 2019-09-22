@@ -53,8 +53,8 @@ namespace TranslationHelper
             //Settings
             //Optimization
             THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBox, "String will not be loaded for translation if this string contains romaji characters in text more of specified percent.");
-            THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen, "Is true while opening. Always true for RPGMaker MV files or jsons for strings filtering purposes.");
-            THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation, T._("Is true while online translating. Will be used both with other chars like .!/? and other same"));
+            //THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen, "Is true while opening. Always true for RPGMaker MV files or jsons for strings filtering purposes.");
+            //THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation, T._("Is true while online translating. Will be used both with other chars like .!/? and other same"));
             THToolTip.SetToolTip(THOptionDBCompressionCheckBox, T._("Format for DB files: standard not compressed xml and compressed xml for both other"));
             //Tools
             THToolTip.SetToolTip(THOptionAutotranslationForIdenticalCheckBox, T._("Automatically will be translated all almost identical cells with same original."));

@@ -118,13 +118,14 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="THAboutTextBox.Text" xml:space="preserve">
-    <value>Translation Helper bu DenisK (c)2019
+    <value>Translation Helper by DenisK (c) 2019
 
-Utility which helps in translation of some games and other.
+Utility which helps in translation of some RPGMaker and other games .
 
 Currently can help to translate:
 RPG Maker Trans Patch and all games with it
 RPG Maker MV games or they json files with string
+Not encrypted KiriKiri games and they files
 
 Credits:
 Aleph Fell (Habisain) for RPGMakerTrans</value>
