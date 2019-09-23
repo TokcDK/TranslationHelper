@@ -541,7 +541,7 @@ namespace TranslationHelper
                         return string.Empty;
                     }
                 }
-                else if (dir.GetFiles("*.rgss2a").Length > 0 || dir.GetFiles("*.rvdata").Length > 0 || dir.GetFiles("*.rgssad").Length > 0 || dir.GetFiles("*.rxdata").Length > 0 || dir.GetFiles("*.lmt").Length > 0 || dir.GetFiles("*.lmu").Length > 0)
+                else if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2")) || dir.GetFiles("*.rgss3a").Length > 0 || dir.GetFiles("*.rgss2a").Length > 0 || dir.GetFiles("*.rvdata").Length > 0 || dir.GetFiles("*.rgssad").Length > 0 || dir.GetFiles("*.rxdata").Length > 0 || dir.GetFiles("*.lmt").Length > 0 || dir.GetFiles("*.lmu").Length > 0)
                 {
 
                     extractedpatchpath = string.Empty;
@@ -565,6 +565,12 @@ namespace TranslationHelper
                             //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
                             dir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpath + "\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
                                                                                                        //MessageBox.Show("patchdir1=" + patchdir);
+                        }
+                        else if (Directory.Exists(extractedpatchpath + Path.GetFileName(extractedpatchpath) + "\\patch"))
+                        {
+                            THRPGMTransPatchver = "3";
+                            extractedpatchpath += Path.GetFileName(extractedpatchpath) + "\\patch";
+                            dir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpath + "\\"));
                         }
                         else //иначе это версия 2
                         {
@@ -2686,10 +2692,11 @@ namespace TranslationHelper
             }
             //MessageBox.Show("tempdir=" + tempdir);
             string outdir = workdir + Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath));
+            
 
             if (extractdir == "Work")
             {
-                extractedpatchpath = outdir + "_patch";
+                extractedpatchpath = outdir + "_patch";// Распаковывать в Work\ProjectDir\
             }
 
             bool ret = false;
@@ -2697,10 +2704,10 @@ namespace TranslationHelper
             {
                 Directory.CreateDirectory(outdir);
 
-                ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
-                
+                //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
+
             }
-            else
+            else if (Directory.GetFiles(outdir+"_patch", "RPGMKTRANSPATCH", SearchOption.AllDirectories).Length > 0)
             {
                 DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
@@ -2713,9 +2720,12 @@ namespace TranslationHelper
                     Directory.Delete(outdir, true);
                     Directory.CreateDirectory(outdir);
 
-                    ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
+                    //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
+
                 }
             }
+
+            ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
 
             if (ret)
             {
@@ -2733,6 +2743,7 @@ namespace TranslationHelper
         {
             string rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rpgmakertrans", "rpgmt.exe");
             bool ret;
+            //string projectname = Path.GetFileName(outdir);
 
             //параметры
             //parser.add_argument("input", help = "Path of input game to patch")
@@ -8181,7 +8192,7 @@ namespace TranslationHelper
                         //string spath = THFOpenBD.FileName;
                         //THFOpenBD.OpenFile().Close();
                         //MessageBox.Show(THFOpenBD.FileName);
-                        LoadTranslationFromDB();
+                        //LoadTranslationFromDB();
                         
                         ProgressInfo(true);
 
@@ -8939,6 +8950,11 @@ namespace TranslationHelper
                     }
                 }
             }
+        }
+
+        private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            ControlsSwitch(true);//не включалось копирование в ячейку, при копировании с гугла назад
         }
 
 
