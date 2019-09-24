@@ -548,9 +548,9 @@ namespace TranslationHelper
                         //        }
                         //    }
                         //}
-                        string[] textarray = text2.Replace("DNTT", Environment.NewLine).Split(splitter, StringSplitOptions.None);
-                        array = textarray.Take(textarray.Length - 1).ToArray();//take берет все элементы кроме последнего пустого элемента массива, чтобы в основном коде не уменьшать его счет на один
-                        return array;
+
+                        return SplitTextToLinesAndRestoreSomeSpecsymbols(text2);
+                        //return array;
                     }
                     catch// (Exception ex)
                     {
@@ -560,6 +560,19 @@ namespace TranslationHelper
                 }
                 return null;
             }
+        }
+
+        private static string[] SplitTextToLinesAndRestoreSomeSpecsymbols(string text2)
+        {
+            // возвращение знака новой строки и разделение на подстроки в массив
+            string[] array = text2.Replace("DNTT", Environment.NewLine)
+                         .Split(splitter, StringSplitOptions.None);
+            
+            //возвращение <br>, если такие были изначально
+            array = array.Select(x => x.Replace("NBRN", "<br>")).ToArray();
+            
+            //take берет все элементы кроме последнего пустого элемента массива, чтобы в основном коде не уменьшать его счет на один;
+            return array.Take(array.Length - 1).ToArray();
         }
 
         private const string DNTT = "DNTT";
