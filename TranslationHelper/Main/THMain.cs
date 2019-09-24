@@ -6351,7 +6351,8 @@ namespace TranslationHelper
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
-                Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
+                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "a")));
                 //
                 //..и фикс ошибки:
                 //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -6365,6 +6366,129 @@ namespace TranslationHelper
                 //IsTranslating = false;
             }
             IsTranslating = false;
+        }
+
+        private void THOnlineTranslateByBigBlocks2(int cind, int tableindex, int[] selindexes, string v)
+        {
+            int maxchars = 500;
+            int currentchars = 0;
+            string InputOriginalLine;
+            string TranslationOfInputOriginalLine;
+
+            using (DataTable InputLines = new DataTable())
+            {
+                using (DataTable InputLinesInfo = new DataTable())
+                {
+                    InputLines.Columns.Add("Original");
+
+                    InputLinesInfo.Columns.Add("Original");
+                    InputLinesInfo.Columns.Add("Table");
+                    InputLinesInfo.Columns.Add("Row");
+
+                    for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
+                    {
+                        for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                        {
+                            TranslationOfInputOriginalLine = (THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty);
+                            if (TranslationOfInputOriginalLine.Length == 0)
+                            {
+                                InputOriginalLine = THFilesElementsDataset.Tables[t].Rows[r][0] + string.Empty;
+
+                                bool TranslateIt;
+                                TranslateIt = (currentchars + InputOriginalLine.Length) >= maxchars || (t == THFilesElementsDataset.Tables.Count - 1 && r == THFilesElementsDataset.Tables[t].Rows.Count - 1);
+
+                                currentchars += InputOriginalLine.Length;
+
+                                if (InputOriginalLine.Split('\n').Length > 1)
+                                {
+                                    string[] lines = InputOriginalLine.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                                    for (int s = 0; s < lines.Length; s++)
+                                    {
+                                        //if (lines[s].Length > 0)
+                                        //{
+                                        //    InputLines.Rows.Add(lines[s]);
+                                        //}
+                                        InputLines.Rows.Add(lines[s]);
+                                        InputLinesInfo.Rows.Add(lines[s], t, r);
+                                    }
+
+                                }
+                                else
+                                {
+                                    InputLines.Rows.Add(InputOriginalLine);
+                                    InputLinesInfo.Rows.Add(InputOriginalLine, t, r);
+                                }
+
+
+                                if (TranslateIt)
+                                {
+                                    currentchars = 0;
+
+                                    //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
+                                    string[] OriginalLines = InputLines.Rows.OfType<DataRow>().Select(row => row[0].ToString()).ToArray();
+
+                                    string[] TranslatedLines = GoogleAPI.TranslateMultiple(OriginalLines);
+
+                                    //int infoCount = InputLinesInfo.Rows.Count;
+                                    //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
+
+                                    if (TranslatedLines == null || TranslatedLines.Length == 0)
+                                    {
+                                    }
+                                    else
+                                    {
+                                        StringBuilder resultvalue = new StringBuilder();
+                                        int PreviousTableIndex = -1;
+                                        int PreviousRowIndex = -1;
+                                        int i2 = 0;
+                                        for (int i = 0; i < TranslatedLines.Length-1; i++) //-1 для удаления последнего пустого элемента в варианте с <br>
+                                        {
+                                            int TableIndex = int.Parse(InputLinesInfo.Rows[i2][1] + string.Empty);
+                                            int RowIndex = int.Parse(InputLinesInfo.Rows[i2][2] + string.Empty);
+                                            
+                                            if (RowIndex == PreviousRowIndex)
+                                            {
+                                                if ((InputLinesInfo.Rows[i2][0] + string.Empty).Length == 0)
+                                                {
+                                                    resultvalue.Append(Environment.NewLine);
+                                                }
+                                                else
+                                                {
+                                                    resultvalue.Append(Environment.NewLine + TranslatedLines[i]);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (resultvalue.Length > 0)
+                                                {
+                                                    if ((THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] + string.Empty).Length == 0)
+                                                    {
+                                                        THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = resultvalue.ToString().Replace("NBRN", "<br>");
+                                                    }
+                                                    resultvalue.Clear();
+                                                    resultvalue.Append(TranslatedLines[i]);
+                                                }
+                                                else
+                                                {
+                                                    resultvalue.Append(TranslatedLines[i]);
+                                                    //THFilesElementsDataset.Tables[TableIndex].Rows[RowIndex][1] = TranslatedLines[i];
+                                                }
+                                            }
+                                            PreviousRowIndex = RowIndex;
+                                            PreviousTableIndex = TableIndex;
+                                            i2++;
+                                        }
+
+                                    }
+                                    InputLines.Rows.Clear();
+                                    InputLinesInfo.Rows.Clear();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         //DataSet THTranslationCache = new DataSet();
@@ -6612,13 +6736,6 @@ namespace TranslationHelper
             ProgressInfo(false);
         }
 
-        /// <summary>
-        /// перевод множества строк большим блоком
-        /// </summary>
-        /// <param name="cind"></param>
-        /// <param name="tableindex"></param>
-        /// <param name="selindexes"></param>
-        /// <param name="method"></param>
         private void THOnlineTranslateByBigBlocks(int cind, int tableindex, int[] selindexes, string method = "a")
         {
             int rowscount = 0;

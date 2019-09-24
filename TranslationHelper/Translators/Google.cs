@@ -432,13 +432,14 @@ namespace TranslationHelper
                             }
                             stringBuilder.Append(string.Concat(new string[]
                             {
-                                "##",
-                                Conversions.ToString(i),
-                                "#># ",
-                                Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None),
-                                " #<#",
-                                Conversions.ToString(i),
-                                "##\r\n"
+                                //"##",
+                                //Conversions.ToString(i),
+                                //"#># ",
+                                Regex.Replace(Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None), @"\<br\>", "NBRN", RegexOptions.None),
+                                //" #<#",
+                                //Conversions.ToString(i),
+                                //"##\r\n"
+                                " <br> \r\n"
                             }));
                         }
                     }
@@ -509,30 +510,34 @@ namespace TranslationHelper
                             }
                             return array;
                         }
-                        MatchCollection matchCollection = myReg.Matches(text2);
-                        //FileWriter.WriteData("c:\\THLog.log", "\r\nmatchCollection cnt:" + matchCollection.Count+ ", array.Count()"+ array.Count());
-                        int matchnum = 0;
-                        for (int k = 0; k < array.Count(); k++)
-                        {
-                            //FileWriter.WriteData("c:\\THLog.log", "\r\narray[k]=" + array[k]);
-                            if (array[k] == null)
-                            {
-                                if (matchCollection.Count == matchnum)
-                                {
-                                    array[k] = string.Empty;
-                                }
-                                else
-                                {
-                                    //FileWriter.WriteData("c:\\THLog.log", "\r\nSet matchCollection["+matchnum+"].Value" + matchCollection[matchnum].Value);
-                                    array[k] = matchCollection[matchnum].Value.Replace("DNTT", Environment.NewLine);
-                                    matchnum++;
-                                }
-                            }
-                        }
+
+                        //array = NormalizeResponse(text2);
+                        //MatchCollection matchCollection = myReg.Matches(text2);
+                        ////FileWriter.WriteData("c:\\THLog.log", "\r\nmatchCollection cnt:" + matchCollection.Count+ ", array.Count()"+ array.Count());
+                        //int matchnum = 0;
+                        //for (int k = 0; k < array.Count(); k++)
+                        //{
+                        //    //FileWriter.WriteData("c:\\THLog.log", "\r\narray[k]=" + array[k]);
+                        //    if (array[k] == null)
+                        //    {
+                        //        if (matchCollection.Count == matchnum)
+                        //        {
+                        //            array[k] = string.Empty;
+                        //        }
+                        //        else
+                        //        {
+                        //            //FileWriter.WriteData("c:\\THLog.log", "\r\nSet matchCollection["+matchnum+"].Value" + matchCollection[matchnum].Value);
+                        //            array[k] = matchCollection[matchnum].Value.Replace("DNTT", Environment.NewLine);
+                        //            matchnum++;
+                        //        }
+                        //    }
+                        //}
+                        array = text2.Replace("DNTT", Environment.NewLine).Split(splitter, StringSplitOptions.None);
                         return array;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        FileWriter.WriteData("c:\\Exc.log", "\r\nError:" + ex);
                         //Debog.Writeline(ex);
                     }
                 }
@@ -559,7 +564,9 @@ namespace TranslationHelper
         // Token: 0x04000449 RID: 1097
         //private static readonly Regex myReg = new Regex("(?<=##\\d## ).*?(?=##\\d##)", RegexOptions.Compiled);
         private static readonly Regex myReg = new Regex(@"(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\<\# \1 \#\# )|(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\#\#\#\# )", RegexOptions.Compiled);
+        
         //## 27 #># Same sex with this woman _ <# 27 ## 
         //\#\# \d{1,3} \#\# ?(.*) ?\#\# \d{1,3} \#\# ?
+        private static readonly string[] splitter = new string[] { " <br> " };
     }
 }
