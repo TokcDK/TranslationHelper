@@ -6404,11 +6404,10 @@ namespace TranslationHelper
                                     string[] lines = InputOriginalLine.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
                                     for (int s = 0; s < lines.Length; s++)
                                     {
-                                        //if (lines[s].Length > 0)
-                                        //{
-                                        //    InputLines.Rows.Add(lines[s]);
-                                        //}
-                                        InputLines.Rows.Add(lines[s]);
+                                        if (lines[s].Length > 0)
+                                        {
+                                            InputLines.Rows.Add(lines[s]);
+                                        }
                                         InputLinesInfo.Rows.Add(lines[s], t, r);
                                     }
 
@@ -6441,29 +6440,33 @@ namespace TranslationHelper
                                         int PreviousTableIndex = -1;
                                         int PreviousRowIndex = -1;
                                         int i2 = 0;
+                                        bool EmptyWasSetFromInfo = false;
                                         for (int i = 0; i < TranslatedLines.Length-1; i++) //-1 для удаления последнего пустого элемента в варианте с <br>
                                         {
+                                            if ((InputLinesInfo.Rows[i2][0] + string.Empty).Length == 0)
+                                            {
+                                                resultvalue.Append(Environment.NewLine);
+                                                EmptyWasSetFromInfo = true;
+                                                i2++;
+                                            }
+
                                             int TableIndex = int.Parse(InputLinesInfo.Rows[i2][1] + string.Empty);
                                             int RowIndex = int.Parse(InputLinesInfo.Rows[i2][2] + string.Empty);
-                                            
-                                            if (RowIndex == PreviousRowIndex)
+
+                                            if (RowIndex == PreviousRowIndex && !EmptyWasSetFromInfo)// должно быть false, если была добавлена пустая строка
                                             {
-                                                if ((InputLinesInfo.Rows[i2][0] + string.Empty).Length == 0)
-                                                {
-                                                    resultvalue.Append(Environment.NewLine);
-                                                }
-                                                else
-                                                {
-                                                    resultvalue.Append(Environment.NewLine + TranslatedLines[i]);
-                                                }
+                                                resultvalue.Append(Environment.NewLine + TranslatedLines[i]);
                                             }
                                             else
                                             {
+                                                EmptyWasSetFromInfo = false;
+
                                                 if (resultvalue.Length > 0)
                                                 {
                                                     if ((THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] + string.Empty).Length == 0)
                                                     {
                                                         THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = resultvalue.ToString().Replace("NBRN", "<br>");
+                                                        THAutoSetValueForSameCells(PreviousTableIndex, PreviousRowIndex, 0, true);
                                                     }
                                                     resultvalue.Clear();
                                                     resultvalue.Append(TranslatedLines[i]);
@@ -6478,7 +6481,15 @@ namespace TranslationHelper
                                             PreviousTableIndex = TableIndex;
                                             i2++;
                                         }
-
+                                        if (resultvalue.Length > 0)
+                                        {
+                                            if ((THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] + string.Empty).Length == 0)
+                                            {
+                                                THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = resultvalue.ToString().Replace("NBRN", "<br>");
+                                                THAutoSetValueForSameCells(PreviousTableIndex, PreviousRowIndex, 0, true);
+                                            }
+                                            resultvalue.Clear();
+                                        }
                                     }
                                     InputLines.Rows.Clear();
                                     InputLinesInfo.Rows.Clear();
