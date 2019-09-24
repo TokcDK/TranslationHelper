@@ -27,14 +27,11 @@ namespace TranslationHelper
 {
     class GoogleAPI
     {
-        // Token: 0x06000EEA RID: 3818 RVA: 0x0006A671 File Offset: 0x00068871
         public static void ResetCache()
         {
             myCache.Clear();
         }
 
-        // Token: 0x170005D4 RID: 1492
-        // (get) Token: 0x06000EEB RID: 3819 RVA: 0x0006A680 File Offset: 0x00068880
         public static List<string> Languages
         {
             get
@@ -213,7 +210,6 @@ namespace TranslationHelper
         //    return result;
         //}
 
-        // Token: 0x06000EED RID: 3821 RVA: 0x0006AE40 File Offset: 0x00069040
         public static string Translate(string OriginalText)
         {
             string ResultOfTranslation;
@@ -246,24 +242,23 @@ namespace TranslationHelper
             return ResultOfTranslation;
         }
 
-        /// <summary>
-        /// кодирует некоторые символы в строке, как видно из строки адресу переводчика Гугл
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string UrlEncodeForTranslation(string value)
-        {
-            string[,] encode = { { "%", "%25" }, { Environment.NewLine, "%0A" }, { " ", "%20" }, { ":", "%3A" }, { ",", "%2C" }, { "$", "%24" }, { "&", "%26" }, { "#", "%23" }, { "@", "%40" }, { "`", "%60" }, { "+", "%2B" }, { "^", "%5E" }, { "/", "%2F" } };
+        ///// <summary>
+        ///// кодирует некоторые символы в строке, как видно из строки адресу переводчика Гугл
+        ///// </summary>
+        ///// <param name="value"></param>
+        ///// <returns></returns>
+        //public static string UrlEncodeForTranslation(string value)
+        //{
+        //    string[,] encode = { { "%", "%25" }, { Environment.NewLine, "%0A" }, { " ", "%20" }, { ":", "%3A" }, { ",", "%2C" }, { "$", "%24" }, { "&", "%26" }, { "#", "%23" }, { "@", "%40" }, { "`", "%60" }, { "+", "%2B" }, { "^", "%5E" }, { "/", "%2F" } };
 
-            for (int i = 0; i < encode.Length / 2; i++)
-            {
-                value = value.Replace(encode[i, 0], encode[i, 1]);
-            }
+        //    for (int i = 0; i < encode.Length / 2; i++)
+        //    {
+        //        value = value.Replace(encode[i, 0], encode[i, 1]);
+        //    }
 
-            return value;
-        }
+        //    return value;
+        //}
 
-        // Token: 0x06000EEE RID: 3822 RVA: 0x0006AEFC File Offset: 0x000690FC
         public static string GetTranslation(string OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
             string ResultOfTranslation;
@@ -279,7 +274,7 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nOriginalText:\r\n" + OriginalText);
+                    //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nOriginalText:\r\n" + OriginalText);
                     //https://www.codementor.io/000581/use-the-google-translate-api-for-free-rmxch1s67
                     //link = 'https://translate.googleapis.com/translate_a/single'.'?client=gtx&sl=auto&tl=ru&dt=t&q='.urlencode(text_part);
                     //result = go_curl(result = go​curl(link);
@@ -288,22 +283,26 @@ namespace TranslationHelper
                     //string str = UrlEncodeForTranslation(OriginalText);
                     //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "DNTT", RegexOptions.None);
                     //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
-                    string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "<code>0</code>", RegexOptions.None);
-                    FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nSTR:\r\n" + str);
+                    //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "<code>0</code>", RegexOptions.None);
+                    string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", " <br> ", RegexOptions.None);
+                    //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nSTR:\r\n" + str);
                     //string str = OriginalText.Replace(Environment.NewLine, "BBC");
                     //string str = OriginalText.Replace(Environment.NewLine, "%0A");
                     //string str = OriginalText;
                     //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "%0A", RegexOptions.None).Replace("\"", "\\\"");//.Replace("\r\n", "%0A").Replace("\"", "\\\"")
+
                     string arg = HttpUtility.UrlEncode(str, Encoding.UTF8);
                     //string arg = UrlEncodeForTranslation(str);
                     //string arg = str;
+                   
                     //string address = string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, arg);
                     string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
                     //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, str);
+
                     using (WebClient webClient = new WebClient())
                     {
                         webClient.Encoding = Encoding.UTF8;
-                        webClient.Headers.Add(HttpRequestHeader.UserAgent, "Opera/9.80 (J2ME/MIDP; Opera Mini/5.1.21214/28.2725; U; en) Presto/2.8.119 Version/11.10");
+                        webClient.Headers.Add(HttpRequestHeader.UserAgent, BrowserUserAgent);
                         try
                         {
                             //Материалы, что помогли
@@ -317,7 +316,7 @@ namespace TranslationHelper
                                 //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
                                 //FileWriter.WriteData("c:\\THLog1.log", "\r\ndownloadString:\r\n" + downloadString);
                                 text = webClient.DownloadString(address);
-                                FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nTEXT:\r\n" + text);
+                                //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nTEXT:\r\n" + text);
                                 WB.ScriptErrorsSuppressed = true;
                                 WB.DocumentText = string.Empty;
                                 htmlDocument = WB.Document.OpenNew(true);
@@ -333,7 +332,7 @@ namespace TranslationHelper
                                     }
                                     else
                                     {
-                                        FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
+                                        //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
                                         if (htmlElement.InnerHtml.StartsWith("<"))
                                         {
                                         }
@@ -344,7 +343,7 @@ namespace TranslationHelper
                                             string text2 = FixFormat(htmlElement.InnerText);
                                             //string text2 = htmlElement.InnerText.Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
                                             myCache[OriginalText] = text2;
-                                            FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\ntext2:\r\n" + text2);
+                                            //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\ntext2:\r\n" + text2);
                                             return text2;
                                         }
                                     }
@@ -354,7 +353,7 @@ namespace TranslationHelper
                             {
                             }
                         }
-                        catch (Exception)
+                        catch// (Exception)
                         {
                             //Debog.Writeline(ex);
                         }
@@ -367,17 +366,33 @@ namespace TranslationHelper
 
         private static string FixFormat(string input)
         {
-            input = Regex.Replace(input, @"## (\d{1,5}) # > #", "## $1 #>#");
-            input = Regex.Replace(input, @"## (\d{1,5}) #> #", "## $1 #>#");
-            input = Regex.Replace(input, @"## (\d{1,5}) # >#", "## $1 #>#");
-            input = Regex.Replace(input, @"# < # (\d{1,5}) ##", "#<# $1 ##");
-            input = Regex.Replace(input, @"# <# (\d{1,5}) ##", "#<# $1 ##");
-            input = Regex.Replace(input, @"#< # (\d{1,5}) ##", "#<# $1 ##");
-            input = Regex.Replace(input, @" <# (\d{1,5}) ##", " #<# $1 ##");
-            input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ######", "## $1 #># $2 #<# $1 ##");
-            input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) #####", "## $1 #># $2 #<# $1 ##");
-            input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ####", "## $1 #># $2 #<# $1 ##");
-            input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ###", "## $1 #># $2 #<# $1 ##");
+            return input
+                .Replace("</ p> </ font>", " </p></font>")
+                .Replace("</ p>", "</p>")
+                .Replace("</ font>", "</font>")
+                .Replace("<p align = ", "<p align=")
+                .Replace("<img src = ", "<img src=")
+                .Replace("<font size = ", "<font size=")
+                .Replace("<font face = ", "<font face=")
+                .Replace(" <br> ", Environment.NewLine)
+                ;
+        }
+
+        private static string FixFormatMulti(string input)
+        {
+            //Заменил разделитель на <br>
+            //input = Regex.Replace(input, @"## (\d{1,5}) # > #", "## $1 #>#");
+            //input = Regex.Replace(input, @"## (\d{1,5}) #> #", "## $1 #>#");
+            //input = Regex.Replace(input, @"## (\d{1,5}) # >#", "## $1 #>#");
+            //input = Regex.Replace(input, @"# < # (\d{1,5}) ##", "#<# $1 ##");
+            //input = Regex.Replace(input, @"# <# (\d{1,5}) ##", "#<# $1 ##");
+            //input = Regex.Replace(input, @"#< # (\d{1,5}) ##", "#<# $1 ##");
+            //input = Regex.Replace(input, @" <# (\d{1,5}) ##", " #<# $1 ##");
+            //input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ######", "## $1 #># $2 #<# $1 ##");
+            //input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) #####", "## $1 #># $2 #<# $1 ##");
+            //input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ####", "## $1 #># $2 #<# $1 ##");
+            //input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ###", "## $1 #># $2 #<# $1 ##");
+
             //\#\# (\d{1,5}) \#\>\# ([^(\#\>\# )]*) \#\#\#\#\#
             return input
                 //.Replace("<code> 0 </ code>", "<code>0</code>")
@@ -425,11 +440,12 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            bool flag3 = myCache.ContainsKey(OriginalText[i]);
-                            if (flag3)
+                            if (myCache.ContainsKey(OriginalText[i]))
                             {
                                 array[i] = myCache[OriginalText[i]];
                             }
+                            //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
+                            //https://stackoverflow.com/questions/47709517/google-translate-api-how-to-add-newline-without-changing-the-phrase-meaning
                             stringBuilder.Append(string.Concat(new string[]
                             {
                                 //"##",
@@ -439,7 +455,7 @@ namespace TranslationHelper
                                 //" #<#",
                                 //Conversions.ToString(i),
                                 //"##\r\n"
-                                " <br> \r\n"
+                                " <br> "+Environment.NewLine+"\r\n"//мой разделитель, <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
                             }));
                         }
                     }
@@ -451,7 +467,7 @@ namespace TranslationHelper
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.Encoding = Encoding.UTF8;
-                    webClient.Headers.Add(HttpRequestHeader.UserAgent, "Opera/9.80 (J2ME/MIDP; Opera Mini/5.1.21214/28.2725; U; en) Presto/2.8.119 Version/11.10");
+                    webClient.Headers.Add(HttpRequestHeader.UserAgent, BrowserUserAgent);
                     try
                     {
                         //Материалы, что помогли
@@ -463,7 +479,7 @@ namespace TranslationHelper
                         using (WebBrowser WB = new WebBrowser())//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
                         {
                             text = webClient.DownloadString(address);
-                            FileWriter.WriteData("c:\\THLog.log", "\r\nTEXT:\r\n" + text);
+                            //FileWriter.WriteData("c:\\THLog.log", "\r\nTEXT:\r\n" + text);
                             WB.ScriptErrorsSuppressed = true;
                             WB.DocumentText = string.Empty;
                             htmlDocument = WB.Document.OpenNew(true);
@@ -488,7 +504,7 @@ namespace TranslationHelper
                                     else
                                     {
                                         //text2 = htmlElement.InnerText.Replace(DNTT, "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                        text2 = FixFormat(htmlElement.InnerText);
+                                        text2 = FixFormatMulti(htmlElement.InnerText);
                                         break;
                                     }
                                 }
@@ -532,12 +548,13 @@ namespace TranslationHelper
                         //        }
                         //    }
                         //}
-                        array = text2.Replace("DNTT", Environment.NewLine).Split(splitter, StringSplitOptions.None);
+                        string[] textarray = text2.Replace("DNTT", Environment.NewLine).Split(splitter, StringSplitOptions.None);
+                        array = textarray.Take(textarray.Length - 1).ToArray();//take берет все элементы кроме последнего пустого элемента массива, чтобы в основном коде не уменьшать его счет на один
                         return array;
                     }
-                    catch (Exception ex)
+                    catch// (Exception ex)
                     {
-                        FileWriter.WriteData("c:\\Exc.log", "\r\nError:" + ex);
+                        //FileWriter.WriteData("c:\\Exc.log", "\r\nError:" + ex);
                         //Debog.Writeline(ex);
                     }
                 }
@@ -545,28 +562,26 @@ namespace TranslationHelper
             }
         }
 
-        // Token: 0x04000444 RID: 1092
         private const string DNTT = "DNTT";
         //private const string DNTT = "<code>0</code>";
 
-        // Token: 0x04000445 RID: 1093
         //private const string SEPARATOR = "\r\n#DONOTTRANSLATE#\r\n";
 
-        // Token: 0x04000446 RID: 1094
         //private static WebBrowser WB = new WebBrowser();
 
-        // Token: 0x04000447 RID: 1095
         private static readonly List<string> _Languages = new List<string>();
 
-        // Token: 0x04000448 RID: 1096
-        private static Dictionary<string, string> myCache = new Dictionary<string, string>(1);
+        private static readonly Dictionary<string, string> myCache = new Dictionary<string, string>(1);
 
-        // Token: 0x04000449 RID: 1097
         //private static readonly Regex myReg = new Regex("(?<=##\\d## ).*?(?=##\\d##)", RegexOptions.Compiled);
-        private static readonly Regex myReg = new Regex(@"(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\<\# \1 \#\# )|(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\#\#\#\# )", RegexOptions.Compiled);
+        //заменено на <br>
+        //private static readonly Regex myReg = new Regex(@"(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\<\# \1 \#\# )|(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\#\#\#\# )", RegexOptions.Compiled);
         
         //## 27 #># Same sex with this woman _ <# 27 ## 
         //\#\# \d{1,3} \#\# ?(.*) ?\#\# \d{1,3} \#\# ?
         private static readonly string[] splitter = new string[] { " <br> " };
+
+        //Browser UserAgent
+        private const string BrowserUserAgent = "Opera/9.80 (J2ME/MIDP; Opera Mini/5.1.21214/28.2725; U; en) Presto/2.8.119 Version/11.10";
     }
 }

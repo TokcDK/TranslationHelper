@@ -2699,7 +2699,7 @@ namespace TranslationHelper
                 extractedpatchpath = outdir + "_patch";// Распаковывать в Work\ProjectDir\
             }
 
-            bool ret = false;
+            bool ret;// = false;
             if (!Directory.Exists(outdir))
             {
                 Directory.CreateDirectory(outdir);
@@ -6370,8 +6370,8 @@ namespace TranslationHelper
 
         private void THOnlineTranslateByBigBlocks2(int cind, int tableindex, int[] selindexes, string v)
         {
-            int maxchars = 500;
-            int currentchars = 0;
+            int maxchars = 500; //большие значения ломаю ответ сервера, например отсутствует или ломается разделитель при значении 1000, потом надо будет подстроить идеальный максимум
+            int CurrentCharsCount = 0;
             string InputOriginalLine;
             string TranslationOfInputOriginalLine;
 
@@ -6389,20 +6389,20 @@ namespace TranslationHelper
                     {
                         for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
                         {
-                            TranslationOfInputOriginalLine = (THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty);
-                            if (TranslationOfInputOriginalLine.Length == 0)
+                            InputOriginalLine = THFilesElementsDataset.Tables[t].Rows[r][0] + string.Empty;
+
+                            bool TranslateIt;
+                            TranslateIt = (CurrentCharsCount + InputOriginalLine.Length) >= maxchars || (t == THFilesElementsDataset.Tables.Count - 1 && r == THFilesElementsDataset.Tables[t].Rows.Count - 1);
+                            
+                            if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)
                             {
-                                InputOriginalLine = THFilesElementsDataset.Tables[t].Rows[r][0] + string.Empty;
+                                CurrentCharsCount += InputOriginalLine.Length;
 
-                                bool TranslateIt;
-                                TranslateIt = (currentchars + InputOriginalLine.Length) >= maxchars || (t == THFilesElementsDataset.Tables.Count - 1 && r == THFilesElementsDataset.Tables[t].Rows.Count - 1);
+                                string[] lines = InputOriginalLine.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
-                                currentchars += InputOriginalLine.Length;
-
-                                if (InputOriginalLine.Split('\n').Length > 1)
+                                if (lines.Length > 1) //если строк больше одной
                                 {
-                                    string[] lines = InputOriginalLine.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-                                    for (int s = 0; s < lines.Length; s++)
+                                    for (int s = 0; s < lines.Length; s++) //добавить все непустые строки по отдельности, пустые добавить в Info
                                     {
                                         if (lines[s].Length > 0)
                                         {
@@ -6414,92 +6414,98 @@ namespace TranslationHelper
                                 }
                                 else
                                 {
+                                    //с одной строкой просто добавить её в таблицы
                                     InputLines.Rows.Add(InputOriginalLine);
                                     InputLinesInfo.Rows.Add(InputOriginalLine, t, r);
                                 }
+                            }
+                                                       
+                            if (TranslateIt)
+                            {
+                                CurrentCharsCount = 0;
 
+                                TranslateLinesAndSetTranslation(InputLines, InputLinesInfo);
 
-                                if (TranslateIt)
-                                {
-                                    currentchars = 0;
-
-                                    //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
-                                    string[] OriginalLines = InputLines.Rows.OfType<DataRow>().Select(row => row[0].ToString()).ToArray();
-
-                                    string[] TranslatedLines = GoogleAPI.TranslateMultiple(OriginalLines);
-
-                                    //int infoCount = InputLinesInfo.Rows.Count;
-                                    //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
-
-                                    if (TranslatedLines == null || TranslatedLines.Length == 0)
-                                    {
-                                    }
-                                    else
-                                    {
-                                        StringBuilder resultvalue = new StringBuilder();
-                                        int PreviousTableIndex = -1;
-                                        int PreviousRowIndex = -1;
-                                        int i2 = 0;
-                                        bool EmptyWasSetFromInfo = false;
-                                        for (int i = 0; i < TranslatedLines.Length-1; i++) //-1 для удаления последнего пустого элемента в варианте с <br>
-                                        {
-                                            if ((InputLinesInfo.Rows[i2][0] + string.Empty).Length == 0)
-                                            {
-                                                resultvalue.Append(Environment.NewLine);
-                                                EmptyWasSetFromInfo = true;
-                                                i2++;
-                                            }
-
-                                            int TableIndex = int.Parse(InputLinesInfo.Rows[i2][1] + string.Empty);
-                                            int RowIndex = int.Parse(InputLinesInfo.Rows[i2][2] + string.Empty);
-
-                                            if (RowIndex == PreviousRowIndex && !EmptyWasSetFromInfo)// должно быть false, если была добавлена пустая строка
-                                            {
-                                                resultvalue.Append(Environment.NewLine + TranslatedLines[i]);
-                                            }
-                                            else
-                                            {
-                                                EmptyWasSetFromInfo = false;
-
-                                                if (resultvalue.Length > 0)
-                                                {
-                                                    if ((THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] + string.Empty).Length == 0)
-                                                    {
-                                                        THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = resultvalue.ToString().Replace("NBRN", "<br>");
-                                                        THAutoSetValueForSameCells(PreviousTableIndex, PreviousRowIndex, 0, true);
-                                                    }
-                                                    resultvalue.Clear();
-                                                    resultvalue.Append(TranslatedLines[i]);
-                                                }
-                                                else
-                                                {
-                                                    resultvalue.Append(TranslatedLines[i]);
-                                                    //THFilesElementsDataset.Tables[TableIndex].Rows[RowIndex][1] = TranslatedLines[i];
-                                                }
-                                            }
-                                            PreviousRowIndex = RowIndex;
-                                            PreviousTableIndex = TableIndex;
-                                            i2++;
-                                        }
-                                        if (resultvalue.Length > 0)
-                                        {
-                                            if ((THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] + string.Empty).Length == 0)
-                                            {
-                                                THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = resultvalue.ToString().Replace("NBRN", "<br>");
-                                                THAutoSetValueForSameCells(PreviousTableIndex, PreviousRowIndex, 0, true);
-                                            }
-                                            resultvalue.Clear();
-                                        }
-                                    }
-                                    InputLines.Rows.Clear();
-                                    InputLinesInfo.Rows.Clear();
-                                }
+                                InputLines.Rows.Clear();
+                                InputLinesInfo.Rows.Clear();
                             }
                         }
                     }
                 }
             }
 
+        }
+
+        private void TranslateLinesAndSetTranslation(DataTable InputLines, DataTable InputLinesInfo )
+        {
+            //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
+            string[] OriginalLines = InputLines.Rows.OfType<DataRow>().Select(row => row[0].ToString()).ToArray();
+
+            string[] TranslatedLines = GoogleAPI.TranslateMultiple(OriginalLines);
+
+            //int infoCount = InputLinesInfo.Rows.Count;
+            //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
+
+            if (TranslatedLines == null || TranslatedLines.Length == 0)
+            {
+            }
+            else
+            {
+                StringBuilder resultvalue = new StringBuilder();
+                int PreviousTableIndex = -1;
+                int PreviousRowIndex = -1;
+                int i2 = 0;
+                bool EmptyWasSetFromInfo = false;
+                for (int i = 0; i < TranslatedLines.Length; i++)
+                {
+                    if ((InputLinesInfo.Rows[i2][0] + string.Empty).Length == 0)
+                    {
+                        resultvalue.Append(Environment.NewLine);
+                        EmptyWasSetFromInfo = true;
+                        i2++;
+                    }
+
+                    int TableIndex = int.Parse(InputLinesInfo.Rows[i2][1] + string.Empty);
+                    int RowIndex = int.Parse(InputLinesInfo.Rows[i2][2] + string.Empty);
+
+                    if (RowIndex == PreviousRowIndex && !EmptyWasSetFromInfo)// должно быть false, если была добавлена пустая строка
+                    {
+                        resultvalue.Append(Environment.NewLine + TranslatedLines[i]);
+                    }
+                    else
+                    {
+                        EmptyWasSetFromInfo = false;
+
+                        if (resultvalue.Length > 0)
+                        {
+                            if ((THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] + string.Empty).Length == 0)
+                            {
+                                THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = resultvalue.ToString().Replace("NBRN", "<br>");
+                                THAutoSetValueForSameCells(PreviousTableIndex, PreviousRowIndex, 0, true);
+                            }
+                            resultvalue.Clear();
+                            resultvalue.Append(TranslatedLines[i]);
+                        }
+                        else
+                        {
+                            resultvalue.Append(TranslatedLines[i]);
+                            //THFilesElementsDataset.Tables[TableIndex].Rows[RowIndex][1] = TranslatedLines[i];
+                        }
+                    }
+                    PreviousRowIndex = RowIndex;
+                    PreviousTableIndex = TableIndex;
+                    i2++;
+                }
+                if (resultvalue.Length > 0)
+                {
+                    if ((THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] + string.Empty).Length == 0)
+                    {
+                        THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = resultvalue.ToString().Replace("NBRN", "<br>");
+                        THAutoSetValueForSameCells(PreviousTableIndex, PreviousRowIndex, 0, true);
+                    }
+                    resultvalue.Clear();
+                }
+            }
         }
 
         //DataSet THTranslationCache = new DataSet();
@@ -8718,7 +8724,7 @@ namespace TranslationHelper
 
         public DirectoryInfo mvdatadirTranslated;
         public string THWorkProjectDirTranslated;
-        private bool istpptransfileTranslated;
+        //private bool istpptransfileTranslated;
         DataSet THFilesElementsDatasetTranslated = new DataSet();
         public string THSelectedDirTranslated;
         public string THRPGMTransPatchverTranslated;
@@ -8739,7 +8745,7 @@ namespace TranslationHelper
             }
             else if (sPath.ToLower().Contains(".trans"))
             {
-                istpptransfileTranslated = true;
+                //istpptransfileTranslated = true;
                 if (OpentppTransFile(sPath))
                 {
                     for (int i = 0; i < THFilesElementsDatasetTranslated.Tables.Count; i++)
