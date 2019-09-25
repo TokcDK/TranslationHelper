@@ -500,7 +500,7 @@ namespace TranslationHelper
             }
             else if (Path.GetExtension(sPath) == ".exe" /*sPath.ToLower().Contains("\\game.exe") || dir.GetFiles("*.exe").Length > 0*/)
             {
-                if (GetExeDescription(sPath).ToUpper().Contains("KIRIKIRI") && dir.GetFiles("*.xp3").Length > 0)
+                if ((GetExeDescription(sPath) != null && GetExeDescription(sPath).ToUpper().Contains("KIRIKIRI")) && dir.GetFiles("*.xp3").Length > 0)
                 {
                     if (KiriKiriGame(sPath))
                     {
@@ -4306,17 +4306,27 @@ namespace TranslationHelper
         private void THFileElementsDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
             var grid = sender as DataGridView;
-            var rowIdx = (e.RowIndex + 1) + string.Empty;
 
-            var centerFormat = new StringFormat()
+            string rowIdx = GetSelectedRowIndexinDatatable(e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
+            //string rowIdx = (e.RowIndex + 1) + string.Empty;
+
+            StringFormat centerFormat = new StringFormat()
             {
                 // right alignment might actually make more sense for numbers
                 Alignment = StringAlignment.Center,
                 LineAlignment = StringAlignment.Center
             };
 
-            var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+            Rectangle headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
+        }
+
+        private int GetSelectedRowIndexinDatatable(int rowIndex)
+        {
+            return THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows
+                .IndexOf(
+                ( (DataRowView)THFileElementsDataGridView.Rows[rowIndex].DataBoundItem ).Row
+                        );
         }
 
         //Пример виртуального режима
@@ -6251,9 +6261,22 @@ namespace TranslationHelper
                 int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
                 int tableindex = THFilesList.SelectedIndex;
                 int[] selindexes = new int[THFileElementsDataGridView.SelectedCells.Count];
+
                 for (int i = 0; i < selindexes.Length; i++)
                 {
-                    selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                    //по нахождению верного индекса строки
+                    //https://stackoverflow.com/questions/50999121/displaying-original-rowindex-after-filter-in-datagridview
+                    //https://stackoverflow.com/questions/27125494/get-index-of-selected-row-in-filtered-datagrid
+                    //DataRow r = ((DataRowView)BindingContext[THFileElementsDataGridView.DataSource].).Row;
+                    //selindexes[i] = r.Table.Rows.IndexOf(r); //находит верный но только длявыбранной ячейки
+                    //
+                    //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
+                    //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
+                    //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
+                    int index = GetSelectedRowIndexinDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                    selindexes[i] = index;
+
+                    //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
                 }
 
                 //THMsg.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
@@ -9185,6 +9208,30 @@ namespace TranslationHelper
         private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             ControlsSwitch(true);//не включалось копирование в ячейку, при копировании с гугла назад
+        }
+
+        //int SelectedRowIndexWhenFilteredDGW = 0;
+        private void THFileElementsDataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            //здесь добавить запоминание индекса выбранной  строки в отфильтрованном DGW
+            //bool IsOneOfFiltersHasValue = false;
+            //for (int s = 0; s < THFiltersDataGridView.Columns.Count; s++)
+            //{
+            //    if ((THFiltersDataGridView.Rows[0].Cells[s].Value + string.Empty).Length > 0)
+            //    {
+            //        IsOneOfFiltersHasValue = true;
+            //        break;
+            //    }
+            //}
+
+            //if (IsOneOfFiltersHasValue)
+            //{
+            //    //по нахождению верного индекса строки
+            //    //https://stackoverflow.com/questions/50999121/displaying-original-rowindex-after-filter-in-datagridview
+            //    //https://stackoverflow.com/questions/27125494/get-index-of-selected-row-in-filtered-datagrid
+            //    var r = ((DataRowView)BindingContext[THFileElementsDataGridView.DataSource].Current).Row;
+            //    SelectedRowIndexWhenFilteredDGW = r.Table.Rows.IndexOf(r); //находит верный но только для выбранной ячейки
+            //}
         }
 
 
