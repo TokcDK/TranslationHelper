@@ -3529,7 +3529,14 @@ namespace TranslationHelper
         /// </summary>
         /// <param name="extractedvalue"></param>
         /// <returns></returns>
-        public bool SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(string extractedvalue) => SelectedLocalePercentFromStringIsNotValid(extractedvalue) || SelectedLocalePercentFromStringIsNotValid(extractedvalue, "other");
+        public bool SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(string extractedvalue)
+        {
+            return SelectedLocalePercentFromStringIsNotValid(extractedvalue)
+                || SelectedLocalePercentFromStringIsNotValid(extractedvalue, "other")
+                || (GetLocaleLangCount(extractedvalue, "romaji") + GetLocaleLangCount(extractedvalue, "other")) == extractedvalue.Length
+                || GetLocaleLangCount(extractedvalue, "romaji") == extractedvalue.Length
+                || GetLocaleLangCount(extractedvalue, "other") == extractedvalue.Length;
+        }
 
         /// <summary>
         /// True if procent of selected locale characters in target string is lesser of set value in Settings
@@ -3937,7 +3944,7 @@ namespace TranslationHelper
                             //MessageBox.Show("1: " + ArrayTransFilses[i].blocks[y].Trans);
                             //MessageBox.Show("2: " + ArrayTransFilses[i].blocks[y].Context);
                             //string[] str = THRPGMTransPatchFiles[i].blocks[y].Context.Split('\n');
-                            string[] CONTEXT = (THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex] + string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
+                            string[] CONTEXT = (THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
                             //string str1 = string.Empty;
                             string TRANSLATION = THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + string.Empty;
                             for (int g = 0; g < CONTEXT.Count(); g++)
@@ -6031,7 +6038,10 @@ namespace TranslationHelper
                                 {
                                     //Where здесь формирует новый массив из входного, из элементов входного, удовлетворяющих заданному условию
                                     //https://stackoverflow.com/questions/1912128/filter-an-array-in-c-sharp
-                                    string[] origA = (THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/).Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0).ToArray();//Все строки, кроме пустых, чтобы потом исключить из проверки
+                                    string[] origA = (THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
+                                        .Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/)
+                                        .Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0)
+                                        .ToArray();//Все строки, кроме пустых, чтобы потом исключить из проверки
                                     int origALength = origA.Length;
                                     if (origALength == 0)
                                     {
@@ -6042,7 +6052,10 @@ namespace TranslationHelper
 
                                     if (origALength > 0)
                                     {
-                                        string[] transA = (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/).Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0).ToArray();//Все строки, кроме пустых
+                                        string[] transA = (THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty)
+                                            .Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/)
+                                            .Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0)
+                                            .ToArray();//Все строки, кроме пустых
                                         if (transA.Length == 0)
                                         {
                                             transA = new string[1];
@@ -6422,65 +6435,76 @@ namespace TranslationHelper
                                 {
                                     InputOriginalLine = THFilesElementsDataset.Tables[t].Rows[r][0] + string.Empty;
 
-                                    bool TranslateIt;
-                                    TranslateIt = (CurrentCharsCount + InputOriginalLine.Length) >= maxchars || (t == THFilesElementsDataset.Tables.Count - 1 && r == THFilesElementsDataset.Tables[t].Rows.Count - 1);
+                                    bool TranslateIt=false;
+                                    TranslateIt = (CurrentCharsCount + InputOriginalLine.Length) >= maxchars || r == THFilesElementsDataset.Tables[t].Rows.Count - 1;
 
                                     if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)
                                     {
-                                        CurrentCharsCount += InputOriginalLine.Length;
-
-                                        string[] Lines = InputOriginalLine.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-                                        string extractedvalue;
-                                        string cache;
-
-                                        if (Lines.Length > 1) //если строк больше одной
+                                        string InputOriginalLineFromCache = TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
+                                        
+                                        if (InputOriginalLineFromCache.Length > 0)
                                         {
-                                            for (int s = 0; s < Lines.Length; s++) //добавить все непустые строки по отдельности, пустые добавить в Info
+                                            THFilesElementsDataset.Tables[t].Rows[r][1] = InputOriginalLineFromCache;
+                                        }
+                                        else
+                                        {
+                                            CurrentCharsCount += InputOriginalLine.Length;
+
+                                            string[] Lines = InputOriginalLine.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
+                                            string extractedvalue;
+                                            string cache;
+
+                                            if (Lines.Length > 1) //если строк больше одной
+                                            {
+                                                for (int s = 0; s < Lines.Length; s++) //добавить все непустые строки по отдельности, пустые добавить в Info
+                                                {
+                                                    string linevalue = Lines[s];
+                                                    cache = TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
+                                                    if (cache.Length > 0)
+                                                    {
+                                                        InputLinesInfo.Rows.Add(linevalue, cache, t, r);
+                                                    }
+                                                    else
+                                                    {
+                                                        string Translation = string.Empty;
+                                                        if (linevalue.Length > 0)
+                                                        {
+                                                            extractedvalue = THExtractTextForTranslation(linevalue);
+
+                                                            cache = TranslationCacheFind(THTranslationCache, extractedvalue);
+                                                            if (cache.Length > 0)
+                                                            {
+                                                                Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
+                                                            }
+                                                            else
+                                                            {
+                                                                InputLines.Rows.Add(extractedvalue.Length == 0 ? linevalue : extractedvalue);
+                                                            }
+                                                        }
+                                                        InputLinesInfo.Rows.Add(linevalue, Translation, t, r);
+                                                    }
+
+                                                }
+
+                                            }
+                                            else
                                             {
                                                 cache = TranslationCacheFind(THTranslationCache, InputOriginalLine);
                                                 if (cache.Length > 0)
                                                 {
-                                                    InputLinesInfo.Rows.Add(Lines[s], cache, t, r);
+                                                    if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)
+                                                    {
+                                                        THFilesElementsDataset.Tables[t].Rows[r][1] = cache;
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    string Translation = string.Empty;
-                                                    if (Lines[s].Length > 0)
-                                                    {
-                                                        extractedvalue = THExtractTextForTranslation(Lines[s]);
-
-                                                        cache = TranslationCacheFind(THTranslationCache, extractedvalue);
-                                                        if (cache.Length > 0)
-                                                        {
-                                                            Translation = PasteTranslationBackIfExtracted(cache, Lines[s], extractedvalue);
-                                                        }
-                                                        else
-                                                        {
-                                                            InputLines.Rows.Add(extractedvalue.Length == 0 ? Lines[s] : extractedvalue);
-                                                        }
-                                                    }
-                                                    InputLinesInfo.Rows.Add(Lines[s], Translation, t, r);
+                                                    //с одной строкой просто добавить её в таблицы
+                                                    extractedvalue = THExtractTextForTranslation(InputOriginalLine);
+                                                    InputLines.Rows.Add(extractedvalue.Length == 0 ? InputOriginalLine : extractedvalue);
+                                                    InputLinesInfo.Rows.Add(InputOriginalLine, string.Empty, t, r);
                                                 }
 
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            cache = TranslationCacheFind(THTranslationCache, InputOriginalLine);
-                                            if (cache.Length > 0)
-                                            {
-                                                if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)
-                                                {
-                                                    THFilesElementsDataset.Tables[t].Rows[r][1] = cache;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                //с одной строкой просто добавить её в таблицы
-                                                extractedvalue = THExtractTextForTranslation(InputOriginalLine);
-                                                InputLines.Rows.Add(extractedvalue.Length == 0 ? InputOriginalLine : extractedvalue);
-                                                InputLinesInfo.Rows.Add(InputOriginalLine, string.Empty, t, r);
                                             }
 
                                         }
@@ -6530,40 +6554,93 @@ namespace TranslationHelper
                 int PreviousRowIndex = -1;
                 int i2 = 0;
                 bool EmptyWasSetFromInfo = false;
+
+                int TableIndex=0;
+                int RowIndex=0;
+
                 for (int i = 0; i < TranslatedLines.Length; i++)
                 {
+                    string fdsfsdf = TranslatedLines[i];
+                    string dfsgsdg1 = fdsfsdf;
+                    //--------------------------------
+                    //Блок считывания индеков таблицы и строки
+                    //добавление переноса, если строка той же ячейки, либо запись результата, если уже новая ячейка
+                    string prelastvalue="";
+                    string lastvalue = "";
+                    try
+                    {
+                        int inforowscount = InputLinesInfo.Rows.Count;
+                        if (inforowscount > 0)
+                        {
+                            if (inforowscount > 1)
+                            {
+                                prelastvalue = InputLinesInfo.Rows[InputLines.Rows.Count - 2][1] + string.Empty;
+                                
+                            }
+                            lastvalue = InputLinesInfo.Rows[InputLinesInfo.Rows.Count - 1][1] + string.Empty;
+                            
+                        }
+                        TableIndex = int.Parse(InputLinesInfo.Rows[i2][2] + string.Empty);
+                        RowIndex = int.Parse(InputLinesInfo.Rows[i2][3] + string.Empty);
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
+                    string asdasd = prelastvalue;
+                    string adsasdaaa = lastvalue;
+
+                    if (RowIndex == PreviousRowIndex)
+                    {
+                        ResultValue.Append(Environment.NewLine);                       
+                    }
+                    else
+                    {
+                        SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                    }
+
+                    //--------------------------------
+                    //Блок записи пустой строки или кеша из информации, если они были и увеличение i2 на 1
+
+                    bool WritedFromInfo = false;
                     if ((InputLinesInfo.Rows[i2][0] + string.Empty).Length == 0)
                     {
                         ResultValue.Append(Environment.NewLine);
-                        EmptyWasSetFromInfo = true;
+                        WritedFromInfo = true;
                         i2++;
                     }
                     else if ((InputLinesInfo.Rows[i2][1] + string.Empty).Length > 0)
                     {
                         ResultValue.Append(InputLinesInfo.Rows[i2][1] + string.Empty);
-                        EmptyWasSetFromInfo = true;
+                        WritedFromInfo = true;
                         i2++;
                     }
 
-                    int TableIndex = int.Parse(InputLinesInfo.Rows[i2][2] + string.Empty);
-                    int RowIndex = int.Parse(InputLinesInfo.Rows[i2][3] + string.Empty);
-
-                    if (RowIndex == PreviousRowIndex && !EmptyWasSetFromInfo)// должно быть false, если была добавлена пустая строка
+                    if (WritedFromInfo)//контроль, когда было записано из Info , предотвращает запись лишнего переноса
                     {
-                        ResultValue.Append(Environment.NewLine + PasteTranslationBackIfExtracted(TranslatedLines[i], InputLinesInfo.Rows[i2][0] + string.Empty, InputLines.Rows[i][0] + string.Empty));
+                        //--------------------------------
+                        //Блок считывания индеков таблицы и строки
+                        //добавление переноса, если строка той же ячейки, либо запись результата, если уже новая ячейка
 
-                        AddToTranslationCacheIfValid(THTranslationCache, InputLines.Rows[i][0] + string.Empty, TranslatedLines[i]);                        
+                        TableIndex = int.Parse(InputLinesInfo.Rows[i2][2] + string.Empty);
+                        RowIndex = int.Parse(InputLinesInfo.Rows[i2][3] + string.Empty);
+
+                        if (RowIndex == PreviousRowIndex)
+                        {
+                            ResultValue.Append(Environment.NewLine);
+                        }
+                        else
+                        {
+                            SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                        }
+
+                        //--------------------------------
                     }
-                    else
-                    {
-                        EmptyWasSetFromInfo = false;
 
-                        SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                    ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLines[i], InputLinesInfo.Rows[i2][0] + string.Empty, InputLines.Rows[i][0] + string.Empty));
 
-                        ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLines[i], InputLinesInfo.Rows[i2][0] + string.Empty, InputLines.Rows[i][0] + string.Empty));
+                    AddToTranslationCacheIfValid(THTranslationCache, InputLines.Rows[i][0] + string.Empty, TranslatedLines[i]);
 
-                        AddToTranslationCacheIfValid(THTranslationCache, InputLines.Rows[i][0] + string.Empty, TranslatedLines[i]);
-                    }
                     PreviousRowIndex = RowIndex;
                     PreviousTableIndex = TableIndex;
                     i2++;
@@ -6623,7 +6700,14 @@ namespace TranslationHelper
             //строка в нужное место и с рассчетом на будущее, когда возможно строки будут выдираться из исходной
             //, а потом вставляться обратно
             int IndexOfTheString = Original.IndexOf(Extracted);
-            return Original.Remove(IndexOfTheString, Extracted.Length).Insert(IndexOfTheString, Translation);
+            if (IndexOfTheString > -1)
+            {
+                return Original.Remove(IndexOfTheString, Extracted.Length).Insert(IndexOfTheString, Translation);
+            }
+            else
+            {
+                return Translation;
+            }
         }
 
         //DataSet THTranslationCache = new DataSet();
@@ -6762,7 +6846,7 @@ namespace TranslationHelper
                                     if (resultvalue.Length == 0)
                                     {
                                         //LogToFile("resultvalue from cache is empty. resultvalue=" + resultvalue, true);
-                                        string[] inputvaluearray = inputvalue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                                        string[] inputvaluearray = inputvalue.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
                                         if (inputvaluearray.Length > 1)
                                         {
                                             resultvalue = TranslateMultilineValue(inputvaluearray, THTranslationCache);
@@ -7175,7 +7259,7 @@ namespace TranslationHelper
 
         //            if (targetrowindex+1 < inputtextarrayInfo.Rows.Count && targetrowindex == int.Parse(inputtextarrayInfo.Rows[resultindex + 1][1] + string.Empty))
         //            {
-        //                string[] targetcellarray = (THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0] + string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        //                string[] targetcellarray = (THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
 
         //                int linenum = resultindex;
         //                for (int line= 0; line< targetcellarray.Length; line++)
@@ -7261,7 +7345,7 @@ namespace TranslationHelper
         //    //else
         //    //{
         //    //    //https://stackoverflow.com/questions/3989816/reading-a-string-line-per-line-in-c-sharp
-        //    //    string[] translationarray = translation.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        //    //    string[] translationarray = translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
         //    //    //LogToFile("\r\ntranslationarray count="+ translationarray.Length+ "\r\ninputtextarrayInfo.Rows.Count="+ inputtextarrayInfo.Rows.Count);
         //    //    for (int i = 0; i < translationarray.Length; i++)
         //    //    {
@@ -7270,7 +7354,7 @@ namespace TranslationHelper
         //    //        int targetrowindex = int.Parse(inputtextarrayInfo.Rows[i][1].ToString());
         //    //        if (THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1] == null || string.IsNullOrEmpty(THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][1].ToString()))
         //    //        {
-        //    //            string[] targetcellarray = THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0].ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        //    //            string[] targetcellarray = THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0].ToString().Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
 
         //    //            //LogToFile("targetcellarray.Length=" + targetcellarray.Length+",value="+ THFilesElementsDataset.Tables[targettableindex].Rows[targetrowindex][0].ToString());
         //    //            if (targetcellarray.Length > 1)
@@ -8263,7 +8347,7 @@ namespace TranslationHelper
                     && iRowIndex <= THFileElementsDataGridView.Rows.Count - 1)
                     {
                         cell = THFileElementsDataGridView[iColIndex, iRowIndex];
-                        origcellmaxlines = (THFileElementsDataGridView[origcolindex, iRowIndex].Value + string.Empty).Split(new string[] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/).Length;
+                        origcellmaxlines = (THFileElementsDataGridView[origcolindex, iRowIndex].Value + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/).Length;
 
                         origcellcurlines++;
                         OrigMaxEqualCurrent = origcellcurlines == origcellmaxlines;
@@ -8349,7 +8433,7 @@ namespace TranslationHelper
             Dictionary<int, Dictionary<int, string>>
             copyValues = new Dictionary<int, Dictionary<int, string>>();
 
-            String[] lines = clipboardValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
+            String[] lines = clipboardValue.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
 
             for (int i = 0; i <= lines.Length - 1; i++)
             {
@@ -9233,7 +9317,6 @@ namespace TranslationHelper
             //    SelectedRowIndexWhenFilteredDGW = r.Table.Rows.IndexOf(r); //находит верный но только для выбранной ячейки
             //}
         }
-
 
 
 

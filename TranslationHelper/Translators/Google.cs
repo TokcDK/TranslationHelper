@@ -455,7 +455,7 @@ namespace TranslationHelper
                                 //" #<#",
                                 //Conversions.ToString(i),
                                 //"##\r\n"
-                                " <br> "+Environment.NewLine+"\r\n"//мой разделитель, <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
+                                " </br> "+Environment.NewLine+"\r\n"//<br> заменил на </br>, последний также воспринимается как новая строка, влияя на перевод и не клонировался в середину там, где была проблема с <br> <== upd: <br> Гугл один раз раздвоил, сунув копию в середину, из-за чего была ошибка при раборе строк перевода <== <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
                             }));
                         }
                     }
@@ -479,7 +479,7 @@ namespace TranslationHelper
                         using (WebBrowser WB = new WebBrowser())//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
                         {
                             text = webClient.DownloadString(address);
-                            //FileWriter.WriteData("c:\\THLog.log", "\r\nTEXT:\r\n" + text);
+                            FileWriter.WriteData("c:\\THLog.log", "\r\nTEXT:\r\n" + text);
                             WB.ScriptErrorsSuppressed = true;
                             WB.DocumentText = string.Empty;
                             htmlDocument = WB.Document.OpenNew(true);
@@ -514,7 +514,7 @@ namespace TranslationHelper
                         {
                         }
 
-                        //FileWriter.WriteData("c:\\THLog.log", "\r\ntext2:\r\n" + text2);
+                        FileWriter.WriteData("c:\\THLog.log", "\r\ntext2:\r\n" + text2);
                         if (text2.Length == 0)
                         {
                             for (int j = 0; j < array.Count(); j++)
@@ -565,11 +565,13 @@ namespace TranslationHelper
         private static string[] SplitTextToLinesAndRestoreSomeSpecsymbols(string text2)
         {
             // возвращение знака новой строки и разделение на подстроки в массив
-            string[] array = text2.Replace("DNTT", Environment.NewLine)
+            string[] array = text2
+                         .Replace(" </br> ", "</br>")
+                         .Replace("DNTT", Environment.NewLine)
                          .Split(splitter, StringSplitOptions.None);
             
             //возвращение <br>, если такие были изначально
-            array = array.Select(x => x.Replace("NBRN", "<br>")).ToArray();
+            array = array.Select(x => x.Replace("NBRN", "</br>")).ToArray();
             
             //take берет все элементы кроме последнего пустого элемента массива, чтобы в основном коде не уменьшать его счет на один;
             return array.Take(array.Length - 1).ToArray();
@@ -592,7 +594,7 @@ namespace TranslationHelper
         
         //## 27 #># Same sex with this woman _ <# 27 ## 
         //\#\# \d{1,3} \#\# ?(.*) ?\#\# \d{1,3} \#\# ?
-        private static readonly string[] splitter = new string[] { " <br> " };
+        private static readonly string[] splitter = new string[] { "</br>" };
 
         //Browser UserAgent
         private const string BrowserUserAgent = "Opera/9.80 (J2ME/MIDP; Opera Mini/5.1.21214/28.2725; U; en) Presto/2.8.119 Version/11.10";
