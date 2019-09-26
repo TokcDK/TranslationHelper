@@ -37,6 +37,7 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
             this.THProgramSettingsReadOptionsPanel = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen = new System.Windows.Forms.CheckBox();
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation = new System.Windows.Forms.CheckBox();
             this.THOptionDBCompressionComboBox = new System.Windows.Forms.ComboBox();
@@ -51,7 +52,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTransLinkTextBox = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.THSettingsOptimizationsTabPage.SuspendLayout();
@@ -166,6 +166,15 @@
             this.THProgramSettingsReadOptionsPanel.Name = "THProgramSettingsReadOptionsPanel";
             this.THProgramSettingsReadOptionsPanel.Size = new System.Drawing.Size(518, 373);
             this.THProgramSettingsReadOptionsPanel.TabIndex = 1;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(321, 8);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(18, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "%";
             // 
             // THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen
             // 
@@ -294,7 +303,7 @@
             this.THOptionEnableTranslationCacheCheckBox.TabIndex = 12;
             this.THOptionEnableTranslationCacheCheckBox.Text = "Enable online translation cache.";
             this.THOptionEnableTranslationCacheCheckBox.UseVisualStyleBackColor = true;
-            this.THOptionEnableTranslationCacheCheckBox.CheckedChanged += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_CheckedChanged);
+            this.THOptionEnableTranslationCacheCheckBox.Click += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_Click);
             // 
             // linkLabel4
             // 
@@ -336,15 +345,7 @@
             this.THSettingsWebTransLinkTextBox.Size = new System.Drawing.Size(508, 21);
             this.THSettingsWebTransLinkTextBox.TabIndex = 7;
             this.THSettingsWebTransLinkTextBox.Text = "https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(321, 8);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(18, 13);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "%";
+            this.THSettingsWebTransLinkTextBox.Validated += new System.EventHandler(this.THSettingsWebTransLinkTextBox_Validated);
             // 
             // THSettings
             // 
@@ -354,6 +355,7 @@
             this.Controls.Add(this.THSettingsTabControl);
             this.Name = "THSettings";
             this.Text = "Settings";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.THSettings_FormClosed);
             this.Load += new System.EventHandler(this.THProgramSettingsForm_Load);
             this.THSettingsTabControl.ResumeLayout(false);
             this.THSettingsMainTabPage.ResumeLayout(false);
