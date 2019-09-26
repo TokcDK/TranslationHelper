@@ -15,15 +15,15 @@ namespace TranslationHelper
 {
     public partial class THSearch : Form
     {
-        private THMain Main;
+        //private readonly THMain Main;
         public ListBox THFilesListBox;
         public DataSet THFilesElementsDataset;
         public DataGridView THFileElementsDataGridView;
-        RichTextBox THTargetRichTextBox;
-        public THSearch(THMain MainForm, DataSet DS, ListBox listBox, DataGridView DGV, RichTextBox TTB)
+        readonly RichTextBox THTargetRichTextBox;
+        public THSearch(DataSet DS, ListBox listBox, DataGridView DGV, RichTextBox TTB)
         {
             InitializeComponent();
-            Main = MainForm;
+            //Main = MainForm;
             THFilesListBox = listBox;
             THFilesElementsDataset = DS;
             THFileElementsDataGridView = DGV;
@@ -315,7 +315,7 @@ namespace TranslationHelper
             SearchFormFindWhatComboBox.Items.Add(foundvalue);
         }
 
-        private bool IsContainsText(string searchobject, string searchinput)
+        private bool IsContainsText(string searchobject)
         {
             if (THSearchMatchCaseCheckBox.Checked)
             {
@@ -395,78 +395,78 @@ namespace TranslationHelper
         }
 
         //Dictionary<int, int> oDsResultsCoordinates = new Dictionary<int, int>();
-        DataTable oDsResultsCoordinates = new DataTable();
-        private DataTable SelectFromDatatables(DataSet oDsResults)
-        {
-            //Check for user input
-            if (THFilesElementsDataset.Tables.Count > 0)
-            {
-                DataRow[] drFilterRows;
-                string searchcolumn = GetSearchColumn();
+        private readonly DataTable oDsResultsCoordinates = new DataTable();
+        //private DataTable SelectFromDatatables(DataSet oDsResults)
+        //{
+        //    //Check for user input
+        //    if (THFilesElementsDataset.Tables.Count > 0)
+        //    {
+        //        DataRow[] drFilterRows;
+        //        string searchcolumn = GetSearchColumn();
 
-                //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
-                //THFilesElementsDataset.Tables[0].CaseSensitive = THSearchMatchCaseCheckBox.Checked;
+        //        //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
+        //        //THFilesElementsDataset.Tables[0].CaseSensitive = THSearchMatchCaseCheckBox.Checked;
 
-                string strQuery = "[" + THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName + "] Like '%" + SearchFormFindWhatTextBox.Text.Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";
+        //        string strQuery = "[" + THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName + "] Like '%" + SearchFormFindWhatTextBox.Text.Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";
 
-                if (SearchRangeTableRadioButton.Checked)
-                {
-                    //drFilterRows = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Select(strQuery);
-                    //drFilterRows = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable().Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName) == strQuery);
+        //        if (SearchRangeTableRadioButton.Checked)
+        //        {
+        //            //drFilterRows = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Select(strQuery);
+        //            //drFilterRows = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable().Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName) == strQuery);
 
 
-                    //drFilterRows = GetDTRowsWithFoundValue(THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex], strQuery);
-                    if (THSearchMatchCaseCheckBox.Checked)
-                    {
-                        //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
-                        drFilterRows = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
-                                        .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).Contains(SearchFormFindWhatTextBox.Text)).ToArray();
-                    }
-                    else
-                    {
-                        //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
-                        drFilterRows = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
-                                        .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant())).ToArray();
-                    }                  
+        //            //drFilterRows = GetDTRowsWithFoundValue(THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex], strQuery);
+        //            if (THSearchMatchCaseCheckBox.Checked)
+        //            {
+        //                //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
+        //                drFilterRows = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
+        //                                .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).Contains(SearchFormFindWhatTextBox.Text)).ToArray();
+        //            }
+        //            else
+        //            {
+        //                //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
+        //                drFilterRows = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
+        //                                .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant())).ToArray();
+        //            }                  
 
-                    if (drFilterRows.Length > 0)
-                    {
-                        oDsResultsCoordinates.Clear();
-                        foreach (DataRow dr in drFilterRows)
-                        {
-                            oDsResults.Tables[0].ImportRow(dr);
-                            oDsResultsCoordinates.Rows.Add(THFilesListBox.SelectedIndex, THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Rows.IndexOf(dr));
-                            FileWriter.WriteData(@"c:\\ddd.log", "\r\nindex=" + THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Rows.IndexOf(dr));
-                        }
-                    }
+        //            if (drFilterRows.Length > 0)
+        //            {
+        //                oDsResultsCoordinates.Clear();
+        //                foreach (DataRow dr in drFilterRows)
+        //                {
+        //                    oDsResults.Tables[0].ImportRow(dr);
+        //                    oDsResultsCoordinates.Rows.Add(THFilesListBox.SelectedIndex, THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Rows.IndexOf(dr));
+        //                    FileWriter.WriteData(@"c:\\ddd.log", "\r\nindex=" + THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Rows.IndexOf(dr));
+        //                }
+        //            }
 
-                    //MessageBox.Show(oDsResults.Tables[0].Rows[0][1].ToString());
-                    return oDsResults.Tables[0];
-                }
-                else
-                {
-                    oDsResultsCoordinates.Clear();
-                    for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
-                    {                        
-                        drFilterRows = GetDTRowsWithFoundValue(THFilesElementsDataset.Tables[t], strQuery, searchcolumn);
+        //            //MessageBox.Show(oDsResults.Tables[0].Rows[0][1].ToString());
+        //            return oDsResults.Tables[0];
+        //        }
+        //        else
+        //        {
+        //            oDsResultsCoordinates.Clear();
+        //            for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
+        //            {                        
+        //                drFilterRows = GetDTRowsWithFoundValue(THFilesElementsDataset.Tables[t], strQuery, searchcolumn);
 
-                        if (drFilterRows.Length > 0)
-                        {
-                            foreach (DataRow dr in drFilterRows)
-                            {
-                                oDsResults.Tables[0].ImportRow(dr);
-                                oDsResultsCoordinates.Rows.Add(t, THFilesElementsDataset.Tables[t].Rows.IndexOf(dr));
-                                FileWriter.WriteData(@"c:\\ddd.log", "\r\nindex=" + THFilesElementsDataset.Tables[t].Rows.IndexOf(dr));
-                            }
-                        }
-                    }
+        //                if (drFilterRows.Length > 0)
+        //                {
+        //                    foreach (DataRow dr in drFilterRows)
+        //                    {
+        //                        oDsResults.Tables[0].ImportRow(dr);
+        //                        oDsResultsCoordinates.Rows.Add(t, THFilesElementsDataset.Tables[t].Rows.IndexOf(dr));
+        //                        FileWriter.WriteData(@"c:\\ddd.log", "\r\nindex=" + THFilesElementsDataset.Tables[t].Rows.IndexOf(dr));
+        //                    }
+        //                }
+        //            }
 
-                    //MessageBox.Show(oDsResults.Tables[0].Rows[0][1].ToString());
-                    return oDsResults.Tables[0];
-                }
-            }
-            return null;
-        }
+        //            //MessageBox.Show(oDsResults.Tables[0].Rows[0][1].ToString());
+        //            return oDsResults.Tables[0];
+        //        }
+        //    }
+        //    return null;
+        //}
 
 
         private DataTable SearchNew(DataSet DS)
@@ -550,32 +550,32 @@ namespace TranslationHelper
             return DS.Tables[0];
         }
 
-        private DataRow[] GetDTRowsWithFoundValue(DataTable DT, string strQuery, string searchcolumn)
-        {
-            //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
-            //DT.CaseSensitive = THSearchMatchCaseCheckBox.Checked;
+        //private DataRow[] GetDTRowsWithFoundValue(DataTable DT, string strQuery, string searchcolumn)
+        //{
+        //    //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
+        //    //DT.CaseSensitive = THSearchMatchCaseCheckBox.Checked;
 
-            //return DT.Select(strQuery);
-            if (THSearchMatchCaseCheckBox.Checked)
-            {
-                //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
-                return THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
-                                .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).Contains(strQuery)).ToArray();
-            }
-            else
-            {
-                //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
-                return THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
-                                .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).ToLowerInvariant().Contains(strQuery.ToLowerInvariant())).ToArray();
-            }
-        }
+        //    //return DT.Select(strQuery);
+        //    if (THSearchMatchCaseCheckBox.Checked)
+        //    {
+        //        //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
+        //        return THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
+        //                        .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).Contains(strQuery)).ToArray();
+        //    }
+        //    else
+        //    {
+        //        //https://stackoverflow.com/questions/13292771/enable-case-sensitive-when-using-datatable-select
+        //        return THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].AsEnumerable()
+        //                        .Where(r => r.Field<string>(THFilesElementsDataset.Tables[0].Columns[searchcolumn].ColumnName).ToLowerInvariant().Contains(strQuery.ToLowerInvariant())).ToArray();
+        //    }
+        //}
 
         private void LinkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://patreon.com/TranslationHelper");
         }
 
-        DataTable SearchFormFindWhatComboBoxCustomeSource = new DataTable();
+        //private readonly DataTable SearchFormFindWhatComboBoxCustomeSource = new DataTable();
         private void THSearch_Load(object sender, EventArgs e)
         {
             //some other info: https://stackoverflow.com/questions/20893725/how-to-hide-and-show-panels-on-a-form-and-have-it-resize-to-take-up-slack
@@ -1005,6 +1005,11 @@ namespace TranslationHelper
                     }
                 }
             }
+        }
+
+        private void THSearch_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            oDsResultsCoordinates.Dispose();
         }
     }
 }

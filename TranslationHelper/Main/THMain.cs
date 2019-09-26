@@ -52,7 +52,7 @@ namespace TranslationHelper
         //public string THMainDGVTranslationColumnName;
 
         //про primary key взял отсюда: https://stackoverflow.com/questions/3567552/table-doesnt-have-a-primary-key
-        DataColumn[] keyColumns = new DataColumn[1];
+        readonly DataColumn[] keyColumns = new DataColumn[1];
 
         //Translation cache
         //DataSet THTranslationCache;
@@ -93,7 +93,8 @@ namespace TranslationHelper
             this.fixCellsTableToolStripMenuItem.Text = T._("Table");
             this.allToolStripMenuItem.Text = T._("All");
             this.setOriginalValueToTranslationToolStripMenuItem.Text = T._("Translation=Original");
-            this.completeRomajiotherLinesToolStripMenuItem.Text = T._(@"Complete romaji\other lines");
+            this.completeRomajiotherLinesToolStripMenuItem.Text = T._("Complete Romaji/Other lines");
+            this.completeRomajiotherLinesToolStripMenuItem1.Text = T._("Complete Romaji/Other lines");
             this.cutToolStripMenuItem1.Text = T._("Cut");
             this.copyCellValuesToolStripMenuItem.Text = T._("Copy");
             this.pasteCellValuesToolStripMenuItem.Text = T._("Paste");
@@ -184,7 +185,7 @@ namespace TranslationHelper
             ////////////////////////////
         }
 
-        bool THdebug = true;
+        readonly bool THdebug = true;
         StringBuilder THsbLog = new StringBuilder();
         public void LogToFile(string s, bool w = false)
         {
@@ -324,64 +325,65 @@ namespace TranslationHelper
             }
         }
 
-        private void THMakeRPGMakerMVWorkProjectDir(string sPath)
-        {
-            string outdir = Path.Combine(Application.StartupPath, "Work", "RPGMakerMV", Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath)));
+        //private void THMakeRPGMakerMVWorkProjectDir(string sPath)
+        //{
+        //    string outdir = Path.Combine(Application.StartupPath, "Work", "RPGMakerMV", Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath)));
 
-            if (!Directory.Exists(outdir))
-            {
-                Directory.CreateDirectory(outdir);
+        //    if (!Directory.Exists(outdir))
+        //    {
+        //        Directory.CreateDirectory(outdir);
 
 
-                foreach (var d in Directory.GetDirectories(THSelectedDir, "*"))
-                {
-                    if (d.Contains("\\www"))
-                    {
-                        continue;
-                    }
-                    if (Directory.Exists(Path.Combine(outdir,Path.GetFileNameWithoutExtension(d))))
-                    {
-                    }
-                    else
-                    {
-                        THCreateSymlink.Folder(d, Path.Combine(outdir,Path.GetFileNameWithoutExtension(d)));
-                    }
-                }
-                Directory.CreateDirectory(Path.Combine(outdir,"www"));
-                foreach (var d in Directory.GetDirectories(Path.Combine(THSelectedDir,"www"), "*"))
-                {
-                    if (d.Contains("www\\data"))
-                    {
-                        continue;
-                    }
-                    if (Directory.Exists(Path.Combine(outdir,"www",Path.GetFileNameWithoutExtension(d))))
-                    {
-                    }
-                    else
-                    {
-                        THCreateSymlink.Folder(d, Path.Combine(outdir,"www",Path.GetFileNameWithoutExtension(d)));
-                    }
-                }
-                foreach (var f in Directory.GetFiles(THSelectedDir, "*.*"))
-                {
-                    if (File.Exists(Path.Combine(outdir,Path.GetFileName(f))))
-                    {
-                    }
-                    else
-                    {
-                        THCreateSymlink.File(f, Path.Combine(outdir,Path.GetFileName(f)));
-                    }
-                }
+        //        foreach (var d in Directory.GetDirectories(THSelectedDir, "*"))
+        //        {
+        //            if (d.Contains("\\www"))
+        //            {
+        //                continue;
+        //            }
+        //            if (Directory.Exists(Path.Combine(outdir,Path.GetFileNameWithoutExtension(d))))
+        //            {
+        //            }
+        //            else
+        //            {
+        //                THCreateSymlink.Folder(d, Path.Combine(outdir,Path.GetFileNameWithoutExtension(d)));
+        //            }
+        //        }
+        //        Directory.CreateDirectory(Path.Combine(outdir,"www"));
+        //        foreach (var d in Directory.GetDirectories(Path.Combine(THSelectedDir,"www"), "*"))
+        //        {
+        //            if (d.Contains("www\\data"))
+        //            {
+        //                continue;
+        //            }
+        //            if (Directory.Exists(Path.Combine(outdir,"www",Path.GetFileNameWithoutExtension(d))))
+        //            {
+        //            }
+        //            else
+        //            {
+        //                THCreateSymlink.Folder(d, Path.Combine(outdir,"www",Path.GetFileNameWithoutExtension(d)));
+        //            }
+        //        }
+        //        foreach (var f in Directory.GetFiles(THSelectedDir, "*.*"))
+        //        {
+        //            if (File.Exists(Path.Combine(outdir,Path.GetFileName(f))))
+        //            {
+        //            }
+        //            else
+        //            {
+        //                THCreateSymlink.File(f, Path.Combine(outdir,Path.GetFileName(f)));
+        //            }
+        //        }
 
-                CopyFolder.Copy(Path.Combine(THSelectedDir,"www","data"), Path.Combine(outdir,"www","data"));
-            }
-            THWorkProjectDir = outdir;
-        }
+        //        CopyFolder.Copy(Path.Combine(THSelectedDir,"www","data"), Path.Combine(outdir,"www","data"));
+        //    }
+        //    THWorkProjectDir = outdir;
+        //}
 
         private void THCleanupThings()
         {
             try
             {
+
                 //Reset strings
                 ActiveForm.Text = "Translation Helper by DenisK";
                 THInfoTextBox.Text = string.Empty;
@@ -395,6 +397,11 @@ namespace TranslationHelper
                 THFilesElementsDatasetInfo.Reset();
                 THFileElementsDataGridView.Columns.Clear();
                 //THFileElementsDataGridView.Rows.Clear();
+
+                //Dispose objects
+                THFilesElementsDataset.Dispose();
+                THFilesElementsALLDataTable.Dispose();
+                THFilesElementsDatasetInfo.Dispose();
 
                 //Disable items
                 saveToolStripMenuItem.Enabled = false;
@@ -3516,14 +3523,14 @@ namespace TranslationHelper
         }
 
         //Для функции перевода, чтобы не переводить, когда в тексте нет иероглифов
-        private bool NoKanjiHiraganaKatakanaInTheString(string target)
-        {
-            if (GetLocaleLangCount(target, "kanji") == 0 && GetLocaleLangCount(target, "hiragana") == 0 && GetLocaleLangCount(target, "katakana") == 0)
-            {
-                return true;
-            }
-            return false;
-        }
+        //private bool NoKanjiHiraganaKatakanaInTheString(string target)
+        //{
+        //    if (GetLocaleLangCount(target, "kanji") == 0 && GetLocaleLangCount(target, "hiragana") == 0 && GetLocaleLangCount(target, "katakana") == 0)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         /// <summary>
         /// True if procent of Romaji or Other characters in input string is lesser of set value in Settings
@@ -3802,56 +3809,56 @@ namespace TranslationHelper
             }
         }
 
-        private void KiriKiriScenarioWrite(string sPath)
-        {
-            try
-            {
-                StringBuilder buffer = new StringBuilder();
+        //private void KiriKiriScenarioWrite(string sPath)
+        //{
+        //    try
+        //    {
+        //        StringBuilder buffer = new StringBuilder();
 
-                using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
-                {
-                    string line;
-                    string original = string.Empty;
-                    string filename = Path.GetFileNameWithoutExtension(sPath);
-                    int elementnumber = 0;
-                    while (!file.EndOfStream)
-                    {
-                        line = file.ReadLine();
+        //        using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
+        //        {
+        //            string line;
+        //            string original = string.Empty;
+        //            string filename = Path.GetFileNameWithoutExtension(sPath);
+        //            int elementnumber = 0;
+        //            while (!file.EndOfStream)
+        //            {
+        //                line = file.ReadLine();
 
-                        if (line.StartsWith(";") || line.StartsWith("@") || Equals(line, string.Empty))
-                        {
-                        }
-                        else
-                        {
-                            if (line.EndsWith("[k]"))
-                            {
-                                if (
-                                    (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
-                                    && Equals(line.Remove(line.Length - 3, 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
-                                    && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
-                                   )
-                                {
-                                    line = THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + "[k]";
-                                }
+        //                if (line.StartsWith(";") || line.StartsWith("@") || Equals(line, string.Empty))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    if (line.EndsWith("[k]"))
+        //                    {
+        //                        if (
+        //                            (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
+        //                            && Equals(line.Remove(line.Length - 3, 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
+        //                            && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
+        //                           )
+        //                        {
+        //                            line = THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + "[k]";
+        //                        }
 
-                                elementnumber++;
-                            }
-                        }
+        //                        elementnumber++;
+        //                    }
+        //                }
 
-                        buffer.AppendLine(line);
-                    }
-                }
+        //                buffer.AppendLine(line);
+        //            }
+        //        }
 
-                File.Move(sPath, sPath + ".bak");
-                File.WriteAllText(sPath, buffer.ToString(), Encoding.GetEncoding(932));
+        //        File.Move(sPath, sPath + ".bak");
+        //        File.WriteAllText(sPath, buffer.ToString(), Encoding.GetEncoding(932));
 
-                _ = MessageBox.Show(T._("finished") + "!");
-            }
-            catch (Exception ex)
-            {
-                _ = MessageBox.Show(ex.ToString());
-            }
-        }
+        //        _ = MessageBox.Show(T._("finished") + "!");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _ = MessageBox.Show(ex.ToString());
+        //    }
+        //}
 
         private void ProgressInfo(bool status, string statustext = "")
         {
@@ -4283,7 +4290,7 @@ namespace TranslationHelper
             }
         }
 
-        THSettings THSettings;
+        private THSettings THSettings;
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -6405,7 +6412,7 @@ namespace TranslationHelper
             IsTranslating = false;
         }
 
-        private void THOnlineTranslateByBigBlocks2(int cind, int tableindex, int[] selindexes, string v)
+        private void THOnlineTranslateByBigBlocks2(int cind, int tableindex, int[] rowindexes, string range)
         {
             try
             {
@@ -6446,6 +6453,7 @@ namespace TranslationHelper
                                         if (InputOriginalLineFromCache.Length > 0)
                                         {
                                             THFilesElementsDataset.Tables[t].Rows[r][1] = InputOriginalLineFromCache;
+                                            continue;
                                         }
                                         else
                                         {
@@ -6460,6 +6468,7 @@ namespace TranslationHelper
                                                 for (int s = 0; s < Lines.Length; s++) //добавить все непустые строки по отдельности, пустые добавить в Info
                                                 {
                                                     string linevalue = Lines[s];
+
                                                     cache = TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
                                                     if (cache.Length > 0)
                                                     {
@@ -6470,9 +6479,10 @@ namespace TranslationHelper
                                                         string Translation = string.Empty;
                                                         if (linevalue.Length > 0)
                                                         {
-                                                            extractedvalue = THExtractTextForTranslation(linevalue);
+                                                            extractedvalue = THExtractTextForTranslation(linevalue);//извлечение подстроки
 
-                                                            cache = TranslationCacheFind(THTranslationCache, extractedvalue);
+                                                            // только если извлеченное значение отличается от оригинальной строки
+                                                            cache = Equals(extractedvalue, linevalue) ? string.Empty : TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
                                                             if (cache.Length > 0)
                                                             {
                                                                 Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
@@ -6511,7 +6521,7 @@ namespace TranslationHelper
                                         }
                                     }
 
-                                    if (TranslateIt)
+                                    if (TranslateIt && InputLines.Rows.Count > 0)
                                     {
                                         CurrentCharsCount = 0;
 
@@ -8765,7 +8775,7 @@ namespace TranslationHelper
                 {
                     if (search == null || search.IsDisposed)
                     {
-                        search = new THSearch(this, THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
+                        search = new THSearch(THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
                     }
 
                     if (search.Visible)
@@ -8932,8 +8942,9 @@ namespace TranslationHelper
 
         public DirectoryInfo mvdatadirTranslated;
         public string THWorkProjectDirTranslated;
+
         //private bool istpptransfileTranslated;
-        DataSet THFilesElementsDatasetTranslated = new DataSet();
+        private DataSet THFilesElementsDatasetTranslated = new DataSet();
         public string THSelectedDirTranslated;
         public string THRPGMTransPatchverTranslated;
         public string THSelectedSourceTypeTranslated;
@@ -9141,13 +9152,13 @@ namespace TranslationHelper
 
 
         //global brushes with ordinary/selected colors
-        private SolidBrush ListBoxItemForegroundBrushSelected = new SolidBrush(Color.White);
-        private SolidBrush ListBoxItemForegroundBrush = new SolidBrush(Color.Black);
-        private SolidBrush ListBoxItemBackgroundBrushSelected = new SolidBrush(Color.FromKnownColor(KnownColor.Highlight));
-        private SolidBrush ListBoxItemBackgroundBrush1 = new SolidBrush(Color.White);
-        private SolidBrush ListBoxItemBackgroundBrush1Complete = new SolidBrush(Color.FromArgb(235, 255, 235));
-        private SolidBrush ListBoxItemBackgroundBrush2 = new SolidBrush(Color.FromArgb(235, 240, 235));
-        private SolidBrush ListBoxItemBackgroundBrush2Complete = new SolidBrush(Color.FromArgb(225, 255, 225));
+        private readonly SolidBrush ListBoxItemForegroundBrushSelected = new SolidBrush(Color.White);
+        private readonly SolidBrush ListBoxItemForegroundBrush = new SolidBrush(Color.Black);
+        private readonly SolidBrush ListBoxItemBackgroundBrushSelected = new SolidBrush(Color.FromKnownColor(KnownColor.Highlight));
+        private readonly SolidBrush ListBoxItemBackgroundBrush1 = new SolidBrush(Color.White);
+        private readonly SolidBrush ListBoxItemBackgroundBrush1Complete = new SolidBrush(Color.FromArgb(235, 255, 235));
+        private readonly SolidBrush ListBoxItemBackgroundBrush2 = new SolidBrush(Color.FromArgb(235, 240, 235));
+        private readonly SolidBrush ListBoxItemBackgroundBrush2Complete = new SolidBrush(Color.FromArgb(225, 255, 225));
 
         //custom method to draw the items, don't forget to set DrawMode of the ListBox to OwnerDrawFixed
         private void THFilesList_DrawItem(object sender, DrawItemEventArgs e)
