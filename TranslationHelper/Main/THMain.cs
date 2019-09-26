@@ -8473,19 +8473,24 @@ namespace TranslationHelper
 
                 try
                 {
-                    for (int i = 0; i < THFileElementsDataGridView.SelectedCells.Count; i++)
+                    int[] rindexes = new int[THFileElementsDataGridView.SelectedCells.Count];
+                    int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
+                    int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
+                    for (int i = 0; i < rindexes.Length; i++)
                     {
                         int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                        int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
-                        int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
                         if ((THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).Length == 0)
                         {
                         }
                         else
                         {
-                            THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = string.Empty;
+                            rindexes[i] = GetSelectedRowIndexinDatatable(rind);
                         }
 
+                    }
+                    foreach (int rind in rindexes)
+                    {
+                        THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[rind][ctransind] = string.Empty;
                     }
                 }
                 catch

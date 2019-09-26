@@ -451,11 +451,16 @@ namespace TranslationHelper
                                 //"##",
                                 //Conversions.ToString(i),
                                 //"#># ",
+                                " <br> ",
+                                Environment.NewLine,
                                 Regex.Replace(Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None), @"\<br\>", "NBRN", RegexOptions.None),
                                 //" #<#",
                                 //Conversions.ToString(i),
                                 //"##\r\n"
-                                " </br> "+Environment.NewLine+"\r\n"//<br> заменил на </br>, последний также воспринимается как новая строка, влияя на перевод и не клонировался в середину там, где была проблема с <br> <== upd: <br> Гугл один раз раздвоил, сунув копию в середину, из-за чего была ошибка при раборе строк перевода <== <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
+                                Environment.NewLine,
+                                //<br> заменил на </br>, последний также воспринимается как новая строка, влияя на перевод и не клонировался в середину там, где была проблема с <br> <== upd: <br> Гугл один раз раздвоил, сунув копию в середину, из-за чего была ошибка при раборе строк перевода <== <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
+                                " </br> ",
+                                Environment.NewLine
                             }));
                         }
                     }
@@ -566,6 +571,9 @@ namespace TranslationHelper
         {
             // возвращение знака новой строки и разделение на подстроки в массив
             string[] array = text2
+                         .Replace(" <br> ", "<br>")
+                         .Replace("<br>", string.Empty)
+                         .Replace("  </br> ", "</br>")
                          .Replace(" </br> ", "</br>")
                          .Replace("DNTT", Environment.NewLine)
                          .Split(splitter, StringSplitOptions.None);
