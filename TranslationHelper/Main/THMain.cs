@@ -3091,7 +3091,7 @@ namespace TranslationHelper
         private bool THFilesListBox_MouseClickBusy;
         private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
         {
-            if (THFilesListBox_MouseClickBusy)
+            if (THFilesListBox_MouseClickBusy && THFilesList.SelectedIndex > -1) //THFilesList.SelectedIndex > -1 - фикс исключения сразу после загрузки таблицы, когда индекс выбранной таблицы равен -1 
             {
                 //return;
             }
@@ -3181,6 +3181,7 @@ namespace TranslationHelper
                     //{
                     //    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
                     //}
+
                     BindToDataTableGridView(THFilesElementsDataset.Tables[THFilesList.SelectedIndex]);
 
 
@@ -6553,7 +6554,6 @@ namespace TranslationHelper
                 int PreviousTableIndex = -1;
                 int PreviousRowIndex = -1;
                 int i2 = 0;
-                bool EmptyWasSetFromInfo = false;
 
                 int TableIndex=0;
                 int RowIndex=0;
@@ -6605,7 +6605,7 @@ namespace TranslationHelper
                     bool WritedFromInfo = false;
                     if ((InputLinesInfo.Rows[i2][0] + string.Empty).Length == 0)
                     {
-                        ResultValue.Append(Environment.NewLine);
+                        //ResultValue.Append(string.Empty); //закоментировано для оптимизации, тот же эффект добавление пустой строки
                         WritedFromInfo = true;
                         i2++;
                     }

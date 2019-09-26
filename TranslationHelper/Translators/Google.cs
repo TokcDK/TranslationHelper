@@ -309,45 +309,47 @@ namespace TranslationHelper
                             //http://www.cyberforum.ru/ado-net/thread903701.html
                             //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
                             //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
-                            HtmlDocument htmlDocument;
-                            string text;
-                            using (WebBrowser WB = new WebBrowser())//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
-                            {
-                                //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
-                                //FileWriter.WriteData("c:\\THLog1.log", "\r\ndownloadString:\r\n" + downloadString);
-                                text = webClient.DownloadString(address);
-                                //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nTEXT:\r\n" + text);
-                                WB.ScriptErrorsSuppressed = true;
-                                WB.DocumentText = string.Empty;
-                                htmlDocument = WB.Document.OpenNew(true);
-                            }
+                            
+                            //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
+                            //FileWriter.WriteData("c:\\THLog1.log", "\r\ndownloadString:\r\n" + downloadString);
+                            
+                            string text = webClient.DownloadString(address);
+                            //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nTEXT:\r\n" + text);
+                            
+                            HtmlDocument htmlDocument = WBhtmlDocument();
                             htmlDocument.Write(text);
                             try
                             {
-                                foreach (object obj in htmlDocument.Body.Children)
-                                {
-                                    HtmlElement htmlElement = (HtmlElement)obj;
-                                    if (htmlElement.InnerText == null)
-                                    {
-                                    }
-                                    else
-                                    {
-                                        //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
-                                        if (htmlElement.InnerHtml.StartsWith("<"))
-                                        {
-                                        }
-                                        else
-                                        {
-                                            //string text2 = htmlElement.InnerText.Replace(" BBC ", "BBC").Replace(" BBC", "BBC").Replace("BBC ", "BBC").Replace("BBC", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                            //string text2 = htmlElement.InnerText.Replace(" DNTT ", "DNTT").Replace(" DNTT", "DNTT").Replace("DNTT ", "DNTT").Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                            string text2 = FixFormat(htmlElement.InnerText);
-                                            //string text2 = htmlElement.InnerText.Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                            myCache[OriginalText] = text2;
-                                            //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\ntext2:\r\n" + text2);
-                                            return text2;
-                                        }
-                                    }
-                                }
+                                string text2 = FixFormat(GetTranslationHtmlElement(htmlDocument));
+
+                                myCache[OriginalText] = text2;
+
+                                return text2;
+
+                                //foreach (object obj in htmlDocument.Body.Children)
+                                //{
+                                //    HtmlElement htmlElement = (HtmlElement)obj;
+                                //    if (htmlElement.InnerText == null)
+                                //    {
+                                //    }
+                                //    else
+                                //    {
+                                //        //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
+                                //        if (htmlElement.InnerHtml.StartsWith("<"))
+                                //        {
+                                //        }
+                                //        else
+                                //        {
+                                //            //string text2 = htmlElement.InnerText.Replace(" BBC ", "BBC").Replace(" BBC", "BBC").Replace("BBC ", "BBC").Replace("BBC", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                //            //string text2 = htmlElement.InnerText.Replace(" DNTT ", "DNTT").Replace(" DNTT", "DNTT").Replace("DNTT ", "DNTT").Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                //            string text2 = FixFormat(htmlElement.InnerText);
+                                //            //string text2 = htmlElement.InnerText.Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                //            myCache[OriginalText] = text2;
+                                //            //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\ntext2:\r\n" + text2);
+                                //            return text2;
+                                //        }
+                                //    }
+                                //}
                             }
                             finally
                             {
@@ -417,15 +419,14 @@ namespace TranslationHelper
                 ;
         }
 
-        // Token: 0x06000EEF RID: 3823 RVA: 0x0006B160 File Offset: 0x00069360
         public static string[] TranslateMultiple(string[] OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
             checked
             {
-                string[] array = new string[OriginalText.Count()];
+                int num = OriginalText.Count();
+                string[] array = new string[num];
                 StringBuilder stringBuilder = new StringBuilder();
-                int num = OriginalText.Count() - 1;
-                for (int i = 0; i <= num; i++)
+                for (int i = 0; i < num; i++)
                 {
                     if (OriginalText[i].Length == 0)
                     {
@@ -446,20 +447,20 @@ namespace TranslationHelper
                             }
                             //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
                             //https://stackoverflow.com/questions/47709517/google-translate-api-how-to-add-newline-without-changing-the-phrase-meaning
-                            stringBuilder.Append(string.Concat(new string[]
+                            _ = stringBuilder.Append(string.Concat(new string[]
                             {
                                 //"##",
                                 //Conversions.ToString(i),
                                 //"#># ",
-                                " <br> ",
+                                "<br>",
                                 Environment.NewLine,
-                                Regex.Replace(Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None), @"\<br\>", "NBRN", RegexOptions.None),
+                                Regex.Replace(Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None), @"<br>", "QBRQ", RegexOptions.None),
                                 //" #<#",
                                 //Conversions.ToString(i),
                                 //"##\r\n"
                                 Environment.NewLine,
                                 //<br> заменил на </br>, последний также воспринимается как новая строка, влияя на перевод и не клонировался в середину там, где была проблема с <br> <== upd: <br> Гугл один раз раздвоил, сунув копию в середину, из-за чего была ошибка при раборе строк перевода <== <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
-                                " </br> ",
+                                "</br>",
                                 Environment.NewLine
                             }));
                         }
@@ -479,58 +480,37 @@ namespace TranslationHelper
                         //http://www.cyberforum.ru/ado-net/thread903701.html
                         //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
                         //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
-                        HtmlDocument htmlDocument;
-                        string text;
-                        using (WebBrowser WB = new WebBrowser())//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
-                        {
-                            text = webClient.DownloadString(address);
-                            FileWriter.WriteData("c:\\THLog.log", "\r\nTEXT:\r\n" + text);
-                            WB.ScriptErrorsSuppressed = true;
-                            WB.DocumentText = string.Empty;
-                            htmlDocument = WB.Document.OpenNew(true);
-                        }
-                        htmlDocument.Write(text);
-                        string text2 = string.Empty;
-                        try
-                        {
-                            //FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlDocument.Body.Children:\r\n" + htmlDocument.Body.Children);
-                            foreach (object obj in htmlDocument.Body.Children)
-                            {
-                                HtmlElement htmlElement = (HtmlElement)obj;
-                                if (htmlElement.InnerText == null)
-                                {
-                                }
-                                else
-                                {
-                                    //FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
-                                    if (htmlElement.InnerHtml.StartsWith("<"))
-                                    {
-                                    }
-                                    else
-                                    {
-                                        //text2 = htmlElement.InnerText.Replace(DNTT, "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                        text2 = FixFormatMulti(htmlElement.InnerText);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        finally
-                        {
-                        }
+                        
+                        //скачать страницу
+                        string text = webClient.DownloadString(address);
+                        FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"TEXT:"+Environment.NewLine + text);
 
-                        FileWriter.WriteData("c:\\THLog.log", "\r\ntext2:\r\n" + text2);
-                        if (text2.Length == 0)
-                        {
-                            for (int j = 0; j < array.Count(); j++)
-                            {
-                                if (array[j] == null)
-                                {
-                                    array[j] = string.Empty;
-                                }
-                            }
-                            return array;
-                        }
+                        HtmlDocument htmlDocument = WBhtmlDocument();
+                        htmlDocument.Write(text);
+
+                        //string text2 = string.Empty;
+                        //try
+                        //{
+                        //    text2 = FixFormatMulti(GetTranslationHtmlElement(htmlDocument));
+                        //}
+                        //finally
+                        //{
+                        //}
+
+                        string text2 = FixFormatMulti(GetTranslationHtmlElement(htmlDocument));
+
+                        FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"text2:"+Environment.NewLine + text2);
+                        //if (text2.Length == 0)
+                        //{
+                        //    for (int j = 0; j < array.Count(); j++)
+                        //    {
+                        //        if (array[j] == null)
+                        //        {
+                        //            array[j] = string.Empty;
+                        //        }
+                        //    }
+                        //    return array;
+                        //}
 
                         //array = NormalizeResponse(text2);
                         //MatchCollection matchCollection = myReg.Matches(text2);
@@ -554,7 +534,7 @@ namespace TranslationHelper
                         //    }
                         //}
 
-                        return SplitTextToLinesAndRestoreSomeSpecsymbols(text2);
+                        return text2.Length == 0 ? RetWithNullToEmpty(array) : SplitTextToLinesAndRestoreSomeSpecsymbols(text2);
                         //return array;
                     }
                     catch// (Exception ex)
@@ -567,13 +547,56 @@ namespace TranslationHelper
             }
         }
 
+        private static string[] RetWithNullToEmpty(string[] array)
+        {
+            for (int j = 0; j < array.Count(); j++)
+            {
+                if (array[j] == null)
+                {
+                    array[j] = string.Empty;
+                }
+            }
+            return array;
+        }
+
+        private static string GetTranslationHtmlElement(HtmlDocument htmlDocument)
+        {
+            //FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlDocument.Body.Children:\r\n" + htmlDocument.Body.Children);
+            foreach (object obj in htmlDocument.Body.Children)
+            {
+                HtmlElement htmlElement = (HtmlElement)obj;
+                if (htmlElement.InnerText == null)
+                {
+                }
+                else
+                {
+                    //FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
+                    if (htmlElement.InnerHtml.StartsWith("<"))
+                    {
+                    }
+                    else
+                    {
+                        //text2 = htmlElement.InnerText.Replace(DNTT, "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                        return htmlElement.InnerText;
+                    }
+                }
+            }
+            return string.Empty;
+        }
+
+        private static HtmlDocument WBhtmlDocument()
+        {
+            using (WebBrowser WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty })//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
+            {
+                return WB.Document.OpenNew(true);
+            }
+        }
+
         private static string[] SplitTextToLinesAndRestoreSomeSpecsymbols(string text2)
         {
             // возвращение знака новой строки и разделение на подстроки в массив
             string[] array = text2
-                         .Replace(" <br> ", "<br>")
-                         .Replace("<br>", string.Empty)
-                         .Replace("  </br> ", "</br>")
+                         .Replace("<br> ", "<br>").Replace("<br>", string.Empty)
                          .Replace(" </br> ", "</br>")
                          .Replace("DNTT", Environment.NewLine)
                          .Split(splitter, StringSplitOptions.None);
