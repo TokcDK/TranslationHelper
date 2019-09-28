@@ -24,6 +24,7 @@ namespace TranslationHelper
         private void SetUIStrings()
         {
             //translation
+            THOptionFullComprasionDBload.Text = T._("Full recursive scan while translation DB loading (slower)");
             this.THSettingsMainTabPage.Text = T._("General");
             this.label3.Text = T._("Translation  Helper support:");
             this.THSettingsOptimizationsTabPage.Text = T._("Optimizations");
@@ -57,8 +58,11 @@ namespace TranslationHelper
             };
 
             //Settings
+            //General
+            THToolTip.SetToolTip(THOptionFullComprasionDBload, T._("In time of DB loading will be checked all DB lines for each line of table for translation."));
             //Optimization
             THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBox, T._("String will not be loaded for translation if this string contains romaji characters in text more of specified percent."));
+            
             //THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen, "Is true while opening. Always true for RPGMaker MV files or jsons for strings filtering purposes.");
             //THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation, T._("Is true while online translating. Will be used both with other chars like .!/? and other same"));
             THToolTip.SetToolTip(THOptionDBCompressionCheckBox, T._("Format for DB files: standard not compressed xml and compressed xml for both other"));
@@ -77,6 +81,9 @@ namespace TranslationHelper
         {
             try
             {
+                //General
+                THOptionFullComprasionDBload.Checked = FullComprasionDBloadINI;
+
                 //Optimizations
                 THOptionDontLoadStringIfRomajiPercentCheckBox.Checked = DontLoadStringIfRomajiPercentINI;
                 THOptionDontLoadStringIfRomajiPercentTextBox.Text = DontLoadStringIfRomajiPercentNumINI.ToString();                
@@ -150,6 +157,14 @@ namespace TranslationHelper
             set => THConfigINI.WriteINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked", value.ToString());
         }
 
+        public bool FullComprasionDBloadINI
+        {
+            get => THConfigINI.KeyExists("THOptionFullComprasionDBload.Checked", "General")
+                    ? bool.Parse(THConfigINI.ReadINI("General", "THOptionFullComprasionDBload.Checked"))
+                    : true;
+            set => THConfigINI.WriteINI("General", "THOptionFullComprasionDBload.Checked", value.ToString());
+        }
+
         private void THOptionDontLoadStringIfRomajiPercentTextBox_TextChanged(object sender, EventArgs e)
         {
             ValidTHOptionDontLoadStringIfRomajiPercent();
@@ -189,12 +204,13 @@ namespace TranslationHelper
 
         private void THSettingsWebTransLinkTextBox_Validated(object sender, EventArgs e)
         {
+            main.WebTranslationLink = THSettingsWebTransLinkTextBox.Text;
             WebTransLinkINI = THSettingsWebTransLinkTextBox.Text;
         }
 
         private void LinkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://patreon.com/TranslationHelper");
+            //Process.Start("https://patreon.com/TranslationHelper");
         }
 
         private void THOptionEnableTranslationCacheCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -203,6 +219,7 @@ namespace TranslationHelper
 
         private void THOptionAutotranslationForIdenticalCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            main.AutotranslationForIdentical = THOptionAutotranslationForIdenticalCheckBox.Checked;
             AutotranslationForIdenticalINI = THOptionAutotranslationForIdenticalCheckBox.Checked;
         }
 
@@ -215,6 +232,13 @@ namespace TranslationHelper
         private void THSettings_FormClosed(object sender, FormClosedEventArgs e)
         {
             THToolTip.Dispose();
+        }
+
+        private void FullComparasionDBload_CheckedChanged(object sender, EventArgs e)
+        {
+            main.IsFullComprasionDBloadEnabled = THOptionFullComprasionDBload.Checked;
+            FullComprasionDBloadINI = THOptionFullComprasionDBload.Checked;
+
         }
     }
 }

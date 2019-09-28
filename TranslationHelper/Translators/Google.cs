@@ -284,7 +284,7 @@ namespace TranslationHelper
                     //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "DNTT", RegexOptions.None);
                     //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
                     //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "<code>0</code>", RegexOptions.None);
-                    string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", " <br> ", RegexOptions.None);
+                    string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", " </br> ", RegexOptions.None);
                     //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nSTR:\r\n" + str);
                     //string str = OriginalText.Replace(Environment.NewLine, "BBC");
                     //string str = OriginalText.Replace(Environment.NewLine, "%0A");
@@ -376,7 +376,7 @@ namespace TranslationHelper
                 .Replace("<img src = ", "<img src=")
                 .Replace("<font size = ", "<font size=")
                 .Replace("<font face = ", "<font face=")
-                .Replace(" <br> ", Environment.NewLine)
+                .Replace(" </br> ", Environment.NewLine)
                 ;
         }
 
@@ -452,8 +452,8 @@ namespace TranslationHelper
                                 //"##",
                                 //Conversions.ToString(i),
                                 //"#># ",
-                                "<br>",
-                                Environment.NewLine,
+                                //"<br>",
+                                //Environment.NewLine,
                                 Regex.Replace(Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None), @"<br>", "QBRQ", RegexOptions.None),
                                 //" #<#",
                                 //Conversions.ToString(i),
@@ -483,7 +483,7 @@ namespace TranslationHelper
                         
                         //скачать страницу
                         string text = webClient.DownloadString(address);
-                        FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"TEXT:"+Environment.NewLine + text);
+                        //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"TEXT:"+Environment.NewLine + text);
 
                         HtmlDocument htmlDocument = WBhtmlDocument();
                         htmlDocument.Write(text);
@@ -499,7 +499,7 @@ namespace TranslationHelper
 
                         string text2 = FixFormatMulti(GetTranslationHtmlElement(htmlDocument));
 
-                        FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"text2:"+Environment.NewLine + text2);
+                        //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"text2:"+Environment.NewLine + text2);
                         //if (text2.Length == 0)
                         //{
                         //    for (int j = 0; j < array.Count(); j++)
@@ -596,7 +596,7 @@ namespace TranslationHelper
         {
             // возвращение знака новой строки и разделение на подстроки в массив
             string[] array = text2
-                         .Replace("<br> ", "<br>").Replace("<br>", string.Empty)
+                         //.Replace("<br> ", "<br>").Replace("<br>", string.Empty)
                          .Replace(" </br> ", "</br>")
                          .Replace("DNTT", Environment.NewLine)
                          .Split(splitter, StringSplitOptions.None);

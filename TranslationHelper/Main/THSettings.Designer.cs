@@ -33,6 +33,8 @@
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.THOptionAutotranslationForIdenticalCheckBox = new System.Windows.Forms.CheckBox();
+            this.THOptionFullComprasionDBload = new System.Windows.Forms.CheckBox();
             this.THSettingsOptimizationsTabPage = new System.Windows.Forms.TabPage();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
@@ -46,7 +48,6 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsToolsTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.THOptionAutotranslationForIdenticalCheckBox = new System.Windows.Forms.CheckBox();
             this.THOptionEnableTranslationCacheCheckBox = new System.Windows.Forms.CheckBox();
             this.linkLabel4 = new System.Windows.Forms.LinkLabel();
             this.label4 = new System.Windows.Forms.Label();
@@ -54,6 +55,7 @@
             this.THSettingsWebTransLinkTextBox = new System.Windows.Forms.TextBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.THSettingsOptimizationsTabPage.SuspendLayout();
             this.THProgramSettingsReadOptionsPanel.SuspendLayout();
             this.THSettingsToolsTabPage.SuspendLayout();
@@ -110,11 +112,37 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.THOptionAutotranslationForIdenticalCheckBox);
+            this.panel1.Controls.Add(this.THOptionFullComprasionDBload);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(518, 373);
             this.panel1.TabIndex = 7;
+            // 
+            // THOptionAutotranslationForIdenticalCheckBox
+            // 
+            this.THOptionAutotranslationForIdenticalCheckBox.AutoSize = true;
+            this.THOptionAutotranslationForIdenticalCheckBox.Checked = true;
+            this.THOptionAutotranslationForIdenticalCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionAutotranslationForIdenticalCheckBox.Location = new System.Drawing.Point(5, 3);
+            this.THOptionAutotranslationForIdenticalCheckBox.Name = "THOptionAutotranslationForIdenticalCheckBox";
+            this.THOptionAutotranslationForIdenticalCheckBox.Size = new System.Drawing.Size(159, 17);
+            this.THOptionAutotranslationForIdenticalCheckBox.TabIndex = 14;
+            this.THOptionAutotranslationForIdenticalCheckBox.Text = "Autotranslation for identical";
+            this.THOptionAutotranslationForIdenticalCheckBox.UseVisualStyleBackColor = true;
+            this.THOptionAutotranslationForIdenticalCheckBox.CheckedChanged += new System.EventHandler(this.THOptionAutotranslationForIdenticalCheckBox_CheckedChanged);
+            // 
+            // THOptionFullComprasionDBload
+            // 
+            this.THOptionFullComprasionDBload.AutoSize = true;
+            this.THOptionFullComprasionDBload.Location = new System.Drawing.Point(5, 26);
+            this.THOptionFullComprasionDBload.Name = "THOptionFullComprasionDBload";
+            this.THOptionFullComprasionDBload.Size = new System.Drawing.Size(290, 17);
+            this.THOptionFullComprasionDBload.TabIndex = 0;
+            this.THOptionFullComprasionDBload.Text = "Full recursive scan while translation DB loading (slower)";
+            this.THOptionFullComprasionDBload.UseVisualStyleBackColor = true;
+            this.THOptionFullComprasionDBload.CheckedChanged += new System.EventHandler(this.FullComparasionDBload_CheckedChanged);
             // 
             // THSettingsOptimizationsTabPage
             // 
@@ -267,7 +295,6 @@
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.THOptionAutotranslationForIdenticalCheckBox);
             this.panel2.Controls.Add(this.THOptionEnableTranslationCacheCheckBox);
             this.panel2.Controls.Add(this.linkLabel4);
             this.panel2.Controls.Add(this.label4);
@@ -279,25 +306,12 @@
             this.panel2.Size = new System.Drawing.Size(524, 379);
             this.panel2.TabIndex = 8;
             // 
-            // THOptionAutotranslationForIdenticalCheckBox
-            // 
-            this.THOptionAutotranslationForIdenticalCheckBox.AutoSize = true;
-            this.THOptionAutotranslationForIdenticalCheckBox.Checked = true;
-            this.THOptionAutotranslationForIdenticalCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.THOptionAutotranslationForIdenticalCheckBox.Location = new System.Drawing.Point(9, 267);
-            this.THOptionAutotranslationForIdenticalCheckBox.Name = "THOptionAutotranslationForIdenticalCheckBox";
-            this.THOptionAutotranslationForIdenticalCheckBox.Size = new System.Drawing.Size(159, 17);
-            this.THOptionAutotranslationForIdenticalCheckBox.TabIndex = 13;
-            this.THOptionAutotranslationForIdenticalCheckBox.Text = "Autotranslation for identical";
-            this.THOptionAutotranslationForIdenticalCheckBox.UseVisualStyleBackColor = true;
-            this.THOptionAutotranslationForIdenticalCheckBox.CheckedChanged += new System.EventHandler(this.THOptionAutotranslationForIdenticalCheckBox_CheckedChanged);
-            // 
             // THOptionEnableTranslationCacheCheckBox
             // 
             this.THOptionEnableTranslationCacheCheckBox.AutoSize = true;
             this.THOptionEnableTranslationCacheCheckBox.Checked = true;
             this.THOptionEnableTranslationCacheCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.THOptionEnableTranslationCacheCheckBox.Location = new System.Drawing.Point(9, 290);
+            this.THOptionEnableTranslationCacheCheckBox.Location = new System.Drawing.Point(8, 3);
             this.THOptionEnableTranslationCacheCheckBox.Name = "THOptionEnableTranslationCacheCheckBox";
             this.THOptionEnableTranslationCacheCheckBox.Size = new System.Drawing.Size(178, 17);
             this.THOptionEnableTranslationCacheCheckBox.TabIndex = 12;
@@ -331,7 +345,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 310);
+            this.label1.Location = new System.Drawing.Point(7, 23);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(225, 13);
             this.label1.TabIndex = 8;
@@ -339,7 +353,7 @@
             // 
             // THSettingsWebTransLinkTextBox
             // 
-            this.THSettingsWebTransLinkTextBox.Location = new System.Drawing.Point(9, 326);
+            this.THSettingsWebTransLinkTextBox.Location = new System.Drawing.Point(8, 39);
             this.THSettingsWebTransLinkTextBox.Name = "THSettingsWebTransLinkTextBox";
             this.THSettingsWebTransLinkTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.THSettingsWebTransLinkTextBox.Size = new System.Drawing.Size(508, 21);
@@ -360,6 +374,8 @@
             this.THSettingsTabControl.ResumeLayout(false);
             this.THSettingsMainTabPage.ResumeLayout(false);
             this.THSettingsMainTabPage.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.THSettingsOptimizationsTabPage.ResumeLayout(false);
             this.THSettingsOptimizationsTabPage.PerformLayout();
             this.THProgramSettingsReadOptionsPanel.ResumeLayout(false);
@@ -395,7 +411,8 @@
         internal System.Windows.Forms.LinkLabel linkLabel4;
         internal System.Windows.Forms.Label label4;
         public System.Windows.Forms.CheckBox THOptionEnableTranslationCacheCheckBox;
-        public System.Windows.Forms.CheckBox THOptionAutotranslationForIdenticalCheckBox;
         private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.CheckBox THOptionAutotranslationForIdenticalCheckBox;
+        private System.Windows.Forms.CheckBox THOptionFullComprasionDBload;
     }
 }

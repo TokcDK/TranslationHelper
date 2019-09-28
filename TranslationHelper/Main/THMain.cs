@@ -62,7 +62,6 @@ namespace TranslationHelper
         {
             InitializeComponent();
             //LangF = new THLang();
-            Settings = new THSettings(this);
 
             SetSettings();
 
@@ -99,13 +98,17 @@ namespace TranslationHelper
         public bool DontLoadStringIfRomajiPercent = true;
         public int DontLoadStringIfRomajiPercentNum = 90;
         public bool AutotranslationForIdentical = true;
+        public bool IsFullComprasionDBloadEnabled = true;
         private void SetSettings()
         {
+            Settings = new THSettings(this);
             IsTranslationCacheEnabled = Settings.EnableTranslationCacheINI;
             WebTranslationLink = Settings.WebTransLinkINI;
             DontLoadStringIfRomajiPercent = Settings.DontLoadStringIfRomajiPercentINI;
             DontLoadStringIfRomajiPercentNum = Settings.DontLoadStringIfRomajiPercentNumINI;
             AutotranslationForIdentical = Settings.AutotranslationForIdenticalINI;
+            IsFullComprasionDBloadEnabled = Settings.FullComprasionDBloadINI;
+            Settings.Dispose();
         }
 
         private void SetUIStrings()
@@ -2670,15 +2673,15 @@ namespace TranslationHelper
         //}
 
 
-        public bool GetAlreadyAddedInTable(string tablename, string value)
+        public bool GetAlreadyAddedInTable(DataTable table, string value)
         {
             //про primary key взял отсюда: https://stackoverflow.com/questions/3567552/table-doesnt-have-a-primary-key
             //DataColumn[] keyColumns = new DataColumn[1];
-            keyColumns[0] = THFilesElementsDataset.Tables[tablename].Columns["Original"];
-            THFilesElementsDataset.Tables[tablename].PrimaryKey = keyColumns;
+            keyColumns[0] = table.Columns["Original"];
+            table.PrimaryKey = keyColumns;
 
             //очень быстрый способ поиска дубликата значения, два нижник в разы медленней, этот почти не заметен
-            if (THFilesElementsDataset.Tables[tablename].Rows.Contains(value))
+            if (table.Rows.Contains(value))
             {
                 //LogToFile("Value already in table: \r\n"+ value);
                 //MessageBox.Show("found! value=" + value);
@@ -4671,8 +4674,33 @@ namespace TranslationHelper
             ProgressInfo(false);
         }
 
+        private bool IsDataSetsElementsCountIdentical(DataSet DS1, DataSet DS2)
+        {
+            if (DS1.Tables.Count == DS2.Tables.Count)
+            {
+                for (int t =0;t< DS1.Tables.Count; t++)
+                {
+                    if (DS1.Tables[t].Rows.Count != DS2.Tables[t].Rows.Count)
+                    {
+                        return false;
+                    }
+                }
+                return true; ;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private void THLoadDBCompare(DataSet THTempDS)
         {
+            if (!IsFullComprasionDBloadEnabled && IsDataSetsElementsCountIdentical(THFilesElementsDataset, THTempDS))
+            {
+                CompareLiteIfIdentical(THTempDS);
+                return;
+            }
+
             //using (DataSet THTempDS = new DataSet())
             //{
             //    //LogToFile("cleaning THTempDS and refreshing dgv", true);
@@ -4684,8 +4712,8 @@ namespace TranslationHelper
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
             int otranscol = THFilesElementsDataset.Tables[0].Columns.Count - 1; //если вдруг колонка была только одна
-                                                                           //LogToFile("ocol=" + ocol);
-            //оптимизация. Не искать колонку перевода, если она по стандарту первая
+                                                                                //LogToFile("ocol=" + ocol);
+                                                                                //оптимизация. Не искать колонку перевода, если она по стандарту первая
             if (THFilesElementsDataset.Tables[0].Columns[1].ColumnName == "Translation")
             {
                 otranscol = 1;
@@ -4701,21 +4729,25 @@ namespace TranslationHelper
                     otranscol -= 1;
                 }
             }
-            int ttranscol = THTempDS.Tables[0].Columns.Count - 1;
-            //LogToFile("tcol=" + tcol);
-            if (THTempDS.Tables[0].Columns[1].ColumnName == "Translation")
+            int ttranscol;
+            using (var TempDBTable = THTempDS.Tables[0])
             {
-                ttranscol = 1;
-            }
-            else
-            {
-                while (ttranscol > 1) //поиск колонки оригинал
+                ttranscol = TempDBTable.Columns.Count - 1;
+                //LogToFile("tcol=" + tcol);
+                if (TempDBTable.Columns[1].ColumnName == "Translation")
                 {
-                    if (THTempDS.Tables[0].Columns[ttranscol].ColumnName == "Translation")
+                    ttranscol = 1;
+                }
+                else
+                {
+                    while (ttranscol > 1) //поиск колонки оригинал
                     {
-                        break;
+                        if (TempDBTable.Columns[ttranscol].ColumnName == "Translation")
+                        {
+                            break;
+                        }
+                        ttranscol -= 1;
                     }
-                    ttranscol -= 1;
                 }
             }
 
@@ -4723,75 +4755,108 @@ namespace TranslationHelper
             int ttablestartindex = 0;
             int trowstartindex = 0;
 
+            int tcount = THFilesElementsDataset.Tables.Count;
+            string infomessage = T._("loading translation") + ":";
             //проход по всем таблицам рабочего dataset
-            for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
+            for (int t = 0; t < tcount; t++)
             {
-                ProgressInfo(true, T._("loading translation: ") + t + @" \ " + THFilesElementsDataset.Tables.Count);
-                //if (THFilesElementsDataset.Tables[t].Columns.Count == 1)
-                //{
-                //    //LogToFile("ocol=0! creating second");
-                //    THFilesElementsDataset.Tables[t].Columns.Add("Translation");
-                //    continue;
-                //}
-                //LogToFile("THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName=" + THFilesElementsDataset.Tables[t].Columns[ocol].ColumnName);
-
-                //проход по всем строкам таблицы рабочего dataset
-                for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                using (var Table = THFilesElementsDataset.Tables[t])
                 {
-                    if ((THFilesElementsDataset.Tables[t].Rows[r][otranscol] + string.Empty).Length == 0)
+                    string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
+                    ProgressInfo(true, tableprogressinfo);
+
+                    int rcount = Table.Rows.Count;
+                    //проход по всем строкам таблицы рабочего dataset
+                    for (int r = 0; r < rcount; r++)
                     {
-                        //LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][" + ocol + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[r][ocol].ToString());
-                        bool TranslationWasSet = false;
-                        //проход по всем таблицам dataset с переводом
-                        for (int t1 = ttablestartindex; t1 < THTempDS.Tables.Count; t1++)
+                        ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+                        var Row = Table.Rows[r];
+                        if (Row[otranscol] == null || string.IsNullOrEmpty(Row[otranscol] as string))
                         {
-                            if (THTempDS.Tables[t1].Columns.Count > 1)
+                            bool TranslationWasSet = false;
+
+                            var DBTablesCount = THTempDS.Tables.Count;
+                            //проход по всем таблицам dataset с переводом
+                            for (int t1 = ttablestartindex; t1 < DBTablesCount; t1++)
                             {
-                                //проход по всем строкам таблицы dataset с переводом
-                                for (int r1 = trowstartindex; r1 < THTempDS.Tables[t1].Rows.Count; r1++)
+                                using (var DBTable = THTempDS.Tables[t1])
                                 {
-                                    if ((THTempDS.Tables[t1].Rows[r1][ttranscol] + string.Empty).Length == 0)
+                                    if (DBTable.Columns.Count > 1)
                                     {
-                                    }
-                                    else
-                                    {
-                                        //LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][0].ToString()=" + THFilesElementsDataset.Tables[t].Rows[r][0].ToString());
-                                        //LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][0].ToString()=" + THTempDS.Tables[t1].Rows[r1][0].ToString());
-                                        //LogToFile("THFilesElementsDataset.Tables[" + t + "].Rows[" + r + "][0]=" + THFilesElementsDataset.Tables[t].Rows[r][0]);
-                                        //LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][0]=" + THTempDS.Tables[t1].Rows[r1][0]);
-                                        //LogToFile("THTempDS.Tables[" + t1 + "].Rows[" + r1 + "][" + tcol + "].ToString()=" + THTempDS.Tables[t1].Rows[r1][tcol].ToString());
-                                        try
+                                        var DBTableRowsCount = THTempDS.Tables[t1].Rows.Count;
+                                        //проход по всем строкам таблицы dataset с переводом
+                                        for (int r1 = trowstartindex; r1 < DBTableRowsCount; r1++)
                                         {
-                                            if (Equals(THFilesElementsDataset.Tables[t].Rows[r][0], THTempDS.Tables[t1].Rows[r1][0]))
+                                            var DBRow = DBTable.Rows[r1];
+                                            if (DBRow[ttranscol] == null || string.IsNullOrEmpty(DBRow[ttranscol] as string))
                                             {
-                                                //дополнительная проверка для предотвращения перезаписи ячейки, если она была заполнена значением пользователем или другой функцией
-                                                if ((THFilesElementsDataset.Tables[t].Rows[r][otranscol] + string.Empty).Length == 0)
+                                            }
+                                            else
+                                            {
+                                                try
                                                 {
-                                                    THFilesElementsDataset.Tables[t].Rows[r][otranscol] = THTempDS.Tables[t1].Rows[r1][ttranscol];
-                                                    TranslationWasSet = true;
-                                                    //LogToFile("value set. transwasset=" + transwasset.ToString());
-                                                    trowstartindex = r1;//запоминание последнего индекса строки
-                                                    break;
+                                                    if (Equals(Row[0], DBRow[0]))
+                                                    {
+                                                        //дополнительная проверка для предотвращения перезаписи ячейки, если она была заполнена значением пользователем или другой функцией
+                                                        if (Row[otranscol] == null || string.IsNullOrEmpty(Row[otranscol] as string))
+                                                        {
+                                                            THFilesElementsDataset.Tables[t].Rows[r][otranscol] = DBRow[ttranscol];
+                                                            TranslationWasSet = true;
+
+                                                            trowstartindex = IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                catch
+                                                {
                                                 }
                                             }
                                         }
-                                        catch
+                                        if (TranslationWasSet)//если перевод был присвоен, выйти из цикла таблицы с переводом
                                         {
+                                            ttablestartindex = IsFullComprasionDBloadEnabled ? 0 : t1;//запоминание последнего индекса таблицы, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            //сбрасывать индекс на ноль
+                                            trowstartindex = 0;
                                         }
                                     }
                                 }
-                                if (TranslationWasSet)//если перевод был присвоен, выйти из цикла таблицы с переводом
-                                {
-                                    //LogToFile("value set. transwasset=" + transwasset.ToString());
-                                    ttablestartindex = t1;//запоминание последнего индекса таблицы
-                                    break;
-                                }
-                                else
-                                {
-                                    //сбрасывать индекс на ноль
-                                    trowstartindex = 0;
-                                }
                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CompareLiteIfIdentical(DataSet tHTempDS)
+        {
+            int tcount = THFilesElementsDataset.Tables.Count;
+            string infomessage = T._("loading translation") + ":";
+            //проход по всем таблицам рабочего dataset
+            for (int t = 0; t < tcount; t++)
+            {
+                var DT = THFilesElementsDataset.Tables[t];
+                string tableprogressinfo = infomessage + DT.TableName + ">" + t + "/" + tcount;
+                ProgressInfo(true, tableprogressinfo);
+
+                int rcount = DT.Rows.Count;
+                //проход по всем строкам таблицы рабочего dataset
+                for (int r = 0; r < rcount; r++)
+                {
+                    ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+
+                    var TranslationRow = DT.Rows[r];
+                    var TranslationCell = TranslationRow[1];
+                    if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell as string))
+                    {
+                        var DBRow = tHTempDS.Tables[t].Rows[r];
+                        if (Equals(TranslationRow[0], DBRow[0]))
+                        {
+                            THFilesElementsDataset.Tables[t].Rows[r][1] = DBRow[1];
                         }
                     }
                 }
@@ -6324,7 +6389,7 @@ namespace TranslationHelper
 
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                 //почемуто так не переводит, переводчик кидает ошибку при заппуске в другом потоке
-                //await Task.Run(() => OnlineTranslateSelected(cind, tableindex, selindexes));
+                //await Task.Run(() => OnlineTranslateSelected(cind, tableindex, selindexes));  
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "s")));
@@ -6436,11 +6501,13 @@ namespace TranslationHelper
         {
             try
             {
+                translationInteruptToolStripMenuItem.Visible = true;
+
                 using (DataSet THTranslationCache = new DataSet())
                 {
                     TranslationCacheInit(THTranslationCache);
 
-                    int maxchars = 500; //большие значения ломаю ответ сервера, например отсутствует или ломается разделитель при значении 1000, потом надо будет подстроить идеальный максимум
+                    int maxchars = 1000; //большие значения ломаю ответ сервера, например отсутствует или ломается разделитель при значении 1000, потом надо будет подстроить идеальный максимум
                     int CurrentCharsCount = 0;
                     string InputOriginalLine;
 
@@ -6455,16 +6522,30 @@ namespace TranslationHelper
                             InputLinesInfo.Columns.Add("Table");
                             InputLinesInfo.Columns.Add("Row");
 
-                            for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
+                            int tcount = THFilesElementsDataset.Tables.Count;
+                            for (int t = 0; t < tcount; t++)
                             {
-                                for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                                var Table = THFilesElementsDataset.Tables[t];
+                                int rcount = Table.Rows.Count;
+                                for (int r = 0; r < rcount; r++)
                                 {
-                                    InputOriginalLine = THFilesElementsDataset.Tables[t].Rows[r][0] + string.Empty;
+                                    var Row = Table.Rows[r];
+                                    if (InteruptTranslation)
+                                    {
+                                        translationInteruptToolStripMenuItem.Visible = false;
+                                        Thread.CurrentThread.Interrupt();
+                                        ProgressInfo(false);
+                                        return;
+                                    }
+                                    ProgressInfo(true, T._("translating")+": "+t+"/"+tcount+" ("+r+"/"+rcount+")");
+
+                                    InputOriginalLine = Row[0] as string;
 
                                     bool TranslateIt=false;
-                                    TranslateIt = (CurrentCharsCount + InputOriginalLine.Length) >= maxchars || r == THFilesElementsDataset.Tables[t].Rows.Count - 1;
+                                    TranslateIt = (CurrentCharsCount + InputOriginalLine.Length) >= maxchars || r == rcount - 1;
 
-                                    if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)
+                                    var Cell = Row[1];
+                                    if (Cell == null || string.IsNullOrEmpty(Cell as string))
                                     {
                                         string InputOriginalLineFromCache = TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
                                         
@@ -6487,20 +6568,20 @@ namespace TranslationHelper
                                                 {
                                                     string linevalue = Lines[s];
 
+                                                    string Translation = string.Empty;
                                                     cache = TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
                                                     if (cache.Length > 0)
                                                     {
-                                                        InputLinesInfo.Rows.Add(linevalue, cache, t, r);
+                                                        Translation = cache;
                                                     }
                                                     else
                                                     {
-                                                        string Translation = string.Empty;
                                                         if (linevalue.Length > 0)
                                                         {
                                                             extractedvalue = THExtractTextForTranslation(linevalue);//извлечение подстроки
 
                                                             // только если извлеченное значение отличается от оригинальной строки
-                                                            cache = Equals(extractedvalue, linevalue) ? string.Empty : TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
+                                                            cache = extractedvalue == linevalue ? string.Empty : TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
                                                             if (cache.Length > 0)
                                                             {
                                                                 Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
@@ -6510,21 +6591,16 @@ namespace TranslationHelper
                                                                 InputLines.Rows.Add(extractedvalue.Length == 0 ? linevalue : extractedvalue);
                                                             }
                                                         }
-                                                        InputLinesInfo.Rows.Add(linevalue, Translation, t, r);
                                                     }
-
+                                                    InputLinesInfo.Rows.Add(linevalue, Translation, t, r);
                                                 }
-
                                             }
                                             else
                                             {
                                                 cache = TranslationCacheFind(THTranslationCache, InputOriginalLine);
                                                 if (cache.Length > 0)
                                                 {
-                                                    if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)
-                                                    {
-                                                        THFilesElementsDataset.Tables[t].Rows[r][1] = cache;
-                                                    }
+                                                    THFilesElementsDataset.Tables[t].Rows[r][1] = cache;
                                                 }
                                                 else
                                                 {
@@ -6539,11 +6615,48 @@ namespace TranslationHelper
                                         }
                                     }
 
-                                    if (TranslateIt && InputLines.Rows.Count > 0)
+                                    if (TranslateIt)
                                     {
                                         CurrentCharsCount = 0;
 
-                                        TranslateLinesAndSetTranslation(InputLines, InputLinesInfo, THTranslationCache);
+                                        if (InputLines.Rows.Count > 0)
+                                        {
+                                            TranslateLinesAndSetTranslation(InputLines, InputLinesInfo, THTranslationCache);
+                                        }
+                                        else if (InputLinesInfo.Rows.Count > 0)
+                                        {
+                                            int PreviousTableIndex = -1;
+                                            int PreviousRowIndex = -1;
+                                            int NewTableIndex;
+                                            int NewRowIndex;
+                                            int rowscount = InputLinesInfo.Rows.Count;
+                                            StringBuilder ResultValue = new StringBuilder(rowscount);
+                                            for (int i = 0; i < rowscount; i++)
+                                            {
+                                                var row = InputLinesInfo.Rows[i];
+                                                NewTableIndex = int.Parse(row[2] as string);
+                                                NewRowIndex = int.Parse(row[3] as string);
+                                                if (string.IsNullOrEmpty(row[0] as string))
+                                                {
+                                                    ResultValue.Append(Environment.NewLine);
+                                                }
+                                                else if (!string.IsNullOrEmpty(row[1] as string))
+                                                {
+                                                    ResultValue.Append(row[1]);
+                                                }
+                                                if (NewRowIndex == PreviousRowIndex && i < rowscount-1)
+                                                {
+                                                    ResultValue.Append(Environment.NewLine);
+                                                }
+                                                else
+                                                {
+                                                    SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                                                }
+                                                PreviousTableIndex = NewTableIndex;
+                                                PreviousRowIndex = NewRowIndex;
+                                            }
+                                        }
+                                        WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
 
                                         InputLines.Rows.Clear();
                                         InputLinesInfo.Rows.Clear();
@@ -6560,7 +6673,7 @@ namespace TranslationHelper
             {
                 MessageBox.Show(ex.ToString());
             }
-
+            ProgressInfo(false);
         }
 
         private void TranslateLinesAndSetTranslation(DataTable InputLines, DataTable InputLinesInfo, DataSet THTranslationCache)
@@ -6586,37 +6699,40 @@ namespace TranslationHelper
                 int TableIndex=0;
                 int RowIndex=0;
 
-                for (int i = 0; i < TranslatedLines.Length; i++)
+                int TranslatedLinesLength = TranslatedLines.Length;
+                for (int i = 0; i < TranslatedLinesLength; i++)
                 {
-                    string fdsfsdf = TranslatedLines[i];
-                    string dfsgsdg1 = fdsfsdf;
+                    string TranslatedLine = TranslatedLines[i];
+                    var InfoRow = InputLinesInfo.Rows[i2];
+                    //string fdsfsdf = TranslatedLines[i];
+                    //string dfsgsdg1 = fdsfsdf;
                     //--------------------------------
                     //Блок считывания индеков таблицы и строки
                     //добавление переноса, если строка той же ячейки, либо запись результата, если уже новая ячейка
-                    string prelastvalue="";
-                    string lastvalue = "";
-                    try
-                    {
-                        int inforowscount = InputLinesInfo.Rows.Count;
-                        if (inforowscount > 0)
-                        {
-                            if (inforowscount > 1)
-                            {
-                                prelastvalue = InputLinesInfo.Rows[InputLines.Rows.Count - 2][1] + string.Empty;
-                                
-                            }
-                            lastvalue = InputLinesInfo.Rows[InputLinesInfo.Rows.Count - 1][1] + string.Empty;
-                            
-                        }
-                        TableIndex = int.Parse(InputLinesInfo.Rows[i2][2] + string.Empty);
-                        RowIndex = int.Parse(InputLinesInfo.Rows[i2][3] + string.Empty);
-                    }
-                    catch(Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString());
-                    }
-                    string asdasd = prelastvalue;
-                    string adsasdaaa = lastvalue;
+                    //string prelastvalue="";
+                    //string lastvalue = "";
+                    //try
+                    //{
+                    //    int inforowscount = InputLinesInfo.Rows.Count;
+                    //    if (inforowscount > 0)
+                    //    {
+                    //        if (inforowscount > 1)
+                    //        {
+                    //            prelastvalue = InputLinesInfo.Rows[InputLines.Rows.Count - 2][1] + string.Empty;
+
+                    //        }
+                    //        lastvalue = InputLinesInfo.Rows[InputLinesInfo.Rows.Count - 1][1] + string.Empty;
+
+                    //    }
+                    TableIndex = int.Parse(InfoRow[2] as string);
+                    RowIndex = int.Parse(InfoRow[3] as string);
+                    //}
+                    //catch(Exception ex)
+                    //{
+                    //    MessageBox.Show(ex.ToString());
+                    //}
+                    //string asdasd = prelastvalue;
+                    //string adsasdaaa = lastvalue;
 
                     if (RowIndex == PreviousRowIndex)
                     {
@@ -6630,44 +6746,50 @@ namespace TranslationHelper
                     //--------------------------------
                     //Блок записи пустой строки или кеша из информации, если они были и увеличение i2 на 1
 
-                    bool WritedFromInfo = false;
-                    if ((InputLinesInfo.Rows[i2][0] + string.Empty).Length == 0)
+                    bool WritedFromInfo = true;
+                    while (WritedFromInfo)
                     {
-                        //ResultValue.Append(string.Empty); //закоментировано для оптимизации, тот же эффект добавление пустой строки
-                        WritedFromInfo = true;
-                        i2++;
-                    }
-                    else if ((InputLinesInfo.Rows[i2][1] + string.Empty).Length > 0)
-                    {
-                        ResultValue.Append(InputLinesInfo.Rows[i2][1] + string.Empty);
-                        WritedFromInfo = true;
-                        i2++;
-                    }
-
-                    if (WritedFromInfo)//контроль, когда было записано из Info , предотвращает запись лишнего переноса
-                    {
-                        //--------------------------------
-                        //Блок считывания индеков таблицы и строки
-                        //добавление переноса, если строка той же ячейки, либо запись результата, если уже новая ячейка
-
-                        TableIndex = int.Parse(InputLinesInfo.Rows[i2][2] + string.Empty);
-                        RowIndex = int.Parse(InputLinesInfo.Rows[i2][3] + string.Empty);
-
-                        if (RowIndex == PreviousRowIndex)
+                        WritedFromInfo = false;
+                        if (string.IsNullOrEmpty(InfoRow[0] as string))
                         {
-                            ResultValue.Append(Environment.NewLine);
+                            //ResultValue.Append(string.Empty); //закоментировано для оптимизации, тот же эффект добавление пустой строки
+                            WritedFromInfo = true;
+                            i2++;
                         }
-                        else
+                        else if (!string.IsNullOrEmpty(InfoRow[1] as string))
                         {
-                            SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                            ResultValue.Append(InfoRow[1]);
+                            WritedFromInfo = true;
+                            i2++;
                         }
 
-                        //--------------------------------
+                        if (WritedFromInfo)//контроль, когда было записано из Info , предотвращает запись лишнего переноса
+                        {
+                            PreviousRowIndex = RowIndex;
+                            PreviousTableIndex = TableIndex;
+                            //--------------------------------
+                            //Блок считывания индеков таблицы и строки
+                            //добавление переноса, если строка той же ячейки, либо запись результата, если уже новая ячейка
+                            InfoRow = InputLinesInfo.Rows[i2];//еще раз переприсваивание, т.к. i2 поменялось
+                            TableIndex = int.Parse(InfoRow[2] as string);
+                            RowIndex = int.Parse(InfoRow[3] as string);
+
+                            if (RowIndex == PreviousRowIndex)
+                            {
+                                ResultValue.Append(Environment.NewLine);
+                            }
+                            else
+                            {
+                                SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                            }
+
+                            //--------------------------------
+                        }
                     }
 
-                    ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLines[i], InputLinesInfo.Rows[i2][0] + string.Empty, InputLines.Rows[i][0] + string.Empty));
+                    ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, InfoRow[0] as string, InputLines.Rows[i][0] as string));
 
-                    AddToTranslationCacheIfValid(THTranslationCache, InputLines.Rows[i][0] + string.Empty, TranslatedLines[i]);
+                    AddToTranslationCacheIfValid(THTranslationCache, InfoRow[0] as string, TranslatedLine);
 
                     PreviousRowIndex = RowIndex;
                     PreviousTableIndex = TableIndex;
@@ -6679,15 +6801,15 @@ namespace TranslationHelper
 
         private void AddToTranslationCacheIfValid(DataSet THTranslationCache, string Original, string Translation)
         {
-            if (Settings.THOptionEnableTranslationCacheCheckBox.Checked)
+            if (IsTranslationCacheEnabled)
             {
-                if (Equals(Original, Translation) || TranslationCacheFind(THTranslationCache, Original).Length > 0)
+                DataTable Table = THTranslationCache.Tables[0];
+                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || GetAlreadyAddedInTable(Table, Original))
                 {
-
                 }
                 else
                 {
-                    THTranslationCache.Tables[0].Rows.Add(Original, Translation);
+                    Table.Rows.Add(Original, Translation);
                 }
             }
         }
@@ -6697,25 +6819,28 @@ namespace TranslationHelper
             if (ResultValue.Length > 0 && PreviousTableIndex > -1 && PreviousRowIndex > -1)
             {
                 string s; //иногда значения без перевода и равны оригиналу, но отдельным переводом выбранной ячейки получается нормально
-                if (Equals((THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][0] + string.Empty), ResultValue.ToString()))
+                var Row = THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex];
+                var Cell = Row[0];
+                if (Equals(Cell, ResultValue))
                 {
-                    s = GoogleAPI.Translate(THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][0] + string.Empty);
+                    s = GoogleAPI.Translate(Cell as string);
                 }
                 else
                 {
                     s = ResultValue.ToString();
                 }
 
-                if ((THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] + string.Empty).Length == 0)
+                var TranslationCell = Row[1];
+                if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell as string))
                 {
                     THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = s;
 
-                    AddToTranslationCacheIfValid(THTranslationCache, THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][0] + string.Empty, s);
+                    AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
 
-                    THAutoSetValueForSameCells(PreviousTableIndex, PreviousRowIndex, 0, true);
+                    THAutoSetValueForSameCells(PreviousTableIndex, PreviousRowIndex, 0);
                 }
+                ResultValue.Clear();
             }
-            ResultValue.Clear();
         }
 
         private string PasteTranslationBackIfExtracted(string Translation, string Original, string Extracted)
@@ -6757,14 +6882,28 @@ namespace TranslationHelper
 
         public string TranslationCacheFind(DataSet DS, string Input)
         {
-            if (Input.Length > 0 && Settings.THOptionEnableTranslationCacheCheckBox.Checked && DS.Tables[0].Rows.Count > 0)
+            if (IsTranslationCacheEnabled)
             {
-                for (int i = 0; i < DS.Tables[0].Rows.Count; i++)
+                if (Input.Length > 0)
                 {
-                    //MessageBox.Show("Input=" + Input+"\r\nCache="+ THTranslationCache.Tables["TranslationCache"].Rows[i][0].ToString());
-                    if (Input == DS.Tables[0].Rows[i][0] + string.Empty)
+                    using (var Table = DS.Tables[0])
                     {
-                        return DS.Tables[0].Rows[i][1] + string.Empty;
+                        if (Table.Rows.Count > 0)
+                        {
+                            if (GetAlreadyAddedInTable(Table, Input))
+                            {
+                                var RowsCount = Table.Rows.Count;
+                                for (int i = 0; i < RowsCount; i++)
+                                {
+                                    var row = Table.Rows[i];
+                                    //MessageBox.Show("Input=" + Input+"\r\nCache="+ THTranslationCache.Tables["TranslationCache"].Rows[i][0].ToString());
+                                    if (Input == row[0] as string)
+                                    {
+                                        return row[1] as string;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -6959,7 +7098,7 @@ namespace TranslationHelper
 
         private void WriteTranslationCacheIfValid(DataSet THTranslationCache, string tHTranslationCachePath)
         {
-            if (Settings.THOptionEnableTranslationCacheCheckBox.Checked && THTranslationCache.Tables[0].Rows.Count > 0)
+            if (IsTranslationCacheEnabled && THTranslationCache.Tables[0].Rows.Count > 0)
             {
                 WriteDBFile(THTranslationCache, THTranslationCachePath);
                 //THTranslationCache.Reset();
@@ -8020,12 +8159,15 @@ namespace TranslationHelper
         }
 
         bool cellchanged = false;
-        private void THAutoSetValueForSameCells(int tableind, int rind, int cind, bool forcerun = true)
+        private void THAutoSetValueForSameCells(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true)
         {
             if ((cellchanged || forcerun) && AutotranslationForIdentical) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
-                int transcind = cind + 1;
-                if ((THFilesElementsDataset.Tables[tableind].Rows[rind][transcind] + string.Empty).Length == 0)
+                int TranslationCellIndex = InputCellIndex + 1;
+                var InputTableRow = THFilesElementsDataset.Tables[InputTableIndex].Rows[InputRowIndex];
+                var InputTableOriginalCell = InputTableRow[InputCellIndex];
+                var InputTableTranslationCell = InputTableRow[TranslationCellIndex];
+                if (InputTableTranslationCell==null || string.IsNullOrEmpty(InputTableTranslationCell as string))
                 {
                 }
                 else//Запускать сравнение только если ячейка имеет значение
@@ -8036,24 +8178,29 @@ namespace TranslationHelper
                     string japanessymbols = "【|】|「|」";
                     string pattern = @"((\d|\!|\?|\.|[|]|" + quote + "|" + japanessymbols + ")+)";
                     Regex reg = new Regex(pattern); //reg равняется любым цифрам
-                    string inputorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][cind] + string.Empty);
-                    string inputtranscellvalue = THFixDigits(THFilesElementsDataset.Tables[tableind].Rows[rind][transcind] + string.Empty);
+                    string inputorigcellvalue = THFixDigits(InputTableOriginalCell as string);
+                    string inputtranscellvalue = THFixDigits(InputTableTranslationCell as string);
                     MatchCollection mc = reg.Matches(inputorigcellvalue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
                     int mccount = mc.Count;
 
-
-                    for (int Tindx = 0; Tindx < THFilesElementsDataset.Tables.Count; Tindx++) //количество файлов
+                    int TableCount = THFilesElementsDataset.Tables.Count;
+                    for (int Tindx = 0; Tindx < TableCount; Tindx++) //количество файлов
                     {
+                        var Table = THFilesElementsDataset.Tables[Tindx];
+                        var RowsCount = Table.Rows.Count;
                         //LogToFile("Table "+Tindx+" proceed");
-                        for (int Rindx = 0; Rindx < THFilesElementsDataset.Tables[Tindx].Rows.Count; Rindx++) //количество строк в каждом файле
+                        for (int Rindx = 0; Rindx < RowsCount; Rindx++) //количество строк в каждом файле
                         {
-                            if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] + string.Empty).Length==0) //Проверять только для пустых ячеек перевода
+                            var TRow = Table.Rows[Rindx];
+                            var TCell = TRow[TranslationCellIndex];
+                            if (TCell == null || string.IsNullOrEmpty(TCell as string)) //Проверять только для пустых ячеек перевода
                             {
                                 //LogToFile("THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString()=" + THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString());
                                 if (mccount > 0) //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
                                 {
-                                    string checkingorigcellvalue = THFixDigits(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind] + string.Empty);
-                                    MatchCollection mc0 = reg.Matches(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind] + string.Empty); //mc0 равно значениям цифр ячейки под номером y в файле i
+                                    string TempCell = TRow[InputCellIndex] + string.Empty;
+                                    string checkingorigcellvalue = THFixDigits(TempCell);
+                                    MatchCollection mc0 = reg.Matches(TempCell); //mc0 равно значениям цифр ячейки под номером y в файле i
                                     int mc0Count = mc0.Count;
                                     if (mc0Count > 0) //если количество совпадений в mc0 больше нуля, т.е. цифры были в поле untrans проверяемой на совпадение ячейки
                                     {
@@ -8064,64 +8211,64 @@ namespace TranslationHelper
                                         //если поле перевода равно только что измененному во входной, без учета цифр
                                         if (Equals(checkingorigcellvalueNoDigits,inputorigcellvalueNoDigits) && mccount == mc0Count && IsAllMatchesInIdenticalPlaces(inputorigcellvalue, checkingorigcellvalue, mc, mc0))
                                         {
-                                            if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] + string.Empty).Length == 0)
+                                            //инициализация основных целевого и входного массивов
+                                            string[] inputorigmatches = new string[mccount];
+                                            string[] targetorigmatches = new string[mccount];
+                                            //присваивание цифр из совпадений в массивы, в основной входного и во временный целевого
+                                            for (int r = 0; r < mccount; r++)
                                             {
-                                                //инициализация основных целевого и входного массивов
-                                                string[] inputorigmatches = new string[mccount];
-                                                string[] targetorigmatches = new string[mccount];
-                                                //присваивание цифр из совпадений в массивы, в основной входного и во временный целевого
-                                                for (int r = 0; r < mccount; r++)
+                                                inputorigmatches[r] = THFixDigits(mc[r].Value/*.Replace(mc[r].Value, mc[r].Value)*/);
+                                                targetorigmatches[r] = THFixDigits(mc0[r].Value/*.Replace(mc0[r].Value, mc0[r].Value)*/);
+                                            }
+                                            //также инфо о другом способе:
+                                            //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
+                                            //там же че тести и for, ак у здесь меня - наиболее быстрый вариант
+
+                                            //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет пеерведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменется, т.к. 万 [man] переводится как 10000.
+                                            if (reg.Matches(inputtranscellvalue).Count == mccount)
+                                            {
+                                                //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+                                                string inputresult = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+
+                                                MatchCollection tm = reg.Matches(inputresult);
+                                                int startindex;
+                                                int stringoverallength = 0;
+                                                int stringlength = 0;
+                                                int stringoverallength0 = 0;
+                                                //LogToFile("arraysize=" + arraysize + ", wrapped inputresult" + inputresult);
+                                                for (int m = 0; m < mccount; m++)
                                                 {
-                                                    inputorigmatches[r] = THFixDigits(mc[r].Value.Replace(mc[r].Value, mc[r].Value));
-                                                    targetorigmatches[r] = THFixDigits(mc0[r].Value.Replace(mc0[r].Value, mc0[r].Value));
+                                                    //LogToFile("inputorigmatches[" + m + "]=" + inputorigmatches[m] + ", targetorigmatches[" + m + "]=" + targetorigmatches[m] + ", pre result[" + m + "]=" + inputresult);
+                                                    //inputresult = inputresult.Replace("{{" + inputorigmatches[m] + "}}", targetorigmatches[m]);
+
+                                                    //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
+                                                    startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
+                                                    stringlength = inputorigmatches[m].Length;
+                                                    stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
+                                                    inputresult = inputresult.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);
+                                                    stringoverallength0 += targetorigmatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
+                                                                                                       //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
+                                                                                                       //LogToFile("result[" + m + "]=" + inputresult);
                                                 }
-                                                //также инфо о другом способе:
-                                                //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
-                                                //там же че тести и for, ак у здесь меня - наиболее быстрый вариант
-
-                                                //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет пеерведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменется, т.к. 万 [man] переводится как 10000.
-                                                if (reg.Matches(inputtranscellvalue).Count == mccount)
+                                                //только если ячейка пустая
+                                                TCell = THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex];
+                                                if (TCell == null || string.IsNullOrEmpty(TCell as string))
                                                 {
-                                                    //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
-                                                    string inputresult = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
-
-                                                    MatchCollection tm = reg.Matches(inputresult);
-                                                    int startindex;
-                                                    int stringoverallength=0;
-                                                    int stringlength=0;
-                                                    int stringoverallength0=0;
-                                                    //LogToFile("arraysize=" + arraysize + ", wrapped inputresult" + inputresult);
-                                                    for (int m = 0; m < mccount; m++)
-                                                    {
-                                                        //LogToFile("inputorigmatches[" + m + "]=" + inputorigmatches[m] + ", targetorigmatches[" + m + "]=" + targetorigmatches[m] + ", pre result[" + m + "]=" + inputresult);
-                                                        //inputresult = inputresult.Replace("{{" + inputorigmatches[m] + "}}", targetorigmatches[m]);
-
-                                                        //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
-                                                        startindex = tm[m].Index- stringoverallength+ stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
-                                                        stringlength = inputorigmatches[m].Length;
-                                                        stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
-                                                        inputresult = inputresult.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);
-                                                        stringoverallength0 += targetorigmatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
-                                                        //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
-                                                        //LogToFile("result[" + m + "]=" + inputresult);
-                                                    }
-                                                    //только если ячейка пустая
-                                                    if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] + string.Empty).Length == 0)
-                                                    {
-                                                        THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = inputresult;
-                                                    }
-                                                }                                                
+                                                    THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = inputresult;
+                                                }
                                             }
                                         }
                                     }
                                 }
                                 else //иначе, если в поле оригинала не было цифр, сравнить как обычно, два поля между собой 
                                 {
-                                    if (Equals(THFilesElementsDataset.Tables[Tindx].Rows[Rindx][cind],THFilesElementsDataset.Tables[tableind].Rows[rind][cind])) //если поле Untrans елемента равно только что измененному
+                                    TRow = THFilesElementsDataset.Tables[Tindx].Rows[Rindx];
+                                    if (Equals(TRow[InputCellIndex], InputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
                                     {
-                                        if ((THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] + string.Empty).Length == 0)
+                                        TCell = TRow[TranslationCellIndex];
+                                        if (TCell==null || string.IsNullOrEmpty(TCell as string))
                                         {
-                                            THFilesElementsDataset.Tables[Tindx].Rows[Rindx][transcind] = THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода                                        
+                                            THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода                                        
                                         }
                                     }
                                 }
