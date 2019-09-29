@@ -326,6 +326,7 @@ namespace TranslationHelper
                                 loadTranslationToolStripMenuItem.Enabled = true;
                                 loadTrasnlationAsToolStripMenuItem.Enabled = true;
                                 runTestGameToolStripMenuItem.Enabled = true;
+                                runTestGameToolStripMenuItem.Visible = true;
 
                                 if (FVariant.Length == 0)
                                 {
@@ -491,6 +492,11 @@ namespace TranslationHelper
             if (sPath.ToLower().EndsWith(".ks") || sPath.ToLower().EndsWith(".scn"))
             {
                 return KiriKiriScriptScenario(sPath);
+                //return "RPGMakerTransPatch";
+            }
+            else if (sPath.ToLower().EndsWith(".tjs"))
+            {
+                return KiriKiriScenarioOpen(sPath);
                 //return "RPGMakerTransPatch";
             }
             else if (sPath.ToLower().EndsWith(".scn"))
@@ -702,6 +708,18 @@ namespace TranslationHelper
                 {
                     KiriKiriFiles.Add(file.FullName);
                 }
+                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).GetFiles("*.csv", SearchOption.AllDirectories))
+                {
+                    KiriKiriFiles.Add(file.FullName);
+                }
+                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).GetFiles("*.tsv", SearchOption.AllDirectories))
+                {
+                    KiriKiriFiles.Add(file.FullName);
+                }
+                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).GetFiles("*.tjs", SearchOption.AllDirectories))
+                {
+                    KiriKiriFiles.Add(file.FullName);
+                }
                 //foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).GetFiles("*", SearchOption.AllDirectories))
                 //{
                 //    if (file.Extension == ".ks" || file.Extension == ".scn")
@@ -737,7 +755,20 @@ namespace TranslationHelper
                     _ = THFilesElementsDatasetInfo.Tables.Add(filename);
                     _ = THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
 
-                    DataTable DT = KiriKiriScriptScenarioOpen(kiriKiriFiles[i], THFilesElementsDataset.Tables[filename], THFilesElementsDatasetInfo.Tables[filename]);
+                    DataTable DT=null;
+                    if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
+                    {
+                        DT = KiriKiriScriptScenarioOpen(kiriKiriFiles[i], THFilesElementsDataset.Tables[filename], THFilesElementsDatasetInfo.Tables[filename]);
+                    }
+                    else if (filename.EndsWith(".csv"))
+                    {
+                        DT = KiriKiriCSVOpen(kiriKiriFiles[i], THFilesElementsDataset.Tables[filename], THFilesElementsDatasetInfo.Tables[filename]);
+                    }
+                    else if (filename.EndsWith(".tsv"))
+                    {
+                        DT = KiriKiriTSVOpen(kiriKiriFiles[i], THFilesElementsDataset.Tables[filename], THFilesElementsDatasetInfo.Tables[filename]);
+                    }
+
                     if (DT == null || DT.Rows.Count == 0)
                     {
                         THFilesElementsDataset.Tables.Remove(filename);
@@ -758,6 +789,189 @@ namespace TranslationHelper
             }
 
             return ret;
+        }
+
+        private DataTable KiriKiriTSVOpen(string sPath, DataTable DT, DataTable DTInfo)
+        {
+            using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
+            {
+                string line;
+                while (!file.EndOfStream)
+                {
+                    line = file.ReadLine();
+                    if (line.StartsWith(";") || string.IsNullOrWhiteSpace(line))
+                    {
+                    }
+                    else
+                    {
+                        string[] NameValues = line.Split('	');
+
+                        if (NameValues.Length == 2)
+                        {
+                            string[] Values = NameValues[1].Split(',');
+
+                            int ValuesLength = Values.Length;
+                            for (int l=0;l < ValuesLength; l++)
+                            {
+                                string subline = Values[l];
+                                if (string.IsNullOrEmpty(subline) || subline=="true" || subline=="false" || subline.StartsWith("0x") || IsDigitsOnly(subline))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(subline);
+                                    _ = DTInfo.Rows.Add(NameValues[0]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return DT;
+        }
+
+        private DataTable KiriKiriCSVOpen(string sPath, DataTable DT, DataTable DTInfo)
+        {
+            using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
+            {
+                string line;
+                //string original = string.Empty;
+                //_ = THFilesElementsDataset.Tables.Add(filename);
+                //_ = THFilesElementsDataset.Tables[0].Columns.Add("Original");
+                //_ = THFilesElementsDatasetInfo.Tables.Add(filename);
+                //_ = THFilesElementsDatasetInfo.Tables[0].Columns.Add("Original");
+                //_ = THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                //THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
+                bool IsFirstLineWasNotRead = true;
+                int name = -1;
+                int detail = -1;
+                int type = -1;
+                int field = -1;
+                int comment = -1;
+                string[] columns;
+                while (!file.EndOfStream)
+                {
+                    line = file.ReadLine();
+
+                    if (line.StartsWith(";") || string.IsNullOrWhiteSpace(line))
+                    {
+                    }
+                    else
+                    {
+                        columns = line.Split(new string[] { "	" }, StringSplitOptions.None);
+                        if (IsFirstLineWasNotRead)
+                        {
+                            for (int i = 0; i < columns.Length; i++)
+                            {
+                                if (columns[i]== "name")
+                                {
+                                    name = i;
+                                }
+                                else if(columns[i] == "detail")
+                                {
+                                    detail = i;
+                                }
+                                else if(columns[i] == "type")
+                                {
+                                    type = i;
+                                }
+                                else if(columns[i] == "field")
+                                {
+                                    field = i;
+                                }
+                                else if(columns[i] == "comment")
+                                {
+                                    comment = i;
+                                }
+                            }
+                            IsFirstLineWasNotRead = false;
+                        }
+                        else
+                        {
+                            if (name > -1)
+                            {
+                                if (string.IsNullOrEmpty(columns[name]) || IsDigitsOnly(columns[name]))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(columns[name]);
+                                    _ = DTInfo.Rows.Add("name");
+                                }
+                            }
+                            if (detail > -1)
+                            {
+                                if (string.IsNullOrEmpty(columns[detail]) || IsDigitsOnly(columns[detail]))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(columns[detail]);
+                                    _ = DTInfo.Rows.Add("detail");
+                                }
+                            }
+                            if (type > -1)
+                            {
+                                if (string.IsNullOrEmpty(columns[type]) || IsDigitsOnly(columns[type]))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(columns[type]);
+                                    _ = DTInfo.Rows.Add("type");
+                                }
+                            }
+                            if (field > -1)
+                            {
+                                if (string.IsNullOrEmpty(columns[field]) || IsDigitsOnly(columns[field]))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(columns[field]);
+                                    _ = DTInfo.Rows.Add("field");
+                                }
+                            }
+                            if (comment > -1)
+                            {
+                                if (string.IsNullOrEmpty(columns[comment]) || IsDigitsOnly(columns[comment]))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(columns[comment]);
+                                    _ = DTInfo.Rows.Add("comment");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return DT;
+        }
+
+        static bool IsDigitsOnly(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return false;
+            }
+
+            str = str.Replace(".", string.Empty);
+            //https://stackoverflow.com/questions/7461080/fastest-way-to-check-if-string-contains-only-digits
+            //наибыстрейший метод 
+            int strLength = str.Length;//и моя оптимизация, ускоряющая с 2.19 до 1.62 при 100млн. итераций
+            for (int i = 0; i < strLength; i++)
+            {
+                if ((str[i] ^ '0') > 9)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private bool ExtractXP3files(string sPath)
@@ -869,69 +1083,135 @@ namespace TranslationHelper
             }
         }
 
+        string KiriKiriVariableSearchRegexPattern = string.Empty;
+        string KiriKiriVariableSearchRegexFullPattern = string.Empty;
+        string KiriKiriQuotePattern = string.Empty;
         private DataTable KiriKiriScriptScenarioOpen(string sPath, DataTable DT = null, DataTable DTInfo = null)
         {
             try
             {
+                //ks scn tjs open
+                KiriKiriVariableSearchRegexPattern = @"( |'|\(|\[|,|\.)o\.";
+                KiriKiriVariableSearchRegexFullPattern = @"((^o\.)|(" + KiriKiriVariableSearchRegexPattern + @"))([^\.|\s|'|\)|\]|;|:|,]+)";
+                string Quote1 = "\"";
+                string Quote2 = "\'";
+                KiriKiriQuotePattern = Quote1+"(.+)"+ Quote1+";$";
                 using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
                 {
                     string line;
-                    //string original = string.Empty;
-                    //_ = THFilesElementsDataset.Tables.Add(filename);
-                    //_ = THFilesElementsDataset.Tables[0].Columns.Add("Original");
-                    //_ = THFilesElementsDatasetInfo.Tables.Add(filename);
-                    //_ = THFilesElementsDatasetInfo.Tables[0].Columns.Add("Original");
-                    //_ = THFilesElementsDataset.Tables[0].Columns.Add("Translation");
-                    //THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
+                    bool iscomment = false;
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
 
-                        if (line.StartsWith(";") || Equals(line, string.Empty))
+                        if (line.StartsWith("/*"))
+                        {
+                            iscomment = true;
+                        }
+
+                        if (iscomment || string.IsNullOrEmpty(line) || line.StartsWith(";") || line.StartsWith("//") || Regex.IsMatch(line, @"\s*//"))
                         {
                         }
                         else
                         {
                             if (line.EndsWith("[k]")) // text
                             {
-                                _ = DT.Rows.Add(line.Remove(line.Length - 3, 3));
-                                _ = DTInfo.Rows.Add("[k] = end of line");
+                                line = line.Replace("[k]", string.Empty);
+                                if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(line);
+                                    _ = DTInfo.Rows.Add("[k] = end of line");
+                                }
                             }
                             else if (line.StartsWith("*")) // text
                             {
-                                _ = DT.Rows.Add(line);
-                                _ = DTInfo.Rows.Add(string.Empty);
+                                line = line.Remove(0, 1);
+                                if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(line);
+                                    _ = DTInfo.Rows.Add(string.Empty);
+                                }
                             }
                             else if (line.EndsWith("[r]")) //text, first line
                             {
-                                //string value = string.Empty;
-                                //while (!line.EndsWith("[k]"))
-                                //{
-                                //    value += line + Environment.NewLine;
-
-                                //    line = file.ReadLine();
-                                //}
-                                //value += line;
-                                //_ = THFilesElementsDataset.Tables[0].Rows.Add(value.Remove(value.Length - 3, 3));
-                                _ = DT.Rows.Add(line);
-                                _ = DTInfo.Rows.Add("[r] = carriage return");
+                                line = line.Replace("[r]", string.Empty).Trim();
+                                if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(line);
+                                    _ = DTInfo.Rows.Add("[r] = carriage return");
+                                }
                             }
-                            else if (line.StartsWith("o.") || Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.")) //variable, which is using even for displaing and should be translated in all files
+                            else if (line.StartsWith("o.") || Regex.IsMatch(line, KiriKiriVariableSearchRegexPattern)) //variable, which is using even for displaing and should be translated in all files
                             {
-                                MatchCollection matches = Regex.Matches(line, @"((^o\.)|(( |'|\(|\[|,|\.)o\.))([^\.|\s|'|\)|,]+)");
+                                MatchCollection matches = Regex.Matches(line, KiriKiriVariableSearchRegexFullPattern);
 
                                 bool startswith = line.StartsWith("o.");
                                 for (int m = 0; m < matches.Count; m++)
                                 {
                                     _ = DT.Rows.Add(matches[m].Value.Remove(0, startswith ? 2 : 3));
                                     _ = DTInfo.Rows.Add(T._("Variable>Must be Identical in all files>Only A-Za-z0-9" + Environment.NewLine + "line: " + line));
+                                    if (startswith)
+                                    {
+                                        startswith = false;//o. в начале встречается только в первый раз
+                                    }
                                 }
                             }
                             else if (line.StartsWith("@notice text="))
                             {
-                                _ = DT.Rows.Add(line.Replace("@notice text=", string.Empty));
-                                _ = DTInfo.Rows.Add("@notice text=");
+                                line = line.Remove(0, 13);//удаление "@notice text="
+                                if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(line);
+                                    _ = DTInfo.Rows.Add("@notice text=");
+                                }
                             }
+                            else if (line.StartsWith("Name = '"))
+                            {
+                                line = line.Remove(line.Length-2, 2).Remove(0, 8);
+                                if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                {
+                                }
+                                else
+                                {
+                                    _ = DT.Rows.Add(line);
+                                    _ = DTInfo.Rows.Add("Name = '");
+                                }
+                            }
+                            else if (Regex.IsMatch(line, "\\\"(.*?)\\\""))
+                            {
+                                //https://stackoverflow.com/questions/13024073/regex-c-sharp-extract-text-within-double-quotes
+                                var matches = Regex.Matches(line, "\\\"(.*?)\\\"");
+                                string subline;
+                                foreach (var m in matches)
+                                {
+                                    subline = m.ToString();
+                                    if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || IsDigitsOnly(line.Replace("\"", string.Empty)))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        _ = DT.Rows.Add(subline.Remove(subline.Length-1,1).Remove(0,1));
+                                        _ = DTInfo.Rows.Add(line);
+                                    }
+                                }
+                            }
+                        }
+
+                        if (line.EndsWith("*/"))
+                        {
+                            iscomment = false;
                         }
                     }
 
@@ -3579,7 +3859,7 @@ namespace TranslationHelper
         {
             try
             {
-                if (DontLoadStringIfRomajiPercent)
+                if (DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
                 {
                     return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > DontLoadStringIfRomajiPercentNum;
                 }
@@ -3733,6 +4013,7 @@ namespace TranslationHelper
         {
             try
             {
+                //ks scn tjs open
                 StringBuilder buffer = new StringBuilder();
 
                 using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
@@ -3741,81 +4022,132 @@ namespace TranslationHelper
                     //string original = string.Empty;
                     string filename = Path.GetFileNameWithoutExtension(sPath);
                     int elementnumber = 0;
+                    bool iscomment = false;
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
 
-                        if (line.StartsWith(";") || Equals(line, string.Empty))
+                        if (line.StartsWith("/*"))
                         {
+                            iscomment = true;
+                        }
+                        else if (line.EndsWith("*/"))
+                        {
+                            iscomment = false;
+                        }
 
+                        if (iscomment || string.IsNullOrEmpty(line) || line.StartsWith(";") || line.StartsWith("//"))
+                        {
                         }
                         else
                         {
                             if (line.EndsWith("[k]")) // text
                             {
-                                if (
-                                    (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
-                                    && Equals(line.Remove(line.Length - 3, 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
-                                    && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
-                                   )
+                                string cline = line.Replace("[r]", string.Empty).Remove(line.Length - 3, 3);
+                                if (string.IsNullOrEmpty(cline) || IsDigitsOnly(cline))
                                 {
-                                    line = THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + "[k]";
                                 }
-                                elementnumber++;
+                                else
+                                {
+                                    var row = THFilesElementsDataset.Tables[0].Rows[elementnumber];
+                                    if (
+                                        row[1] == null
+                                        || string.IsNullOrEmpty(row[1] as string)
+                                        && Equals(cline, row[0] as string)
+                                        && !Equals(row[0], row[1])
+                                       )
+                                    {
+                                        line = row[1] + "[k]";
+                                    }
+                                    elementnumber++;
+                                }
                             }
                             else if (line.StartsWith("*")) // text
                             {
-                                if (
-                                    (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
-                                    && Equals(line, THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
-                                    && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
-                                   )
+                                string cline = line.Remove(0, 1);
+                                if (string.IsNullOrEmpty(cline) || IsDigitsOnly(cline))
                                 {
-                                    line = THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty;
                                 }
-                                elementnumber++;
+                                else
+                                {
+                                    var row = THFilesElementsDataset.Tables[0].Rows[elementnumber];
+                                    if (
+                                        row[1] == null
+                                        || string.IsNullOrEmpty(row[1] as string)
+                                        && Equals(cline, row[0] as string)
+                                        && !Equals(row[0], row[1])
+                                       )
+                                    {
+                                        line = row[1] as string;
+                                    }
+                                    elementnumber++;
+                                }
                             }
                             else if (line.EndsWith("[r]")) //text, first line
                             {
-                                if (
-                                    (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
-                                    && Equals(line, THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
-                                    && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
-                                   )
+                                string cline = line.Replace("[r]", string.Empty);
+                                if (string.IsNullOrEmpty(cline) || IsDigitsOnly(cline))
                                 {
-                                    line = THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty;
                                 }
-                                elementnumber++;
+                                else
+                                {
+                                    var row = THFilesElementsDataset.Tables[0].Rows[elementnumber];
+                                    if (
+                                        row[1] == null
+                                        || string.IsNullOrEmpty(row[1] as string)
+                                        && Equals(cline, row[0] as string)
+                                        && !Equals(row[0], row[1])
+                                       )
+                                    {
+                                        line = row[1] as string;
+                                    }
+                                    elementnumber++;
+                                }
                             }
-                            else if (line.StartsWith("o.") || Regex.IsMatch(line, @"( |'|\(|\[|,|\.)o\.")) //variable, which is using even for displaing and should be translated in all files
+                            else if (line.StartsWith("o.") || Regex.IsMatch(line, KiriKiriVariableSearchRegexPattern)) //variable, which is using even for displaing and should be translated in all files
                             {
-                                MatchCollection matches = Regex.Matches(line, @"((^o\.)|(( |'|\(|\[|,|\.)o\.))([^\.|\s|'|\)|,]+)");
+                                MatchCollection matches = Regex.Matches(line, KiriKiriVariableSearchRegexFullPattern);
 
                                 bool startswith = line.StartsWith("o.");
                                 for (int m = 0; m < matches.Count; m++)
                                 {
+                                    var row = THFilesElementsDataset.Tables[0].Rows[elementnumber];
                                     if (
-                                        (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
-                                        && Equals(matches[m].Value.Remove(0, startswith ? 2 : 3), THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty)
-                                        && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
+                                        row[1] == null
+                                        || string.IsNullOrEmpty(row[1] as string)
+                                        && Equals(matches[m].Value.Remove(0, startswith ? 2 : 3), row[0] as string)
+                                        && !Equals(row[0], row[1])
                                        )
                                     {
-                                        line = line.Remove(matches[m].Index, matches[m].Value.Length).Insert(matches[m].Index, matches[m].Value.Replace(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty));
+                                        line = line.Remove(matches[m].Index, matches[m].Value.Length).Insert(matches[m].Index, matches[m].Value.Replace(row[0] as string, row[1] as string));
+                                    }
+                                    if (startswith)
+                                    {
+                                        startswith = false;//o. в начале встречается только раз
                                     }
                                     elementnumber++;
                                 }
                             }
                             else if (line.StartsWith("@notice text="))
                             {
-                                if (
-                                    (THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty).Length > 0
-                                    && Equals(line, "@notice text=" + THFilesElementsDataset.Tables[0].Rows[elementnumber][0])
-                                    && !Equals(THFilesElementsDataset.Tables[0].Rows[elementnumber][0] + string.Empty, THFilesElementsDataset.Tables[0].Rows[elementnumber][1] + string.Empty)
-                                   )
+                                string cline = line.Remove(0, 13);//удаление "@notice text="
+                                if (string.IsNullOrEmpty(cline) || IsDigitsOnly(cline))
                                 {
-                                    line = "@notice text=" + THFilesElementsDataset.Tables[0].Rows[elementnumber][1];
                                 }
-                                elementnumber++;
+                                else
+                                {
+                                    var row = THFilesElementsDataset.Tables[0].Rows[elementnumber];
+                                    if (
+                                        row[1] == null
+                                        || string.IsNullOrEmpty(row[1] as string)
+                                        && Equals(cline, row[0] as string)
+                                        && !Equals(row[0], row[1])
+                                       )
+                                    {
+                                        line = "@notice text=" + row[1];
+                                    }
+                                    elementnumber++;
+                                }
                             }
                         }
 
@@ -8161,13 +8493,13 @@ namespace TranslationHelper
         bool cellchanged = false;
         private void THAutoSetValueForSameCells(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true)
         {
-            if ((cellchanged || forcerun) && AutotranslationForIdentical) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
+            if (AutotranslationForIdentical && (cellchanged || forcerun)) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
                 int TranslationCellIndex = InputCellIndex + 1;
                 var InputTableRow = THFilesElementsDataset.Tables[InputTableIndex].Rows[InputRowIndex];
                 var InputTableOriginalCell = InputTableRow[InputCellIndex];
                 var InputTableTranslationCell = InputTableRow[TranslationCellIndex];
-                if (InputTableTranslationCell==null || string.IsNullOrEmpty(InputTableTranslationCell as string))
+                if (InputTableTranslationCell == null || string.IsNullOrEmpty(InputTableTranslationCell as string))
                 {
                 }
                 else//Запускать сравнение только если ячейка имеет значение
@@ -8252,6 +8584,8 @@ namespace TranslationHelper
                                                 }
                                                 //только если ячейка пустая
                                                 TCell = THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex];
+                                                int ti = THFilesElementsDataset.Tables.Count;
+                                                int ri = THFilesElementsDataset.Tables[Tindx].Rows.Count;
                                                 if (TCell == null || string.IsNullOrEmpty(TCell as string))
                                                 {
                                                     THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = inputresult;
@@ -8262,14 +8596,9 @@ namespace TranslationHelper
                                 }
                                 else //иначе, если в поле оригинала не было цифр, сравнить как обычно, два поля между собой 
                                 {
-                                    TRow = THFilesElementsDataset.Tables[Tindx].Rows[Rindx];
                                     if (Equals(TRow[InputCellIndex], InputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
                                     {
-                                        TCell = TRow[TranslationCellIndex];
-                                        if (TCell==null || string.IsNullOrEmpty(TCell as string))
-                                        {
-                                            THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода                                        
-                                        }
+                                        THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
                                     }
                                 }
                             }
@@ -8712,12 +9041,31 @@ namespace TranslationHelper
                     {
                         using (Process Testgame = new Process())
                         {
-                            //MessageBox.Show("outdir=" + outdir);
-                            Testgame.StartInfo.FileName = Path.Combine(THSelectedDir,"game.exe");
-                            //RPGMakerTransPatch.StartInfo.Arguments = string.Empty;
-                            //Testgame.StartInfo.UseShellExecute = true;
-                            await Task.Run(() => Testgame.Start());
-                            Testgame.WaitForExit();
+                            try
+                            {
+                                DirectoryInfo di = new DirectoryInfo(THSelectedDir);
+                                FileInfo[] fiArr = di.GetFiles("*.exe");
+                                string largestexe = string.Empty;
+                                long filesize = 0;
+                                foreach (FileInfo file in fiArr)
+                                {
+                                    if (file.Length > filesize)
+                                    {
+                                        filesize = file.Length;
+                                        largestexe = file.FullName;
+                                    }
+                                }
+                                //MessageBox.Show("outdir=" + outdir);
+                                //Testgame.StartInfo.FileName = Path.Combine(THSelectedDir,"game.exe");
+                                Testgame.StartInfo.FileName = largestexe;
+                                //RPGMakerTransPatch.StartInfo.Arguments = string.Empty;
+                                //Testgame.StartInfo.UseShellExecute = true;
+                                await Task.Run(() => Testgame.Start());
+                                Testgame.WaitForExit();
+                            }
+                            catch
+                            {
+                            }
                         }
                     }
                 }
@@ -8727,7 +9075,7 @@ namespace TranslationHelper
                 catch
                 {
                 }
-                Directory.Delete(Path.Combine(THSelectedDir,"www","data"), true);
+                Directory.Delete(Path.Combine(THSelectedDir, "www", "data"), true);
                 Directory.Move(Path.Combine(THSelectedDir, "www", "data_bak"), Path.Combine(THSelectedDir, "www", "data"));
             }
         }
@@ -8923,6 +9271,7 @@ namespace TranslationHelper
                 {
                     THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.RowFilter = string.Empty;
                     THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.Sort = string.Empty;
+                    THFileElementsDataGridView.Refresh();
                 }
             }
         }
@@ -9242,15 +9591,24 @@ namespace TranslationHelper
             return "OK";
         }
 
-        private bool IsTableRowsCompleted(DataTable DT, string column)
+        private bool IsTableRowsCompleted(DataTable DT, string column="Translation")
         {
-            for (int r = 0; r < DT.Rows.Count; r++)
+            if (DT == null)
             {
-                //LogToFile("\r\nIsTableRowsCompleted Value =\"" + DT.Rows[r][column] +"\", Length=" + ((DT.Rows[r][column] + string.Empty).Length));
-                if ((DT.Rows[r][column] + string.Empty).Length == 0)
+                return false;
+            }
+            using (DataTable tempDT = DT)
+            {
+                int DTRowsCount = tempDT.Rows.Count;
+                for (int r = 0; r < DTRowsCount; r++)
                 {
-                    //LogToFile("\r\nIsTableRowsCompleted=false");
-                    return false;
+                    var cell = tempDT.Rows[r][column];
+                    //LogToFile("\r\nIsTableRowsCompleted Value =\"" + DT.Rows[r][column] +"\", Length=" + ((DT.Rows[r][column] + string.Empty).Length));
+                    if (cell == null || string.IsNullOrEmpty(cell as string))
+                    {
+                        //LogToFile("\r\nIsTableRowsCompleted=false");
+                        return false;
+                    }
                 }
             }
             //THFilesElementsDataset.Tables[e.Index].AsEnumerable().All(dr => !string.IsNullOrEmpty(dr["Translation"] + string.Empty))
@@ -9284,7 +9642,7 @@ namespace TranslationHelper
             if (index >= 0 && index < THFilesList.Items.Count)
             {
                 bool selected = ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
-                string text = THFilesList.Items[index] + string.Empty;
+                string text = THFilesList.Items[index] as string;
                 Graphics g = e.Graphics;
 
                 //background:
@@ -9293,15 +9651,25 @@ namespace TranslationHelper
                     backgroundBrush = ListBoxItemBackgroundBrushSelected;
                 else if ((index % 2) == 0)
                 {
-                    backgroundBrush = IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index],"Translation")
-                        ? ListBoxItemBackgroundBrush1Complete
-                        : ListBoxItemBackgroundBrush1;
+                    if (IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index]))
+                    {
+                        backgroundBrush = ListBoxItemBackgroundBrush1Complete;
+                    }
+                    else
+                    {
+                        backgroundBrush = ListBoxItemBackgroundBrush1;
+                    }
                 }
                 else
                 {
-                    backgroundBrush = IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index], "Translation")
-                        ? ListBoxItemBackgroundBrush2Complete
-                        : ListBoxItemBackgroundBrush2;
+                    if (IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index]))
+                    {
+                        backgroundBrush = ListBoxItemBackgroundBrush2Complete;
+                    }
+                    else
+                    {
+                        backgroundBrush = ListBoxItemBackgroundBrush2;
+                    }
                 }
 
                 g.FillRectangle(backgroundBrush, e.Bounds);
