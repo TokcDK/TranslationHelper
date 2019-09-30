@@ -4796,7 +4796,7 @@ namespace TranslationHelper
             {
                 projecttypeDBfolder += "RPGMakerMV\\";
             }
-            else if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
+            else if (THSelectedSourceType.Contains("RPGMaker"))
             {
                 projecttypeDBfolder += "RPGMakerTransPatch\\";
             }
@@ -4823,9 +4823,9 @@ namespace TranslationHelper
             {
                 AutosaveActivated = true;
 
-                dbpath = Application.StartupPath + "\\DB";
+                dbpath = Path.Combine(Application.StartupPath,"DB");
                 string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir)+"_autosave";
-                string autosavepath = dbpath + "\\Auto\\" + dbfilename + ".cmx";
+                string autosavepath = Path.Combine(dbpath, "Auto", dbfilename + ".cmx");
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread trans = new Thread(new ParameterizedThreadStart((obj) => SaveLoop(THFilesElementsDataset, autosavepath) ));
@@ -8968,7 +8968,7 @@ namespace TranslationHelper
                 {
                     projecttypeDBfolder += "RPGMakerMV\\";
                 }
-                else if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
+                else if (THSelectedSourceType.Contains("RPGMaker"))
                 {
                     projecttypeDBfolder += "RPGMakerTransPatch\\";
                 }
@@ -9240,7 +9240,7 @@ namespace TranslationHelper
 
                     if (search.Visible)
                     {
-                        search.Activate();
+                        search.Activate();//помещает на передний план
                     }
                     else
                     {
@@ -9291,9 +9291,6 @@ namespace TranslationHelper
                 //MessageBox.Show("match="+ match.ToString()+ ", matchCollection count="+ matchCollection.Count);
             }
             MessageBox.Show("FOUND=\r\n" + o + "\r\n, matchCollection count=" + matchCollection.Count);
-
-
-
         }
 
         private void THFileElementsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
@@ -9680,48 +9677,6 @@ namespace TranslationHelper
             }
 
             e.DrawFocusRectangle();
-            //LogToFile(string.Empty, true);
-
-            //if (e.Index == -1 || THFilesList_DrawItemIsBusy)
-            //{
-            //}
-            //else
-            //{
-            //    THFilesList_DrawItemIsBusy = true;
-            //    if (THFilesElementsDataset.Tables[e.Index].AsEnumerable().All(dr => !string.IsNullOrEmpty(dr["Translation"] + string.Empty)))
-            //    {
-            //        e.DrawBackground();
-            //        Graphics g = e.Graphics;
-
-            //        // draw the background color you want
-            //        // mine is set to olive, change it to whatever you want
-            //        g.FillRectangle(new SolidBrush(Color.Green), e.Bounds);
-
-            //        // draw the text of the list item, not doing this will only show
-            //        // the background color
-            //        // you will need to get the text of item to display
-            //        g.DrawString(THFilesList.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), new PointF(e.Bounds.X, e.Bounds.Y));
-
-            //        e.DrawFocusRectangle();
-            //    }
-            //    else
-            //    {
-            //        e.DrawBackground();
-            //        Graphics g = e.Graphics;
-
-            //        // draw the background color you want
-            //        // mine is set to olive, change it to whatever you want
-            //        g.FillRectangle(new SolidBrush(Color.White), e.Bounds);
-
-            //        // draw the text of the list item, not doing this will only show
-            //        // the background color
-            //        // you will need to get the text of item to display
-            //        g.DrawString(THFilesList.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), new PointF(e.Bounds.X, e.Bounds.Y));
-
-            //        e.DrawFocusRectangle();
-            //    }
-            //    THFilesList_DrawItemIsBusy = false;
-            //}
         }
 
         private void TestTimingsToolStripMenuItem_Click(object sender, EventArgs e)
