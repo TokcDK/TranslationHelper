@@ -119,6 +119,7 @@
             this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
             this.THInfolabel = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.saveInnewFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -172,7 +173,8 @@
             this.testSplitToolStripMenuItem,
             this.runTestGameToolStripMenuItem,
             this.tESTRegexToolStripMenuItem,
-            this.testTimingsToolStripMenuItem});
+            this.testTimingsToolStripMenuItem,
+            this.saveInnewFormatToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -1033,6 +1035,13 @@
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             this.contextMenuStrip1.Text = "2000";
             // 
+            // saveInnewFormatToolStripMenuItem
+            // 
+            this.saveInnewFormatToolStripMenuItem.Name = "saveInnewFormatToolStripMenuItem";
+            this.saveInnewFormatToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.saveInnewFormatToolStripMenuItem.Text = "SaveNEW";
+            this.saveInnewFormatToolStripMenuItem.Click += new System.EventHandler(this.saveInnewFormatToolStripMenuItem_Click);
+            // 
             // THMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1163,6 +1172,7 @@
         private System.Windows.Forms.ToolStripMenuItem completeRomajiotherLinesToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem showCheckboxvalueToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem saveInnewFormatToolStripMenuItem;
     }
 }
 

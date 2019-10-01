@@ -5103,7 +5103,8 @@ namespace TranslationHelper
                     {
                         ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
                         var Row = Table.Rows[r];
-                        if (Row[otranscol] == null || string.IsNullOrEmpty(Row[otranscol] as string))
+                        var CellTranslation = Row[otranscol];
+                        if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
                         {
                             bool TranslationWasSet = false;
 
@@ -5120,7 +5121,8 @@ namespace TranslationHelper
                                         for (int r1 = trowstartindex; r1 < DBTableRowsCount; r1++)
                                         {
                                             var DBRow = DBTable.Rows[r1];
-                                            if (DBRow[ttranscol] == null || string.IsNullOrEmpty(DBRow[ttranscol] as string))
+                                            var DBCellTranslation = DBRow[ttranscol];
+                                            if (DBCellTranslation == null || string.IsNullOrEmpty(DBCellTranslation as string))
                                             {
                                             }
                                             else
@@ -5129,15 +5131,11 @@ namespace TranslationHelper
                                                 {
                                                     if (Equals(Row[0], DBRow[0]))
                                                     {
-                                                        //дополнительная проверка для предотвращения перезаписи ячейки, если она была заполнена значением пользователем или другой функцией
-                                                        if (Row[otranscol] == null || string.IsNullOrEmpty(Row[otranscol] as string))
-                                                        {
-                                                            THFilesElementsDataset.Tables[t].Rows[r][otranscol] = DBRow[ttranscol];
-                                                            TranslationWasSet = true;
+                                                        THFilesElementsDataset.Tables[t].Rows[r][otranscol] = DBCellTranslation;
+                                                        TranslationWasSet = true;
 
-                                                            trowstartindex = IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
-                                                            break;
-                                                        }
+                                                        trowstartindex = IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
+                                                        break;
                                                     }
                                                 }
                                                 catch
@@ -5279,17 +5277,17 @@ namespace TranslationHelper
                 using (OpenFileDialog THFOpenBD = new OpenFileDialog())
                 {
                     THFOpenBD.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
-                    string projecttypeDBfolder = "\\";
+                    string projecttypeDBfolder = string.Empty;
                     if (THSelectedSourceType.Contains("RPG Maker MV"))
                     {
-                        projecttypeDBfolder += "RPGMakerMV\\";
+                        projecttypeDBfolder += "RPGMakerMV";
                     }
                     else if (THSelectedSourceType.Contains("TransPatch"))
                     {
-                        projecttypeDBfolder += "RPGMakerTransPatch\\";
+                        projecttypeDBfolder += "RPGMakerTransPatch";
                     }
 
-                    THFOpenBD.InitialDirectory = Application.StartupPath + "\\DB" + projecttypeDBfolder;
+                    THFOpenBD.InitialDirectory = Path.Combine(Application.StartupPath,"DB",projecttypeDBfolder);
 
                     if (THFOpenBD.ShowDialog() == DialogResult.OK)
                     {
@@ -6220,7 +6218,7 @@ namespace TranslationHelper
                 {
                     if (token.Type == JTokenType.String)
                     {
-                        if ((textsb + string.Empty).Length == 0)
+                        if (textsb.ToString().Length == 0)
                         {
                         }
                         else
@@ -6235,12 +6233,12 @@ namespace TranslationHelper
                 {
                     if (IsCommonEvents)
                     {
-                        if ((textsb + string.Empty).Length == 0)
+                        if (string.IsNullOrWhiteSpace(textsb.ToString()))
                         {
                         }
                         else
                         {
-                            string mergedstring = textsb + string.Empty;
+                            string mergedstring = textsb.ToString();
                             if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ SelectedLocalePercentFromStringIsNotValid(mergedstring))
                             {
                             }
@@ -6537,11 +6535,11 @@ namespace TranslationHelper
                                             //}
 
                                             //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
-                                            if (parameter0value == origA[i2].Replace("\r", string.Empty)) //Replace здесь убирает \r из за которой строки считались неравными
+                                            if (parameter0value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
                                             {
                                                 //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
                                                 var t = token as JValue;
-                                                t.Value = transA[i2].Replace("\r", string.Empty); //Replace убирает \r
+                                                t.Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
 
                                                 startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
                                                 //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
@@ -8959,20 +8957,20 @@ namespace TranslationHelper
         {
             using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
             {
-                dbpath = Application.StartupPath + "\\DB";
+                dbpath = Path.Combine(Application.StartupPath,"DB");
                 string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir) + "_" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
                 
                 THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
-                string projecttypeDBfolder = "\\";
+                string projecttypeDBfolder = string.Empty;
                 if (THSelectedSourceType.Contains("RPG Maker MV"))
                 {
-                    projecttypeDBfolder += "RPGMakerMV\\";
+                    projecttypeDBfolder += "RPGMakerMV";
                 }
                 else if (THSelectedSourceType.Contains("RPGMaker"))
                 {
-                    projecttypeDBfolder += "RPGMakerTransPatch\\";
+                    projecttypeDBfolder += "RPGMakerTransPatch";
                 }
-                THFSaveBDAs.InitialDirectory = Path.Combine(Application.StartupPath,"DB",projecttypeDBfolder);
+                THFSaveBDAs.InitialDirectory = Path.Combine(dbpath, projecttypeDBfolder);
                 THFSaveBDAs.FileName = dbfilename + GetDBCompressionExt();
 
                 if (THFSaveBDAs.ShowDialog() == DialogResult.OK)
@@ -8989,12 +8987,64 @@ namespace TranslationHelper
                         
                         ProgressInfo(true);
 
-                        WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
-
+                        //SaveNEWDB(THFilesElementsDataset, THFSaveBDAs.FileName);
+                        //WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
+                        using (DataSet ds = FillTempDB(THFilesElementsDataset))
+                        {
+                            WriteDBFile(ds, THFSaveBDAs.FileName);
+                        }
+                        MessageBox.Show("finished");
                         ProgressInfo(false);
                     }
                 }
             }
+        }
+
+
+        private DataSet FillTempDB(DataSet DS)
+        {
+            DataSet RETDS = new DataSet();
+            int TablesCount = DS.Tables.Count;
+            for (int t = 0; t < TablesCount; t++)
+            {
+                var Table = DS.Tables[t];
+                string tname = Table.TableName;
+                RETDS.Tables.Add(tname);
+                RETDS.Tables[tname].Columns.Add("Original");
+                RETDS.Tables[tname].Columns.Add("Translation");
+                int RowsCount = Table.Rows.Count;
+                for (int r = 0; r < RowsCount; r++)
+                {
+                    var Row = Table.Rows[r];
+                    var CellTranslation = Row[1];
+                    if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                    {
+                    }
+                    else
+                    {
+                        RETDS.Tables[tname].ImportRow(Row);
+                    }
+                }
+                if (RETDS.Tables[tname].Rows.Count==0)
+                {
+                    RETDS.Tables.Remove(tname);
+                }
+            }
+
+            return RETDS;
+        }
+
+        private void SaveNEWDB(DataSet DS4Save, string fileName)
+        {
+            //int TablesCount = DS4Save.Tables.Count;
+            //for (int t = 0; t < TablesCount; t++)
+            //{
+            //    int RowsCount = DS4Save.Tables[t].Rows.Count;
+            //    for (int r = 0; r < RowsCount; r++)
+            //    {
+            //        string
+            //    }
+            //}
         }
 
         private async void RunTestGameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -9772,6 +9822,11 @@ namespace TranslationHelper
         private void showCheckboxvalueToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show(IsTranslationCacheEnabled.ToString());
+        }
+
+        private void saveInnewFormatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
 
 
