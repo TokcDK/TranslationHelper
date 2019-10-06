@@ -3563,7 +3563,7 @@ namespace TranslationHelper
 
         public void BindToDataTableGridView(DataTable DT)
         {
-            if (THFilesList.SelectedIndex >= 0)//предотвращает исключение "Невозможно найти таблицу -1"
+            if (THFilesList != null && THFilesList.SelectedIndex > -1)//вторая попытка исправить исключение при выборе элемента списка
             {
                 THFileElementsDataGridView.DataSource = DT;
             }
@@ -3650,8 +3650,8 @@ namespace TranslationHelper
             {
                 //Считывание значения ячейки в текстовое поле 1, вариант 2, для DataSet, ds.Tables[0]
                 if (THSourceRichTextBox.Enabled && THFileElementsDataGridView.Rows.Count > 0 && e.RowIndex >= 0 && e.ColumnIndex >= 0) //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
-                {
-                    THTargetRichTextBox.Clear();
+                {                    
+                    THTargetRichTextBox.Invoke((Action)(() => THTargetRichTextBox.Clear()));//здесь была ошибка о попытке доступа из другого потока
 
                     if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty).Length == 0)
                     {
@@ -4857,6 +4857,7 @@ namespace TranslationHelper
                 }
                 else//если dataset пустой, нет смысла его сохранять
                 {
+                    AutosaveActivated = false;
                     return;
                 }
 
@@ -4893,11 +4894,18 @@ namespace TranslationHelper
 
             try
             {
-                for (int t = 0; t < DS.Tables.Count; t++)
+                int DSTablesCount = DS.Tables.Count;
+                for (int t = 0; t < DSTablesCount; t++)
                 {
-                    for (int r = 0; r < DS.Tables[t].Rows.Count; r++)
+                    var table = DS.Tables[t];
+                    int rowscount = table.Rows.Count;
+                    for (int r = 0; r < rowscount; r++)
                     {
-                        if ((DS.Tables[t].Rows[r][1] + string.Empty).Length > 0)
+                        var cell = table.Rows[r][1];
+                        if (cell==null && string.IsNullOrEmpty(cell as string))
+                        {
+                        }
+                        else
                         {
                             return true;
                         }
@@ -5040,12 +5048,17 @@ namespace TranslationHelper
             //}
 
             //Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath); // write lastsavedpath
-
-
+                       
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
             int otranscol = THFilesElementsDataset.Tables[0].Columns.Count - 1; //если вдруг колонка была только одна
-                                                                                //LogToFile("ocol=" + ocol);
-                                                                                //оптимизация. Не искать колонку перевода, если она по стандарту первая
+            if (otranscol == 0)
+            {
+                return;
+            }
+
+            //LogToFile("ocol=" + ocol);
+            //оптимизация. Не искать колонку перевода, если она по стандарту первая
+
             if (THFilesElementsDataset.Tables[0].Columns[1].ColumnName == "Translation")
             {
                 otranscol = 1;
@@ -5065,6 +5078,12 @@ namespace TranslationHelper
             using (var TempDBTable = THTempDS.Tables[0])
             {
                 ttranscol = TempDBTable.Columns.Count - 1;
+
+                if (ttranscol == 0)
+                {
+                    return;
+                }
+
                 //LogToFile("tcol=" + tcol);
                 if (TempDBTable.Columns[1].ColumnName == "Translation")
                 {
