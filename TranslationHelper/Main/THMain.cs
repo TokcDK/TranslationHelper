@@ -97,7 +97,7 @@ namespace TranslationHelper
         public string WebTranslationLink = string.Empty;
         public bool DontLoadStringIfRomajiPercent = true;
         public int DontLoadStringIfRomajiPercentNum = 90;
-        public bool AutotranslationForIdentical = true;
+        public bool AutotranslationForSimular = true;
         public bool IsFullComprasionDBloadEnabled = true;
         private void SetSettings()
         {
@@ -106,7 +106,7 @@ namespace TranslationHelper
             WebTranslationLink = Settings.WebTransLinkINI;
             DontLoadStringIfRomajiPercent = Settings.DontLoadStringIfRomajiPercentINI;
             DontLoadStringIfRomajiPercentNum = Settings.DontLoadStringIfRomajiPercentNumINI;
-            AutotranslationForIdentical = Settings.AutotranslationForIdenticalINI;
+            AutotranslationForSimular = Settings.AutotranslationForIdenticalINI;
             IsFullComprasionDBloadEnabled = Settings.FullComprasionDBloadINI;
             Settings.Dispose();
         }
@@ -142,6 +142,8 @@ namespace TranslationHelper
             this.setOriginalValueToTranslationToolStripMenuItem.Text = T._("Translation=Original");
             this.completeRomajiotherLinesToolStripMenuItem.Text = T._("Complete Romaji/Other lines");
             this.completeRomajiotherLinesToolStripMenuItem1.Text = T._("Complete Romaji/Other lines");
+            this.forceSameForSimularToolStripMenuItem.Text = T._("Force same for simular");
+            this.forceSameForSimularToolStripMenuItem1.Text = T._("Force same for simular");
             this.cutToolStripMenuItem1.Text = T._("Cut");
             this.copyCellValuesToolStripMenuItem.Text = T._("Copy");
             this.pasteCellValuesToolStripMenuItem.Text = T._("Paste");
@@ -449,6 +451,8 @@ namespace TranslationHelper
                 setOriginalValueToTranslationToolStripMenuItem.Enabled = false;
                 completeRomajiotherLinesToolStripMenuItem.Enabled = false;
                 completeRomajiotherLinesToolStripMenuItem1.Enabled = false;
+                forceSameForSimularToolStripMenuItem.Enabled = false;
+                forceSameForSimularToolStripMenuItem1.Enabled = false;
                 cutToolStripMenuItem1.Enabled = false;
                 copyCellValuesToolStripMenuItem.Enabled = false;
                 pasteCellValuesToolStripMenuItem.Enabled = false;
@@ -3593,6 +3597,8 @@ namespace TranslationHelper
             setOriginalValueToTranslationToolStripMenuItem.Enabled = true;
             completeRomajiotherLinesToolStripMenuItem.Enabled = true;
             completeRomajiotherLinesToolStripMenuItem1.Enabled = true;
+            forceSameForSimularToolStripMenuItem.Enabled = true;
+            forceSameForSimularToolStripMenuItem1.Enabled = true;
             cutToolStripMenuItem1.Enabled = true;
             copyCellValuesToolStripMenuItem.Enabled = true;
             pasteCellValuesToolStripMenuItem.Enabled = true;
@@ -4682,7 +4688,7 @@ namespace TranslationHelper
         {
             var grid = sender as DataGridView;
 
-            string rowIdx = GetSelectedRowIndexinDatatable(e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
+            string rowIdx = GetSelectedRowIndexInDatatable(e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
             StringFormat centerFormat = new StringFormat()
@@ -4696,7 +4702,7 @@ namespace TranslationHelper
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
 
-        private int GetSelectedRowIndexinDatatable(int rowIndex)
+        private int GetSelectedRowIndexInDatatable(int rowIndex)
         {
             return THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows
                 .IndexOf(
@@ -6689,7 +6695,7 @@ namespace TranslationHelper
                 else
                 {
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetValueForSameCells(tableind, rind, cind, false)));
+                    Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)));
                     trans.Start();
                 }
                 //if (THFilesElementsDataset.Tables[tableind].AsEnumerable().All(dr => !string.IsNullOrEmpty(dr["name"] + string.Empty)))
@@ -6733,7 +6739,7 @@ namespace TranslationHelper
                     //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                     //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                     //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                    int index = GetSelectedRowIndexinDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                    int index = GetSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
                     selindexes[i] = index;
 
                     //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
@@ -7191,7 +7197,7 @@ namespace TranslationHelper
 
                     AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
 
-                    THAutoSetValueForSameCells(PreviousTableIndex, PreviousRowIndex, 0);
+                    THAutoSetSameTranslationForSimular(PreviousTableIndex, PreviousRowIndex, 0);
                 }
                 ResultValue.Clear();
             }
@@ -7435,7 +7441,7 @@ namespace TranslationHelper
                                         }
                                     }
                                 }
-                                THAutoSetValueForSameCells(t, rowindex, cind);
+                                THAutoSetSameTranslationForSimular(t, rowindex, cind);
                             }
                         }
                     }
@@ -8475,7 +8481,8 @@ namespace TranslationHelper
                 int overallength = 0;
                 //int startindex0;
                 int overallength0 = 0;
-                for (int m = 0; m < mc.Count; m++)
+                int mcCount = mc.Count;
+                for (int m = 0; m < mcCount; m++)
                 {
                     if (mc[m].Index - overallength == mc0[m].Index - overallength0)
                     {
@@ -8513,9 +8520,9 @@ namespace TranslationHelper
         }
 
         bool cellchanged = false;
-        private void THAutoSetValueForSameCells(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true)
+        private void THAutoSetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool forcevalue = false)
         {
-            if (AutotranslationForIdentical && (cellchanged || forcerun)) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
+            if (forcevalue || (AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
                 int TranslationCellIndex = InputCellIndex + 1;
                 var InputTableRow = THFilesElementsDataset.Tables[InputTableIndex].Rows[InputRowIndex];
@@ -8547,7 +8554,7 @@ namespace TranslationHelper
                         {
                             var TRow = Table.Rows[Rindx];
                             var TCell = TRow[TranslationCellIndex];
-                            if (TCell == null || string.IsNullOrEmpty(TCell as string)) //Проверять только для пустых ячеек перевода
+                            if ((forcevalue && Rindx != InputRowIndex) || TCell == null || string.IsNullOrEmpty(TCell as string)) //Проверять только для пустых ячеек перевода
                             {
                                 //LogToFile("THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString()=" + THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString());
                                 if (mccount > 0) //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
@@ -8563,7 +8570,7 @@ namespace TranslationHelper
 
                                         //LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
                                         //если поле перевода равно только что измененному во входной, без учета цифр
-                                        if (Equals(checkingorigcellvalueNoDigits,inputorigcellvalueNoDigits) && mccount == mc0Count && IsAllMatchesInIdenticalPlaces(inputorigcellvalue, checkingorigcellvalue, mc, mc0))
+                                        if (Equals(checkingorigcellvalueNoDigits, inputorigcellvalueNoDigits) && mccount == mc0Count && IsAllMatchesInIdenticalPlaces(inputorigcellvalue, checkingorigcellvalue, mc, mc0))
                                         {
                                             //инициализация основных целевого и входного массивов
                                             string[] inputorigmatches = new string[mccount];
@@ -8578,7 +8585,7 @@ namespace TranslationHelper
                                             //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
                                             //там же че тести и for, ак у здесь меня - наиболее быстрый вариант
 
-                                            //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет пеерведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменется, т.к. 万 [man] переводится как 10000.
+                                            //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменется, т.к. 万 [man] переводится как 10000.
                                             if (reg.Matches(inputtranscellvalue).Count == mccount)
                                             {
                                                 //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
@@ -8587,7 +8594,7 @@ namespace TranslationHelper
                                                 MatchCollection tm = reg.Matches(inputresult);
                                                 int startindex;
                                                 int stringoverallength = 0;
-                                                int stringlength = 0;
+                                                int stringlength;
                                                 int stringoverallength0 = 0;
                                                 //LogToFile("arraysize=" + arraysize + ", wrapped inputresult" + inputresult);
                                                 for (int m = 0; m < mccount; m++)
@@ -8606,9 +8613,7 @@ namespace TranslationHelper
                                                 }
                                                 //только если ячейка пустая
                                                 TCell = THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex];
-                                                int ti = THFilesElementsDataset.Tables.Count;
-                                                int ri = THFilesElementsDataset.Tables[Tindx].Rows.Count;
-                                                if (TCell == null || string.IsNullOrEmpty(TCell as string))
+                                                if (forcevalue || TCell == null || string.IsNullOrEmpty(TCell as string))
                                                 {
                                                     THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = inputresult;
                                                 }
@@ -8889,7 +8894,7 @@ namespace TranslationHelper
                         }
                     }
                     cellvalue.Clear();
-                    THAutoSetValueForSameCells(THFilesList.SelectedIndex, iRowIndex, origcolindex);
+                    THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, iRowIndex, origcolindex);
                     origcellcurlines = 0;
                     //LogToFile("PasteClipboardValue next row, iRowIndex=" + iRowIndex);
                     iRowIndex++;
@@ -8975,7 +8980,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            rindexes[i] = GetSelectedRowIndexinDatatable(rind);
+                            rindexes[i] = GetSelectedRowIndexInDatatable(rind);
                         }
 
                     }
@@ -9473,7 +9478,7 @@ namespace TranslationHelper
                 if (switchon && !ControlsSwitchIsOn)
                 {
                     ControlsSwitchIsOn = switchon;
-                    System.Media.SystemSounds.Asterisk.Play();
+                    //System.Media.SystemSounds.Asterisk.Play();
                     cutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
                     copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
                     pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
@@ -9481,7 +9486,7 @@ namespace TranslationHelper
                 else if (ControlsSwitchIsOn)
                 {
                     ControlsSwitchIsOn = switchon;
-                    System.Media.SystemSounds.Hand.Play();
+                    //System.Media.SystemSounds.Hand.Play();
                     cutToolStripMenuItem1.ShortcutKeys = Keys.None;
                     copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
                     pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
@@ -9922,6 +9927,15 @@ namespace TranslationHelper
         private void saveInnewFormatToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void forceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int i = THFileElementsDataGridView.SelectedCells.Count;
+            if (i == 1)
+            {
+                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, GetSelectedRowIndexInDatatable(THFileElementsDataGridView.CurrentCell.RowIndex), 0, true, true);
+            }
         }
 
 

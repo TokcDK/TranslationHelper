@@ -219,7 +219,7 @@ namespace TranslationHelper
 
         private void THOptionAutotranslationForIdenticalCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            main.AutotranslationForIdentical = THOptionAutotranslationForIdenticalCheckBox.Checked;
+            main.AutotranslationForSimular = THOptionAutotranslationForIdenticalCheckBox.Checked;
             AutotranslationForIdenticalINI = THOptionAutotranslationForIdenticalCheckBox.Checked;
         }
 
