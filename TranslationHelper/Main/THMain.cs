@@ -413,6 +413,7 @@ namespace TranslationHelper
                 THInfoTextBox.Text = string.Empty;
                 THSourceRichTextBox.Text = string.Empty;
                 THTargetRichTextBox.Text = string.Empty;
+                TableCompleteInfoLabel.Text = string.Empty;
 
                 //Clean data
                 THFilesList.Items.Clear();
@@ -4791,21 +4792,21 @@ namespace TranslationHelper
         private void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir);
-            string projecttypeDBfolder = "\\";
+            string projecttypeDBfolder = string.Empty;
             if (THSelectedSourceType.Contains("RPG Maker MV"))
             {
-                projecttypeDBfolder += "RPGMakerMV\\";
+                projecttypeDBfolder += "RPGMakerMV";
             }
             else if (THSelectedSourceType.Contains("RPGMaker"))
             {
-                projecttypeDBfolder += "RPGMakerTransPatch\\";
+                projecttypeDBfolder += "RPGMakerTransPatch";
             }
-            dbpath = Application.StartupPath + "\\DB" + projecttypeDBfolder;
-            lastautosavepath = dbpath + dbfilename + GetDBCompressionExt();
+            dbpath = Path.Combine(Application.StartupPath, "DB", projecttypeDBfolder);
+            lastautosavepath = Path.Combine(dbpath, dbfilename + GetDBCompressionExt());
 
             ProgressInfo(true);
 
-            WriteDBFile(THFilesElementsDataset, lastautosavepath);
+            WriteDBFileLite(THFilesElementsDataset, lastautosavepath);
             //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
 
             Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
@@ -4876,7 +4877,7 @@ namespace TranslationHelper
                 {
                     Thread.Sleep(10000);
                 }
-                WriteDBFile(Data, Path);
+                WriteDBFileLite(Data, Path);
             }
         }
 
@@ -9008,10 +9009,7 @@ namespace TranslationHelper
 
                         //SaveNEWDB(THFilesElementsDataset, THFSaveBDAs.FileName);
                         //WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
-                        using (DataSet ds = FillTempDB(THFilesElementsDataset))
-                        {
-                            WriteDBFile(ds, THFSaveBDAs.FileName);
-                        }
+                        WriteDBFileLite(THFilesElementsDataset, THFSaveBDAs.FileName);
                         MessageBox.Show("finished");
                         ProgressInfo(false);
                     }
@@ -9019,6 +9017,32 @@ namespace TranslationHelper
             }
         }
 
+        bool WriteDBFileIsBusy = false;
+        string WriteDBFileLiteLastFileName = string.Empty;
+        private async void WriteDBFileLite(DataSet ds, string fileName)
+        {
+            if (fileName.Length==0 || ds == null)
+            {
+                return;
+            }
+            while (WriteDBFileIsBusy && WriteDBFileLiteLastFileName != fileName)
+            {
+                await Task.Run(() => WaitThreaded(5000));
+            }
+            WriteDBFileIsBusy = true;
+            WriteDBFileLiteLastFileName = fileName;
+            using (DataSet liteds = FillTempDB(ds))
+            {
+                await Task.Run(() => WriteDBFile(liteds, fileName));
+            }
+            WriteDBFileIsBusy = false;
+            WriteDBFileLiteLastFileName = string.Empty;
+        }
+
+        private void WaitThreaded(int time)
+        {
+            Thread.Sleep(time);
+        }
 
         private DataSet FillTempDB(DataSet DS)
         {
