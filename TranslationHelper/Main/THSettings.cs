@@ -32,7 +32,7 @@ namespace TranslationHelper
             this.THOptionDBCompressionCheckBox.Text = T._("Compression for DB files:");
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Text = T._("Do not load string if it has more of next romaji percent - ");
             this.THSettingsToolsTabPage.Text = T._("Tools");
-            this.THOptionAutotranslationForIdenticalCheckBox.Text = T._("Autotranslation for identical");
+            this.THOptionAutotranslationForIdenticalCheckBox.Text = T._("Autotranslation for simular");
             this.THOptionEnableTranslationCacheCheckBox.Text = T._("Enable online translation cache.");
             this.label4.Text = T._("Translation  Helper support:");
             this.label1.Text = T._("Web service link for manual translation (F12):");

@@ -408,12 +408,13 @@ namespace TranslationHelper
             try
             {
 
-                //Reset strings
+                //Reset vars
                 ActiveForm.Text = "Translation Helper by DenisK";
                 THInfoTextBox.Text = string.Empty;
                 THSourceRichTextBox.Text = string.Empty;
                 THTargetRichTextBox.Text = string.Empty;
                 TableCompleteInfoLabel.Text = string.Empty;
+                ControlsSwitchActivated = false;
 
                 //Clean data
                 THFilesList.Items.Clear();
@@ -3572,6 +3573,9 @@ namespace TranslationHelper
 
         private void SetOnTHFileElementsDataGridViewWasLoaded()
         {
+            ControlsSwitchActivated = true;
+            ControlsSwitchIsOn = (cutToolStripMenuItem1.ShortcutKeys != Keys.None);
+
             THFileElementsDataGridView.Columns["Original"].HeaderText = T._("Original");//THMainDGVOriginalColumnName;
             THFileElementsDataGridView.Columns["Translation"].HeaderText = T._("Translation");//THMainDGVTranslationColumnName;
             THFileElementsDataGridView.Columns["Original"].ReadOnly = true;
@@ -8689,6 +8693,12 @@ namespace TranslationHelper
 
         private void CutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (CellBeginEditStarted)//если ячейка в режиме редактирования
+            {
+                //вылючение действий для ячеек при выходе из режима редактирования
+                ControlsSwitch();
+            }
+
             if (THFileElementsDataGridView == null)
             {
             }
@@ -8719,6 +8729,12 @@ namespace TranslationHelper
 
         private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (CellBeginEditStarted)//если ячейка в режиме редактирования
+            {
+                //вылючение действий для ячеек при выходе из режима редактирования
+                ControlsSwitch();
+            }
+
             if (THFileElementsDataGridView == null)
             {
             }
@@ -8734,6 +8750,12 @@ namespace TranslationHelper
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (CellBeginEditStarted)//если ячейка в режиме редактирования
+            {
+                //вылючение действий для ячеек при выходе из режима редактирования
+                ControlsSwitch();
+            }
+
             //LogToFile("Paste Enter");
             if (THFileElementsDataGridView == null)
             {
@@ -9386,32 +9408,47 @@ namespace TranslationHelper
             MessageBox.Show("FOUND=\r\n" + o + "\r\n, matchCollection count=" + matchCollection.Count);
         }
 
+        private bool CellBeginEditStarted = false;
         private void THFileElementsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
+            CellBeginEditStarted = true;
             //отключение действий для ячеек при входе в режим редктирования
             ControlsSwitch();
         }
 
         private void THFileElementsDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            CellBeginEditStarted = false;
             //влючение действий для ячеек при выходе из режима редктирования
             ControlsSwitch(true);
         }
 
         private void THSourceRichTextBox_MouseEnter(object sender, EventArgs e)
         {
-            //отключение действий для ячеек при входе
-            ControlsSwitch();
-            //https://stackoverflow.com/questions/12780961/disable-copy-and-paste-in-datagridview
-            THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable;
+            if (CellBeginEditStarted)
+            {
+            }
+            else
+            {
+                //отключение действий для ячеек при входе
+                ControlsSwitch();
+                //https://stackoverflow.com/questions/12780961/disable-copy-and-paste-in-datagridview
+                THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable;
+            }
 
         }
 
         private void THSourceRichTextBox_MouseLeave(object sender, EventArgs e)
         {
-            //влючение действий для ячеек при выходе из режима редктирования
-            ControlsSwitch(true);
-            THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            if (CellBeginEditStarted)
+            {
+            }
+            else
+            {
+                //влючение действий для ячеек при выходе из режима редктирования
+                ControlsSwitch(true);
+                THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            }
         }
 
         private void THTargetRichTextBox_MouseEnter(object sender, EventArgs e)
@@ -9427,19 +9464,28 @@ namespace TranslationHelper
             ControlsSwitch(true);
         }
 
+        private bool ControlsSwitchIsOn = true;
+        private bool ControlsSwitchActivated = false;
         private void ControlsSwitch(bool switchon=false)
         {
-            if (switchon)
+            if (ControlsSwitchActivated)
             {
-                cutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
-                copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
-                pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
-            }
-            else
-            {
-                cutToolStripMenuItem1.ShortcutKeys = Keys.None;
-                copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
-                pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+                if (switchon && !ControlsSwitchIsOn)
+                {
+                    ControlsSwitchIsOn = switchon;
+                    System.Media.SystemSounds.Asterisk.Play();
+                    cutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
+                    copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
+                    pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
+                }
+                else if (ControlsSwitchIsOn)
+                {
+                    ControlsSwitchIsOn = switchon;
+                    System.Media.SystemSounds.Hand.Play();
+                    cutToolStripMenuItem1.ShortcutKeys = Keys.None;
+                    copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+                    pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+                }
             }
         }
 
@@ -9798,12 +9844,12 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_MouseEnter(object sender, EventArgs e)
         {
-            ControlsSwitch(true);
+            //ControlsSwitch(true);
         }
 
         private void THFileElementsDataGridView_MouseLeave(object sender, EventArgs e)
         {
-            ControlsSwitch();
+            //ControlsSwitch();
         }
 
         private void THSourceRichTextBox_MouseClick(object sender, MouseEventArgs e)
@@ -9835,7 +9881,13 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            ControlsSwitch(true);//не включалось копирование в ячейку, при копировании с гугла назад
+            if (ControlsSwitchActivated)
+            {
+            }
+            else
+            {
+                ControlsSwitch(true);//не включалось копирование в ячейку, при копировании с гугла назад
+            }
         }
 
         //int SelectedRowIndexWhenFilteredDGW = 0;
