@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper
 {
@@ -3500,6 +3501,7 @@ namespace TranslationHelper
 
                     BindToDataTableGridView(THFilesElementsDataset.Tables[THFilesList.SelectedIndex]);
 
+                    ShowNonEmptyRowsCount(THFilesElementsDataset);
 
                     /*
                     //Virtual mode implementation
@@ -3724,6 +3726,20 @@ namespace TranslationHelper
             }
             catch
             {
+            }
+        }
+
+        private void ShowNonEmptyRowsCount(DataSet tHFilesElementsDataset)
+        {
+            int RowsCount = Table.GetDatasetRowsCount(tHFilesElementsDataset);
+            if (RowsCount == 0)
+            {
+                TableCompleteInfoLabel.Visible = false;
+            }
+            else
+            {
+                TableCompleteInfoLabel.Visible = true;
+                TableCompleteInfoLabel.Text = Table.GetDatasetNonEmptyRowsCount(tHFilesElementsDataset) + "/" + RowsCount;
             }
         }
 
@@ -9732,36 +9748,6 @@ namespace TranslationHelper
             return "OK";
         }
 
-        private bool IsTableRowsCompleted(DataTable DT, string column="Translation")
-        {
-            if (DT == null)
-            {
-                return false;
-            }
-            using (DataTable tempDT = DT)
-            {
-                int DTRowsCount = tempDT.Rows.Count;
-                for (int r = 0; r < DTRowsCount; r++)
-                {
-                    var cell = tempDT.Rows[r][column];
-                    //LogToFile("\r\nIsTableRowsCompleted Value =\"" + DT.Rows[r][column] +"\", Length=" + ((DT.Rows[r][column] + string.Empty).Length));
-                    if (cell == null || string.IsNullOrEmpty(cell as string))
-                    {
-                        //LogToFile("\r\nIsTableRowsCompleted=false");
-                        return false;
-                    }
-                }
-            }
-            //THFilesElementsDataset.Tables[e.Index].AsEnumerable().All(dr => !string.IsNullOrEmpty(dr["Translation"] + string.Empty))
-            //if (DT.AsEnumerable().All(datarow => !string.IsNullOrEmpty(datarow[column]+string.Empty)))
-            //{
-            //    return true;
-            //}
-            //LogToFile("\r\nIsTableRowsCompleted=true");
-            return true;
-        }
-
-
         //global brushes with ordinary/selected colors
         private readonly SolidBrush ListBoxItemForegroundBrushSelected = new SolidBrush(Color.White);
         private readonly SolidBrush ListBoxItemForegroundBrush = new SolidBrush(Color.Black);
@@ -9792,7 +9778,7 @@ namespace TranslationHelper
                     backgroundBrush = ListBoxItemBackgroundBrushSelected;
                 else if ((index % 2) == 0)
                 {
-                    if (IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index]))
+                    if (Table.IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index]))
                     {
                         backgroundBrush = ListBoxItemBackgroundBrush1Complete;
                     }
@@ -9803,7 +9789,7 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    if (IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index]))
+                    if (Table.IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index]))
                     {
                         backgroundBrush = ListBoxItemBackgroundBrush2Complete;
                     }

@@ -83,6 +83,7 @@
     <Compile Include="Main\DoubleBufferedListBox.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Main\Functions\Table.cs" />
     <Compile Include="Translators\DeepL.cs" />
     <Compile Include="Translators\Google.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
