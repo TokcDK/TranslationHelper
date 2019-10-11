@@ -6,6 +6,69 @@ namespace TranslationHelper.Main.Functions
     static class Table
     {
         /// <summary>
+        /// Returns Dataset with tables with only non empty rows
+        /// </summary>
+        /// <param name="DS"></param>
+        /// <returns></returns>
+        public static DataSet FillTempDB(DataSet DS)
+        {
+            DataSet RETDS = new DataSet();
+            int TablesCount = DS.Tables.Count;
+            for (int t = 0; t < TablesCount; t++)
+            {
+                var Table = DS.Tables[t];
+                string tname = Table.TableName;
+                RETDS.Tables.Add(tname);
+                RETDS.Tables[tname].Columns.Add("Original");
+                RETDS.Tables[tname].Columns.Add("Translation");
+                int RowsCount = Table.Rows.Count;
+                for (int r = 0; r < RowsCount; r++)
+                {
+                    var Row = Table.Rows[r];
+                    var CellTranslation = Row[1];
+                    if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                    {
+                    }
+                    else
+                    {
+                        RETDS.Tables[tname].ImportRow(Row);
+                    }
+                }
+                if (RETDS.Tables[tname].Rows.Count == 0)
+                {
+                    RETDS.Tables.Remove(tname);
+                }
+            }
+
+            return RETDS;
+        }
+
+        /// <summary>
+        /// true if 2 datasets tables and table rows count is identical
+        /// </summary>
+        /// <param name="DS1"></param>
+        /// <param name="DS2"></param>
+        /// <returns></returns>
+        public static bool IsDataSetsElementsCountIdentical(DataSet DS1, DataSet DS2)
+        {
+            if (DS1.Tables.Count == DS2.Tables.Count)
+            {
+                for (int t = 0; t < DS1.Tables.Count; t++)
+                {
+                    if (DS1.Tables[t].Rows.Count != DS2.Tables[t].Rows.Count)
+                    {
+                        return false;
+                    }
+                }
+                return true; ;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Returns false if any of Datatable row have value
         /// </summary>
         /// <param name="DT"></param>

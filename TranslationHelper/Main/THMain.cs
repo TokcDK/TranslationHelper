@@ -2996,7 +2996,7 @@ namespace TranslationHelper
 
         public bool HasNOJPcharacters(string str)
         {
-            return GetLocaleLangCount(str, "kanji") < 1 && GetLocaleLangCount(str, "katakana") < 1 && GetLocaleLangCount(str, "hiragana") < 1;
+            return RomajiKana.GetLocaleLangCount(str, "kanji") < 1 && RomajiKana.GetLocaleLangCount(str, "katakana") < 1 && RomajiKana.GetLocaleLangCount(str, "hiragana") < 1;
         }
 
         private bool TryToExtractToRPGMakerTransPatch(string sPath, string extractdir="Work")
@@ -3719,7 +3719,7 @@ namespace TranslationHelper
                             THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
                         }
                         THInfoTextBox.Text += Environment.NewLine+ Environment.NewLine;
-                        THInfoTextBox.Text += THShowLangsOfString(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty, "all"); //Show all detected languages count info
+                        THInfoTextBox.Text += RomajiKana.THShowLangsOfString(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty, "all"); //Show all detected languages count info
                     }
                 }
                 //--------Считывание значения ячейки в текстовое поле 1
@@ -3743,115 +3743,6 @@ namespace TranslationHelper
             }
         }
 
-        //Detect languages
-        //source: https://stackoverflow.com/questions/15805859/detect-japanese-character-input-and-romajis-ascii
-        private static IEnumerable<char> GetCharsInRange(string text, int min, int max)
-        {
-            //Usage:
-            //var romaji = GetCharsInRange(searchKeyword, 0x0020, 0x007E);
-            //var hiragana = GetCharsInRange(searchKeyword, 0x3040, 0x309F);
-            //var katakana = GetCharsInRange(searchKeyword, 0x30A0, 0x30FF);
-            //var kanji = GetCharsInRange(searchKeyword, 0x4E00, 0x9FBF);
-            return text.Where(e => e >= min && e <= max);
-        }
-
-        private string THShowLangsOfString(string target, string langlocale)
-        {
-            string ret = string.Empty;
-            if (langlocale == "all")
-            {
-                var kanji = GetCharsInRange(target, 0x4E00, 0x9FBF);
-                var romaji = GetCharsInRange(target, 0x0020, 0x007E);
-                var hiragana = GetCharsInRange(target, 0x3040, 0x309F);
-                var katakana = GetCharsInRange(target, 0x30A0, 0x30FF);
-
-                ret += T._("contains: ") + Environment.NewLine;
-                if (romaji.Any())
-                {
-                    ret += ("       romaji:" + GetLocaleLangCount(target, "romaji") + Environment.NewLine);
-                }
-                if (kanji.Any())
-                {
-                    ret += ("       kanji:" + GetLocaleLangCount(target, "kanji") + Environment.NewLine);
-                }
-                if (hiragana.Any())
-                {
-                    ret += ("       hiragana:" + GetLocaleLangCount(target, "hiragana") + Environment.NewLine);
-                }
-                if (katakana.Any())
-                {
-                    ret += ("       katakana:" + GetLocaleLangCount(target, "katakana") + Environment.NewLine);
-                }
-                if (GetLocaleLangCount(target, "other") > 0)
-                {
-                    ret += ("       other:" + GetLocaleLangCount(target, "other") + Environment.NewLine);
-                }
-            }
-            else if (string.Compare(langlocale, "romaji", true) == 0) //asdf оптимизация, сравнение с игнором регистра: http://www.vcskicks.com/optimize_csharp_code.php
-            {
-                return ("       romaji:" + GetLocaleLangCount(target, "romaji") + Environment.NewLine);
-            }
-            else if (string.Compare(langlocale, "kanji", true) == 0)
-            {
-                return ("       kanji:" + GetLocaleLangCount(target, "kanji") + Environment.NewLine);
-            }
-            else if (string.Compare(langlocale, "hiragana", true) == 0)
-            {
-                return ("       hiragana:" + GetLocaleLangCount(target, "hiragana") + Environment.NewLine);
-            }
-            else if (string.Compare(langlocale, "katakana", true) == 0)
-            {
-                return ("       katakana:" + GetLocaleLangCount(target, "katakana") + Environment.NewLine);
-            }
-            else if (string.Compare(langlocale, "other", true) == 0)
-            {
-                return ("       other:" + (GetLocaleLangCount(target, "other")) + Environment.NewLine);
-            }
-
-            return ret;
-        }
-
-        private int GetLocaleLangCount(string target, string langlocale)
-        {
-            //var romaji = GetCharsInRange(THSourceTextBox.Text, 0x0020, 0x007E);
-            //var kanji = GetCharsInRange(THSourceTextBox.Text, 0x4E00, 0x9FBF);
-            //var hiragana = GetCharsInRange(THSourceTextBox.Text, 0x3040, 0x309F);
-            //var katakana = GetCharsInRange(THSourceTextBox.Text, 0x30A0, 0x30FF);
-
-            int romaji = (GetCharsInRange(target, 0x0020, 0x007E)).Count();
-            int kanji = (GetCharsInRange(target, 0x4E00, 0x9FBF)).Count();
-            int hiragana = (GetCharsInRange(target, 0x3040, 0x309F)).Count();
-            int katakana = (GetCharsInRange(target, 0x30A0, 0x30FF)).Count();
-
-            int all = (romaji + kanji + hiragana + katakana);
-            if (string.Compare(langlocale, "all", true) == 0)
-            {
-                return all + (target.Length - all);
-            }
-            else if (string.Compare(langlocale, "romaji", true) == 0)
-            {
-                return (romaji);
-            }
-            else if (string.Compare(langlocale, "kanji", true) == 0)
-            {
-                return (kanji);
-            }
-            else if (string.Compare(langlocale, "hiragana", true) == 0)
-            {
-                return (hiragana);
-            }
-            else if (string.Compare(langlocale, "katakana", true) == 0)
-            {
-                return (katakana);
-            }
-            else if (string.Compare(langlocale, "other", true) == 0)
-            {
-                return (target.Length - all);
-            }
-
-            return all;
-        }
-
         //Для функции перевода, чтобы не переводить, когда в тексте нет иероглифов
         //private bool NoKanjiHiraganaKatakanaInTheString(string target)
         //{
@@ -3871,9 +3762,9 @@ namespace TranslationHelper
         {
             return SelectedLocalePercentFromStringIsNotValid(extractedvalue)
                 || SelectedLocalePercentFromStringIsNotValid(extractedvalue, "other")
-                || (GetLocaleLangCount(extractedvalue, "romaji") + GetLocaleLangCount(extractedvalue, "other")) == extractedvalue.Length
-                || GetLocaleLangCount(extractedvalue, "romaji") == extractedvalue.Length
-                || GetLocaleLangCount(extractedvalue, "other") == extractedvalue.Length;
+                || (RomajiKana.GetLocaleLangCount(extractedvalue, "romaji") + RomajiKana.GetLocaleLangCount(extractedvalue, "other")) == extractedvalue.Length
+                || RomajiKana.GetLocaleLangCount(extractedvalue, "romaji") == extractedvalue.Length
+                || RomajiKana.GetLocaleLangCount(extractedvalue, "other") == extractedvalue.Length;
         }
 
         /// <summary>
@@ -3888,7 +3779,7 @@ namespace TranslationHelper
             {
                 if (DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
                 {
-                    return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > DontLoadStringIfRomajiPercentNum;
+                    return ((RomajiKana.GetLocaleLangCount(target, langlocale) * 100) / RomajiKana.GetLocaleLangCount(target, "all")) > DontLoadStringIfRomajiPercentNum;
                 }
             }
             catch
@@ -5031,38 +4922,19 @@ namespace TranslationHelper
             if (sPath.Length == 0)
             {
                 //THFilesElementsDataset.ReadXml(Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
-                ReadDBFile(DBDataSet, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
+                DBFile.ReadDBFile(DBDataSet, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
             }
             else
             {
-                ReadDBFile(DBDataSet, sPath); //load new data
+                DBFile.ReadDBFile(DBDataSet, sPath); //load new data
             }
             THLoadDBCompare(DBDataSet);
             ProgressInfo(false);
         }
 
-        private bool IsDataSetsElementsCountIdentical(DataSet DS1, DataSet DS2)
-        {
-            if (DS1.Tables.Count == DS2.Tables.Count)
-            {
-                for (int t =0;t< DS1.Tables.Count; t++)
-                {
-                    if (DS1.Tables[t].Rows.Count != DS2.Tables[t].Rows.Count)
-                    {
-                        return false;
-                    }
-                }
-                return true; ;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         private void THLoadDBCompare(DataSet THTempDS)
         {
-            if (!IsFullComprasionDBloadEnabled && IsDataSetsElementsCountIdentical(THFilesElementsDataset, THTempDS))
+            if (!IsFullComprasionDBloadEnabled && Table.IsDataSetsElementsCountIdentical(THFilesElementsDataset, THTempDS))
             {
                 CompareLiteIfIdentical(THTempDS);
                 return;
@@ -5264,52 +5136,6 @@ namespace TranslationHelper
             }
             //MessageBox.Show("Default .xml");
             return ".xml";
-        }
-
-        //https://stackoverflow.com/questions/223738/net-stream-dataset-of-xml-data-to-zip-file
-        //http://madprops.org/blog/saving-datasets-locally-with-compression/
-        public static void ReadDBFile(DataSet DS, string fileName)
-        {
-            using (FileStream fs = new FileStream(fileName, FileMode.Open))
-            {
-                Stream s;
-                if (Path.GetExtension(fileName) == ".cmx")
-                {
-                    s = new GZipStream(fs, CompressionMode.Decompress);
-                }
-                else if (Path.GetExtension(fileName) == ".cmz")
-                {
-                    s = new DeflateStream(fs, CompressionMode.Decompress);
-                }
-                else
-                {
-                    s = fs;
-                }
-                DS.ReadXml(s);
-                s.Close();
-            }
-        }
-
-        public static void WriteDBFile(DataSet DS, string fileName)
-        {
-            using (FileStream fs = new FileStream(fileName, FileMode.Create))
-            {
-                Stream s;
-                if (Path.GetExtension(fileName) == ".cmx")
-                {
-                    s = new GZipStream(fs, CompressionMode.Compress);
-                }
-                else if (Path.GetExtension(fileName) == ".cmz")
-                {
-                    s = new DeflateStream(fs, CompressionMode.Compress);
-                }
-                else
-                {
-                    s = fs;
-                }
-                DS.WriteXml(s);
-                s.Close();
-            }
         }
         
         private void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -7245,7 +7071,7 @@ namespace TranslationHelper
             DS.Reset();
             if (File.Exists(THTranslationCachePath))
             {
-                ReadDBFile(DS, THTranslationCachePath);
+                DBFile.ReadDBFile(DS, THTranslationCachePath);
             }
             else
             {
@@ -7476,7 +7302,7 @@ namespace TranslationHelper
         {
             if (IsTranslationCacheEnabled && THTranslationCache.Tables[0].Rows.Count > 0)
             {
-                WriteDBFile(THTranslationCache, THTranslationCachePath);
+                DBFile.WriteDBFile(THTranslationCache, THTranslationCachePath);
                 //THTranslationCache.Reset();
             }
         }
@@ -9074,9 +8900,9 @@ namespace TranslationHelper
             }
             WriteDBFileIsBusy = true;
             WriteDBFileLiteLastFileName = fileName;
-            using (DataSet liteds = FillTempDB(ds))
+            using (DataSet liteds = Table.FillTempDB(ds))
             {
-                await Task.Run(() => WriteDBFile(liteds, fileName));
+                await Task.Run(() => DBFile.WriteDBFile(liteds, fileName));
             }
             WriteDBFileIsBusy = false;
             WriteDBFileLiteLastFileName = string.Empty;
@@ -9085,39 +8911,6 @@ namespace TranslationHelper
         private void WaitThreaded(int time)
         {
             Thread.Sleep(time);
-        }
-
-        private DataSet FillTempDB(DataSet DS)
-        {
-            DataSet RETDS = new DataSet();
-            int TablesCount = DS.Tables.Count;
-            for (int t = 0; t < TablesCount; t++)
-            {
-                var Table = DS.Tables[t];
-                string tname = Table.TableName;
-                RETDS.Tables.Add(tname);
-                RETDS.Tables[tname].Columns.Add("Original");
-                RETDS.Tables[tname].Columns.Add("Translation");
-                int RowsCount = Table.Rows.Count;
-                for (int r = 0; r < RowsCount; r++)
-                {
-                    var Row = Table.Rows[r];
-                    var CellTranslation = Row[1];
-                    if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
-                    {
-                    }
-                    else
-                    {
-                        RETDS.Tables[tname].ImportRow(Row);
-                    }
-                }
-                if (RETDS.Tables[tname].Rows.Count==0)
-                {
-                    RETDS.Tables.Remove(tname);
-                }
-            }
-
-            return RETDS;
         }
 
         private void SaveNEWDB(DataSet DS4Save, string fileName)
