@@ -442,5 +442,61 @@ namespace TranslationHelper.Main.Functions
                 return false;
             }
         }
+
+        /// <summary>
+        /// Changing string to uppercase(first char or all) or lowercase.
+        /// variant 0 - lowercase / 
+        /// variant 1 = Uppercase / 
+        /// variant 2 = UPPERCASE / 
+        /// </summary>
+        /// <param name="THFileElementsDataGridView"></param>
+        /// <param name="variant"></param>
+        public static void StringCaseMorph(DataGridView THFileElementsDataGridView, int variant)
+        {
+            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
+            if (THFileElementsDataGridViewSelectedCellsCount > 0)
+            {
+                try
+                {
+                    for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
+                    {
+                        int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                        //int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
+                        int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
+                        if (THFileElementsDataGridView.SelectedCells[i].Value == null)
+                        {
+                        }
+                        else
+                        {
+                            if (variant == 0)//lowercase
+                            {
+                                THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = (THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).ToLowerInvariant();
+                            }
+                            else if (variant == 1)//Uppercase
+                            {
+                                //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1
+                                string s = THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value as string;
+                                THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = char.ToUpper(s[0]) + s.Substring(1);
+                            }
+                            else if (variant == 2)//UPPERCASE
+                            {
+                                THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = (THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value as string).ToUpperInvariant();
+                            }
+                            else
+                            {
+                                break;
+                            }
+
+                        }
+
+                    }
+                }
+                catch
+                {
+                }
+            }
+
+        }
+
     }
 }

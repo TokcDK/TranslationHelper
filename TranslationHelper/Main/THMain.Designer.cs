@@ -562,7 +562,7 @@
             this.toLOWERCASEToolStripMenuItem.Name = "toLOWERCASEToolStripMenuItem";
             this.toLOWERCASEToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.toLOWERCASEToolStripMenuItem.Text = "lowercase";
-            this.toLOWERCASEToolStripMenuItem.Click += new System.EventHandler(this.ToLOWERCASEToolStripMenuItem_Click);
+            this.toLOWERCASEToolStripMenuItem.Click += new System.EventHandler(this.TolowercaseToolStripMenuItem_Click);
             // 
             // searchToolStripMenuItem
             // 
@@ -939,7 +939,7 @@
             this.lowercaseToolStripMenuItem.Name = "lowercaseToolStripMenuItem";
             this.lowercaseToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
             this.lowercaseToolStripMenuItem.Text = "lowercase";
-            this.lowercaseToolStripMenuItem.Click += new System.EventHandler(this.ToLOWERCASEToolStripMenuItem_Click);
+            this.lowercaseToolStripMenuItem.Click += new System.EventHandler(this.TolowercaseToolStripMenuItem_Click);
             // 
             // THEditElementsSplitContainer
             // 
