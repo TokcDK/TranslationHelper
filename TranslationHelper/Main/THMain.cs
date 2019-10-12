@@ -7973,200 +7973,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsFixingCells = true;
 
-            //если файл с правилами существует
-            if (File.Exists(Path.Combine(Application.StartupPath,"TranslationHelperCellFixesRegexRules.txt")))
-            {
-                //читать файл с правилами
-                using (StreamReader rules = new StreamReader(Path.Combine(Application.StartupPath,"TranslationHelperCellFixesRegexRules.txt")))
-                {
-                    try
-                    {
-                        if (selectedonly)
-                        {
-                            //regex правило и результат из файла
-                            string rule;
-                            string result = string.Empty;
-                            while (!rules.EndOfStream)
-                            {
-                                //читать правило и результат
-                                rule = rules.ReadLine();
-                                result = rules.ReadLine();
-
-                                //проверить, есть ли правило и результат, если вдруг файле будет нечетное количество строк, по ошибке юзера
-                                if (rule.Length == 0)
-                                {
-                                }
-                                else
-                                {
-                                    //задать правило
-                                    Regex regexrule = new Regex(rule);
-
-                                    //найти совпадение с заданным правилом в выбранной ячейке
-                                    MatchCollection mc = regexrule.Matches(THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty);
-                                    
-                                    //перебрать все найденные совпадения
-                                    foreach (Match m in mc)
-                                    {
-                                        //исправить значения по найденным совпадениям в выбранной ячейке
-                                        THFilesElementsDataset.Tables[tind].Rows[rind][cind] = (THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty).Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
-                                        //THFilesElementsDataset.Tables[tind].Rows[rind][cind] = Regex.Replace(THFilesElementsDataset.Tables[tind].Rows[rind][cind].ToString(),m.Value.ToString(), result);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //индекс столбца перевода, таблицы и массив индексов для варианта с несколькими выбранными ячейками
-                            //int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans
-                            int initialtableindex = 0;
-                            int[] selcellscnt;
-
-                            //method
-                            //a - All
-                            //t - Table
-                            //s - Selected
-
-                            if (method == "s")
-                            {
-                                //cind = THFileElementsDataGridView.Columns["Translation"].Index;//-поле untrans                            
-                                initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-                                selcellscnt = new int[THFileElementsDataGridView.SelectedCells.Count];//создать массив длинной числом выбранных ячеек
-                                for (int i = 0; i < selcellscnt.Length; i++) //записать индексы всех выбранных ячеек
-                                {
-                                    selcellscnt[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                                }
-                            }
-                            else if (method == "t")
-                            {
-                                initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-                                                         //cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;
-                                selcellscnt = new int[1];//не будет использоваться с этим вариантом
-                            }
-                            else
-                            {
-                                selcellscnt = new int[1];//не будет использоваться с этим вариантом
-                            }
-
-                            //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
-                            int tablescount;
-                            int rowscount;
-                            int rowindex;
-
-                            //regex правило и результат из файла
-                            string rule;
-                            string result = string.Empty;
-                            while (!rules.EndOfStream)
-                            {
-                                //читать правило и результат
-                                rule = rules.ReadLine();
-                                result = rules.ReadLine();
-
-                                //проверить, есть ли правило и результат, если вдруг файле будет нечетное количество строк, по ошибке юзера
-                                if (rule.Length == 0)
-                                {
-                                }
-                                else
-                                {
-                                    //задать правило
-                                    Regex regexrule = new Regex(rule);
-
-                                    if (selectedonly)
-                                    {
-                                        //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
-
-                                        //найти совпадение с заданным правилом в выбранной ячейке
-                                        MatchCollection mc = regexrule.Matches(THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty);
-                                        //перебрать все айденные совпадения
-                                        foreach (Match m in mc)
-                                        {
-                                            //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
-
-                                            //исправить значения по найденным совпадениям в выбранной ячейке
-                                            THFilesElementsDataset.Tables[tind].Rows[rind][cind] = (THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty).Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
-
-                                            //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
-                                        }
-                                    }
-                                    else
-                                    {
-
-                                        //LogToFile("1 rule=" + rule + ",tableindex=" + initialtableindex);
-                                        if (method == "a")
-                                        {
-                                            tablescount = THFilesElementsDataset.Tables.Count;//все таблицы в dataset
-                                        }
-                                        else
-                                        {
-                                            tablescount = initialtableindex + 1;//одна таблица с индексом на один больше индекса стартовой
-                                        }
-
-                                        //LogToFile("2 tablescount=" + tablescount);
-                                        //перебор таблиц dataset
-                                        for (int t = initialtableindex; t < tablescount; t++)
-                                        {
-                                            //LogToFile("3 selected table index=" + t);
-                                            if (method == "a" || method == "t")
-                                            {
-                                                //все строки в выбранной таблице
-                                                rowscount = THFilesElementsDataset.Tables[t].Rows.Count;
-                                            }
-                                            else
-                                            {
-                                                //все выделенные строки в выбранной таблице
-                                                rowscount = selcellscnt.Length;
-                                            }
-
-                                            //LogToFile("4 rowscount=" + rowscount);
-                                            //перебор строк таблицы
-                                            for (int i = 0; i < rowscount; i++)
-                                            {
-                                                if (method == "s")
-                                                {
-                                                    //индекс = первому из заданного списка выбранных индексов
-                                                    rowindex = selcellscnt[i];
-                                                }
-                                                else
-                                                {
-                                                    //индекс с нуля и до последней строки
-                                                    rowindex = i;
-                                                }
-
-                                                //LogToFile("5 selected i row index=" + i + ", value of THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "]=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind]);
-                                                //не трогать строку перевода, если она пустая
-                                                if ((THFilesElementsDataset.Tables[t].Rows[rowindex][cind] + string.Empty).Length == 0)
-                                                {
-                                                }
-                                                else
-                                                {
-                                                    //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
-
-                                                    //найти совпадение с заданным правилом в выбранной ячейке
-                                                    MatchCollection mc = regexrule.Matches(THFilesElementsDataset.Tables[t].Rows[rowindex][cind] + string.Empty);
-                                                    //перебрать все айденные совпадения
-                                                    foreach (Match m in mc)
-                                                    {
-                                                        //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
-
-                                                        //исправить значения по найденным совпадениям в выбранной ячейке
-                                                        THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = (THFilesElementsDataset.Tables[t].Rows[rowindex][cind] + string.Empty).Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
-                                                        //THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), m.Value.ToString(), result);
-
-                                                        //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        //LogToFile(string.Empty,true);
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
+            AutoOperations.THFixCells(THFilesElementsDataset, THFileElementsDataGridView, method, cind, tind, rind, selectedonly);
 
             //снять занятость по окончании
             THIsFixingCells = false;
@@ -8183,60 +7990,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsExtractingTextForTranslation = true;
 
-            string ret = input;
-            //если файл с правилами существует
-            if (File.Exists(Path.Combine(Application.StartupPath,"TranslationHelperTranslationRegexRules.txt")))
-            {
-                //читать файл с правилами
-                using (StreamReader rules = new StreamReader(Path.Combine(Application.StartupPath,"TranslationHelperTranslationRegexRules.txt")))
-                {
-                    try
-                    {
-                        //regex правило и результат из файла
-                        string rule;
-                        string result = string.Empty;
-                        while (!rules.EndOfStream)
-                        {
-                            //читать правило и результат
-                            rule = rules.ReadLine();
-                            result = rules.ReadLine();
-
-                            //проверить, есть ли правило и результат, если вдруг файле будет нечетное количество строк, по ошибке юзера
-                            if (rule.Length == 0 || !result.Contains("$"))
-                            {
-                            }
-                            else
-                            {
-                                ret = Regex.Replace(ret, rule, result);
-                                //задать правило
-                                //Regex regexrule = new Regex(rule);
-
-                                ////найти совпадение с заданным правилом в выбранной ячейке
-                                //MatchCollection mc = regexrule.Matches(input);
-
-                                ////перебрать все найденные совпадения
-                                //foreach (Match m in mc)
-                                //{
-                                //    //исправить значения по найденным совпадениям в выбранной ячейке
-                                //    //ret = ret.Replace(m.Value.ToString(), regexrule.Replace(m.Value.ToString(), result));
-                                //    ret = Regex.Replace(ret, rule, result);
-                                //}
-                                if (ret == input)
-                                {
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                        //LogToFile(string.Empty,true);
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
+            string ret = AutoOperations.THExtractTextForTranslation(input);            
 
             //снять занятость по окончании
             THIsExtractingTextForTranslation = false;
@@ -8315,196 +8069,15 @@ namespace TranslationHelper
             }
         }
 
-        private bool IsAllMatchesInIdenticalPlaces(string first, string second, MatchCollection mc, MatchCollection mc0)
-        {
-            try
-            {
-                //int startindex;
-                int overallength = 0;
-                //int startindex0;
-                int overallength0 = 0;
-                int mcCount = mc.Count;
-                for (int m = 0; m < mcCount; m++)
-                {
-                    if (mc[m].Index - overallength == mc0[m].Index - overallength0)
-                    {
-                        overallength += mc[m].Length;
-                        overallength0 += mc0[m].Length;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                    //string mvalue = mc[m].Value;
-                    //string mvalue0 = mc0[m].Value;
-                    //int i = first.IndexOf(mvalue, startindex);
-                    //int i0 = second.IndexOf(mvalue0, startindex0);
-                    //if (i - overallength == i0 - overallength0)
-                    //{
-                    //    int l = mvalue.Length;
-                    //    startindex = i+ l;
-                    //    overallength+= l;
-                    //    int l0 = mvalue0.Length;
-                    //    startindex0 = i0 + l0;
-                    //    overallength0 += l0;
-                    //}
-                    //else
-                    //{
-                    //    return false;
-                    //}
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         bool cellchanged = false;
-        private void THAutoSetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool forcevalue = false)
+        public void THAutoSetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool forcevalue = false)
         {
             if (forcevalue || (AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
-                int TranslationCellIndex = InputCellIndex + 1;
-                var InputTableRow = THFilesElementsDataset.Tables[InputTableIndex].Rows[InputRowIndex];
-                var InputTableOriginalCell = InputTableRow[InputCellIndex];
-                var InputTableTranslationCell = InputTableRow[TranslationCellIndex];
-                if (InputTableTranslationCell == null || string.IsNullOrEmpty(InputTableTranslationCell as string))
-                {
-                }
-                else//Запускать сравнение только если ячейка имеет значение
-                {
-                    //LogToFile("THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]="+ THFilesElementsDataset.Tables[tableind].Rows[rind][transcind].ToString());
-                    //http://www.cyberforum.ru/csharp-beginners/thread244709.html
-                    string quote = "\"";
-                    string japanessymbols = "【|】|「|」";
-                    string pattern = @"((\d|\!|\?|\.|[|]|" + quote + "|" + japanessymbols + ")+)";
-                    Regex reg = new Regex(pattern); //reg равняется любым цифрам
-                    string inputorigcellvalue = THFixDigits(InputTableOriginalCell as string);
-                    string inputtranscellvalue = THFixDigits(InputTableTranslationCell as string);
-                    MatchCollection mc = reg.Matches(inputorigcellvalue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
-                    int mccount = mc.Count;
-
-                    int TableCount = THFilesElementsDataset.Tables.Count;
-                    for (int Tindx = 0; Tindx < TableCount; Tindx++) //количество файлов
-                    {
-                        var Table = THFilesElementsDataset.Tables[Tindx];
-                        var RowsCount = Table.Rows.Count;
-                        //LogToFile("Table "+Tindx+" proceed");
-                        for (int Rindx = 0; Rindx < RowsCount; Rindx++) //количество строк в каждом файле
-                        {
-                            var TRow = Table.Rows[Rindx];
-                            var TCell = TRow[TranslationCellIndex];
-                            if ((forcevalue && Rindx != InputRowIndex) || TCell == null || string.IsNullOrEmpty(TCell as string)) //Проверять только для пустых ячеек перевода
-                            {
-                                //LogToFile("THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString()=" + THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString());
-                                if (mccount > 0) //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
-                                {
-                                    string TempCell = TRow[InputCellIndex] + string.Empty;
-                                    string checkingorigcellvalue = THFixDigits(TempCell);
-                                    MatchCollection mc0 = reg.Matches(TempCell); //mc0 равно значениям цифр ячейки под номером y в файле i
-                                    int mc0Count = mc0.Count;
-                                    if (mc0Count > 0) //если количество совпадений в mc0 больше нуля, т.е. цифры были в поле untrans проверяемой на совпадение ячейки
-                                    {
-                                        string checkingorigcellvalueNoDigits = Regex.Replace(checkingorigcellvalue, pattern, string.Empty);
-                                        string inputorigcellvalueNoDigits = Regex.Replace(inputorigcellvalue, pattern, string.Empty);
-
-                                        //LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
-                                        //если поле перевода равно только что измененному во входной, без учета цифр
-                                        if (Equals(checkingorigcellvalueNoDigits, inputorigcellvalueNoDigits) && mccount == mc0Count && IsAllMatchesInIdenticalPlaces(inputorigcellvalue, checkingorigcellvalue, mc, mc0))
-                                        {
-                                            //инициализация основных целевого и входного массивов
-                                            string[] inputorigmatches = new string[mccount];
-                                            string[] targetorigmatches = new string[mccount];
-                                            //присваивание цифр из совпадений в массивы, в основной входного и во временный целевого
-                                            for (int r = 0; r < mccount; r++)
-                                            {
-                                                inputorigmatches[r] = THFixDigits(mc[r].Value/*.Replace(mc[r].Value, mc[r].Value)*/);
-                                                targetorigmatches[r] = THFixDigits(mc0[r].Value/*.Replace(mc0[r].Value, mc0[r].Value)*/);
-                                            }
-                                            //также инфо о другом способе:
-                                            //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
-                                            //там же че тести и for, ак у здесь меня - наиболее быстрый вариант
-
-                                            //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменется, т.к. 万 [man] переводится как 10000.
-                                            if (reg.Matches(inputtranscellvalue).Count == mccount)
-                                            {
-                                                //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
-                                                string inputresult = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
-
-                                                MatchCollection tm = reg.Matches(inputresult);
-                                                int startindex;
-                                                int stringoverallength = 0;
-                                                int stringlength;
-                                                int stringoverallength0 = 0;
-                                                //LogToFile("arraysize=" + arraysize + ", wrapped inputresult" + inputresult);
-                                                for (int m = 0; m < mccount; m++)
-                                                {
-                                                    //LogToFile("inputorigmatches[" + m + "]=" + inputorigmatches[m] + ", targetorigmatches[" + m + "]=" + targetorigmatches[m] + ", pre result[" + m + "]=" + inputresult);
-                                                    //inputresult = inputresult.Replace("{{" + inputorigmatches[m] + "}}", targetorigmatches[m]);
-
-                                                    //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
-                                                    startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
-                                                    stringlength = inputorigmatches[m].Length;
-                                                    stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
-                                                    inputresult = inputresult.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);
-                                                    stringoverallength0 += targetorigmatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
-                                                                                                       //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
-                                                                                                       //LogToFile("result[" + m + "]=" + inputresult);
-                                                }
-                                                //только если ячейка пустая
-                                                TCell = THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex];
-                                                if (forcevalue || TCell == null || string.IsNullOrEmpty(TCell as string))
-                                                {
-                                                    THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = inputresult;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else //иначе, если в поле оригинала не было цифр, сравнить как обычно, два поля между собой 
-                                {
-                                    if (Equals(TRow[InputCellIndex], InputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
-                                    {
-                                        THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            //LogToFile(string.Empty,true);
-            cellchanged = false;
-        }
-
-        /// <summary>
-        /// Замена японских(и не только) цифр на стандартные
-        /// </summary>
-        private string THFixDigits(string input)
-        {
-            if (input.Length == 0)
-            {
-                return input;
-            }
-            else
-            {
-                string ret = input;
-                //Перевод японских(и не только) цифр в стандартные--------------------------
-                string[,] ReplaceData = {
-                { "０", "0" }, { "１", "1" },{ "２", "2" }, { "３", "3" }, { "４", "4" }, { "５", "5" }, { "６", "6" },
-                { "７", "7" }, { "８", "8" }, { "９", "9" }, { "①", "1" }, { "②", "2" }, { "③", "3" }, { "④", "4" },
-                { "⑤", "5" }, { "⑥", "6" }, { "⑦", "7" }, { "⑧", "8" }, { "⑨", "9" }
-                                    };
-
-                int ReplaceDataCount = ReplaceData.Length / 2;
-                for (int a = 0; a < ReplaceDataCount; a++)
-                {
-                    ret = ret.Replace(ReplaceData[a, 0], ReplaceData[a, 1]);
-                }
-
-                return ret;
+                AutoOperations.THAutoSetSameTranslationForSimular(THFilesElementsDataset, InputTableIndex, InputRowIndex, InputCellIndex, forcerun, forcevalue);
+                
+                //LogToFile(string.Empty,true);
+                cellchanged = false;
             }
         }
 
@@ -8555,7 +8128,7 @@ namespace TranslationHelper
                 if (THFileElementsDataGridView.SelectedCells.Count > 0)
                 {
                     //Copy to clipboard
-                    CopyToClipboard();
+                    CopyPaste.CopyToClipboard(THFileElementsDataGridView);
 
                     //Clear selected cells                
                     //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
@@ -8590,7 +8163,7 @@ namespace TranslationHelper
                 // Ensure that text is selected in the text box.    
                 if (THFileElementsDataGridView.SelectedCells.Count > 0)
                 {
-                    CopyToClipboard();
+                    CopyPaste.CopyToClipboard(THFileElementsDataGridView);
                 }
             }
         }
@@ -8619,7 +8192,7 @@ namespace TranslationHelper
                     {
                         //LogToFile("DGV sel cells > 0");
                         //Perform paste Operation
-                        PasteClipboardValue();
+                        CopyPaste.PasteClipboardValue(THFileElementsDataGridView, this);
                     }
                 }
             }
@@ -8627,169 +8200,6 @@ namespace TranslationHelper
         }
 
         //==============вырезать, копировать, вставить, для одной или нескольких ячеек
-        private void CopyToClipboard()
-        {
-            //Copy to clipboard
-            DataObject dataObj = THFileElementsDataGridView.GetClipboardContent();
-            if (dataObj == null)
-            {
-            }
-            else
-            {
-                Clipboard.SetDataObject(dataObj);
-            }
-        }
-
-        /// <summary>
-        /// МОДИФИЦИРОВАНО
-        /// Вставляет значения из буфера обмена в ячейки.
-        /// Модифицированная функция учитывает количество строк в ячейке оригинала
-        /// и вставляет столько же строк из буфера в ячейку перевода
-        /// </summary>
-        private void PasteClipboardValue()
-        {
-            
-            //LogToFile("PasteClipboardValue Enter");
-            //Show Error if no cell is selected
-            if (THFileElementsDataGridView.SelectedCells.Count == 0)
-            {
-                MessageBox.Show(T._("Select cell first"), T._("Paste"),
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            //LogToFile("PasteClipboardValue Enter 1");
-            int origcolindex = THFileElementsDataGridView.Columns["Original"].Index;
-
-            //Get the starting Cell
-            DataGridViewCell startCell = GetStartCell(THFileElementsDataGridView);
-            //Get the clipboard value in a dictionary
-            Dictionary<int, Dictionary<int, string>> cbValue =
-                    ClipBoardValues(Clipboard.GetText());
-
-            int origcellmaxlines;
-            int origcellcurlines = 0;
-            bool OrigMaxEqualCurrent = false;
-            int iRowIndex = startCell.RowIndex;
-            StringBuilder cellvalue = new StringBuilder();
-            DataGridViewCell cell = null;
-            foreach (int rowKey in cbValue.Keys)
-            {
-                //LogToFile("PasteClipboardValue rowKey="+ rowKey);
-                int iColIndex = startCell.ColumnIndex;
-                foreach (int cellKey in cbValue[rowKey].Keys)
-                {
-                    //LogToFile("PasteClipboardValue iColIndex=" + iColIndex);
-                    //Check if the index is within the limit
-                    if (iColIndex <= THFileElementsDataGridView.Columns.Count - 1
-                    && iRowIndex <= THFileElementsDataGridView.Rows.Count - 1)
-                    {
-                        cell = THFileElementsDataGridView[iColIndex, iRowIndex];
-                        origcellmaxlines = (THFileElementsDataGridView[origcolindex, iRowIndex].Value + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/).Length;
-
-                        origcellcurlines++;
-                        OrigMaxEqualCurrent = origcellcurlines == origcellmaxlines;
-
-                        if (cell.ReadOnly)
-                        {
-                        }
-                        else
-                        {
-                            if ((cell.Value + string.Empty).Length == 0)
-                            {
-                               // //LogToFile("PasteClipboardValue origcellmaxlines=" + origcellmaxlines + ",origcellcurlines=" + origcellcurlines);
-                                //Copy to selected cells if 'chkPasteToSelectedCells' is checked
-                                // Закомментировал как здесь: https://code.google.com/p/seminary-software-engineering/source/browse/trunk/SystemForResultsEvaluaton/SystemForResultsEvaluaton/Core.cs?spec=svn21&r=21
-                                //if ((chkPasteToSelectedCells.Checked && cell.Selected) ||
-                                //   (!chkPasteToSelectedCells.Checked))
-                                if (cbValue.Count > 1 && OrigMaxEqualCurrent)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
-                                {
-                                    //LogToFile("PasteClipboardValue cbValue.Count > 1 && OrigMaxEqualCurrent");
-                                    //получались двойные значения при использовании с функцией автоподстановки для похожих
-                                        //LogToFile("PasteClipboardValue value=" + Regex.Replace(cbValue[rowKey][cellKey], @"\r$", string.Empty));
-                                        //cell.Value += Regex.Replace(cbValue[rowKey][cellKey], @"\r$", string.Empty);
-                                        cellvalue.Append(Regex.Replace(cbValue[rowKey][cellKey], @"\r$", string.Empty));
-                                }
-                                else
-                                {
-                                    //LogToFile("PasteClipboardValue NOT cbValue.Count > 1 && OrigMaxEqualCurrent");
-                                    //получались двойные значения при использовании с функцией автоподстановки для похожих
-                                    //LogToFile("PasteClipboardValue value=" + cbValue[rowKey][cellKey]);
-                                    //cell.Value += cbValue[rowKey][cellKey];//asdfg
-                                    cellvalue.Append(cbValue[rowKey][cellKey]);//asdfg
-                                }
-                            }
-                        }
-                        //LogToFile("cbValue[rowKey][cellKey]=" + cbValue[rowKey][cellKey]+ ",cell.Value="+ cell.Value);
-                    }
-                    //LogToFile("PasteClipboardValue next col, iColIndex=" + iColIndex);
-                    iColIndex++;
-                }
-                //LogToFile("PasteClipboardValue check if OrigMaxEqualCurrent is true and it is " + OrigMaxEqualCurrent);
-                if (OrigMaxEqualCurrent)
-                {
-                    if (cell != null)
-                    {
-                        if ((cell.Value + string.Empty).Length == 0)
-                        {
-                            cell.Value = cellvalue + string.Empty;
-                        }
-                    }
-                    cellvalue.Clear();
-                    THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, iRowIndex, origcolindex);
-                    origcellcurlines = 0;
-                    //LogToFile("PasteClipboardValue next row, iRowIndex=" + iRowIndex);
-                    iRowIndex++;
-                }
-            }
-            //LogToFile(string.Empty,true);
-            //LogToFile("PasteClipboardValue Exit");
-        }
-
-        private DataGridViewCell GetStartCell(DataGridView dgView)
-        {
-            //get the smallest row,column index
-            if (dgView.SelectedCells.Count == 0)
-                return null;
-
-            int rowIndex = dgView.Rows.Count - 1;
-            int colIndex = dgView.Columns.Count - 1;
-
-            foreach (DataGridViewCell dgvCell in dgView.SelectedCells)
-            {
-                if (dgvCell.RowIndex < rowIndex)
-                    rowIndex = dgvCell.RowIndex;
-                if (dgvCell.ColumnIndex < colIndex)
-                    colIndex = dgvCell.ColumnIndex;
-            }
-
-            return dgView[colIndex, rowIndex];
-        }
-
-        private Dictionary<int, Dictionary<int, string>> ClipBoardValues(string clipboardValue)
-        {
-            Dictionary<int, Dictionary<int, string>>
-            copyValues = new Dictionary<int, Dictionary<int, string>>();
-
-            String[] lines = clipboardValue.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
-
-            for (int i = 0; i <= lines.Length - 1; i++)
-            {
-                copyValues[i] = new Dictionary<int, string>();
-                String[] lineContent = lines[i].Split('\t');
-
-                //if an empty cell value copied, then set the dictionary with an empty string
-                //else Set value to dictionary
-                if (lineContent.Length == 0)
-                    copyValues[i][0] = string.Empty;
-                else
-                {
-                    for (int j = 0; j <= lineContent.Length - 1; j++)
-                        copyValues[i][j] = lineContent[j];
-                }
-            }
-            return copyValues;
-        }
 
         private void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -8835,7 +8245,9 @@ namespace TranslationHelper
                 {
                 }
             }
-        }//==============вырезать, копировать, вставить, для одной или нескольких ячеек
+        }
+        
+        //==============вырезать, копировать, вставить, для одной или нескольких ячеек
 
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
         {
