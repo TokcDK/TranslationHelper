@@ -498,5 +498,111 @@ namespace TranslationHelper.Main.Functions
 
         }
 
+        /// <summary>
+        /// Returns length of longest line in string
+        /// </summary>
+        /// <param name="Line"></param>
+        /// <returns></returns>
+        public static int GetLongestLineLength(string Line)
+        {
+            int ReturnLength = 0;
+            string[] sublines = Line.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
+            int sublinesLength = sublines.Length;
+            if (sublinesLength > 1)
+            {
+                for (int N=0;N< sublinesLength; N++)
+                {
+                    int sublinesNLength = sublines[N].Length;
+                    if (sublinesNLength > 0 && sublinesNLength > ReturnLength)
+                    {
+                        ReturnLength = sublinesNLength;
+                    }
+                }
+            }
+            else
+            {
+                ReturnLength = Line.TrimEnd().Length;
+            }
+            return ReturnLength;
+        }
+
+        public static string SplitMultiLineIfBeyondOfLimit(string Line, int Limit)
+        {
+            StringBuilder ReturnLine = new StringBuilder();
+            string[] sublines = Line.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
+            int sublinesLength = sublines.Length;
+            if (sublinesLength > 1)
+            {
+                for (int N = 0; N < sublinesLength; N++)
+                {
+                    int sublinesNLength = sublines[N].Length;
+                    if (sublinesNLength > 0)
+                    {
+                        if (N == sublinesLength - 1)
+                        {
+                            ReturnLine.Append(GetSplittedLine(sublines[N], Limit));
+                        }
+                        else
+                        {
+                            ReturnLine.AppendLine(GetSplittedLine(sublines[N], Limit));
+                        }
+                    }
+                    else
+                    {
+                        if (N == sublinesLength - 1)
+                        {
+                            ReturnLine.Append(sublines[N]);
+                        }
+                        else
+                        {
+                            ReturnLine.AppendLine(sublines[N]);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (Line.Length > Limit)
+                {
+                    return GetSplittedLine(Line, Limit);                    
+                }
+                else
+                {
+                    return Line;
+                }
+            }
+
+            return ReturnLine.ToString();
+        }
+
+        private static string GetSplittedLine(string Line, int Limit)
+        {
+            string[] s = SplitLineIfBeyondOfLimit(Line, Limit);
+            string ret = string.Empty;
+            int sLength = s.Length;
+            for (int i = 0; i < sLength; i++)
+            {
+                if (i == sLength - 1)
+                {
+                    ret += s[i];
+                }
+                else
+                {
+                    ret += s[i]+Environment.NewLine;
+                }
+            }
+            return ret;
+        }
+
+        public static string[] SplitLineIfBeyondOfLimit(string text, int max)
+        {
+            //https://ru.stackoverflow.com/questions/707937/c-%D0%BF%D0%B5%D1%80%D0%B5%D0%BD%D0%BE%D1%81-%D1%81%D0%BB%D0%BE%D0%B2-%D0%B2-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B5-%D1%81-%D1%80%D0%B0%D0%B7%D0%B1%D0%B8%D0%B2%D0%BA%D0%BE%D0%B9-%D0%BD%D0%B0-%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D1%83%D1%8E-%D0%B4%D0%BB%D0%B8%D0%BD%D1%83
+            var charCount = 0;
+            var lines = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            return lines.GroupBy(w => (charCount += (((charCount % max) + w.Length + 1 >= max)
+                            ? max - (charCount % max) : 0) + w.Length + 1) / max)
+                        .Select(g => string.Join(" ", g.ToArray()))
+                        .ToArray();
+        }
     }
 }

@@ -362,6 +362,7 @@ namespace TranslationHelper
                 THSourceRichTextBox.Text = string.Empty;
                 THTargetRichTextBox.Text = string.Empty;
                 TableCompleteInfoLabel.Text = string.Empty;
+                TranslationLongestLineLenghtLabel.Text = string.Empty;
                 ControlsSwitchActivated = false;
 
                 //Clean data
@@ -2311,7 +2312,6 @@ namespace TranslationHelper
 
                     if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty).Length == 0)
                     {
-
                     }
                     else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
                     {
@@ -2329,16 +2329,18 @@ namespace TranslationHelper
                     }
                     if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value + string.Empty).Length == 0)
                     {
-
                     }
                     else//проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
-                        if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value + string.Empty).Length == 0)
+                        var cellvalue = THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value;
+                        if (cellvalue == null || (cellvalue as string).Length == 0)
                         {
                             THTargetRichTextBox.Clear();
                         }
 
-                        THTargetRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value + string.Empty; //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        THTargetRichTextBox.Text = cellvalue as string; //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+
+                        TranslationLongestLineLenghtLabel.Text = AutoOperations.GetLongestLineLength(cellvalue.ToString()).ToString();
                     }
 
                     THInfoTextBox.Text = string.Empty;
@@ -3238,7 +3240,7 @@ namespace TranslationHelper
         {
             var grid = sender as DataGridView;
 
-            string rowIdx = GetSelectedRowIndexInDatatable(e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
+            string rowIdx = GetDGVSelectedRowIndexInDatatable(e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
             StringFormat centerFormat = new StringFormat()
@@ -3252,7 +3254,7 @@ namespace TranslationHelper
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
 
-        private int GetSelectedRowIndexInDatatable(int rowIndex)
+        private int GetDGVSelectedRowIndexInDatatable(int rowIndex)
         {
             return THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows
                 .IndexOf(
@@ -4439,7 +4441,7 @@ namespace TranslationHelper
                     //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                     //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                     //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                    int index = GetSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                    int index = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
                     selindexes[i] = index;
 
                     //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
@@ -5419,7 +5421,7 @@ namespace TranslationHelper
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         //координаты ячейки
-                        int rind = GetSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                        int rind = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
                         int cind = THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Original"].Ordinal;//2-поле untrans
 
                         THFileElementsDataGridView[cind + 1, rind].Value = THFileElementsDataGridView[cind, rind].Value;
@@ -5594,7 +5596,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            rindexes[i] = GetSelectedRowIndexInDatatable(rind);
+                            rindexes[i] = GetDGVSelectedRowIndexInDatatable(rind);
                         }
 
                     }
@@ -6336,17 +6338,21 @@ namespace TranslationHelper
 
         private void CompleteRomajiotherLinesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
+            int THFilesElementsDatasetTablesCount = THFilesElementsDataset.Tables.Count;
+            for (int t = 0; t < THFilesElementsDatasetTablesCount; t++)
             {
-                for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                var table = THFilesElementsDataset.Tables[t];
+                int tableRowsCount = table.Rows.Count;
+                for (int r = 0; r < tableRowsCount; r++)
                 {
-                    if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)
-                    {
-                        if (SelectedRomajiAndOtherLocalePercentFromStringIsNotValid((THFilesElementsDataset.Tables[t].Rows[r][0] + string.Empty)))
+                    var row = table.Rows[r];
+                    //if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)//убрал проверку пустой ячейки, чтобы насильно переприсваивать
+                    //{
+                        if (SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(row[0] as string))
                         {
-                            THFilesElementsDataset.Tables[t].Rows[r][1] = THFilesElementsDataset.Tables[t].Rows[r][0];
+                            THFilesElementsDataset.Tables[t].Rows[r][1] = row[0];
                         }
-                    }
+                    //}
                 }
             }
         }
@@ -6401,8 +6407,37 @@ namespace TranslationHelper
             int i = THFileElementsDataGridView.SelectedCells.Count;
             if (i == 1)
             {
-                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, GetSelectedRowIndexInDatatable(THFileElementsDataGridView.CurrentCell.RowIndex), 0, true, true);
+                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.CurrentCell.RowIndex), 0, true, true);
             }
+        }
+
+        private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int realrowindex = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.CurrentCell.RowIndex);
+            var value = THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1].ToString();
+            THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(value, 60);
+        }
+
+        private void SplitLinesWhichLongerOfLimitALLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int TablesCount = THFilesElementsDataset.Tables.Count;
+            for (int t = 0; t < TablesCount; t++)
+            {
+                var Table = THFilesElementsDataset.Tables[t];
+                int TableRowsCount = Table.Rows.Count;
+                for (int r = 0; r < TableRowsCount; r++)
+                {
+                    var Cell = Table.Rows[r][1];
+                    if (Cell==null || string.IsNullOrEmpty(Cell as string) || AutoOperations.GetLongestLineLength(Cell as string) < 60)
+                    {
+                    }
+                    else
+                    {
+                        THFilesElementsDataset.Tables[t].Rows[r][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(Cell as string, 60);
+                    }
+                }
+            }
+            MessageBox.Show("Finished");
         }
 
 
