@@ -3359,7 +3359,7 @@ namespace TranslationHelper
             {
                 projecttypeDBfolder += "RPGMakerMV";
             }
-            else if (THSelectedSourceType.Contains("RPGMaker"))
+            else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
             {
                 projecttypeDBfolder += "RPGMakerTransPatch";
             }
@@ -5631,7 +5631,7 @@ namespace TranslationHelper
                 {
                     projecttypeDBfolder += "RPGMakerMV";
                 }
-                else if (THSelectedSourceType.Contains("RPGMaker"))
+                else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
                 {
                     projecttypeDBfolder += "RPGMakerTransPatch";
                 }
@@ -6438,6 +6438,30 @@ namespace TranslationHelper
                 }
             }
             MessageBox.Show("Finished");
+        }
+
+        private void fixMessagesInTheTableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            for (int r=0;r< THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows.Count; r++)
+            {
+                var row = THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r];
+                if (row[1]==null || string.IsNullOrWhiteSpace(row[1] as string))
+                {
+                }
+                else
+                {
+                    var s = row[0] as string;
+                    var s1 = row[1] as string;
+                    if (s.StartsWith("は") && !s1.StartsWith(" "))
+                    {
+                        THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r][1] = " " + s1.Substring(0, 1).ToLower() + s1.Substring(1);
+                    }
+                    else if(s.StartsWith("の") && !s1.StartsWith("'s ") && !s1.StartsWith(" "))
+                    {
+                        THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r][1] = "'s " + s1.Substring(0, 1).ToLower() + s1.Substring(1);
+                    }
+                }
+            }
         }
 
 
