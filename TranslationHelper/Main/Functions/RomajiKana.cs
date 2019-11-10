@@ -10,6 +10,47 @@ namespace TranslationHelper.Main.Functions
     {
 
         /// <summary>
+        /// True if procent of Romaji or Other characters in input string is lesser of set value in Settings
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        public static bool SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(string inputString)
+        {
+            return SelectedLocalePercentFromStringIsNotValid(inputString)
+                || SelectedLocalePercentFromStringIsNotValid(inputString, "other")
+                || (RomajiKana.GetLocaleLangCount(inputString, "romaji") + RomajiKana.GetLocaleLangCount(inputString, "other")) == inputString.Length
+                || RomajiKana.GetLocaleLangCount(inputString, "romaji") == inputString.Length
+                || RomajiKana.GetLocaleLangCount(inputString, "other") == inputString.Length;
+        }
+
+        /// <summary>
+        /// True if procent of selected locale characters in target string is lesser of set value in Settings
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="langlocale"></param>
+        /// <returns></returns>
+        public static bool SelectedLocalePercentFromStringIsNotValid(string target, string langlocale = "romaji")
+        {
+            try
+            {
+                if (TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
+                {
+                    return ((RomajiKana.GetLocaleLangCount(target, langlocale) * 100) / RomajiKana.GetLocaleLangCount(target, "all")) > TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
+                }
+            }
+            catch
+            {
+
+            }
+            return false;
+        }
+
+        public bool HasNOJPcharacters(string str)
+        {
+            return RomajiKana.GetLocaleLangCount(str, "kanji") < 1 && RomajiKana.GetLocaleLangCount(str, "katakana") < 1 && RomajiKana.GetLocaleLangCount(str, "hiragana") < 1;
+        }
+
+        /// <summary>
         /// Замена японских(и не только) цифр на стандартные
         /// </summary>
         public static string THFixDigits(string input)

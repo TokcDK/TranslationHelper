@@ -93,21 +93,27 @@ namespace TranslationHelper
         }
 
         //Settings
-        public bool IsTranslationCacheEnabled = true;
-        public string WebTranslationLink = string.Empty;
-        public bool DontLoadStringIfRomajiPercent = true;
-        public int DontLoadStringIfRomajiPercentNum = 90;
-        public bool AutotranslationForSimular = true;
-        public bool IsFullComprasionDBloadEnabled = true;
+        //public bool IsTranslationCacheEnabled = true;
+        //public string WebTranslationLink = string.Empty;
+        //public bool DontLoadStringIfRomajiPercent = true;
+        //public int DontLoadStringIfRomajiPercentNum = 90;
+        //public bool AutotranslationForSimular = true;
+        //public bool IsFullComprasionDBloadEnabled = true;
         private void SetSettings()
         {
-            Settings = new THSettings(this);
-            IsTranslationCacheEnabled = Settings.EnableTranslationCacheINI;
-            WebTranslationLink = Settings.WebTransLinkINI;
-            DontLoadStringIfRomajiPercent = Settings.DontLoadStringIfRomajiPercentINI;
-            DontLoadStringIfRomajiPercentNum = Settings.DontLoadStringIfRomajiPercentNumINI;
-            AutotranslationForSimular = Settings.AutotranslationForIdenticalINI;
-            IsFullComprasionDBloadEnabled = Settings.FullComprasionDBloadINI;
+            Settings = new THSettings();
+            TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled = Settings.EnableTranslationCacheINI;
+            //IsTranslationCacheEnabled = TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled;
+            TranslationHelper.Properties.Settings.Default.WebTranslationLink = Settings.WebTransLinkINI;
+            //WebTranslationLink = TranslationHelper.Properties.Settings.Default.WebTranslationLink;
+            TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercent = Settings.DontLoadStringIfRomajiPercentINI;
+            //DontLoadStringIfRomajiPercent = TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercent;
+            TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNum = Settings.DontLoadStringIfRomajiPercentNumINI;
+            //DontLoadStringIfRomajiPercentNum = TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
+            TranslationHelper.Properties.Settings.Default.AutotranslationForSimular = Settings.AutotranslationForIdenticalINI;
+            //AutotranslationForSimular = TranslationHelper.Properties.Settings.Default.AutotranslationForSimular;
+            TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled = Settings.FullComprasionDBloadINI;
+            //IsFullComprasionDBloadEnabled = TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled;
             Settings.Dispose();
         }
 
@@ -210,11 +216,15 @@ namespace TranslationHelper
             ////////////////////////////
         }
 
-        readonly bool THdebug = true;
-        StringBuilder THsbLog = new StringBuilder();
+        //readonly bool THdebug = true;
+        StringBuilder THsbLog;// = new StringBuilder();
         public void LogToFile(string s, bool w = false)
         {
-            if (THdebug)
+            if (THsbLog == null)
+            {
+                THsbLog = new StringBuilder();
+            }
+            if (Properties.Settings.Default.THdebug)
             {
                 if (w)
                 {
@@ -1047,7 +1057,7 @@ namespace TranslationHelper
                 KiriKiriVariableSearchRegexPattern = @"( |'|\(|\[|,|\.)o\.";
                 KiriKiriVariableSearchRegexFullPattern = @"((^o\.)|(" + KiriKiriVariableSearchRegexPattern + @"))([^\.|\s|'|\)|\]|;|:|,]+)";
                 string Quote1 = "\"";
-                string Quote2 = "\'";
+                //string Quote2 = "\'";
                 KiriKiriQuotePattern = Quote1 + "(.+)" + Quote1 + ";$";
                 using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
                 {
@@ -1636,11 +1646,6 @@ namespace TranslationHelper
             */
             //LogToFile("Value still not in table: \r\n" + value);
             return false;
-        }
-
-        public bool HasNOJPcharacters(string str)
-        {
-            return RomajiKana.GetLocaleLangCount(str, "kanji") < 1 && RomajiKana.GetLocaleLangCount(str, "katakana") < 1 && RomajiKana.GetLocaleLangCount(str, "hiragana") < 1;
         }
 
         private bool TryToExtractToRPGMakerTransPatch(string sPath, string extractdir = "Work")
@@ -2386,52 +2391,6 @@ namespace TranslationHelper
                 TableCompleteInfoLabel.Visible = true;
                 TableCompleteInfoLabel.Text = Table.GetDatasetNonEmptyRowsCount(tHFilesElementsDataset) + "/" + RowsCount;
             }
-        }
-
-        //Для функции перевода, чтобы не переводить, когда в тексте нет иероглифов
-        //private bool NoKanjiHiraganaKatakanaInTheString(string target)
-        //{
-        //    if (GetLocaleLangCount(target, "kanji") == 0 && GetLocaleLangCount(target, "hiragana") == 0 && GetLocaleLangCount(target, "katakana") == 0)
-        //    {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-        /// <summary>
-        /// True if procent of Romaji or Other characters in input string is lesser of set value in Settings
-        /// </summary>
-        /// <param name="extractedvalue"></param>
-        /// <returns></returns>
-        public bool SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(string extractedvalue)
-        {
-            return SelectedLocalePercentFromStringIsNotValid(extractedvalue)
-                || SelectedLocalePercentFromStringIsNotValid(extractedvalue, "other")
-                || (RomajiKana.GetLocaleLangCount(extractedvalue, "romaji") + RomajiKana.GetLocaleLangCount(extractedvalue, "other")) == extractedvalue.Length
-                || RomajiKana.GetLocaleLangCount(extractedvalue, "romaji") == extractedvalue.Length
-                || RomajiKana.GetLocaleLangCount(extractedvalue, "other") == extractedvalue.Length;
-        }
-
-        /// <summary>
-        /// True if procent of selected locale characters in target string is lesser of set value in Settings
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="langlocale"></param>
-        /// <returns></returns>
-        public bool SelectedLocalePercentFromStringIsNotValid(string target, string langlocale = "romaji")
-        {
-            try
-            {
-                if (DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
-                {
-                    return ((RomajiKana.GetLocaleLangCount(target, langlocale) * 100) / RomajiKana.GetLocaleLangCount(target, "all")) > DontLoadStringIfRomajiPercentNum;
-                }
-            }
-            catch
-            {
-
-            }
-            return false;
         }
 
         bool SaveInAction = false;
@@ -3215,7 +3174,7 @@ namespace TranslationHelper
             {
                 if (THSettings == null || THSettings.IsDisposed)
                 {
-                    THSettings = new THSettings(this);
+                    THSettings = new THSettings();
                 }
 
                 if (THSettings.Visible)
@@ -3580,7 +3539,7 @@ namespace TranslationHelper
 
         private void THLoadDBCompare(DataSet THTempDS)
         {
-            if (!IsFullComprasionDBloadEnabled && Table.IsDataSetsElementsCountIdentical(THFilesElementsDataset, THTempDS))
+            if (!TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled && Table.IsDataSetsElementsCountIdentical(THFilesElementsDataset, THTempDS))
             {
                 CompareLiteIfIdentical(THTempDS);
                 return;
@@ -3661,7 +3620,7 @@ namespace TranslationHelper
                                                         THFilesElementsDataset.Tables[t].Rows[r][otranscol] = DBCellTranslation;
                                                         TranslationWasSet = true;
 
-                                                        trowstartindex = IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
+                                                        trowstartindex = TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
                                                         break;
                                                     }
                                                 }
@@ -3672,7 +3631,7 @@ namespace TranslationHelper
                                         }
                                         if (TranslationWasSet)//если перевод был присвоен, выйти из цикла таблицы с переводом
                                         {
-                                            ttablestartindex = IsFullComprasionDBloadEnabled ? 0 : t1;//запоминание последнего индекса таблицы, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
+                                            ttablestartindex = TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : t1;//запоминание последнего индекса таблицы, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
                                             break;
                                         }
                                         else
@@ -3972,7 +3931,7 @@ namespace TranslationHelper
                         else
                         {
                             string mergedstring = textsb.ToString();
-                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ SelectedLocalePercentFromStringIsNotValid(mergedstring))
+                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ RomajiKana.SelectedLocalePercentFromStringIsNotValid(mergedstring))
                             {
                             }
                             else
@@ -3992,7 +3951,7 @@ namespace TranslationHelper
                     }
                     if (token.Type == JTokenType.String)
                     {
-                        if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || SelectedLocalePercentFromStringIsNotValid(tokenvalue) || GetAnyFileWithTheNameExist(tokenvalue))
+                        if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || RomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) || GetAnyFileWithTheNameExist(tokenvalue))
                         {
                         }
                         else
@@ -4168,7 +4127,7 @@ namespace TranslationHelper
                 if (token.Type == JTokenType.String)
                 {
                     string tokenvalue = token + string.Empty;
-                    if (tokenvalue.Length == 0 || SelectedLocalePercentFromStringIsNotValid(tokenvalue))
+                    if (tokenvalue.Length == 0 || RomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue))
                     {
                     }
                     else
@@ -4865,7 +4824,7 @@ namespace TranslationHelper
 
         private void AddToTranslationCacheIfValid(DataSet THTranslationCache, string Original, string Translation)
         {
-            if (IsTranslationCacheEnabled)
+            if (TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled)
             {
                 DataTable Table = THTranslationCache.Tables[0];
                 if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || GetAlreadyAddedInTable(Table, Original))
@@ -4946,7 +4905,7 @@ namespace TranslationHelper
 
         public string TranslationCacheFind(DataSet DS, string Input)
         {
-            if (IsTranslationCacheEnabled)
+            if (TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled)
             {
                 if (Input.Length > 0)
                 {
@@ -5077,10 +5036,11 @@ namespace TranslationHelper
                                 else
                                 {
                                     //LogToFile("resultvalue from cache is empty. resultvalue=" + resultvalue, true);
-                                    string[] inputvaluearray = InputValue.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
-                                    if (inputvaluearray.Length > 1)
+                                    //string[] inputvaluearray = InputValue.Split(new string[2] { Environment.NewLine, @"\n" }, StringSplitOptions.None);
+
+                                    if (StringOperations.IsMultiline(InputValue))
                                     {
-                                        ResultValue = TranslateMultilineValue(inputvaluearray, THTranslationCache);
+                                        ResultValue = TranslateMultilineValue(InputValue.SplitToLines().ToArray(), THTranslationCache);
                                     }
                                     else
                                     {
@@ -5162,7 +5122,7 @@ namespace TranslationHelper
 
         private void WriteTranslationCacheIfValid(DataSet THTranslationCache, string tHTranslationCachePath)
         {
-            if (IsTranslationCacheEnabled && THTranslationCache.Tables[0].Rows.Count > 0)
+            if (TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled && THTranslationCache.Tables[0].Rows.Count > 0)
             {
                 DBFile.WriteDBFile(THTranslationCache, THTranslationCachePath);
                 //THTranslationCache.Reset();
@@ -5173,9 +5133,10 @@ namespace TranslationHelper
         {
             //LogToFile("0 Started multiline array handling");
             //string ResultValue = string.Empty;
-            StringBuilder ResultValue = new StringBuilder(InputLines.Length);
+            int InputLinesLength = InputLines.Length;
+            StringBuilder ResultValue = new StringBuilder(InputLinesLength);
             string OriginalLine;
-            for (int a = 0; a < InputLines.Length; a++)
+            for (int a = 0; a < InputLinesLength; a++)
             {
                 OriginalLine = InputLines[a];//.Replace("\r", string.Empty);//replace было нужно когда делил строку по знаку \n и оставался \r
                 //LogToFile("1 inputlinevalue="+ inputlinevalue);
@@ -5189,7 +5150,7 @@ namespace TranslationHelper
                     string ExtractedOriginal = THExtractTextForTranslation(OriginalLine);
                     //LogToFile("2 extractedvalue=" + extractedvalue);
                     string Result;
-                    if (ExtractedOriginal.Length == 0 || Equals(ExtractedOriginal, OriginalLine))
+                    if (ExtractedOriginal.Length == 0 || (ExtractedOriginal == OriginalLine))
                     {
                         Result = ReturnTranslatedOrCache(cacheDS, OriginalLine);
                         AddToTranslationCacheIfValid(cacheDS, OriginalLine, Result);
@@ -5207,7 +5168,7 @@ namespace TranslationHelper
 
                 }
                 //добавление новой строки если последняя строка не последняя в массиве строк
-                if (a + 1 < InputLines.Length)
+                if (a + 1 < InputLinesLength)
                 {
                     ResultValue.Append(Environment.NewLine);
                 }
@@ -5266,7 +5227,7 @@ namespace TranslationHelper
                 }
                 //MessageBox.Show(value.ToString());
                 //string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\string.Empty));
-                string result = string.Format(WebTranslationLink.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", HttpUtility.UrlEncode(value + string.Empty, Encoding.UTF8));
+                string result = string.Format(TranslationHelper.Properties.Settings.Default.WebTranslationLink.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", HttpUtility.UrlEncode(value + string.Empty, Encoding.UTF8));
                 //MessageBox.Show(result);
                 Process.Start(result);
 
@@ -5438,7 +5399,7 @@ namespace TranslationHelper
         bool cellchanged = false;
         public void THAutoSetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool forcevalue = false)
         {
-            if (forcevalue || (AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
+            if (forcevalue || (TranslationHelper.Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
                 AutoOperations.THAutoSetSameTranslationForSimular(THFilesElementsDataset, InputTableIndex, InputRowIndex, InputCellIndex, forcerun, forcevalue);
 
@@ -6350,7 +6311,7 @@ namespace TranslationHelper
                     var row = table.Rows[r];
                     //if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)//убрал проверку пустой ячейки, чтобы насильно переприсваивать
                     //{
-                    if (SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(row[0] as string))
+                    if (RomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(row[0] as string))
                     {
                         THFilesElementsDataset.Tables[t].Rows[r][1] = row[0];
                     }
@@ -6396,7 +6357,7 @@ namespace TranslationHelper
 
         private void showCheckboxvalueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(IsTranslationCacheEnabled.ToString());
+            MessageBox.Show(TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled.ToString());
         }
 
         private void saveInnewFormatToolStripMenuItem_Click(object sender, EventArgs e)

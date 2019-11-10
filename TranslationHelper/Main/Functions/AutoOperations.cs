@@ -37,6 +37,8 @@ namespace TranslationHelper.Main.Functions
                             else
                             {
                                 ret = Regex.Replace(ret, rule, result);
+                                //ret = Regex.Replace(ret, rule, Regex.Replace(result, @"(\$\d+)","$1{{AND}}"));//new for regex split rules
+
                                 //задать правило
                                 //Regex regexrule = new Regex(rule);
 

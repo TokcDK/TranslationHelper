@@ -1,5 +1,4 @@
 ﻿//using HtmlAgilityPack;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,7 @@ using System.Windows.Forms;
 //using System.Web;
 //using System.Windows.Forms;
 //using ESP_Translation.My;
-using Microsoft.VisualBasic.CompilerServices;
+using TranslationHelper.Main.Functions;
 //using System.Threading;
 //using Newtonsoft.Json;
 
@@ -217,27 +216,33 @@ namespace TranslationHelper
             {
                 string languageFrom = "jp";
                 string languageTo = "en";
-                //bool flag = MySettingsProperty.Settings.GoogleTrad_Entree.Length > 0;
-                //if (flag)
-                //{
-                //    languageFrom = MySettingsProperty.Settings.GoogleTrad_Entree.Split(new char[]
-                //    {
-                //        ' '
-                //    }).Last<string>();
-                //}
-                //bool flag2 = MySettingsProperty.Settings.GoogleTrad_Sortie.Length > 0;
-                //if (flag2)
-                //{
-                //    languageTo = MySettingsProperty.Settings.GoogleTrad_Sortie.Split(new char[]
-                //    {
-                //        ' '
-                //    }).Last<string>();
-                //}
-                ResultOfTranslation = GetTranslation(OriginalText, languageFrom, languageTo);
+                if (TranslationHelper.Properties.Settings.Default.OnlineTranslationSourceLanguage.Length > 0)
+                {
+                    languageFrom = TranslationHelper.Properties.Settings.Default.OnlineTranslationSourceLanguage.Split(new char[]
+                    {
+                        ' '
+                    }).Last();
+                }
+                if (TranslationHelper.Properties.Settings.Default.OnlineTranslationTargetLanguage.Length > 0)
+                {
+                    languageTo = Properties.Settings.Default.OnlineTranslationTargetLanguage.Split(new char[]
+                    {
+                        ' '
+                    }).Last();
+                }
+
+                if (languageFrom == "jp" && RomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(OriginalText))
+                {
+                    return OriginalText;
+                }
+                else
+                {
+                    ResultOfTranslation = GetTranslation(OriginalText, languageFrom, languageTo);
+                }
             }
             catch (Exception)
             {
-                ResultOfTranslation = string.Empty;
+                return string.Empty;
             }
             return ResultOfTranslation;
         }
@@ -294,7 +299,7 @@ namespace TranslationHelper
                     string arg = HttpUtility.UrlEncode(str, Encoding.UTF8);
                     //string arg = UrlEncodeForTranslation(str);
                     //string arg = str;
-                   
+
                     //string address = string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, arg);
                     string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
                     //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, str);
@@ -309,13 +314,13 @@ namespace TranslationHelper
                             //http://www.cyberforum.ru/ado-net/thread903701.html
                             //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
                             //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
-                            
+
                             //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
                             //FileWriter.WriteData("c:\\THLog1.log", "\r\ndownloadString:\r\n" + downloadString);
-                            
+
                             string text = webClient.DownloadString(address);
                             //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nTEXT:\r\n" + text);
-                            
+
                             HtmlDocument htmlDocument = WBhtmlDocument();
                             htmlDocument.Write(text);
                             try
@@ -480,7 +485,7 @@ namespace TranslationHelper
                         //http://www.cyberforum.ru/ado-net/thread903701.html
                         //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
                         //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
-                        
+
                         //скачать страницу
                         string text = webClient.DownloadString(address);
                         //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"TEXT:"+Environment.NewLine + text);
@@ -600,10 +605,10 @@ namespace TranslationHelper
                          .Replace(" </br> ", "</br>")
                          .Replace("DNTT", Environment.NewLine)
                          .Split(splitter, StringSplitOptions.None);
-            
+
             //возвращение <br>, если такие были изначально
             array = array.Select(x => x.Replace("NBRN", "</br>")).ToArray();
-            
+
             //take берет все элементы кроме последнего пустого элемента массива, чтобы в основном коде не уменьшать его счет на один;
             return array.Take(array.Length - 1).ToArray();
         }
@@ -622,7 +627,7 @@ namespace TranslationHelper
         //private static readonly Regex myReg = new Regex("(?<=##\\d## ).*?(?=##\\d##)", RegexOptions.Compiled);
         //заменено на <br>
         //private static readonly Regex myReg = new Regex(@"(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\<\# \1 \#\# )|(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\#\#\#\# )", RegexOptions.Compiled);
-        
+
         //## 27 #># Same sex with this woman _ <# 27 ## 
         //\#\# \d{1,3} \#\# ?(.*) ?\#\# \d{1,3} \#\# ?
         private static readonly string[] splitter = new string[] { "</br>" };
