@@ -442,17 +442,17 @@ namespace TranslationHelper
             THSelectedDir = dir + string.Empty;
             THSelectedGameDir = dir + string.Empty;
             //MessageBox.Show("sPath=" + sPath);
-            if (sPath.ToLower().EndsWith(".ks") || sPath.ToLower().EndsWith(".scn"))
+            if (sPath.ToUpper().EndsWith(".KS") || sPath.ToUpper().EndsWith(".SCN"))
             {
                 return KiriKiriScriptScenario(sPath);
                 //return "RPGMakerTransPatch";
             }
-            else if (sPath.ToLower().EndsWith(".tjs"))
+            else if (sPath.ToUpper().EndsWith(".TJS"))
             {
                 return KiriKiriScenarioOpen(sPath);
                 //return "RPGMakerTransPatch";
             }
-            else if (sPath.ToLower().EndsWith(".scn"))
+            else if (sPath.ToUpper().EndsWith(".SCN"))
             {
                 return KiriKiriScenarioOpen(sPath);
                 //return "RPGMakerTransPatch";
@@ -462,7 +462,7 @@ namespace TranslationHelper
                 return RPGMTransPatchPrepare(sPath);
                 //return "RPGMakerTransPatch";
             }
-            else if (sPath.ToLower().Contains(".transSSSSSSS"))
+            else if (sPath.ToUpper().Contains(".TRANSSSSSSSS"))
             {
                 istpptransfile = true;
                 if (OpentppTransFile(sPath))
@@ -475,7 +475,7 @@ namespace TranslationHelper
                     return "T++ trans";
                 }
             }
-            else if (sPath.ToLower().Contains(".json"))
+            else if (sPath.ToUpper().Contains(".JSON"))
             {
                 if (OpenRPGMakerMVjson(sPath))
                 {
@@ -6058,7 +6058,7 @@ namespace TranslationHelper
                 return RPGMTransPatchPrepareTranslated(sPath);
                 //return "RPGMakerTransPatch";
             }
-            else if (sPath.ToLower().Contains(".trans"))
+            else if (sPath.ToUpper().Contains(".TRANSSS"))
             {
                 //istpptransfileTranslated = true;
                 if (OpentppTransFile(sPath))
@@ -6071,7 +6071,7 @@ namespace TranslationHelper
                     return "T++ trans";
                 }
             }
-            else if (sPath.ToLower().Contains(".json"))
+            else if (sPath.ToUpper().Contains(".JSON"))
             {
                 if (OpenRPGMakerMVjson(sPath))
                 {
@@ -6083,7 +6083,7 @@ namespace TranslationHelper
                     return "RPG Maker MV json";
                 }
             }
-            else if (sPath.ToLower().Contains("\\game.exe") || dir.GetFiles("*.exe").Length > 0)
+            else if (sPath.ToUpper().EndsWith("GAME.EXE") || dir.GetFiles("*.exe").Length > 0)
             {
                 if (File.Exists(Path.Combine(THSelectedDir,"www","data","system.json")))//RPGMakerMV
                 {

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TranslationHelper.Main.Functions
@@ -333,7 +331,7 @@ namespace TranslationHelper.Main.Functions
 
                                     //LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
                                     //если поле перевода равно только что измененному во входной, без учета цифр
-                                    if (Equals(checkingorigcellvalueNoDigits, inputorigcellvalueNoDigits) && mccount == mc0Count && IsAllMatchesInIdenticalPlaces(mc, mc0))
+                                    if ((checkingorigcellvalueNoDigits == inputorigcellvalueNoDigits) && mccount == mc0Count && IsAllMatchesInIdenticalPlaces(mc, mc0))
                                     {
                                         //инициализация основных целевого и входного массивов
                                         string[] inputorigmatches = new string[mccount];
@@ -510,7 +508,7 @@ namespace TranslationHelper.Main.Functions
             int sublinesLength = sublines.Length;
             if (sublinesLength > 1)
             {
-                for (int N=0;N< sublinesLength; N++)
+                for (int N = 0; N < sublinesLength; N++)
                 {
                     int sublinesNLength = sublines[N].Length;
                     if (sublinesNLength > 0 && sublinesNLength > ReturnLength)
@@ -564,7 +562,7 @@ namespace TranslationHelper.Main.Functions
             {
                 if (Line.Length > Limit)
                 {
-                    return GetSplittedLine(Line, Limit);                    
+                    return GetSplittedLine(Line, Limit);
                 }
                 else
                 {
@@ -588,7 +586,7 @@ namespace TranslationHelper.Main.Functions
                 }
                 else
                 {
-                    ret += s[i]+Environment.NewLine;
+                    ret += s[i] + Environment.NewLine;
                 }
             }
             return ret;
