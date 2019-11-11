@@ -102,7 +102,7 @@ namespace TranslationHelper
         {
             get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercent", "Optimizations")
                     ? int.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent"))
-                    : TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
+                    : Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
             set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent", value.ToString());
         }
 
@@ -110,7 +110,7 @@ namespace TranslationHelper
         {
             get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", "Optimizations")
                     ? bool.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked"))
-                    : TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercent;
+                    : Properties.Settings.Default.DontLoadStringIfRomajiPercent;
             set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", value.ToString());
         }
 
@@ -150,7 +150,7 @@ namespace TranslationHelper
         {
             get => THConfigINI.KeyExists("THOptionAutotranslationForIdenticalCheckBox.Checked", "Tools")
                     ? bool.Parse(THConfigINI.ReadINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked"))
-                    : TranslationHelper.Properties.Settings.Default.AutotranslationForSimular;
+                    : Properties.Settings.Default.AutotranslationForSimular;
             set => THConfigINI.WriteINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked", value.ToString());
         }
 
@@ -172,7 +172,7 @@ namespace TranslationHelper
             if (System.Text.RegularExpressions.Regex.IsMatch(THOptionDontLoadStringIfRomajiPercentTextBox.Text, "^[0-9]{1,3}$") && int.Parse(THOptionDontLoadStringIfRomajiPercentTextBox.Text) <= 100)
             {
                 int newvalue = int.Parse(THOptionDontLoadStringIfRomajiPercentTextBox.Text);
-                TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNum = newvalue;
+                Properties.Settings.Default.DontLoadStringIfRomajiPercentNum = newvalue;
                 DontLoadStringIfRomajiPercentNumINI = newvalue;                
             }
             else
@@ -189,7 +189,7 @@ namespace TranslationHelper
         private void THOptionDontLoadStringIfRomajiPercentCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             bool newvalue = THOptionDontLoadStringIfRomajiPercentCheckBox.Checked;
-            TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercent = newvalue;
+            Properties.Settings.Default.DontLoadStringIfRomajiPercent = newvalue;
             DontLoadStringIfRomajiPercentINI = newvalue;            
         }
 
@@ -205,7 +205,7 @@ namespace TranslationHelper
 
         private void THSettingsWebTransLinkTextBox_Validated(object sender, EventArgs e)
         {
-            TranslationHelper.Properties.Settings.Default.WebTranslationLink = THSettingsWebTransLinkTextBox.Text;
+            Properties.Settings.Default.WebTranslationLink = THSettingsWebTransLinkTextBox.Text;
             WebTransLinkINI = THSettingsWebTransLinkTextBox.Text;
         }
 
@@ -220,13 +220,13 @@ namespace TranslationHelper
 
         private void THOptionAutotranslationForIdenticalCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            TranslationHelper.Properties.Settings.Default.AutotranslationForSimular = THOptionAutotranslationForIdenticalCheckBox.Checked;
+            Properties.Settings.Default.AutotranslationForSimular = THOptionAutotranslationForIdenticalCheckBox.Checked;
             AutotranslationForIdenticalINI = THOptionAutotranslationForIdenticalCheckBox.Checked;
         }
 
         private void THOptionEnableTranslationCacheCheckBox_Click(object sender, EventArgs e)
         {
-            TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled = THOptionEnableTranslationCacheCheckBox.Checked;
+            Properties.Settings.Default.IsTranslationCacheEnabled = THOptionEnableTranslationCacheCheckBox.Checked;
             EnableTranslationCacheINI = THOptionEnableTranslationCacheCheckBox.Checked;            
         }
 
@@ -237,7 +237,7 @@ namespace TranslationHelper
 
         private void FullComparasionDBload_CheckedChanged(object sender, EventArgs e)
         {
-            TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled = THOptionFullComprasionDBload.Checked;
+            Properties.Settings.Default.IsFullComprasionDBloadEnabled = THOptionFullComprasionDBload.Checked;
             FullComprasionDBloadINI = THOptionFullComprasionDBload.Checked;
         }
     }

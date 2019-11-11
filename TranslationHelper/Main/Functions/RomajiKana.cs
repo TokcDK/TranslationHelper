@@ -33,9 +33,9 @@ namespace TranslationHelper.Main.Functions
         {
             try
             {
-                if (TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
+                if (Properties.Settings.Default.DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
                 {
-                    return ((RomajiKana.GetLocaleLangCount(target, langlocale) * 100) / RomajiKana.GetLocaleLangCount(target, "all")) > TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
+                    return ((RomajiKana.GetLocaleLangCount(target, langlocale) * 100) / RomajiKana.GetLocaleLangCount(target, "all")) > Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
                 }
             }
             catch

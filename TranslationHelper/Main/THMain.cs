@@ -102,18 +102,18 @@ namespace TranslationHelper
         private void SetSettings()
         {
             Settings = new THSettings();
-            TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled = Settings.EnableTranslationCacheINI;
-            //IsTranslationCacheEnabled = TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled;
-            TranslationHelper.Properties.Settings.Default.WebTranslationLink = Settings.WebTransLinkINI;
-            //WebTranslationLink = TranslationHelper.Properties.Settings.Default.WebTranslationLink;
-            TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercent = Settings.DontLoadStringIfRomajiPercentINI;
-            //DontLoadStringIfRomajiPercent = TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercent;
-            TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNum = Settings.DontLoadStringIfRomajiPercentNumINI;
-            //DontLoadStringIfRomajiPercentNum = TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
-            TranslationHelper.Properties.Settings.Default.AutotranslationForSimular = Settings.AutotranslationForIdenticalINI;
-            //AutotranslationForSimular = TranslationHelper.Properties.Settings.Default.AutotranslationForSimular;
-            TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled = Settings.FullComprasionDBloadINI;
-            //IsFullComprasionDBloadEnabled = TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled;
+            Properties.Settings.Default.IsTranslationCacheEnabled = Settings.EnableTranslationCacheINI;
+            //IsTranslationCacheEnabled = Properties.Settings.Default.IsTranslationCacheEnabled;
+            Properties.Settings.Default.WebTranslationLink = Settings.WebTransLinkINI;
+            //WebTranslationLink = Properties.Settings.Default.WebTranslationLink;
+            Properties.Settings.Default.DontLoadStringIfRomajiPercent = Settings.DontLoadStringIfRomajiPercentINI;
+            //DontLoadStringIfRomajiPercent = Properties.Settings.Default.DontLoadStringIfRomajiPercent;
+            Properties.Settings.Default.DontLoadStringIfRomajiPercentNum = Settings.DontLoadStringIfRomajiPercentNumINI;
+            //DontLoadStringIfRomajiPercentNum = Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
+            Properties.Settings.Default.AutotranslationForSimular = Settings.AutotranslationForIdenticalINI;
+            //AutotranslationForSimular = Properties.Settings.Default.AutotranslationForSimular;
+            Properties.Settings.Default.IsFullComprasionDBloadEnabled = Settings.FullComprasionDBloadINI;
+            //IsFullComprasionDBloadEnabled = Properties.Settings.Default.IsFullComprasionDBloadEnabled;
             Settings.Dispose();
         }
 
@@ -3313,18 +3313,7 @@ namespace TranslationHelper
         string lastautosavepath;
         private void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir);
-            string projecttypeDBfolder = string.Empty;
-            if (THSelectedSourceType.Contains("RPG Maker MV"))
-            {
-                projecttypeDBfolder += "RPGMakerMV";
-            }
-            else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
-            {
-                projecttypeDBfolder += "RPGMakerTransPatch";
-            }
-            dbpath = Path.Combine(Application.StartupPath, "DB", projecttypeDBfolder);
-            lastautosavepath = Path.Combine(dbpath, dbfilename + GetDBCompressionExt());
+            lastautosavepath = Path.Combine(GetProjectDBFolder(), GetDBFileName() + GetDBCompressionExt());
 
             ProgressInfo(true);
 
@@ -3539,7 +3528,7 @@ namespace TranslationHelper
 
         private void THLoadDBCompare(DataSet THTempDS)
         {
-            if (!TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled && Table.IsDataSetsElementsCountIdentical(THFilesElementsDataset, THTempDS))
+            if (!Properties.Settings.Default.IsFullComprasionDBloadEnabled && Table.IsDataSetsElementsCountIdentical(THFilesElementsDataset, THTempDS))
             {
                 CompareLiteIfIdentical(THTempDS);
                 return;
@@ -3620,7 +3609,7 @@ namespace TranslationHelper
                                                         THFilesElementsDataset.Tables[t].Rows[r][otranscol] = DBCellTranslation;
                                                         TranslationWasSet = true;
 
-                                                        trowstartindex = TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
+                                                        trowstartindex = Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
                                                         break;
                                                     }
                                                 }
@@ -3631,7 +3620,7 @@ namespace TranslationHelper
                                         }
                                         if (TranslationWasSet)//если перевод был присвоен, выйти из цикла таблицы с переводом
                                         {
-                                            ttablestartindex = TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : t1;//запоминание последнего индекса таблицы, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
+                                            ttablestartindex = Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : t1;//запоминание последнего индекса таблицы, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
                                             break;
                                         }
                                         else
@@ -4824,7 +4813,7 @@ namespace TranslationHelper
 
         private void AddToTranslationCacheIfValid(DataSet THTranslationCache, string Original, string Translation)
         {
-            if (TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled)
+            if (Properties.Settings.Default.IsTranslationCacheEnabled)
             {
                 DataTable Table = THTranslationCache.Tables[0];
                 if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || GetAlreadyAddedInTable(Table, Original))
@@ -4905,7 +4894,7 @@ namespace TranslationHelper
 
         public string TranslationCacheFind(DataSet DS, string Input)
         {
-            if (TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled)
+            if (Properties.Settings.Default.IsTranslationCacheEnabled)
             {
                 if (Input.Length > 0)
                 {
@@ -5122,7 +5111,7 @@ namespace TranslationHelper
 
         private void WriteTranslationCacheIfValid(DataSet THTranslationCache, string tHTranslationCachePath)
         {
-            if (TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled && THTranslationCache.Tables[0].Rows.Count > 0)
+            if (Properties.Settings.Default.IsTranslationCacheEnabled && THTranslationCache.Tables[0].Rows.Count > 0)
             {
                 DBFile.WriteDBFile(THTranslationCache, THTranslationCachePath);
                 //THTranslationCache.Reset();
@@ -5227,7 +5216,7 @@ namespace TranslationHelper
                 }
                 //MessageBox.Show(value.ToString());
                 //string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\string.Empty));
-                string result = string.Format(TranslationHelper.Properties.Settings.Default.WebTranslationLink.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", HttpUtility.UrlEncode(value + string.Empty, Encoding.UTF8));
+                string result = string.Format(Properties.Settings.Default.WebTranslationLink.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", HttpUtility.UrlEncode(value + string.Empty, Encoding.UTF8));
                 //MessageBox.Show(result);
                 Process.Start(result);
 
@@ -5399,7 +5388,7 @@ namespace TranslationHelper
         bool cellchanged = false;
         public void THAutoSetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool forcevalue = false)
         {
-            if (forcevalue || (TranslationHelper.Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
+            if (forcevalue || (Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
                 AutoOperations.THAutoSetSameTranslationForSimular(THFilesElementsDataset, InputTableIndex, InputRowIndex, InputCellIndex, forcerun, forcevalue);
 
@@ -5585,21 +5574,10 @@ namespace TranslationHelper
         {
             using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
             {
-                dbpath = Path.Combine(Application.StartupPath, "DB");
-                string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir) + "_" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
-
                 THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
-                string projecttypeDBfolder = string.Empty;
-                if (THSelectedSourceType.Contains("RPG Maker MV"))
-                {
-                    projecttypeDBfolder += "RPGMakerMV";
-                }
-                else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
-                {
-                    projecttypeDBfolder += "RPGMakerTransPatch";
-                }
-                THFSaveBDAs.InitialDirectory = Path.Combine(dbpath, projecttypeDBfolder);
-                THFSaveBDAs.FileName = dbfilename + GetDBCompressionExt();
+
+                THFSaveBDAs.InitialDirectory = GetProjectDBFolder();
+                THFSaveBDAs.FileName = GetDBFileName(true) + GetDBCompressionExt();
 
                 if (THFSaveBDAs.ShowDialog() == DialogResult.OK)
                 {
@@ -5623,6 +5601,44 @@ namespace TranslationHelper
                     }
                 }
             }
+        }
+
+        private string GetProjectDBFolder()
+        {
+            string ret = string.Empty;
+            if (THSelectedSourceType.Contains("RPG Maker MV"))
+            {
+                ret = "RPGMakerMV";
+            }
+            else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
+            {
+                ret = "RPGMakerTransPatch";
+            }
+            return Path.Combine(Application.StartupPath, "DB", ret);
+        }
+
+        private string GetDBFileName(bool IsSaveAs = false)
+        {
+            string fName = Path.GetFileName(THSelectedDir);
+            if (THSelectedSourceType.Contains("RPG Maker MV"))
+            {
+                if (THFilesList.Items.Count == 1 && THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(THFilesList.Items[0].ToString()))
+                {
+                    if (fName == "data")
+                    {
+                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(THSelectedDir))) + "_" + Path.GetFileNameWithoutExtension(THFilesList.Items[0].ToString());
+                    }
+                    else
+                    {
+                        fName = Path.GetFileNameWithoutExtension(THFilesList.Items[0].ToString());
+                    }
+                }
+            }
+            //else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
+            //{
+
+            //}
+            return fName + "_" + (IsSaveAs ? DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") : string.Empty);
         }
 
         bool WriteDBFileIsBusy = false;
@@ -6357,7 +6373,7 @@ namespace TranslationHelper
 
         private void showCheckboxvalueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(TranslationHelper.Properties.Settings.Default.IsTranslationCacheEnabled.ToString());
+            MessageBox.Show(Properties.Settings.Default.IsTranslationCacheEnabled.ToString());
         }
 
         private void saveInnewFormatToolStripMenuItem_Click(object sender, EventArgs e)

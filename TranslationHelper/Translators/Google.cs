@@ -216,14 +216,14 @@ namespace TranslationHelper
             {
                 string languageFrom = "jp";
                 string languageTo = "en";
-                if (TranslationHelper.Properties.Settings.Default.OnlineTranslationSourceLanguage.Length > 0)
+                if (Properties.Settings.Default.OnlineTranslationSourceLanguage.Length > 0)
                 {
-                    languageFrom = TranslationHelper.Properties.Settings.Default.OnlineTranslationSourceLanguage.Split(new char[]
+                    languageFrom = Properties.Settings.Default.OnlineTranslationSourceLanguage.Split(new char[]
                     {
                         ' '
                     }).Last();
                 }
-                if (TranslationHelper.Properties.Settings.Default.OnlineTranslationTargetLanguage.Length > 0)
+                if (Properties.Settings.Default.OnlineTranslationTargetLanguage.Length > 0)
                 {
                     languageTo = Properties.Settings.Default.OnlineTranslationTargetLanguage.Split(new char[]
                     {
