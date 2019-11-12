@@ -114,18 +114,22 @@ namespace TranslationHelper.Main.Functions
                                 }
                                 else
                                 {
-                                    //задать правило
-                                    Regex regexrule = new Regex(rule);
-
-                                    //найти совпадение с заданным правилом в выбранной ячейке
-                                    MatchCollection mc = regexrule.Matches(THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty);
-
-                                    //перебрать все найденные совпадения
-                                    foreach (Match m in mc)
+                                    string cvalue = THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty;
+                                    if (cvalue.Length > 0 && cvalue != THFilesElementsDataset.Tables[tind].Rows[rind][cind - 1] + string.Empty)
                                     {
-                                        //исправить значения по найденным совпадениям в выбранной ячейке
-                                        THFilesElementsDataset.Tables[tind].Rows[rind][cind] = (THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty).Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
-                                        //THFilesElementsDataset.Tables[tind].Rows[rind][cind] = Regex.Replace(THFilesElementsDataset.Tables[tind].Rows[rind][cind].ToString(),m.Value.ToString(), result);
+                                        //задать правило
+                                        Regex regexrule = new Regex(rule);
+
+                                        //найти совпадение с заданным правилом в выбранной ячейке
+                                        MatchCollection mc = regexrule.Matches(cvalue);
+
+                                        //перебрать все найденные совпадения
+                                        foreach (Match m in mc)
+                                        {
+                                            //исправить значения по найденным совпадениям в выбранной ячейке
+                                            THFilesElementsDataset.Tables[tind].Rows[rind][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+                                            //THFilesElementsDataset.Tables[tind].Rows[rind][cind] = Regex.Replace(THFilesElementsDataset.Tables[tind].Rows[rind][cind].ToString(),m.Value.ToString(), result);
+                                        }
                                     }
                                 }
                             }
@@ -188,19 +192,23 @@ namespace TranslationHelper.Main.Functions
 
                                     if (selectedonly)
                                     {
-                                        //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
-
-                                        //найти совпадение с заданным правилом в выбранной ячейке
-                                        MatchCollection mc = regexrule.Matches(THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty);
-                                        //перебрать все айденные совпадения
-                                        foreach (Match m in mc)
+                                        string cvalue = THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty;
+                                        if (cvalue.Length > 0 && cvalue != THFilesElementsDataset.Tables[tind].Rows[rind][cind - 1] + string.Empty)
                                         {
-                                            //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
+                                            //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
 
-                                            //исправить значения по найденным совпадениям в выбранной ячейке
-                                            THFilesElementsDataset.Tables[tind].Rows[rind][cind] = (THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty).Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+                                            //найти совпадение с заданным правилом в выбранной ячейке
+                                            MatchCollection mc = regexrule.Matches(cvalue);
+                                            //перебрать все айденные совпадения
+                                            foreach (Match m in mc)
+                                            {
+                                                //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
 
-                                            //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+                                                //исправить значения по найденным совпадениям в выбранной ячейке
+                                                THFilesElementsDataset.Tables[tind].Rows[rind][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+
+                                                //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+                                            }
                                         }
                                     }
                                     else
@@ -248,23 +256,21 @@ namespace TranslationHelper.Main.Functions
                                                 }
 
                                                 //LogToFile("5 selected i row index=" + i + ", value of THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "]=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind]);
+                                                string cvalue = THFilesElementsDataset.Tables[t].Rows[rowindex][cind] + string.Empty;
                                                 //не трогать строку перевода, если она пустая
-                                                if ((THFilesElementsDataset.Tables[t].Rows[rowindex][cind] + string.Empty).Length == 0)
-                                                {
-                                                }
-                                                else
+                                                if (cvalue.Length > 0 && cvalue!= THFilesElementsDataset.Tables[t].Rows[rowindex][cind-1] + string.Empty)
                                                 {
                                                     //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
 
                                                     //найти совпадение с заданным правилом в выбранной ячейке
-                                                    MatchCollection mc = regexrule.Matches(THFilesElementsDataset.Tables[t].Rows[rowindex][cind] + string.Empty);
+                                                    MatchCollection mc = regexrule.Matches(cvalue);
                                                     //перебрать все айденные совпадения
                                                     foreach (Match m in mc)
                                                     {
                                                         //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
 
                                                         //исправить значения по найденным совпадениям в выбранной ячейке
-                                                        THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = (THFilesElementsDataset.Tables[t].Rows[rowindex][cind] + string.Empty).Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+                                                        THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
                                                         //THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), m.Value.ToString(), result);
 
                                                         //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
@@ -369,7 +375,7 @@ namespace TranslationHelper.Main.Functions
                                                 startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
                                                 stringlength = inputorigmatches[m].Length;
                                                 stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
-                                                inputresult = inputresult.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);
+                                                inputresult = inputresult.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
                                                 stringoverallength0 += targetorigmatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
                                                                                                    //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
                                                                                                    //LogToFile("result[" + m + "]=" + inputresult);

@@ -5376,7 +5376,10 @@ namespace TranslationHelper
                         int rind = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
                         int cind = THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Original"].Ordinal;//2-поле untrans
 
-                        THFileElementsDataGridView[cind + 1, rind].Value = THFileElementsDataGridView[cind, rind].Value;
+                        if (!Equals(THFileElementsDataGridView[cind + 1, rind].Value,THFileElementsDataGridView[cind, rind].Value) || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value+string.Empty))
+                        {
+                            THFileElementsDataGridView[cind + 1, rind].Value = THFileElementsDataGridView[cind, rind].Value;
+                        }
                     }
                 }
                 catch
