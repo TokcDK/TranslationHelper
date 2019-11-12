@@ -291,8 +291,15 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
+        static bool THAutoSetSameTranslationForSimularIsBusy = false;
         public static void THAutoSetSameTranslationForSimular(DataSet THFilesElementsDataset, int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool forcevalue = false)
         {
+            if (THAutoSetSameTranslationForSimularIsBusy)
+            {
+                return;
+            }
+            THAutoSetSameTranslationForSimularIsBusy = true;
+
             int TranslationCellIndex = InputCellIndex + 1;
             var InputTableRow = THFilesElementsDataset.Tables[InputTableIndex].Rows[InputRowIndex];
             var InputTableOriginalCell = InputTableRow[InputCellIndex];
@@ -365,6 +372,7 @@ namespace TranslationHelper.Main.Functions
                                             int stringoverallength = 0;
                                             int stringlength;
                                             int stringoverallength0 = 0;
+                                            bool failed = false;
                                             //LogToFile("arraysize=" + arraysize + ", wrapped inputresult" + inputresult);
                                             for (int m = 0; m < mccount; m++)
                                             {
@@ -373,16 +381,35 @@ namespace TranslationHelper.Main.Functions
 
                                                 //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
                                                 startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
+                                                //if (startindex > -1 ??)
+                                                //{
+                                                //}
+                                                //else
+                                                //{
+                                                //    //была ошибка когда индекс был -1. Добавил проверку индекса и
+                                                //    failed = true;
+                                                //}
                                                 stringlength = inputorigmatches[m].Length;
                                                 stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
-                                                inputresult = inputresult.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
+                                                try
+                                                {
+                                                    inputresult = inputresult.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    string ggg = ex.ToString();
+                                                    MessageBox.Show(ggg);
+                                                    //    //была ошибка когда индекс был -1. Добавил проверку индекса и
+                                                    failed = true;
+                                                }
+
                                                 stringoverallength0 += targetorigmatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
                                                                                                    //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
                                                                                                    //LogToFile("result[" + m + "]=" + inputresult);
                                             }
                                             //только если ячейка пустая
                                             TCell = THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex];
-                                            if (forcevalue || TCell == null || string.IsNullOrEmpty(TCell as string))
+                                            if (!failed && (forcevalue || TCell == null || string.IsNullOrEmpty(TCell as string)))
                                             {
                                                 THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = inputresult;
                                             }
@@ -401,6 +428,7 @@ namespace TranslationHelper.Main.Functions
                     }
                 }
             }
+            THAutoSetSameTranslationForSimularIsBusy = false;
         }
 
         public static bool IsAllMatchesInIdenticalPlaces(MatchCollection mc, MatchCollection mc0)

@@ -513,7 +513,7 @@ namespace TranslationHelper
                                 }
                                 catch
                                 {
-
+                                    return null;//при ошибках регекса выходить
                                 }
                             }
                             else

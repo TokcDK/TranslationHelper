@@ -1618,8 +1618,23 @@ namespace TranslationHelper
         {
             //про primary key взял отсюда: https://stackoverflow.com/questions/3567552/table-doesnt-have-a-primary-key
             //DataColumn[] keyColumns = new DataColumn[1];
+
+            //показать неуникальную строчку из таблицы, если есть. делал, когда была ошибка об неуникальности значения.
+            //for (int i = 0; i < table.Rows.Count; i++)
+            //{
+            //    var value1 = table.Rows[i][0];
+            //    for (int i2 = 0; i2 < table.Rows.Count; i2++)
+            //    {
+            //        var value2 = table.Rows[i2][0];
+            //        if (i != i2 && Equals(value1, value2))
+            //        {
+            //            MessageBox.Show(value2 as string);
+            //        }
+            //    }
+            //}
+
             keyColumns[0] = table.Columns["Original"];
-            table.PrimaryKey = keyColumns;
+            table.PrimaryKey = keyColumns;//здесь ошибки, когда кеш ломается из за ошибки с автозаменой и в него попадают неуникальные строчки, нужно тогда удалить из таблицы все неуникальные строки
 
             //очень быстрый способ поиска дубликата значения, два нижник в разы медленней, этот почти не заметен
             if (table.Rows.Contains(value))
@@ -4799,9 +4814,11 @@ namespace TranslationHelper
                         }
                     }
 
-                    ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, InfoRow[0] as string, InputLines.Rows[i][0] as string));
+                    string originalLineValue = InfoRow[0] as string;
+                    string extractedLineValue = InputLines.Rows[i][0] as string;
+                    ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, originalLineValue, extractedLineValue));
 
-                    AddToTranslationCacheIfValid(THTranslationCache, InfoRow[0] as string, TranslatedLine);
+                    AddToTranslationCacheIfValid(THTranslationCache, (originalLineValue.Length == extractedLineValue.Length && originalLineValue == extractedLineValue) ? originalLineValue : extractedLineValue, TranslatedLine);
 
                     PreviousRowIndex = RowIndex;
                     PreviousTableIndex = TableIndex;
@@ -5376,7 +5393,7 @@ namespace TranslationHelper
                         int rind = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
                         int cind = THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Original"].Ordinal;//2-поле untrans
 
-                        if (!Equals(THFileElementsDataGridView[cind + 1, rind].Value,THFileElementsDataGridView[cind, rind].Value) || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value+string.Empty))
+                        if (!Equals(THFileElementsDataGridView[cind + 1, rind].Value, THFileElementsDataGridView[cind, rind].Value) || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value + string.Empty))
                         {
                             THFileElementsDataGridView[cind + 1, rind].Value = THFileElementsDataGridView[cind, rind].Value;
                         }
