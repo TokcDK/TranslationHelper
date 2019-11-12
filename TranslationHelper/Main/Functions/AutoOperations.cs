@@ -258,7 +258,7 @@ namespace TranslationHelper.Main.Functions
                                                 //LogToFile("5 selected i row index=" + i + ", value of THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "]=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind]);
                                                 string cvalue = THFilesElementsDataset.Tables[t].Rows[rowindex][cind] + string.Empty;
                                                 //не трогать строку перевода, если она пустая
-                                                if (cvalue.Length > 0 && cvalue!= THFilesElementsDataset.Tables[t].Rows[rowindex][cind-1] + string.Empty)
+                                                if (cvalue.Length > 0 && cvalue != THFilesElementsDataset.Tables[t].Rows[rowindex][cind - 1] + string.Empty)
                                                 {
                                                     //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
 
@@ -570,27 +570,14 @@ namespace TranslationHelper.Main.Functions
                 for (int N = 0; N < sublinesLength; N++)
                 {
                     int sublinesNLength = sublines[N].Length;
-                    if (sublinesNLength > 0)
+
+                    if (N == sublinesLength - 1)
                     {
-                        if (N == sublinesLength - 1)
-                        {
-                            ReturnLine.Append(GetSplittedLine(sublines[N], Limit));
-                        }
-                        else
-                        {
-                            ReturnLine.AppendLine(GetSplittedLine(sublines[N], Limit));
-                        }
+                        ReturnLine.Append(sublinesNLength > 0 ? GetSplittedLine(sublines[N], Limit) : sublines[N]);
                     }
                     else
                     {
-                        if (N == sublinesLength - 1)
-                        {
-                            ReturnLine.Append(sublines[N]);
-                        }
-                        else
-                        {
-                            ReturnLine.AppendLine(sublines[N]);
-                        }
+                        ReturnLine.AppendLine(sublinesNLength > 0 ? GetSplittedLine(sublines[N], Limit) : sublines[N]);
                     }
                 }
             }

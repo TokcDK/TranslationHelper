@@ -6414,7 +6414,7 @@ namespace TranslationHelper
         {
             int realrowindex = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.CurrentCell.RowIndex);
             var value = THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1].ToString();
-            THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(value, 60);
+            THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(value, 50);
         }
 
         private void SplitLinesWhichLongerOfLimitALLToolStripMenuItem_Click(object sender, EventArgs e)
@@ -6427,12 +6427,12 @@ namespace TranslationHelper
                 for (int r = 0; r < TableRowsCount; r++)
                 {
                     var Cell = Table.Rows[r][1];
-                    if (Cell == null || string.IsNullOrEmpty(Cell as string) || AutoOperations.GetLongestLineLength(Cell as string) < 60)
+                    if (Cell == null || string.IsNullOrEmpty(Cell as string) || AutoOperations.GetLongestLineLength(Cell as string) < 50)
                     {
                     }
                     else
                     {
-                        THFilesElementsDataset.Tables[t].Rows[r][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(Cell as string, 60);
+                        THFilesElementsDataset.Tables[t].Rows[r][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(Cell as string, 50);
                     }
                 }
             }
