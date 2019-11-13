@@ -292,7 +292,7 @@ namespace TranslationHelper.Main.Functions
         }
 
         static bool THAutoSetSameTranslationForSimularIsBusy = false;
-        public static void THAutoSetSameTranslationForSimular(DataSet THFilesElementsDataset, int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool forcevalue = false)
+        public static void THAutoSetSameTranslationForSimular(DataSet THFilesElementsDataset, int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool ForceSetValue = false)
         {
             if (THAutoSetSameTranslationForSimularIsBusy)
             {
@@ -300,9 +300,15 @@ namespace TranslationHelper.Main.Functions
             }
             THAutoSetSameTranslationForSimularIsBusy = true;
 
-            int TranslationCellIndex = InputCellIndex + 1;
-            var InputTableRow = THFilesElementsDataset.Tables[InputTableIndex].Rows[InputRowIndex];
-            var InputTableOriginalCell = InputTableRow[InputCellIndex];
+            //reset input variables to prevent break of work while concurent execution
+            bool forcevalue = ForceSetValue;
+            int iTableIndex = InputTableIndex;
+            int iRowIndex = InputRowIndex;
+            int iCellIndex = InputCellIndex;
+
+            int TranslationCellIndex = iCellIndex + 1;
+            var InputTableRow = THFilesElementsDataset.Tables[iTableIndex].Rows[iRowIndex];
+            var InputTableOriginalCell = InputTableRow[iCellIndex];
             var InputTableTranslationCell = InputTableRow[TranslationCellIndex];
             if (InputTableTranslationCell == null || string.IsNullOrEmpty(InputTableTranslationCell as string))
             {
@@ -330,12 +336,12 @@ namespace TranslationHelper.Main.Functions
                     {
                         var TRow = Table.Rows[Rindx];
                         var TCell = TRow[TranslationCellIndex];
-                        if ((forcevalue && Rindx != InputRowIndex) || TCell == null || string.IsNullOrEmpty(TCell as string)) //Проверять только для пустых ячеек перевода
+                        if ((forcevalue && Rindx != iRowIndex) || TCell == null || string.IsNullOrEmpty(TCell as string)) //Проверять только для пустых ячеек перевода
                         {
                             //LogToFile("THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString()=" + THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString());
                             if (mccount > 0) //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
                             {
-                                string TempCell = TRow[InputCellIndex] + string.Empty;
+                                string TempCell = TRow[iCellIndex] + string.Empty;
                                 string checkingorigcellvalue = RomajiKana.THFixDigits(TempCell);
                                 MatchCollection mc0 = reg.Matches(TempCell); //mc0 равно значениям цифр ячейки под номером y в файле i
                                 int mc0Count = mc0.Count;
@@ -419,7 +425,7 @@ namespace TranslationHelper.Main.Functions
                             }
                             else //иначе, если в поле оригинала не было цифр, сравнить как обычно, два поля между собой 
                             {
-                                if (Equals(TRow[InputCellIndex], InputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
+                                if (Equals(TRow[iCellIndex], InputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
                                 {
                                     THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
                                 }
