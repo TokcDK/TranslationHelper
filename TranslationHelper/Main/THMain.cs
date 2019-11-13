@@ -398,6 +398,7 @@ namespace TranslationHelper
                 loadTranslationToolStripMenuItem.Enabled = false;
                 loadTrasnlationAsToolStripMenuItem.Enabled = false;
                 saveTranslationAsToolStripMenuItem.Enabled = false;
+                savemenusNOTenabled = true;
                 THSourceRichTextBox.Enabled = false;
                 THTargetRichTextBox.Enabled = false;
                 openInWebToolStripMenuItem.Enabled = false;
@@ -3851,9 +3852,31 @@ namespace TranslationHelper
                 // treeView1.Nodes.Clear();
                 //var tNode = treeView1.Nodes[treeView1.Nodes.Add(new TreeNode(rootName))];
                 //tNode.Tag = root;
+
+                //Stopwatch timer = new Stopwatch();
+
+                //timer.Start();
+
+                //TempList = new List<string>();
+                //TempListInfo = new List<string>();
                 IsCommonEvents = (Jsonname == "CommonEvents");
                 ProceedJToken(root, Jsonname);
 
+                //занесение в список
+                //int TempListCount = TempList.Count;
+                //for (int i = 0; i < TempListCount; i++)
+                //{
+                //    THFilesElementsDataset.Tables[Jsonname].Rows.Add(TempList[i]);
+                //    THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(TempListInfo[i]);
+                //}
+
+                //TempList = null;
+                //TempListInfo = null;
+
+                //timer.Stop();
+                //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
+                //FileWriter.WriteData(Path.Combine(Application.StartupPath, "Timers 4 Table.log"), Jsonname + ": " + difference + Environment.NewLine);
+                //MessageBox.Show(difference.ToString());
 
                 //treeView1.ExpandAll();
             }
@@ -3876,7 +3899,9 @@ namespace TranslationHelper
 
         }
 
-        StringBuilder textsb = new StringBuilder();
+        //List<string> TempList;
+        //List<string> TempListInfo;
+        private StringBuilder textsb = new StringBuilder();
         private string curcode = string.Empty;
         //string cType;
         //private string cCode = string.Empty;
@@ -3908,18 +3933,15 @@ namespace TranslationHelper
                 //    }
                 //}
                 //LogToFile("JValue: " + propertyname + "=" + token.ToString()+", token path="+token.Path);
-                string tokenvalue = token + string.Empty;
+                string tokenvalue = token.ToString();
 
                 if (IsCommonEvents && (curcode == "401" || curcode == "405"))
                 {
                     if (token.Type == JTokenType.String)
                     {
-                        if (textsb.ToString().Length == 0)
+                        if (textsb.ToString().Length > 0)
                         {
-                        }
-                        else
-                        {
-                            textsb.Append(Environment.NewLine);
+                            textsb.AppendLine();
                         }
                         //LogToFile("code 401 adding valur to merge=" + tokenvalue + ", curcode=" + curcode);
                         textsb.Append(tokenvalue);
@@ -3935,20 +3957,25 @@ namespace TranslationHelper
                         else
                         {
                             string mergedstring = textsb.ToString();
-                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ RomajiKana.SelectedLocalePercentFromStringIsNotValid(mergedstring))
+                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && RomajiKana.SelectedLocalePercentFromStringIsNotValid(mergedstring))
                             {
                             }
                             else
                             {
                                 //LogToFile("textsb is not empty. add. value=" + mergedstring + ", curcode=" + curcode);
+
                                 THFilesElementsDataset.Tables[Jsonname].Rows.Add(mergedstring);
+                                //TempList.Add(mergedstring);//много быстрее
+
                                 //JToken t = token;
                                 //while (!string.IsNullOrEmpty(t.Parent.Path))
                                 //{
                                 //    t = t.Parent;
                                 //    extra += "\\" + t.Path;
                                 //}
+
                                 THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
+                                //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                             }
                             textsb.Clear();
                         }
@@ -3967,7 +3994,10 @@ namespace TranslationHelper
 
                             //LogToFile("Jsonname=" + Jsonname+ ", tokenvalue=" + tokenvalue);
                             //LogToFile(string.Empty, true);
+
                             THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
+                            //TempList.Add(tokenvalue);//много быстрее
+
                             //dsinfo.Tables[0].Rows.Add(cType+"\\"+ cId + "\\" + cCode + "\\" + cName);
                             //JToken t = token;
                             //while (!string.IsNullOrEmpty(t.Parent.Path))
@@ -3977,6 +4007,7 @@ namespace TranslationHelper
                             //}
 
                             THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
+                            //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                         }
                     }
                 }
@@ -4022,7 +4053,7 @@ namespace TranslationHelper
                             if (cName.Length == 4 && cName == "code")
                             {
                                 string propertyValue = property.Value + string.Empty;
-                                if (propertyValue == "108" || propertyValue == "408" || propertyValue == "356")
+                                if (propertyValue.Length==3 && (propertyValue == "108" || propertyValue == "408" || propertyValue == "356"))
                                 {
                                     skipit = true;
                                     continue;
@@ -4293,7 +4324,7 @@ namespace TranslationHelper
                         }
                         if (skipit)
                         {
-                            if (curcode == "108" || curcode == "408" || curcode == "356")
+                            if (curcode.Length==3 && curcode == "108" || curcode == "408" || curcode == "356")
                             {
                                 if (property.Name == "parameters")//asdf
                                 {
@@ -4310,7 +4341,8 @@ namespace TranslationHelper
                         {
                             if (cName.Length == 4 && cName == "code")
                             {
-                                if (property.Value + string.Empty == "108" || property.Value + string.Empty == "408" || property.Value + string.Empty == "356")
+                                string propertyValue = property.Value + string.Empty;
+                                if (propertyValue.Length==3 && (propertyValue == "108" || propertyValue == "408" || propertyValue == "356"))
                                 {
                                     skipit = true;
                                     continue;
@@ -4350,6 +4382,7 @@ namespace TranslationHelper
                     saveAsToolStripMenuItem.Enabled = true;
                     saveTranslationToolStripMenuItem.Enabled = true;
                     saveTranslationAsToolStripMenuItem.Enabled = true;
+                    savemenusNOTenabled = false;
                 }
 
                 int tableind = THFilesList.SelectedIndex;
@@ -5390,14 +5423,14 @@ namespace TranslationHelper
                     int tableIndex = THFilesList.SelectedIndex;
                     int cind = THFilesElementsDataset.Tables[tableIndex].Columns["Original"].Ordinal;// Колонка Original
                     int cindTrans = THFilesElementsDataset.Tables[tableIndex].Columns["Translation"].Ordinal;// Колонка Original
-                    int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount]; 
+                    int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         //координаты ячейки
                         selectedRowIndexses[i] = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
 
                     }
-                    foreach(var rind in selectedRowIndexses)
+                    foreach (var rind in selectedRowIndexses)
                     {
                         string origCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] + string.Empty;
                         string transCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
@@ -6423,7 +6456,7 @@ namespace TranslationHelper
         {
             int realrowindex = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.CurrentCell.RowIndex);
             var value = THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1].ToString();
-            THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(value, 50);
+            THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(value, 60);
         }
 
         private void SplitLinesWhichLongerOfLimitALLToolStripMenuItem_Click(object sender, EventArgs e)
@@ -6436,12 +6469,12 @@ namespace TranslationHelper
                 for (int r = 0; r < TableRowsCount; r++)
                 {
                     var Cell = Table.Rows[r][1];
-                    if (Cell == null || string.IsNullOrEmpty(Cell as string) || AutoOperations.GetLongestLineLength(Cell as string) < 50)
+                    if (Cell == null || string.IsNullOrEmpty(Cell as string) || AutoOperations.GetLongestLineLength(Cell as string) < 60)
                     {
                     }
                     else
                     {
-                        THFilesElementsDataset.Tables[t].Rows[r][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(Cell as string, 50);
+                        THFilesElementsDataset.Tables[t].Rows[r][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(Cell as string, 60);
                     }
                 }
             }
