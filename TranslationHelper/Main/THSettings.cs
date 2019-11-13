@@ -23,15 +23,15 @@ namespace TranslationHelper
             //translation
             THOptionFullComprasionDBload.Text = T._("Full recursive scan while translation DB loading (slower)");
             this.THSettingsMainTabPage.Text = T._("General");
-            this.label3.Text = T._("Translation  Helper support:");
+            //this.label3.Text = T._("Translation  Helper support:");
             this.THSettingsOptimizationsTabPage.Text = T._("Optimizations");
-            this.label2.Text = T._("Translation  Helper support:");
+            //this.label2.Text = T._("Translation  Helper support:");
             this.THOptionDBCompressionCheckBox.Text = T._("Compression for DB files:");
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Text = T._("Do not load string if it has more of next romaji percent - ");
             this.THSettingsToolsTabPage.Text = T._("Tools");
             this.THOptionAutotranslationForIdenticalCheckBox.Text = T._("Autotranslation for simular");
             this.THOptionEnableTranslationCacheCheckBox.Text = T._("Enable online translation cache.");
-            this.label4.Text = T._("Translation  Helper support:");
+            //this.label4.Text = T._("Translation  Helper support:");
             this.label1.Text = T._("Web service link for manual translation (F12):");
             this.Text = T._("Settings");
         }
@@ -68,9 +68,9 @@ namespace TranslationHelper
             THToolTip.SetToolTip(THOptionEnableTranslationCacheCheckBox, T._("Will save online translation result in cache db to use it in next time for same values instead of attemp to connect to service."));
             THToolTip.SetToolTip(THSettingsWebTransLinkTextBox, T._("Web site which wil be opened by pressing F12 key with added selected table cells values. Can be any here Google, Yandex, DeepL or other."));
             //support links
-            THToolTip.SetToolTip(linkLabel1, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
-            THToolTip.SetToolTip(linkLabel2, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
-            THToolTip.SetToolTip(linkLabel4, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
+            //THToolTip.SetToolTip(linkLabel1, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
+            //THToolTip.SetToolTip(linkLabel2, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
+            //THToolTip.SetToolTip(linkLabel4, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
             ////////////////////////////
         }
 
