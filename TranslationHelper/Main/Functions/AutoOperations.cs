@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -612,42 +612,68 @@ namespace TranslationHelper.Main.Functions
 
         public static string SplitMultiLineIfBeyondOfLimit(string Line, int Limit)
         {
-            StringBuilder ReturnLine = new StringBuilder();
-            string[] sublines = Line.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
+            //StringBuilder ReturnLine = new StringBuilder();
+            string[] sublines = Line.Split(new string[2] { Environment.NewLine, "\n" }, StringSplitOptions.None);
             int sublinesLength = sublines.Length;
+            List<string> Lines = new List<string>();
             if (sublinesLength > 1)
             {
+                bool lastLineWasSplitted = false;
                 for (int N = 0; N < sublinesLength; N++)
                 {
-                    int sublinesNLength = sublines[N].Length;
+                    string subline = sublines[N];
+                    if (lastLineWasSplitted && subline.Length > 0)
+                    {
+                        //lastLineWasSplitted значит, что соединять только когда предыдущая была разделена, если нет, не нужно трогать порядок переноса из оригинала
+                        //когда не первая строка, соединяем эту строку с последним элементом в Lines и удаляем последний элемент, обрабатываем такую новую строку
+                        int LasLineIndex = Lines.Count - 1;
+                        if (Lines[LasLineIndex].Length > 0)
+                        {
+                            subline = Lines[LasLineIndex] + subline;
+                            Lines.RemoveAt(LasLineIndex);
+                        }
+                    }
+                    int i = 0;
+                    lastLineWasSplitted = false;
+                    foreach (var line in GetSplittedLine(subline, Limit).SplitToLines())
+                    {
+                        i++;
+                        Lines.Add(line);
+                    }
 
-                    if (N == sublinesLength - 1)
+                    if (i > 1)
                     {
-                        ReturnLine.Append(sublinesNLength > 0 ? GetSplittedLine(sublines[N], Limit) : sublines[N]);
+                        //если i>1 значит строка была разделена
+                        lastLineWasSplitted = true;
                     }
-                    else
-                    {
-                        ReturnLine.AppendLine(sublinesNLength > 0 ? GetSplittedLine(sublines[N], Limit) : sublines[N]);
-                    }
+                    //if (N == sublinesLength - 1)
+                    //{
+                    //    foreach(var line in GetSplittedLine(subline, Limit).SplitToLines())
+                    //    {
+                    //        Lines.Add(line);
+                    //    }
+                    //    ReturnLine.Append(string.Join(Environment.NewLine, Lines));
+                    //}
+                    //else
+                    //{
+                    //    ReturnLine.AppendLine(GetSplittedLine(subline, Limit));
+                    //}
                 }
             }
             else
             {
-                if (Line.Length > Limit)
-                {
-                    return GetSplittedLine(Line, Limit);
-                }
-                else
-                {
-                    return Line;
-                }
+                return GetSplittedLine(Line, Limit);
             }
 
-            return ReturnLine.ToString();
+            return string.Join(Environment.NewLine, Lines); //ReturnLine.ToString();
         }
 
         private static string GetSplittedLine(string Line, int Limit)
         {
+            if (Line.Length == 0 || Line.Length <= Limit)
+            {
+                return Line;
+            }
             string[] s = SplitLineIfBeyondOfLimit(Line, Limit);
             string ret = string.Empty;
             int sLength = s.Length;

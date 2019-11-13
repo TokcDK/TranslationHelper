@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,8 +76,11 @@
             this.pasteCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearSelectedCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toUPPERCASEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.firstCharacterToUppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toLOWERCASEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongestOfLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongerOfLimitALLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -128,9 +131,6 @@
             this.TableCompleteInfoLabel = new System.Windows.Forms.Label();
             this.TranslationLongestLineLenghtLabel = new System.Windows.Forms.Label();
             this.RTBInfoLengthLabel = new System.Windows.Forms.Label();
-            this.allToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.allToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.allToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -561,6 +561,13 @@
             this.toUPPERCASEToolStripMenuItem.Text = "UPPERCASE";
             this.toUPPERCASEToolStripMenuItem.Click += new System.EventHandler(this.ToUPPERCASEToolStripMenuItem_Click);
             // 
+            // allToolStripMenuItem4
+            // 
+            this.allToolStripMenuItem4.Name = "allToolStripMenuItem4";
+            this.allToolStripMenuItem4.Size = new System.Drawing.Size(85, 22);
+            this.allToolStripMenuItem4.Text = "All";
+            this.allToolStripMenuItem4.Click += new System.EventHandler(this.UPPERCASEallToolStripMenuItem_Click);
+            // 
             // firstCharacterToUppercaseToolStripMenuItem
             // 
             this.firstCharacterToUppercaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -571,6 +578,13 @@
             this.firstCharacterToUppercaseToolStripMenuItem.Text = "Uppercase";
             this.firstCharacterToUppercaseToolStripMenuItem.Click += new System.EventHandler(this.FirstCharacterToUppercaseToolStripMenuItem_Click);
             // 
+            // allToolStripMenuItem3
+            // 
+            this.allToolStripMenuItem3.Name = "allToolStripMenuItem3";
+            this.allToolStripMenuItem3.Size = new System.Drawing.Size(85, 22);
+            this.allToolStripMenuItem3.Text = "All";
+            this.allToolStripMenuItem3.Click += new System.EventHandler(this.UppercaseAllToolStripMenuItem_Click);
+            // 
             // toLOWERCASEToolStripMenuItem
             // 
             this.toLOWERCASEToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -580,6 +594,13 @@
             this.toLOWERCASEToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
             this.toLOWERCASEToolStripMenuItem.Text = "lowercase";
             this.toLOWERCASEToolStripMenuItem.Click += new System.EventHandler(this.TolowercaseToolStripMenuItem_Click);
+            // 
+            // allToolStripMenuItem2
+            // 
+            this.allToolStripMenuItem2.Name = "allToolStripMenuItem2";
+            this.allToolStripMenuItem2.Size = new System.Drawing.Size(85, 22);
+            this.allToolStripMenuItem2.Text = "All";
+            this.allToolStripMenuItem2.Click += new System.EventHandler(this.lowercaseAllToolStripMenuItem_Click);
             // 
             // searchToolStripMenuItem
             // 
@@ -735,8 +756,8 @@
             this.THFileElementsDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 351);
             this.THFileElementsDataGridView.TabIndex = 2;
@@ -767,26 +788,26 @@
             this.THFiltersDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFiltersDataGridView.ColumnHeadersVisible = false;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle5;
             this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.THFiltersDataGridView.Enabled = false;
             this.THFiltersDataGridView.Location = new System.Drawing.Point(0, 0);
             this.THFiltersDataGridView.Name = "THFiltersDataGridView";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.THFiltersDataGridView.RowTemplate.Height = 23;
             this.THFiltersDataGridView.Size = new System.Drawing.Size(625, 18);
             this.THFiltersDataGridView.TabIndex = 3;
@@ -1018,10 +1039,12 @@
             this.THTargetRichTextBox.Size = new System.Drawing.Size(344, 98);
             this.THTargetRichTextBox.TabIndex = 1;
             this.THTargetRichTextBox.Text = "";
+            this.THTargetRichTextBox.TextChanged += new System.EventHandler(this.THTargetRichTextBox_TextChanged);
             this.THTargetRichTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
             this.THTargetRichTextBox.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
             this.THTargetRichTextBox.MouseEnter += new System.EventHandler(this.THTargetRichTextBox_MouseEnter);
             this.THTargetRichTextBox.MouseLeave += new System.EventHandler(this.THTargetRichTextBox_MouseLeave);
+            this.THTargetRichTextBox.Validated += new System.EventHandler(this.THTargetRichTextBox_Validated);
             // 
             // THWorkSpaceSplitContainer
             // 
@@ -1130,27 +1153,6 @@
             this.RTBInfoLengthLabel.Size = new System.Drawing.Size(41, 13);
             this.RTBInfoLengthLabel.TabIndex = 10;
             this.RTBInfoLengthLabel.Text = "length:";
-            // 
-            // allToolStripMenuItem2
-            // 
-            this.allToolStripMenuItem2.Name = "allToolStripMenuItem2";
-            this.allToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
-            this.allToolStripMenuItem2.Text = "All";
-            this.allToolStripMenuItem2.Click += new System.EventHandler(this.lowercaseAllToolStripMenuItem_Click);
-            // 
-            // allToolStripMenuItem3
-            // 
-            this.allToolStripMenuItem3.Name = "allToolStripMenuItem3";
-            this.allToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
-            this.allToolStripMenuItem3.Text = "All";
-            this.allToolStripMenuItem3.Click += new System.EventHandler(this.UppercaseAllToolStripMenuItem_Click);
-            // 
-            // allToolStripMenuItem4
-            // 
-            this.allToolStripMenuItem4.Name = "allToolStripMenuItem4";
-            this.allToolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
-            this.allToolStripMenuItem4.Text = "All";
-            this.allToolStripMenuItem4.Click += new System.EventHandler(this.UPPERCASEallToolStripMenuItem_Click);
             // 
             // THMain
             // 

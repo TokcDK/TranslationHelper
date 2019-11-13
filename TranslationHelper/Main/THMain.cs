@@ -2366,6 +2366,11 @@ namespace TranslationHelper
 
                         THTargetRichTextBox.Text = cellvalue as string; //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
 
+                        FormatTextBox();
+
+                        //THTargetRichTextBox.Select(Properties.Settings.Default.THOptionLineCharLimit+1, THTargetRichTextBox.Text.Length);
+                        //THTargetRichTextBox.SelectionColor = Color.Red;
+
                         TranslationLongestLineLenghtLabel.Text = AutoOperations.GetLongestLineLength(cellvalue.ToString()).ToString();
                     }
 
@@ -2397,6 +2402,50 @@ namespace TranslationHelper
             }
             catch
             {
+            }
+        }
+
+        //https://stackoverflow.com/a/31150444
+        private void FormatTextBox()
+        {
+            if (THTargetRichTextBox==null || THTargetRichTextBox.Text.Length == 0)
+            {
+                return;
+            }
+
+            // Loop over each line
+            int THTargetRichTextBoxLinesCount = THTargetRichTextBox.Lines.Count();
+            for (int i = 0; i < THTargetRichTextBoxLinesCount; i++)
+            {
+                // Current line text
+                string currentLine = THTargetRichTextBox.Lines[i];
+
+                // Ignore the non-assembly lines
+                if (currentLine.Length > Properties.Settings.Default.THOptionLineCharLimit)
+                {
+                    // Start position
+                    int start = Properties.Settings.Default.THOptionLineCharLimit;
+
+                    // Length
+                    int length = currentLine.Length - start;
+
+                    // Make the selection
+                    THTargetRichTextBox.SelectionStart = start;
+                    THTargetRichTextBox.SelectionLength = length;
+
+                    // Change the colour
+                    THTargetRichTextBox.SelectionColor = Color.DarkRed;
+                }
+                //else
+                //{//пробовал сделать возвращение цвета текста на черный при редактировании текстбокса, через события TextChanged и Validated, но он не меняется, хотя и функция выполняется, только когда кликаю на ячейку таблицы
+                //    //вернуть цвет на дефолт
+                //    // Make the selection
+                //    THTargetRichTextBox.SelectionStart = 0;
+                //    THTargetRichTextBox.SelectionLength = currentLine.Length;
+                //    // Change the colour
+                //    THTargetRichTextBox.SelectionColor = Color.Black;
+                //}
+
             }
         }
 
@@ -3457,18 +3506,7 @@ namespace TranslationHelper
             {
                 IsOpeningInProcess = true;
 
-                string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir);
-                string projecttypeDBfolder = "\\";
-                if (THSelectedSourceType.Contains("RPG Maker MV"))
-                {
-                    projecttypeDBfolder += "RPGMakerMV\\";
-                }
-                else if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
-                {
-                    projecttypeDBfolder += "RPGMakerTransPatch\\";
-                }
-                dbpath = Application.StartupPath + "\\DB" + projecttypeDBfolder;
-                lastautosavepath = Path.Combine(dbpath, dbfilename, GetDBCompressionExt());
+                lastautosavepath = Path.Combine(GetProjectDBFolder(), GetDBFileName() + GetDBCompressionExt());
                 if (File.Exists(lastautosavepath))
                 {
                     LoadTranslationFromDB(lastautosavepath);
@@ -3722,17 +3760,8 @@ namespace TranslationHelper
                 using (OpenFileDialog THFOpenBD = new OpenFileDialog())
                 {
                     THFOpenBD.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
-                    string projecttypeDBfolder = string.Empty;
-                    if (THSelectedSourceType.Contains("RPG Maker MV"))
-                    {
-                        projecttypeDBfolder += "RPGMakerMV";
-                    }
-                    else if (THSelectedSourceType.Contains("TransPatch"))
-                    {
-                        projecttypeDBfolder += "RPGMakerTransPatch";
-                    }
-
-                    THFOpenBD.InitialDirectory = Path.Combine(Application.StartupPath, "DB", projecttypeDBfolder);
+                    
+                    THFOpenBD.InitialDirectory = GetProjectDBFolder();
 
                     if (THFOpenBD.ShowDialog() == DialogResult.OK)
                     {
@@ -5303,7 +5332,7 @@ namespace TranslationHelper
             }
             else//если текстовое поле 2 не пустое
             {
-                THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                
+                THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
             }
         }
 
@@ -5443,7 +5472,7 @@ namespace TranslationHelper
                     }
                     foreach (var rind in selectedRowIndexses)
                     {
-                        string origCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] + string.Empty;
+                        string origCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] as string;
                         string transCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
                         if (transCellValue != origCellValue || transCellValue.Length == 0)
                         {
@@ -5711,7 +5740,7 @@ namespace TranslationHelper
             //{
 
             //}
-            return fName + "_" + (IsSaveAs ? DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") : string.Empty);
+            return fName+(IsSaveAs ? "_" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") : string.Empty);
         }
 
         bool WriteDBFileIsBusy = false;
@@ -6435,7 +6464,7 @@ namespace TranslationHelper
                     var row = table.Rows[r];
                     //if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)//убрал проверку пустой ячейки, чтобы насильно переприсваивать
                     //{
-                    if (RomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(row[0] as string))
+                    if ((row[1] == null || string.IsNullOrEmpty(row[1] as string) || !Equals(row[1], row[0])) && RomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(row[0] as string))
                     {
                         THFilesElementsDataset.Tables[t].Rows[r][1] = row[0];
                     }
@@ -6500,9 +6529,36 @@ namespace TranslationHelper
 
         private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int realrowindex = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.CurrentCell.RowIndex);
-            var value = THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1].ToString();
-            THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(value, Properties.Settings.Default.THOptionLineCharLimit);
+            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
+            if (THFileElementsDataGridViewSelectedCellsCount > 0)
+            {
+                try
+                {
+                    int tableIndex = THFilesList.SelectedIndex;
+                    int cind = THFilesElementsDataset.Tables[tableIndex].Columns["Original"].Ordinal;// Колонка Original
+                    int cindTrans = THFilesElementsDataset.Tables[tableIndex].Columns["Translation"].Ordinal;// Колонка Original
+                    int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
+                    for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
+                    {
+                        //координаты ячейки
+                        selectedRowIndexses[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+
+                    }
+                    foreach (var rind in selectedRowIndexses)
+                    {
+                        string origCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] as string;
+                        string transCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
+                        if (!string.IsNullOrWhiteSpace(transCellValue) && transCellValue != origCellValue && AutoOperations.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit)
+                        {
+                            THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[rind][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(transCellValue, Properties.Settings.Default.THOptionLineCharLimit);
+                        }
+
+                    }
+                }
+                catch
+                {
+                }
+            }
         }
 
         private void SplitLinesWhichLongerOfLimitALLToolStripMenuItem_Click(object sender, EventArgs e)
@@ -6514,13 +6570,14 @@ namespace TranslationHelper
                 int TableRowsCount = Table.Rows.Count;
                 for (int r = 0; r < TableRowsCount; r++)
                 {
-                    var Cell = Table.Rows[r][1];
-                    if (Cell == null || string.IsNullOrEmpty(Cell as string) || AutoOperations.GetLongestLineLength(Cell as string) < Properties.Settings.Default.THOptionLineCharLimit)
+                    var Row = THFilesElementsDataset.Tables[t].Rows[r];
+                    string CellValue = Row[1] as string;
+                    if (Row[1] == null || string.IsNullOrEmpty(CellValue) || Equals(Row[1], Row[0]) || AutoOperations.GetLongestLineLength(CellValue) <= Properties.Settings.Default.THOptionLineCharLimit)
                     {
                     }
                     else
                     {
-                        THFilesElementsDataset.Tables[t].Rows[r][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(Cell as string, Properties.Settings.Default.THOptionLineCharLimit);
+                        THFilesElementsDataset.Tables[t].Rows[r][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(CellValue, Properties.Settings.Default.THOptionLineCharLimit);
                     }
                 }
             }
@@ -6570,6 +6627,14 @@ namespace TranslationHelper
             int TIndex = THFilesList.SelectedIndex;
             Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => AutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 2, true)));
             StringCase.Start();
+        }
+
+        private void THTargetRichTextBox_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void THTargetRichTextBox_Validated(object sender, EventArgs e)
+        {
         }
 
 
