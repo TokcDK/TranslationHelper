@@ -5387,16 +5387,25 @@ namespace TranslationHelper
             {
                 try
                 {
+                    int tableIndex = THFilesList.SelectedIndex;
+                    int cind = THFilesElementsDataset.Tables[tableIndex].Columns["Original"].Ordinal;// Колонка Original
+                    int cindTrans = THFilesElementsDataset.Tables[tableIndex].Columns["Translation"].Ordinal;// Колонка Original
+                    int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount]; 
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         //координаты ячейки
-                        int rind = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
-                        int cind = THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Original"].Ordinal;//2-поле untrans
+                        selectedRowIndexses[i] = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
 
-                        if (!Equals(THFileElementsDataGridView[cind + 1, rind].Value, THFileElementsDataGridView[cind, rind].Value) || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value + string.Empty))
+                    }
+                    foreach(var rind in selectedRowIndexses)
+                    {
+                        string origCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] + string.Empty;
+                        string transCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
+                        if (transCellValue != origCellValue || transCellValue.Length == 0)
                         {
-                            THFileElementsDataGridView[cind + 1, rind].Value = THFileElementsDataGridView[cind, rind].Value;
+                            THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] = origCellValue;
                         }
+
                     }
                 }
                 catch
