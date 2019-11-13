@@ -33,7 +33,7 @@ namespace TranslationHelper
 
             //translation
             this.THSearch1st.Text = T._("Find and Replace");
-            this.label3.Text = T._("Translation  Helper support:");
+            //this.label3.Text = T._("Translation  Helper support:");
             this.SearchModeGroupBox.Text = T._("Search Mode");
             this.SearchModeNormalRadioButton.Text = T._("Normal");
             this.label5.Text = T._("Range");
@@ -1023,17 +1023,18 @@ namespace TranslationHelper
         {
         }
 
+        //https://www.c-sharpcorner.com/uploadfile/kirtan007/make-form-stay-always-on-top-of-every-window/
         private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
-        static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
-        static readonly IntPtr HWND_TOP = new IntPtr(0);
-        static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
-        const UInt32 SWP_NOSIZE = 0x0001;
-        const UInt32 SWP_NOMOVE = 0x0002;
-        const UInt32 TOPMOST_FLAGS = SWP_NOMOVE | SWP_NOSIZE;
+        private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+        //private static readonly IntPtr HWND_TOP = new IntPtr(0);
+        //private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOMOVE = 0x0002;
+        private const uint TOPMOST_FLAGS = SWP_NOMOVE | SWP_NOSIZE;
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
         private void SearchAlwaysOnTopCheckBox_CheckedChanged(object sender, EventArgs e)
         {
