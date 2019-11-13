@@ -300,15 +300,15 @@ namespace TranslationHelper.Main.Functions
             }
             THAutoSetSameTranslationForSimularIsBusy = true;
 
-            //reset input variables to prevent break of work while concurent execution
+            //re-set input variables to prevent break of work while concurent execution
             bool forcevalue = ForceSetValue;
             int iTableIndex = InputTableIndex;
             int iRowIndex = InputRowIndex;
             int iCellIndex = InputCellIndex;
 
-            int TranslationCellIndex = iCellIndex + 1;
             var InputTableRow = THFilesElementsDataset.Tables[iTableIndex].Rows[iRowIndex];
             var InputTableOriginalCell = InputTableRow[iCellIndex];
+            int TranslationCellIndex = iCellIndex + 1;
             var InputTableTranslationCell = InputTableRow[TranslationCellIndex];
             if (InputTableTranslationCell == null || string.IsNullOrEmpty(InputTableTranslationCell as string))
             {
@@ -400,18 +400,20 @@ namespace TranslationHelper.Main.Functions
                                                 try
                                                 {
                                                     inputresult = inputresult.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
+
+                                                    stringoverallength0 += targetorigmatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
+                                                                                                       //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
+                                                                                                       //LogToFile("result[" + m + "]=" + inputresult);
                                                 }
                                                 catch (Exception ex)
                                                 {
+                                                    //была ошибка с startindex, добавлено для поимки исключения
                                                     string ggg = ex.ToString();
-                                                    MessageBox.Show(ggg);
-                                                    //    //была ошибка когда индекс был -1. Добавил проверку индекса и
+                                                    FileWriter.WriteData(Path.Combine(Application.StartupPath,"Error.log"), ggg);
+                                                    MessageBox.Show("AutoSameValueMethod ERROR: " + ggg);
                                                     failed = true;
+                                                    break;
                                                 }
-
-                                                stringoverallength0 += targetorigmatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
-                                                                                                   //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
-                                                                                                   //LogToFile("result[" + m + "]=" + inputresult);
                                             }
                                             //только если ячейка пустая
                                             TCell = THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex];
