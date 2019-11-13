@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -437,6 +438,10 @@ namespace TranslationHelper
 
                 //reset vars
                 istpptransfile = false;
+
+                //memory cleaning thing.
+                GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+                GC.Collect();
             }
             catch
             {
@@ -3215,7 +3220,7 @@ namespace TranslationHelper
         {
             var grid = sender as DataGridView;
 
-            string rowIdx = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset,THFileElementsDataGridView, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
+            string rowIdx = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
             StringFormat centerFormat = new StringFormat()
@@ -3388,7 +3393,7 @@ namespace TranslationHelper
                 while (i < 60)
                 {
                     Thread.Sleep(1000);
-                    if (MainIsClosing || this == null || IsDisposed || Data == null || Path.Length == 0)
+                    if (Properties.Settings.Default.IsTranslationHelperWasClosed || this == null || IsDisposed || Data == null || Path.Length == 0)
                     {
                         AutosaveActivated = false;
                         return;
@@ -4048,7 +4053,7 @@ namespace TranslationHelper
                             if (cName.Length == 4 && cName == "code")
                             {
                                 string propertyValue = property.Value + string.Empty;
-                                if (propertyValue.Length==3 && (propertyValue == "108" || propertyValue == "408" || propertyValue == "356"))
+                                if (propertyValue.Length == 3 && (propertyValue == "108" || propertyValue == "408" || propertyValue == "356"))
                                 {
                                     skipit = true;
                                     continue;
@@ -4319,7 +4324,7 @@ namespace TranslationHelper
                         }
                         if (skipit)
                         {
-                            if (curcode.Length==3 && curcode == "108" || curcode == "408" || curcode == "356")
+                            if (curcode.Length == 3 && curcode == "108" || curcode == "408" || curcode == "356")
                             {
                                 if (property.Name == "parameters")//asdf
                                 {
@@ -4337,7 +4342,7 @@ namespace TranslationHelper
                             if (cName.Length == 4 && cName == "code")
                             {
                                 string propertyValue = property.Value + string.Empty;
-                                if (propertyValue.Length==3 && (propertyValue == "108" || propertyValue == "408" || propertyValue == "356"))
+                                if (propertyValue.Length == 3 && (propertyValue == "108" || propertyValue == "408" || propertyValue == "356"))
                                 {
                                     skipit = true;
                                     continue;
@@ -4585,10 +4590,15 @@ namespace TranslationHelper
                                 for (int r = 0; r < rcount; r++)
                                 {
                                     var Row = Table.Rows[r];
-                                    if (InteruptTranslation)
+                                    if (Properties.Settings.Default.IsTranslationHelperWasClosed)
+                                    {
+                                        Thread.CurrentThread.Abort();
+                                        return;
+                                    }
+                                    else if (InteruptTranslation)
                                     {
                                         translationInteruptToolStripMenuItem.Visible = false;
-                                        Thread.CurrentThread.Interrupt();
+                                        Thread.CurrentThread.Abort();
                                         ProgressInfo(false);
                                         return;
                                     }
@@ -4858,7 +4868,7 @@ namespace TranslationHelper
 
         private void AddToTranslationCacheIfValid(DataSet THTranslationCache, string Original, string Translation)
         {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled)
+            if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed)
             {
                 DataTable Table = THTranslationCache.Tables[0];
                 if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || GetAlreadyAddedInTable(Table, Original))
@@ -5019,13 +5029,19 @@ namespace TranslationHelper
                         //перебор строк таблицы
                         for (int i = 0; i < rowscount; i++)
                         {
-                            if (InteruptTranslation)
+                            if (Properties.Settings.Default.IsTranslationHelperWasClosed)
+                            {
+                                Thread.CurrentThread.Abort();
+                                return;
+                            }
+                            else if (InteruptTranslation)
                             {
                                 //translationInteruptToolStripMenuItem.Visible = false;
                                 //translationInteruptToolStripMenuItem1.Visible = false;
                                 this.Invoke((Action)(() => translationInteruptToolStripMenuItem.Visible = false));
                                 this.Invoke((Action)(() => translationInteruptToolStripMenuItem1.Visible = false));
                                 InteruptTranslation = false;
+                                Thread.CurrentThread.Abort();
                                 return;
                             }
 
@@ -5156,7 +5172,7 @@ namespace TranslationHelper
 
         private void WriteTranslationCacheIfValid(DataSet THTranslationCache, string tHTranslationCachePath)
         {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled && THTranslationCache.Tables[0].Rows.Count > 0)
+            if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THTranslationCache.Tables[0].Rows.Count > 0)
             {
                 DBFile.WriteDBFile(THTranslationCache, THTranslationCachePath);
                 //THTranslationCache.Reset();
@@ -5724,19 +5740,23 @@ namespace TranslationHelper
             WriteDBFileLiteLastFileName = string.Empty;
         }
 
-        private void IndicateSaveProcess(string InfoText="")
+        private void IndicateSaveProcess(string InfoText = "")
         {
             bool THInfolabelEnabled = false;
-            if (!THInfolabel.Enabled)
+            if (!Properties.Settings.Default.IsTranslationHelperWasClosed && !THInfolabel.Enabled)
             {
                 THInfolabelEnabled = true;
                 THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = true));
             }
 
-            THInfolabel.Invoke((Action)(() => THInfolabel.Text= InfoText));
+            if (!Properties.Settings.Default.IsTranslationHelperWasClosed)
+            {
+                THInfolabel.Invoke((Action)(() => THInfolabel.Text = InfoText));
+            }
+
             WaitThreaded(1000);
 
-            if (THInfolabelEnabled && THInfolabel.Enabled)
+            if (THInfolabelEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THInfolabel.Enabled)
             {
                 THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
                 THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
@@ -5873,10 +5893,10 @@ namespace TranslationHelper
             InteruptTranslation = true;
         }
 
-        bool MainIsClosing = false;
+
         private void THMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            MainIsClosing = true;
+            Properties.Settings.Default.IsTranslationHelperWasClosed = true;
             InteruptTranslation = true;
         }
 

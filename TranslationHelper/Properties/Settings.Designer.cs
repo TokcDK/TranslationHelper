@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Properties {
+namespace TranslationHelper.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -128,6 +128,18 @@ namespace Properties {
             }
             set {
                 this["THdebug"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsTranslationHelperWasClosed {
+            get {
+                return ((bool)(this["IsTranslationHelperWasClosed"]));
+            }
+            set {
+                this["IsTranslationHelperWasClosed"] = value;
             }
         }
     }

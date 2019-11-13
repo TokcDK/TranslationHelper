@@ -831,10 +831,7 @@ namespace TranslationHelper
                         if (tableindex >= 0 && tableindex < THFilesListBox.Items.Count && rowindex >= 0 && rowindex < THFileElementsDataGridView.Rows.Count)
                         {
                             string value = THFileElementsDataGridView[searchcolumn, rowindex].Value + string.Empty;
-                            if (value.Length == 0)
-                            {
-                            }
-                            else
+                            if (value.Length > 0)
                             {
                                 if (SearchModeRegexRadioButton.Checked)
                                 {
@@ -981,10 +978,7 @@ namespace TranslationHelper
                             rowindex = int.Parse(oDsResultsCoordinates.Rows[r][1] + string.Empty);
 
                             string value = THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] + string.Empty;
-                            if (value.Length == 0)
-                            {
-                            }
-                            else
+                            if (value.Length > 0)
                             {
                                 if (SearchModeRegexRadioButton.Checked)
                                 {

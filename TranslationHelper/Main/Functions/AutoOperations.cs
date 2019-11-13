@@ -317,10 +317,14 @@ namespace TranslationHelper.Main.Functions
             {
                 //LogToFile("THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]="+ THFilesElementsDataset.Tables[tableind].Rows[rind][transcind].ToString());
                 //http://www.cyberforum.ru/csharp-beginners/thread244709.html
-                string quote = "\"";
-                string japanessymbols = "【|】|「|」";
-                string pattern = @"((\d|\!|\?|\.|[|]|" + quote + "|" + japanessymbols + ")+)";
-                Regex reg = new Regex(pattern); //reg равняется любым цифрам
+                string regexPatternQuotationMark = "\"";
+                string regexPatternJapanesSymbols = "【|】|「|」";
+                string regexPatternDigitsInAnyPlace = @"\d+";
+                string regexPatternDigitsOrSymbolsInEndOfLine = @"((\d|\!|\?|\.|[|]|" + regexPatternQuotationMark + "|" + regexPatternJapanesSymbols + ")+$)";
+                string regexPatternDigitsOrSymbolsInStartOfLine = @"(^(\d|\!|\?|\.|[|]|" + regexPatternQuotationMark + "|" + regexPatternJapanesSymbols + ")+)";
+                string regexPattern = regexPatternDigitsOrSymbolsInStartOfLine + "|" + regexPatternDigitsInAnyPlace + "|" + regexPatternDigitsOrSymbolsInEndOfLine;
+
+                Regex reg = new Regex(regexPattern); //reg равняется любым цифрам
                 string inputorigcellvalue = RomajiKana.THFixDigits(InputTableOriginalCell as string);
                 string inputtranscellvalue = RomajiKana.THFixDigits(InputTableTranslationCell as string);
                 MatchCollection mc = reg.Matches(inputorigcellvalue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
@@ -334,21 +338,30 @@ namespace TranslationHelper.Main.Functions
                     //LogToFile("Table "+Tindx+" proceed");
                     for (int Rindx = 0; Rindx < RowsCount; Rindx++) //количество строк в каждом файле
                     {
+                        //если приложение закрылось
+                        if (Properties.Settings.Default.IsTranslationHelperWasClosed)
+                        {
+                            return;
+                        }
+
                         var TRow = Table.Rows[Rindx];
                         var TCell = TRow[TranslationCellIndex];
                         if ((forcevalue && Rindx != iRowIndex) || TCell == null || string.IsNullOrEmpty(TCell as string)) //Проверять только для пустых ячеек перевода
                         {
+                            var OCell = TRow[iCellIndex];
                             //LogToFile("THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString()=" + THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString());
-                            if (mccount > 0) //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
+                            //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
+                            //также проверить, если оригиналы с цифрами не равны, иначе присваивать по обычному
+                            if (mccount > 0 && !Equals(InputTableOriginalCell, OCell))
                             {
-                                string TempCell = TRow[iCellIndex] + string.Empty;
+                                string TempCell = OCell as string;
                                 string checkingorigcellvalue = RomajiKana.THFixDigits(TempCell);
                                 MatchCollection mc0 = reg.Matches(TempCell); //mc0 равно значениям цифр ячейки под номером y в файле i
                                 int mc0Count = mc0.Count;
                                 if (mc0Count > 0) //если количество совпадений в mc0 больше нуля, т.е. цифры были в поле untrans проверяемой на совпадение ячейки
                                 {
-                                    string checkingorigcellvalueNoDigits = Regex.Replace(checkingorigcellvalue, pattern, string.Empty);
-                                    string inputorigcellvalueNoDigits = Regex.Replace(inputorigcellvalue, pattern, string.Empty);
+                                    string checkingorigcellvalueNoDigits = Regex.Replace(checkingorigcellvalue, regexPattern, string.Empty);
+                                    string inputorigcellvalueNoDigits = Regex.Replace(inputorigcellvalue, regexPattern, string.Empty);
 
                                     //LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
                                     //если поле перевода равно только что измененному во входной, без учета цифр
@@ -365,15 +378,15 @@ namespace TranslationHelper.Main.Functions
                                         }
                                         //также инфо о другом способе:
                                         //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
-                                        //там же че тести и for, ак у здесь меня - наиболее быстрый вариант
+                                        //там же все тесты и for, как у здесь меня - наиболее быстрый вариант
 
                                         //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменется, т.к. 万 [man] переводится как 10000.
                                         if (reg.Matches(inputtranscellvalue).Count == mccount)
                                         {
                                             //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
-                                            string inputresult = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+                                            //переименовано и закомментировано, т.к. было убрано оборачивание в цифры. string inputtranscellvalue = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
 
-                                            MatchCollection tm = reg.Matches(inputresult);
+                                            MatchCollection tm = reg.Matches(inputtranscellvalue);
                                             int startindex;
                                             int stringoverallength = 0;
                                             int stringlength;
@@ -399,7 +412,7 @@ namespace TranslationHelper.Main.Functions
                                                 stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
                                                 try
                                                 {
-                                                    inputresult = inputresult.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
+                                                    inputtranscellvalue = inputtranscellvalue.Remove(startindex, stringlength).Insert(startindex, targetorigmatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
 
                                                     stringoverallength0 += targetorigmatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
                                                                                                        //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
@@ -409,7 +422,7 @@ namespace TranslationHelper.Main.Functions
                                                 {
                                                     //была ошибка с startindex, добавлено для поимки исключения
                                                     string ggg = ex.ToString();
-                                                    FileWriter.WriteData(Path.Combine(Application.StartupPath,"Error.log"), ggg);
+                                                    FileWriter.WriteData(Path.Combine(Application.StartupPath, "Error.log"), ggg);
                                                     MessageBox.Show("AutoSameValueMethod ERROR: " + ggg);
                                                     failed = true;
                                                     break;
@@ -419,7 +432,7 @@ namespace TranslationHelper.Main.Functions
                                             TCell = THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex];
                                             if (!failed && (forcevalue || TCell == null || string.IsNullOrEmpty(TCell as string)))
                                             {
-                                                THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = inputresult;
+                                                THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = inputtranscellvalue;
                                             }
                                         }
                                     }
@@ -493,9 +506,9 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="THFileElementsDataGridView"></param>
         /// <param name="variant"></param>
-        public static void StringCaseMorph(DataSet THFilesElementsDataset, int TableIndex, DataGridView THFileElementsDataGridView, int variant, bool All=false)
+        public static void StringCaseMorph(DataSet THFilesElementsDataset, int TableIndex, DataGridView THFileElementsDataGridView, int variant, bool All = false)
         {
-            if (THFilesElementsDataset== null || variant > 2 || (!All && (TableIndex==-1 || THFileElementsDataGridView==null)))
+            if (THFilesElementsDataset == null || variant > 2 || (!All && (TableIndex == -1 || THFileElementsDataGridView == null)))
             {
                 return;
             }
@@ -560,7 +573,7 @@ namespace TranslationHelper.Main.Functions
                 case 1:
                     //Uppercase
                     //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1
-                    return char.ToUpper(DSTransCell[0]) + DSTransCell.Substring(1);                
+                    return char.ToUpper(DSTransCell[0]) + DSTransCell.Substring(1);
                 case 2:
                     //UPPERCASE
                     return DSTransCell.ToUpperInvariant();
