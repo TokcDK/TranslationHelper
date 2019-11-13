@@ -1,10 +1,19 @@
 ﻿
 using System.Data;
+using System.Windows.Forms;
 
 namespace TranslationHelper.Main.Functions
 {
     static class Table
     {
+        public static int GetDGVSelectedRowIndexInDatatable(DataSet TargetDataSet, DataGridView InputDataGridView,  int TableIndex, int rowIndex)
+        {
+            return TargetDataSet.Tables[TableIndex].Rows
+                .IndexOf(
+                ((DataRowView)InputDataGridView.Rows[rowIndex].DataBoundItem).Row
+                        );
+        }
+
         /// <summary>
         /// Returns Dataset with tables with only non empty rows
         /// </summary>

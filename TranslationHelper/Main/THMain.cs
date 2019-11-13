@@ -3215,7 +3215,7 @@ namespace TranslationHelper
         {
             var grid = sender as DataGridView;
 
-            string rowIdx = GetDGVSelectedRowIndexInDatatable(e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
+            string rowIdx = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset,THFileElementsDataGridView, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
             StringFormat centerFormat = new StringFormat()
@@ -3227,14 +3227,6 @@ namespace TranslationHelper
 
             Rectangle headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
-        }
-
-        private int GetDGVSelectedRowIndexInDatatable(int rowIndex)
-        {
-            return THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows
-                .IndexOf(
-                ((DataRowView)THFileElementsDataGridView.Rows[rowIndex].DataBoundItem).Row
-                        );
         }
 
         //Пример виртуального режима
@@ -3354,6 +3346,9 @@ namespace TranslationHelper
                 dbpath = Path.Combine(Application.StartupPath, "DB");
                 string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir) + "_autosave";
                 string autosavepath = Path.Combine(dbpath, "Auto", dbfilename + ".cmx");
+
+                Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
+                IndicateSave.Start();
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread trans = new Thread(new ParameterizedThreadStart((obj) => SaveLoop(THFilesElementsDataset, autosavepath)));
@@ -4439,7 +4434,7 @@ namespace TranslationHelper
                     //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                     //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                     //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                    int index = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                    int index = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
                     selindexes[i] = index;
 
                     //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
@@ -5427,7 +5422,7 @@ namespace TranslationHelper
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         //координаты ячейки
-                        selectedRowIndexses[i] = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                        selectedRowIndexses[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
 
                     }
                     foreach (var rind in selectedRowIndexses)
@@ -5610,7 +5605,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            rindexes[i] = GetDGVSelectedRowIndexInDatatable(rind);
+                            rindexes[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, rind);
                         }
 
                     }
@@ -5715,6 +5710,10 @@ namespace TranslationHelper
             {
                 await Task.Run(() => WaitThreaded(5000));
             }
+
+            Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
+            IndicateSave.Start();
+
             WriteDBFileIsBusy = true;
             WriteDBFileLiteLastFileName = fileName;
             using (DataSet liteds = Table.FillTempDB(ds))
@@ -5723,6 +5722,25 @@ namespace TranslationHelper
             }
             WriteDBFileIsBusy = false;
             WriteDBFileLiteLastFileName = string.Empty;
+        }
+
+        private void IndicateSaveProcess(string InfoText="")
+        {
+            bool THInfolabelEnabled = false;
+            if (!THInfolabel.Enabled)
+            {
+                THInfolabelEnabled = true;
+                THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = true));
+            }
+
+            THInfolabel.Invoke((Action)(() => THInfolabel.Text= InfoText));
+            WaitThreaded(1000);
+
+            if (THInfolabelEnabled && THInfolabel.Enabled)
+            {
+                THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
+                THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
+            }
         }
 
         private void WaitThreaded(int time)
@@ -5836,17 +5854,17 @@ namespace TranslationHelper
 
         private void ToUPPERCASEToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AutoOperations.StringCaseMorph(THFileElementsDataGridView, 2);
+            AutoOperations.StringCaseMorph(THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 2);
         }
 
         private void FirstCharacterToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AutoOperations.StringCaseMorph(THFileElementsDataGridView, 1);
+            AutoOperations.StringCaseMorph(THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 1);
         }
 
         private void TolowercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AutoOperations.StringCaseMorph(THFileElementsDataGridView, 0);
+            AutoOperations.StringCaseMorph(THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 0);
         }
 
         bool InteruptTranslation = false;
@@ -6456,13 +6474,13 @@ namespace TranslationHelper
             int i = THFileElementsDataGridView.SelectedCells.Count;
             if (i == 1)
             {
-                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.CurrentCell.RowIndex), 0, true, true);
+                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.CurrentCell.RowIndex), 0, true, true);
             }
         }
 
         private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int realrowindex = GetDGVSelectedRowIndexInDatatable(THFileElementsDataGridView.CurrentCell.RowIndex);
+            int realrowindex = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.CurrentCell.RowIndex);
             var value = THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1].ToString();
             THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[realrowindex][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(value, 60);
         }
@@ -6511,6 +6529,27 @@ namespace TranslationHelper
                     }
                 }
             }
+        }
+
+        private void lowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int TIndex = THFilesList.SelectedIndex;
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => AutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 0, true)));
+            StringCase.Start();
+        }
+
+        private void UppercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int TIndex = THFilesList.SelectedIndex;
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => AutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 1, true)));
+            StringCase.Start();
+        }
+
+        private void UPPERCASEallToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int TIndex = THFilesList.SelectedIndex;
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => AutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 2, true)));
+            StringCase.Start();
         }
 
 

@@ -493,51 +493,80 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="THFileElementsDataGridView"></param>
         /// <param name="variant"></param>
-        public static void StringCaseMorph(DataGridView THFileElementsDataGridView, int variant)
+        public static void StringCaseMorph(DataSet THFilesElementsDataset, int TableIndex, DataGridView THFileElementsDataGridView, int variant, bool All=false)
         {
-            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
-            if (THFileElementsDataGridViewSelectedCellsCount > 0)
+            if (THFilesElementsDataset== null || variant > 2 || (!All && (TableIndex==-1 || THFileElementsDataGridView==null)))
             {
-                try
-                {
-                    for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
-                    {
-                        int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                        //int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
-                        int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
-                        if (THFileElementsDataGridView.SelectedCells[i].Value == null)
-                        {
-                        }
-                        else
-                        {
-                            if (variant == 0)//lowercase
-                            {
-                                THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = (THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).ToLowerInvariant();
-                            }
-                            else if (variant == 1)//Uppercase
-                            {
-                                //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1
-                                string s = THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value as string;
-                                THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = char.ToUpper(s[0]) + s.Substring(1);
-                            }
-                            else if (variant == 2)//UPPERCASE
-                            {
-                                THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value = (THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value as string).ToUpperInvariant();
-                            }
-                            else
-                            {
-                                break;
-                            }
+                return;
+            }
 
+            int ctransind = THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+            int corigind = THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
+            if (!All)
+            {
+                int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
+                if (THFileElementsDataGridViewSelectedCellsCount > 0)
+                {
+                    try
+                    {
+                        int[] indexes = new int[THFileElementsDataGridViewSelectedCellsCount];
+                        for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
+                        {
+                            int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                            indexes[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, TableIndex, rind);
+                        }
+                        foreach (var rindex in indexes)
+                        {
+                            var DSOrigCell = THFilesElementsDataset.Tables[TableIndex].Rows[rindex][corigind] + string.Empty;
+                            var DSTransCell = THFilesElementsDataset.Tables[TableIndex].Rows[rindex][ctransind] + string.Empty;
+                            if (!string.IsNullOrWhiteSpace(DSTransCell) && DSTransCell != DSOrigCell)
+                            {
+                                THFilesElementsDataset.Tables[TableIndex].Rows[rindex][ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+            else
+            {
+                int THFilesElementsDatasetTablesCount = THFilesElementsDataset.Tables.Count;
+                for (int tindex = 0; tindex < THFilesElementsDatasetTablesCount; tindex++)
+                {
+                    int THFilesElementsDatasetTableRowsCount = THFilesElementsDataset.Tables[tindex].Rows.Count;
+                    for (int rindex = 0; rindex < THFilesElementsDatasetTableRowsCount; rindex++)
+                    {
+                        var DSOrigCell = THFilesElementsDataset.Tables[tindex].Rows[rindex][corigind] + string.Empty;
+                        var DSTransCell = THFilesElementsDataset.Tables[tindex].Rows[rindex][ctransind] + string.Empty;
+                        if (!string.IsNullOrWhiteSpace(DSTransCell) && DSTransCell != DSOrigCell)
+                        {
+                            THFilesElementsDataset.Tables[tindex].Rows[rindex][ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
                         }
 
                     }
                 }
-                catch
-                {
-                }
             }
+        }
 
+        private static string ChangeRegistryCaseForTheCell(string DSTransCell, int variant)
+        {
+            switch (variant)
+            {
+                case 0:
+                    //lowercase
+                    return DSTransCell.ToLowerInvariant();
+                case 1:
+                    //Uppercase
+                    //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1
+                    return char.ToUpper(DSTransCell[0]) + DSTransCell.Substring(1);                
+                case 2:
+                    //UPPERCASE
+                    return DSTransCell.ToUpperInvariant();
+                default:
+                    return DSTransCell;
+            }
         }
 
         /// <summary>
