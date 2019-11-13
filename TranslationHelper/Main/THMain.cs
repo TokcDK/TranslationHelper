@@ -5806,8 +5806,16 @@ namespace TranslationHelper
                                 Testgame.StartInfo.FileName = largestexe;
                                 //RPGMakerTransPatch.StartInfo.Arguments = string.Empty;
                                 //Testgame.StartInfo.UseShellExecute = true;
+
+                                //http://www.cyberforum.ru/windows-forms/thread31052.html
+                                // свернуть
+                                WindowState = FormWindowState.Minimized;
+
                                 await Task.Run(() => Testgame.Start());
                                 Testgame.WaitForExit();
+
+                                // Показать
+                                WindowState = FormWindowState.Normal;
                             }
                             catch
                             {
