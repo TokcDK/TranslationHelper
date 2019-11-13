@@ -142,5 +142,17 @@ namespace TranslationHelper.Properties {
                 this["IsTranslationHelperWasClosed"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public int THOptionLineCharLimit {
+            get {
+                return ((int)(this["THOptionLineCharLimit"]));
+            }
+            set {
+                this["THOptionLineCharLimit"] = value;
+            }
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace TranslationHelper
         {
             //translation
             THOptionFullComprasionDBload.Text = T._("Full recursive scan while translation DB loading (slower)");
+            THOptionLineCharLimitLabel.Text = "- "+T._("char limit of line length (for line split functions)");
             this.THSettingsMainTabPage.Text = T._("General");
             //this.label3.Text = T._("Translation  Helper support:");
             this.THSettingsOptimizationsTabPage.Text = T._("Optimizations");
@@ -162,6 +163,14 @@ namespace TranslationHelper
             set => THConfigINI.WriteINI("General", "THOptionFullComprasionDBload.Checked", value.ToString());
         }
 
+        public int LineCharLimitINI
+        {
+            get => THConfigINI.KeyExists("THOptionLineCharLimit", "General")
+                    ? int.Parse(THConfigINI.ReadINI("General", "LineCharLimit"))
+                    : 60;
+            set => THConfigINI.WriteINI("General", "THOptionLineCharLimit", value.ToString());
+        }
+
         private void THOptionDontLoadStringIfRomajiPercentTextBox_TextChanged(object sender, EventArgs e)
         {
             ValidTHOptionDontLoadStringIfRomajiPercent();
@@ -239,6 +248,21 @@ namespace TranslationHelper
         {
             Properties.Settings.Default.IsFullComprasionDBloadEnabled = THOptionFullComprasionDBload.Checked;
             FullComprasionDBloadINI = THOptionFullComprasionDBload.Checked;
+        }
+
+        private void LineCharLimitTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (System.Text.RegularExpressions.Regex.IsMatch(LineCharLimitTextBox.Text, "^[0-9]{1,4}$") && int.Parse(LineCharLimitTextBox.Text) <= 9999)
+            {
+                int newvalue = int.Parse(LineCharLimitTextBox.Text);
+                Properties.Settings.Default.THOptionLineCharLimit = newvalue;
+                LineCharLimitINI = newvalue;
+            }
+            else
+            {
+                LineCharLimitTextBox.Text = "60";
+            }
+
         }
     }
 }

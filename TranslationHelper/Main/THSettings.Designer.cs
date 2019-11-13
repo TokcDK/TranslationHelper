@@ -47,6 +47,8 @@
             this.THOptionEnableTranslationCacheCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTransLinkTextBox = new System.Windows.Forms.TextBox();
+            this.THOptionLineCharLimitLabel = new System.Windows.Forms.Label();
+            this.LineCharLimitTextBox = new System.Windows.Forms.TextBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -81,6 +83,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.LineCharLimitTextBox);
+            this.panel1.Controls.Add(this.THOptionLineCharLimitLabel);
             this.panel1.Controls.Add(this.THOptionAutotranslationForIdenticalCheckBox);
             this.panel1.Controls.Add(this.THOptionFullComprasionDBload);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -280,6 +284,24 @@
             this.THSettingsWebTransLinkTextBox.Text = "https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}";
             this.THSettingsWebTransLinkTextBox.Validated += new System.EventHandler(this.THSettingsWebTransLinkTextBox_Validated);
             // 
+            // THOptionLineCharLimitLabel
+            // 
+            this.THOptionLineCharLimitLabel.AutoSize = true;
+            this.THOptionLineCharLimitLabel.Location = new System.Drawing.Point(46, 52);
+            this.THOptionLineCharLimitLabel.Name = "THOptionLineCharLimitLabel";
+            this.THOptionLineCharLimitLabel.Size = new System.Drawing.Size(227, 13);
+            this.THOptionLineCharLimitLabel.TabIndex = 15;
+            this.THOptionLineCharLimitLabel.Text = "char limit of line length (for line split functions)";
+            // 
+            // LineCharLimitTextBox
+            // 
+            this.LineCharLimitTextBox.Location = new System.Drawing.Point(5, 49);
+            this.LineCharLimitTextBox.Name = "LineCharLimitTextBox";
+            this.LineCharLimitTextBox.Size = new System.Drawing.Size(35, 21);
+            this.LineCharLimitTextBox.TabIndex = 16;
+            this.LineCharLimitTextBox.Text = "60";
+            this.LineCharLimitTextBox.TextChanged += new System.EventHandler(this.LineCharLimitTextBox_TextChanged);
+            // 
             // THSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -325,5 +347,7 @@
         private System.Windows.Forms.Label label5;
         public System.Windows.Forms.CheckBox THOptionAutotranslationForIdenticalCheckBox;
         private System.Windows.Forms.CheckBox THOptionFullComprasionDBload;
+        private System.Windows.Forms.TextBox LineCharLimitTextBox;
+        private System.Windows.Forms.Label THOptionLineCharLimitLabel;
     }
 }
