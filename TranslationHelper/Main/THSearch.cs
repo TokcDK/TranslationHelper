@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace TranslationHelper
 {
@@ -19,7 +20,8 @@ namespace TranslationHelper
         public ListBox THFilesListBox;
         public DataSet THFilesElementsDataset;
         public DataGridView THFileElementsDataGridView;
-        readonly RichTextBox THTargetRichTextBox;
+        readonly RichTextBox THTargetRichTextBox;        
+
         public THSearch(DataSet DS, ListBox listBox, DataGridView DGV, RichTextBox TTB)
         {
             InitializeComponent();
@@ -48,6 +50,11 @@ namespace TranslationHelper
             this.THSearchFindWhatLabel.Text = T._("Find what:");
             this.label1.Text = T._("Replace with:");
             this.Text = T._("Find and Replace");
+
+            if (SearchAlwaysOnTopCheckBox.Checked)
+            {
+                SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
+            }
         }
 
         private void SearchModeNormalRadioButton_Click(object sender, EventArgs e)
@@ -1010,6 +1017,34 @@ namespace TranslationHelper
         private void THSearch_FormClosed(object sender, FormClosedEventArgs e)
         {
             oDsResultsCoordinates.Dispose();
+        }
+
+        private void SearchAlwaysOnTopCheckBox_Click(object sender, EventArgs e)
+        {
+        }
+
+        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+        static readonly IntPtr HWND_TOP = new IntPtr(0);
+        static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+        const UInt32 SWP_NOSIZE = 0x0001;
+        const UInt32 SWP_NOMOVE = 0x0002;
+        const UInt32 TOPMOST_FLAGS = SWP_NOMOVE | SWP_NOSIZE;
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        private void SearchAlwaysOnTopCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SearchAlwaysOnTopCheckBox.Checked)
+            {
+                SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
+            }
+            else
+            {
+                SetWindowPos(this.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
+            }
         }
     }
 }

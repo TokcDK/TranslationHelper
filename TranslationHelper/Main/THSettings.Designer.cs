@@ -30,14 +30,10 @@
         {
             this.THSettingsTabControl = new System.Windows.Forms.TabControl();
             this.THSettingsMainTabPage = new System.Windows.Forms.TabPage();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.label3 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.THOptionAutotranslationForIdenticalCheckBox = new System.Windows.Forms.CheckBox();
             this.THOptionFullComprasionDBload = new System.Windows.Forms.CheckBox();
             this.THSettingsOptimizationsTabPage = new System.Windows.Forms.TabPage();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.label2 = new System.Windows.Forms.Label();
             this.THProgramSettingsReadOptionsPanel = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen = new System.Windows.Forms.CheckBox();
@@ -49,8 +45,6 @@
             this.THSettingsToolsTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
             this.THOptionEnableTranslationCacheCheckBox = new System.Windows.Forms.CheckBox();
-            this.linkLabel4 = new System.Windows.Forms.LinkLabel();
-            this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTransLinkTextBox = new System.Windows.Forms.TextBox();
             this.THSettingsTabControl.SuspendLayout();
@@ -76,8 +70,6 @@
             // 
             // THSettingsMainTabPage
             // 
-            this.THSettingsMainTabPage.Controls.Add(this.linkLabel2);
-            this.THSettingsMainTabPage.Controls.Add(this.label3);
             this.THSettingsMainTabPage.Controls.Add(this.panel1);
             this.THSettingsMainTabPage.Location = new System.Drawing.Point(4, 22);
             this.THSettingsMainTabPage.Name = "THSettingsMainTabPage";
@@ -86,29 +78,6 @@
             this.THSettingsMainTabPage.TabIndex = 0;
             this.THSettingsMainTabPage.Text = "General";
             this.THSettingsMainTabPage.UseVisualStyleBackColor = true;
-            // 
-            // linkLabel2
-            // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.linkLabel2.Location = new System.Drawing.Point(331, 366);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(193, 13);
-            this.linkLabel2.TabIndex = 13;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "https://patreon.com/TranslationHelper";
-            this.linkLabel2.Visible = false;
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(194, 366);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(141, 13);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Translation  Helper support:";
-            this.label3.Visible = false;
             // 
             // panel1
             // 
@@ -146,8 +115,6 @@
             // 
             // THSettingsOptimizationsTabPage
             // 
-            this.THSettingsOptimizationsTabPage.Controls.Add(this.linkLabel1);
-            this.THSettingsOptimizationsTabPage.Controls.Add(this.label2);
             this.THSettingsOptimizationsTabPage.Controls.Add(this.THProgramSettingsReadOptionsPanel);
             this.THSettingsOptimizationsTabPage.Location = new System.Drawing.Point(4, 22);
             this.THSettingsOptimizationsTabPage.Name = "THSettingsOptimizationsTabPage";
@@ -156,29 +123,6 @@
             this.THSettingsOptimizationsTabPage.TabIndex = 1;
             this.THSettingsOptimizationsTabPage.Text = "Optimizations";
             this.THSettingsOptimizationsTabPage.UseVisualStyleBackColor = true;
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.linkLabel1.Location = new System.Drawing.Point(331, 366);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(193, 13);
-            this.linkLabel1.TabIndex = 9;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "https://patreon.com/TranslationHelper";
-            this.linkLabel1.Visible = false;
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(194, 366);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(141, 13);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Translation  Helper support:";
-            this.label2.Visible = false;
             // 
             // THProgramSettingsReadOptionsPanel
             // 
@@ -296,8 +240,6 @@
             // panel2
             // 
             this.panel2.Controls.Add(this.THOptionEnableTranslationCacheCheckBox);
-            this.panel2.Controls.Add(this.linkLabel4);
-            this.panel2.Controls.Add(this.label4);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.THSettingsWebTransLinkTextBox);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -318,29 +260,6 @@
             this.THOptionEnableTranslationCacheCheckBox.Text = "Enable online translation cache.";
             this.THOptionEnableTranslationCacheCheckBox.UseVisualStyleBackColor = true;
             this.THOptionEnableTranslationCacheCheckBox.Click += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_Click);
-            // 
-            // linkLabel4
-            // 
-            this.linkLabel4.AutoSize = true;
-            this.linkLabel4.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.linkLabel4.Location = new System.Drawing.Point(331, 366);
-            this.linkLabel4.Name = "linkLabel4";
-            this.linkLabel4.Size = new System.Drawing.Size(193, 13);
-            this.linkLabel4.TabIndex = 11;
-            this.linkLabel4.TabStop = true;
-            this.linkLabel4.Text = "https://patreon.com/TranslationHelper";
-            this.linkLabel4.Visible = false;
-            this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel4_LinkClicked);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(194, 366);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(141, 13);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "Translation  Helper support:";
-            this.label4.Visible = false;
             // 
             // label1
             // 
@@ -373,11 +292,9 @@
             this.Load += new System.EventHandler(this.THProgramSettingsForm_Load);
             this.THSettingsTabControl.ResumeLayout(false);
             this.THSettingsMainTabPage.ResumeLayout(false);
-            this.THSettingsMainTabPage.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.THSettingsOptimizationsTabPage.ResumeLayout(false);
-            this.THSettingsOptimizationsTabPage.PerformLayout();
             this.THProgramSettingsReadOptionsPanel.ResumeLayout(false);
             this.THProgramSettingsReadOptionsPanel.PerformLayout();
             this.THSettingsToolsTabPage.ResumeLayout(false);
@@ -401,15 +318,9 @@
         public System.Windows.Forms.CheckBox THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen;
         public System.Windows.Forms.CheckBox THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation;
         private System.Windows.Forms.Panel panel1;
-        internal System.Windows.Forms.LinkLabel linkLabel1;
-        internal System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.TextBox THSettingsWebTransLinkTextBox;
-        internal System.Windows.Forms.LinkLabel linkLabel2;
-        internal System.Windows.Forms.Label label3;
-        internal System.Windows.Forms.LinkLabel linkLabel4;
-        internal System.Windows.Forms.Label label4;
         public System.Windows.Forms.CheckBox THOptionEnableTranslationCacheCheckBox;
         private System.Windows.Forms.Label label5;
         public System.Windows.Forms.CheckBox THOptionAutotranslationForIdenticalCheckBox;

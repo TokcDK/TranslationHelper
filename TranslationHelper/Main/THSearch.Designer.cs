@@ -32,10 +32,9 @@
             this.THSearch1st = new System.Windows.Forms.TabPage();
             this.SearchResultsPanel = new System.Windows.Forms.Panel();
             this.SearchResultsDatagridview = new System.Windows.Forms.DataGridView();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.label3 = new System.Windows.Forms.Label();
             this.lblError = new System.Windows.Forms.Label();
             this.THSearchPanel = new System.Windows.Forms.Panel();
+            this.SearchAlwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchModeGroupBox = new System.Windows.Forms.GroupBox();
             this.panel6 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -90,8 +89,6 @@
             // THSearch1st
             // 
             this.THSearch1st.Controls.Add(this.SearchResultsPanel);
-            this.THSearch1st.Controls.Add(this.linkLabel2);
-            this.THSearch1st.Controls.Add(this.label3);
             this.THSearch1st.Controls.Add(this.lblError);
             this.THSearch1st.Controls.Add(this.THSearchPanel);
             this.THSearch1st.Location = new System.Drawing.Point(4, 22);
@@ -130,29 +127,6 @@
             this.SearchResultsDatagridview.TabIndex = 19;
             this.SearchResultsDatagridview.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SearchResultsDatagridview_CellClick);
             // 
-            // linkLabel2
-            // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.linkLabel2.Location = new System.Drawing.Point(375, 294);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(193, 13);
-            this.linkLabel2.TabIndex = 13;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "https://patreon.com/TranslationHelper";
-            this.linkLabel2.Visible = false;
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel2_LinkClicked);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(238, 294);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(141, 13);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Translation  Helper support:";
-            this.label3.Visible = false;
-            // 
             // lblError
             // 
             this.lblError.AutoSize = true;
@@ -167,6 +141,7 @@
             // 
             this.THSearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.THSearchPanel.Controls.Add(this.SearchAlwaysOnTopCheckBox);
             this.THSearchPanel.Controls.Add(this.SearchModeGroupBox);
             this.THSearchPanel.Controls.Add(this.THSearchMatchCaseCheckBox);
             this.THSearchPanel.Controls.Add(this.panel4);
@@ -175,6 +150,19 @@
             this.THSearchPanel.Name = "THSearchPanel";
             this.THSearchPanel.Size = new System.Drawing.Size(565, 304);
             this.THSearchPanel.TabIndex = 7;
+            // 
+            // SearchAlwaysOnTopCheckBox
+            // 
+            this.SearchAlwaysOnTopCheckBox.AutoSize = true;
+            this.SearchAlwaysOnTopCheckBox.Checked = true;
+            this.SearchAlwaysOnTopCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.SearchAlwaysOnTopCheckBox.Location = new System.Drawing.Point(438, 185);
+            this.SearchAlwaysOnTopCheckBox.Name = "SearchAlwaysOnTopCheckBox";
+            this.SearchAlwaysOnTopCheckBox.Size = new System.Drawing.Size(96, 17);
+            this.SearchAlwaysOnTopCheckBox.TabIndex = 21;
+            this.SearchAlwaysOnTopCheckBox.Text = "Always on Top";
+            this.SearchAlwaysOnTopCheckBox.UseVisualStyleBackColor = true;
+            this.SearchAlwaysOnTopCheckBox.CheckedChanged += new System.EventHandler(this.SearchAlwaysOnTopCheckBox_CheckedChanged);
             // 
             // SearchModeGroupBox
             // 
@@ -492,8 +480,6 @@
 
         private System.Windows.Forms.TabControl THSearchTabs;
         private System.Windows.Forms.TabPage THSearch1st;
-        internal System.Windows.Forms.LinkLabel linkLabel2;
-        internal System.Windows.Forms.Label label3;
         private System.Windows.Forms.Panel THSearchPanel;
         private System.Windows.Forms.RadioButton SearchModeRegexRadioButton;
         private System.Windows.Forms.RadioButton SearchModeNormalRadioButton;
@@ -525,5 +511,6 @@
         private System.Windows.Forms.Panel SearchResultsPanel;
         private System.Windows.Forms.TextBox SearchFormReplaceWithTextBox;
         private System.Windows.Forms.TextBox SearchFormFindWhatTextBox;
+        private System.Windows.Forms.CheckBox SearchAlwaysOnTopCheckBox;
     }
 }
