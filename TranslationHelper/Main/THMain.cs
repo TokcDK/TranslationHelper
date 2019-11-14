@@ -43,8 +43,6 @@ namespace TranslationHelper
         //DataTable THFilesElementsDatatable;
         //private BindingSource THBS = new BindingSource();
 
-        public string THSelectedDir;
-        public string THSelectedGameDir;
         public string THRPGMTransPatchver;
         public string THSelectedSourceType;
 
@@ -324,16 +322,18 @@ namespace TranslationHelper
                                     }
                                 }
 
+                                Properties.Settings.Default.THSelectedGameDir = GetCorrectedGameDIr(Properties.Settings.Default.THSelectedGameDir);
+
                                 if (THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch") || THSelectedSourceType.Contains("KiriKiri game"))
                                 {
-                                    Settings.THConfigINI.WriteINI("Paths", "LastPath", THSelectedGameDir);
+                                    Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedGameDir);
                                 }
                                 else
                                 {
-                                    Settings.THConfigINI.WriteINI("Paths", "LastPath", THSelectedDir);
+                                    Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedDir);
                                 }
                                 _ = THMsg.Show(THSelectedSourceType + T._(" loaded") + "!");
-
+                                
                                 editToolStripMenuItem.Enabled = true;
                                 viewToolStripMenuItem.Enabled = true;
                                 loadTranslationToolStripMenuItem.Enabled = true;
@@ -360,6 +360,23 @@ namespace TranslationHelper
 
                 IsOpeningInProcess = false;
             }
+        }
+
+        private string GetCorrectedGameDIr(string tHSelectedGameDir)
+        {
+            if (tHSelectedGameDir.Length == 0)
+            {
+                tHSelectedGameDir = Properties.Settings.Default.THSelectedDir;
+            }
+
+            //для rpgmaker mv. если была папка data, которая в папке www
+            string pFolderName = Path.GetFileName(tHSelectedGameDir);
+            if (string.Compare(pFolderName, "data", true) == 0)
+            {
+                return Path.GetDirectoryName(Path.GetDirectoryName(tHSelectedGameDir));
+            }
+            return tHSelectedGameDir;
+            throw new NotImplementedException();
         }
 
         private void THCleanupThings()
@@ -450,13 +467,12 @@ namespace TranslationHelper
         }
 
         public DirectoryInfo mvdatadir;
-        public string THWorkProjectDir;
         bool istpptransfile = false;
         private string GetSourceType(string sPath)
         {
             DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-            THSelectedDir = dir + string.Empty;
-            THSelectedGameDir = dir + string.Empty;
+            Properties.Settings.Default.THSelectedDir = dir + string.Empty;
+            Properties.Settings.Default.THSelectedGameDir = dir + string.Empty;
             //MessageBox.Show("sPath=" + sPath);
             if (sPath.ToUpper().EndsWith(".KS") || sPath.ToUpper().EndsWith(".SCN"))
             {
@@ -512,13 +528,13 @@ namespace TranslationHelper
                         return "KiriKiri game";
                     }
                 }
-                else if (File.Exists(Path.Combine(THSelectedDir, "www", "data", "system.json")))
+                else if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", "system.json")))
                 {
                     try
                     {
-                        //THSelectedDir += "\\www\\data";
+                        //Properties.Settings.Default.THSelectedDir += "\\www\\data";
                         //var MVJsonFIles = new List<string>();
-                        mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(THSelectedDir, "www", "data/")));
+                        mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
                         foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
                         {
                             //MessageBox.Show("file.FullName=" + file.FullName);
@@ -613,8 +629,8 @@ namespace TranslationHelper
                                 //dGFiles.Rows[i].Cells[0].Value = THRPGMTransPatchFiles[i].Name;
                             }
 
-                            THSelectedGameDir = THSelectedDir;
-                            THSelectedDir = extractedpatchpath.Replace("\\patch", string.Empty);
+                            Properties.Settings.Default.THSelectedGameDir = Properties.Settings.Default.THSelectedDir;
+                            Properties.Settings.Default.THSelectedDir = extractedpatchpath.Replace("\\patch", string.Empty);
                             //MessageBox.Show(THSelectedSourceType + " loaded!");
                             //ProgressInfo(false, string.Empty);
                             return "RPG Maker game with RPGMTransPatch";
@@ -1279,8 +1295,8 @@ namespace TranslationHelper
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
             //MessageBox.Show("THFOpen.FileName=" + THFOpen.FileName);
             //MessageBox.Show("dir=" + dir);
-            THSelectedDir = dir + string.Empty;
-            //MessageBox.Show("THSelectedDir=" + THSelectedDir);
+            Properties.Settings.Default.THSelectedDir = dir + string.Empty;
+            //MessageBox.Show("Properties.Settings.Default.THSelectedDir=" + Properties.Settings.Default.THSelectedDir);
 
             //MessageBox.Show("sType=" + sType);
 
@@ -1294,7 +1310,7 @@ namespace TranslationHelper
             var patchdir = dir;
             StreamReader patchfile = new StreamReader(sPath);
             //MessageBox.Show(patchfile.ReadLine());
-            if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(Path.Combine(THSelectedDir, "patch"))) //если есть подпапка patch, тогда это версия патча 3
+            if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "patch"))) //если есть подпапка patch, тогда это версия патча 3
             {
                 THRPGMTransPatchver = "3";
                 patchdir = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(sPath), "patch"));
@@ -1349,7 +1365,7 @@ namespace TranslationHelper
             THFilesElementsDatasetTranslated.Reset();
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
             var patchdir = dir;
-            THSelectedDir = dir + string.Empty;
+            Properties.Settings.Default.THSelectedDir = dir + string.Empty;
             StreamReader patchfile = new StreamReader(sPath);
             //MessageBox.Show(patchfile.ReadLine());
             if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(dir + "\\patch")) //если есть подпапка patch, тогда это версия патча 3
@@ -2408,7 +2424,7 @@ namespace TranslationHelper
         //https://stackoverflow.com/a/31150444
         private void FormatTextBox()
         {
-            if (THTargetRichTextBox==null || THTargetRichTextBox.Text.Length == 0)
+            if (THTargetRichTextBox == null || THTargetRichTextBox.Text.Length == 0)
             {
                 return;
             }
@@ -2488,14 +2504,14 @@ namespace TranslationHelper
                     //THInfoTextBox.Text = "Saving...";
 
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    //Thread save = new Thread(new ParameterizedThreadStart((obj) => SaveRPGMTransPatchFiles(THSelectedDir, THRPGMTransPatchver)));
+                    //Thread save = new Thread(new ParameterizedThreadStart((obj) => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver)));
                     //save.Start();
 
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => SaveRPGMTransPatchFiles(THSelectedDir, THRPGMTransPatchver));
+                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver));
 
-                    //MessageBox.Show("THSelectedDir=" + THSelectedDir);
-                    //SaveRPGMTransPatchFiles(THSelectedDir, THRPGMTransPatchver);
+                    //MessageBox.Show("Properties.Settings.Default.THSelectedDir=" + Properties.Settings.Default.THSelectedDir);
+                    //SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver);
 
                     //THInfoTextBox.Text = string.Empty;
 
@@ -2527,7 +2543,7 @@ namespace TranslationHelper
                             //        help = "Dump labels to patch file")
                             //parser.add_argument('--dump-scripts', type = str, default = None,
                             //        help = "Dump scripts to given directory")
-                            string rpgmakertranscliargs = "\"" + THSelectedGameDir + "\" -p \"" + THSelectedDir + "\"" + " -o \"" + THSelectedDir.Remove(THSelectedDir.Length - "_patch".Length, "_patch".Length) + "_translated\"";
+                            string rpgmakertranscliargs = "\"" + Properties.Settings.Default.THSelectedGameDir + "\" -p \"" + Properties.Settings.Default.THSelectedDir + "\"" + " -o \"" + Properties.Settings.Default.THSelectedDir.Remove(Properties.Settings.Default.THSelectedDir.Length - "_patch".Length, "_patch".Length) + "_translated\"";
 
                             if (RunProgram(rpgmakertranscli, rpgmakertranscliargs))
                             {
@@ -2547,13 +2563,13 @@ namespace TranslationHelper
                 }
                 else if (istpptransfile)
                 {
-                    //THMsg.Show(THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                    WriteJson(THFilesList.Items[0] + string.Empty, THSelectedDir + THFilesList.Items[0] + ".trans");
+                    //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                    WriteJson(THFilesList.Items[0] + string.Empty, Properties.Settings.Default.THSelectedDir + THFilesList.Items[0] + ".trans");
                 }
                 else if (THSelectedSourceType == "RPG Maker MV json")
                 {
-                    //THMsg.Show(THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                    WriteJson(THFilesList.Items[0] + string.Empty, THSelectedDir + "\\" + THFilesList.Items[0] + ".json");
+                    //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                    WriteJson(THFilesList.Items[0] + string.Empty, Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".json");
                 }
                 else if (THSelectedSourceType == "RPG Maker MV")
                 {
@@ -2574,14 +2590,14 @@ namespace TranslationHelper
                                 break;
                             }
                         }
-                        //THMsg.Show(THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                        //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
                         if (changed)
                         {
 
                             //THMsg.Show("start writing");
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, THSelectedDir + "\\www\\data\\" + THFilesList.Items[f] + ".json"));
-                            //WriteJson(THFilesListBox.Items[f].ToString(), THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
+                            await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Properties.Settings.Default.THSelectedDir + "\\www\\data\\" + THFilesList.Items[f] + ".json"));
+                            //WriteJson(THFilesListBox.Items[f].ToString(), Properties.Settings.Default.THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                         }
                     }
                     THMsg.Show(T._("finished") + "!");
@@ -2589,13 +2605,13 @@ namespace TranslationHelper
                 else if (THSelectedSourceType == "KiriKiri scenario")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    //await Task.Run(() => KiriKiriScenarioWrite(THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
-                    await Task.Run(() => KiriKiriScriptScenarioWrite(THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
+                    //await Task.Run(() => KiriKiriScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
+                    await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
                 }
                 else if (THSelectedSourceType == "KiriKiri script")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => KiriKiriScriptScenarioWrite(THSelectedDir + "\\" + THFilesList.Items[0] + ".ks"));
+                    await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".ks"));
                 }
             }
             SaveInAction = false;
@@ -2833,7 +2849,7 @@ namespace TranslationHelper
                 }
 
                 //MessageBox.Show(dirpath);
-                THSaveFolderBrowser.SelectedPath = THSelectedDir; //Установить начальный путь на тот, что был установлен при открытии.
+                THSaveFolderBrowser.SelectedPath = Properties.Settings.Default.THSelectedDir; //Установить начальный путь на тот, что был установлен при открытии.
 
                 if (THSaveFolderBrowser.ShowDialog() == DialogResult.OK)
                 {
@@ -2841,7 +2857,7 @@ namespace TranslationHelper
                     {
                         if (SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, THRPGMTransPatchver))
                         {
-                            THSelectedDir = THSaveFolderBrowser.SelectedPath;
+                            Properties.Settings.Default.THSelectedDir = THSaveFolderBrowser.SelectedPath;
                             //MessageBox.Show("Сохранение завершено!");
                             THMsg.Show(T._("Save complete!"));
                         }
@@ -3384,6 +3400,7 @@ namespace TranslationHelper
 
             Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
 
+            System.Media.SystemSounds.Beep.Play();
             ProgressInfo(false);
         }
 
@@ -3398,7 +3415,7 @@ namespace TranslationHelper
                 AutosaveActivated = true;
 
                 dbpath = Path.Combine(Application.StartupPath, "DB");
-                string dbfilename = Path.GetFileNameWithoutExtension(THSelectedDir) + "_autosave";
+                string dbfilename = Path.GetFileNameWithoutExtension(Properties.Settings.Default.THSelectedDir) + "_autosave";
                 string autosavepath = Path.Combine(dbpath, "Auto", dbfilename + ".cmx");
 
                 Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
@@ -3760,7 +3777,7 @@ namespace TranslationHelper
                 using (OpenFileDialog THFOpenBD = new OpenFileDialog())
                 {
                     THFOpenBD.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
-                    
+
                     THFOpenBD.InitialDirectory = GetProjectDBFolder();
 
                     if (THFOpenBD.ShowDialog() == DialogResult.OK)
@@ -3835,21 +3852,26 @@ namespace TranslationHelper
             //THMsg.Show("s.Length=" + s.Length + infoabouts);
         }
 
-        private bool GetAnyFileWithTheNameExist(string name)
+        private bool GetAnyFileWithTheNameExist(string[] array, string name)
         {
             //исключение имен с недопустимыми именами для файла или папки
             //http://www.cyberforum.ru/post5599483.html
-            if (name.Intersect(Path.GetInvalidFileNameChars()).Any())
+            if (name.Length == 0 || StringOperations.IsMultiline(name) || name.Intersect(Path.GetInvalidFileNameChars()).Any())
             {
                 //MessageBox.Show("GetAnyFileWithTheNameExist return false because invalid! name=" + name);
                 return false;
             }
-            //MessageBox.Show("THSelectedDir=" + THSelectedDir.Replace("\\www\\data", "\\www") + "\r\n, name=" + name + "\r\n, Count=" + Directory.EnumerateFiles(THSelectedDir, name + ".*", SearchOption.AllDirectories).Count());
-            if (Directory.EnumerateFiles(THSelectedDir, name + ".*", SearchOption.AllDirectories).Count() > 0)
+            if (array.Contains(name))
             {
-                //MessageBox.Show("GetAnyFileWithTheNameExist Returns True! name="+ name);
                 return true;
             }
+
+            //MessageBox.Show("Properties.Settings.Default.THSelectedDir=" + Properties.Settings.Default.THSelectedDir.Replace("\\www\\data", "\\www") + "\r\n, name=" + name + "\r\n, Count=" + Directory.EnumerateFiles(Properties.Settings.Default.THSelectedDir, name + ".*", SearchOption.AllDirectories).Count());
+            //foreach (var f in Directory.EnumerateFiles(Properties.Settings.Default.THSelectedDir, name + ".*", SearchOption.AllDirectories))
+            //{
+            //    //MessageBox.Show("GetAnyFileWithTheNameExist Returns True! name="+ name);
+            //    return true;
+            //}
             //MessageBox.Show("GetAnyFileWithTheNameExist Returns False! name=" + name);
             return false;
         }
@@ -3861,8 +3883,8 @@ namespace TranslationHelper
             {
                 //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
                 JToken root;
-                //MessageBox.Show(THSelectedDir);
-                //using (var reader = new StreamReader(THSelectedDir+"\\"+ Jsonname+".json"))
+                //MessageBox.Show(Properties.Settings.Default.THSelectedDir);
+                //using (var reader = new StreamReader(Properties.Settings.Default.THSelectedDir+"\\"+ Jsonname+".json"))
                 using (StreamReader reader = new StreamReader(sPath))
                 {
                     using (JsonTextReader jsonReader = new JsonTextReader(reader))
@@ -4011,7 +4033,7 @@ namespace TranslationHelper
                     }
                     if (token.Type == JTokenType.String)
                     {
-                        if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || RomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) || GetAnyFileWithTheNameExist(tokenvalue))
+                        if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || RomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
                         {
                         }
                         else
@@ -4119,8 +4141,8 @@ namespace TranslationHelper
             {
                 //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
                 JToken root;
-                //MessageBox.Show(THSelectedDir);
-                //using (var reader = new StreamReader(THSelectedDir+"\\"+ Jsonname+".json"))
+                //MessageBox.Show(Properties.Settings.Default.THSelectedDir);
+                //using (var reader = new StreamReader(Properties.Settings.Default.THSelectedDir+"\\"+ Jsonname+".json"))
                 using (StreamReader reader = new StreamReader(sPath))
                 {
                     using (JsonTextReader jsonReader = new JsonTextReader(reader))
@@ -5721,14 +5743,14 @@ namespace TranslationHelper
 
         private string GetDBFileName(bool IsSaveAs = false)
         {
-            string fName = Path.GetFileName(THSelectedDir);
+            string fName = Path.GetFileName(Properties.Settings.Default.THSelectedDir);
             if (THSelectedSourceType.Contains("RPG Maker MV"))
             {
                 if (THFilesList.Items.Count == 1 && THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(THFilesList.Items[0].ToString()))
                 {
                     if (fName == "data")
                     {
-                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(THSelectedDir))) + "_" + Path.GetFileNameWithoutExtension(THFilesList.Items[0].ToString());
+                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(Properties.Settings.Default.THSelectedDir))) + "_" + Path.GetFileNameWithoutExtension(THFilesList.Items[0].ToString());
                     }
                     else
                     {
@@ -5740,7 +5762,7 @@ namespace TranslationHelper
             //{
 
             //}
-            return fName+(IsSaveAs ? "_" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") : string.Empty);
+            return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") : string.Empty);
         }
 
         bool WriteDBFileIsBusy = false;
@@ -5814,7 +5836,7 @@ namespace TranslationHelper
         {
             if (THSelectedSourceType == "RPG Maker MV")
             {
-                CopyFolder.Copy(Path.Combine(THSelectedDir, "www", "data"), Path.Combine(THSelectedDir, "www", "data_bak"));
+                CopyFolder.Copy(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data_bak"));
                 try
                 {
                     bool success = false;
@@ -5835,19 +5857,19 @@ namespace TranslationHelper
                                 break;
                             }
                         }
-                        //THMsg.Show(THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                        //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
                         if (changed)
                         {
 
                             //THMsg.Show("start writing");
 
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            success = await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(THSelectedDir, "www", "data", THFilesList.Items[f] + ".json")));
+                            success = await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json")));
                             if (!success)
                             {
                                 break;
                             }
-                            //success = WriteJson(THFilesListBox.Items[f].ToString(), THWorkProjectDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
+                            //success = WriteJson(THFilesListBox.Items[f].ToString(), Properties.Settings.Default.THWorkProjectDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                         }
                     }
                     if (success)
@@ -5856,7 +5878,7 @@ namespace TranslationHelper
                         {
                             try
                             {
-                                DirectoryInfo di = new DirectoryInfo(THSelectedDir);
+                                DirectoryInfo di = new DirectoryInfo(Properties.Settings.Default.THSelectedDir);
                                 FileInfo[] fiArr = di.GetFiles("*.exe");
                                 string largestexe = string.Empty;
                                 long filesize = 0;
@@ -5869,7 +5891,7 @@ namespace TranslationHelper
                                     }
                                 }
                                 //MessageBox.Show("outdir=" + outdir);
-                                //Testgame.StartInfo.FileName = Path.Combine(THSelectedDir,"game.exe");
+                                //Testgame.StartInfo.FileName = Path.Combine(Properties.Settings.Default.THSelectedDir,"game.exe");
                                 Testgame.StartInfo.FileName = largestexe;
                                 //RPGMakerTransPatch.StartInfo.Arguments = string.Empty;
                                 //Testgame.StartInfo.UseShellExecute = true;
@@ -5896,8 +5918,8 @@ namespace TranslationHelper
                 catch
                 {
                 }
-                Directory.Delete(Path.Combine(THSelectedDir, "www", "data"), true);
-                Directory.Move(Path.Combine(THSelectedDir, "www", "data_bak"), Path.Combine(THSelectedDir, "www", "data"));
+                Directory.Delete(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data"), true);
+                Directory.Move(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data_bak"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data"));
             }
         }
 
@@ -6104,197 +6126,195 @@ namespace TranslationHelper
             }
         }
 
-        private async void LoadTranslationFromCompatibleSourceToolStripMenuItem_Click(object sender, EventArgs e)
+        private /*async*/ void LoadTranslationFromCompatibleSourceToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-            if (IsOpeningInProcess)//Do nothing if user will try to use Open menu before previous will be finished
-            {
-            }
-            else
-            {
-                IsOpeningInProcess = true;
+            //if (IsOpeningInProcess)//Do nothing if user will try to use Open menu before previous will be finished
+            //{
+            //}
+            //else
+            //{
+            //    IsOpeningInProcess = true;
 
-                //об сообщении Освобождаемый объект никогда не освобождается и почему using здесь
-                //https://stackoverflow.com/questions/2926869/do-you-need-to-dispose-of-objects-and-set-them-to-null
-                using (OpenFileDialog THFOpen = new OpenFileDialog())
-                {
-                    THFOpen.InitialDirectory = Settings.THConfigINI.ReadINI("Paths", "LastPath");
-                    THFOpen.Filter = "RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker game exe(*.exe)|*.exe";
+            //    //об сообщении Освобождаемый объект никогда не освобождается и почему using здесь
+            //    //https://stackoverflow.com/questions/2926869/do-you-need-to-dispose-of-objects-and-set-them-to-null
+            //    using (OpenFileDialog THFOpen = new OpenFileDialog())
+            //    {
+            //        THFOpen.InitialDirectory = Settings.THConfigINI.ReadINI("Paths", "LastPath");
+            //        THFOpen.Filter = "RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker game exe(*.exe)|*.exe";
 
-                    if (THFOpen.ShowDialog() == DialogResult.OK)
-                    {
-                        if (THFOpen.OpenFile() != null)
-                        {
-                            //THActionProgressBar.Visible = true;
-                            ProgressInfo(true, T._("loading") + "..");
+            //        if (THFOpen.ShowDialog() == DialogResult.OK)
+            //        {
+            //            if (THFOpen.OpenFile() != null)
+            //            {
+            //                //THActionProgressBar.Visible = true;
+            //                ProgressInfo(true, T._("loading") + "..");
 
-                            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                            //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
-                            //open.Start();
+            //                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            //                //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
+            //                //open.Start();
 
-                            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => THSelectedSourceTypeTranslated = GetSourceTypeTranslated(THFOpen.FileName));
+            //                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+            //                await Task.Run(() => THSelectedSourceTypeTranslated = GetSourceTypeTranslated(THFOpen.FileName));
 
-                            //THSelectedSourceTypeTranslated = GetSourceType(THFOpen.FileName);
+            //                //THSelectedSourceTypeTranslated = GetSourceType(THFOpen.FileName);
 
-                            //THActionProgressBar.Visible = false;
-                            ProgressInfo(false, string.Empty);
+            //                //THActionProgressBar.Visible = false;
+            //                ProgressInfo(false, string.Empty);
 
-                            if (THSelectedSourceTypeTranslated.Length == 0)
-                            {
-                                THMsg.Show(T._("Problem with loading"));
-                            }
-                        }
-                    }
-                }
+            //                if (THSelectedSourceTypeTranslated.Length == 0)
+            //                {
+            //                    THMsg.Show(T._("Problem with loading"));
+            //                }
+            //            }
+            //        }
+            //    }
 
-                IsOpeningInProcess = false;
-            }
+            //    IsOpeningInProcess = false;
+            //}
         }
 
         public DirectoryInfo mvdatadirTranslated;
-        public string THWorkProjectDirTranslated;
 
         //private bool istpptransfileTranslated;
         private DataSet THFilesElementsDatasetTranslated = new DataSet();
-        public string THSelectedDirTranslated;
         public string THRPGMTransPatchverTranslated;
         public string THSelectedSourceTypeTranslated;
         private string extractedpatchpathTranslated = string.Empty;
-        private string GetSourceTypeTranslated(string sPath)
-        {
-            //Reset temp dir for translation
-            THFilesElementsDatasetTranslated.Reset();
+        //private string GetSourceTypeTranslated(string sPath)
+        //{
+        //    //Reset temp dir for translation
+        //    THFilesElementsDatasetTranslated.Reset();
 
-            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-            THSelectedDirTranslated = dir + string.Empty;
-            //MessageBox.Show("sPath=" + sPath);
-            if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
-            {
-                return RPGMTransPatchPrepareTranslated(sPath);
-                //return "RPGMakerTransPatch";
-            }
-            else if (sPath.ToUpper().Contains(".TRANSSS"))
-            {
-                //istpptransfileTranslated = true;
-                if (OpentppTransFile(sPath))
-                {
-                    for (int i = 0; i < THFilesElementsDatasetTranslated.Tables.Count; i++)
-                    {
-                        THFilesList.Invoke((Action)(() => THFilesList.Items.Add(THFilesElementsDatasetTranslated.Tables[i].TableName)));//add all dataset tables names to the ListBox
+        //    DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+        //    Properties.Settings.Default.THSelectedDirTranslated = dir + string.Empty;
+        //    //MessageBox.Show("sPath=" + sPath);
+        //    if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
+        //    {
+        //        return RPGMTransPatchPrepareTranslated(sPath);
+        //        //return "RPGMakerTransPatch";
+        //    }
+        //    else if (sPath.ToUpper().Contains(".TRANSSS"))
+        //    {
+        //        //istpptransfileTranslated = true;
+        //        if (OpentppTransFile(sPath))
+        //        {
+        //            for (int i = 0; i < THFilesElementsDatasetTranslated.Tables.Count; i++)
+        //            {
+        //                THFilesList.Invoke((Action)(() => THFilesList.Items.Add(THFilesElementsDatasetTranslated.Tables[i].TableName)));//add all dataset tables names to the ListBox
 
-                    }
-                    return "T++ trans";
-                }
-            }
-            else if (sPath.ToUpper().Contains(".JSON"))
-            {
-                if (OpenRPGMakerMVjson(sPath))
-                {
-                    for (int i = 0; i < THFilesElementsDatasetTranslated.Tables.Count; i++)
-                    {
-                        THFilesList.Invoke((Action)(() => THFilesList.Items.Add(THFilesElementsDatasetTranslated.Tables[i].TableName)));//add all dataset tables names to the ListBox
+        //            }
+        //            return "T++ trans";
+        //        }
+        //    }
+        //    else if (sPath.ToUpper().Contains(".JSON"))
+        //    {
+        //        if (OpenRPGMakerMVjson(sPath))
+        //        {
+        //            for (int i = 0; i < THFilesElementsDatasetTranslated.Tables.Count; i++)
+        //            {
+        //                THFilesList.Invoke((Action)(() => THFilesList.Items.Add(THFilesElementsDatasetTranslated.Tables[i].TableName)));//add all dataset tables names to the ListBox
 
-                    }
-                    return "RPG Maker MV json";
-                }
-            }
-            else if (sPath.ToUpper().EndsWith("GAME.EXE") || dir.GetFiles("*.exe").Length > 0)
-            {
-                if (File.Exists(Path.Combine(THSelectedDir, "www", "data", "system.json")))//RPGMakerMV
-                {
-                    try
-                    {
-                        //THSelectedDir += "\\www\\data";
-                        //var MVJsonFIles = new List<string>();
-                        mvdatadirTranslated = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(THSelectedDir, "www", "data/")));
-                        foreach (FileInfo file in mvdatadirTranslated.GetFiles("*.json"))
-                        {
-                            //MessageBox.Show("file.FullName=" + file.FullName);
-                            //MVJsonFIles.Add(file.FullName);
+        //            }
+        //            return "RPG Maker MV json";
+        //        }
+        //    }
+        //    else if (sPath.ToUpper().EndsWith("GAME.EXE") || dir.GetFiles("*.exe").Length > 0)
+        //    {
+        //        if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", "system.json")))//RPGMakerMV
+        //        {
+        //            try
+        //            {
+        //                //Properties.Settings.Default.THSelectedDir += "\\www\\data";
+        //                //var MVJsonFIles = new List<string>();
+        //                mvdatadirTranslated = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
+        //                foreach (FileInfo file in mvdatadirTranslated.GetFiles("*.json"))
+        //                {
+        //                    //MessageBox.Show("file.FullName=" + file.FullName);
+        //                    //MVJsonFIles.Add(file.FullName);
 
-                            if (OpenRPGMakerMVjson(file.FullName))
-                            {
-                            }
-                            else
-                            {
-                                return string.Empty;
-                            }
-                        }
+        //                    if (OpenRPGMakerMVjson(file.FullName))
+        //                    {
+        //                    }
+        //                    else
+        //                    {
+        //                        return string.Empty;
+        //                    }
+        //                }
 
-                        for (int i = 0; i < THFilesElementsDatasetTranslated.Tables.Count; i++)
-                        {
-                            //THFilesListBox.Items.Add(THFilesElementsDatasetTranslated.Tables[i].TableName);
-                            THFilesList.Invoke((Action)(() => THFilesList.Items.Add(THFilesElementsDatasetTranslated.Tables[i].TableName)));
-                        }
+        //                for (int i = 0; i < THFilesElementsDatasetTranslated.Tables.Count; i++)
+        //                {
+        //                    //THFilesListBox.Items.Add(THFilesElementsDatasetTranslated.Tables[i].TableName);
+        //                    THFilesList.Invoke((Action)(() => THFilesList.Items.Add(THFilesElementsDatasetTranslated.Tables[i].TableName)));
+        //                }
 
-                        return "RPG Maker MV";
-                    }
-                    catch
-                    {
-                        return string.Empty;
-                    }
-                }
-                else if (dir.GetFiles("*.rgss2a").Length > 0 || dir.GetFiles("*.rvdata").Length > 0 || dir.GetFiles("*.rgssad").Length > 0 || dir.GetFiles("*.rxdata").Length > 0 || dir.GetFiles("*.lmt").Length > 0 || dir.GetFiles("*.lmu").Length > 0)
-                {
+        //                return "RPG Maker MV";
+        //            }
+        //            catch
+        //            {
+        //                return string.Empty;
+        //            }
+        //        }
+        //        else if (dir.GetFiles("*.rgss2a").Length > 0 || dir.GetFiles("*.rvdata").Length > 0 || dir.GetFiles("*.rgssad").Length > 0 || dir.GetFiles("*.rxdata").Length > 0 || dir.GetFiles("*.lmt").Length > 0 || dir.GetFiles("*.lmu").Length > 0)
+        //        {
 
-                    extractedpatchpathTranslated = string.Empty;
-                    bool result = TryToExtractToRPGMakerTransPatch(sPath, "Temp");
-                    //MessageBox.Show("result=" + result);
-                    //MessageBox.Show("extractedpatchpathTranslated=" + extractedpatchpathTranslated);
-                    if (result)
-                    {
-                        //Cleaning of the type
-                        //THRPGMTransPatchFiles.Clear();
-                        //THFilesElementsDatasetTranslated.Clear();
+        //            extractedpatchpathTranslated = string.Empty;
+        //            bool result = TryToExtractToRPGMakerTransPatch(sPath, "Temp");
+        //            //MessageBox.Show("result=" + result);
+        //            //MessageBox.Show("extractedpatchpathTranslated=" + extractedpatchpathTranslated);
+        //            if (result)
+        //            {
+        //                //Cleaning of the type
+        //                //THRPGMTransPatchFiles.Clear();
+        //                //THFilesElementsDatasetTranslated.Clear();
 
-                        //var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-                        //string patchver;
-                        //MessageBox.Show("isv3=" + isv3+ ", patchdir="+ extractedpatchpathTranslated+ ", extractedpatchpathTranslated="+ extractedpatchpathTranslated);
-                        if (Directory.Exists(extractedpatchpathTranslated + "\\patch")) //если есть подпапка patch, тогда это версия патча 3
-                        {
-                            THRPGMTransPatchverTranslated = "3";
-                            extractedpatchpathTranslated += "\\patch";
-                            //MessageBox.Show("extractedpatchpathTranslated=" + extractedpatchpathTranslated);
-                            dir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpathTranslated + "\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
-                                                                                                                 //MessageBox.Show("patchdir1=" + patchdir);
-                        }
-                        else //иначе это версия 2
-                        {
-                            THRPGMTransPatchverTranslated = "2";
-                        }
-                        //MessageBox.Show("patchdir2=" + patchdir);
+        //                //var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+        //                //string patchver;
+        //                //MessageBox.Show("isv3=" + isv3+ ", patchdir="+ extractedpatchpathTranslated+ ", extractedpatchpathTranslated="+ extractedpatchpathTranslated);
+        //                if (Directory.Exists(extractedpatchpathTranslated + "\\patch")) //если есть подпапка patch, тогда это версия патча 3
+        //                {
+        //                    THRPGMTransPatchverTranslated = "3";
+        //                    extractedpatchpathTranslated += "\\patch";
+        //                    //MessageBox.Show("extractedpatchpathTranslated=" + extractedpatchpathTranslated);
+        //                    dir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpathTranslated + "\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
+        //                                                                                                         //MessageBox.Show("patchdir1=" + patchdir);
+        //                }
+        //                else //иначе это версия 2
+        //                {
+        //                    THRPGMTransPatchverTranslated = "2";
+        //                }
+        //                //MessageBox.Show("patchdir2=" + patchdir);
 
-                        List<string> vRPGMTransPatchFiles = new List<string>();
+        //                List<string> vRPGMTransPatchFiles = new List<string>();
 
-                        foreach (FileInfo file in dir.GetFiles("*.txt"))
-                        {
-                            //MessageBox.Show("file.FullName=" + file.FullName);
-                            vRPGMTransPatchFiles.Add(file.FullName);
-                        }
+        //                foreach (FileInfo file in dir.GetFiles("*.txt"))
+        //                {
+        //                    //MessageBox.Show("file.FullName=" + file.FullName);
+        //                    vRPGMTransPatchFiles.Add(file.FullName);
+        //                }
 
-                        //var RPGMTransPatch = new THRPGMTransPatchLoad(this);
+        //                //var RPGMTransPatch = new THRPGMTransPatchLoad(this);
 
-                        //THFilesDataGridView.Nodes.Add("main");
-                        //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
-                        //RPGMTransPatch.OpenTransFiles(files, patchver);
-                        //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
-                        if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver, THFilesElementsDatasetTranslated, null))
-                        {
-                            THSelectedDirTranslated = extractedpatchpathTranslated.Replace("\\patch", string.Empty);
-                            //MessageBox.Show(THSelectedSourceType + " loaded!");
-                            //ProgressInfo(false, string.Empty);                            
+        //                //THFilesDataGridView.Nodes.Add("main");
+        //                //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
+        //                //RPGMTransPatch.OpenTransFiles(files, patchver);
+        //                //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
+        //                if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver, THFilesElementsDatasetTranslated, null))
+        //                {
+        //                    Properties.Settings.Default.THSelectedDirTranslated = extractedpatchpathTranslated.Replace("\\patch", string.Empty);
+        //                    //MessageBox.Show(THSelectedSourceType + " loaded!");
+        //                    //ProgressInfo(false, string.Empty);                            
 
-                            return LoadOriginalToTranslation(THFilesElementsDatasetTranslated);
-                        }
-                    }
-                }
+        //                    return LoadOriginalToTranslation(THFilesElementsDatasetTranslated);
+        //                }
+        //            }
+        //        }
 
-            }
+        //    }
 
-            //MessageBox.Show("Uncompatible source or problem with opening.");
-            return string.Empty;
-        }
+        //    //MessageBox.Show("Uncompatible source or problem with opening.");
+        //    return string.Empty;
+        //}
 
         private string LoadOriginalToTranslation(DataSet tHFilesElementsDatasetTranslated)
         {
@@ -6636,6 +6656,47 @@ namespace TranslationHelper
         private void THTargetRichTextBox_Validated(object sender, EventArgs e)
         {
         }
+
+        private void allIfExistsFiledirWithNameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Thread newthread = new Thread(new ParameterizedThreadStart((obj) =>
+            SetOriginalToTranslationIfFileExistsInAnyFolder()
+            ));
+            newthread.Start();
+        }
+
+        private void SetOriginalToTranslationIfFileExistsInAnyFolder()
+        {
+            string[] ProjectFilesList = Directory.GetFiles(Properties.Settings.Default.THSelectedGameDir, "*.*", SearchOption.AllDirectories);
+            for (int i = 0; i < ProjectFilesList.Length; i++)
+            {
+                ProjectFilesList[i] = Path.GetFileNameWithoutExtension(ProjectFilesList[i]);
+            }
+            ProjectFilesList = ProjectFilesList.Distinct().ToArray();
+
+            int cind = THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;// Колонка Original
+            int cindTrans = THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;// Колонка Original
+            //string[] Files = Directory.GetFiles(Properties.Settings.Default.THWorkProjectDir, "*.*", SearchOption.AllDirectories);
+            //string[] Dirs = Directory.GetDirectories(Properties.Settings.Default.THWorkProjectDir, "*", SearchOption.AllDirectories);
+            int tablesCount = THFilesElementsDataset.Tables.Count;
+            for (int t = 0; t < tablesCount; t++)
+            {
+                int rowsCount = THFilesElementsDataset.Tables[t].Rows.Count;
+                for (int r = 0; r < rowsCount; r++)
+                {
+                    string origCellValue = THFilesElementsDataset.Tables[t].Rows[r][cind] as string;
+                    string transCellValue = THFilesElementsDataset.Tables[t].Rows[r][cindTrans] + string.Empty;
+
+                    if ((transCellValue.Length == 0 || origCellValue != transCellValue) && GetAnyFileWithTheNameExist(ProjectFilesList, origCellValue))
+                    {
+                        THFilesElementsDataset.Tables[t].Rows[r][cindTrans] = origCellValue;
+                    }
+                }
+            }
+            System.Media.SystemSounds.Asterisk.Play();
+        }
+
+
 
 
 

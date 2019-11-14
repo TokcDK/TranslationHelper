@@ -154,5 +154,29 @@ namespace TranslationHelper.Properties {
                 this["THOptionLineCharLimit"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\"\"")]
+        public string THSelectedGameDir {
+            get {
+                return ((string)(this["THSelectedGameDir"]));
+            }
+            set {
+                this["THSelectedGameDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\"\"")]
+        public string THSelectedDir {
+            get {
+                return ((string)(this["THSelectedDir"]));
+            }
+            set {
+                this["THSelectedDir"] = value;
+            }
+        }
     }
 }
