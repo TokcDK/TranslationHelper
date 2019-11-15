@@ -6083,7 +6083,7 @@ namespace TranslationHelper
             else
             {
                 //влючение действий для ячеек при выходе из режима редктирования
-                ControlsSwitch(true);
+                //ControlsSwitch(true);
                 THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             }
         }
@@ -6098,7 +6098,7 @@ namespace TranslationHelper
         private void THTargetRichTextBox_MouseLeave(object sender, EventArgs e)
         {
             //влючение действий для ячеек при выходе из текстбокса
-            ControlsSwitch(true);
+            //ControlsSwitch(true);
         }
 
         private bool ControlsSwitchIsOn = true;
