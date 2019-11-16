@@ -1081,10 +1081,18 @@ namespace TranslationHelper
                 string Quote1 = "\"";
                 //string Quote2 = "\'";
                 KiriKiriQuotePattern = Quote1 + "(.+)" + Quote1 + ";$";
-                using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
+                bool TeachingFeelingCS = false;
+                string tmpfile = File.ReadAllText(sPath);
+                if (tmpfile.Contains("[p_]"))
+                {
+                    TeachingFeelingCS = true;
+                }
+                tmpfile = null;
+                using (StreamReader file = new StreamReader(sPath, TeachingFeelingCS? Encoding.UTF8 : Encoding.GetEncoding(932)))
                 {
                     string line;
                     bool iscomment = false;
+                    
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
@@ -1094,104 +1102,123 @@ namespace TranslationHelper
                             iscomment = true;
                         }
 
+
                         if (iscomment || string.IsNullOrEmpty(line) || line.StartsWith(";") || line.StartsWith("//") || Regex.IsMatch(line, @"\s*//"))
                         {
                         }
                         else
                         {
-                            if (line.EndsWith("[k]")) // text
+                            if (TeachingFeelingCS)//Teaching Feeling cs
                             {
-                                line = line.Replace("[k]", string.Empty);
-                                if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                if (line.Contains("[p_]") || line.Contains("[lr_]"))
                                 {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(line);
-                                    _ = DTInfo.Rows.Add("[k] = end of line");
-                                }
-                            }
-                            else if (line.StartsWith("*")) // text
-                            {
-                                line = line.Remove(0, 1);
-                                if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
-                                {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(line);
-                                    _ = DTInfo.Rows.Add(string.Empty);
-                                }
-                            }
-                            else if (line.EndsWith("[r]")) //text, first line
-                            {
-                                line = line.Replace("[r]", string.Empty).Trim();
-                                if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
-                                {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(line);
-                                    _ = DTInfo.Rows.Add("[r] = carriage return");
-                                }
-                            }
-                            else if (line.StartsWith("o.") || Regex.IsMatch(line, KiriKiriVariableSearchRegexPattern)) //variable, which is using even for displaing and should be translated in all files
-                            {
-                                MatchCollection matches = Regex.Matches(line, KiriKiriVariableSearchRegexFullPattern);
-
-                                bool startswith = line.StartsWith("o.");
-                                for (int m = 0; m < matches.Count; m++)
-                                {
-                                    _ = DT.Rows.Add(matches[m].Value.Remove(0, startswith ? 2 : 3));
-                                    _ = DTInfo.Rows.Add(T._("Variable>Must be Identical in all files>Only A-Za-z0-9" + Environment.NewLine + "line: " + line));
-                                    if (startswith)
-                                    {
-                                        startswith = false;//o. в начале встречается только в первый раз
-                                    }
-                                }
-                            }
-                            else if (line.StartsWith("@notice text="))
-                            {
-                                line = line.Remove(0, 13);//удаление "@notice text="
-                                if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
-                                {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(line);
-                                    _ = DTInfo.Rows.Add("@notice text=");
-                                }
-                            }
-                            else if (line.StartsWith("Name = '"))
-                            {
-                                line = line.Remove(line.Length - 2, 2).Remove(0, 8);
-                                if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
-                                {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(line);
-                                    _ = DTInfo.Rows.Add("Name = '");
-                                }
-                            }
-                            else if (Regex.IsMatch(line, "\\\"(.*?)\\\""))
-                            {
-                                //https://stackoverflow.com/questions/13024073/regex-c-sharp-extract-text-within-double-quotes
-                                var matches = Regex.Matches(line, "\\\"(.*?)\\\"");
-                                string subline;
-                                foreach (var m in matches)
-                                {
-                                    subline = m.ToString();
-                                    if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || IsDigitsOnly(line.Replace("\"", string.Empty)))
+                                    line = Regex.Replace(line, @"^\s*(\[[a-z\/_]+\])*((\[name\])?.+)\[(lr|p)_\]\s*$", "$2");
+                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
                                     {
                                     }
                                     else
                                     {
-                                        _ = DT.Rows.Add(subline.Remove(subline.Length - 1, 1).Remove(0, 1));
-                                        _ = DTInfo.Rows.Add(line);
+                                        _ = DT.Rows.Add(line);
+                                        _ = DTInfo.Rows.Add("Teeching feeling cs");
                                     }
                                 }
                             }
+                            else
+                            {
+                                if (line.EndsWith("[k]")) // text
+                                {
+                                    line = line.Replace("[k]", string.Empty);
+                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        _ = DT.Rows.Add(line);
+                                        _ = DTInfo.Rows.Add("[k] = end of line");
+                                    }
+                                }
+                                else if (line.StartsWith("*")) // text
+                                {
+                                    line = line.Remove(0, 1);
+                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        _ = DT.Rows.Add(line);
+                                        _ = DTInfo.Rows.Add(string.Empty);
+                                    }
+                                }
+                                else if (line.EndsWith("[r]")) //text, first line
+                                {
+                                    line = line.Replace("[r]", string.Empty).Trim();
+                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        _ = DT.Rows.Add(line);
+                                        _ = DTInfo.Rows.Add("[r] = carriage return");
+                                    }
+                                }
+                                else if (line.StartsWith("o.") || Regex.IsMatch(line, KiriKiriVariableSearchRegexPattern)) //variable, which is using even for displaing and should be translated in all files
+                                {
+                                    MatchCollection matches = Regex.Matches(line, KiriKiriVariableSearchRegexFullPattern);
+
+                                    bool startswith = line.StartsWith("o.");
+                                    for (int m = 0; m < matches.Count; m++)
+                                    {
+                                        _ = DT.Rows.Add(matches[m].Value.Remove(0, startswith ? 2 : 3));
+                                        _ = DTInfo.Rows.Add(T._("Variable>Must be Identical in all files>Only A-Za-z0-9" + Environment.NewLine + "line: " + line));
+                                        if (startswith)
+                                        {
+                                            startswith = false;//o. в начале встречается только в первый раз
+                                        }
+                                    }
+                                }
+                                else if (line.StartsWith("@notice text="))
+                                {
+                                    line = line.Remove(0, 13);//удаление "@notice text="
+                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        _ = DT.Rows.Add(line);
+                                        _ = DTInfo.Rows.Add("@notice text=");
+                                    }
+                                }
+                                else if (line.StartsWith("Name = '"))
+                                {
+                                    line = line.Remove(line.Length - 2, 2).Remove(0, 8);
+                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        _ = DT.Rows.Add(line);
+                                        _ = DTInfo.Rows.Add("Name = '");
+                                    }
+                                }
+                                else if (Regex.IsMatch(line, "\\\"(.*?)\\\""))
+                                {
+                                    //https://stackoverflow.com/questions/13024073/regex-c-sharp-extract-text-within-double-quotes
+                                    var matches = Regex.Matches(line, "\\\"(.*?)\\\"");
+                                    string subline;
+                                    foreach (var m in matches)
+                                    {
+                                        subline = m.ToString();
+                                        if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || IsDigitsOnly(line.Replace("\"", string.Empty)))
+                                        {
+                                        }
+                                        else
+                                        {
+                                            _ = DT.Rows.Add(subline.Remove(subline.Length - 1, 1).Remove(0, 1));
+                                            _ = DTInfo.Rows.Add(line);
+                                        }
+                                    }
+                                }
+                            }                            
                         }
 
                         if (line.EndsWith("*/"))
