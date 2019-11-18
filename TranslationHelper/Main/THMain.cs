@@ -333,7 +333,7 @@ namespace TranslationHelper
                                     Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedDir);
                                 }
                                 _ = THMsg.Show(THSelectedSourceType + T._(" loaded") + "!");
-                                
+
                                 editToolStripMenuItem.Enabled = true;
                                 viewToolStripMenuItem.Enabled = true;
                                 loadTranslationToolStripMenuItem.Enabled = true;
@@ -1083,16 +1083,16 @@ namespace TranslationHelper
                 KiriKiriQuotePattern = Quote1 + "(.+)" + Quote1 + ";$";
                 bool TeachingFeelingCS = false;
                 string tmpfile = File.ReadAllText(sPath);
-                if (tmpfile.Contains("[p_]"))
+                if (tmpfile.Contains("[p_]") || tmpfile.Contains("[lr_]"))
                 {
                     TeachingFeelingCS = true;
                 }
                 tmpfile = null;
-                using (StreamReader file = new StreamReader(sPath, TeachingFeelingCS? Encoding.UTF8 : Encoding.GetEncoding(932)))
+                using (StreamReader file = new StreamReader(sPath, TeachingFeelingCS ? Encoding.UTF8 : Encoding.GetEncoding(932)))
                 {
                     string line;
                     bool iscomment = false;
-                    
+
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
@@ -1112,7 +1112,47 @@ namespace TranslationHelper
                             {
                                 if (line.Contains("[p_]") || line.Contains("[lr_]"))
                                 {
-                                    line = Regex.Replace(line, @"^\s*(\[[a-z\/_]+\])*((\[name\])?.+)\[(lr|p)_\]\s*$", "$2");
+                                    int lastMergeIndex = -1;
+                                    int startMergeIndex = -1;
+                                    string[] temp = line.Split(']');
+                                    int Cnt = temp.Length;
+
+                                    //поиск первой и последней части для записи
+                                    for (int i = 0; i < Cnt; i++)
+                                    {
+                                        temp[i] += "]";
+                                        string substring = temp[i];
+                                        if (lastMergeIndex > -1 && i >= startMergeIndex && i <= lastMergeIndex)
+                                        {
+                                            line += temp[i];
+                                        }
+                                        else if (temp[i].EndsWith("[lr_]") || temp[i].EndsWith("[p_]"))
+                                        {
+                                            lastMergeIndex = i;
+                                            startMergeIndex = i;
+                                            while (startMergeIndex > 0 && (!temp[startMergeIndex - 1].Contains("[") || temp[startMergeIndex - 1].Contains("[name")))
+                                            {
+                                                startMergeIndex -= 1;
+                                            }
+                                        }
+                                    }
+
+                                    //обнуление, для записи нового чистого значения
+                                    line = string.Empty;
+
+                                    //запись значения из найденного диапазона
+                                    if (lastMergeIndex > -1)
+                                    {
+                                        for (int i = startMergeIndex; i <= lastMergeIndex; i++)
+                                        {
+                                            line += temp[i];
+                                        }
+                                    }
+
+                                    //убрать идентификатор окончания строки
+                                    line = line.Replace("[lr_]", string.Empty).Replace("[p_]", string.Empty);
+                                    
+                                    //line = Regex.Replace(line, @"^\s*(\[[a-z\/_]+\])*((\[name\])?.+)\[(lr|p)_\]\s*$", "$2");
                                     if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
                                     {
                                     }
@@ -1218,7 +1258,7 @@ namespace TranslationHelper
                                         }
                                     }
                                 }
-                            }                            
+                            }
                         }
 
                         if (line.EndsWith("*/"))
