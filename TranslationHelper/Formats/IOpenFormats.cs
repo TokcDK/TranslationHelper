@@ -3,6 +3,6 @@ namespace TranslationHelper.Formats
 {
     public interface IOpenFormats
     {
-        bool Open();
+        bool Open(string sPath);
     }
 }

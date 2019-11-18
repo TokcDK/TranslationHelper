@@ -383,7 +383,6 @@ namespace TranslationHelper
         {
             try
             {
-
                 //Reset vars
                 ActiveForm.Text = "Translation Helper by DenisK";
                 THInfoTextBox.Text = string.Empty;

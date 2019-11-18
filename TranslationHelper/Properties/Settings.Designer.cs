@@ -157,7 +157,7 @@ namespace TranslationHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\"\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string THSelectedGameDir {
             get {
                 return ((string)(this["THSelectedGameDir"]));
@@ -169,13 +169,25 @@ namespace TranslationHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\"\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string THSelectedDir {
             get {
                 return ((string)(this["THSelectedDir"]));
             }
             set {
                 this["THSelectedDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public string THRPGMTransPatchver {
+            get {
+                return ((string)(this["THRPGMTransPatchver"]));
+            }
+            set {
+                this["THRPGMTransPatchver"] = value;
             }
         }
     }

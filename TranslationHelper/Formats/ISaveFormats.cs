@@ -8,6 +8,6 @@ namespace TranslationHelper.Formats
 {
     public interface ISaveFormats
     {
-        bool Save();
+        bool Save(string sPath);
     }
 }
