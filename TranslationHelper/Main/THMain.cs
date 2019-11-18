@@ -1754,13 +1754,13 @@ namespace TranslationHelper
         private bool TryToExtractToRPGMakerTransPatch(string sPath, string extractdir = "Work")
         {
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-            string workdir = Path.Combine(Application.StartupPath, extractdir, "RPGMakerTrans/");
+            string workdir = Path.Combine(Application.StartupPath, extractdir, "RPGMakerTrans");
             if (!Directory.Exists(workdir))
             {
                 Directory.CreateDirectory(workdir);
             }
             //MessageBox.Show("tempdir=" + tempdir);
-            string outdir = workdir + Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath));
+            string outdir = Path.Combine(workdir, Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath)));
 
 
             if (extractdir == "Work")
@@ -1769,14 +1769,14 @@ namespace TranslationHelper
             }
 
             bool ret;// = false;
-            if (!Directory.Exists(outdir))
-            {
-                Directory.CreateDirectory(outdir);
+            //if (!Directory.Exists(outdir))
+            //{
+            //    Directory.CreateDirectory(outdir);
 
-                //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
+            //    //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
 
-            }
-            else if (Directory.GetFiles(outdir + "_patch", "RPGMKTRANSPATCH", SearchOption.AllDirectories).Length > 0)
+            //}
+            if (Directory.Exists(outdir + "_patch") && Directory.GetFiles(outdir + "_patch", "RPGMKTRANSPATCH", SearchOption.AllDirectories).Length > 0)
             {
                 DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
@@ -1837,20 +1837,143 @@ namespace TranslationHelper
 
             ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs);
 
-            if (ret)
+            if (ret && Directory.Exists(outdir + "_patch\""))
             {
             }
             else
             {
                 //чистка папок 
-                Directory.Delete(outdir + "_patch", true);
-                Directory.Delete(outdir + "_translated", true);
+                if (Directory.Exists(outdir + "_patch\""))
+                {
+                    Directory.Delete(outdir + "_patch", true);
+                }
+                if (Directory.Exists(outdir + "_translated\""))
+                {
+                    Directory.Delete(outdir + "_translated", true);
+                }
 
                 //попытка с параметром -b - Use UTF-8 BOM in Patch files
                 ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
+                if (!ret || (ret && !Directory.Exists(outdir + "_patch\"")))
+                {
+                    string tempDIr = Path.Combine(inputdir, "tempTH");
+
+                    Directory.CreateDirectory(tempDIr);
+
+                    string rgss = GetRPGMakerArc(inputdir);
+                    if (rgss.Length == 0)
+                    {
+                        return false;
+                    }
+
+                    rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rgssdecryptor", "RgssDecrypter.exe");
+                    rpgmakertranscliargs = "\"--output="+ tempDIr+"\" "+ rgss;
+
+                    ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+
+                    if (Directory.GetDirectories(tempDIr).Length > 0)
+                    {
+                        foreach(var dir in Directory.GetDirectories(inputdir))
+                        {
+                            if (Path.GetFileName(dir) == "tempTH")
+                            {
+                                continue;
+                            }
+
+                            string targetDirPath = dir.Replace(inputdir, tempDIr);
+                            if (Directory.Exists(targetDirPath))
+                            {
+                                foreach (var file in Directory.GetFiles(dir,"*.*",SearchOption.AllDirectories))
+                                {
+                                    string targetFilePath = file.Replace(dir, Path.Combine(tempDIr, Path.GetFileName(file)));
+                                    if (File.Exists(targetFilePath))
+                                    {
+                                        File.Delete(targetFilePath);
+                                    }
+                                    File.Move(file, targetFilePath);
+                                }
+                                Directory.Delete(dir, true);
+                            }
+                            else
+                            {
+                                Directory.Move(dir, targetDirPath);
+                            }
+                        }
+                        foreach (var dir in Directory.GetDirectories(tempDIr))
+                        {
+                            Directory.Move(dir, dir.Replace(tempDIr, inputdir));
+                        }
+                        Directory.Delete(tempDIr, true);
+
+                        if (Directory.GetDirectories(inputdir).Length > 0)
+                        {
+                            File.Delete(rgss);
+
+                            rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rpgmakertrans", "rpgmt.exe");
+                            rpgmakertranscliargs = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
+                            ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+                            if (ret && Directory.Exists(outdir + "_patch\""))
+                            {
+                            }
+                            else
+                            {
+                                //чистка папок 
+                                if (Directory.Exists(outdir + "_patch\""))
+                                {
+                                    Directory.Delete(outdir + "_patch", true);
+                                }
+                                if (Directory.Exists(outdir + "_translated\""))
+                                {
+                                    Directory.Delete(outdir + "_translated", true);
+                                }
+
+                                //попытка с параметром -b - Use UTF-8 BOM in Patch files
+                                ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
+                                if (!ret || (ret && !Directory.Exists(outdir + "_patch\"")))
+                                {
+                                    //чистка папок 
+                                    if (Directory.Exists(outdir + "_patch\""))
+                                    {
+                                        Directory.Delete(outdir + "_patch", true);
+                                    }
+                                    if (Directory.Exists(outdir + "_translated\""))
+                                    {
+                                        Directory.Delete(outdir + "_translated", true);
+                                    }
+                                    return false;
+                                }
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //чистка папок 
+                        Directory.Delete(tempDIr, true);
+                        if (Directory.Exists(outdir + "_patch\""))
+                        {
+                            Directory.Delete(outdir + "_patch", true);
+                        }
+                        if (Directory.Exists(outdir + "_translated\""))
+                        {
+                            Directory.Delete(outdir + "_translated", true);
+                        }
+                        return false;
+                    }
+                }
             }
 
             return ret;
+        }
+
+        private string GetRPGMakerArc(string inputDir)
+        {
+            string path = Path.Combine(inputDir, "Game.rgss3a");
+            if (File.Exists(path))
+            {
+                return path;
+            }
+            return string.Empty;
         }
 
         private bool RunProgram(string ProgramPath, string Arguments)
