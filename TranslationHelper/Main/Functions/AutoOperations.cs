@@ -114,22 +114,27 @@ namespace TranslationHelper.Main.Functions
                                 }
                                 else
                                 {
-                                    string cvalue = THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty;
-                                    if (cvalue.Length > 0 && cvalue != THFilesElementsDataset.Tables[tind].Rows[rind][cind - 1] + string.Empty)
+                                    var row = THFilesElementsDataset.Tables[tind].Rows[rind];
+                                    string cvalue = row[cind] + string.Empty;
+                                    if (cvalue.Length == 0 || cvalue == row[cind - 1] as string)
                                     {
-                                        //задать правило
-                                        Regex regexrule = new Regex(rule);
+                                        return;
+                                    }
 
-                                        //найти совпадение с заданным правилом в выбранной ячейке
-                                        MatchCollection mc = regexrule.Matches(cvalue);
+                                    cvalue = FixForRPGMAkerMV(cvalue);
 
-                                        //перебрать все найденные совпадения
-                                        foreach (Match m in mc)
-                                        {
-                                            //исправить значения по найденным совпадениям в выбранной ячейке
-                                            THFilesElementsDataset.Tables[tind].Rows[rind][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
-                                            //THFilesElementsDataset.Tables[tind].Rows[rind][cind] = Regex.Replace(THFilesElementsDataset.Tables[tind].Rows[rind][cind].ToString(),m.Value.ToString(), result);
-                                        }
+                                    //задать правило
+                                    Regex regexrule = new Regex(rule);
+
+                                    //найти совпадение с заданным правилом в выбранной ячейке
+                                    MatchCollection mc = regexrule.Matches(cvalue);
+
+                                    //перебрать все найденные совпадения
+                                    foreach (Match m in mc)
+                                    {
+                                        //исправить значения по найденным совпадениям в выбранной ячейке
+                                        THFilesElementsDataset.Tables[tind].Rows[rind][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+                                        //THFilesElementsDataset.Tables[tind].Rows[rind][cind] = Regex.Replace(THFilesElementsDataset.Tables[tind].Rows[rind][cind].ToString(),m.Value.ToString(), result);
                                     }
                                 }
                             }
@@ -153,7 +158,7 @@ namespace TranslationHelper.Main.Functions
                                 selcellscnt = new int[THFileElementsDataGridView.SelectedCells.Count];//создать массив длинной числом выбранных ячеек
                                 for (int i = 0; i < selcellscnt.Length; i++) //записать индексы всех выбранных ячеек
                                 {
-                                    selcellscnt[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                                    selcellscnt[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, tind, THFileElementsDataGridView.SelectedCells[i].RowIndex);
                                 }
                             }
                             else if (method == "t")
@@ -192,9 +197,12 @@ namespace TranslationHelper.Main.Functions
 
                                     if (selectedonly)
                                     {
-                                        string cvalue = THFilesElementsDataset.Tables[tind].Rows[rind][cind] + string.Empty;
-                                        if (cvalue.Length > 0 && cvalue != THFilesElementsDataset.Tables[tind].Rows[rind][cind - 1] + string.Empty)
+                                        var row = THFilesElementsDataset.Tables[tind].Rows[rind];
+                                        string cvalue = row[cind] + string.Empty;
+                                        if (cvalue.Length > 0 && cvalue != row[cind - 1] as string)
                                         {
+                                            cvalue = FixForRPGMAkerMV(cvalue);
+
                                             //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
 
                                             //найти совпадение с заданным правилом в выбранной ячейке
@@ -258,8 +266,10 @@ namespace TranslationHelper.Main.Functions
                                                 //LogToFile("5 selected i row index=" + i + ", value of THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "]=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind]);
                                                 string cvalue = THFilesElementsDataset.Tables[t].Rows[rowindex][cind] + string.Empty;
                                                 //не трогать строку перевода, если она пустая
-                                                if (cvalue.Length > 0 && cvalue != THFilesElementsDataset.Tables[t].Rows[rowindex][cind - 1] + string.Empty)
+                                                if (cvalue.Length > 0 && cvalue != THFilesElementsDataset.Tables[t].Rows[rowindex][cind - 1] as string)
                                                 {
+                                                    cvalue = FixForRPGMAkerMV(cvalue);
+
                                                     //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
 
                                                     //найти совпадение с заданным правилом в выбранной ячейке
@@ -270,10 +280,15 @@ namespace TranslationHelper.Main.Functions
                                                         //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
 
                                                         //исправить значения по найденным совпадениям в выбранной ячейке
-                                                        THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+                                                        cvalue = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
                                                         //THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), m.Value.ToString(), result);
 
                                                         //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+                                                    }
+
+                                                    if (!Equals(THFilesElementsDataset.Tables[t].Rows[rowindex][cind], cvalue))
+                                                    {
+                                                        THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
                                                     }
                                                 }
                                             }
@@ -291,6 +306,24 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
+        private static string FixForRPGMAkerMV(string cvalue)
+        {
+            //rpgmaker mv string will broke script if starts\ends with "'" and contains another "'" in middle
+            if (cvalue.Length>2 && cvalue.Substring(0, 1) == "'" && cvalue.Substring(cvalue.Length - 1, 1) == "'" && StringOperations.IsStringAContainsStringB(cvalue.Substring(1, cvalue.Length - 2),"'"))
+            {
+                cvalue = cvalue
+                    .Replace("do n't", "do not")
+                    .Replace("don't", "do not")
+                    .Replace("n’t", "not")
+                    .Replace("'ve", " have")
+                    .Replace("I'm", "I am")
+                    .Replace("t's", "t is")
+                    .Replace("'s", "s")
+                    ;
+            }
+            return cvalue;
+        }
+
         public static string GetStringSimularityRegexPattern()
         {
             //http://www.cyberforum.ru/csharp-beginners/thread244709.html
@@ -304,7 +337,7 @@ namespace TranslationHelper.Main.Functions
             string regexPatternDigitsInAnyPlace = @"\d+";
             string regexPatternDigitsOrSymbolsInStartOfLine = "(^(" + regexPatternJapanesSymbolsStart + "|" + regexPatternQuotationMark + "|" + regexPatternLatinSymbolsStart + ")+)";
             string regexPatternDigitsOrSymbolsInEndOfLine = "((" + regexPatternLatinSymbolsEnd + "|" + regexPatternQuotationMark + "|" + regexPatternJapanesSymbolsEnd + ")+$)";
-            
+
             return regexPatternDigitsOrSymbolsInStartOfLine + "|" + regexPatternDigitsInAnyPlace + "|" + regexPatternDigitsOrSymbolsInEndOfLine;
         }
 
@@ -333,7 +366,7 @@ namespace TranslationHelper.Main.Functions
             else//Запускать сравнение только если ячейка имеет значение
             {
                 //LogToFile("THFilesElementsDataset.Tables[tableind].Rows[rind][transcind]="+ THFilesElementsDataset.Tables[tableind].Rows[rind][transcind].ToString());
-                
+
                 string regexPattern = GetStringSimularityRegexPattern();
 
                 Regex reg = new Regex(regexPattern); //reg равняется любым цифрам
@@ -341,12 +374,12 @@ namespace TranslationHelper.Main.Functions
                 string InputTransCellValue = RomajiKana.THFixDigits(InputTableTranslationCell as string);
 
                 //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменяется, т.к. 万 [man] переводится как 10000.
-                if (Properties.Settings.Default.OnlineTranslationSourceLanguage=="Japanese" && Regex.Matches(InputTransCellValue, @"\d+").Count != Regex.Matches(InputOrigCellValue, @"\d+").Count)
+                if (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && Regex.Matches(InputTransCellValue, @"\d+").Count != Regex.Matches(InputOrigCellValue, @"\d+").Count)
                 {
                     THAutoSetSameTranslationForSimularIsBusy = false;
                     return;
                 }
-                
+
                 MatchCollection mc = reg.Matches(InputOrigCellValue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
                 int mccount = mc.Count;
 
@@ -392,7 +425,7 @@ namespace TranslationHelper.Main.Functions
 
                                     string TargetOrigCellValueWithRemovedPatternMatches = Regex.Replace(TargetOriginallCellString, regexPattern, string.Empty);
                                     string InputOrigCellValueWithRemovedPatternMatches = Regex.Replace(InputOrigCellValue, regexPattern, string.Empty);
-                                    
+
                                     //LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
                                     //если поле перевода равно только что измененному во входной, без учета цифр
                                     if ((TargetOrigCellValueWithRemovedPatternMatches == InputOrigCellValueWithRemovedPatternMatches) && mccount == mc0Count && IsAllMatchesInIdenticalPlaces(mc, mc0))
@@ -409,7 +442,7 @@ namespace TranslationHelper.Main.Functions
                                         //также инфо о другом способе:
                                         //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
                                         //там же все тесты и for, как у здесь меня - наиболее быстрый вариант
-                                        
+
                                         //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
                                         //переименовано и закомментировано, т.к. было убрано оборачивание в цифры. string inputtranscellvalue = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
 
@@ -441,12 +474,12 @@ namespace TranslationHelper.Main.Functions
                                                                                                                 //    //была ошибка когда индекс был -1. Добавил проверку индекса и
                                                                                                                 //    failed = true;
                                                                                                                 //}
-                                            //string g1 = tm[m].Value;//i
-                                            //string g2 = targetOrigMatches[m];//t
-                                            //string g3 = inputOrigMatches[m];//i
-                                            //string g4 = mc[m].Value;//i
-                                            //string g5 = mc0[m].Value;//t
-                                            //stringlength = inputOrigMatches[m].Length;
+                                                                                                                //string g1 = tm[m].Value;//i
+                                                                                                                //string g2 = targetOrigMatches[m];//t
+                                                                                                                //string g3 = inputOrigMatches[m];//i
+                                                                                                                //string g4 = mc[m].Value;//i
+                                                                                                                //string g5 = mc0[m].Value;//t
+                                                                                                                //stringlength = inputOrigMatches[m].Length;
                                             stringlength = tm[m].Value.Length;
                                             stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
                                             try
@@ -456,8 +489,8 @@ namespace TranslationHelper.Main.Functions
 
                                                 //stringoverallength0 += targetOrigMatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
                                                 stringoverallength0 += mc0[m].Value.Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
-                                                                                                   //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
-                                                                                                   //LogToFile("result[" + m + "]=" + inputresult);
+                                                                                           //inputresult = inputresult.Replace("{{"+ mc[m].Value + "}}", mc0[m].Value);
+                                                                                           //LogToFile("result[" + m + "]=" + inputresult);
                                             }
                                             catch (Exception ex)
                                             {
@@ -714,21 +747,7 @@ namespace TranslationHelper.Main.Functions
             {
                 return Line;
             }
-            string[] s = SplitLineIfBeyondOfLimit(Line, Limit);
-            string ret = string.Empty;
-            int sLength = s.Length;
-            for (int i = 0; i < sLength; i++)
-            {
-                if (i == sLength - 1)
-                {
-                    ret += s[i];
-                }
-                else
-                {
-                    ret += s[i] + Environment.NewLine;
-                }
-            }
-            return ret;
+            return string.Join(StringOperations.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Line, Limit));
         }
 
         public static string[] SplitLineIfBeyondOfLimit(string text, int max)

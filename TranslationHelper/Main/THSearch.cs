@@ -748,7 +748,13 @@ namespace TranslationHelper
         {
             string searchcolumn = GetSearchColumn();
             tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString());
+
+            THFilesElementsDataset.Tables[tableindex].DefaultView.RowFilter = string.Empty;
+            THFilesElementsDataset.Tables[tableindex].DefaultView.Sort = string.Empty;
+            THFileElementsDataGridView.Refresh();
+
             rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString());
+
 
             if (tableindex == THFilesListBox.SelectedIndex)
             {

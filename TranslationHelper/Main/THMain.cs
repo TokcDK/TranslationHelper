@@ -43,8 +43,17 @@ namespace TranslationHelper
         //DataTable THFilesElementsDatatable;
         //private BindingSource THBS = new BindingSource();
 
-        public string THRPGMTransPatchver;
-        public string THSelectedSourceType;
+        public string THRPGMTransPatchver
+        {
+            get => Properties.Settings.Default.THRPGMTransPatchver;
+            set => Properties.Settings.Default.THRPGMTransPatchver = value;
+        }
+
+        public string THSelectedSourceType 
+        {
+            get => Properties.Settings.Default.THSelectedSourceType;
+            set => Properties.Settings.Default.THSelectedSourceType = value;
+        }
 
         //Language strings
         //public string THMainDGVOriginalColumnName;
@@ -5502,7 +5511,7 @@ namespace TranslationHelper
                 int[] selindexes = new int[selcellscnt];
                 for (int i = 0; i < selcellscnt; i++)
                 {
-                    selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                    selindexes[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, tableindex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
                 }
                 Array.Sort(selindexes);
                 for (int i = 0; i < selcellscnt; i++)
@@ -5588,7 +5597,7 @@ namespace TranslationHelper
             }
             //установить занятость при старте
             THIsFixingCells = true;
-
+            
             AutoOperations.THFixCells(THFilesElementsDataset, THFileElementsDataGridView, method, cind, tind, rind, selectedonly);
 
             //снять занятость по окончании
