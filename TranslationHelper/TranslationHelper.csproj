@@ -74,12 +74,6 @@
     <Compile Include="ExternalAdditions\GDI.cs" />
     <Compile Include="ExternalAdditions\ReplaceEx.cs" />
     <Compile Include="ExternalAdditions\T.cs" />
-    <Compile Include="Formats\ISaveFormats.cs" />
-    <Compile Include="Formats\IOpenFormats.cs" />
-    <Compile Include="Formats\RPGMakerMVGame.cs" />
-    <Compile Include="Formats\RPGMakerMVJson.cs" />
-    <Compile Include="Formats\RPGMakerTransGame.cs" />
-    <Compile Include="Formats\RPGMakerTransPatch.cs" />
     <Compile Include="Main\DoubleBufferedListBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,6 +182,7 @@
   <ItemGroup>
     <Folder Include="Costura32\" />
     <Folder Include="Costura64\" />
+    <Folder Include="Formats\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
