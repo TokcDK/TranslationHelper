@@ -84,8 +84,6 @@
     <Compile Include="Main\Functions\StringOperations.cs" />
     <Compile Include="Main\Functions\Table.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
-    <Compile Include="Projects\ProjectBase.cs" />
-    <Compile Include="Projects\ProjectRPGMakerTransPatch.cs" />
     <Compile Include="Translators\DeepL.cs" />
     <Compile Include="Translators\Google.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
@@ -183,6 +181,7 @@
     <Folder Include="Costura32\" />
     <Folder Include="Costura64\" />
     <Folder Include="Formats\" />
+    <Folder Include="Projects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
