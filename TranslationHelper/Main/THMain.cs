@@ -499,7 +499,7 @@ namespace TranslationHelper
             }
             else if (sPath.ToUpper().EndsWith(".TXT"))
             {
-                return TxtOpen(sPath);
+                return AnyTxt(sPath);
                 //return "RPGMakerTransPatch";
             }
             else if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
@@ -657,14 +657,18 @@ namespace TranslationHelper
             return string.Empty;
         }
 
-        private string TxtOpen(string sPath)
+        private string AnyTxt(string sPath)
         {
-            if (Path.GetFileName(Path.GetDirectoryName(sPath))== "TextE")
-            {
-                THFilesElementsDataset.Tables.Add(Path.GetFileNameWithoutExtension(sPath));
-                THFilesElementsDatasetInfo.Tables.Add(Path.GetFileNameWithoutExtension(sPath));
-                THFilesElementsDataset.Tables[0].Columns.Add("Original");
-                THFilesElementsDatasetInfo.Tables[0].Columns.Add("Original");
+            string FolderName = Path.GetFileName(Path.GetDirectoryName(sPath));
+
+            THFilesElementsDataset.Tables.Add(Path.GetFileNameWithoutExtension(sPath));
+            THFilesElementsDatasetInfo.Tables.Add(Path.GetFileNameWithoutExtension(sPath));
+            THFilesElementsDataset.Tables[0].Columns.Add("Original");
+            THFilesElementsDatasetInfo.Tables[0].Columns.Add("Original");
+
+            if (FolderName == "TextE" || FolderName == "TextH")
+            {         
+
                 //THFilesElementsDataset.Tables[0].Columns.Add("Translation");
                 StreamReader sr = new StreamReader(sPath, Encoding.GetEncoding(932));
                 string line;
@@ -677,7 +681,7 @@ namespace TranslationHelper
 
                     if (recordstarted)
                     {
-                        if (line.Length > 0 && !line.StartsWith("END") && !RomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
+                        if (line.Length > 0 && !line.StartsWith("/") && !line.StartsWith("END") && !RomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
                         {
                             if (cnt > 0)
                             {
@@ -689,7 +693,7 @@ namespace TranslationHelper
                         else
                         {
                             THFilesElementsDataset.Tables[0].Rows.Add(sb.ToString());
-                            THFilesElementsDatasetInfo.Tables[0].Rows.Add("TextE");
+                            THFilesElementsDatasetInfo.Tables[0].Rows.Add(FolderName);
                             recordstarted = false;
                             sb.Clear();
                             cnt = 0;
@@ -707,7 +711,19 @@ namespace TranslationHelper
                 }
                 THFilesElementsDataset.Tables[0].Columns.Add("Translation");
                 THFilesList.Invoke((Action)(() => THFilesList.Items.Add(Path.GetFileNameWithoutExtension(sPath))));
-                return "Wolf RPG txt";
+                return "Wolf RPG txt EH";
+            }
+            else if(Path.GetFileName(Path.GetDirectoryName(sPath)) == "TextP")
+            {
+                foreach (var file in Directory.GetFiles(Path.GetDirectoryName(sPath), "*.txt"))
+                {
+                    THFilesElementsDataset.Tables[0].Rows.Add(File.ReadAllText(file, Encoding.GetEncoding(932)));
+                    THFilesElementsDatasetInfo.Tables[0].Rows.Add(Path.GetFileName(file)); ;
+                }
+
+                THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                THFilesList.Invoke((Action)(() => THFilesList.Items.Add(FolderName)));
+                return "Wolf RPG txt P";
             }
             return string.Empty;
         }
