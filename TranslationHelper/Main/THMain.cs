@@ -280,7 +280,7 @@ namespace TranslationHelper
                 using (OpenFileDialog THFOpen = new OpenFileDialog())
                 {
                     THFOpen.InitialDirectory = Settings.THConfigINI.ReadINI("Paths", "LastPath");
-                    THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json;*.scn;*.ks|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks";
+                    THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json;*.scn;*.ks|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt";
 
                     if (THFOpen.ShowDialog() == DialogResult.OK)
                     {
@@ -315,21 +315,21 @@ namespace TranslationHelper
                                 //}
 
                                 //Попытка добавить открытие сразу всех таблиц в одной
-                                if (setAsDatasourceAllToolStripMenuItem.Visible)
-                                {
-                                    for (int c = 0; c < THFilesElementsDataset.Tables[0].Columns.Count; c++)
-                                    {
-                                        THFilesElementsALLDataTable.Columns.Add(THFilesElementsDataset.Tables[0].Columns[c].ColumnName);//asdfgh
-                                    }
+                                //if (setAsDatasourceAllToolStripMenuItem.Visible)
+                                //{
+                                //    for (int c = 0; c < THFilesElementsDataset.Tables[0].Columns.Count; c++)
+                                //    {
+                                //        THFilesElementsALLDataTable.Columns.Add(THFilesElementsDataset.Tables[0].Columns[c].ColumnName);//asdfgh
+                                //    }
 
-                                    for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
-                                    {
-                                        for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
-                                        {
-                                            THFilesElementsALLDataTable.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r].ItemArray);
-                                        }
-                                    }
-                                }
+                                //    for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
+                                //    {
+                                //        for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                                //        {
+                                //            THFilesElementsALLDataTable.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r].ItemArray);
+                                //        }
+                                //    }
+                                //}
 
                                 Properties.Settings.Default.THSelectedGameDir = GetCorrectedGameDIr(Properties.Settings.Default.THSelectedGameDir);
 
@@ -497,6 +497,11 @@ namespace TranslationHelper
                 return KiriKiriScenarioOpen(sPath);
                 //return "RPGMakerTransPatch";
             }
+            else if (sPath.ToUpper().EndsWith(".TXT"))
+            {
+                return TxtOpen(sPath);
+                //return "RPGMakerTransPatch";
+            }
             else if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
             {
                 return RPGMTransPatchPrepare(sPath);
@@ -649,6 +654,61 @@ namespace TranslationHelper
             }
 
             //MessageBox.Show("Uncompatible source or problem with opening.");
+            return string.Empty;
+        }
+
+        private string TxtOpen(string sPath)
+        {
+            if (Path.GetFileName(Path.GetDirectoryName(sPath))== "TextE")
+            {
+                THFilesElementsDataset.Tables.Add(Path.GetFileNameWithoutExtension(sPath));
+                THFilesElementsDatasetInfo.Tables.Add(Path.GetFileNameWithoutExtension(sPath));
+                THFilesElementsDataset.Tables[0].Columns.Add("Original");
+                THFilesElementsDatasetInfo.Tables[0].Columns.Add("Original");
+                //THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                StreamReader sr = new StreamReader(sPath, Encoding.GetEncoding(932));
+                string line;
+                bool recordstarted = false;
+                StringBuilder sb = new StringBuilder();
+                int cnt = 0;
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+
+                    if (recordstarted)
+                    {
+                        if (line.Length > 0 && !line.StartsWith("END") && !RomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
+                        {
+                            if (cnt > 0)
+                            {
+                                sb.Append(Environment.NewLine);
+                            }
+                            sb.Append(line);
+                            cnt++;
+                        }
+                        else
+                        {
+                            THFilesElementsDataset.Tables[0].Rows.Add(sb.ToString());
+                            THFilesElementsDatasetInfo.Tables[0].Rows.Add("TextE");
+                            recordstarted = false;
+                            sb.Clear();
+                            cnt = 0;
+                        }
+                    }
+                    else
+                    {
+                        if (line.Length > 0 && !line.StartsWith("END") && !RomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
+                        {
+                            sb.Append(line);
+                            cnt++;
+                            recordstarted = true;
+                        }
+                    }
+                }
+                THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                THFilesList.Invoke((Action)(() => THFilesList.Items.Add(Path.GetFileNameWithoutExtension(sPath))));
+                return "Wolf RPG txt";
+            }
             return string.Empty;
         }
 
