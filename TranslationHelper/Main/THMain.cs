@@ -666,7 +666,7 @@ namespace TranslationHelper
             {
                 using (StreamReader sr = new StreamReader(sPath))
                 {
-                    if (sr.ReadLine()== "> WOLF TRANS PATCH FILE VERSION 1.0")
+                    if (sr.ReadLine() == "> WOLF TRANS PATCH FILE VERSION 1.0")
                     {
                         return OpenWolfTransPatch(Path.GetDirectoryName(Path.GetDirectoryName(FolderPath)));
                     }
@@ -757,14 +757,22 @@ namespace TranslationHelper
                                 }
 
                                 int contextlines = 0;
-                                while (_string.StartsWith("> CONTEXT"))
+                                while (_string.StartsWith("> CONTEXT") || _string.EndsWith("< UNTRANSLATED"))
                                 {
-                                    if (contextlines > 0)
+                                    if (!_string.StartsWith("> CONTEXT") && _string.EndsWith("< UNTRANSLATED"))
                                     {
-                                        _context += Environment.NewLine;
+                                        _context += _string.Replace(" < UNTRANSLATED", string.Empty);
                                     }
+                                    else
+                                    {
+                                        if (contextlines > 0)
+                                        {
+                                            _context += Environment.NewLine;
+                                        }
 
-                                    _context += _string.Replace("> CONTEXT ", string.Empty).Replace(" < UNTRANSLATED", string.Empty);// +"\r\n";//Убрал символ переноса, так как он остается при сохранении //Сохраняем коментарий
+                                        _context += _string.Replace("> CONTEXT ", string.Empty).Replace(" < UNTRANSLATED", string.Empty);// +"\r\n";//Убрал символ переноса, так как он остается при сохранении //Сохраняем коментарий
+
+                                    }
 
                                     _string = _file.ReadLine();
                                     contextlines++;
@@ -812,7 +820,7 @@ namespace TranslationHelper
                 }
             }
 
-            foreach(DataTable table in THFilesElementsDataset.Tables)
+            foreach (DataTable table in THFilesElementsDataset.Tables)
             {
                 THFilesList.Invoke((Action)(() => THFilesList.Items.Add(table.TableName)));
             }
@@ -3107,9 +3115,10 @@ namespace TranslationHelper
                                                                              //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
                     for (int r = 0; r < THFilesElementsDataset.Tables[fileName].Rows.Count; r++)
                     {
+                        string ORIGINAL = THFilesElementsDataset.Tables[fileName].Rows[r][originalcolumnindex] as string;
                         buffer.AppendLine("> BEGIN STRING");// + Environment.NewLine);
                                                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Original + Environment.NewLine;
-                        buffer.AppendLine(THFilesElementsDataset.Tables[fileName].Rows[r][originalcolumnindex] + string.Empty);// + Environment.NewLine);
+                        buffer.AppendLine(ORIGINAL);// + Environment.NewLine);
                         string[] CONTEXT = (THFilesElementsDatasetInfo.Tables[fileName].Rows[r][0] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
                         //string str1 = string.Empty;
                         string TRANSLATION = THFilesElementsDataset.Tables[fileName].Rows[r][translationcolumnindex] + string.Empty;
@@ -3122,7 +3131,7 @@ namespace TranslationHelper
                             }
                             else
                             {   //if (String.IsNullOrEmpty(THRPGMTransPatchFiles[i].blocks[y].Translation)) //if (ArrayTransFilses[i].blocks[y].Trans == Environment.NewLine)
-                                if (TRANSLATION.Length == 0) //if (ArrayTransFilses[i].blocks[y].Trans == Environment.NewLine)
+                                if (TRANSLATION.Length == 0 || TRANSLATION == ORIGINAL) //if (ArrayTransFilses[i].blocks[y].Trans == Environment.NewLine)
                                 {
                                     buffer.AppendLine("> CONTEXT " + CONTEXT[g] + " < UNTRANSLATED");// + Environment.NewLine);
                                 }
