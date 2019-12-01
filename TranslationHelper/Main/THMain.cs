@@ -788,7 +788,7 @@ namespace TranslationHelper
                                 else
                                 {
                                     THFilesElementsDataset.Tables[fname].Rows.Add(_original, _translation/*, _context, _advice, _status*/);
-                                    THFilesElementsDatasetInfo.Tables[fname].Rows.Add("Context:" + Environment.NewLine + _context/* + Environment.NewLine + "Advice:" + Environment.NewLine + _advice*/);
+                                    THFilesElementsDatasetInfo.Tables[fname].Rows.Add(_context/* + Environment.NewLine + "Advice:" + Environment.NewLine + _advice*/);
                                 }
 
                                 _context = string.Empty;  //Чистим
