@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TranslationHelper.Main.Functions
 {
-    class RomajiKana
+    class FunctionsRomajiKana
     {
 
         /// <summary>
@@ -18,9 +18,9 @@ namespace TranslationHelper.Main.Functions
         {
             return SelectedLocalePercentFromStringIsNotValid(inputString)
                 || SelectedLocalePercentFromStringIsNotValid(inputString, "other")
-                || (RomajiKana.GetLocaleLangCount(inputString, "romaji") + RomajiKana.GetLocaleLangCount(inputString, "other")) == inputString.Length
-                || RomajiKana.GetLocaleLangCount(inputString, "romaji") == inputString.Length
-                || RomajiKana.GetLocaleLangCount(inputString, "other") == inputString.Length;
+                || (FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji") + FunctionsRomajiKana.GetLocaleLangCount(inputString, "other")) == inputString.Length
+                || FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji") == inputString.Length
+                || FunctionsRomajiKana.GetLocaleLangCount(inputString, "other") == inputString.Length;
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace TranslationHelper.Main.Functions
             {
                 if (Properties.Settings.Default.DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
                 {
-                    return ((RomajiKana.GetLocaleLangCount(target, langlocale) * 100) / RomajiKana.GetLocaleLangCount(target, "all")) > Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
+                    return ((FunctionsRomajiKana.GetLocaleLangCount(target, langlocale) * 100) / FunctionsRomajiKana.GetLocaleLangCount(target, "all")) > Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
                 }
             }
             catch
@@ -47,7 +47,7 @@ namespace TranslationHelper.Main.Functions
 
         public bool HasNOJPcharacters(string str)
         {
-            return RomajiKana.GetLocaleLangCount(str, "kanji") < 1 && RomajiKana.GetLocaleLangCount(str, "katakana") < 1 && RomajiKana.GetLocaleLangCount(str, "hiragana") < 1;
+            return FunctionsRomajiKana.GetLocaleLangCount(str, "kanji") < 1 && FunctionsRomajiKana.GetLocaleLangCount(str, "katakana") < 1 && FunctionsRomajiKana.GetLocaleLangCount(str, "hiragana") < 1;
         }
 
         /// <summary>

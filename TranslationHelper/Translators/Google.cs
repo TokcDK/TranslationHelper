@@ -231,7 +231,7 @@ namespace TranslationHelper
                     }).Last();
                 }
 
-                if (languageFrom == "jp" && RomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(OriginalText))
+                if (languageFrom == "jp" && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(OriginalText))
                 {
                     return OriginalText;
                 }

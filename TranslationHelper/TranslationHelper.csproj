@@ -77,12 +77,12 @@
     <Compile Include="Main\DoubleBufferedListBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main\Functions\AutoOperations.cs" />
-    <Compile Include="Main\Functions\CopyPaste.cs" />
-    <Compile Include="Main\Functions\DBFile.cs" />
-    <Compile Include="Main\Functions\RomajiKana.cs" />
-    <Compile Include="Main\Functions\StringOperations.cs" />
-    <Compile Include="Main\Functions\Table.cs" />
+    <Compile Include="Main\Functions\FunctionsAutoOperations.cs" />
+    <Compile Include="Main\Functions\FunctionsCopyPaste.cs" />
+    <Compile Include="Main\Functions\FunctionsDBFile.cs" />
+    <Compile Include="Main\Functions\FunctionsRomajiKana.cs" />
+    <Compile Include="Main\Functions\FunctionsStringOperations.cs" />
+    <Compile Include="Main\Functions\FunctionsTable.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
     <Compile Include="Translators\DeepL.cs" />
     <Compile Include="Translators\Google.cs" />

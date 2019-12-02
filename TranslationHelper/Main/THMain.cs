@@ -534,7 +534,11 @@ namespace TranslationHelper
             }
             else if (Path.GetExtension(sPath) == ".exe" /*sPath.ToLower().Contains("\\game.exe") || dir.GetFiles("*.exe").Length > 0*/)
             {
-                if ((GetExeDescription(sPath) != null && GetExeDescription(sPath).ToUpper().Contains("KIRIKIRI")) && dir.GetFiles("*.xp3").Length > 0)
+                if (Directory.Exists(Path.Combine(Path.GetDirectoryName(sPath), "data", "bin")))
+                {
+                    return ProceedRubyRPGGame(Path.GetDirectoryName(sPath));//RJ263914
+                }
+                else if ((GetExeDescription(sPath) != null && GetExeDescription(sPath).ToUpper().Contains("KIRIKIRI")) && dir.GetFiles("*.xp3").Length > 0)
                 {
                     if (KiriKiriGame(sPath))
                     {
@@ -655,6 +659,68 @@ namespace TranslationHelper
 
             //MessageBox.Show("Uncompatible source or problem with opening.");
             return string.Empty;
+        }
+
+        private string ProceedRubyRPGGame(string GameDirectory)
+        {
+            string binDir = Path.Combine(GameDirectory, "data", "bin");
+            string targetDirPath = Path.Combine(binDir, "enemes");
+            if (Directory.Exists(targetDirPath))
+            {
+                RubyRPGGameFIlesFromTheDir(targetDirPath, "enemes");
+            }
+            return "RubyRPGGame";
+        }
+
+        private void RubyRPGGameFIlesFromTheDir(string targetDirPath, string extension)
+        {
+            foreach (var enemesFile in Directory.GetFiles(targetDirPath, "*." + extension))
+            {
+                string fileName = Path.GetFileName(enemesFile);
+                THFilesElementsDataset.Tables.Add(fileName);
+                THFilesElementsDataset.Tables[fileName].Columns.Add("Original");
+
+                THFilesElementsDatasetInfo.Tables.Add(fileName);
+                THFilesElementsDatasetInfo.Tables[fileName].Columns.Add("Original");
+
+                if (extension == "enemes")
+                {
+                    Open_enemesDirFile(enemesFile);
+                }
+
+                THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
+                THFilesList.Invoke((Action)(() => THFilesList.Items.Add(fileName)));
+            }
+        }
+
+        private void Open_enemesDirFile(string enemesFile)
+        {
+            using (StreamReader sr = new StreamReader(enemesFile))
+            {
+                string fileName = Path.GetFileName(enemesFile);
+                string line;
+                int lineNum = 1;
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+                    if (lineNum > 2 && line.Length > 0 && line != "top" && line != "bottom")
+                    {
+                        string[] strings = line.Split(',');
+                        
+                        for (int i = 0; i < strings.Length; i++)
+                        {
+                            if (FunctionsStringOperations.IsDigitsOnly(strings[i]) || string.IsNullOrEmpty(strings[i]))
+                            {
+                                continue;
+                            }
+                            THFilesElementsDataset.Tables[fileName].Rows.Add(strings[i]);
+                            THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(fileName);
+                        }
+                    }
+                    lineNum++;
+                }
+
+            }
         }
 
         private string AnyTxt(string sPath)
@@ -881,7 +947,7 @@ namespace TranslationHelper
 
                         if (recordstarted)
                         {
-                            if (line.Length > 0 && !line.StartsWith("/") && !line.StartsWith("END") && !RomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
+                            if (line.Length > 0 && !line.StartsWith("/") && !line.StartsWith("END") && !FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
                             {
                                 if (cnt > 0)
                                 {
@@ -901,7 +967,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            if (line.Length > 0 && !line.StartsWith("/") && !line.StartsWith("END") && !RomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
+                            if (line.Length > 0 && !line.StartsWith("/") && !line.StartsWith("END") && !FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
                             {
                                 sb.Append(line);
                                 cnt++;
@@ -1073,7 +1139,7 @@ namespace TranslationHelper
                             for (int l = 0; l < ValuesLength; l++)
                             {
                                 string subline = Values[l];
-                                if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || IsDigitsOnly(subline))
+                                if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || FunctionsStringOperations.IsDigitsOnly(subline))
                                 {
                                 }
                                 else
@@ -1150,7 +1216,7 @@ namespace TranslationHelper
                         {
                             if (name > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[name]) || IsDigitsOnly(columns[name]))
+                                if (string.IsNullOrEmpty(columns[name]) || FunctionsStringOperations.IsDigitsOnly(columns[name]))
                                 {
                                 }
                                 else
@@ -1161,7 +1227,7 @@ namespace TranslationHelper
                             }
                             if (detail > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[detail]) || IsDigitsOnly(columns[detail]))
+                                if (string.IsNullOrEmpty(columns[detail]) || FunctionsStringOperations.IsDigitsOnly(columns[detail]))
                                 {
                                 }
                                 else
@@ -1172,7 +1238,7 @@ namespace TranslationHelper
                             }
                             if (type > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[type]) || IsDigitsOnly(columns[type]))
+                                if (string.IsNullOrEmpty(columns[type]) || FunctionsStringOperations.IsDigitsOnly(columns[type]))
                                 {
                                 }
                                 else
@@ -1183,7 +1249,7 @@ namespace TranslationHelper
                             }
                             if (field > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[field]) || IsDigitsOnly(columns[field]))
+                                if (string.IsNullOrEmpty(columns[field]) || FunctionsStringOperations.IsDigitsOnly(columns[field]))
                                 {
                                 }
                                 else
@@ -1194,7 +1260,7 @@ namespace TranslationHelper
                             }
                             if (comment > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[comment]) || IsDigitsOnly(columns[comment]))
+                                if (string.IsNullOrEmpty(columns[comment]) || FunctionsStringOperations.IsDigitsOnly(columns[comment]))
                                 {
                                 }
                                 else
@@ -1209,28 +1275,6 @@ namespace TranslationHelper
             }
 
             return DT;
-        }
-
-        static bool IsDigitsOnly(string str)
-        {
-            if (string.IsNullOrEmpty(str))
-            {
-                return false;
-            }
-
-            str = str.Replace(".", string.Empty);
-            //https://stackoverflow.com/questions/7461080/fastest-way-to-check-if-string-contains-only-digits
-            //наибыстрейший метод 
-            int strLength = str.Length;//и моя оптимизация, ускоряющая с 2.19 до 1.62 при 100млн. итераций
-            for (int i = 0; i < strLength; i++)
-            {
-                if ((str[i] ^ '0') > 9)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         private bool ExtractXP3files(string sPath)
@@ -1427,7 +1471,7 @@ namespace TranslationHelper
                                     line = line.Replace("[lr_]", string.Empty).Replace("[p_]", string.Empty);
 
                                     //line = Regex.Replace(line, @"^\s*(\[[a-z\/_]+\])*((\[name\])?.+)\[(lr|p)_\]\s*$", "$2");
-                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1442,7 +1486,7 @@ namespace TranslationHelper
                                 if (line.EndsWith("[k]")) // text
                                 {
                                     line = line.Replace("[k]", string.Empty);
-                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1454,7 +1498,7 @@ namespace TranslationHelper
                                 else if (line.StartsWith("*")) // text
                                 {
                                     line = line.Remove(0, 1);
-                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1466,7 +1510,7 @@ namespace TranslationHelper
                                 else if (line.EndsWith("[r]")) //text, first line
                                 {
                                     line = line.Replace("[r]", string.Empty).Trim();
-                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1493,7 +1537,7 @@ namespace TranslationHelper
                                 else if (line.StartsWith("@notice text="))
                                 {
                                     line = line.Remove(0, 13);//удаление "@notice text="
-                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1505,7 +1549,7 @@ namespace TranslationHelper
                                 else if (line.StartsWith("Name = '"))
                                 {
                                     line = line.Remove(line.Length - 2, 2).Remove(0, 8);
-                                    if (string.IsNullOrEmpty(line) || IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1522,7 +1566,7 @@ namespace TranslationHelper
                                     foreach (var m in matches)
                                     {
                                         subline = m.ToString();
-                                        if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || IsDigitsOnly(line.Replace("\"", string.Empty)))
+                                        if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || FunctionsStringOperations.IsDigitsOnly(line.Replace("\"", string.Empty)))
                                         {
                                         }
                                         else
@@ -2851,7 +2895,7 @@ namespace TranslationHelper
                         //THTargetRichTextBox.Select(Properties.Settings.Default.THOptionLineCharLimit+1, THTargetRichTextBox.Text.Length);
                         //THTargetRichTextBox.SelectionColor = Color.Red;
 
-                        TranslationLongestLineLenghtLabel.Text = AutoOperations.GetLongestLineLength(cellvalue.ToString()).ToString();
+                        TranslationLongestLineLenghtLabel.Text = FunctionsAutoOperations.GetLongestLineLength(cellvalue.ToString()).ToString();
                     }
 
                     THInfoTextBox.Text = string.Empty;
@@ -2875,7 +2919,7 @@ namespace TranslationHelper
                             THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
                         }
                         THInfoTextBox.Text += Environment.NewLine + Environment.NewLine;
-                        THInfoTextBox.Text += RomajiKana.THShowLangsOfString(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty, "all"); //Show all detected languages count info
+                        THInfoTextBox.Text += FunctionsRomajiKana.THShowLangsOfString(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty, "all"); //Show all detected languages count info
                     }
                 }
                 //--------Считывание значения ячейки в текстовое поле 1
@@ -2931,7 +2975,7 @@ namespace TranslationHelper
 
         private void ShowNonEmptyRowsCount(DataSet tHFilesElementsDataset)
         {
-            int RowsCount = Table.GetDatasetRowsCount(tHFilesElementsDataset);
+            int RowsCount = FunctionsTable.GetDatasetRowsCount(tHFilesElementsDataset);
             if (RowsCount == 0)
             {
                 TableCompleteInfoLabel.Visible = false;
@@ -2939,7 +2983,7 @@ namespace TranslationHelper
             else
             {
                 TableCompleteInfoLabel.Visible = true;
-                TableCompleteInfoLabel.Text = Table.GetDatasetNonEmptyRowsCount(tHFilesElementsDataset) + "/" + RowsCount;
+                TableCompleteInfoLabel.Text = FunctionsTable.GetDatasetNonEmptyRowsCount(tHFilesElementsDataset) + "/" + RowsCount;
             }
         }
 
@@ -3215,7 +3259,7 @@ namespace TranslationHelper
                             continue;
                         }
 
-                        if (line.Length == 0 || line.StartsWith("/") || line.StartsWith("END") || RomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
+                        if (line.Length == 0 || line.StartsWith("/") || line.StartsWith("END") || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
                         {
                             sb.AppendLine(line);
                         }
@@ -3276,7 +3320,7 @@ namespace TranslationHelper
                             if (line.EndsWith("[k]")) // text
                             {
                                 string cline = line.Replace("[r]", string.Empty).Remove(line.Length - 3, 3);
-                                if (string.IsNullOrEmpty(cline) || IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsStringOperations.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -3297,7 +3341,7 @@ namespace TranslationHelper
                             else if (line.StartsWith("*")) // text
                             {
                                 string cline = line.Remove(0, 1);
-                                if (string.IsNullOrEmpty(cline) || IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsStringOperations.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -3318,7 +3362,7 @@ namespace TranslationHelper
                             else if (line.EndsWith("[r]")) //text, first line
                             {
                                 string cline = line.Replace("[r]", string.Empty);
-                                if (string.IsNullOrEmpty(cline) || IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsStringOperations.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -3363,7 +3407,7 @@ namespace TranslationHelper
                             else if (line.StartsWith("@notice text="))
                             {
                                 string cline = line.Remove(0, 13);//удаление "@notice text="
-                                if (string.IsNullOrEmpty(cline) || IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsStringOperations.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -3909,7 +3953,7 @@ namespace TranslationHelper
         {
             var grid = sender as DataGridView;
 
-            string rowIdx = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
+            string rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
             StringFormat centerFormat = new StringFormat()
@@ -4211,11 +4255,11 @@ namespace TranslationHelper
             if (sPath.Length == 0)
             {
                 //THFilesElementsDataset.ReadXml(Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
-                DBFile.ReadDBFile(DBDataSet, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
+                FunctionsDBFile.ReadDBFile(DBDataSet, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
             }
             else
             {
-                DBFile.ReadDBFile(DBDataSet, sPath); //load new data
+                FunctionsDBFile.ReadDBFile(DBDataSet, sPath); //load new data
             }
             THLoadDBCompare(DBDataSet);
             ProgressInfo(false);
@@ -4223,7 +4267,7 @@ namespace TranslationHelper
 
         private void THLoadDBCompare(DataSet THTempDS)
         {
-            if (!Properties.Settings.Default.IsFullComprasionDBloadEnabled && Table.IsDataSetsElementsCountIdentical(THFilesElementsDataset, THTempDS))
+            if (!Properties.Settings.Default.IsFullComprasionDBloadEnabled && FunctionsTable.IsDataSetsElementsCountIdentical(THFilesElementsDataset, THTempDS))
             {
                 CompareLiteIfIdentical(THTempDS);
                 return;
@@ -4480,7 +4524,7 @@ namespace TranslationHelper
         {
             //исключение имен с недопустимыми именами для файла или папки
             //http://www.cyberforum.ru/post5599483.html
-            if (name.Length == 0 || StringOperations.IsMultiline(name) || name.Intersect(Path.GetInvalidFileNameChars()).Any())
+            if (name.Length == 0 || FunctionsStringOperations.IsMultiline(name) || name.Intersect(Path.GetInvalidFileNameChars()).Any())
             {
                 //MessageBox.Show("GetAnyFileWithTheNameExist return false because invalid! name=" + name);
                 return false;
@@ -4632,7 +4676,7 @@ namespace TranslationHelper
                         else
                         {
                             string mergedstring = textsb.ToString();
-                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && RomajiKana.SelectedLocalePercentFromStringIsNotValid(mergedstring))
+                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(mergedstring))
                             {
                             }
                             else
@@ -4657,7 +4701,7 @@ namespace TranslationHelper
                     }
                     if (token.Type == JTokenType.String)
                     {
-                        if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || RomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
+                        if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
                         {
                         }
                         else
@@ -4837,7 +4881,7 @@ namespace TranslationHelper
                 if (token.Type == JTokenType.String)
                 {
                     string tokenvalue = token + string.Empty;
-                    if (tokenvalue.Length == 0 || RomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue))
+                    if (tokenvalue.Length == 0 || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue))
                     {
                     }
                     else
@@ -5114,7 +5158,7 @@ namespace TranslationHelper
                     //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                     //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                     //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                    int index = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                    int index = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
                     selindexes[i] = index;
 
                     //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
@@ -5611,7 +5655,7 @@ namespace TranslationHelper
             DS.Reset();
             if (File.Exists(THTranslationCachePath))
             {
-                DBFile.ReadDBFile(DS, THTranslationCachePath);
+                FunctionsDBFile.ReadDBFile(DS, THTranslationCachePath);
             }
             else
             {
@@ -5763,7 +5807,7 @@ namespace TranslationHelper
                                     //LogToFile("resultvalue from cache is empty. resultvalue=" + resultvalue, true);
                                     //string[] inputvaluearray = InputValue.Split(new string[2] { Environment.NewLine, @"\n" }, StringSplitOptions.None);
 
-                                    if (StringOperations.IsMultiline(InputValue))
+                                    if (FunctionsStringOperations.IsMultiline(InputValue))
                                     {
                                         ResultValue = TranslateMultilineValue(InputValue.SplitToLines().ToArray(), THTranslationCache);
                                     }
@@ -5849,7 +5893,7 @@ namespace TranslationHelper
         {
             if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THTranslationCache.Tables[0].Rows.Count > 0)
             {
-                DBFile.WriteDBFile(THTranslationCache, THTranslationCachePath);
+                FunctionsDBFile.WriteDBFile(THTranslationCache, THTranslationCachePath);
                 //THTranslationCache.Reset();
             }
         }
@@ -5937,7 +5981,7 @@ namespace TranslationHelper
                 int[] selindexes = new int[selcellscnt];
                 for (int i = 0; i < selcellscnt; i++)
                 {
-                    selindexes[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, tableindex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                    selindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, tableindex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
                 }
                 Array.Sort(selindexes);
                 for (int i = 0; i < selcellscnt; i++)
@@ -6024,7 +6068,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsFixingCells = true;
 
-            AutoOperations.THFixCells(THFilesElementsDataset, THFileElementsDataGridView, method, cind, tind, rind, selectedonly);
+            FunctionsAutoOperations.THFixCells(THFilesElementsDataset, THFileElementsDataGridView, method, cind, tind, rind, selectedonly);
 
             //снять занятость по окончании
             THIsFixingCells = false;
@@ -6041,7 +6085,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsExtractingTextForTranslation = true;
 
-            string ret = AutoOperations.THExtractTextForTranslation(input);
+            string ret = FunctionsAutoOperations.THExtractTextForTranslation(input);
 
             //снять занятость по окончании
             THIsExtractingTextForTranslation = false;
@@ -6113,7 +6157,7 @@ namespace TranslationHelper
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         //координаты ячейки
-                        selectedRowIndexses[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
 
                     }
                     foreach (var rind in selectedRowIndexses)
@@ -6138,7 +6182,7 @@ namespace TranslationHelper
         {
             if (forcevalue || (Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
-                AutoOperations.THAutoSetSameTranslationForSimular(THFilesElementsDataset, InputTableIndex, InputRowIndex, InputCellIndex, forcerun, forcevalue);
+                FunctionsAutoOperations.THAutoSetSameTranslationForSimular(THFilesElementsDataset, InputTableIndex, InputRowIndex, InputCellIndex, forcerun, forcevalue);
 
                 //LogToFile(string.Empty,true);
                 cellchanged = false;
@@ -6194,7 +6238,7 @@ namespace TranslationHelper
                 if (THFileElementsDataGridView.SelectedCells.Count > 0)
                 {
                     //Copy to clipboard
-                    CopyPaste.CopyToClipboard(THFileElementsDataGridView);
+                    FunctionsCopyPaste.CopyToClipboard(THFileElementsDataGridView);
 
                     //Clear selected cells                
                     //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
@@ -6229,7 +6273,7 @@ namespace TranslationHelper
                 // Ensure that text is selected in the text box.    
                 if (THFileElementsDataGridView.SelectedCells.Count > 0)
                 {
-                    CopyPaste.CopyToClipboard(THFileElementsDataGridView);
+                    FunctionsCopyPaste.CopyToClipboard(THFileElementsDataGridView);
                 }
             }
         }
@@ -6258,7 +6302,7 @@ namespace TranslationHelper
                     {
                         //LogToFile("DGV sel cells > 0");
                         //Perform paste Operation
-                        CopyPaste.PasteClipboardValue(THFileElementsDataGridView, this);
+                        FunctionsCopyPaste.PasteClipboardValue(THFileElementsDataGridView, this);
                     }
                 }
             }
@@ -6296,7 +6340,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            rindexes[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, rind);
+                            rindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, rind);
                         }
 
                     }
@@ -6407,9 +6451,9 @@ namespace TranslationHelper
 
             WriteDBFileIsBusy = true;
             WriteDBFileLiteLastFileName = fileName;
-            using (DataSet liteds = Table.FillTempDB(ds))
+            using (DataSet liteds = FunctionsTable.FillTempDB(ds))
             {
-                await Task.Run(() => DBFile.WriteDBFile(liteds, fileName));
+                await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName));
             }
             WriteDBFileIsBusy = false;
             WriteDBFileLiteLastFileName = string.Empty;
@@ -6549,17 +6593,17 @@ namespace TranslationHelper
 
         private void ToUPPERCASEToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AutoOperations.StringCaseMorph(THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 2);
+            FunctionsAutoOperations.StringCaseMorph(THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 2);
         }
 
         private void FirstCharacterToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AutoOperations.StringCaseMorph(THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 1);
+            FunctionsAutoOperations.StringCaseMorph(THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 1);
         }
 
         private void TolowercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AutoOperations.StringCaseMorph(THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 0);
+            FunctionsAutoOperations.StringCaseMorph(THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 0);
         }
 
         bool InteruptTranslation = false;
@@ -7021,7 +7065,7 @@ namespace TranslationHelper
                     backgroundBrush = ListBoxItemBackgroundBrushSelected;
                 else if ((index % 2) == 0)
                 {
-                    if (Table.IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index]))
+                    if (FunctionsTable.IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index]))
                     {
                         backgroundBrush = ListBoxItemBackgroundBrush1Complete;
                     }
@@ -7032,7 +7076,7 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    if (Table.IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index]))
+                    if (FunctionsTable.IsTableRowsCompleted(THFilesElementsDataset.Tables[e.Index]))
                     {
                         backgroundBrush = ListBoxItemBackgroundBrush2Complete;
                     }
@@ -7108,7 +7152,7 @@ namespace TranslationHelper
                     var row = table.Rows[r];
                     //if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)//убрал проверку пустой ячейки, чтобы насильно переприсваивать
                     //{
-                    if ((row[1] == null || string.IsNullOrEmpty(row[1] as string) || !Equals(row[1], row[0])) && RomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(row[0] as string))
+                    if ((row[1] == null || string.IsNullOrEmpty(row[1] as string) || !Equals(row[1], row[0])) && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(row[0] as string))
                     {
                         THFilesElementsDataset.Tables[t].Rows[r][1] = row[0];
                     }
@@ -7167,7 +7211,7 @@ namespace TranslationHelper
             int i = THFileElementsDataGridView.SelectedCells.Count;
             if (i == 1)
             {
-                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.CurrentCell.RowIndex), 0, true, true);
+                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.CurrentCell.RowIndex), 0, true, true);
             }
         }
 
@@ -7185,16 +7229,16 @@ namespace TranslationHelper
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         //координаты ячейки
-                        selectedRowIndexses[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
 
                     }
                     foreach (var rind in selectedRowIndexses)
                     {
                         string origCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] as string;
                         string transCellValue = THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
-                        if (!string.IsNullOrWhiteSpace(transCellValue) && transCellValue != origCellValue && AutoOperations.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit)
+                        if (!string.IsNullOrWhiteSpace(transCellValue) && transCellValue != origCellValue && FunctionsAutoOperations.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit)
                         {
-                            THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[rind][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(transCellValue, Properties.Settings.Default.THOptionLineCharLimit);
+                            THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[rind][1] = FunctionsAutoOperations.SplitMultiLineIfBeyondOfLimit(transCellValue, Properties.Settings.Default.THOptionLineCharLimit);
                         }
 
                     }
@@ -7216,12 +7260,12 @@ namespace TranslationHelper
                 {
                     var Row = THFilesElementsDataset.Tables[t].Rows[r];
                     string CellValue = Row[1] as string;
-                    if (Row[1] == null || string.IsNullOrEmpty(CellValue) || Equals(Row[1], Row[0]) || AutoOperations.GetLongestLineLength(CellValue) <= Properties.Settings.Default.THOptionLineCharLimit)
+                    if (Row[1] == null || string.IsNullOrEmpty(CellValue) || Equals(Row[1], Row[0]) || FunctionsAutoOperations.GetLongestLineLength(CellValue) <= Properties.Settings.Default.THOptionLineCharLimit)
                     {
                     }
                     else
                     {
-                        THFilesElementsDataset.Tables[t].Rows[r][1] = AutoOperations.SplitMultiLineIfBeyondOfLimit(CellValue, Properties.Settings.Default.THOptionLineCharLimit);
+                        THFilesElementsDataset.Tables[t].Rows[r][1] = FunctionsAutoOperations.SplitMultiLineIfBeyondOfLimit(CellValue, Properties.Settings.Default.THOptionLineCharLimit);
                     }
                 }
             }
@@ -7255,21 +7299,21 @@ namespace TranslationHelper
         private void lowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => AutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 0, true)));
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsAutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 0, true)));
             StringCase.Start();
         }
 
         private void UppercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => AutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 1, true)));
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsAutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 1, true)));
             StringCase.Start();
         }
 
         private void UPPERCASEallToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => AutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 2, true)));
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsAutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 2, true)));
             StringCase.Start();
         }
 

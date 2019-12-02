@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TranslationHelper.Main.Functions
 {
-    class DBFile
+    class FunctionsDBFile
     {
         //https://stackoverflow.com/questions/223738/net-stream-dataset-of-xml-data-to-zip-file
         //http://madprops.org/blog/saving-datasets-locally-with-compression/

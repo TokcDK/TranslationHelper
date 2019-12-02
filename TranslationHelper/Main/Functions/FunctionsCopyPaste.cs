@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace TranslationHelper.Main.Functions
 {
-    class CopyPaste
+    class FunctionsCopyPaste
     {
         public static void CopyToClipboard(DataGridView THFileElementsDataGridView)
         {

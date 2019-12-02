@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace TranslationHelper.Main.Functions
 {
-    static class Table
+    static class FunctionsTable
     {
         public static int GetDGVSelectedRowIndexInDatatable(DataSet TargetDataSet, DataGridView InputDataGridView,  int TableIndex, int rowIndex)
         {

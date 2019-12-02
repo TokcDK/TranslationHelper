@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace TranslationHelper.Main.Functions
 {
-    class AutoOperations
+    class FunctionsAutoOperations
     {
         public static string THExtractTextForTranslation(string input)
         {
@@ -158,7 +158,7 @@ namespace TranslationHelper.Main.Functions
                                 selcellscnt = new int[THFileElementsDataGridView.SelectedCells.Count];//создать массив длинной числом выбранных ячеек
                                 for (int i = 0; i < selcellscnt.Length; i++) //записать индексы всех выбранных ячеек
                                 {
-                                    selcellscnt[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, tind, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                                    selcellscnt[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, tind, THFileElementsDataGridView.SelectedCells[i].RowIndex);
                                 }
                             }
                             else if (method == "t")
@@ -309,7 +309,7 @@ namespace TranslationHelper.Main.Functions
         private static string FixForRPGMAkerMV(string cvalue)
         {
             //rpgmaker mv string will broke script if starts\ends with "'" and contains another "'" in middle
-            if (cvalue.Length>2 && cvalue.Substring(0, 1) == "'" && cvalue.Substring(cvalue.Length - 1, 1) == "'" && StringOperations.IsStringAContainsStringB(cvalue.Substring(1, cvalue.Length - 2),"'"))
+            if (cvalue.Length>2 && cvalue.Substring(0, 1) == "'" && cvalue.Substring(cvalue.Length - 1, 1) == "'" && FunctionsStringOperations.IsStringAContainsStringB(cvalue.Substring(1, cvalue.Length - 2),"'"))
             {
                 cvalue = cvalue
                     .Replace("do n't", "do not")
@@ -370,8 +370,8 @@ namespace TranslationHelper.Main.Functions
                 string regexPattern = GetStringSimularityRegexPattern();
 
                 Regex reg = new Regex(regexPattern); //reg равняется любым цифрам
-                string InputOrigCellValue = RomajiKana.THFixDigits(InputTableOriginalCell as string);
-                string InputTransCellValue = RomajiKana.THFixDigits(InputTableTranslationCell as string);
+                string InputOrigCellValue = FunctionsRomajiKana.THFixDigits(InputTableOriginalCell as string);
+                string InputTransCellValue = FunctionsRomajiKana.THFixDigits(InputTableTranslationCell as string);
 
                 //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменяется, т.к. 万 [man] переводится как 10000.
                 if (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && Regex.Matches(InputTransCellValue, @"\d+").Count != Regex.Matches(InputOrigCellValue, @"\d+").Count)
@@ -599,7 +599,7 @@ namespace TranslationHelper.Main.Functions
                         for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                         {
                             int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                            indexes[i] = Table.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, TableIndex, rind);
+                            indexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, TableIndex, rind);
                         }
                         foreach (var rindex in indexes)
                         {
@@ -747,7 +747,7 @@ namespace TranslationHelper.Main.Functions
             {
                 return Line;
             }
-            return string.Join(StringOperations.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Line, Limit));
+            return string.Join(FunctionsStringOperations.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Line, Limit));
         }
 
         public static string[] SplitLineIfBeyondOfLimit(string text, int max)

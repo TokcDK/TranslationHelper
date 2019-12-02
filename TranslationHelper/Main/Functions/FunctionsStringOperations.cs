@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TranslationHelper.Main.Functions
 {
-    static class StringOperations
+    static class FunctionsStringOperations
     {
         /// <summary>
         /// Split string to lines
@@ -69,6 +69,28 @@ namespace TranslationHelper.Main.Functions
             }
             return false;
 
+        }
+
+        public static bool IsDigitsOnly(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return false;
+            }
+
+            str = str.Replace(".", string.Empty);
+            //https://stackoverflow.com/questions/7461080/fastest-way-to-check-if-string-contains-only-digits
+            //наибыстрейший метод 
+            int strLength = str.Length;//и моя оптимизация, ускоряющая с 2.19 до 1.62 при 100млн. итераций
+            for (int i = 0; i < strLength; i++)
+            {
+                if ((str[i] ^ '0') > 9)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
