@@ -664,14 +664,43 @@ namespace TranslationHelper
         private string ProceedRubyRPGGame(string GameDirectory)
         {
             string binDir = Path.Combine(GameDirectory, "data", "bin");
-            string[] folderNames = { "enemes", "enemy", "item", "mappos", "onom" };
+            string[,] folderNames = {
+                { "enemes", "enemes" }
+                ,
+                {"enemy", "enemy" }
+                ,
+                {"item", "item" }
+                ,
+                {"mappos", "mappos" }
+                ,
+                {"onom", "onom" }
+                ,
+                {"pants", "pants" }
+                ,
+                {"plugin", "plugin" }
+                ,
+                {"recollect", "*" }
+                ,
+                {"skill", "skill" }
+                ,
+                {"state", "state" }
+                ,
+                {"submission", "mission" }
+                ,
+                {"trophy", "trophy" }
+                ,
+                {"tutorial", "tuto" }
+                ,
+                {"type", "type" }
+            };
 
-            foreach (var folder in folderNames)
+            int folderNamesLength = folderNames.Length / 2;
+            for (int i = 0; i < folderNamesLength; i++)
             {
-                string targetDirPath = Path.Combine(binDir, folder);
+                string targetDirPath = Path.Combine(binDir, folderNames[i, 0]);
                 if (Directory.Exists(targetDirPath))
                 {
-                    RubyRPGGameFIlesFromTheDir(targetDirPath, folder);
+                    RubyRPGGameFIlesFromTheDir(targetDirPath, folderNames[i, 1]);
                 }
             }
             return "RubyRPGGame";
@@ -679,42 +708,179 @@ namespace TranslationHelper
 
         private void RubyRPGGameFIlesFromTheDir(string targetDirPath, string extension)
         {
-            foreach (var enemesFile in Directory.GetFiles(targetDirPath, "*." + extension, SearchOption.AllDirectories))
+            bool DropItIn1File = (
+                    extension == "item"
+                    ||
+                    extension == "enemy"
+                    ||
+                    extension == "mappos"
+                    ||
+                    extension == "mission"
+                    ||
+                    extension == "onom"
+                    ||
+                    extension == "pants"
+                    ||
+                    extension == "plugin"
+                    ||
+                    extension == "skill"
+                    ||
+                    extension == "state"
+                    ||
+                    extension == "trophy"
+                    ||
+                    extension == "type"
+                    );
+
+            string folderName = Path.GetFileName(targetDirPath);
+            foreach (var filePath in Directory.GetFiles(targetDirPath, "*." + extension, SearchOption.AllDirectories))
             {
-                string fileName = (extension == "onom" ? Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(enemesFile))) + "_" + Path.GetFileName(Path.GetDirectoryName(enemesFile)) + "_" : string.Empty) + Path.GetFileName(enemesFile);
-                THFilesElementsDataset.Tables.Add(fileName);
-                THFilesElementsDataset.Tables[fileName].Columns.Add("Original");
+                string fileName = Path.GetFileName(filePath);
+                //string tableName = (extension == "onom" ? Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filePath))) + "_" + Path.GetFileName(Path.GetDirectoryName(filePath)) + "_" : string.Empty) + Path.GetFileName(filePath);
+                string tableName = DropItIn1File ? Path.GetFileName(targetDirPath) : fileName;
 
-                THFilesElementsDatasetInfo.Tables.Add(fileName);
-                THFilesElementsDatasetInfo.Tables[fileName].Columns.Add("Original");
+                bool tableNotExists = THFilesElementsDataset.Tables[tableName] == null;
+                if (tableNotExists)
+                {
+                    THFilesElementsDataset.Tables.Add(tableName);
+                    THFilesElementsDataset.Tables[tableName].Columns.Add("Original");
 
-                if (extension == "enemes")
-                {
-                    Open_enemesDirFile(enemesFile);
-                }
-                else if (extension == "enemy")
-                {
-                    Open_variousDirFile(enemesFile, fileName, new int[4] { 2, 3, 19, 20 });
-                }
-                else if (extension == "item")
-                {
-                    Open_variousDirFile(enemesFile, fileName, new int[2] { 1, 5 });
-                }
-                else if (extension == "mappos")
-                {
-                    Open_variousDirFile(enemesFile, fileName, new int[2] { 2, 6 });
-                }
-                else if (extension == "onom")
-                {
-                    Open_variousDirFile(enemesFile, fileName, new int[1] { 1 });
+                    THFilesElementsDataset.Tables[tableName].Columns.Add("Translation");
+                    THFilesList.Invoke((Action)(() => THFilesList.Items.Add(tableName)));
+
+                    THFilesElementsDatasetInfo.Tables.Add(tableName);
+                    THFilesElementsDatasetInfo.Tables[tableName].Columns.Add("Original");
                 }
 
-                THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
-                THFilesList.Invoke((Action)(() => THFilesList.Items.Add(fileName)));
+                if (folderName == "enemes")
+                {
+                    Open_enemesDirFile(filePath);
+                }
+                else if (folderName == "enemy")
+                {
+                    //Open_SelectedLinesFromDirFile(filePath, fileName, new int[4] { 2, 3, 19, 20 }, fileName);
+                    Open_SelectedLinesFromDirFile(filePath, tableName, new int[4] { 2, 3, 19, 20 }, fileName);
+                }
+                else if (folderName == "item")
+                {
+                    Open_SelectedLinesFromDirFile(filePath, tableName, new int[2] { 1, 5 }, fileName);
+                }
+                else if (folderName == "mappos")
+                {
+                    Open_SelectedLinesFromDirFile(filePath, tableName, new int[2] { 2, 6 }, fileName);
+                }
+                else if (folderName == "onom")
+                {
+                    Open_SelectedLinesFromDirFile(filePath, tableName, new int[1] { 1 },
+                        Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filePath))) + Path.DirectorySeparatorChar + Path.GetFileName(Path.GetDirectoryName(filePath)) + Path.DirectorySeparatorChar + fileName
+                        );
+                }
+                else if (folderName == "pants")
+                {
+                    THFilesElementsDataset.Tables[tableName].Rows.Add(File.ReadAllText(filePath));
+                    THFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
+                }
+                else if (folderName == "plugin")
+                {
+                    Open_SelectedLinesFromDirFile(filePath, tableName, new int[2] { 1, 4 }, fileName);
+                }
+                else if (folderName == "recollect")
+                {
+                    Open_recollectDirFile(filePath, folderName);
+                }
+                else if (folderName == "skill")
+                {
+                    Open_SelectedLinesFromDirFile(filePath, tableName, new int[3] { 1, 18, 19 }, fileName);
+                }
+                else if (folderName == "state")
+                {
+                    Open_SelectedLinesFromDirFile(filePath, tableName, new int[5] { 1, 6, 7, 8, 9 }, fileName);
+                }
+                else if (folderName == "submission")
+                {
+                    THFilesElementsDataset.Tables[tableName].Rows.Add(File.ReadAllText(filePath));
+                    THFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
+                }
+                else if (folderName == "trophy")
+                {
+                    THFilesElementsDataset.Tables[tableName].Rows.Add(File.ReadAllText(filePath));
+                    THFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
+                }
+                else if (folderName == "tutorial")
+                {
+                    Open_tutorialDirFile(filePath, folderName);
+                }
+                else if (folderName == "type")
+                {
+                    string[] lines = File.ReadAllLines(filePath);
+                    if (lines.Length==2 && !FunctionsStringOperations.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
+                    {
+                        THFilesElementsDataset.Tables[tableName].Rows.Add(lines[1], lines[0]);
+                        THFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
+                    }
+                }
+
+                //if (tableNotExists)
+                //{
+                //}
             }
         }
 
-        private void Open_variousDirFile(string filePath, string fileName, int[] lineNumbers, bool pasteSubName = false)
+        private void Open_tutorialDirFile(string filePath, string folderName)
+        {
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                string fileName = Path.GetFileName(filePath);
+                string line;
+                int lineNum = 1;
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+                    if (line.Length > 0)
+                    {
+                        string[] lineArray = line.Split(',');
+                        if (lineArray.Length > 4)
+                        {
+                            line = lineArray[4];
+                            if (!FunctionsStringOperations.IsDigitsOnly(line) && !string.IsNullOrEmpty(line))
+                            {
+                                THFilesElementsDataset.Tables[fileName].Rows.Add(line);
+                                THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(folderName + Path.DirectorySeparatorChar + fileName);
+                            }
+                        }
+                    }
+                    lineNum++;
+                }
+
+            }
+        }
+
+        private void Open_recollectDirFile(string filePath, string folderName)
+        {
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                string fileName = Path.GetFileName(filePath);
+                string line;
+                int lineNum = 1;
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+                    if (line.Length>0 && line.StartsWith("message"))
+                    {
+                        line = line.Split(',')[1];
+                        if (!FunctionsStringOperations.IsDigitsOnly(line) && !string.IsNullOrEmpty(line))
+                        {
+                            THFilesElementsDataset.Tables[fileName].Rows.Add(line);
+                            THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(folderName+Path.DirectorySeparatorChar+fileName);
+                        }
+                    }
+                    lineNum++;
+                }
+
+            }
+        }
+
+        private void Open_SelectedLinesFromDirFile(string filePath, string fileName, int[] lineNumbers, string Info)
         {
             using (StreamReader sr = new StreamReader(filePath))
             {
@@ -725,12 +891,11 @@ namespace TranslationHelper
                     line = sr.ReadLine();
                     if (FunctionsDigitsOperations.IsEqualsAnyNumberFromArray(lineNum, lineNumbers))
                     {
-                        if (string.IsNullOrEmpty(line) || line == "\\n")
+                        if (!FunctionsStringOperations.IsDigitsOnly(line) && !string.IsNullOrEmpty(line) && line != "\\n")
                         {
-                            continue;
+                            THFilesElementsDataset.Tables[fileName].Rows.Add(line);
+                            THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(Info);
                         }
-                        THFilesElementsDataset.Tables[fileName].Rows.Add(line);
-                        THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(fileName);
                     }
                     lineNum++;
                 }
@@ -754,12 +919,11 @@ namespace TranslationHelper
 
                         for (int i = 0; i < strings.Length; i++)
                         {
-                            if (FunctionsStringOperations.IsDigitsOnly(strings[i]) || string.IsNullOrEmpty(strings[i]))
+                            if (!FunctionsStringOperations.IsDigitsOnly(strings[i]) && !string.IsNullOrEmpty(strings[i]))
                             {
-                                continue;
+                                THFilesElementsDataset.Tables[fileName].Rows.Add(strings[i]);
+                                THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(fileName);
                             }
-                            THFilesElementsDataset.Tables[fileName].Rows.Add(strings[i]);
-                            THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(fileName);
                         }
                     }
                     lineNum++;
@@ -5325,7 +5489,7 @@ namespace TranslationHelper
         {
             try
             {
-                translationInteruptToolStripMenuItem.Visible = true;
+                this.Invoke((Action)(() => translationInteruptToolStripMenuItem.Visible = true));
 
                 using (DataSet THTranslationCache = new DataSet())
                 {
@@ -5569,26 +5733,39 @@ namespace TranslationHelper
                     }
                     else
                     {
-                        string originalValue = InfoRow[0] as string;
-                        string extractedValue = InputLines.Rows[i][0] as string;
+                        //string originalValue = InfoRow[0] as string;
+                        //string extractedValue = InputLines.Rows[i][0] as string;
+                        //SetTranslationResultToCellIfEmpty(
+                        //    PreviousTableIndex == -1
+                        //    ?
+                        //    TableIndex
+                        //    : 
+                        //    PreviousTableIndex
+                        //    , 
+                        //    PreviousRowIndex == -1
+                        //    ? 
+                        //    RowIndex
+                        //    : 
+                        //    PreviousRowIndex
+                        //    , 
+                        //    PreviousRowIndex == -1 && ResultValue.ToString().Length == 0
+                        //    ? 
+                        //    ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, originalValue, extractedValue))
+                        //    : 
+                        //    ResultValue
+                        //    ,
+                        //    THTranslationCache
+                        //    );
+
                         SetTranslationResultToCellIfEmpty(
-                            PreviousTableIndex == -1
-                            ?
-                            TableIndex
-                            : 
                             PreviousTableIndex
-                            , 
-                            PreviousRowIndex == -1
-                            ? 
-                            RowIndex
-                            : 
+                            ,
                             PreviousRowIndex
-                            , 
-                            PreviousRowIndex == -1 && ResultValue.ToString().Length == 0
-                            ? 
-                            ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, originalValue, extractedValue))
-                            : 
-                            ResultValue, THTranslationCache);
+                            ,
+                            ResultValue
+                            ,
+                            THTranslationCache
+                            );
                     }
 
                     //--------------------------------

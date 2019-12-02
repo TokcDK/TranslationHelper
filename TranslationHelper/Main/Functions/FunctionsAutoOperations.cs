@@ -463,9 +463,10 @@ namespace TranslationHelper.Main.Functions
 
                                             //LogToFile("inputorigmatches[" + m + "]=" + inputorigmatches[m] + ", targetorigmatches[" + m + "]=" + targetorigmatches[m] + ", pre result[" + m + "]=" + inputresult);
                                             //inputresult = inputresult.Replace("{{" + inputorigmatches[m] + "}}", targetorigmatches[m]);
-
-                                            //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
-                                            startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
+                                            try
+                                            {
+                                                //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
+                                                startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
                                                                                                                 //if (startindex > -1 ??)
                                                                                                                 //{
                                                                                                                 //}
@@ -480,10 +481,9 @@ namespace TranslationHelper.Main.Functions
                                                                                                                 //string g4 = mc[m].Value;//i
                                                                                                                 //string g5 = mc0[m].Value;//t
                                                                                                                 //stringlength = inputOrigMatches[m].Length;
-                                            stringlength = tm[m].Value.Length;
-                                            stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
-                                            try
-                                            {
+                                                stringlength = tm[m].Value.Length;
+                                                stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
+                                            
                                                 //InputTransCellValue = InputTransCellValue.Remove(startindex, stringlength).Insert(startindex, targetOrigMatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
                                                 InputTransCellValue = InputTransCellValue.Remove(startindex, stringlength).Insert(startindex, mc0[m].Value);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
 
@@ -495,7 +495,11 @@ namespace TranslationHelper.Main.Functions
                                             catch (Exception ex)
                                             {
                                                 //была ошибка с startindex, добавлено для поимки исключения
-                                                string ggg = ex.ToString();
+                                                string ggg = ex.ToString()
+                                                    +Environment.NewLine+ "m="+ m
+                                                    +Environment.NewLine+ "tm[m].Index=" + tm[m].Index
+                                                    +Environment.NewLine+ "stringoverallength=" + stringoverallength
+                                                    +Environment.NewLine+ "stringoverallength0=" + stringoverallength0;
                                                 FileWriter.WriteData(Path.Combine(Application.StartupPath, "Error.log"), ggg);
                                                 MessageBox.Show("AutoSameValueMethod ERROR: " + ggg);
                                                 failed = true;
