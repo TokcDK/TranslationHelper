@@ -664,19 +664,24 @@ namespace TranslationHelper
         private string ProceedRubyRPGGame(string GameDirectory)
         {
             string binDir = Path.Combine(GameDirectory, "data", "bin");
-            string targetDirPath = Path.Combine(binDir, "enemes");
-            if (Directory.Exists(targetDirPath))
+            string[] folderNames = { "enemes", "enemy", "item", "mappos", "onom" };
+
+            foreach (var folder in folderNames)
             {
-                RubyRPGGameFIlesFromTheDir(targetDirPath, "enemes");
+                string targetDirPath = Path.Combine(binDir, folder);
+                if (Directory.Exists(targetDirPath))
+                {
+                    RubyRPGGameFIlesFromTheDir(targetDirPath, folder);
+                }
             }
             return "RubyRPGGame";
         }
 
         private void RubyRPGGameFIlesFromTheDir(string targetDirPath, string extension)
         {
-            foreach (var enemesFile in Directory.GetFiles(targetDirPath, "*." + extension))
+            foreach (var enemesFile in Directory.GetFiles(targetDirPath, "*." + extension, SearchOption.AllDirectories))
             {
-                string fileName = Path.GetFileName(enemesFile);
+                string fileName = (extension == "onom" ? Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(enemesFile))) + "_" + Path.GetFileName(Path.GetDirectoryName(enemesFile)) + "_" : string.Empty) + Path.GetFileName(enemesFile);
                 THFilesElementsDataset.Tables.Add(fileName);
                 THFilesElementsDataset.Tables[fileName].Columns.Add("Original");
 
@@ -687,9 +692,49 @@ namespace TranslationHelper
                 {
                     Open_enemesDirFile(enemesFile);
                 }
+                else if (extension == "enemy")
+                {
+                    Open_variousDirFile(enemesFile, fileName, new int[4] { 2, 3, 19, 20 });
+                }
+                else if (extension == "item")
+                {
+                    Open_variousDirFile(enemesFile, fileName, new int[2] { 1, 5 });
+                }
+                else if (extension == "mappos")
+                {
+                    Open_variousDirFile(enemesFile, fileName, new int[2] { 2, 6 });
+                }
+                else if (extension == "onom")
+                {
+                    Open_variousDirFile(enemesFile, fileName, new int[1] { 1 });
+                }
 
                 THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
                 THFilesList.Invoke((Action)(() => THFilesList.Items.Add(fileName)));
+            }
+        }
+
+        private void Open_variousDirFile(string filePath, string fileName, int[] lineNumbers, bool pasteSubName = false)
+        {
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                string line;
+                int lineNum = 1;
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+                    if (FunctionsDigitsOperations.IsEqualsAnyNumberFromArray(lineNum, lineNumbers))
+                    {
+                        if (string.IsNullOrEmpty(line) || line == "\\n")
+                        {
+                            continue;
+                        }
+                        THFilesElementsDataset.Tables[fileName].Rows.Add(line);
+                        THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(fileName);
+                    }
+                    lineNum++;
+                }
+
             }
         }
 
@@ -706,7 +751,7 @@ namespace TranslationHelper
                     if (lineNum > 2 && line.Length > 0 && line != "top" && line != "bottom")
                     {
                         string[] strings = line.Split(',');
-                        
+
                         for (int i = 0; i < strings.Length; i++)
                         {
                             if (FunctionsStringOperations.IsDigitsOnly(strings[i]) || string.IsNullOrEmpty(strings[i]))
@@ -5316,7 +5361,7 @@ namespace TranslationHelper
                                     }
                                     else if (InteruptTranslation)
                                     {
-                                        translationInteruptToolStripMenuItem.Visible = false;
+                                        this.Invoke((Action)(() => translationInteruptToolStripMenuItem.Visible = false));
                                         Thread.CurrentThread.Abort();
                                         ProgressInfo(false);
                                         return;
@@ -5326,7 +5371,7 @@ namespace TranslationHelper
                                     InputOriginalLine = Row[0] as string;
 
                                     bool TranslateIt = false;
-                                    TranslateIt = (CurrentCharsCount + InputOriginalLine.Length) >= maxchars || r == rcount - 1;
+                                    TranslateIt = (CurrentCharsCount + InputOriginalLine.Length) >= maxchars || (t == tcount - 1 && r == rcount - 1);
 
                                     var Cell = Row[1];
                                     if (Cell == null || string.IsNullOrEmpty(Cell as string))
@@ -5518,13 +5563,32 @@ namespace TranslationHelper
                     //string asdasd = prelastvalue;
                     //string adsasdaaa = lastvalue;
 
-                    if (RowIndex == PreviousRowIndex)
+                    if (RowIndex == PreviousRowIndex && TableIndex == PreviousTableIndex)
                     {
                         ResultValue.Append(Environment.NewLine);
                     }
                     else
                     {
-                        SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                        string originalValue = InfoRow[0] as string;
+                        string extractedValue = InputLines.Rows[i][0] as string;
+                        SetTranslationResultToCellIfEmpty(
+                            PreviousTableIndex == -1
+                            ?
+                            TableIndex
+                            : 
+                            PreviousTableIndex
+                            , 
+                            PreviousRowIndex == -1
+                            ? 
+                            RowIndex
+                            : 
+                            PreviousRowIndex
+                            , 
+                            PreviousRowIndex == -1 && ResultValue.ToString().Length == 0
+                            ? 
+                            ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, originalValue, extractedValue))
+                            : 
+                            ResultValue, THTranslationCache);
                     }
 
                     //--------------------------------
@@ -5558,7 +5622,7 @@ namespace TranslationHelper
                             TableIndex = int.Parse(InfoRow[2] as string);
                             RowIndex = int.Parse(InfoRow[3] as string);
 
-                            if (RowIndex == PreviousRowIndex)
+                            if (RowIndex == PreviousRowIndex && TableIndex == PreviousTableIndex)
                             {
                                 ResultValue.Append(Environment.NewLine);
                             }

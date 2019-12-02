@@ -80,6 +80,7 @@
     <Compile Include="Main\Functions\FunctionsAutoOperations.cs" />
     <Compile Include="Main\Functions\FunctionsCopyPaste.cs" />
     <Compile Include="Main\Functions\FunctionsDBFile.cs" />
+    <Compile Include="Main\Functions\FunctionsDigitsOperations.cs" />
     <Compile Include="Main\Functions\FunctionsRomajiKana.cs" />
     <Compile Include="Main\Functions\FunctionsStringOperations.cs" />
     <Compile Include="Main\Functions\FunctionsTable.cs" />
