@@ -209,7 +209,7 @@ namespace TranslationHelper
             {
 
                 // Set up the delays for the ToolTip.
-                AutoPopDelay = 10000,
+                AutoPopDelay = 32000,
                 InitialDelay = 1000,
                 ReshowDelay = 500,
                 UseAnimation = true,
@@ -671,6 +671,8 @@ namespace TranslationHelper
                 {"enemy", "enemy" }
                 ,
                 {"item", "item" }
+                //,
+                //{"map", "map" }
                 ,
                 {"mappos", "mappos" }
                 ,
@@ -793,6 +795,10 @@ namespace TranslationHelper
                     }
                     rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[2] { 2, 6 }, fileName, IsWrite, rowIndex);
                     processingFolderName = folderName;
+                }
+                else if (folderName == "map")
+                {
+                    Open_mapBynaryFromDirFile(filePath);
                 }
                 else if (folderName == "onom")
                 {
@@ -942,6 +948,21 @@ namespace TranslationHelper
                     }
                 }
             }
+        }
+
+        private void Open_mapBynaryFromDirFile(string filePath)
+        {
+            //var sss = "4079690290013B094922";
+            //File.SetAttributes(filePath, FileAttributes.Normal);
+            ////var m = MarshalExt.GetDataAsStructure(typeof(RubyGamemapFile), File.ReadAllBytes(filePath));
+            //var b = File.ReadAllBytes(filePath);
+            //var m = MarshalExt.GetDataAsStructure(b.GetType(), b);
+            //using (BinaryReader br = new BinaryReader(File.Open(filePath, FileMode.Open)))
+            //{
+            //    //var l = br.Re;
+            //    var ss = Encoding.GetEncoding(932).GetString(br.ReadBytes(512));
+            //    var aa = ss;
+            //}
         }
 
         private void Open_tutorialDirFile(string filePath, string folderName, bool IsWrite = false)
@@ -1729,7 +1750,7 @@ namespace TranslationHelper
 
                 if (Directory.Exists(KiriKiriWorkFolder))
                 {
-                    if ((new DirectoryInfo(KiriKiriWorkFolder + "\\")).GetFiles("*", SearchOption.AllDirectories).Length > 0)
+                    if ((new DirectoryInfo(KiriKiriWorkFolder + Path.DirectorySeparatorChar)).GetFiles("*", SearchOption.AllDirectories).Length > 0)
                     {
                         DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (result == DialogResult.Yes)
@@ -1751,10 +1772,15 @@ namespace TranslationHelper
                             //}
                         }
                     }
+                    else
+                    {
+                        ret = RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
+                    }
                 }
                 else
                 {
                     Directory.CreateDirectory(KiriKiriWorkFolder);
+                    ret = RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
                 }
             }
             catch
@@ -1857,7 +1883,7 @@ namespace TranslationHelper
                         }
 
 
-                        if (iscomment || string.IsNullOrEmpty(line) || line.StartsWith(";") || line.StartsWith("//") || Regex.IsMatch(line, @"\s*//"))
+                        if ((iscomment || string.IsNullOrEmpty(line) || line.StartsWith(";") || line.StartsWith("//") || Regex.IsMatch(line, @"\s*//")))
                         {
                         }
                         else
@@ -1919,7 +1945,23 @@ namespace TranslationHelper
                             }
                             else
                             {
-                                if (line.EndsWith("[k]")) // text
+                                if (line == "@nanasi")//Life with daughter
+                                {
+                                    line = file.ReadLine();
+                                    while (!line.EndsWith("[ll]") && !line.EndsWith("@s"))
+                                    {
+                                        while (line.StartsWith("@"))
+                                        {
+                                            line = file.ReadLine();
+                                        }
+                                        line += Environment.NewLine;
+                                        line += file.ReadLine();
+                                    }
+                                    line = line.Remove(line.Length - 4);//удаление последних четырех символов "[ll]" или "\r\n@s"
+                                    _ = DT.Rows.Add(line);
+                                    _ = DTInfo.Rows.Add(string.Empty);
+                                }
+                                else if (line.EndsWith("[k]")) // text ;Magic Swordsman Rene
                                 {
                                     line = line.Replace("[k]", string.Empty);
                                     if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
@@ -1931,7 +1973,7 @@ namespace TranslationHelper
                                         _ = DTInfo.Rows.Add("[k] = end of line");
                                     }
                                 }
-                                else if (line.StartsWith("*")) // text
+                                else if (line.StartsWith("*")) // text ;Magic Swordsman Rene
                                 {
                                     line = line.Remove(0, 1);
                                     if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
@@ -1943,7 +1985,7 @@ namespace TranslationHelper
                                         _ = DTInfo.Rows.Add(string.Empty);
                                     }
                                 }
-                                else if (line.EndsWith("[r]")) //text, first line
+                                else if (line.EndsWith("[r]")) //text, first line ;Magic Swordsman Rene
                                 {
                                     line = line.Replace("[r]", string.Empty).Trim();
                                     if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
@@ -1955,7 +1997,7 @@ namespace TranslationHelper
                                         _ = DTInfo.Rows.Add("[r] = carriage return");
                                     }
                                 }
-                                else if (line.StartsWith("o.") || Regex.IsMatch(line, KiriKiriVariableSearchRegexPattern)) //variable, which is using even for displaing and should be translated in all files
+                                else if (line.StartsWith("o.") || Regex.IsMatch(line, KiriKiriVariableSearchRegexPattern)) //variable, which is using even for displaing and should be translated in all files ;Magic Swordsman Rene
                                 {
                                     MatchCollection matches = Regex.Matches(line, KiriKiriVariableSearchRegexFullPattern);
 
@@ -1970,7 +2012,7 @@ namespace TranslationHelper
                                         }
                                     }
                                 }
-                                else if (line.StartsWith("@notice text="))
+                                else if (line.StartsWith("@notice text="))// ; Magic Swordsman Rene
                                 {
                                     line = line.Remove(0, 13);//удаление "@notice text="
                                     if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
@@ -1982,7 +2024,7 @@ namespace TranslationHelper
                                         _ = DTInfo.Rows.Add("@notice text=");
                                     }
                                 }
-                                else if (line.StartsWith("Name = '"))
+                                else if (line.StartsWith("Name = '"))// ; Magic Swordsman Rene
                                 {
                                     line = line.Remove(line.Length - 2, 2).Remove(0, 8);
                                     if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
@@ -1994,7 +2036,7 @@ namespace TranslationHelper
                                         _ = DTInfo.Rows.Add("Name = '");
                                     }
                                 }
-                                else if (Regex.IsMatch(line, "\\\"(.*?)\\\""))
+                                else if (Regex.IsMatch(line, "\\\"(.*?)\\\""))// ; Magic Swordsman Rene
                                 {
                                     //https://stackoverflow.com/questions/13024073/regex-c-sharp-extract-text-within-double-quotes
                                     var matches = Regex.Matches(line, "\\\"(.*?)\\\"");
