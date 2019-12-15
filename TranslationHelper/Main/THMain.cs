@@ -296,7 +296,7 @@ namespace TranslationHelper
                             //open.Start();
 
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => THSelectedSourceType = GetSourceType(THFOpen.FileName)).ConfigureAwait(false);
+                            await Task.Run(() => THSelectedSourceType = GetSourceType(THFOpen.FileName)).ConfigureAwait(true);
 
                             //THSelectedSourceType = GetSourceType(THFOpen.FileName);
 
@@ -3509,7 +3509,7 @@ namespace TranslationHelper
                     //save.Start();
 
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver)).ConfigureAwait(false);
+                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver)).ConfigureAwait(true);
 
                     //MessageBox.Show("Properties.Settings.Default.THSelectedDir=" + Properties.Settings.Default.THSelectedDir);
                     //SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver);
@@ -3597,7 +3597,7 @@ namespace TranslationHelper
 
                             //THMsg.Show("start writing");
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Properties.Settings.Default.THSelectedDir + "\\www\\data\\" + THFilesList.Items[f] + ".json")).ConfigureAwait(false);
+                            await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Properties.Settings.Default.THSelectedDir + "\\www\\data\\" + THFilesList.Items[f] + ".json")).ConfigureAwait(true);
                             //WriteJson(THFilesListBox.Items[f].ToString(), Properties.Settings.Default.THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                         }
                     }
@@ -3607,12 +3607,12 @@ namespace TranslationHelper
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                     //await Task.Run(() => KiriKiriScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
-                    await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".scn")).ConfigureAwait(false);
+                    await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".scn")).ConfigureAwait(true);
                 }
                 else if (THSelectedSourceType == "KiriKiri script")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".ks")).ConfigureAwait(false);
+                    await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".ks")).ConfigureAwait(true);
                 }
             }
             SaveInAction = false;
@@ -4710,7 +4710,7 @@ namespace TranslationHelper
             {
 
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath)).ConfigureAwait(false);
+                await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath)).ConfigureAwait(true);
             }
 
             THFileElementsDataGridView.Refresh();
@@ -5953,10 +5953,7 @@ namespace TranslationHelper
             //int infoCount = InputLinesInfo.Rows.Count;
             //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
 
-            if (TranslatedLines == null || TranslatedLines.Length == 0)
-            {
-            }
-            else
+            if (TranslatedLines != null && TranslatedLines.Length > 0)
             {
                 StringBuilder ResultValue = new StringBuilder();
                 int PreviousTableIndex = -1;
@@ -6001,7 +5998,7 @@ namespace TranslationHelper
                     //string asdasd = prelastvalue;
                     //string adsasdaaa = lastvalue;
 
-                    if (RowIndex == PreviousRowIndex && TableIndex == PreviousTableIndex)
+                    if (TableIndex == PreviousTableIndex && (RowIndex == PreviousRowIndex /*|| (i2 + 1 < InputLinesInfo.Rows.Count && TableIndex== int.Parse(InputLinesInfo.Rows[i2 + 1][2] as string)  && RowIndex == int.Parse(InputLinesInfo.Rows[i2 + 1][3] as string))*/))
                     {
                         ResultValue.Append(Environment.NewLine);
                     }
@@ -6048,16 +6045,18 @@ namespace TranslationHelper
                     bool WritedFromInfo = true;
                     while (WritedFromInfo)
                     {
+                        string InfoRow0asstring = InfoRow[0] as string;
+                        string InfoRow1asstring = InfoRow[1] as string;
                         WritedFromInfo = false;
-                        if (string.IsNullOrEmpty(InfoRow[0] as string))
+                        if (string.IsNullOrEmpty(InfoRow0asstring))
                         {
                             //ResultValue.Append(string.Empty); //закоментировано для оптимизации, тот же эффект добавление пустой строки
                             WritedFromInfo = true;
                             i2++;
                         }
-                        else if (!string.IsNullOrEmpty(InfoRow[1] as string))
+                        else if (!string.IsNullOrEmpty(InfoRow1asstring))
                         {
-                            ResultValue.Append(InfoRow[1]);
+                            ResultValue.Append(InfoRow1asstring);
                             WritedFromInfo = true;
                             i2++;
                         }
@@ -6091,6 +6090,41 @@ namespace TranslationHelper
                     ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, originalLineValue, extractedLineValue));
 
                     AddToTranslationCacheIfValid(THTranslationCache, (originalLineValue.Length == extractedLineValue.Length && originalLineValue == extractedLineValue) ? originalLineValue : extractedLineValue, TranslatedLine);
+
+                    PreviousRowIndex = RowIndex;
+                    PreviousTableIndex = TableIndex;
+                    i2++;
+                }
+
+                //--------------------------------ВТОРОЙ БЛОК
+                //-когда строки в переводчике закончились а InputLinesInfo.Rows еще нет
+                int InputLinesInfoRowsCount = InputLinesInfo.Rows.Count;
+                while (i2 < InputLinesInfoRowsCount)
+                {
+                    var InfoRow = InputLinesInfo.Rows[i2];
+
+                    TableIndex = int.Parse(InfoRow[2] as string);
+                    RowIndex = int.Parse(InfoRow[3] as string);
+
+                    if (TableIndex == PreviousTableIndex && RowIndex == PreviousRowIndex)
+                    {
+                        ResultValue.Append(Environment.NewLine);
+                    }
+                    else
+                    {
+                        SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                    }
+
+                    string InfoOriginalLineValue = InfoRow[0] as string;
+                    string InfoCacheValue = InfoRow[1] as string;
+                    if (string.IsNullOrEmpty(InfoOriginalLineValue))
+                    {
+                        //ResultValue.Append(string.Empty); //закоментировано для оптимизации, тот же эффект добавление пустой строки                      
+                    }
+                    else if (!string.IsNullOrEmpty(InfoCacheValue))
+                    {
+                        ResultValue.Append(InfoCacheValue);
+                    }
 
                     PreviousRowIndex = RowIndex;
                     PreviousTableIndex = TableIndex;
@@ -6958,7 +6992,7 @@ namespace TranslationHelper
             }
             while (WriteDBFileIsBusy && WriteDBFileLiteLastFileName != fileName)
             {
-                await Task.Run(() => WaitThreaded(5000)).ConfigureAwait(false);
+                await Task.Run(() => WaitThreaded(5000)).ConfigureAwait(true);
             }
 
             Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
@@ -6968,7 +7002,7 @@ namespace TranslationHelper
             WriteDBFileLiteLastFileName = fileName;
             using (DataSet liteds = FunctionsTable.FillTempDB(ds))
             {
-                await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(false);
+                await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(true);
             }
             WriteDBFileIsBusy = false;
             WriteDBFileLiteLastFileName = string.Empty;
@@ -7047,7 +7081,7 @@ namespace TranslationHelper
                             //THMsg.Show("start writing");
 
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            success = await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(false);
+                            success = await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(true);
                             if (!success)
                             {
                                 break;
@@ -7083,7 +7117,7 @@ namespace TranslationHelper
                                 // свернуть
                                 WindowState = FormWindowState.Minimized;
 
-                                await Task.Run(() => Testgame.Start()).ConfigureAwait(false);
+                                await Task.Run(() => Testgame.Start()).ConfigureAwait(true);
                                 Testgame.WaitForExit();
 
                                 // Показать
