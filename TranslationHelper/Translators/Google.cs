@@ -428,7 +428,7 @@ namespace TranslationHelper
         {
             checked
             {
-                int num = OriginalText.Count();
+                int num = OriginalText.Length;
                 string[] array = new string[num];
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < num; i++)
@@ -554,7 +554,8 @@ namespace TranslationHelper
 
         private static string[] RetWithNullToEmpty(string[] array)
         {
-            for (int j = 0; j < array.Count(); j++)
+            int arrayLength = array.Length;
+            for (int j = 0; j < arrayLength; j++)
             {
                 if (array[j] == null)
                 {

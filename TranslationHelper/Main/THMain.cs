@@ -24,7 +24,7 @@ namespace TranslationHelper
     {
         //string THLog;
         //public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
-        public THSettings Settings;
+        internal THSettings Settings;
         //public const string THStrDGTranslationColumnName = "Translation";
         //public const string THStrDGOriginalColumnName = "Original";
         //private readonly THLang LangF;
@@ -37,9 +37,9 @@ namespace TranslationHelper
         private string FVariant = string.Empty;
         //private BindingList<THRPGMTransPatchFile> THRPGMTransPatchFiles; //Все файлы
         //DataTable fileslistdt = new DataTable();
-        public DataSet THFilesElementsDataset;
-        public DataTable THFilesElementsALLDataTable;
-        public DataSet THFilesElementsDatasetInfo;
+        internal DataSet THFilesElementsDataset;
+        internal DataTable THFilesElementsALLDataTable;
+        internal DataSet THFilesElementsDatasetInfo;
         //DataTable THFilesElementsDatatable;
         //private BindingSource THBS = new BindingSource();
 
@@ -64,7 +64,7 @@ namespace TranslationHelper
 
         //Translation cache
         //DataSet THTranslationCache;
-        public static string THTranslationCachePath;
+        internal static string THTranslationCachePath;
 
         public THMain()
         {
@@ -296,7 +296,7 @@ namespace TranslationHelper
                             //open.Start();
 
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => THSelectedSourceType = GetSourceType(THFOpen.FileName));
+                            await Task.Run(() => THSelectedSourceType = GetSourceType(THFOpen.FileName)).ConfigureAwait(false);
 
                             //THSelectedSourceType = GetSourceType(THFOpen.FileName);
 
@@ -474,7 +474,7 @@ namespace TranslationHelper
             }
         }
 
-        public DirectoryInfo mvdatadir;
+        internal DirectoryInfo mvdatadir;
         bool istpptransfile = false;
         private string GetSourceType(string sPath)
         {
@@ -3416,7 +3416,7 @@ namespace TranslationHelper
             }
 
             // Loop over each line
-            int THTargetRichTextBoxLinesCount = THTargetRichTextBox.Lines.Count();
+            int THTargetRichTextBoxLinesCount = THTargetRichTextBox.Lines.Length;
             for (int i = 0; i < THTargetRichTextBoxLinesCount; i++)
             {
                 // Current line text
@@ -3509,7 +3509,7 @@ namespace TranslationHelper
                     //save.Start();
 
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver));
+                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver)).ConfigureAwait(false);
 
                     //MessageBox.Show("Properties.Settings.Default.THSelectedDir=" + Properties.Settings.Default.THSelectedDir);
                     //SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver);
@@ -3597,7 +3597,7 @@ namespace TranslationHelper
 
                             //THMsg.Show("start writing");
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Properties.Settings.Default.THSelectedDir + "\\www\\data\\" + THFilesList.Items[f] + ".json"));
+                            await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Properties.Settings.Default.THSelectedDir + "\\www\\data\\" + THFilesList.Items[f] + ".json")).ConfigureAwait(false);
                             //WriteJson(THFilesListBox.Items[f].ToString(), Properties.Settings.Default.THSelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                         }
                     }
@@ -3607,12 +3607,12 @@ namespace TranslationHelper
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                     //await Task.Run(() => KiriKiriScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
-                    await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
+                    await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".scn")).ConfigureAwait(false);
                 }
                 else if (THSelectedSourceType == "KiriKiri script")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".ks"));
+                    await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".ks")).ConfigureAwait(false);
                 }
             }
             SaveInAction = false;
@@ -3649,10 +3649,10 @@ namespace TranslationHelper
                         string[] CONTEXT = (THFilesElementsDatasetInfo.Tables[fileName].Rows[r][0] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
                         //string str1 = string.Empty;
                         string TRANSLATION = THFilesElementsDataset.Tables[fileName].Rows[r][translationcolumnindex] + string.Empty;
-                        for (int g = 0; g < CONTEXT.Count(); g++)
+                        for (int g = 0; g < CONTEXT.Length; g++)
                         {
                             /*CONTEXT[g] = CONTEXT[g].Replace("\r", string.Empty);*///очистка от знака переноса, возникающего после разбития на строки по \n
-                            if (CONTEXT.Count() > 1)
+                            if (CONTEXT.Length > 1)
                             {
                                 buffer.AppendLine("> CONTEXT " + CONTEXT[g]);// + Environment.NewLine);
                             }
@@ -4069,10 +4069,10 @@ namespace TranslationHelper
                             string[] CONTEXT = (THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
                             //string str1 = string.Empty;
                             string TRANSLATION = THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + string.Empty;
-                            for (int g = 0; g < CONTEXT.Count(); g++)
+                            for (int g = 0; g < CONTEXT.Length; g++)
                             {
                                 /*CONTEXT[g] = CONTEXT[g].Replace("\r", string.Empty);*///очистка от знака переноса, возникающего после разбития на строки по \n
-                                if (CONTEXT.Count() > 1)
+                                if (CONTEXT.Length > 1)
                                 {
                                     buffer.AppendLine("> CONTEXT: " + CONTEXT[g]);// + Environment.NewLine);
                                 }
@@ -4710,7 +4710,7 @@ namespace TranslationHelper
             {
 
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath));
+                await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath)).ConfigureAwait(false);
             }
 
             THFileElementsDataGridView.Refresh();
@@ -6958,7 +6958,7 @@ namespace TranslationHelper
             }
             while (WriteDBFileIsBusy && WriteDBFileLiteLastFileName != fileName)
             {
-                await Task.Run(() => WaitThreaded(5000));
+                await Task.Run(() => WaitThreaded(5000)).ConfigureAwait(false);
             }
 
             Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
@@ -6968,7 +6968,7 @@ namespace TranslationHelper
             WriteDBFileLiteLastFileName = fileName;
             using (DataSet liteds = FunctionsTable.FillTempDB(ds))
             {
-                await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName));
+                await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(false);
             }
             WriteDBFileIsBusy = false;
             WriteDBFileLiteLastFileName = string.Empty;
@@ -7047,7 +7047,7 @@ namespace TranslationHelper
                             //THMsg.Show("start writing");
 
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            success = await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json")));
+                            success = await Task.Run(() => WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(false);
                             if (!success)
                             {
                                 break;
@@ -7083,7 +7083,7 @@ namespace TranslationHelper
                                 // свернуть
                                 WindowState = FormWindowState.Minimized;
 
-                                await Task.Run(() => Testgame.Start());
+                                await Task.Run(() => Testgame.Start()).ConfigureAwait(false);
                                 Testgame.WaitForExit();
 
                                 // Показать
@@ -7357,13 +7357,13 @@ namespace TranslationHelper
             //}
         }
 
-        public DirectoryInfo mvdatadirTranslated;
+        internal DirectoryInfo mvdatadirTranslated;
 
         //private bool istpptransfileTranslated;
         private DataSet THFilesElementsDatasetTranslated = new DataSet();
-        public string THRPGMTransPatchverTranslated;
-        public string THSelectedSourceTypeTranslated;
-        private string extractedpatchpathTranslated = string.Empty;
+        internal string THRPGMTransPatchverTranslated;
+        internal string THSelectedSourceTypeTranslated;
+        //private readonly string extractedpatchpathTranslated;
         //private string GetSourceTypeTranslated(string sPath)
         //{
         //    //Reset temp dir for translation
@@ -7811,7 +7811,7 @@ namespace TranslationHelper
             }
         }
 
-        private void lowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int TIndex = THFilesList.SelectedIndex;
             Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsAutoOperations.StringCaseMorph(THFilesElementsDataset, TIndex, THFileElementsDataGridView, 0, true)));
@@ -7840,7 +7840,7 @@ namespace TranslationHelper
         {
         }
 
-        private void allIfExistsFiledirWithNameToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AllIfExistsFiledirWithNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Thread newthread = new Thread(new ParameterizedThreadStart((obj) =>
             SetOriginalToTranslationIfFileExistsInAnyFolder()

@@ -603,7 +603,7 @@
             this.allToolStripMenuItem2.Name = "allToolStripMenuItem2";
             this.allToolStripMenuItem2.Size = new System.Drawing.Size(85, 22);
             this.allToolStripMenuItem2.Text = "All";
-            this.allToolStripMenuItem2.Click += new System.EventHandler(this.lowercaseAllToolStripMenuItem_Click);
+            this.allToolStripMenuItem2.Click += new System.EventHandler(this.LowercaseAllToolStripMenuItem_Click);
             // 
             // searchToolStripMenuItem
             // 
@@ -1162,7 +1162,7 @@
             this.allIfExistsFiledirWithNameToolStripMenuItem.Name = "allIfExistsFiledirWithNameToolStripMenuItem";
             this.allIfExistsFiledirWithNameToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
             this.allIfExistsFiledirWithNameToolStripMenuItem.Text = "All, if exists file/dir with name";
-            this.allIfExistsFiledirWithNameToolStripMenuItem.Click += new System.EventHandler(this.allIfExistsFiledirWithNameToolStripMenuItem_Click);
+            this.allIfExistsFiledirWithNameToolStripMenuItem.Click += new System.EventHandler(this.AllIfExistsFiledirWithNameToolStripMenuItem_Click);
             // 
             // THMain
             // 
