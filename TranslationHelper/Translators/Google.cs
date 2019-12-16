@@ -303,8 +303,7 @@ namespace TranslationHelper
 
                     //string address = string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, arg);
                     
-                    //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
-                    string address = string.Format(CultureInfo.GetCultureInfo("en-US"), "https://www.deepl.com/translator#{0}/{1}/{2}", LanguageFrom, LanguageTo, arg);
+                    string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
                     
                     //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, str);
 
