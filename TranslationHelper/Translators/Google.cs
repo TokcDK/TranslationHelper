@@ -237,7 +237,7 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    ResultOfTranslation = GetTranslation(OriginalText, languageFrom, languageTo);
+                    ResultOfTranslation = Translate(OriginalText, languageFrom, languageTo);
                 }
             }
             catch (Exception)
@@ -264,7 +264,7 @@ namespace TranslationHelper
         //    return value;
         //}
 
-        public static string GetTranslation(string OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
+        public static string Translate(string OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
             string ResultOfTranslation;
             if (OriginalText.Length == 0)
@@ -301,7 +301,10 @@ namespace TranslationHelper
                     //string arg = str;
 
                     //string address = string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, arg);
-                    string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
+                    
+                    //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
+                    string address = string.Format("https://www.deepl.com/translator#{0}/{1}/{2}", LanguageFrom, LanguageTo, arg);
+                    
                     //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, str);
 
                     using (WebClient webClient = new WebClient())
