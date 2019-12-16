@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -60,7 +61,7 @@ namespace TranslationHelper
         //public string THMainDGVTranslationColumnName;
 
         //про primary key взял отсюда: https://stackoverflow.com/questions/3567552/table-doesnt-have-a-primary-key
-        readonly DataColumn[] keyColumns = new DataColumn[1];
+        //readonly DataColumn[] keyColumns = new DataColumn[1];
 
         //Translation cache
         //DataSet THTranslationCache;
@@ -665,45 +666,45 @@ namespace TranslationHelper
         {
             Properties.Settings.Default.THSelectedGameDir = GameDirectory;
             string binDir = Path.Combine(GameDirectory, "data", "bin");
-            string[,] folderNames = {
-                { "enemes", "enemes" }
+            string[][] folderNames = new string[14][] {
+                new string[2] { "enemes", "enemes" }
                 ,
-                {"enemy", "enemy" }
+                new string[2] {"enemy", "enemy" }
                 ,
-                {"item", "item" }
+                new string[2] {"item", "item" }
                 //,
-                //{"map", "map" }
+                //new string[2] {"map", "map" }
                 ,
-                {"mappos", "mappos" }
+                new string[2] {"mappos", "mappos" }
                 ,
-                {"onom", "onom" }
+                new string[2] {"onom", "onom" }
                 ,
-                {"pants", "pants" }
+                new string[2] {"pants", "pants" }
                 ,
-                {"plugin", "plugin" }
+                new string[2] {"plugin", "plugin" }
                 ,
-                {"recollect", "*" }
+                new string[2] {"recollect", "*" }
                 ,
-                {"skill", "skill" }
+                new string[2] {"skill", "skill" }
                 ,
-                {"state", "state" }
+                new string[2] {"state", "state" }
                 ,
-                {"submission", "mission" }
+                new string[2] {"submission", "mission" }
                 ,
-                {"trophy", "trophy" }
+                new string[2] {"trophy", "trophy" }
                 ,
-                {"tutorial", "tuto" }
+                new string[2] {"tutorial", "tuto" }
                 ,
-                {"type", "type" }
+                new string[2] {"type", "type" }
             };
 
             int folderNamesLength = folderNames.Length / 2;
             for (int i = 0; i < folderNamesLength; i++)
             {
-                string targetDirPath = Path.Combine(binDir, folderNames[i, 0]);
+                string targetDirPath = Path.Combine(binDir, folderNames[i][0]);
                 if (Directory.Exists(targetDirPath))
                 {
-                    RubyRPGGameFIlesFromTheDir(targetDirPath, folderNames[i, 1], IsWrite);
+                    RubyRPGGameFIlesFromTheDir(targetDirPath, folderNames[i][1], IsWrite);
                 }
             }
             return "RubyRPGGame";
@@ -2499,55 +2500,6 @@ namespace TranslationHelper
 
         }
 
-        public bool GetAlreadyAddedInTable(DataTable table, string value)
-        {
-            //про primary key взял отсюда: https://stackoverflow.com/questions/3567552/table-doesnt-have-a-primary-key
-            //DataColumn[] keyColumns = new DataColumn[1];
-
-            //показать неуникальную строчку из таблицы, если есть. делал, когда была ошибка об неуникальности значения.
-            //for (int i = 0; i < table.Rows.Count; i++)
-            //{
-            //    var value1 = table.Rows[i][0];
-            //    for (int i2 = 0; i2 < table.Rows.Count; i2++)
-            //    {
-            //        var value2 = table.Rows[i2][0];
-            //        if (i != i2 && Equals(value1, value2))
-            //        {
-            //            MessageBox.Show(value2 as string);
-            //        }
-            //    }
-            //}
-
-            keyColumns[0] = table.Columns["Original"];
-            table.PrimaryKey = keyColumns;//здесь ошибки, когда кеш ломается из за ошибки с автозаменой и в него попадают неуникальные строчки, нужно тогда удалить из таблицы все неуникальные строки
-
-            //очень быстрый способ поиска дубликата значения, два нижник в разы медленней, этот почти не заметен
-            if (table.Rows.Contains(value))
-            {
-                //LogToFile("Value already in table: \r\n"+ value);
-                //MessageBox.Show("found! value=" + value);
-                return true;
-            }
-            /*самый медленный способ, заметно медленней нижнего и непомерно критически медленней верхнего
-            if (ds.Tables[tablename].Select("Original = '" + value.Replace("'", "''") + "'").Length > 0)
-            {
-                //MessageBox.Show("found! value=" + value);
-                return true;
-            }
-            */
-            /*довольно медленный способ, быстрее того, что перед этим с Select, но критически медленней верхнего первого
-            for (int i=0; i < ds.Tables[tablename].Rows.Count; i++)
-            {
-                if (ds.Tables[tablename].Rows[i][0].ToString() == value)
-                {
-                    return true;
-                }
-            }
-            */
-            //LogToFile("Value still not in table: \r\n" + value);
-            return false;
-        }
-
         private bool TryToExtractToRPGMakerTransPatch(string sPath, string extractdir = "Work")
         {
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
@@ -3150,7 +3102,7 @@ namespace TranslationHelper
                     //swatch.Start();
 
                     //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
-                    //THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
+                    THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
                     //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
 
                     //THsplitContainerFilesElements.Panel2.Visible = false;//сделать невидимым родительский элемент на время
@@ -3221,7 +3173,7 @@ namespace TranslationHelper
                     //this.Cursor = Cursors.Default; ;//Поменять курсор обратно на обычный
 
                     //THFileElementsDataGridView.ResumeLayout();
-                    //THFileElementsDataGridView.ResumeDrawing();
+                    THFileElementsDataGridView.ResumeDrawing();
 
                     SetFilterDGV(); //Init Filters datagridview
 
@@ -3246,6 +3198,11 @@ namespace TranslationHelper
             if (THFilesList != null && THFilesList.SelectedIndex > -1)//вторая попытка исправить исключение при выборе элемента списка
             {
                 THFileElementsDataGridView.DataSource = DT;
+
+                //во время прокрутки DGV чернела полоса прокрутки и в результате было получено исключение
+                //добавил это для возможного фикса
+                //https://fooobar.com/questions/1404812/datagridview-scrollbar-throwing-argumentoutofrange-exception
+                THFileElementsDataGridView.PerformLayout();
             }
         }
 
@@ -4381,12 +4338,12 @@ namespace TranslationHelper
                         //https://webcache.googleusercontent.com/search?q=cache:irqjhHKbiFMJ:https://www.syncfusion.com/kb/4492/how-to-filter-special-characters-like-by-typing-it-in-dynamic-filter+&cd=6&hl=ru&ct=clnk&gl=ru
                         if (OverallFilter.Length == 0)
                         {
-                            OverallFilter += "[" + THFiltersDataGridView.Columns[c].Name + "] Like '%" + (THFiltersDataGridView.Rows[0].Cells[c].Value + string.Empty).Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";//-QB[BQ- - для исбежания проблем с заменой в операторе .Replace("]", "[]]"), после этого
+                            OverallFilter += "[" + THFiltersDataGridView.Columns[c].Name + "] Like '%" + FunctionsTable.FixDataTableFilterStringValue(THFiltersDataGridView.Rows[0].Cells[c].Value + string.Empty) + "%'";
                         }
                         else
                         {
                             OverallFilter += " AND ";
-                            OverallFilter += "[" + THFiltersDataGridView.Columns[c].Name + "] Like '%" + (THFiltersDataGridView.Rows[0].Cells[c].Value + string.Empty).Replace("'", "''").Replace("*", "[*]").Replace("%", "[%]").Replace("[", "-QB[BQ-").Replace("]", "[]]").Replace("-QB[BQ-", "[[]") + "%'";//-QB[BQ- - для исбежания проблем с заменой в операторе .Replace("]", "[]]"), после этого
+                            OverallFilter += "[" + THFiltersDataGridView.Columns[c].Name + "] Like '%" + FunctionsTable.FixDataTableFilterStringValue(THFiltersDataGridView.Rows[0].Cells[c].Value + string.Empty) + "%'";
                         }
                     }
                 }
@@ -5814,7 +5771,7 @@ namespace TranslationHelper
                                     var Cell = Row[1];
                                     if (Cell == null || string.IsNullOrEmpty(Cell as string))
                                     {
-                                        string InputOriginalLineFromCache = TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
+                                        string InputOriginalLineFromCache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
 
                                         if (InputOriginalLineFromCache.Length > 0)
                                         {
@@ -5836,7 +5793,7 @@ namespace TranslationHelper
                                                     string linevalue = Lines[s];
 
                                                     string Translation = string.Empty;
-                                                    cache = TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
+                                                    cache = FunctionsTable.TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
                                                     if (cache.Length > 0)
                                                     {
                                                         Translation = cache;
@@ -5848,7 +5805,7 @@ namespace TranslationHelper
                                                             extractedvalue = THExtractTextForTranslation(linevalue);//извлечение подстроки
 
                                                             // только если извлеченное значение отличается от оригинальной строки
-                                                            cache = extractedvalue == linevalue ? string.Empty : TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
+                                                            cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
                                                             if (cache.Length > 0)
                                                             {
                                                                 Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
@@ -5864,7 +5821,7 @@ namespace TranslationHelper
                                             }
                                             else
                                             {
-                                                cache = TranslationCacheFind(THTranslationCache, InputOriginalLine);
+                                                cache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);
                                                 if (cache.Length > 0)
                                                 {
                                                     THFilesElementsDataset.Tables[t].Rows[r][1] = cache;
@@ -6069,8 +6026,8 @@ namespace TranslationHelper
                             //Блок считывания индеков таблицы и строки
                             //добавление переноса, если строка той же ячейки, либо запись результата, если уже новая ячейка
                             InfoRow = InputLinesInfo.Rows[i2];//еще раз переприсваивание, т.к. i2 поменялось
-                            TableIndex = int.Parse(InfoRow[2] as string);
-                            RowIndex = int.Parse(InfoRow[3] as string);
+                            TableIndex = int.Parse(InfoRow[2] as string, CultureInfo.CurrentCulture);
+                            RowIndex = int.Parse(InfoRow[3] as string, CultureInfo.CurrentCulture);
 
                             if (RowIndex == PreviousRowIndex && TableIndex == PreviousTableIndex)
                             {
@@ -6089,7 +6046,7 @@ namespace TranslationHelper
                     string extractedLineValue = InputLines.Rows[i][0] as string;
                     ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, originalLineValue, extractedLineValue));
 
-                    AddToTranslationCacheIfValid(THTranslationCache, (originalLineValue.Length == extractedLineValue.Length && originalLineValue == extractedLineValue) ? originalLineValue : extractedLineValue, TranslatedLine);
+                    FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, (originalLineValue.Length == extractedLineValue.Length && originalLineValue == extractedLineValue) ? originalLineValue : extractedLineValue, TranslatedLine);
 
                     PreviousRowIndex = RowIndex;
                     PreviousTableIndex = TableIndex;
@@ -6103,8 +6060,8 @@ namespace TranslationHelper
                 {
                     var InfoRow = InputLinesInfo.Rows[i2];
 
-                    TableIndex = int.Parse(InfoRow[2] as string);
-                    RowIndex = int.Parse(InfoRow[3] as string);
+                    TableIndex = int.Parse(InfoRow[2] as string, CultureInfo.CurrentCulture);
+                    RowIndex = int.Parse(InfoRow[3] as string, CultureInfo.CurrentCulture);
 
                     if (TableIndex == PreviousTableIndex && RowIndex == PreviousRowIndex)
                     {
@@ -6134,21 +6091,6 @@ namespace TranslationHelper
             }
         }
 
-        private void AddToTranslationCacheIfValid(DataSet THTranslationCache, string Original, string Translation)
-        {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed)
-            {
-                DataTable Table = THTranslationCache.Tables[0];
-                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || GetAlreadyAddedInTable(Table, Original))
-                {
-                }
-                else
-                {
-                    Table.Rows.Add(Original, Translation);
-                }
-            }
-        }
-
         private void SetTranslationResultToCellIfEmpty(int PreviousTableIndex, int PreviousRowIndex, StringBuilder ResultValue, DataSet THTranslationCache)
         {
             if (ResultValue.Length > 0 && PreviousTableIndex > -1 && PreviousRowIndex > -1)
@@ -6170,9 +6112,10 @@ namespace TranslationHelper
                 {
                     THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = s;
 
-                    AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
+                    FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
 
-                    THAutoSetSameTranslationForSimular(PreviousTableIndex, PreviousRowIndex, 0);
+                    //закоментировано для повышения производительности
+                    //THAutoSetSameTranslationForSimular(PreviousTableIndex, PreviousRowIndex, 0);
                 }
                 ResultValue.Clear();
             }
@@ -6201,6 +6144,11 @@ namespace TranslationHelper
         //DataSet THTranslationCache = new DataSet();
         public static void TranslationCacheInit(DataSet DS)
         {
+            if (DS == null)
+            {
+                return;
+            }
+
             DS.Reset();
             if (File.Exists(THTranslationCachePath))
             {
@@ -6215,40 +6163,13 @@ namespace TranslationHelper
             //MessageBox.Show("TranslationCache Rows.Count=" + THTranslationCache.Tables["TranslationCache"].Rows.Count+ "TranslationCache Columns.Count=" + THTranslationCache.Tables["TranslationCache"].Columns.Count);
         }
 
-        public string TranslationCacheFind(DataSet DS, string Input)
-        {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled)
-            {
-                if (Input.Length > 0)
-                {
-                    using (var Table = DS.Tables[0])
-                    {
-                        if (Table.Rows.Count > 0)
-                        {
-                            if (GetAlreadyAddedInTable(Table, Input))
-                            {
-                                var RowsCount = Table.Rows.Count;
-                                for (int i = 0; i < RowsCount; i++)
-                                {
-                                    var row = Table.Rows[i];
-                                    //MessageBox.Show("Input=" + Input+"\r\nCache="+ THTranslationCache.Tables["TranslationCache"].Rows[i][0].ToString());
-                                    if (Input == row[0] as string)
-                                    {
-                                        return row[1] as string;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return string.Empty;
-        }
-
         public static void THTranslationCacheAdd(DataSet DS, string original, string translation)
         {
-            //LogToFile("original=" + original+ ",translation=" + translation,true);
-            DS.Tables[0].Rows.Add(original, translation);
+            if (DS != null)
+            {
+                //LogToFile("original=" + original+ ",translation=" + translation,true);
+                DS.Tables[0].Rows.Add(original, translation);
+            }
         }
 
 
@@ -6344,7 +6265,7 @@ namespace TranslationHelper
                                 //проверка наличия заданного процента romaji или other в оригинале
                                 //if ( SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString()) || SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString(), "other"))
 
-                                string ResultValue = TranslationCacheFind(THTranslationCache, InputValue);
+                                string ResultValue = FunctionsTable.TranslationCacheFind(THTranslationCache, InputValue);
 
                                 if (ResultValue.Length != 0)
                                 {
@@ -6369,11 +6290,11 @@ namespace TranslationHelper
                                             ResultValue = GoogleAPI.Translate(InputValue);
 
                                             //LogToFile("resultvalue=" + resultvalue, true);
-                                            AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
+                                            FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
                                         }
                                         else
                                         {
-                                            string CachedExtractedValue = TranslationCacheFind(THTranslationCache, ExtractedValue);
+                                            string CachedExtractedValue = FunctionsTable.TranslationCacheFind(THTranslationCache, ExtractedValue);
                                             //LogToFile("cachedvalue=" + cachedvalue, true);
                                             if (CachedExtractedValue.Length == 0)
                                             {
@@ -6388,7 +6309,7 @@ namespace TranslationHelper
                                                     ResultValue = PasteTranslationBackIfExtracted(OnlineValue, InputValue, ExtractedValue);
 
                                                     //LogToFile("resultvalue=" + resultvalue, true);
-                                                    AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
+                                                    FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
                                                 }
                                             }
                                             else
@@ -6413,7 +6334,7 @@ namespace TranslationHelper
                                         {
                                             //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
 
-                                            AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
+                                            FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
                                             //THTranslationCacheAdd(inputvalue, onlinetranslation);                                    
 
                                             //запись перевода
@@ -6430,7 +6351,7 @@ namespace TranslationHelper
                     WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
                 }
             }
-            catch
+            catch(System.ArgumentNullException)
             {
                 //LogToFile("Error: "+ex,true);
             }
@@ -6471,7 +6392,7 @@ namespace TranslationHelper
                     if (ExtractedOriginal.Length == 0 || (ExtractedOriginal == OriginalLine))
                     {
                         Result = ReturnTranslatedOrCache(cacheDS, OriginalLine);
-                        AddToTranslationCacheIfValid(cacheDS, OriginalLine, Result);
+                        FunctionsTable.AddToTranslationCacheIfValid(cacheDS, OriginalLine, Result);
                     }
                     else
                     {
@@ -6480,7 +6401,7 @@ namespace TranslationHelper
                             OriginalLine,
                             ExtractedOriginal
                             );
-                        AddToTranslationCacheIfValid(cacheDS, ExtractedOriginal, Result);
+                        FunctionsTable.AddToTranslationCacheIfValid(cacheDS, ExtractedOriginal, Result);
                     }
                     ResultValue.Append(Result);
 
@@ -6498,7 +6419,7 @@ namespace TranslationHelper
 
         private string ReturnTranslatedOrCache(DataSet cacheDS, string InputLine)
         {
-            string valuefromcache = TranslationCacheFind(cacheDS, InputLine);
+            string valuefromcache = FunctionsTable.TranslationCacheFind(cacheDS, InputLine);
 
             if (valuefromcache.Length != 0)
             {
@@ -6545,7 +6466,7 @@ namespace TranslationHelper
                 }
                 //MessageBox.Show(value.ToString());
                 //string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\string.Empty));
-                string result = string.Format(Properties.Settings.Default.WebTranslationLink.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", HttpUtility.UrlEncode(value + string.Empty, Encoding.UTF8));
+                string result = string.Format(CultureInfo.InvariantCulture, Properties.Settings.Default.WebTranslationLink.Replace("{languagefrom}", "{0}").Replace("{languageto}", "{1}").Replace("{text}", "{2}"), "auto", "en", HttpUtility.UrlEncode(value + string.Empty, Encoding.UTF8));
                 //MessageBox.Show(result);
                 Process.Start(result);
 
@@ -6979,7 +6900,7 @@ namespace TranslationHelper
             //{
 
             //}
-            return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") : string.Empty);
+            return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.GetCultureInfo("en-US")) : string.Empty);
         }
 
         bool WriteDBFileIsBusy = false;
@@ -7745,9 +7666,9 @@ namespace TranslationHelper
             //}
         }
 
-        private void showCheckboxvalueToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShowCheckboxvalueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(Properties.Settings.Default.IsTranslationCacheEnabled.ToString());
+            MessageBox.Show(Properties.Settings.Default.IsTranslationCacheEnabled.ToString(CultureInfo.GetCultureInfo("en-US")));
         }
 
         private void saveInnewFormatToolStripMenuItem_Click(object sender, EventArgs e)

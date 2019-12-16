@@ -11,15 +11,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 namespace TranslationHelper
 {
     public partial class THSearch : Form
     {
         //private readonly THMain Main;
-        public ListBox THFilesListBox;
-        public DataSet THFilesElementsDataset;
-        public DataGridView THFileElementsDataGridView;
+        internal ListBox THFilesListBox;
+        internal DataSet THFilesElementsDataset;
+        internal DataGridView THFileElementsDataGridView;
         readonly RichTextBox THTargetRichTextBox;        
 
         public THSearch(DataSet DS, ListBox listBox, DataGridView DGV, RichTextBox TTB)
@@ -330,7 +331,7 @@ namespace TranslationHelper
             }
             else
             {
-                return searchobject.ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant());
+                return searchobject.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant());
             }
         }
 
@@ -537,7 +538,7 @@ namespace TranslationHelper
                                     }
                                     else
                                     {
-                                        if (SelectedCellValue.ToLowerInvariant().Contains(strQuery.ToLowerInvariant()))
+                                        if (SelectedCellValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant()))
                                         {
                                             DS.Tables[0].ImportRow(Row);
                                             oDsResultsCoordinates.Rows.Add(t, r);
@@ -848,7 +849,7 @@ namespace TranslationHelper
                                 }
                                 else
                                 {
-                                    if (value.ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant()))
+                                    if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                                     {
                                         THFileElementsDataGridView["Translation", rowindex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView["Translation", rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                                     }
@@ -980,8 +981,8 @@ namespace TranslationHelper
                         string searchcolumn = GetSearchColumn();
                         for (int r=0; r< oDsResults.Tables[0].Rows.Count; r++)
                         {
-                            tableindex = int.Parse(oDsResultsCoordinates.Rows[r][0] + string.Empty);
-                            rowindex = int.Parse(oDsResultsCoordinates.Rows[r][1] + string.Empty);
+                            tableindex = int.Parse(oDsResultsCoordinates.Rows[r][0] + string.Empty, CultureInfo.CurrentCulture);
+                            rowindex = int.Parse(oDsResultsCoordinates.Rows[r][1] + string.Empty, CultureInfo.CurrentCulture);
 
                             string value = THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] + string.Empty;
                             if (value.Length > 0)
@@ -995,7 +996,7 @@ namespace TranslationHelper
                                 }
                                 else
                                 {
-                                    if (value.ToLowerInvariant().Contains(SearchFormFindWhatTextBox.Text.ToLowerInvariant()))
+                                    if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                                     {
                                         THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = ReplaceEx.Replace(GetFirstIfNotEmpty(THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                                     }

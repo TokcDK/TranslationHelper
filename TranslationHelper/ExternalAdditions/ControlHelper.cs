@@ -15,17 +15,23 @@ namespace TranslationHelper
 
         public static void SuspendDrawing(this Control target)
         {
-            SendMessage(target.Handle, WM_SETREDRAW, 0, 0);
+            if (target != null)
+            {
+                _ = SendMessage(target.Handle, WM_SETREDRAW, 0, 0);
+            }
         }
 
         public static void ResumeDrawing(this Control target) { ResumeDrawing(target, true); }
         public static void ResumeDrawing(this Control target, bool redraw)
         {
-            SendMessage(target.Handle, WM_SETREDRAW, 1, 0);
-
-            if (redraw)
+            if (target != null)
             {
-                target.Refresh();
+                int errorcode = SendMessage(target.Handle, WM_SETREDRAW, 1, 0);
+
+                if (redraw && errorcode == 0)
+                {
+                    target.Refresh();
+                }
             }
         }
         #endregion

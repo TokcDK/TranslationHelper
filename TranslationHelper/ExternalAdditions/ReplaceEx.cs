@@ -49,7 +49,6 @@ namespace TranslationHelper
                 throw new ArgumentException("String cannot be of zero length.");
             }
 
-
             //if (oldValue.Equals(newValue, comparisonType))
             //{
             //This condition has no sense

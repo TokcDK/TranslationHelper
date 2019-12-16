@@ -16,15 +16,17 @@ namespace TranslationHelper
 {
 	internal class T
 	{
-        static T()
+        static Catalog GetGlobal()
         {
             var localesDir = Path.Combine(Directory.GetCurrentDirectory(), "Locale");
             //_Catalog = new Catalog("en", localesDir, new CultureInfo("en-EN"));
             //_Catalog = new Catalog("ru", localesDir, new CultureInfo("ru-RU"));
-            _Catalog = new Catalog("th", localesDir);
+            //_Catalog = new Catalog("th", localesDir);
+            return new Catalog("th", localesDir);
         }
 
-        private static readonly ICatalog _Catalog = new Catalog("Example", "./locale");
+        //private static readonly ICatalog _Catalog = new Catalog("Example", "./locale");
+        private static readonly ICatalog _Catalog = GetGlobal();
 
         public static string _(string text) => _Catalog.GetString(text);
 

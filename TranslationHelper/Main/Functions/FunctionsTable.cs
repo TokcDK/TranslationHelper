@@ -1,11 +1,151 @@
 ﻿
+using System;
 using System.Data;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TranslationHelper.Main.Functions
 {
     static class FunctionsTable
     {
+        public static void AddToTranslationCacheIfValid(DataSet THTranslationCache, string Original, string Translation)
+        {
+            if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed)
+            {
+                DataTable Table = THTranslationCache.Tables[0];
+                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(Table, Original))
+                {
+                }
+                else
+                {
+                    Table.Rows.Add(Original, Translation);
+                }
+            }
+        }
+
+        public static string TranslationCacheFind(DataSet DS, string Input)
+        {
+            if (Properties.Settings.Default.IsTranslationCacheEnabled)
+            {
+                if (!string.IsNullOrEmpty(Input) && DS != null)
+                {
+                    using (var Table = DS.Tables[0])
+                    {
+                        if (FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(Table, Input))
+                        {
+                            var RowsCount = Table.Rows.Count;
+                            for (int i = 0; i < RowsCount; i++)
+                            {
+                                //MessageBox.Show("Input=" + Input+"\r\nCache="+ THTranslationCache.Tables["TranslationCache"].Rows[i][0].ToString());
+                                if (Equals(Input, Table.Rows[i][0]))
+                                {
+                                    return Table.Rows[i][1] as string;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return string.Empty;
+        }
+
+        public static DataTable RemoveAllRowsDuplicatesWithRepeatingOriginals(DataTable table)
+        {
+            using (DataTable tempTable = new DataTable())
+            {
+                foreach(DataColumn column in table.Columns)
+                {
+                    tempTable.Columns.Add(column.ColumnName);
+                }
+                foreach (DataRow row in table.Rows)
+                {
+                    if (!GetAlreadyAddedInTableAndTableHasRowsColumns(tempTable, row[0] as string))
+                    {
+                        tempTable.ImportRow(row);
+                    }
+                }
+                return tempTable;
+            }
+        }
+
+        public static bool GetAlreadyAddedInTableAndTableHasRowsColumns(DataTable table, string value)
+        {
+            if (table.Rows.Count == 0 || table.Columns.Count == 0)
+            {
+                return false;
+            }
+
+            //было отдельно снаружи метода, нужно проверить для чего и будет ли исключение
+            //про primary key взял отсюда: https://stackoverflow.com/questions/3567552/table-doesnt-have-a-primary-key
+            DataColumn[] keyColumns = new DataColumn[1];
+
+            //показать неуникальную строчку из таблицы, если есть. делал, когда была ошибка об неуникальности значения.
+            //for (int i = 0; i < table.Rows.Count; i++)
+            //{
+            //    var value1 = table.Rows[i][0];
+            //    for (int i2 = 0; i2 < table.Rows.Count; i2++)
+            //    {
+            //        var value2 = table.Rows[i2][0];
+            //        if (i != i2 && Equals(value1, value2))
+            //        {
+            //            MessageBox.Show(value2 as string);
+            //        }
+            //    }
+            //}
+
+            int cc = table.Columns.Count;
+            keyColumns[0] = table.Columns[0];
+
+            try
+            {
+                //здесь ошибки, когда кеш ломается из за ошибки с автозаменой и в него попадают неуникальные строчки, нужно тогда удалить из таблицы все неуникальные строки
+                table.PrimaryKey = keyColumns;
+            }
+            catch (System.ArgumentException)
+            {
+                //очистка таблицы от дубликатов, если задание ключа выдало исключение
+                table = RemoveAllRowsDuplicatesWithRepeatingOriginals(table);
+
+                try
+                {
+                    //перезадание ключа
+                    keyColumns[0] = table.Columns[0];
+                    table.PrimaryKey = keyColumns;
+                }
+                catch
+                {
+                    table.Rows.Clear();//очистка, если не смогло восстановить строки
+                    return false;//возврат false, после стирания строк
+                }
+            }
+
+            //очень быстрый способ поиска дубликата значения, два нижник в разы медленней, этот почти не заметен
+            if (table.Rows.Contains(value))
+            {
+                //LogToFile("Value already in table: \r\n"+ value);
+                //MessageBox.Show("found! value=" + value);
+                return true;
+            }
+            /*самый медленный способ, заметно медленней нижнего и непомерно критически медленней верхнего
+            if (ds.Tables[tablename].Select("Original = '" + value.Replace("'", "''") + "'").Length > 0)
+            {
+                //MessageBox.Show("found! value=" + value);
+                return true;
+            }
+            */
+            /*довольно медленный способ, быстрее того, что перед этим с Select, но критически медленней верхнего первого
+            for (int i=0; i < ds.Tables[tablename].Rows.Count; i++)
+            {
+                if (ds.Tables[tablename].Rows[i][0].ToString() == value)
+                {
+                    return true;
+                }
+            }
+            */
+            //LogToFile("Value still not in table: \r\n" + value);
+            return false;
+        }
+
         public static int GetDGVSelectedRowIndexInDatatable(DataSet TargetDataSet, DataGridView InputDataGridView,  int TableIndex, int rowIndex)
         {
             return TargetDataSet.Tables[TableIndex].Rows
@@ -186,6 +326,18 @@ namespace TranslationHelper.Main.Functions
             }
 
             return NonEmptyRowsCount;
+        }
+
+        internal static string FixDataTableFilterStringValue(string stringValue)
+        {
+            return stringValue
+                .Replace("'", "''")
+                .Replace("*", "[*]")
+                .Replace("%", "[%]")
+                .Replace("[", "-QB[BQ-")
+                .Replace("]", "[]]")
+                //-QB[BQ- - для исбежания проблем с заменой в операторе .Replace("]", "[]]"), после этого
+                .Replace("-QB[BQ-", "[[]");
         }
     }
 }

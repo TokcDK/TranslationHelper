@@ -132,9 +132,16 @@ namespace TranslationHelper.Main.Functions
                                     //перебрать все найденные совпадения
                                     foreach (Match m in mc)
                                     {
-                                        //исправить значения по найденным совпадениям в выбранной ячейке
-                                        THFilesElementsDataset.Tables[tind].Rows[rind][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
-                                        //THFilesElementsDataset.Tables[tind].Rows[rind][cind] = Regex.Replace(THFilesElementsDataset.Tables[tind].Rows[rind][cind].ToString(),m.Value.ToString(), result);
+                                        try//если будет корявый регекс и выдаст исключение
+                                        {
+                                            //исправить значения по найденным совпадениям в выбранной ячейке
+                                            THFilesElementsDataset.Tables[tind].Rows[rind][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+                                            //THFilesElementsDataset.Tables[tind].Rows[rind][cind] = Regex.Replace(THFilesElementsDataset.Tables[tind].Rows[rind][cind].ToString(),m.Value.ToString(), result);
+                                        }
+                                        catch
+                                        {
+                                            MessageBox.Show(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
+                                        }
                                     }
                                 }
                             }
@@ -210,12 +217,19 @@ namespace TranslationHelper.Main.Functions
                                             //перебрать все айденные совпадения
                                             foreach (Match m in mc)
                                             {
-                                                //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
+                                                try//если будет корявый регекс и выдаст исключение
+                                                {
+                                                    //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
 
-                                                //исправить значения по найденным совпадениям в выбранной ячейке
-                                                THFilesElementsDataset.Tables[tind].Rows[rind][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+                                                    //исправить значения по найденным совпадениям в выбранной ячейке
+                                                    THFilesElementsDataset.Tables[tind].Rows[rind][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
 
-                                                //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+                                                    //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+                                                }
+                                                catch
+                                                {
+                                                    MessageBox.Show(T._("Error in")+" TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
+                                                }
                                             }
                                         }
                                     }
@@ -277,13 +291,20 @@ namespace TranslationHelper.Main.Functions
                                                     //перебрать все айденные совпадения
                                                     foreach (Match m in mc)
                                                     {
-                                                        //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
+                                                        try//если будет корявый регекс и выдаст исключение
+                                                        {
+                                                            //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
 
-                                                        //исправить значения по найденным совпадениям в выбранной ячейке
-                                                        cvalue = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
-                                                        //THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), m.Value.ToString(), result);
+                                                            //исправить значения по найденным совпадениям в выбранной ячейке
+                                                            cvalue = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+                                                            //THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), m.Value.ToString(), result);
 
-                                                        //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+                                                            //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+                                                        }
+                                                        catch
+                                                        {
+                                                            MessageBox.Show(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
+                                                        }
                                                     }
 
                                                     if (!Equals(THFilesElementsDataset.Tables[t].Rows[rowindex][cind], cvalue))
@@ -309,7 +330,7 @@ namespace TranslationHelper.Main.Functions
         private static string FixForRPGMAkerMV(string cvalue)
         {
             //rpgmaker mv string will broke script if starts\ends with "'" and contains another "'" in middle
-            if (cvalue.Length>2 && cvalue.Substring(0, 1) == "'" && cvalue.Substring(cvalue.Length - 1, 1) == "'" && FunctionsStringOperations.IsStringAContainsStringB(cvalue.Substring(1, cvalue.Length - 2),"'"))
+            if (cvalue.Length > 2 && cvalue.Substring(0, 1) == "'" && cvalue.Substring(cvalue.Length - 1, 1) == "'" && FunctionsStringOperations.IsStringAContainsStringB(cvalue.Substring(1, cvalue.Length - 2), "'"))
             {
                 cvalue = cvalue
                     .Replace("do n't", "do not")
@@ -467,23 +488,23 @@ namespace TranslationHelper.Main.Functions
                                             {
                                                 //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
                                                 startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
-                                                                                                                //if (startindex > -1 ??)
-                                                                                                                //{
-                                                                                                                //}
-                                                                                                                //else
-                                                                                                                //{
-                                                                                                                //    //была ошибка когда индекс был -1. Добавил проверку индекса и
-                                                                                                                //    failed = true;
-                                                                                                                //}
-                                                                                                                //string g1 = tm[m].Value;//i
-                                                                                                                //string g2 = targetOrigMatches[m];//t
-                                                                                                                //string g3 = inputOrigMatches[m];//i
-                                                                                                                //string g4 = mc[m].Value;//i
-                                                                                                                //string g5 = mc0[m].Value;//t
-                                                                                                                //stringlength = inputOrigMatches[m].Length;
+                                                                                                                    //if (startindex > -1 ??)
+                                                                                                                    //{
+                                                                                                                    //}
+                                                                                                                    //else
+                                                                                                                    //{
+                                                                                                                    //    //была ошибка когда индекс был -1. Добавил проверку индекса и
+                                                                                                                    //    failed = true;
+                                                                                                                    //}
+                                                                                                                    //string g1 = tm[m].Value;//i
+                                                                                                                    //string g2 = targetOrigMatches[m];//t
+                                                                                                                    //string g3 = inputOrigMatches[m];//i
+                                                                                                                    //string g4 = mc[m].Value;//i
+                                                                                                                    //string g5 = mc0[m].Value;//t
+                                                                                                                    //stringlength = inputOrigMatches[m].Length;
                                                 stringlength = tm[m].Value.Length;
                                                 stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
-                                            
+
                                                 //InputTransCellValue = InputTransCellValue.Remove(startindex, stringlength).Insert(startindex, targetOrigMatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
                                                 InputTransCellValue = InputTransCellValue.Remove(startindex, stringlength).Insert(startindex, mc0[m].Value);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
 
@@ -496,10 +517,10 @@ namespace TranslationHelper.Main.Functions
                                             {
                                                 //была ошибка с startindex, добавлено для поимки исключения
                                                 string ggg = ex.ToString()
-                                                    +Environment.NewLine+ "m="+ m
-                                                    +Environment.NewLine+ "tm[m].Index=" + tm[m].Index
-                                                    +Environment.NewLine+ "stringoverallength=" + stringoverallength
-                                                    +Environment.NewLine+ "stringoverallength0=" + stringoverallength0;
+                                                    + Environment.NewLine + "m=" + m
+                                                    + Environment.NewLine + "tm[m].Index=" + tm[m].Index
+                                                    + Environment.NewLine + "stringoverallength=" + stringoverallength
+                                                    + Environment.NewLine + "stringoverallength0=" + stringoverallength0;
                                                 FileWriter.WriteData(Path.Combine(Application.StartupPath, "Error.log"), ggg);
                                                 MessageBox.Show("AutoSameValueMethod ERROR: " + ggg);
                                                 failed = true;

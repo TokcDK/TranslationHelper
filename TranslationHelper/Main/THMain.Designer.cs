@@ -667,7 +667,7 @@
             this.showCheckboxvalueToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
             this.showCheckboxvalueToolStripMenuItem.Text = "Show checkboxvalue";
             this.showCheckboxvalueToolStripMenuItem.Visible = false;
-            this.showCheckboxvalueToolStripMenuItem.Click += new System.EventHandler(this.showCheckboxvalueToolStripMenuItem_Click);
+            this.showCheckboxvalueToolStripMenuItem.Click += new System.EventHandler(this.ShowCheckboxvalueToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
