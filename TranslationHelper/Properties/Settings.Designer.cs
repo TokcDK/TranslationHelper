@@ -202,5 +202,17 @@ namespace TranslationHelper.Properties {
                 this["THSelectedSourceType"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int THFilesListSelectedIndex {
+            get {
+                return ((int)(this["THFilesListSelectedIndex"]));
+            }
+            set {
+                this["THFilesListSelectedIndex"] = value;
+            }
+        }
     }
 }

@@ -3123,7 +3123,9 @@ namespace TranslationHelper
                     //    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
                     //}
 
-                    BindToDataTableGridView(THFilesElementsDataset.Tables[THFilesList.SelectedIndex]);
+                    Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.SelectedIndex;
+
+                    BindToDataTableGridView(THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
 
                     ShowNonEmptyRowsCount(THFilesElementsDataset);
 
@@ -6787,50 +6789,9 @@ namespace TranslationHelper
             //LogToFile("Paste End", true);
         }
 
-        private void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Ensure that text is currently selected in the text box.    
-            if (THFileElementsDataGridView.SelectedCells.Count > 0)
-            {
-                //Clear selected cells                
-                //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
-                //if (THFileElementsDataGridView.CurrentCell.ReadOnly)
-                //{
-                //}
-                //else
-                //{
-                //    foreach (DataGridViewCell dgvCell in THFileElementsDataGridView.SelectedCells)
-                //    {
-                //        dgvCell.Value = string.Empty;
-                //    }
-                //}
-
-                try
-                {
-                    int[] rindexes = new int[THFileElementsDataGridView.SelectedCells.Count];
-                    int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
-                    int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
-                    for (int i = 0; i < rindexes.Length; i++)
-                    {
-                        int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                        if ((THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).Length == 0)
-                        {
-                        }
-                        else
-                        {
-                            rindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, rind);
-                        }
-
-                    }
-                    foreach (int rind in rindexes)
-                    {
-                        THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[rind][ctransind] = string.Empty;
-                    }
-                }
-                catch
-                {
-                }
-            }
+            await Task.Run(() => FunctionsTable.CleanTableCells(THFileElementsDataGridView, THFilesElementsDataset)).ConfigureAwait(false);            
         }
 
         //==============вырезать, копировать, вставить, для одной или нескольких ячеек

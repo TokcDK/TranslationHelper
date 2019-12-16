@@ -146,7 +146,15 @@ namespace TranslationHelper.Main.Functions
             return false;
         }
 
-        public static int GetDGVSelectedRowIndexInDatatable(DataSet TargetDataSet, DataGridView InputDataGridView,  int TableIndex, int rowIndex)
+        /// <summary>
+        /// Return real row index in Datatable for Datagridviev cell
+        /// </summary>
+        /// <param name="TargetDataSet"></param>
+        /// <param name="InputDataGridView"></param>
+        /// <param name="TableIndex"></param>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
+        public static int GetDGVSelectedRowIndexInDatatable(DataSet TargetDataSet, DataGridView InputDataGridView, int TableIndex, int rowIndex)
         {
             return TargetDataSet.Tables[TableIndex].Rows
                 .IndexOf(
@@ -338,6 +346,51 @@ namespace TranslationHelper.Main.Functions
                 .Replace("]", "[]]")
                 //-QB[BQ- - для исбежания проблем с заменой в операторе .Replace("]", "[]]"), после этого
                 .Replace("-QB[BQ-", "[[]");
+        }
+
+        internal static void CleanTableCells(DataGridView THFileElementsDataGridView, DataSet THFilesElementsDataset)
+        {
+            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
+            // Ensure that text is currently selected in the text box.    
+            if (THFileElementsDataGridViewSelectedCellsCount > 0)
+            {
+                //Clear selected cells                
+                //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
+                //if (THFileElementsDataGridView.CurrentCell.ReadOnly)
+                //{
+                //}
+                //else
+                //{
+                //    foreach (DataGridViewCell dgvCell in THFileElementsDataGridView.SelectedCells)
+                //    {
+                //        dgvCell.Value = string.Empty;
+                //    }
+                //}
+
+                try
+                {
+                    int[] rindexes = new int[THFileElementsDataGridViewSelectedCellsCount];
+                    int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
+                    int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
+                    for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
+                    {
+                        int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                        if ((THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).Length > 0)
+                        {
+                            rindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, Properties.Settings.Default.THFilesListSelectedIndex, rind);
+                        }
+
+                    }
+                    var rindexesLength = rindexes.Length;
+                    for (int i = 0; i < rindexesLength; i++)
+                    {
+                        THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex].Rows[rindexes[i]][ctransind] = null;
+                    }
+                }
+                catch
+                {
+                }
+            }
         }
     }
 }
