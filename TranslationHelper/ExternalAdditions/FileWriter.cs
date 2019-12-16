@@ -7,9 +7,9 @@ namespace TranslationHelper
     {
         private static readonly ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
 
-        public static void WriteData(string filePath, string data, bool b = false)
+        public static void WriteData(string filePath, string data, bool DebugMode = false)
         {
-            if (filePath.Contains("TranslationHelper.log") && !b)
+            if (string.IsNullOrEmpty(filePath) || (!DebugMode && filePath.Contains("TranslationHelper.log")))
             {
                 return;
             }

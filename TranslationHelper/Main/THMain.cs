@@ -3301,7 +3301,7 @@ namespace TranslationHelper
                     else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
                     {
                         //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
-                        THSourceRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty; //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        this.Invoke((Action)(() => THSourceRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty)); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
                         //https://github.com/caguiclajmg/WanaKanaSharp
                         //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
                         //{
@@ -3320,10 +3320,12 @@ namespace TranslationHelper
                         var cellvalue = THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value;
                         if (cellvalue == null || (cellvalue as string).Length == 0)
                         {
-                            THTargetRichTextBox.Clear();
+                            this.Invoke((Action)(() => THTargetRichTextBox.Clear()));
+                            
                         }
 
-                        THTargetRichTextBox.Text = cellvalue as string; //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        this.Invoke((Action)(() => THTargetRichTextBox.Text = cellvalue as string));
 
                         FormatTextBox();
 
@@ -5904,6 +5906,9 @@ namespace TranslationHelper
         {
             //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
             string[] OriginalLines = InputLines.Rows.OfType<DataRow>().Select(row => row[0].ToString()).ToArray();
+                       
+            //сброс кеша в GoogleAPI
+            GoogleAPI.ResetCache();
 
             string[] TranslatedLines = GoogleAPI.TranslateMultiple(OriginalLines);
 
@@ -6199,6 +6204,9 @@ namespace TranslationHelper
                     //{
                     //    tablescount = tableindex + 1;//одна таблица с индексом на один больше индекса стартовой
                     //}
+
+                    //сброс кеша в GoogleAPI
+                    GoogleAPI.ResetCache();
 
                     //перебор таблиц dataset
                     for (int t = tableindex; t < tablescount; t++)
