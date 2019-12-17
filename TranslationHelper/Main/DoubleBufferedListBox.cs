@@ -10,7 +10,7 @@ namespace TranslationHelper
         /// The double-buffering is accomplished by creating a custom,
         /// off-screen buffer during painting.
         /// </summary>
-        public sealed class DoubleBufferedListBox : ListBox
+        internal sealed class DoubleBufferedListBox : ListBox
         {
             //https://stackoverflow.com/questions/1131912/double-buffered-listbox
             #region Method Overrides
@@ -37,15 +37,5 @@ namespace TranslationHelper
             }
             #endregion
         }
-
-
-
-
-
-
-
-
-
-
     }
 }

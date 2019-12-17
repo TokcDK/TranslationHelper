@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TranslationHelper.Main.Functions
 {
-    class FunctionsRomajiKana
+    public static class FunctionsRomajiKana
     {
 
         /// <summary>
@@ -16,11 +16,14 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         public static bool SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(string inputString)
         {
+            if (string.IsNullOrEmpty(inputString))
+                return true;
+
             return SelectedLocalePercentFromStringIsNotValid(inputString)
                 || SelectedLocalePercentFromStringIsNotValid(inputString, "other")
-                || (FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji") + FunctionsRomajiKana.GetLocaleLangCount(inputString, "other")) == inputString.Length
-                || FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji") == inputString.Length
-                || FunctionsRomajiKana.GetLocaleLangCount(inputString, "other") == inputString.Length;
+                || (GetLocaleLangCount(inputString, "romaji") + GetLocaleLangCount(inputString, "other")) == inputString.Length
+                || GetLocaleLangCount(inputString, "romaji") == inputString.Length
+                || GetLocaleLangCount(inputString, "other") == inputString.Length;
         }
 
         /// <summary>
@@ -35,7 +38,7 @@ namespace TranslationHelper.Main.Functions
             {
                 if (Properties.Settings.Default.DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
                 {
-                    return ((FunctionsRomajiKana.GetLocaleLangCount(target, langlocale) * 100) / FunctionsRomajiKana.GetLocaleLangCount(target, "all")) > Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
+                    return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
                 }
             }
             catch
@@ -45,9 +48,9 @@ namespace TranslationHelper.Main.Functions
             return false;
         }
 
-        public bool HasNOJPcharacters(string str)
+        public static bool HasNOJPcharacters(string str)
         {
-            return FunctionsRomajiKana.GetLocaleLangCount(str, "kanji") < 1 && FunctionsRomajiKana.GetLocaleLangCount(str, "katakana") < 1 && FunctionsRomajiKana.GetLocaleLangCount(str, "hiragana") < 1;
+            return GetLocaleLangCount(str, "kanji") < 1 && GetLocaleLangCount(str, "katakana") < 1 && GetLocaleLangCount(str, "hiragana") < 1;
         }
 
         /// <summary>
@@ -63,16 +66,33 @@ namespace TranslationHelper.Main.Functions
             {
                 string ret = input;
                 //Перевод японских(и не только) цифр в стандартные--------------------------
-                string[,] ReplaceData = {
-                { "０", "0" }, { "１", "1" },{ "２", "2" }, { "３", "3" }, { "４", "4" }, { "５", "5" }, { "６", "6" },
-                { "７", "7" }, { "８", "8" }, { "９", "9" }, { "①", "1" }, { "②", "2" }, { "③", "3" }, { "④", "4" },
-                { "⑤", "5" }, { "⑥", "6" }, { "⑦", "7" }, { "⑧", "8" }, { "⑨", "9" }
-                                    };
+                string[][] ReplaceData = new string[19][]
+                {
+                new string[2] { "０", "0" },
+                new string[2] { "１", "1" },
+                new string[2] { "２", "2" },
+                new string[2] { "３", "3" },
+                new string[2] { "４", "4" },
+                new string[2] { "５", "5" },
+                new string[2] { "６", "6" },
+                new string[2] { "７", "7" },
+                new string[2] { "８", "8" },
+                new string[2] { "９", "9" },
+                new string[2] { "①", "1" },
+                new string[2] { "②", "2" },
+                new string[2] { "③", "3" },
+                new string[2] { "④", "4" },
+                new string[2] { "⑤", "5" },
+                new string[2] { "⑥", "6" },
+                new string[2] { "⑦", "7" },
+                new string[2] { "⑧", "8" },
+                new string[2] { "⑨", "9" }
+                };
 
                 int ReplaceDataCount = ReplaceData.Length / 2;
                 for (int a = 0; a < ReplaceDataCount; a++)
                 {
-                    ret = ret.Replace(ReplaceData[a, 0], ReplaceData[a, 1]);
+                    ret = ret.Replace(ReplaceData[a][0], ReplaceData[a][1]);
                 }
 
                 return ret;

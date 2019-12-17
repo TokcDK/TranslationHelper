@@ -5567,7 +5567,7 @@ namespace TranslationHelper
                                                 PreviousRowIndex = NewRowIndex;
                                             }
                                         }
-                                        WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
+                                        FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
 
                                         InputLines.Rows.Clear();
                                         InputLinesInfo.Rows.Clear();
@@ -5577,7 +5577,7 @@ namespace TranslationHelper
                         }
                     }
 
-                    WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
+                    FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
                 }
             }
             catch (Exception ex)
@@ -6041,7 +6041,7 @@ namespace TranslationHelper
                             }
                         }
                     }
-                    WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
+                    FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
                 }
             }
             catch(System.ArgumentNullException)
@@ -6050,15 +6050,6 @@ namespace TranslationHelper
             }
             IsTranslating = false;
             ProgressInfo(false);
-        }
-
-        private void WriteTranslationCacheIfValid(DataSet THTranslationCache, string tHTranslationCachePath)
-        {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THTranslationCache.Tables[0].Rows.Count > 0)
-            {
-                FunctionsDBFile.WriteDBFile(THTranslationCache, THTranslationCachePath);
-                //THTranslationCache.Reset();
-            }
         }
 
         private string TranslateMultilineValue(string[] InputLines, DataSet cacheDS)

@@ -13,6 +13,9 @@ namespace TranslationHelper.Formats.KiriKiri
     {
         public static DataTable KiriKiriTSVOpen(string sPath, DataTable DT, DataTable DTInfo)
         {
+            if (DT == null || DTInfo == null)
+                return null;
+
             using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
             {
                 string line;

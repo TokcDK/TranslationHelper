@@ -11,6 +11,15 @@ namespace TranslationHelper.Main.Functions
 {
     class FunctionsDBFile
     {
+        public static void WriteTranslationCacheIfValid(DataSet THTranslationCache, string tHTranslationCachePath)
+        {
+            if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THTranslationCache.Tables[0].Rows.Count > 0)
+            {
+                FunctionsDBFile.WriteDBFile(THTranslationCache, tHTranslationCachePath);
+                //THTranslationCache.Reset();
+            }
+        }
+
         //https://stackoverflow.com/questions/223738/net-stream-dataset-of-xml-data-to-zip-file
         //http://madprops.org/blog/saving-datasets-locally-with-compression/
         public static void ReadDBFile(DataSet DS, string fileName)
