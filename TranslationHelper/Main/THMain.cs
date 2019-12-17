@@ -927,7 +927,7 @@ namespace TranslationHelper
                         rowIndex = 0;
                     }
                     string[] lines = File.ReadAllLines(filePath);
-                    if (lines.Length == 2 && !FunctionsStringOperations.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
+                    if (lines.Length == 2 && !FunctionsStrings.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
                     {
                         if (IsWrite)
                         {
@@ -984,7 +984,7 @@ namespace TranslationHelper
                         if (lineArray.Length > 4)
                         {
                             //line = lineArray[4];
-                            if (!FunctionsStringOperations.IsDigitsOnly(lineArray[4]) && !string.IsNullOrEmpty(lineArray[4]))
+                            if (!FunctionsStrings.IsDigitsOnly(lineArray[4]) && !string.IsNullOrEmpty(lineArray[4]))
                             {
                                 if (IsWrite)
                                 {
@@ -1038,7 +1038,7 @@ namespace TranslationHelper
                     {
                         string[] lines = line.Split(',');
                         //line = line.Split(',')[1];
-                        if (!FunctionsStringOperations.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
+                        if (!FunctionsStrings.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
                         {
                             if (IsWrite)
                             {
@@ -1087,7 +1087,7 @@ namespace TranslationHelper
                     line = sr.ReadLine();
                     if (FunctionsDigitsOperations.IsEqualsAnyNumberFromArray(lineNum, lineNumbers))
                     {
-                        if (!FunctionsStringOperations.IsDigitsOnly(line) && !string.IsNullOrEmpty(line) && line != "\\n")
+                        if (!FunctionsStrings.IsDigitsOnly(line) && !string.IsNullOrEmpty(line) && line != "\\n")
                         {
                             if (IsWrite)
                             {
@@ -1143,7 +1143,7 @@ namespace TranslationHelper
 
                         for (int i = 0; i < strings.Length; i++)
                         {
-                            if (!FunctionsStringOperations.IsDigitsOnly(strings[i]) && !string.IsNullOrEmpty(strings[i]))
+                            if (!FunctionsStrings.IsDigitsOnly(strings[i]) && !string.IsNullOrEmpty(strings[i]))
                             {
                                 if (IsWrite)
                                 {
@@ -1597,7 +1597,7 @@ namespace TranslationHelper
                             for (int l = 0; l < ValuesLength; l++)
                             {
                                 string subline = Values[l];
-                                if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || FunctionsStringOperations.IsDigitsOnly(subline))
+                                if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || FunctionsStrings.IsDigitsOnly(subline))
                                 {
                                 }
                                 else
@@ -1674,7 +1674,7 @@ namespace TranslationHelper
                         {
                             if (name > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[name]) || FunctionsStringOperations.IsDigitsOnly(columns[name]))
+                                if (string.IsNullOrEmpty(columns[name]) || FunctionsStrings.IsDigitsOnly(columns[name]))
                                 {
                                 }
                                 else
@@ -1685,7 +1685,7 @@ namespace TranslationHelper
                             }
                             if (detail > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[detail]) || FunctionsStringOperations.IsDigitsOnly(columns[detail]))
+                                if (string.IsNullOrEmpty(columns[detail]) || FunctionsStrings.IsDigitsOnly(columns[detail]))
                                 {
                                 }
                                 else
@@ -1696,7 +1696,7 @@ namespace TranslationHelper
                             }
                             if (type > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[type]) || FunctionsStringOperations.IsDigitsOnly(columns[type]))
+                                if (string.IsNullOrEmpty(columns[type]) || FunctionsStrings.IsDigitsOnly(columns[type]))
                                 {
                                 }
                                 else
@@ -1707,7 +1707,7 @@ namespace TranslationHelper
                             }
                             if (field > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[field]) || FunctionsStringOperations.IsDigitsOnly(columns[field]))
+                                if (string.IsNullOrEmpty(columns[field]) || FunctionsStrings.IsDigitsOnly(columns[field]))
                                 {
                                 }
                                 else
@@ -1718,7 +1718,7 @@ namespace TranslationHelper
                             }
                             if (comment > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[comment]) || FunctionsStringOperations.IsDigitsOnly(columns[comment]))
+                                if (string.IsNullOrEmpty(columns[comment]) || FunctionsStrings.IsDigitsOnly(columns[comment]))
                                 {
                                 }
                                 else
@@ -1934,7 +1934,7 @@ namespace TranslationHelper
                                     line = line.Replace("[lr_]", string.Empty).Replace("[p_]", string.Empty);
 
                                     //line = Regex.Replace(line, @"^\s*(\[[a-z\/_]+\])*((\[name\])?.+)\[(lr|p)_\]\s*$", "$2");
-                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1965,7 +1965,7 @@ namespace TranslationHelper
                                 else if (line.EndsWith("[k]")) // text ;Magic Swordsman Rene
                                 {
                                     line = line.Replace("[k]", string.Empty);
-                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1977,7 +1977,7 @@ namespace TranslationHelper
                                 else if (line.StartsWith("*")) // text ;Magic Swordsman Rene
                                 {
                                     line = line.Remove(0, 1);
-                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1989,7 +1989,7 @@ namespace TranslationHelper
                                 else if (line.EndsWith("[r]")) //text, first line ;Magic Swordsman Rene
                                 {
                                     line = line.Replace("[r]", string.Empty).Trim();
-                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -2016,7 +2016,7 @@ namespace TranslationHelper
                                 else if (line.StartsWith("@notice text="))// ; Magic Swordsman Rene
                                 {
                                     line = line.Remove(0, 13);//удаление "@notice text="
-                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -2028,7 +2028,7 @@ namespace TranslationHelper
                                 else if (line.StartsWith("Name = '"))// ; Magic Swordsman Rene
                                 {
                                     line = line.Remove(line.Length - 2, 2).Remove(0, 8);
-                                    if (string.IsNullOrEmpty(line) || FunctionsStringOperations.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -2045,7 +2045,7 @@ namespace TranslationHelper
                                     foreach (var m in matches)
                                     {
                                         subline = m.ToString();
-                                        if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || FunctionsStringOperations.IsDigitsOnly(line.Replace("\"", string.Empty)))
+                                        if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || FunctionsStrings.IsDigitsOnly(line.Replace("\"", string.Empty)))
                                         {
                                         }
                                         else
@@ -3764,7 +3764,7 @@ namespace TranslationHelper
                             if (line.EndsWith("[k]")) // text
                             {
                                 string cline = line.Replace("[r]", string.Empty).Remove(line.Length - 3, 3);
-                                if (string.IsNullOrEmpty(cline) || FunctionsStringOperations.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsStrings.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -3785,7 +3785,7 @@ namespace TranslationHelper
                             else if (line.StartsWith("*")) // text
                             {
                                 string cline = line.Remove(0, 1);
-                                if (string.IsNullOrEmpty(cline) || FunctionsStringOperations.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsStrings.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -3806,7 +3806,7 @@ namespace TranslationHelper
                             else if (line.EndsWith("[r]")) //text, first line
                             {
                                 string cline = line.Replace("[r]", string.Empty);
-                                if (string.IsNullOrEmpty(cline) || FunctionsStringOperations.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsStrings.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -3851,7 +3851,7 @@ namespace TranslationHelper
                             else if (line.StartsWith("@notice text="))
                             {
                                 string cline = line.Remove(0, 13);//удаление "@notice text="
-                                if (string.IsNullOrEmpty(cline) || FunctionsStringOperations.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsStrings.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -4968,7 +4968,7 @@ namespace TranslationHelper
         {
             //исключение имен с недопустимыми именами для файла или папки
             //http://www.cyberforum.ru/post5599483.html
-            if (name.Length == 0 || FunctionsStringOperations.IsMultiline(name) || name.Intersect(Path.GetInvalidFileNameChars()).Any())
+            if (name.Length == 0 || FunctionsStrings.IsMultiline(name) || name.Intersect(Path.GetInvalidFileNameChars()).Any())
             {
                 //MessageBox.Show("GetAnyFileWithTheNameExist return false because invalid! name=" + name);
                 return false;
@@ -6287,7 +6287,7 @@ namespace TranslationHelper
                                     //LogToFile("resultvalue from cache is empty. resultvalue=" + resultvalue, true);
                                     //string[] inputvaluearray = InputValue.Split(new string[2] { Environment.NewLine, @"\n" }, StringSplitOptions.None);
 
-                                    if (FunctionsStringOperations.IsMultiline(InputValue))
+                                    if (FunctionsStrings.IsMultiline(InputValue))
                                     {
                                         ResultValue = TranslateMultilineValue(InputValue.SplitToLines().ToArray(), THTranslationCache);
                                     }
@@ -6538,7 +6538,7 @@ namespace TranslationHelper
         /// <param name="tind"></param>
         /// <param name="rind"></param>
         /// <param name="selectedonly"></param>
-        private void THFixCells(string method, int cind, int tind, int rind = 0, bool selectedonly = false)//cind - индекс столбца перевода, задан до старта потока
+        private void THFixCells(string method, int cind, int tind, int rind = 0)//cind - индекс столбца перевода, задан до старта потока
         {
             //возвращать, если занято, когда исправление в процессе
             if (THIsFixingCells)
@@ -6548,7 +6548,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsFixingCells = true;
 
-            FunctionsAutoOperations.THFixCells(THFilesElementsDataset, THFileElementsDataGridView, method, cind, tind, rind, selectedonly);
+            FunctionsAutoOperations.THFixCells(THFilesElementsDataset, THFileElementsDataGridView, method, cind, tind, rind);
 
             //снять занятость по окончании
             THIsFixingCells = false;
@@ -6791,7 +6791,7 @@ namespace TranslationHelper
 
         private async void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            await Task.Run(() => FunctionsTable.CleanTableCells(THFileElementsDataGridView, THFilesElementsDataset)).ConfigureAwait(false);            
+            await Task.Run(() => FunctionsTable.CleanTableCells(THFileElementsDataGridView, THFilesElementsDataset, Properties.Settings.Default.THFilesListSelectedIndex)).ConfigureAwait(false);            
         }
 
         //==============вырезать, копировать, вставить, для одной или нескольких ячеек

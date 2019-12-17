@@ -95,253 +95,162 @@ namespace TranslationHelper.Main.Functions
             if (File.Exists(Path.Combine(Application.StartupPath, "TranslationHelperCellFixesRegexRules.txt")))
             {
                 //читать файл с правилами
-                using (StreamReader rules = new StreamReader(Path.Combine(Application.StartupPath, "TranslationHelperCellFixesRegexRules.txt")))
+                string[] rules = File.ReadAllLines(Path.Combine(Application.StartupPath, "TranslationHelperCellFixesRegexRules.txt"));
+                try
                 {
-                    try
+                    var rulesLength = rules.Length;
+                    if (rulesLength < 2)
                     {
-                        if (selectedonly)
+                        return;
+                    }
+
+                    //индекс столбца перевода, таблицы и массив индексов для варианта с несколькими выбранными ячейками
+                    //int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans
+                    int initialtableindex = 0;
+                    int[] selcellscnt;
+
+                    //method
+                    //a - All
+                    //t - Table
+                    //s - Selected
+
+                    if (method == "s")
+                    {
+                        //cind = THFileElementsDataGridView.Columns["Translation"].Index;//-поле untrans                            
+                        initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
+                        selcellscnt = new int[THFileElementsDataGridView.SelectedCells.Count];//создать массив длинной числом выбранных ячеек
+                        for (int i = 0; i < selcellscnt.Length; i++) //записать индексы всех выбранных ячеек
                         {
-                            //regex правило и результат из файла
-                            string rule;
-                            string result = string.Empty;
-                            while (!rules.EndOfStream)
-                            {
-                                //читать правило и результат
-                                rule = rules.ReadLine();
-                                //проверить, есть ли правило и результат, если вдруг файле будет нечетное количество строк, по ошибке юзера
-                                if (rule.Length == 0 || rule.StartsWith(";"))
-                                {
-                                    continue;
-                                }
-                                result = rules.ReadLine();
-                                
-                                var row = THFilesElementsDataset.Tables[tind].Rows[rind];
-                                string cvalue = row[cind] + string.Empty;
-                                if (cvalue.Length == 0 || cvalue == row[cind - 1] as string)
-                                {
-                                    return;
-                                }
+                            selcellscnt[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, tind, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                        }
+                    }
+                    else if (method == "t")
+                    {
+                        initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
+                                                 //cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;
+                        selcellscnt = new int[1];//не будет использоваться с этим вариантом
+                    }
+                    else
+                    {
+                        selcellscnt = new int[1];//не будет использоваться с этим вариантом
+                    }
 
-                                cvalue = FixForRPGMAkerMV(cvalue);
+                    //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
+                    int tablescount;
+                    int rowscount;
+                    int rowindex;
 
-                                //задать правило
-                                Regex regexrule = new Regex(rule);
+                    //LogToFile("1 rule=" + rule + ",tableindex=" + initialtableindex);
+                    if (method == "a")
+                    {
+                        tablescount = THFilesElementsDataset.Tables.Count;//все таблицы в dataset
+                    }
+                    else
+                    {
+                        tablescount = initialtableindex + 1;//одна таблица с индексом на один больше индекса стартовой
+                    }
 
-                                //найти совпадение с заданным правилом в выбранной ячейке
-                                MatchCollection mc = regexrule.Matches(cvalue);
-
-                                //перебрать все найденные совпадения
-                                foreach (Match m in mc)
-                                {
-                                    try//если будет корявый регекс и выдаст исключение
-                                    {
-                                        //исправить значения по найденным совпадениям в выбранной ячейке
-                                        THFilesElementsDataset.Tables[tind].Rows[rind][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
-                                        //THFilesElementsDataset.Tables[tind].Rows[rind][cind] = Regex.Replace(THFilesElementsDataset.Tables[tind].Rows[rind][cind].ToString(),m.Value.ToString(), result);
-                                    }
-                                    catch
-                                    {
-                                        MessageBox.Show(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
-                                    }
-                                }
-                            }
+                    //LogToFile("2 tablescount=" + tablescount);
+                    //перебор таблиц dataset
+                    for (int t = initialtableindex; t < tablescount; t++)
+                    {
+                        //LogToFile("3 selected table index=" + t);
+                        if (method == "a" || method == "t")
+                        {
+                            //все строки в выбранной таблице
+                            rowscount = THFilesElementsDataset.Tables[t].Rows.Count;
                         }
                         else
                         {
-                            //индекс столбца перевода, таблицы и массив индексов для варианта с несколькими выбранными ячейками
-                            //int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans
-                            int initialtableindex = 0;
-                            int[] selcellscnt;
+                            //все выделенные строки в выбранной таблице
+                            rowscount = selcellscnt.Length;
+                        }
 
-                            //method
-                            //a - All
-                            //t - Table
-                            //s - Selected
-
+                        //LogToFile("4 rowscount=" + rowscount);
+                        //перебор строк таблицы
+                        for (int r = 0; r < rowscount; r++)
+                        {
                             if (method == "s")
                             {
-                                //cind = THFileElementsDataGridView.Columns["Translation"].Index;//-поле untrans                            
-                                initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-                                selcellscnt = new int[THFileElementsDataGridView.SelectedCells.Count];//создать массив длинной числом выбранных ячеек
-                                for (int i = 0; i < selcellscnt.Length; i++) //записать индексы всех выбранных ячеек
-                                {
-                                    selcellscnt[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, tind, THFileElementsDataGridView.SelectedCells[i].RowIndex);
-                                }
-                            }
-                            else if (method == "t")
-                            {
-                                initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-                                                         //cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;
-                                selcellscnt = new int[1];//не будет использоваться с этим вариантом
+                                //индекс = первому из заданного списка выбранных индексов
+                                rowindex = selcellscnt[r];
                             }
                             else
                             {
-                                selcellscnt = new int[1];//не будет использоваться с этим вариантом
+                                //индекс с нуля и до последней строки
+                                rowindex = r;
                             }
 
-                            //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
-                            int tablescount;
-                            int rowscount;
-                            int rowindex;
-
-                            //regex правило и результат из файла
-                            string rule;
-                            string result = string.Empty;
-                            while (!rules.EndOfStream)
+                            //LogToFile("5 selected i row index=" + i + ", value of THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "]=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind]);
+                            var row = THFilesElementsDataset.Tables[t].Rows[rowindex];
+                            string cvalue = row[cind] + string.Empty;
+                            //не трогать строку перевода, если она пустая
+                            if (cvalue.Length > 0 && cvalue != row[cind - 1] as string)
                             {
-                                //читать правило и результат
-                                rule = rules.ReadLine();
-                                //проверить, есть ли правило и результат, если вдруг файле будет нечетное количество строк, по ошибке юзера
-                                if (rule.Length == 0 || rule.StartsWith(";"))//игнорировать комментарии
+                                //Hardcoded rules
+                                cvalue = FunctionsStrings.FixForRPGMAkerQuotationInSomeStrings(row);
+
+                                //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+
+                                //regex правило и результат из файла
+                                string rule;
+                                string result;
+                                for (int i = 0; i < rulesLength; i++)
                                 {
-                                    continue;
+                                    //игнорировать комментарии и пустые строки
+                                    while (rules[i].Length == 0 || rules[i].StartsWith(";"))
+                                    {
+                                        i++;
+                                    }
+
+                                    //читать правило и результат
+                                    rule = rules[i];
+                                    i++;
+                                    //проверка, если строки закончились
+                                    if (i == rulesLength)
+                                    {
+                                        break;
+                                    }
+                                    result = rules[i];
+
+                                    //задать правило
+                                    Regex regexrule = new Regex(rule);
+
+                                    //найти совпадение с заданным правилом в выбранной ячейке
+                                    MatchCollection mc = regexrule.Matches(cvalue);
+                                    //перебрать все айденные совпадения
+                                    foreach (Match m in mc)
+                                    {
+                                        try//если будет корявый регекс и выдаст исключение
+                                        {
+                                            //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
+
+                                            //исправить значения по найденным совпадениям в выбранной ячейке
+                                            cvalue = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+                                            //THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), m.Value.ToString(), result);
+
+                                            //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+                                        }
+                                        catch
+                                        {
+                                            MessageBox.Show(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
+                                        }
+                                    }
                                 }
-                                result = rules.ReadLine();
 
-
-                                //задать правило
-                                Regex regexrule = new Regex(rule);
-
-                                if (selectedonly)
+                                if (!Equals(THFilesElementsDataset.Tables[t].Rows[rowindex][cind], cvalue))
                                 {
-                                    var row = THFilesElementsDataset.Tables[tind].Rows[rind];
-                                    string cvalue = row[cind] + string.Empty;
-                                    if (cvalue.Length > 0 && cvalue != row[cind - 1] as string)
-                                    {
-                                        cvalue = FixForRPGMAkerMV(cvalue);
-
-                                        //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
-
-                                        //найти совпадение с заданным правилом в выбранной ячейке
-                                        MatchCollection mc = regexrule.Matches(cvalue);
-                                        //перебрать все айденные совпадения
-                                        foreach (Match m in mc)
-                                        {
-                                            try//если будет корявый регекс и выдаст исключение
-                                            {
-                                                //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
-
-                                                //исправить значения по найденным совпадениям в выбранной ячейке
-                                                THFilesElementsDataset.Tables[tind].Rows[rind][cind] = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
-
-                                                //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
-                                            }
-                                            catch
-                                            {
-                                                MessageBox.Show(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-
-                                    //LogToFile("1 rule=" + rule + ",tableindex=" + initialtableindex);
-                                    if (method == "a")
-                                    {
-                                        tablescount = THFilesElementsDataset.Tables.Count;//все таблицы в dataset
-                                    }
-                                    else
-                                    {
-                                        tablescount = initialtableindex + 1;//одна таблица с индексом на один больше индекса стартовой
-                                    }
-
-                                    //LogToFile("2 tablescount=" + tablescount);
-                                    //перебор таблиц dataset
-                                    for (int t = initialtableindex; t < tablescount; t++)
-                                    {
-                                        //LogToFile("3 selected table index=" + t);
-                                        if (method == "a" || method == "t")
-                                        {
-                                            //все строки в выбранной таблице
-                                            rowscount = THFilesElementsDataset.Tables[t].Rows.Count;
-                                        }
-                                        else
-                                        {
-                                            //все выделенные строки в выбранной таблице
-                                            rowscount = selcellscnt.Length;
-                                        }
-
-                                        //LogToFile("4 rowscount=" + rowscount);
-                                        //перебор строк таблицы
-                                        for (int i = 0; i < rowscount; i++)
-                                        {
-                                            if (method == "s")
-                                            {
-                                                //индекс = первому из заданного списка выбранных индексов
-                                                rowindex = selcellscnt[i];
-                                            }
-                                            else
-                                            {
-                                                //индекс с нуля и до последней строки
-                                                rowindex = i;
-                                            }
-
-                                            //LogToFile("5 selected i row index=" + i + ", value of THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "]=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind]);
-                                            string cvalue = THFilesElementsDataset.Tables[t].Rows[rowindex][cind] + string.Empty;
-                                            //не трогать строку перевода, если она пустая
-                                            if (cvalue.Length > 0 && cvalue != THFilesElementsDataset.Tables[t].Rows[rowindex][cind - 1] as string)
-                                            {
-                                                cvalue = FixForRPGMAkerMV(cvalue);
-
-                                                //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
-
-                                                //найти совпадение с заданным правилом в выбранной ячейке
-                                                MatchCollection mc = regexrule.Matches(cvalue);
-                                                //перебрать все айденные совпадения
-                                                foreach (Match m in mc)
-                                                {
-                                                    try//если будет корявый регекс и выдаст исключение
-                                                    {
-                                                        //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
-
-                                                        //исправить значения по найденным совпадениям в выбранной ячейке
-                                                        cvalue = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
-                                                        //THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), m.Value.ToString(), result);
-
-                                                        //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
-                                                    }
-                                                    catch
-                                                    {
-                                                        MessageBox.Show(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
-                                                    }
-                                                }
-
-                                                if (!Equals(THFilesElementsDataset.Tables[t].Rows[rowindex][cind], cvalue))
-                                                {
-                                                    THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
-                                                }
-                                            }
-                                        }
-                                    }
+                                    THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
                                 }
                             }
                         }
-                        //LogToFile(string.Empty,true);
                     }
-                    catch
-                    {
-                    }
+                    //LogToFile(string.Empty,true);
+                }
+                catch
+                {
                 }
             }
-        }
-
-        private static string FixForRPGMAkerMV(string cvalue)
-        {
-            //rpgmaker mv string will broke script if starts\ends with "'" and contains another "'" in middle
-            if (cvalue.Length > 2 && cvalue.Substring(0, 1) == "'" && cvalue.Substring(cvalue.Length - 1, 1) == "'" && FunctionsStringOperations.IsStringAContainsStringB(cvalue.Substring(1, cvalue.Length - 2), "'"))
-            {
-                cvalue = cvalue
-                    .Replace("do n't", "do not")
-                    .Replace("don't", "do not")
-                    .Replace("n’t", "not")
-                    .Replace("'ve", " have")
-                    .Replace("I'm", "I am")
-                    .Replace("t's", "t is")
-                    .Replace("'s", "s")
-                    ;
-            }
-            return cvalue;
         }
 
         public static string GetStringSimularityRegexPattern()
@@ -796,7 +705,7 @@ namespace TranslationHelper.Main.Functions
             {
                 return Line;
             }
-            return string.Join(FunctionsStringOperations.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Line, Limit));
+            return string.Join(FunctionsStrings.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Line, Limit));
         }
 
         public static string[] SplitLineIfBeyondOfLimit(string text, int max)

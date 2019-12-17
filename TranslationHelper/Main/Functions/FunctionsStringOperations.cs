@@ -1,13 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TranslationHelper.Main.Functions
 {
-    static class FunctionsStringOperations
+    static class FunctionsStrings
     {
+        public static string FixForRPGMAkerQuotationInSomeStrings(DataRow row)
+        {
+            string origValue = row[0] as string;
+            string cvalue = row[1] as string;
+            //rpgmaker mv string will broke script if starts\ends with "'" and contains another "'" in middle
+            bool cvalueStartsWith = cvalue.StartsWith("\"");
+            bool cvalueEndsWith = cvalue.EndsWith("\"");
+            if (
+                 //если оригинал начинается и кончается на апостроф, а в переводе апостроф отсутствует на начале или конце
+                 (origValue.StartsWith("\"") && origValue.EndsWith("\"") && (!cvalueStartsWith || !cvalueEndsWith))
+                 ||
+                 //если перевод начинается и кончается на апостроф и также апостроф есть в где-то середине
+                 (cvalueStartsWith && cvalueEndsWith && cvalue.Length > 2 && FunctionsStrings.IsStringAContainsStringB(cvalue.Remove(cvalue.Length - 1, 1).Remove(0, 1), "\"")))
+            {
+                cvalue = "\"" +
+                    cvalue
+                    .Replace("\"", string.Empty)
+                    + "\""
+                    ;
+            }
+            else
+            {
+                cvalueStartsWith = cvalue.StartsWith("'");
+                cvalueEndsWith = cvalue.EndsWith("'");
+                if (
+                //если оригинал начинается и кончается на апостроф, а в переводе апостроф отсутствует на начале или конце
+                (origValue.StartsWith("'") && origValue.EndsWith("'") && (!cvalueStartsWith || !cvalueEndsWith))
+                ||
+                //если перевод начинается и кончается на апостроф и также апостроф есть в где-то середине
+                (cvalueStartsWith && cvalueEndsWith && cvalue.Length > 2 && FunctionsStrings.IsStringAContainsStringB(cvalue.Remove(cvalue.Length - 1, 1).Remove(0, 1), "'")))
+                {
+                    cvalue = "'" +
+                        cvalue
+                        .Replace("do n't", "do not")
+                        .Replace("don't", "do not")
+                        .Replace("n’t", "not")
+                        .Replace("'ve", " have")
+                        .Replace("I'm", "I am")
+                        .Replace("t's", "t is")
+                        .Replace("'s", "s")
+                        .Replace("'", string.Empty)
+                        + "'"
+                        ;
+                }
+            }
+            return cvalue;
+        }
+
         /// <summary>
         /// Split string to lines
         /// </summary>

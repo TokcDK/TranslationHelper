@@ -348,7 +348,7 @@ namespace TranslationHelper.Main.Functions
                 .Replace("-QB[BQ-", "[[]");
         }
 
-        internal static void CleanTableCells(DataGridView THFileElementsDataGridView, DataSet THFilesElementsDataset)
+        internal static void CleanTableCells(DataGridView THFileElementsDataGridView, DataSet THFilesElementsDataset, int Tindex)
         {
             int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
             // Ensure that text is currently selected in the text box.    
@@ -372,19 +372,54 @@ namespace TranslationHelper.Main.Functions
                     int[] rindexes = new int[THFileElementsDataGridViewSelectedCellsCount];
                     int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
                     int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
+
+                    bool TableHasNotDefaultRowsOrder = true;
+                    if (THFileElementsDataGridViewSelectedCellsCount > 50)
+                    {
+                        //определение, имеет ли датагрид нестандартный порядок строк, как при сортировке или фильтрах
+                        int equalIndexsesCounter = 0;
+                        for (int i = 0; i < 5; i++)
+                        {
+                            var rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                            if (rind == FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, Tindex, rind))
+                            {
+                                equalIndexsesCounter++;
+                            }
+                        }
+
+                        TableHasNotDefaultRowsOrder = equalIndexsesCounter < 5;//имеет, если не все 5 индексов датагрида были равны индексам дататэйбл
+                    }
+
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
                         if ((THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).Length > 0)
                         {
-                            rindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, Properties.Settings.Default.THFilesListSelectedIndex, rind);
+                            if (TableHasNotDefaultRowsOrder)
+                            {
+                                rindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, Tindex, rind);
+                            }
+                            else
+                            {
+                                rindexes[i] = rind;
+                            }
                         }
 
                     }
+
                     var rindexesLength = rindexes.Length;
                     for (int i = 0; i < rindexesLength; i++)
                     {
-                        THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex].Rows[rindexes[i]][ctransind] = null;
+                        if (rindexes[i] == -1)
+                        {
+                            continue;
+                        }
+
+                        var cell = THFilesElementsDataset.Tables[Tindex].Rows[rindexes[i]][ctransind];
+                        if (cell != null && (cell as string).Length > 0)
+                        {
+                            THFilesElementsDataset.Tables[Tindex].Rows[rindexes[i]][ctransind] = string.Empty;
+                        }
                     }
                 }
                 catch
