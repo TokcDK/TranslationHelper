@@ -17,6 +17,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
+using TranslationHelper.Formats.KiriKiri;
+using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper
@@ -43,18 +45,6 @@ namespace TranslationHelper
         internal DataSet THFilesElementsDatasetInfo;
         //DataTable THFilesElementsDatatable;
         //private BindingSource THBS = new BindingSource();
-
-        public string THRPGMTransPatchver
-        {
-            get => Properties.Settings.Default.THRPGMTransPatchver;
-            set => Properties.Settings.Default.THRPGMTransPatchver = value;
-        }
-
-        public string THSelectedSourceType
-        {
-            get => Properties.Settings.Default.THSelectedSourceType;
-            set => Properties.Settings.Default.THSelectedSourceType = value;
-        }
 
         //Language strings
         //public string THMainDGVOriginalColumnName;
@@ -202,11 +192,12 @@ namespace TranslationHelper
             SetTooltips();
         }
 
+        ToolTip THToolTip;
         private void SetTooltips()
         {
             //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
             //THMainResetTableButton
-            ToolTip THToolTip = new ToolTip
+            THToolTip = new ToolTip
             {
 
                 // Set up the delays for the ToolTip.
@@ -297,14 +288,14 @@ namespace TranslationHelper
                             //open.Start();
 
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => THSelectedSourceType = GetSourceType(THFOpen.FileName)).ConfigureAwait(true);
+                            await Task.Run(() => RPGMFunctions.THSelectedSourceType = GetSourceType(THFOpen.FileName)).ConfigureAwait(true);
 
                             //THSelectedSourceType = GetSourceType(THFOpen.FileName);
 
                             //THActionProgressBar.Visible = false;
                             ProgressInfo(false, string.Empty);
 
-                            if (THSelectedSourceType.Length == 0)
+                            if (RPGMFunctions.THSelectedSourceType.Length == 0)
                             {
                                 THMsg.Show(T._("Problem with source opening. Try to report to devs about it."));
                             }
@@ -334,7 +325,7 @@ namespace TranslationHelper
 
                                 Properties.Settings.Default.THSelectedGameDir = GetCorrectedGameDIr(Properties.Settings.Default.THSelectedGameDir);
 
-                                if (THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch") || THSelectedSourceType.Contains("KiriKiri game"))
+                                if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch") || RPGMFunctions.THSelectedSourceType.Contains("KiriKiri game"))
                                 {
                                     Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedGameDir);
                                 }
@@ -342,7 +333,7 @@ namespace TranslationHelper
                                 {
                                     Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedDir);
                                 }
-                                _ = THMsg.Show(THSelectedSourceType + T._(" loaded") + "!");
+                                _ = THMsg.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");
 
                                 editToolStripMenuItem.Enabled = true;
                                 viewToolStripMenuItem.Enabled = true;
@@ -353,7 +344,7 @@ namespace TranslationHelper
 
                                 if (FVariant.Length == 0)
                                 {
-                                    FVariant = " * " + THSelectedSourceType;
+                                    FVariant = " * " + RPGMFunctions.THSelectedSourceType;
                                 }
                                 try
                                 {
@@ -539,7 +530,7 @@ namespace TranslationHelper
                 {
                     return ProceedRubyRPGGame(Path.GetDirectoryName(sPath));//RJ263914
                 }
-                else if ((GetExeDescription(sPath) != null && GetExeDescription(sPath).ToUpper().Contains("KIRIKIRI")) && dir.GetFiles("*.xp3").Length > 0)
+                else if ((FunctionsProcess.GetExeDescription(sPath) != null && FunctionsProcess.GetExeDescription(sPath).ToUpper().Contains("KIRIKIRI")) && dir.GetFiles("*.xp3").Length > 0)
                 {
                     if (KiriKiriGame(sPath))
                     {
@@ -599,7 +590,7 @@ namespace TranslationHelper
                         //MessageBox.Show("isv3=" + isv3+ ", patchdir="+ extractedpatchpath+ ", extractedpatchpath="+ extractedpatchpath);
                         if (isv3) //если есть подпапка patch, тогда это версия патча 3
                         {
-                            THRPGMTransPatchver = "3";
+                            RPGMFunctions.THRPGMTransPatchver = "3";
                             extractedpatchpath += "\\patch";
                             //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
                             dir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpath + "\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
@@ -607,13 +598,13 @@ namespace TranslationHelper
                         }
                         else if (Directory.Exists(extractedpatchpath + Path.GetFileName(extractedpatchpath) + "\\patch"))
                         {
-                            THRPGMTransPatchver = "3";
+                            RPGMFunctions.THRPGMTransPatchver = "3";
                             extractedpatchpath += Path.GetFileName(extractedpatchpath) + "\\patch";
                             dir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpath + "\\"));
                         }
                         else //иначе это версия 2
                         {
-                            THRPGMTransPatchver = "2";
+                            RPGMFunctions.THRPGMTransPatchver = "2";
                         }
                         //MessageBox.Show("patchdir2=" + patchdir);
 
@@ -631,7 +622,7 @@ namespace TranslationHelper
                         //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
                         //RPGMTransPatch.OpenTransFiles(files, patchver);
                         //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
-                        if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver, THFilesElementsDataset, THFilesElementsDatasetInfo))
+                        if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, RPGMFunctions.THRPGMTransPatchver, THFilesElementsDataset, THFilesElementsDatasetInfo))
                         {
 
                             //Запись в dataGridVivwer
@@ -1545,11 +1536,11 @@ namespace TranslationHelper
                     }
                     else if (filename.EndsWith(".csv"))
                     {
-                        DT = KiriKiriCSVOpen(kiriKiriFiles[i], THFilesElementsDataset.Tables[filename], THFilesElementsDatasetInfo.Tables[filename]);
+                        DT = CSV.KiriKiriCSVOpen(kiriKiriFiles[i], THFilesElementsDataset.Tables[filename], THFilesElementsDatasetInfo.Tables[filename]);
                     }
                     else if (filename.EndsWith(".tsv"))
                     {
-                        DT = KiriKiriTSVOpen(kiriKiriFiles[i], THFilesElementsDataset.Tables[filename], THFilesElementsDatasetInfo.Tables[filename]);
+                        DT = TSV.KiriKiriTSVOpen(kiriKiriFiles[i], THFilesElementsDataset.Tables[filename], THFilesElementsDatasetInfo.Tables[filename]);
                     }
 
                     if (DT == null || DT.Rows.Count == 0)
@@ -1572,167 +1563,6 @@ namespace TranslationHelper
             }
 
             return ret;
-        }
-
-        private DataTable KiriKiriTSVOpen(string sPath, DataTable DT, DataTable DTInfo)
-        {
-            using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
-            {
-                string line;
-                while (!file.EndOfStream)
-                {
-                    line = file.ReadLine();
-                    if (line.StartsWith(";") || string.IsNullOrWhiteSpace(line))
-                    {
-                    }
-                    else
-                    {
-                        string[] NameValues = line.Split('	');
-
-                        if (NameValues.Length == 2)
-                        {
-                            string[] Values = NameValues[1].Split(',');
-
-                            int ValuesLength = Values.Length;
-                            for (int l = 0; l < ValuesLength; l++)
-                            {
-                                string subline = Values[l];
-                                if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || FunctionsStrings.IsDigitsOnly(subline))
-                                {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(subline);
-                                    _ = DTInfo.Rows.Add(NameValues[0]);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return DT;
-        }
-
-        private DataTable KiriKiriCSVOpen(string sPath, DataTable DT, DataTable DTInfo)
-        {
-            using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
-            {
-                string line;
-                //string original = string.Empty;
-                //_ = THFilesElementsDataset.Tables.Add(filename);
-                //_ = THFilesElementsDataset.Tables[0].Columns.Add("Original");
-                //_ = THFilesElementsDatasetInfo.Tables.Add(filename);
-                //_ = THFilesElementsDatasetInfo.Tables[0].Columns.Add("Original");
-                //_ = THFilesElementsDataset.Tables[0].Columns.Add("Translation");
-                //THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
-                bool IsFirstLineWasNotRead = true;
-                int name = -1;
-                int detail = -1;
-                int type = -1;
-                int field = -1;
-                int comment = -1;
-                string[] columns;
-                while (!file.EndOfStream)
-                {
-                    line = file.ReadLine();
-
-                    if (line.StartsWith(";") || string.IsNullOrWhiteSpace(line))
-                    {
-                    }
-                    else
-                    {
-                        columns = line.Split(new string[] { "	" }, StringSplitOptions.None);
-                        if (IsFirstLineWasNotRead)
-                        {
-                            for (int i = 0; i < columns.Length; i++)
-                            {
-                                if (columns[i] == "name")
-                                {
-                                    name = i;
-                                }
-                                else if (columns[i] == "detail")
-                                {
-                                    detail = i;
-                                }
-                                else if (columns[i] == "type")
-                                {
-                                    type = i;
-                                }
-                                else if (columns[i] == "field")
-                                {
-                                    field = i;
-                                }
-                                else if (columns[i] == "comment")
-                                {
-                                    comment = i;
-                                }
-                            }
-                            IsFirstLineWasNotRead = false;
-                        }
-                        else
-                        {
-                            if (name > -1)
-                            {
-                                if (string.IsNullOrEmpty(columns[name]) || FunctionsStrings.IsDigitsOnly(columns[name]))
-                                {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(columns[name]);
-                                    _ = DTInfo.Rows.Add("name");
-                                }
-                            }
-                            if (detail > -1)
-                            {
-                                if (string.IsNullOrEmpty(columns[detail]) || FunctionsStrings.IsDigitsOnly(columns[detail]))
-                                {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(columns[detail]);
-                                    _ = DTInfo.Rows.Add("detail");
-                                }
-                            }
-                            if (type > -1)
-                            {
-                                if (string.IsNullOrEmpty(columns[type]) || FunctionsStrings.IsDigitsOnly(columns[type]))
-                                {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(columns[type]);
-                                    _ = DTInfo.Rows.Add("type");
-                                }
-                            }
-                            if (field > -1)
-                            {
-                                if (string.IsNullOrEmpty(columns[field]) || FunctionsStrings.IsDigitsOnly(columns[field]))
-                                {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(columns[field]);
-                                    _ = DTInfo.Rows.Add("field");
-                                }
-                            }
-                            if (comment > -1)
-                            {
-                                if (string.IsNullOrEmpty(columns[comment]) || FunctionsStrings.IsDigitsOnly(columns[comment]))
-                                {
-                                }
-                                else
-                                {
-                                    _ = DT.Rows.Add(columns[comment]);
-                                    _ = DTInfo.Rows.Add("comment");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return DT;
         }
 
         private bool ExtractXP3files(string sPath)
@@ -1764,7 +1594,7 @@ namespace TranslationHelper
                             Directory.Delete(KiriKiriWorkFolder, true);
                             Directory.CreateDirectory(KiriKiriWorkFolder);
 
-                            ret = RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
+                            ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
                             //if (RunProcess(KiriKiriEXEpath, KiriKiriEXEargs))
                             //{
                             //    xp3name = "patch";
@@ -1775,13 +1605,13 @@ namespace TranslationHelper
                     }
                     else
                     {
-                        ret = RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
+                        ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
                     }
                 }
                 else
                 {
                     Directory.CreateDirectory(KiriKiriWorkFolder);
-                    ret = RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
+                    ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
                 }
             }
             catch
@@ -1790,63 +1620,6 @@ namespace TranslationHelper
             }
 
             return ret;
-        }
-
-        private bool RunProcess(string ProgramPath, string Arguments)
-        {
-            bool ret = false;
-            if (File.Exists(ProgramPath))
-            {
-                using (Process Program = new Process())
-                {
-                    //MessageBox.Show("outdir=" + outdir);
-                    Program.StartInfo.FileName = ProgramPath;
-                    if (Arguments.Length > 0)
-                    {
-                        Program.StartInfo.Arguments = Arguments;
-                    }
-                    Program.StartInfo.WorkingDirectory = Path.GetDirectoryName(ProgramPath);
-
-                    //http://www.cyberforum.ru/windows-forms/thread31052.html
-                    // свернуть
-                    //WindowState = FormWindowState.Minimized;
-                    //if (LinksForm == null || LinksForm.IsDisposed)
-                    //{
-                    //}
-                    //else
-                    //{
-                    //    LinksForm.WindowState = FormWindowState.Minimized;
-                    //}
-
-                    ret = Program.Start();
-                    Program.WaitForExit();
-
-                    // Показать
-                    //WindowState = FormWindowState.Normal;
-                    //if (LinksForm == null || LinksForm.IsDisposed)
-                    //{
-                    //}
-                    //else
-                    //{
-                    //    LinksForm.WindowState = FormWindowState.Normal;
-                    //}
-                }
-            }
-
-            return ret;
-        }
-
-        private string GetExeDescription(string exepath)
-        {
-            if (exepath.Length == 0)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                FileVersionInfo ExeInfo = FileVersionInfo.GetVersionInfo(exepath);
-                return ExeInfo.FileDescription;
-            }
         }
 
         string KiriKiriVariableSearchRegexPattern = string.Empty;
@@ -2176,12 +1949,12 @@ namespace TranslationHelper
             //MessageBox.Show(patchfile.ReadLine());
             if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "patch"))) //если есть подпапка patch, тогда это версия патча 3
             {
-                THRPGMTransPatchver = "3";
+                RPGMFunctions.THRPGMTransPatchver = "3";
                 patchdir = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(sPath), "patch"));
             }
             else //иначе это версия 2
             {
-                THRPGMTransPatchver = "2";
+                RPGMFunctions.THRPGMTransPatchver = "2";
             }
             patchfile.Close();
 
@@ -2198,7 +1971,7 @@ namespace TranslationHelper
             //THFilesDataGridView.Nodes.Add("main");
             //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
             //RPGMTransPatch.OpenTransFiles(files, patchver);
-            if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchver, THFilesElementsDataset, THFilesElementsDatasetInfo))
+            if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, RPGMFunctions.THRPGMTransPatchver, THFilesElementsDataset, THFilesElementsDatasetInfo))
             {
                 //MessageBox.Show(THSelectedSourceType + " loaded!");
                 //THShowMessage(THSelectedSourceType + " loaded!");
@@ -2584,7 +2357,7 @@ namespace TranslationHelper
             //        help = "Dump scripts to given directory")
             string rpgmakertranscliargs = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
 
-            ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+            ret = FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
 
             if (ret && Directory.Exists(outdir + "_patch\""))
             {
@@ -2602,14 +2375,14 @@ namespace TranslationHelper
                 }
 
                 //попытка с параметром -b - Use UTF-8 BOM in Patch files
-                ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
+                ret = FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
                 if (!ret || (ret && !Directory.Exists(outdir + "_patch\"")))
                 {
                     string tempDIr = Path.Combine(inputdir, "tempTH");
 
                     Directory.CreateDirectory(tempDIr);
 
-                    string rgss = GetRPGMakerArc(inputdir);
+                    string rgss = RPGMFunctions.GetRPGMakerArc(inputdir);
                     if (rgss.Length == 0)
                     {
                         return false;
@@ -2618,7 +2391,7 @@ namespace TranslationHelper
                     rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rgssdecryptor", "RgssDecrypter.exe");
                     rpgmakertranscliargs = "\"--output=" + tempDIr + "\" " + rgss;
 
-                    ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+                    ret = FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
 
                     if (Directory.GetDirectories(tempDIr).Length > 0)
                     {
@@ -2660,7 +2433,7 @@ namespace TranslationHelper
 
                             rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rpgmakertrans", "rpgmt.exe");
                             rpgmakertranscliargs = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
-                            ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+                            ret = FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
                             if (ret && Directory.Exists(outdir + "_patch\""))
                             {
                             }
@@ -2677,7 +2450,7 @@ namespace TranslationHelper
                                 }
 
                                 //попытка с параметром -b - Use UTF-8 BOM in Patch files
-                                ret = RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
+                                ret = FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
                                 if (!ret || (ret && !Directory.Exists(outdir + "_patch\"")))
                                 {
                                     //чистка папок 
@@ -2715,33 +2488,7 @@ namespace TranslationHelper
             return ret;
         }
 
-        private string GetRPGMakerArc(string inputDir)
-        {
-            string path = Path.Combine(inputDir, "Game.rgss3a");
-            if (File.Exists(path))
-            {
-                return path;
-            }
-            return string.Empty;
-        }
-
-        private bool RunProgram(string ProgramPath, string Arguments)
-        {
-            bool ret = false;
-            using (Process Program = new Process())
-            {
-                //MessageBox.Show("outdir=" + outdir);
-                Program.StartInfo.FileName = ProgramPath;
-                Program.StartInfo.Arguments = Arguments;
-                ret = Program.Start();
-                Program.WaitForExit();
-            }
-
-            return ret;
-        }
-
         private int invalidformat;
-
         public bool OpenRPGMTransPatchFiles(List<string> ListFiles, string patchver, DataSet DS, DataSet DSInfo)
         {
             //измерение времени выполнения
@@ -3162,7 +2909,7 @@ namespace TranslationHelper
                     //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
                     //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
 
-                    if (THSelectedSourceType.Contains("RPGMakerTransPatch") || THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch")) //Additional tweaks for RPGMTransPatch table
+                    if (RPGMFunctions.THSelectedSourceType.Contains("RPGMakerTransPatch") || RPGMFunctions.THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch")) //Additional tweaks for RPGMTransPatch table
                     {
                         THFileElementsDataGridView.Columns["Context"].Visible = false;
                         THFileElementsDataGridView.Columns["Status"].Visible = false;
@@ -3353,7 +3100,7 @@ namespace TranslationHelper
                         //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
                         //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
                         THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + THFilesElementsDatasetInfo.Tables[THFilesList.SelectedIndex].Rows[e.RowIndex][0];
-                        if (THSelectedSourceType == "RPG Maker MV")
+                        if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
                         {
                             THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
                         }
@@ -3441,22 +3188,22 @@ namespace TranslationHelper
                 SaveInAction = true;
                 FIleDataWasChanged = false;
                 //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
-                if (THSelectedSourceType == "RubyRPGGame")
+                if (RPGMFunctions.THSelectedSourceType == "RubyRPGGame")
                 {
                     ProceedRubyRPGGame(Properties.Settings.Default.THSelectedGameDir, true);
                     MessageBox.Show("Finished");
                 }
-                else if (THSelectedSourceType == "Wolf RPG txt")
+                else if (RPGMFunctions.THSelectedSourceType == "Wolf RPG txt")
                 {
                     ProceedWriteWolfRPGtxt();
                     MessageBox.Show("Finished");
                 }
-                else if (THSelectedSourceType == "WOLF TRANS PATCH")
+                else if (RPGMFunctions.THSelectedSourceType == "WOLF TRANS PATCH")
                 {
                     WriteWOLFTRANSPATCH();
                     MessageBox.Show("Finished");
                 }
-                else if (THSelectedSourceType == "RPGMakerTransPatch" || THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
+                else if (RPGMFunctions.THSelectedSourceType == "RPGMakerTransPatch" || RPGMFunctions.THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
                 {
                     //THActionProgressBar.Visible = true;
                     //THInfolabel.Visible = true;
@@ -3470,7 +3217,7 @@ namespace TranslationHelper
                     //save.Start();
 
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver)).ConfigureAwait(true);
+                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.THRPGMTransPatchver)).ConfigureAwait(true);
 
                     //MessageBox.Show("Properties.Settings.Default.THSelectedDir=" + Properties.Settings.Default.THSelectedDir);
                     //SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver);
@@ -3479,7 +3226,7 @@ namespace TranslationHelper
 
                     //THActionProgressBar.Visible = false;
 
-                    if (THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
+                    if (RPGMFunctions.THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
                     {
                         DialogResult result = MessageBox.Show("Write in _translated variant of the game? This will not overwrite original game folder but can be used for test game.", "Write in translated variant", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (result == DialogResult.Yes)
@@ -3507,12 +3254,12 @@ namespace TranslationHelper
                             //        help = "Dump scripts to given directory")
                             string rpgmakertranscliargs = "\"" + Properties.Settings.Default.THSelectedGameDir + "\" -p \"" + Properties.Settings.Default.THSelectedDir + "\"" + " -o \"" + Properties.Settings.Default.THSelectedDir.Remove(Properties.Settings.Default.THSelectedDir.Length - "_patch".Length, "_patch".Length) + "_translated\"";
 
-                            if (RunProgram(rpgmakertranscli, rpgmakertranscliargs))
+                            if (FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs))
                             {
                             }
                             else
                             {
-                                RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");// попытка с параметром -b
+                                FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");// попытка с параметром -b
                             }
                         }
                         else if (result == DialogResult.No)
@@ -3528,12 +3275,12 @@ namespace TranslationHelper
                     //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
                     WriteJson(THFilesList.Items[0] + string.Empty, Properties.Settings.Default.THSelectedDir + THFilesList.Items[0] + ".trans");
                 }
-                else if (THSelectedSourceType == "RPG Maker MV json")
+                else if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV json")
                 {
                     //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
                     WriteJson(THFilesList.Items[0] + string.Empty, Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".json");
                 }
-                else if (THSelectedSourceType == "RPG Maker MV")
+                else if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
                 {
                     for (int f = 0; f < THFilesList.Items.Count; f++)
                     {
@@ -3564,13 +3311,13 @@ namespace TranslationHelper
                     }
                     THMsg.Show(T._("finished") + "!");
                 }
-                else if (THSelectedSourceType == "KiriKiri scenario")
+                else if (RPGMFunctions.THSelectedSourceType == "KiriKiri scenario")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                     //await Task.Run(() => KiriKiriScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
                     await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".scn")).ConfigureAwait(true);
                 }
-                else if (THSelectedSourceType == "KiriKiri script")
+                else if (RPGMFunctions.THSelectedSourceType == "KiriKiri script")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                     await Task.Run(() => KiriKiriScriptScenarioWrite(Properties.Settings.Default.THSelectedDir + "\\" + THFilesList.Items[0] + ".ks")).ConfigureAwait(true);
@@ -3965,9 +3712,9 @@ namespace TranslationHelper
 
                 if (THSaveFolderBrowser.ShowDialog() == DialogResult.OK)
                 {
-                    if (THSelectedSourceType == "RPGMakerTransPatch")
+                    if (RPGMFunctions.THSelectedSourceType == "RPGMakerTransPatch")
                     {
-                        if (SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, THRPGMTransPatchver))
+                        if (SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, RPGMFunctions.THRPGMTransPatchver))
                         {
                             Properties.Settings.Default.THSelectedDir = THSaveFolderBrowser.SelectedPath;
                             //MessageBox.Show("Сохранение завершено!");
@@ -4558,7 +4305,7 @@ namespace TranslationHelper
             //asdf autosave
             while (AutosaveActivated && Data != null && Path.Length > 0)
             {
-                if (TheDataSetIsNotEmpty(Data))
+                if (FunctionsTable.TheDataSetIsNotEmpty(Data))
                 {
                 }
                 else//если dataset пустой, нет смысла его сохранять
@@ -4584,46 +4331,6 @@ namespace TranslationHelper
                 }
                 WriteDBFileLite(Data, Path);
             }
-        }
-
-        /// <summary>
-        /// True if Translation cell of any row has value
-        /// </summary>
-        /// <param name="DS"></param>
-        /// <returns></returns>
-        private bool TheDataSetIsNotEmpty(DataSet DS)
-        {
-            if (DS == null)
-            {
-                return false;
-            }
-
-            try
-            {
-                int DSTablesCount = DS.Tables.Count;
-                for (int t = 0; t < DSTablesCount; t++)
-                {
-                    var table = DS.Tables[t];
-                    int rowscount = table.Rows.Count;
-                    for (int r = 0; r < rowscount; r++)
-                    {
-                        var cell = table.Rows[r][1];
-                        if (cell == null && string.IsNullOrEmpty(cell as string))
-                        {
-                        }
-                        else
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-
-            }
-
-            return false;
         }
 
         private void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4962,30 +4669,6 @@ namespace TranslationHelper
             //}
 
             //THMsg.Show("s.Length=" + s.Length + infoabouts);
-        }
-
-        private bool GetAnyFileWithTheNameExist(string[] array, string name)
-        {
-            //исключение имен с недопустимыми именами для файла или папки
-            //http://www.cyberforum.ru/post5599483.html
-            if (name.Length == 0 || FunctionsStrings.IsMultiline(name) || name.Intersect(Path.GetInvalidFileNameChars()).Any())
-            {
-                //MessageBox.Show("GetAnyFileWithTheNameExist return false because invalid! name=" + name);
-                return false;
-            }
-            if (array.Contains(name))
-            {
-                return true;
-            }
-
-            //MessageBox.Show("Properties.Settings.Default.THSelectedDir=" + Properties.Settings.Default.THSelectedDir.Replace("\\www\\data", "\\www") + "\r\n, name=" + name + "\r\n, Count=" + Directory.EnumerateFiles(Properties.Settings.Default.THSelectedDir, name + ".*", SearchOption.AllDirectories).Count());
-            //foreach (var f in Directory.EnumerateFiles(Properties.Settings.Default.THSelectedDir, name + ".*", SearchOption.AllDirectories))
-            //{
-            //    //MessageBox.Show("GetAnyFileWithTheNameExist Returns True! name="+ name);
-            //    return true;
-            //}
-            //MessageBox.Show("GetAnyFileWithTheNameExist Returns False! name=" + name);
-            return false;
         }
 
         private bool ReadJson(string Jsonname, string sPath)
@@ -6837,11 +6520,11 @@ namespace TranslationHelper
         private string GetProjectDBFolder()
         {
             string ret = string.Empty;
-            if (THSelectedSourceType.Contains("RPG Maker MV"))
+            if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
             {
                 ret = "RPGMakerMV";
             }
-            else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
+            else if (RPGMFunctions.THSelectedSourceType.Contains("RPGMaker") || RPGMFunctions.THSelectedSourceType.Contains("RPG Maker"))
             {
                 ret = "RPGMakerTransPatch";
             }
@@ -6851,7 +6534,7 @@ namespace TranslationHelper
         private string GetDBFileName(bool IsSaveAs = false)
         {
             string fName = Path.GetFileName(Properties.Settings.Default.THSelectedDir);
-            if (THSelectedSourceType.Contains("RPG Maker MV"))
+            if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
             {
                 if (THFilesList.Items.Count == 1 && THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(THFilesList.Items[0].ToString()))
                 {
@@ -6941,7 +6624,7 @@ namespace TranslationHelper
 
         private async void RunTestGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (THSelectedSourceType == "RPG Maker MV")
+            if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
             {
                 CopyFolder.Copy(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data_bak"));
                 try
@@ -7056,6 +6739,7 @@ namespace TranslationHelper
         {
             Properties.Settings.Default.IsTranslationHelperWasClosed = true;
             InteruptTranslation = true;
+            THToolTip.Dispose();
         }
 
         private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -7794,7 +7478,7 @@ namespace TranslationHelper
                     string origCellValue = THFilesElementsDataset.Tables[t].Rows[r][cind] as string;
                     string transCellValue = THFilesElementsDataset.Tables[t].Rows[r][cindTrans] + string.Empty;
 
-                    if ((transCellValue.Length == 0 || origCellValue != transCellValue) && GetAnyFileWithTheNameExist(ProjectFilesList, origCellValue))
+                    if ((transCellValue.Length == 0 || origCellValue != transCellValue) && FunctionsFileFolder.GetAnyFileWithTheNameExist(ProjectFilesList, origCellValue))
                     {
                         THFilesElementsDataset.Tables[t].Rows[r][cindTrans] = origCellValue;
                     }

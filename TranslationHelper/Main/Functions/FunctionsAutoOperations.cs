@@ -575,7 +575,9 @@ namespace TranslationHelper.Main.Functions
             {
                 case 0:
                     //lowercase
+#pragma warning disable CA1308 // Нормализуйте строки до прописных букв
                     return DSTransCell.ToLowerInvariant();
+#pragma warning restore CA1308 // Нормализуйте строки до прописных букв
                 case 1:
                     //Uppercase
                     //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1

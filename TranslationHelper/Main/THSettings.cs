@@ -7,7 +7,7 @@ namespace TranslationHelper
     public partial class THSettings : Form
     {
         //Defaults
-        public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
+        internal IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
 
         public THSettings()
         {

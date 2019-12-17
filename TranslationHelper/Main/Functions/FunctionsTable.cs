@@ -8,6 +8,47 @@ namespace TranslationHelper.Main.Functions
 {
     static class FunctionsTable
     {
+
+        /// <summary>
+        /// True if Translation cell of any row has value
+        /// </summary>
+        /// <param name="DS"></param>
+        /// <returns></returns>
+        public static bool TheDataSetIsNotEmpty(DataSet DS)
+        {
+            if (DS == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                int DSTablesCount = DS.Tables.Count;
+                for (int t = 0; t < DSTablesCount; t++)
+                {
+                    var table = DS.Tables[t];
+                    int rowscount = table.Rows.Count;
+                    for (int r = 0; r < rowscount; r++)
+                    {
+                        var cell = table.Rows[r][1];
+                        if (cell == null && string.IsNullOrEmpty(cell as string))
+                        {
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+
+            return false;
+        }
+
         public static void AddToTranslationCacheIfValid(DataSet THTranslationCache, string Original, string Translation)
         {
             if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed)
