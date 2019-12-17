@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,7 +59,7 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         public static string THFixDigits(string input)
         {
-            if (input.Length == 0)
+            if (string.IsNullOrEmpty(input))
             {
                 return input;
             }
@@ -143,23 +144,23 @@ namespace TranslationHelper.Main.Functions
                     ret += ("       other:" + GetLocaleLangCount(target, "other") + Environment.NewLine);
                 }
             }
-            else if (string.Compare(langlocale, "romaji", true) == 0) //asdf оптимизация, сравнение с игнором регистра: http://www.vcskicks.com/optimize_csharp_code.php
+            else if (string.Compare(langlocale, "romaji", true, CultureInfo.InvariantCulture) == 0) //asdf оптимизация, сравнение с игнором регистра: http://www.vcskicks.com/optimize_csharp_code.php
             {
                 return ("       romaji:" + GetLocaleLangCount(target, "romaji") + Environment.NewLine);
             }
-            else if (string.Compare(langlocale, "kanji", true) == 0)
+            else if (string.Compare(langlocale, "kanji", true, CultureInfo.InvariantCulture) == 0)
             {
                 return ("       kanji:" + GetLocaleLangCount(target, "kanji") + Environment.NewLine);
             }
-            else if (string.Compare(langlocale, "hiragana", true) == 0)
+            else if (string.Compare(langlocale, "hiragana", true, CultureInfo.InvariantCulture) == 0)
             {
                 return ("       hiragana:" + GetLocaleLangCount(target, "hiragana") + Environment.NewLine);
             }
-            else if (string.Compare(langlocale, "katakana", true) == 0)
+            else if (string.Compare(langlocale, "katakana", true, CultureInfo.InvariantCulture) == 0)
             {
                 return ("       katakana:" + GetLocaleLangCount(target, "katakana") + Environment.NewLine);
             }
-            else if (string.Compare(langlocale, "other", true) == 0)
+            else if (string.Compare(langlocale, "other", true, CultureInfo.InvariantCulture) == 0)
             {
                 return ("       other:" + (GetLocaleLangCount(target, "other")) + Environment.NewLine);
             }
@@ -169,6 +170,10 @@ namespace TranslationHelper.Main.Functions
 
         public static int GetLocaleLangCount(string target, string langlocale)
         {
+            if (string.IsNullOrEmpty(target))
+            {
+                return 0;
+            }
             //var romaji = GetCharsInRange(THSourceTextBox.Text, 0x0020, 0x007E);
             //var kanji = GetCharsInRange(THSourceTextBox.Text, 0x4E00, 0x9FBF);
             //var hiragana = GetCharsInRange(THSourceTextBox.Text, 0x3040, 0x309F);
@@ -180,27 +185,27 @@ namespace TranslationHelper.Main.Functions
             int katakana = (GetCharsInRange(target, 0x30A0, 0x30FF)).Count();
 
             int all = (romaji + kanji + hiragana + katakana);
-            if (string.Compare(langlocale, "all", true) == 0)
+            if (string.Compare(langlocale, "all", true, CultureInfo.InvariantCulture) == 0)
             {
                 return all + (target.Length - all);
             }
-            else if (string.Compare(langlocale, "romaji", true) == 0)
+            else if (string.Compare(langlocale, "romaji", true, CultureInfo.InvariantCulture) == 0)
             {
                 return (romaji);
             }
-            else if (string.Compare(langlocale, "kanji", true) == 0)
+            else if (string.Compare(langlocale, "kanji", true, CultureInfo.InvariantCulture) == 0)
             {
                 return (kanji);
             }
-            else if (string.Compare(langlocale, "hiragana", true) == 0)
+            else if (string.Compare(langlocale, "hiragana", true, CultureInfo.InvariantCulture) == 0)
             {
                 return (hiragana);
             }
-            else if (string.Compare(langlocale, "katakana", true) == 0)
+            else if (string.Compare(langlocale, "katakana", true, CultureInfo.InvariantCulture) == 0)
             {
                 return (katakana);
             }
-            else if (string.Compare(langlocale, "other", true) == 0)
+            else if (string.Compare(langlocale, "other", true, CultureInfo.InvariantCulture) == 0)
             {
                 return (target.Length - all);
             }

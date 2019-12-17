@@ -84,10 +84,10 @@
     <Compile Include="ExternalAdditions\T.cs" />
     <Compile Include="Formats\KiriKiri\CSV.cs" />
     <Compile Include="Formats\KiriKiri\TSV.cs" />
+    <Compile Include="Formats\KiriKiri\XP3.cs" />
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
-    <Compile Include="Main\DoubleBufferedListBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Formats\RPGMTrans\Patch.cs" />
+    <Compile Include="Main\DoubleBufferedListBox.cs" />
     <Compile Include="Main\Functions\FunctionsAutoOperations.cs" />
     <Compile Include="Main\Functions\FunctionsCopyPaste.cs" />
     <Compile Include="Main\Functions\FunctionsDBFile.cs" />
@@ -97,9 +97,11 @@
     <Compile Include="Main\Functions\FunctionsRomajiKana.cs" />
     <Compile Include="Main\Functions\FunctionsStringOperations.cs" />
     <Compile Include="Main\Functions\FunctionsTable.cs" />
+    <Compile Include="Main\Functions\FunctionsThreading.cs" />
     <Compile Include="Main\NativeMethods.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
     <Compile Include="Translators\DeepL.cs" />
+    <Compile Include="Translators\TranslatorsFunctions.cs" />
     <Compile Include="Translators\Google.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
     <Compile Include="ExternalAdditions\SimpleJSON.cs" />
@@ -116,12 +118,6 @@
     <Compile Include="Old elements\RPGMakerMVjson.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonSystem.cs" />
     <Compile Include="ExternalAdditions\THCreateSymlink.cs" />
-    <Compile Include="Old elements\THLoading.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Old elements\THLoading.Designer.cs">
-      <DependentUpon>THLoading.cs</DependentUpon>
-    </Compile>
     <Compile Include="Main\THSearch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,9 +148,6 @@
     <Compile Include="Main\THLang.cs" />
     <EmbeddedResource Include="Main\THMessage.resx">
       <DependentUpon>THMessage.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Old elements\THLoading.resx">
-      <DependentUpon>THLoading.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main\THSearch.resx">
       <DependentUpon>THSearch.cs</DependentUpon>

@@ -10,7 +10,7 @@ namespace TranslationHelper
 
         public static void CopyGraphics(Graphics g, Rectangle bounds, Graphics bufferedGraphics, Point p)
         {
-            if (bufferedGraphics == null)
+            if (bufferedGraphics == null || g == null)
             {
                 return;
             }

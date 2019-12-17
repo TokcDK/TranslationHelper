@@ -8,3 +8,6 @@ dotnet_diagnostic.CA1307.severity = none
 
 # CA1031: Не перехватывать исключения общих типов
 dotnet_diagnostic.CA1031.severity = none
+
+# IDE0040: Добавьте модификаторы доступности
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:none

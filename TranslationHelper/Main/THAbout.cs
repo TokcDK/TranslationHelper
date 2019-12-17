@@ -21,5 +21,10 @@ namespace TranslationHelper
         {
             Process.Start("https://patreon.com/TranslationHelper");
         }
+
+        private void THAboutForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Dispose();
+        }
     }
 }

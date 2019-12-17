@@ -452,6 +452,7 @@
             this.MinimumSize = new System.Drawing.Size(596, 368);
             this.Name = "THSearch";
             this.Text = "Find and Replace";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.THSearch_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.THSearch_FormClosed);
             this.Load += new System.EventHandler(this.THSearch_Load);
             this.THSearchTabs.ResumeLayout(false);

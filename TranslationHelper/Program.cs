@@ -13,7 +13,9 @@ namespace TranslationHelper
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+#pragma warning disable CA2000 // Ликвидировать объекты перед потерей области
             Application.Run(new THMain());
+#pragma warning restore CA2000 // Ликвидировать объекты перед потерей области
         }
     }
 }

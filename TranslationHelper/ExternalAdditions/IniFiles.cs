@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Text;
 using TranslationHelper.Main;
 
@@ -13,7 +14,7 @@ namespace TranslationHelper
         // С помощью конструктора записываем пусть до файла и его имя.
         public IniFile(string IniPath)
         {
-            Path = new FileInfo(IniPath).FullName.ToString();
+            Path = new FileInfo(IniPath).FullName.ToString(CultureInfo.InvariantCulture);
         }
 
         //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.

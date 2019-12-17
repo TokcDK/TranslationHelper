@@ -271,7 +271,7 @@ namespace TranslationHelper.Main.Functions
         }
 
         static bool THAutoSetSameTranslationForSimularIsBusy = false;
-        public static void THAutoSetSameTranslationForSimular(DataSet THFilesElementsDataset, int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool ForceSetValue = false)
+        public static void THAutoSetSameTranslationForSimular(DataSet THFilesElementsDataset, int InputTableIndex, int InputRowIndex, int InputCellIndex, bool ForceSetValue = false)
         {
             if (THAutoSetSameTranslationForSimularIsBusy)
             {

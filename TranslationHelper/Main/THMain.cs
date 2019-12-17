@@ -19,7 +19,9 @@ using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Formats.KiriKiri;
 using TranslationHelper.Formats.RPGMaker.Functions;
+using TranslationHelper.Formats.RPGMTrans;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Translators;
 
 namespace TranslationHelper
 {
@@ -246,17 +248,6 @@ namespace TranslationHelper
             }
         }
 
-        public static void StartLoadingForm()
-        {
-            try
-            {
-                Application.Run(new THLoading());
-            }
-            catch (ThreadAbortException)
-            {
-            }
-        }
-
         bool IsOpeningInProcess = false;
         private async void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -372,7 +363,7 @@ namespace TranslationHelper
 
             //для rpgmaker mv. если была папка data, которая в папке www
             string pFolderName = Path.GetFileName(tHSelectedGameDir);
-            if (string.Compare(pFolderName, "data", true) == 0)
+            if (string.Compare(pFolderName, "data", true, CultureInfo.GetCultureInfo("en-US")) == 0)
             {
                 return Path.GetDirectoryName(Path.GetDirectoryName(tHSelectedGameDir));
             }
@@ -474,32 +465,32 @@ namespace TranslationHelper
             Properties.Settings.Default.THSelectedDir = dir + string.Empty;
             Properties.Settings.Default.THSelectedGameDir = dir + string.Empty;
             //MessageBox.Show("sPath=" + sPath);
-            if (sPath.ToUpper().EndsWith(".KS") || sPath.ToUpper().EndsWith(".SCN"))
+            if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".KS") || sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".SCN"))
             {
                 return KiriKiriScriptScenario(sPath);
                 //return "RPGMakerTransPatch";
             }
-            else if (sPath.ToUpper().EndsWith(".TJS"))
+            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".TJS"))
             {
                 return KiriKiriScenarioOpen(sPath);
                 //return "RPGMakerTransPatch";
             }
-            else if (sPath.ToUpper().EndsWith(".SCN"))
+            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".SCN"))
             {
                 return KiriKiriScenarioOpen(sPath);
                 //return "RPGMakerTransPatch";
             }
-            else if (sPath.ToUpper().EndsWith(".TXT"))
+            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".TXT"))
             {
                 return AnyTxt(sPath);
                 //return "RPGMakerTransPatch";
             }
-            else if (sPath.ToUpper().Contains("\\RPGMKTRANSPATCH"))
+            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("\\RPGMKTRANSPATCH"))
             {
                 return RPGMTransPatchPrepare(sPath);
                 //return "RPGMakerTransPatch";
             }
-            else if (sPath.ToUpper().Contains(".TRANSSSSSSSS"))
+            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains(".TRANSSSSSSSS"))
             {
                 istpptransfile = true;
                 if (OpentppTransFile(sPath))
@@ -512,7 +503,7 @@ namespace TranslationHelper
                     return "T++ trans";
                 }
             }
-            else if (sPath.ToUpper().Contains(".JSON"))
+            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains(".JSON"))
             {
                 if (OpenRPGMakerMVjson(sPath))
                 {
@@ -530,7 +521,7 @@ namespace TranslationHelper
                 {
                     return ProceedRubyRPGGame(Path.GetDirectoryName(sPath));//RJ263914
                 }
-                else if ((FunctionsProcess.GetExeDescription(sPath) != null && FunctionsProcess.GetExeDescription(sPath).ToUpper().Contains("KIRIKIRI")) && dir.GetFiles("*.xp3").Length > 0)
+                else if ((FunctionsProcess.GetExeDescription(sPath) != null && FunctionsProcess.GetExeDescription(sPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")) && dir.GetFiles("*.xp3").Length > 0)
                 {
                     if (KiriKiriGame(sPath))
                     {
@@ -942,7 +933,9 @@ namespace TranslationHelper
             }
         }
 
+#pragma warning disable IDE0060 // Удалите неиспользуемый параметр
         private void Open_mapBynaryFromDirFile(string filePath)
+#pragma warning restore IDE0060 // Удалите неиспользуемый параметр
         {
             //var sss = "4079690290013B094922";
             //File.SetAttributes(filePath, FileAttributes.Normal);
@@ -1468,7 +1461,7 @@ namespace TranslationHelper
         private bool KiriKiriGame(string sPath)
         {
             bool ret = false;
-            if (ExtractXP3files(sPath))
+            if (XP3.ExtractXP3files(sPath))
             {
                 var KiriKiriFiles = new List<string>();
                 string DirName = Path.GetFileName(Path.GetDirectoryName(sPath));
@@ -1560,63 +1553,6 @@ namespace TranslationHelper
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-
-            return ret;
-        }
-
-        private bool ExtractXP3files(string sPath)
-        {
-            bool ret = false;
-
-            try
-            {
-                string KiriKiriEXEpath = Path.Combine(Application.StartupPath, "Res", "kirikiriunpacker", "kikiriki.exe");
-                string DirName = Path.GetFileName(Path.GetDirectoryName(sPath));
-                string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
-                DirectoryInfo directory = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\");
-                string xp3name = "data";
-                string xp3path = Path.Combine(directory.FullName, xp3name + ".xp3");
-                string KiriKiriEXEargs = "-i \"" + xp3path + "\" -o \"" + KiriKiriWorkFolder + "\"";
-
-                if (Directory.Exists(KiriKiriWorkFolder))
-                {
-                    if ((new DirectoryInfo(KiriKiriWorkFolder + Path.DirectorySeparatorChar)).GetFiles("*", SearchOption.AllDirectories).Length > 0)
-                    {
-                        DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                        if (result == DialogResult.Yes)
-                        {
-                            ret = true;
-                        }
-                        else
-                        {
-                            //Удаление и пересоздание папки
-                            Directory.Delete(KiriKiriWorkFolder, true);
-                            Directory.CreateDirectory(KiriKiriWorkFolder);
-
-                            ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
-                            //if (RunProcess(KiriKiriEXEpath, KiriKiriEXEargs))
-                            //{
-                            //    xp3name = "patch";
-                            //    xp3path = Path.Combine(directory.FullName, xp3name + ".xp3");
-                            //    ret = RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
-                            //}
-                        }
-                    }
-                    else
-                    {
-                        ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
-                    }
-                }
-                else
-                {
-                    Directory.CreateDirectory(KiriKiriWorkFolder);
-                    ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
-                }
-            }
-            catch
-            {
-
             }
 
             return ret;
@@ -2316,7 +2252,7 @@ namespace TranslationHelper
                 }
             }
 
-            ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
+            ret = Patch.CreateRPGMakerTransPatch(dir.FullName, outdir);
 
             if (ret)
             {
@@ -2330,167 +2266,12 @@ namespace TranslationHelper
             return ret;
         }
 
-        private bool CreateRPGMakerTransPatch(string inputdir, string outdir)
-        {
-            string rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rpgmakertrans", "rpgmt.exe");
-            bool ret;
-            //string projectname = Path.GetFileName(outdir);
-
-            //параметры
-            //parser.add_argument("input", help = "Path of input game to patch")
-            //parser.add_argument("-p", "--patch", help = "Path of patch (directory or zip)"
-            //        "(Defaults to input_directory_patch")
-            //parser.add_argument("-o", "--output", help = "Path to output directory "
-            //        "(will create) (Defaults to input_directory_translated)")
-            //parser.add_argument('-q', '--quiet', help = 'Suppress all output',
-            //        action = 'store_true')
-            //parser.add_argument('-b', '--use-bom', help = 'Use UTF-8 BOM in Patch'
-            //        'files', action = 'store_true')
-            //parser.add_argument('-r', '--rebuild', help = "Rebuild patch against game",
-            //        action = "store_true")
-            //parser.add_argument('-s', '--socket', type = int, default = 27899,
-            //        help = 'Socket to use for XP/VX/VX Ace patching'
-            //        '(default: 27899)')
-            //parser.add_argument('-l', '--dump-labels', action = "store_true",
-            //        help = "Dump labels to patch file")
-            //parser.add_argument('--dump-scripts', type = str, default = None,
-            //        help = "Dump scripts to given directory")
-            string rpgmakertranscliargs = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
-
-            ret = FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
-
-            if (ret && Directory.Exists(outdir + "_patch\""))
-            {
-            }
-            else
-            {
-                //чистка папок 
-                if (Directory.Exists(outdir + "_patch\""))
-                {
-                    Directory.Delete(outdir + "_patch", true);
-                }
-                if (Directory.Exists(outdir + "_translated\""))
-                {
-                    Directory.Delete(outdir + "_translated", true);
-                }
-
-                //попытка с параметром -b - Use UTF-8 BOM in Patch files
-                ret = FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
-                if (!ret || (ret && !Directory.Exists(outdir + "_patch\"")))
-                {
-                    string tempDIr = Path.Combine(inputdir, "tempTH");
-
-                    Directory.CreateDirectory(tempDIr);
-
-                    string rgss = RPGMFunctions.GetRPGMakerArc(inputdir);
-                    if (rgss.Length == 0)
-                    {
-                        return false;
-                    }
-
-                    rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rgssdecryptor", "RgssDecrypter.exe");
-                    rpgmakertranscliargs = "\"--output=" + tempDIr + "\" " + rgss;
-
-                    ret = FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
-
-                    if (Directory.GetDirectories(tempDIr).Length > 0)
-                    {
-                        foreach (var dir in Directory.GetDirectories(inputdir))
-                        {
-                            if (Path.GetFileName(dir) == "tempTH")
-                            {
-                                continue;
-                            }
-
-                            string targetDirPath = dir.Replace(inputdir, tempDIr);
-                            if (Directory.Exists(targetDirPath))
-                            {
-                                foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
-                                {
-                                    string targetFilePath = file.Replace(dir, Path.Combine(tempDIr, Path.GetFileName(file)));
-                                    if (File.Exists(targetFilePath))
-                                    {
-                                        File.Delete(targetFilePath);
-                                    }
-                                    File.Move(file, targetFilePath);
-                                }
-                                Directory.Delete(dir, true);
-                            }
-                            else
-                            {
-                                Directory.Move(dir, targetDirPath);
-                            }
-                        }
-                        foreach (var dir in Directory.GetDirectories(tempDIr))
-                        {
-                            Directory.Move(dir, dir.Replace(tempDIr, inputdir));
-                        }
-                        Directory.Delete(tempDIr, true);
-
-                        if (Directory.GetDirectories(inputdir).Length > 0)
-                        {
-                            File.Delete(rgss);
-
-                            rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rpgmakertrans", "rpgmt.exe");
-                            rpgmakertranscliargs = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
-                            ret = FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
-                            if (ret && Directory.Exists(outdir + "_patch\""))
-                            {
-                            }
-                            else
-                            {
-                                //чистка папок 
-                                if (Directory.Exists(outdir + "_patch\""))
-                                {
-                                    Directory.Delete(outdir + "_patch", true);
-                                }
-                                if (Directory.Exists(outdir + "_translated\""))
-                                {
-                                    Directory.Delete(outdir + "_translated", true);
-                                }
-
-                                //попытка с параметром -b - Use UTF-8 BOM in Patch files
-                                ret = FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
-                                if (!ret || (ret && !Directory.Exists(outdir + "_patch\"")))
-                                {
-                                    //чистка папок 
-                                    if (Directory.Exists(outdir + "_patch\""))
-                                    {
-                                        Directory.Delete(outdir + "_patch", true);
-                                    }
-                                    if (Directory.Exists(outdir + "_translated\""))
-                                    {
-                                        Directory.Delete(outdir + "_translated", true);
-                                    }
-                                    return false;
-                                }
-
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //чистка папок 
-                        Directory.Delete(tempDIr, true);
-                        if (Directory.Exists(outdir + "_patch\""))
-                        {
-                            Directory.Delete(outdir + "_patch", true);
-                        }
-                        if (Directory.Exists(outdir + "_translated\""))
-                        {
-                            Directory.Delete(outdir + "_translated", true);
-                        }
-                        return false;
-                    }
-                }
-            }
-
-            return ret;
-        }
-
         private int invalidformat;
         public bool OpenRPGMTransPatchFiles(List<string> ListFiles, string patchver, DataSet DS, DataSet DSInfo)
         {
+            if (ListFiles == null || DS==null)
+                return false;
+
             //измерение времени выполнения
             //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
             //Stopwatch swatch = new Stopwatch();
@@ -3070,7 +2851,7 @@ namespace TranslationHelper
                         if (cellvalue == null || (cellvalue as string).Length == 0)
                         {
                             this.Invoke((Action)(() => THTargetRichTextBox.Clear()));
-                            
+
                         }
 
                         //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
@@ -3081,7 +2862,7 @@ namespace TranslationHelper
                         //THTargetRichTextBox.Select(Properties.Settings.Default.THOptionLineCharLimit+1, THTargetRichTextBox.Text.Length);
                         //THTargetRichTextBox.SelectionColor = Color.Red;
 
-                        TranslationLongestLineLenghtLabel.Text = FunctionsAutoOperations.GetLongestLineLength(cellvalue.ToString()).ToString();
+                        TranslationLongestLineLenghtLabel.Text = FunctionsAutoOperations.GetLongestLineLength(cellvalue.ToString()).ToString(CultureInfo.InvariantCulture);
                     }
 
                     THInfoTextBox.Text = string.Empty;
@@ -3941,7 +3722,9 @@ namespace TranslationHelper
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+#pragma warning disable CA2000 // Ликвидировать объекты перед потерей области
             THAboutForm AboutForm = new THAboutForm();
+#pragma warning restore CA2000 // Ликвидировать объекты перед потерей области
             AboutForm.Show();
         }
 
@@ -4147,15 +3930,17 @@ namespace TranslationHelper
             string rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
-            StringFormat centerFormat = new StringFormat()
+            using (StringFormat centerFormat = new StringFormat()
             {
                 // right alignment might actually make more sense for numbers
                 Alignment = StringAlignment.Center,
                 LineAlignment = StringAlignment.Center
-            };
+            })
+            {
 
-            Rectangle headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
-            e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
+                Rectangle headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+                e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
+            }
         }
 
         //Пример виртуального режима
@@ -4633,6 +4418,9 @@ namespace TranslationHelper
         //моя функция деления строки на равные части с остатком и запись их в строковый массив
         public static string[] THSplit(string str, int chunkSize)
         {
+            if (str==null)
+                return null;
+
             string[] parts = new string[chunkSize];
 
             int ind = 0;
@@ -5545,8 +5333,8 @@ namespace TranslationHelper
                                             for (int i = 0; i < rowscount; i++)
                                             {
                                                 var row = InputLinesInfo.Rows[i];
-                                                NewTableIndex = int.Parse(row[2] as string);
-                                                NewRowIndex = int.Parse(row[3] as string);
+                                                NewTableIndex = int.Parse(row[2] as string, CultureInfo.GetCultureInfo("en-US"));
+                                                NewRowIndex = int.Parse(row[3] as string, CultureInfo.GetCultureInfo("en-US"));
                                                 if (string.IsNullOrEmpty(row[0] as string))
                                                 {
                                                     ResultValue.Append(Environment.NewLine);
@@ -5591,7 +5379,7 @@ namespace TranslationHelper
         {
             //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
             string[] OriginalLines = InputLines.Rows.OfType<DataRow>().Select(row => row[0].ToString()).ToArray();
-                       
+
             //сброс кеша в GoogleAPI
             GoogleAPI.ResetCache();
 
@@ -5635,8 +5423,8 @@ namespace TranslationHelper
                     //        lastvalue = InputLinesInfo.Rows[InputLinesInfo.Rows.Count - 1][1] + string.Empty;
 
                     //    }
-                    TableIndex = int.Parse(InfoRow[2] as string);
-                    RowIndex = int.Parse(InfoRow[3] as string);
+                    TableIndex = int.Parse(InfoRow[2] as string, CultureInfo.GetCultureInfo("en-US"));
+                    RowIndex = int.Parse(InfoRow[3] as string, CultureInfo.GetCultureInfo("en-US"));
                     //}
                     //catch(Exception ex)
                     //{
@@ -6044,7 +5832,7 @@ namespace TranslationHelper
                     FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
                 }
             }
-            catch(System.ArgumentNullException)
+            catch (System.ArgumentNullException)
             {
                 //LogToFile("Error: "+ex,true);
             }
@@ -6075,13 +5863,13 @@ namespace TranslationHelper
                     string Result;
                     if (ExtractedOriginal.Length == 0 || (ExtractedOriginal == OriginalLine))
                     {
-                        Result = ReturnTranslatedOrCache(cacheDS, OriginalLine);
+                        Result = TranslatorsFunctions.ReturnTranslatedOrCache(cacheDS, OriginalLine);
                         FunctionsTable.AddToTranslationCacheIfValid(cacheDS, OriginalLine, Result);
                     }
                     else
                     {
                         Result = PasteTranslationBackIfExtracted(
-                            ReturnTranslatedOrCache(cacheDS, ExtractedOriginal),
+                            TranslatorsFunctions.ReturnTranslatedOrCache(cacheDS, ExtractedOriginal),
                             OriginalLine,
                             ExtractedOriginal
                             );
@@ -6099,20 +5887,6 @@ namespace TranslationHelper
             }
             //LogToFile(string.Empty,true);
             return ResultValue.ToString();
-        }
-
-        private string ReturnTranslatedOrCache(DataSet cacheDS, string InputLine)
-        {
-            string valuefromcache = FunctionsTable.TranslationCacheFind(cacheDS, InputLine);
-
-            if (valuefromcache.Length != 0)
-            {
-                return valuefromcache;
-            }
-            else
-            {
-                return GoogleAPI.Translate(InputLine);
-            }
         }
 
         private void OpenInWebToolStripMenuItem_Click(object sender, EventArgs e)
@@ -6185,15 +5959,17 @@ namespace TranslationHelper
             var grid = sender as DataGridView;
             //var rowIdx = (e.RowIndex + 1).ToString();
 
-            var centerFormat = new StringFormat()
+            using (var centerFormat = new StringFormat()
             {
                 // right alignment might actually make more sense for numbers
                 Alignment = StringAlignment.Center,
                 LineAlignment = StringAlignment.Center
-            };
+            })
+            {
+                var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+                e.Graphics.DrawString("F", this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
+            }
 
-            var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
-            e.Graphics.DrawString("F", this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
 
         bool THIsFixingCells;
@@ -6336,7 +6112,7 @@ namespace TranslationHelper
         {
             if (forcevalue || (Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
-                FunctionsAutoOperations.THAutoSetSameTranslationForSimular(THFilesElementsDataset, InputTableIndex, InputRowIndex, InputCellIndex, forcerun, forcevalue);
+                FunctionsAutoOperations.THAutoSetSameTranslationForSimular(THFilesElementsDataset, InputTableIndex, InputRowIndex, InputCellIndex, forcevalue);
 
                 //LogToFile(string.Empty,true);
                 cellchanged = false;
@@ -6465,7 +6241,7 @@ namespace TranslationHelper
 
         private async void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            await Task.Run(() => FunctionsTable.CleanTableCells(THFileElementsDataGridView, THFilesElementsDataset, Properties.Settings.Default.THFilesListSelectedIndex)).ConfigureAwait(false);            
+            await Task.Run(() => FunctionsTable.CleanTableCells(THFileElementsDataGridView, THFilesElementsDataset, Properties.Settings.Default.THFilesListSelectedIndex)).ConfigureAwait(false);
         }
 
         //==============вырезать, копировать, вставить, для одной или нескольких ячеек
@@ -6556,7 +6332,7 @@ namespace TranslationHelper
             }
             while (WriteDBFileIsBusy && WriteDBFileLiteLastFileName != fileName)
             {
-                await Task.Run(() => WaitThreaded(5000)).ConfigureAwait(true);
+                await Task.Run(() => FunctionsThreading.WaitThreaded(5000)).ConfigureAwait(true);
             }
 
             Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
@@ -6586,18 +6362,13 @@ namespace TranslationHelper
                 THInfolabel.Invoke((Action)(() => THInfolabel.Text = InfoText));
             }
 
-            WaitThreaded(1000);
+            FunctionsThreading.WaitThreaded(1000);
 
             if (THInfolabelEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THInfolabel.Enabled)
             {
                 THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
                 THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
             }
-        }
-
-        private void WaitThreaded(int time)
-        {
-            Thread.Sleep(time);
         }
 
         private void SaveNEWDB(DataSet DS4Save, string fileName)
@@ -6731,6 +6502,19 @@ namespace TranslationHelper
             Properties.Settings.Default.IsTranslationHelperWasClosed = true;
             InteruptTranslation = true;
             THToolTip.Dispose();
+            THFilesElementsDataset.Dispose();
+            THFilesElementsDatasetInfo.Dispose();
+            THFilesElementsALLDataTable.Dispose();
+            Settings.Dispose();
+
+            //global brushes with ordinary/selected colors
+            ListBoxItemForegroundBrushSelected.Dispose();
+            ListBoxItemForegroundBrush.Dispose();
+            ListBoxItemBackgroundBrushSelected.Dispose();
+            ListBoxItemBackgroundBrush1.Dispose();
+            ListBoxItemBackgroundBrush1Complete.Dispose();
+            ListBoxItemBackgroundBrush2.Dispose();
+            ListBoxItemBackgroundBrush2Complete.Dispose();
         }
 
         private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -7400,11 +7184,15 @@ namespace TranslationHelper
                     var s1 = row[1] as string;
                     if (s.StartsWith("は") && !s1.StartsWith(" "))
                     {
-                        THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r][1] = " " + s1.Substring(0, 1).ToLower() + s1.Substring(1);
+#pragma warning disable CA1308 // Нормализуйте строки до прописных букв
+                        THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r][1] = " " + s1.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + s1.Substring(1);
+#pragma warning restore CA1308 // Нормализуйте строки до прописных букв
                     }
                     else if (s.StartsWith("の") && !s1.StartsWith("'s ") && !s1.StartsWith(" "))
                     {
-                        THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r][1] = "'s " + s1.Substring(0, 1).ToLower() + s1.Substring(1);
+#pragma warning disable CA1308 // Нормализуйте строки до прописных букв
+                        THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r][1] = "'s " + s1.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + s1.Substring(1);
+#pragma warning restore CA1308 // Нормализуйте строки до прописных букв
                     }
                 }
             }

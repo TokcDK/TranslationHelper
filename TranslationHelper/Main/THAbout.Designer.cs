@@ -57,6 +57,7 @@
             this.ShowInTaskbar = false;
             this.Text = "About";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.THAboutForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

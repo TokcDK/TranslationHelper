@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace TranslationHelper
@@ -84,7 +85,7 @@ namespace TranslationHelper
 
                 //Optimizations
                 THOptionDontLoadStringIfRomajiPercentCheckBox.Checked = DontLoadStringIfRomajiPercentINI;
-                THOptionDontLoadStringIfRomajiPercentTextBox.Text = DontLoadStringIfRomajiPercentNumINI.ToString();                
+                THOptionDontLoadStringIfRomajiPercentTextBox.Text = DontLoadStringIfRomajiPercentNumINI.ToString(CultureInfo.GetCultureInfo("en-US"));                
                 THOptionDBCompressionCheckBox.Checked = DBCompressionINI;
                 THOptionDBCompressionComboBox.SelectedItem = DBCompressionTypeINI;
                 
@@ -102,9 +103,9 @@ namespace TranslationHelper
         public int DontLoadStringIfRomajiPercentNumINI
         {
             get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercent", "Optimizations")
-                    ? int.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent"))
+                    ? int.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent"), CultureInfo.GetCultureInfo("en-US"))
                     : Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
-            set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent", value.ToString());
+            set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent", value.ToString(CultureInfo.GetCultureInfo("en-US")));
         }
 
         public bool DontLoadStringIfRomajiPercentINI
@@ -112,7 +113,7 @@ namespace TranslationHelper
             get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", "Optimizations")
                     ? bool.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked"))
                     : Properties.Settings.Default.DontLoadStringIfRomajiPercent;
-            set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", value.ToString());
+            set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
         }
 
         public bool DBCompressionINI
@@ -120,7 +121,7 @@ namespace TranslationHelper
             get => THConfigINI.KeyExists("THOptionDBCompressionCheckBox.Checked", "Optimizations")
                     ? bool.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"))
                     : true;
-            set => THConfigINI.WriteINI("Optimizations", "THOptionDBCompressionCheckBox.Checked", value.ToString());
+            set => THConfigINI.WriteINI("Optimizations", "THOptionDBCompressionCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
         }
 
         public string DBCompressionTypeINI
@@ -144,7 +145,7 @@ namespace TranslationHelper
             get => THConfigINI.KeyExists("THOptionEnableTranslationCacheCheckBox.Checked", "Tools")
                     ? bool.Parse(THConfigINI.ReadINI("Tools", "THOptionEnableTranslationCacheCheckBox.Checked"))
                     : true;
-            set => THConfigINI.WriteINI("Tools", "THOptionEnableTranslationCacheCheckBox.Checked", value.ToString());
+            set => THConfigINI.WriteINI("Tools", "THOptionEnableTranslationCacheCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
         }
 
         public bool AutotranslationForIdenticalINI
@@ -152,7 +153,7 @@ namespace TranslationHelper
             get => THConfigINI.KeyExists("THOptionAutotranslationForIdenticalCheckBox.Checked", "Tools")
                     ? bool.Parse(THConfigINI.ReadINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked"))
                     : Properties.Settings.Default.AutotranslationForSimular;
-            set => THConfigINI.WriteINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked", value.ToString());
+            set => THConfigINI.WriteINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
         }
 
         public bool FullComprasionDBloadINI
@@ -160,15 +161,15 @@ namespace TranslationHelper
             get => THConfigINI.KeyExists("THOptionFullComprasionDBload.Checked", "General")
                     ? bool.Parse(THConfigINI.ReadINI("General", "THOptionFullComprasionDBload.Checked"))
                     : true;
-            set => THConfigINI.WriteINI("General", "THOptionFullComprasionDBload.Checked", value.ToString());
+            set => THConfigINI.WriteINI("General", "THOptionFullComprasionDBload.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
         }
 
         public int LineCharLimitINI
         {
             get => THConfigINI.KeyExists("THOptionLineCharLimit", "General")
-                    ? int.Parse(THConfigINI.ReadINI("General", "LineCharLimit"))
+                    ? int.Parse(THConfigINI.ReadINI("General", "LineCharLimit"), CultureInfo.GetCultureInfo("en-US"))
                     : 60;
-            set => THConfigINI.WriteINI("General", "THOptionLineCharLimit", value.ToString());
+            set => THConfigINI.WriteINI("General", "THOptionLineCharLimit", value.ToString(CultureInfo.GetCultureInfo("en-US")));
         }
 
         private void THOptionDontLoadStringIfRomajiPercentTextBox_TextChanged(object sender, EventArgs e)
@@ -178,9 +179,9 @@ namespace TranslationHelper
 
         private void ValidTHOptionDontLoadStringIfRomajiPercent()
         {
-            if (System.Text.RegularExpressions.Regex.IsMatch(THOptionDontLoadStringIfRomajiPercentTextBox.Text, "^[0-9]{1,3}$") && int.Parse(THOptionDontLoadStringIfRomajiPercentTextBox.Text) <= 100)
+            if (System.Text.RegularExpressions.Regex.IsMatch(THOptionDontLoadStringIfRomajiPercentTextBox.Text, "^[0-9]{1,3}$") && int.Parse(THOptionDontLoadStringIfRomajiPercentTextBox.Text, CultureInfo.GetCultureInfo("en-US")) <= 100)
             {
-                int newvalue = int.Parse(THOptionDontLoadStringIfRomajiPercentTextBox.Text);
+                int newvalue = int.Parse(THOptionDontLoadStringIfRomajiPercentTextBox.Text, CultureInfo.GetCultureInfo("en-US"));
                 Properties.Settings.Default.DontLoadStringIfRomajiPercentNum = newvalue;
                 DontLoadStringIfRomajiPercentNumINI = newvalue;                
             }
@@ -252,9 +253,9 @@ namespace TranslationHelper
 
         private void LineCharLimitTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (System.Text.RegularExpressions.Regex.IsMatch(LineCharLimitTextBox.Text, "^[0-9]{1,4}$") && int.Parse(LineCharLimitTextBox.Text) <= 9999)
+            if (System.Text.RegularExpressions.Regex.IsMatch(LineCharLimitTextBox.Text, "^[0-9]{1,4}$") && int.Parse(LineCharLimitTextBox.Text, CultureInfo.GetCultureInfo("en-US")) <= 9999)
             {
-                int newvalue = int.Parse(LineCharLimitTextBox.Text);
+                int newvalue = int.Parse(LineCharLimitTextBox.Text, CultureInfo.GetCultureInfo("en-US"));
                 Properties.Settings.Default.THOptionLineCharLimit = newvalue;
                 LineCharLimitINI = newvalue;
             }

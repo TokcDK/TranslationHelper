@@ -109,12 +109,12 @@ namespace TranslationHelper
             }
             else
             {
-                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true) == 0;
+                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
                 if (inputqualwithlatest)
                 {
                     string searchcolumn = GetSearchColumn();
-                    tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
-                    rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString());
+                    tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString(), CultureInfo.GetCultureInfo("en-US"));
+                    rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString(), CultureInfo.GetCultureInfo("en-US"));
 
                     if (tableindex == THFilesListBox.SelectedIndex)
                     {
@@ -158,8 +158,8 @@ namespace TranslationHelper
                             oDsResults.AcceptChanges();
                             
                             string searchcolumn = GetSearchColumn();
-                            tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
-                            rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString());
+                            tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString(), CultureInfo.GetCultureInfo("en-US"));
+                            rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString(), CultureInfo.GetCultureInfo("en-US"));
 
                             if (tableindex == THFilesListBox.SelectedIndex)
                             {
@@ -748,13 +748,13 @@ namespace TranslationHelper
         private void SearchResultsDatagridview_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             string searchcolumn = GetSearchColumn();
-            tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString());
+            tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString(), CultureInfo.GetCultureInfo("en-US"));
 
             THFilesElementsDataset.Tables[tableindex].DefaultView.RowFilter = string.Empty;
             THFilesElementsDataset.Tables[tableindex].DefaultView.Sort = string.Empty;
             THFileElementsDataGridView.Refresh();
 
-            rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString());
+            rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString(), CultureInfo.GetCultureInfo("en-US"));
 
 
             if (tableindex == THFilesListBox.SelectedIndex)
@@ -825,7 +825,7 @@ namespace TranslationHelper
             }
             else
             {
-                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true) == 0;
+                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
                 if (inputqualwithlatest)
                 {
                     string searchcolumn = GetSearchColumn();
@@ -863,8 +863,8 @@ namespace TranslationHelper
                         startrowsearchindex = 0;
                     }
 
-                    tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
-                    rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString());
+                    tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString(), CultureInfo.GetCultureInfo("en-US"));
+                    rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString(), CultureInfo.GetCultureInfo("en-US"));
 
 
                     if (tableindex == THFilesListBox.SelectedIndex)
@@ -904,8 +904,8 @@ namespace TranslationHelper
                             oDsResults.AcceptChanges();
 
                             string searchcolumn = GetSearchColumn();
-                            tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString());
-                            rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString());
+                            tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString(), CultureInfo.GetCultureInfo("en-US"));
+                            rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString(), CultureInfo.GetCultureInfo("en-US"));
 
                             if (tableindex == THFilesListBox.SelectedIndex)
                             {
@@ -1047,6 +1047,11 @@ namespace TranslationHelper
             {
                 SetWindowPos(this.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
             }
+        }
+
+        private void THSearch_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            oDsResults.Dispose();
         }
     }
 }
