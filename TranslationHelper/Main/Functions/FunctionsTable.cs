@@ -134,7 +134,6 @@ namespace TranslationHelper.Main.Functions
             //    }
             //}
 
-            int cc = table.Columns.Count;
             keyColumns[0] = table.Columns[0];
 
             try
