@@ -9,9 +9,14 @@ namespace TranslationHelper.Formats.RPGMTrans
 {
     abstract class RPGMTransPatchBase : FormatBase
     {
-        public RPGMTransPatchBase(THDataWork thData) : base(thData)
-        {
-        }
+        protected StringBuilder buffer;
 
+        protected int TableIndex;
+
+        public RPGMTransPatchBase(THDataWork thData, StringBuilder sBuffer, int tableIndex) : base(thData)
+        {
+            buffer = sBuffer;
+            TableIndex = tableIndex;
+        }
     }
 }

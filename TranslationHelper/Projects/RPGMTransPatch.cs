@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
-using TranslationHelper.Formats.RPGMaker.Functions;
+using TranslationHelper.Formats.RPGMTrans;
 
 namespace TranslationHelper.Projects
 {
@@ -39,12 +37,16 @@ namespace TranslationHelper.Projects
 
         internal override bool Open()
         {
-            throw new NotImplementedException();
+            if (RPGMTransPatchPrepare())
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private bool RPGMTransPatchPrepare()
         {
-
             var dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.OpenPath));
 
             //Properties.Settings.Default.THSelectedDir = dir + string.Empty;
@@ -89,7 +91,7 @@ namespace TranslationHelper.Projects
             if (ListFiles == null || thDataWork.THFilesElementsDataset == null)
                 return false;
 
-            int invalidformat=0;
+            int invalidformat = 0;
 
             StreamReader _file;   //Через что читаем
             string _context = string.Empty;           //Комментарий
@@ -334,7 +336,12 @@ namespace TranslationHelper.Projects
 
         internal override bool Save()
         {
-            throw new NotImplementedException();
+            if (SaveRPGMTransPatchFiles())
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public bool SaveRPGMTransPatchFiles()
@@ -348,172 +355,55 @@ namespace TranslationHelper.Projects
             {
                 StringBuilder buffer = new StringBuilder();
 
-                //Прогресс
-                //pbstatuslabel.Visible = true;
-                //pbstatuslabel.Text = "сохранение..";
-                //progressBar.Maximum = 0;
-                //for (int i = 0; i < ArrayTransFilses.Count; i++)
-                //    for (int y = 0; y < ArrayTransFilses[i].blocks.Count; y++)
-                //        progressBar.Maximum = progressBar.Maximum + ArrayTransFilses[i].blocks.Count;
-                //MessageBox.Show(progressBar.Maximum.ToString());
-                //progressBar.Value = 0;
-
                 int originalcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
                 int translationcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
                 int contextcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Context"].Ordinal;
                 int advicecolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Advice"].Ordinal;
                 int statuscolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Status"].Ordinal;
 
-                if (RPGMTransPatchVersion == 3)
+                //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
+                for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
                 {
-                    //запись в файл RPGMKTRANSPATCH строки > RPGMAKER TRANS PATCH V3
-                    //StreamWriter RPGMKTRANSPATCHwriter = new StreamWriter("RPGMKTRANSPATCH", true);
-                    //RPGMKTRANSPATCHwriter.WriteLine("> RPGMAKER TRANS PATCH V3");
-                    //RPGMKTRANSPATCHwriter.Close();
+                    //ProgressInfo(true, T._("saving file: ") + thData.THFilesElementsDataset.Tables[i].TableName);
 
-                    //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
-                    for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
+                    bool successCreated = false;
+
+                    switch (RPGMTransPatchVersion)
                     {
-                        //ProgressInfo(true, T._("saving file: ") + thData.THFilesElementsDataset.Tables[i].TableName);
+                        case 3:
+                            successCreated = new TXTv3(thDataWork, buffer, i).Save();
+                            break;
+                        case 2:
+                            successCreated = new TXTv2(thDataWork, buffer, i).Save();
+                            break;
+                    }
 
-                        buffer.AppendLine("> RPGMAKER TRANS PATCH FILE VERSION 3.2");// + Environment.NewLine);
-                        //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
-                        for (int y = 0; y < thDataWork.THFilesElementsDataset.Tables[i].Rows.Count; y++)
-                        {
-                            buffer.AppendLine("> BEGIN STRING");// + Environment.NewLine);
-                            //buffer += THRPGMTransPatchFiles[i].blocks[y].Original + Environment.NewLine;
-                            buffer.AppendLine(thDataWork.THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] + string.Empty);// + Environment.NewLine);
-                            //MessageBox.Show("1: " + ArrayTransFilses[i].blocks[y].Trans);
-                            //MessageBox.Show("2: " + ArrayTransFilses[i].blocks[y].Context);
-                            //string[] str = THRPGMTransPatchFiles[i].blocks[y].Context.Split('\n');
-                            string[] CONTEXT = (thDataWork.THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
-                            //string str1 = string.Empty;
-                            string TRANSLATION = thDataWork.THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + string.Empty;
-                            for (int g = 0; g < CONTEXT.Length; g++)
-                            {
-                                /*CONTEXT[g] = CONTEXT[g].Replace("\r", string.Empty);*///очистка от знака переноса, возникающего после разбития на строки по \n
-                                if (CONTEXT.Length > 1)
-                                {
-                                    buffer.AppendLine("> CONTEXT: " + CONTEXT[g]);// + Environment.NewLine);
-                                }
-                                else
-                                {   //if (String.IsNullOrEmpty(THRPGMTransPatchFiles[i].blocks[y].Translation)) //if (ArrayTransFilses[i].blocks[y].Trans == Environment.NewLine)
-                                    if (TRANSLATION.Length == 0) //if (ArrayTransFilses[i].blocks[y].Trans == Environment.NewLine)
-                                    {
-                                        buffer.AppendLine("> CONTEXT: " + CONTEXT[g] + " < UNTRANSLATED");// + Environment.NewLine);
-                                    }
-                                    else
-                                    {
-                                        buffer.AppendLine("> CONTEXT: " + CONTEXT[g]);// + Environment.NewLine);
-                                    }
-                                }
-                            }
-                            //buffer += Environment.NewLine;
-                            //buffer += THRPGMTransPatchFiles[i].blocks[y].Translation + Environment.NewLine;
-                            buffer.AppendLine(TRANSLATION);// + Environment.NewLine);
-                            buffer.AppendLine("> END STRING" + Environment.NewLine);// + Environment.NewLine);
-
-                            //progressBar.Value++;
-                            //MessageBox.Show(progressBar.Value.ToString());
-                        }
-
-                        if (string.IsNullOrWhiteSpace(buffer.ToString()))
+                    if (successCreated && !string.IsNullOrWhiteSpace(buffer.ToString()))
+                    {
+                        if (Directory.Exists(Properties.Settings.Default.THSelectedDir + Path.DirectorySeparatorChar + "patch"))
                         {
                         }
                         else
                         {
-                            if (Directory.Exists(Properties.Settings.Default.THSelectedDir + "\\patch"))
-                            {
-                            }
-                            else
-                            {
-                                Directory.CreateDirectory(Properties.Settings.Default.THSelectedDir + "\\patch");
-                            }
-                            buffer.Remove(buffer.Length - 2, 2);//удаление лишнего символа \r\n с конца строки
-                            //String _path = SelectedDir + "\\patch\\" + THRPGMTransPatchFiles[i].Name + ".txt";
-                            string _path = Properties.Settings.Default.THSelectedDir + "\\patch\\" + thDataWork.THFilesElementsDataset.Tables[i].TableName + ".txt";
-                            File.WriteAllText(_path, buffer.ToString());
-                            //buffer = string.Empty;
+                            Directory.CreateDirectory(Properties.Settings.Default.THSelectedDir + Path.DirectorySeparatorChar + "patch");
                         }
-                        buffer.Clear();
+                        buffer.Remove(buffer.Length - 2, 2);//удаление лишнего символа \r\n с конца строки
+                                                            //String _path = SelectedDir + "\\patch\\" + THRPGMTransPatchFiles[i].Name + ".txt";
+                        string _path = Path.Combine(Properties.Settings.Default.THSelectedDir, "patch", thDataWork.THFilesElementsDataset.Tables[i].TableName + ".txt");
+                        File.WriteAllText(_path, buffer.ToString());
+                        //buffer = string.Empty;
                     }
 
-                    //Запись самого файла патча, если вдруг сохраняется в произвольную папку
-                    if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "RPGMKTRANSPATCH")))
-                    {
-                    }
-                    else
-                    {
-                        File.WriteAllText(Path.Combine(Properties.Settings.Default.THSelectedDir, "RPGMKTRANSPATCH"), "> RPGMAKER TRANS PATCH V3");
-                    }
+                    buffer.Clear();
                 }
-                else if (RPGMTransPatchVersion == 2)
+
+                //Запись самого файла патча, если вдруг сохраняется в произвольную папку
+                if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "RPGMKTRANSPATCH")))
                 {
-                    //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
-                    for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
-                    {
-                        //ProgressInfo(true, T._("saving file: ") + thData.THFilesElementsDataset.Tables[i].TableName);
-
-                        bool unusednotfound = true;//для проверки начала неиспользуемых строк, в целях оптимизации
-
-                        buffer.AppendLine("# RPGMAKER TRANS PATCH FILE VERSION 2.0");// + Environment.NewLine);
-                        //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
-                        for (int y = 0; y < thDataWork.THFilesElementsDataset.Tables[i].Rows.Count; y++)
-                        {
-                            string ADVICE = thDataWork.THFilesElementsDataset.Tables[i].Rows[y][advicecolumnindex] + string.Empty;
-                            //Если в advice была информация о начале блоков неиспользуемых, то вставить эту строчку
-                            if (unusednotfound && ADVICE.Contains("# UNUSED TRANSLATABLES"))
-                            {
-                                buffer.AppendLine("# UNUSED TRANSLATABLES");// + Environment.NewLine;
-                                ADVICE = ADVICE.Replace("# UNUSED TRANSLATABLES", string.Empty);
-                                unusednotfound = false;//в целях оптимизации, проверка двоичного значения быстрее, чемискать в строке
-                            }
-                            buffer.AppendLine("# TEXT STRING");// + Environment.NewLine;
-
-                            string TRANSLATION = thDataWork.THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + string.Empty;
-                            if (TRANSLATION.Length == 0)
-                            {
-                                buffer.AppendLine("# UNTRANSLATED");// + Environment.NewLine;
-                            }
-
-                            buffer.AppendLine("# CONTEXT : " + thDataWork.THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex]);// + Environment.NewLine;
-                            if (ADVICE.Length == 0)
-                            {
-                                //иногда # ADVICE отсутствует и при записи нужно пропускать запись этого пункта
-                            }
-                            else
-                            {
-                                buffer.AppendLine("# ADVICE : " + ADVICE);// + Environment.NewLine;
-                            }
-
-                            buffer.AppendLine(thDataWork.THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] + string.Empty);// + Environment.NewLine;
-                            buffer.AppendLine("# TRANSLATION ");// + Environment.NewLine;
-                            buffer.AppendLine(TRANSLATION);// + Environment.NewLine;
-                            buffer.AppendLine("# END STRING" + Environment.NewLine);// + Environment.NewLine;
-                        }
-                        if (string.IsNullOrWhiteSpace(buffer.ToString()))
-                        {
-                        }
-                        else
-                        {
-                            buffer.Remove(buffer.Length - 2, 2);//удаление лишнего символа \r\n с конца строки
-                            //String _path = SelectedDir + "\\" + THRPGMTransPatchFiles[i].Name + ".txt";
-                            string _path = Path.Combine(Properties.Settings.Default.THSelectedDir, thDataWork.THFilesElementsDataset.Tables[i].TableName + ".txt");
-                            File.WriteAllText(_path, buffer.ToString());
-                            //buffer = string.Empty;
-                        }
-                        buffer.Clear();
-                    }
-
-
-                    //Запись самого файла патча, если вдруг сохраняется в произвольную папку
-                    if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "RPGMKTRANSPATCH")))
-                    {
-                    }
-                    else
-                    {
-                        File.WriteAllText(Path.Combine(Properties.Settings.Default.THSelectedDir, "RPGMKTRANSPATCH"), string.Empty); ;
-                    }
+                }
+                else
+                {
+                    File.WriteAllText(Path.Combine(Properties.Settings.Default.THSelectedDir, "RPGMKTRANSPATCH"), RPGMTransPatchVersion == 3 ? "> RPGMAKER TRANS PATCH V3" : string.Empty);
                 }
             }
             catch
