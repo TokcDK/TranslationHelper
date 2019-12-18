@@ -17,6 +17,8 @@ namespace TranslationHelper.Data
 
         internal string OpenPath { get; set; }
 
+        internal string TempPath { get; set; }
+
         internal DataSet THFilesElementsDataset { get; set; }
 
         internal DataSet THFilesElementsDatasetInfo { get; set; }

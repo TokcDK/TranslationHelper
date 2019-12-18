@@ -93,7 +93,6 @@ namespace TranslationHelper.Projects
 
             int invalidformat = 0;
 
-            StreamReader _file;   //Через что читаем
             string _context = string.Empty;           //Комментарий
             string _advice = string.Empty;            //Предел длины строки
             string _string;// = string.Empty;            //Переменная строки
@@ -103,14 +102,14 @@ namespace TranslationHelper.Projects
 
             int verok = 0;                  //версия патча
 
+            bool successCreated = false;
+
             //Читаем все файлы
             for (int i = 0; i < ListFiles.Count; i++)   //Обрабатываем всю строку
             {
                 string fname = Path.GetFileNameWithoutExtension(ListFiles[i]);
 
                 //ProgressInfo(true, T._("opening file: ") + fname + ".txt");
-
-                _file = new StreamReader(ListFiles[i]); //Задаем файл
 
                 _ = thDataWork.THFilesElementsDataset.Tables.Add(fname);
                 _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Original");
@@ -127,182 +126,16 @@ namespace TranslationHelper.Projects
                     _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Columns.Add("Original");
                 }
 
-                if (RPGMTransPatchVersion == 3)
+                switch (RPGMTransPatchVersion)
                 {
-                    verok = 1; //Версия опознана
-                    while (!_file.EndOfStream)   //Читаем до конца
-                    {
-                        _string = _file.ReadLine(); //Чтение
-
-                        //Код для версии патча 3
-                        if (_string.StartsWith("> BEGIN STRING"))
-                        {
-                            invalidformat = 2; //если нашло строку
-                            _string = _file.ReadLine();
-
-                            int untranslines = 0; //счетчик количества проходов по строкам текста для перевода, для записи переносов, если строк больше одной                            
-                            while (!_string.StartsWith("> CONTEXT:"))  //Ждем начало следующего блока
-                            {
-                                if (untranslines > 0)
-                                {
-                                    _original += Environment.NewLine;
-                                }
-                                _original += _string;            //Пишем весь текст
-                                _string = _file.ReadLine();
-                                untranslines++;
-                            }
-
-                            int contextlines = 0;
-                            while (_string.StartsWith("> CONTEXT:"))
-                            {
-                                if (contextlines > 0)
-                                {
-                                    _context += Environment.NewLine;
-                                }
-
-                                _context += _string.Replace("> CONTEXT: ", string.Empty).Replace(" < UNTRANSLATED", string.Empty);// +"\r\n";//Убрал символ переноса, так как он остается при сохранении //Сохраняем коментарий
-
-                                _string = _file.ReadLine();
-                                contextlines++;
-                            }
-
-                            int translines = 0; //счетчик количества проходов по строкам текста для перевода, для записи переносов, если строк больше одной
-                            while (!_string.StartsWith("> END"))      //Ждем конец блока
-                            {
-                                if (translines > 0)
-                                {
-                                    _translation += Environment.NewLine;
-                                }
-                                _translation += _string;
-                                _string = _file.ReadLine();
-                                translines++;
-                            }
-
-                            if (_original == Environment.NewLine)
-                            {
-                            }
-                            else
-                            {
-                                //THRPGMTransPatchFiles[i].blocks.Add(new Block(_context, _advice, _untrans, _trans, _status));  //Пишем
-                                _ = thDataWork.THFilesElementsDataset.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
-                                if (thDataWork.THFilesElementsDatasetInfo == null)
-                                {
-                                }
-                                else
-                                {
-                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
-                                }
-                            }
-
-                            _context = string.Empty;  //Чистим
-                            _original = string.Empty;  //Чистим
-                            _translation = string.Empty;    //Чистим
-                        }
-                    }
-                    if (invalidformat != 2) //если строки не были опознаны, значит формат неверен
-                    {
-                        invalidformat = 1;
-                    }
-                    _file.Close();  //Закрываем файл
-                }
-                else if (RPGMTransPatchVersion == 2)
-                {
-                    string UNUSED = string.Empty;
-                    verok = 1; //Версия опознана
-                    while (!_file.EndOfStream)   //Читаем до конца
-                    {
-                        _string = _file.ReadLine();                       //Чтение
-                        if (Equals(_string, "# UNUSED TRANSLATABLES"))//означает, что перевод отсюда и далее не используется в игре и помечен RPGMakerTrans этой строкой
-                        {
-                            //MessageBox.Show(_string);
-                            UNUSED = _string;
-                        }
-                        //Код для версии патча 2.0
-                        if (_string.StartsWith("# CONTEXT"))               //Ждем начало блока
-                        {
-                            invalidformat = 2;//строка найдена, формат верен
-
-                            if (_string.Split(' ')[3] != "itemAttr/UsageMessage")
-                            {
-                                _context = _string.Replace("# CONTEXT : ", string.Empty); //Сохраняем коментарий
-
-                                _string = _file.ReadLine();
-
-                                //asdf advice Иногда advice отсутствует, например когда "# CONTEXT : Dialogue/SetHeroName" в патче VH
-                                if (_string.StartsWith("# ADVICE"))
-                                {
-                                    _advice = _string.Replace("# ADVICE : ", string.Empty);   //Вытаскиваем число предела
-                                    _string = _file.ReadLine();
-                                }
-                                else
-                                {
-                                    _advice = string.Empty;
-                                }
-
-                                if (UNUSED.Length == 0)
-                                {
-                                }
-                                else
-                                {
-                                    _advice += UNUSED;//добавление информации о начале блока неиспользуемых строк
-                                    UNUSED = string.Empty;//очистка переменной в целях оптимизации, чтобы не писать во все ADVICE
-                                }
-
-                                int untranslines = 0; //счетчик количества проходов по строкам текста для перевода, для записи переносов, если строк больше одной
-                                while (!_string.StartsWith("# TRANSLATION"))  //Ждем начало следующего блока
-                                {
-                                    if (untranslines > 0)
-                                    {
-                                        _original += Environment.NewLine;
-                                    }
-                                    _original += _string;            //Пишем весь текст
-                                    _string = _file.ReadLine();
-                                    untranslines++;
-                                }
-                                if (_original.Length > 0)                    //Если текст есть, ищем перевод
-                                {
-                                    _string = _file.ReadLine();
-                                    int _translationlinescount = 0;
-                                    while (!_string.StartsWith("# END"))      //Ждем конец блока
-                                    {
-                                        if (_translationlinescount > 0)
-                                        {
-                                            _translation += Environment.NewLine;
-                                        }
-                                        _translation += _string;
-                                        _string = _file.ReadLine();
-                                        _translationlinescount++;
-                                    }
-                                    if (_original != Environment.NewLine)
-                                    {
-                                        //THRPGMTransPatchFiles[i].blocks.Add(new Block(_context, _advice, _untrans, _trans, _status));//Пишем
-                                        _ = thDataWork.THFilesElementsDataset.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
-                                        if (thDataWork.THFilesElementsDatasetInfo == null)
-                                        {
-                                        }
-                                        else
-                                        {
-                                            _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
-                                        }
-                                    }
-                                }
-                                _original = string.Empty;  //Чистим
-                                _translation = string.Empty;    //Чистим
-                            }
-                        }
-                    }
-                    if (invalidformat != 2) //если строки не были опознаны, значит формат неверен
-                    {
-                        invalidformat = 1;
-                    }
-                    _file.Close();  //Закрываем файл
-                }
-                else
-                {
-                    //MessageBox.Show(LangF.THStrRPGMTransPatchInvalidVersionMsg);
-                    //THMsg.Show(LangF.THStrRPGMTransPatchInvalidVersionMsg);
-                    _file.Close();  //Закрываем файл
-                    return false;
+                    case 3:
+                        successCreated = new TXTv3(thDataWork, null).Open();
+                        break;
+                    case 2:
+                        successCreated = new TXTv2(thDataWork, null).Open();
+                        break;
+                    case 0:
+                        return false;
                 }
 
                 if (invalidformat == 1)
@@ -318,7 +151,7 @@ namespace TranslationHelper.Projects
 
             //MessageBox.Show("111");
 
-            if (verok == 1 & invalidformat != 1)
+            if (successCreated && verok == 1 & invalidformat != 1)
             {
                 //ConnnectLinesToGrid(0); //подозрения, что вызывается 2 раза
                 //MessageBox.Show("Готово!");
@@ -371,11 +204,13 @@ namespace TranslationHelper.Projects
                     switch (RPGMTransPatchVersion)
                     {
                         case 3:
-                            successCreated = new TXTv3(thDataWork, buffer, i).Save();
+                            successCreated = new TXTv3(thDataWork, buffer).Save();
                             break;
                         case 2:
-                            successCreated = new TXTv2(thDataWork, buffer, i).Save();
+                            successCreated = new TXTv2(thDataWork, buffer).Save();
                             break;
+                        case 0:
+                            return false;
                     }
 
                     if (successCreated && !string.IsNullOrWhiteSpace(buffer.ToString()))

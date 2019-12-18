@@ -11,12 +11,9 @@ namespace TranslationHelper.Formats.RPGMTrans
     {
         protected StringBuilder buffer;
 
-        protected int TableIndex;
-
-        public RPGMTransPatchBase(THDataWork thData, StringBuilder sBuffer, int tableIndex) : base(thData)
+        public RPGMTransPatchBase(THDataWork thData, StringBuilder sBuffer) : base(thData)
         {
             buffer = sBuffer;
-            TableIndex = tableIndex;
         }
     }
 }

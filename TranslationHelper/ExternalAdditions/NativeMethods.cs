@@ -22,6 +22,11 @@ namespace TranslationHelper.ExternalAdditions
         [DllImport("user32.dll", EntryPoint = "SendMessageA", ExactSpelling = true, CharSet = CharSet.Ansi, SetLastError = true)]
         internal static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
 
+        //THSearch
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
         //IniFiles
         [DllImport("kernel32", CharSet = CharSet.Unicode)] // Подключаем kernel32.dll и описываем его функцию WritePrivateProfilesString
         internal static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
