@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using TranslationHelper.Main;
+using TranslationHelper.ExternalAdditions;
 
 //источник
 //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls

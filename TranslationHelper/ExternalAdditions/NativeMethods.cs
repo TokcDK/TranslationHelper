@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TranslationHelper.Main
+namespace TranslationHelper.ExternalAdditions
 {
     internal class NativeMethods
     {
@@ -16,7 +16,7 @@ namespace TranslationHelper.Main
 
         //ControlHelper
         [DllImport("gdi32.dll", CallingConvention = CallingConvention.StdCall)]
-        internal static extern bool BitBlt(IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight, IntPtr hdcSrc, int nXSrc, int nYSrc, UInt32 dwRop);
+        internal static extern bool BitBlt(IntPtr hdc, int nXDest, int nYDest, int nWidth, int nHeight, IntPtr hdcSrc, int nXSrc, int nYSrc, uint dwRop);
 
         //GDI
         [DllImport("user32.dll", EntryPoint = "SendMessageA", ExactSpelling = true, CharSet = CharSet.Ansi, SetLastError = true)]

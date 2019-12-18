@@ -87,28 +87,28 @@
     <Compile Include="Formats\KiriKiri\XP3.cs" />
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
     <Compile Include="Formats\RPGMTrans\Patch.cs" />
-    <Compile Include="Main\DoubleBufferedListBox.cs" />
-    <Compile Include="Main\Functions\FunctionsAutoOperations.cs" />
-    <Compile Include="Main\Functions\FunctionsCopyPaste.cs" />
-    <Compile Include="Main\Functions\FunctionsDBFile.cs" />
-    <Compile Include="Main\Functions\FunctionsDigitsOperations.cs" />
-    <Compile Include="Main\Functions\FunctionsFileFolder.cs" />
-    <Compile Include="Main\Functions\FunctionsProcess.cs" />
-    <Compile Include="Main\Functions\FunctionsRomajiKana.cs" />
-    <Compile Include="Main\Functions\FunctionsStringOperations.cs" />
-    <Compile Include="Main\Functions\FunctionsTable.cs" />
-    <Compile Include="Main\Functions\FunctionsThreading.cs" />
-    <Compile Include="Main\NativeMethods.cs" />
+    <Compile Include="Old elements\DoubleBufferedListBox.cs" />
+    <Compile Include="Functions\FunctionsAutoOperations.cs" />
+    <Compile Include="Functions\FunctionsCopyPaste.cs" />
+    <Compile Include="Functions\FunctionsDBFile.cs" />
+    <Compile Include="Functions\FunctionsDigitsOperations.cs" />
+    <Compile Include="Functions\FunctionsFileFolder.cs" />
+    <Compile Include="Functions\FunctionsProcess.cs" />
+    <Compile Include="Functions\FunctionsRomajiKana.cs" />
+    <Compile Include="Functions\FunctionsStringOperations.cs" />
+    <Compile Include="Functions\FunctionsTable.cs" />
+    <Compile Include="Functions\FunctionsThreading.cs" />
+    <Compile Include="ExternalAdditions\NativeMethods.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
     <Compile Include="Translators\DeepL.cs" />
     <Compile Include="Translators\TranslatorsFunctions.cs" />
     <Compile Include="Translators\Google.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
     <Compile Include="ExternalAdditions\SimpleJSON.cs" />
-    <Compile Include="Main\THMessage.cs">
+    <Compile Include="Forms\THMessage.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main\THMessage.Designer.cs">
+    <Compile Include="Forms\THMessage.Designer.cs">
       <DependentUpon>THMessage.cs</DependentUpon>
     </Compile>
     <Compile Include="Old elements\RPGMakerMVjsonActors.cs" />
@@ -118,47 +118,47 @@
     <Compile Include="Old elements\RPGMakerMVjson.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonSystem.cs" />
     <Compile Include="ExternalAdditions\THCreateSymlink.cs" />
-    <Compile Include="Main\THSearch.cs">
+    <Compile Include="Forms\THSearch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main\THSearch.Designer.cs">
+    <Compile Include="Forms\THSearch.Designer.cs">
       <DependentUpon>THSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Main\THSettings.cs">
+    <Compile Include="Forms\THSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main\THSettings.Designer.cs">
+    <Compile Include="Forms\THSettings.Designer.cs">
       <DependentUpon>THSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Main\THAbout.cs">
+    <Compile Include="Forms\THAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main\THAbout.Designer.cs">
+    <Compile Include="Forms\THAbout.Designer.cs">
       <DependentUpon>THAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="Main\THMain.cs">
+    <Compile Include="Forms\THMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main\THMain.Designer.cs">
+    <Compile Include="Forms\THMain.Designer.cs">
       <DependentUpon>THMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Old elements\THRPGMTransPatchFile.cs" />
-    <Compile Include="Main\THLang.cs" />
-    <EmbeddedResource Include="Main\THMessage.resx">
+    <Compile Include="Old elements\THLang.cs" />
+    <EmbeddedResource Include="Forms\THMessage.resx">
       <DependentUpon>THMessage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main\THSearch.resx">
+    <EmbeddedResource Include="Forms\THSearch.resx">
       <DependentUpon>THSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main\THSettings.resx">
+    <EmbeddedResource Include="Forms\THSettings.resx">
       <DependentUpon>THSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main\THAbout.resx">
+    <EmbeddedResource Include="Forms\THAbout.resx">
       <DependentUpon>THAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main\THMain.resx">
+    <EmbeddedResource Include="Forms\THMain.resx">
       <DependentUpon>THMain.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>

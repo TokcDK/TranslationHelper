@@ -1,4 +1,4 @@
-﻿using TranslationHelper.Main;
+﻿using TranslationHelper.ExternalAdditions;
 
 namespace TranslationHelper
 {

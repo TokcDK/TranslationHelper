@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using TranslationHelper.Main;
+using TranslationHelper.ExternalAdditions;
 
 namespace TranslationHelper
 {

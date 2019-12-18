@@ -1051,7 +1051,7 @@ namespace TranslationHelper
 
         private void THSearch_FormClosing(object sender, FormClosingEventArgs e)
         {
-            oDsResults.Dispose();
+            //oDsResults.Dispose();
         }
     }
 }

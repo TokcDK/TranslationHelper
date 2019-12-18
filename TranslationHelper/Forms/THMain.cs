@@ -4033,11 +4033,19 @@ namespace TranslationHelper
 
         string dbpath;
         string lastautosavepath;
-        private void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             lastautosavepath = Path.Combine(GetProjectDBFolder(), GetDBFileName() + GetDBCompressionExt());
 
             ProgressInfo(true);
+
+            switch (RPGMFunctions.THSelectedSourceType)
+            {
+                case "RPGMakerTransPatch":
+                case "RPG Maker game with RPGMTransPatch":
+                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.THRPGMTransPatchver)).ConfigureAwait(true);
+                    break;
+            }
 
             WriteDBFileLite(THFilesElementsDataset, lastautosavepath);
             //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data

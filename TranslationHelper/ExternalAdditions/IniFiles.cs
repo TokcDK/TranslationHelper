@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.IO;
 using System.Text;
-using TranslationHelper.Main;
+using TranslationHelper.ExternalAdditions;
 
 namespace TranslationHelper
 {
