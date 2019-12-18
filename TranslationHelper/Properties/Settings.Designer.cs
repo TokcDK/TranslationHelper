@@ -182,12 +182,12 @@ namespace TranslationHelper.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("3")]
-        public string THRPGMTransPatchver {
+        public string RPGMTransPatchVersion {
             get {
-                return ((string)(this["THRPGMTransPatchver"]));
+                return ((string)(this["RPGMTransPatchVersion"]));
             }
             set {
-                this["THRPGMTransPatchver"] = value;
+                this["RPGMTransPatchVersion"] = value;
             }
         }
         

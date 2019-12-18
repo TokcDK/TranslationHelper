@@ -10,7 +10,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.RPGMTrans
 {
-    public static class Patch
+    public static class RPGMTransOther
     {
         public static bool CreateRPGMakerTransPatch(string inputdir, string outdir)
         {

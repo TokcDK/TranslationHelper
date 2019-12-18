@@ -19,10 +19,10 @@ namespace TranslationHelper.Formats.RPGMaker.Functions
             return string.Empty;
         }
 
-        public static string THRPGMTransPatchver
+        public static string RPGMTransPatchVersion
         {
-            get => Properties.Settings.Default.THRPGMTransPatchver;
-            set => Properties.Settings.Default.THRPGMTransPatchver = value;
+            get => Properties.Settings.Default.RPGMTransPatchVersion;
+            set => Properties.Settings.Default.RPGMTransPatchVersion = value;
         }
 
         public static string THSelectedSourceType

@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 using TranslationHelper.Formats.KiriKiri;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Formats.RPGMTrans;
@@ -43,8 +44,9 @@ namespace TranslationHelper
         //private BindingList<THRPGMTransPatchFile> THRPGMTransPatchFiles; //Все файлы
         //DataTable fileslistdt = new DataTable();
         internal DataSet THFilesElementsDataset;
-        internal DataTable THFilesElementsALLDataTable;
         internal DataSet THFilesElementsDatasetInfo;
+        internal DataTable THFilesElementsALLDataTable;
+        THDataWork thData;
         //DataTable THFilesElementsDatatable;
         //private BindingSource THBS = new BindingSource();
 
@@ -73,6 +75,7 @@ namespace TranslationHelper
             THFilesElementsDataset = new DataSet();
             THFilesElementsALLDataTable = new DataTable();
             THFilesElementsDatasetInfo = new DataSet();
+            thData = new THDataWork();
             //https://stackoverflow.com/questions/91747/background-color-of-a-listbox-item-winforms
             THFilesList.DrawMode = DrawMode.OwnerDrawFixed;
 
@@ -376,7 +379,7 @@ namespace TranslationHelper
             try
             {
                 //Reset vars
-                ActiveForm.Text = "Translation Helper by DenisK";
+                ActiveForm.Text = "Translation Helper by Dev";
                 THInfoTextBox.Text = string.Empty;
                 THSourceRichTextBox.Text = string.Empty;
                 THTargetRichTextBox.Text = string.Empty;
@@ -387,15 +390,15 @@ namespace TranslationHelper
                 //Clean data
                 THFilesList.Items.Clear();
                 THFilesElementsDataset.Reset();
-                THFilesElementsALLDataTable.Reset();
                 THFilesElementsDatasetInfo.Reset();
+                THFilesElementsALLDataTable.Reset();
                 THFileElementsDataGridView.Columns.Clear();
                 //THFileElementsDataGridView.Rows.Clear();
 
                 //Dispose objects
                 THFilesElementsDataset.Dispose();
-                THFilesElementsALLDataTable.Dispose();
                 THFilesElementsDatasetInfo.Dispose();
+                THFilesElementsALLDataTable.Dispose();
 
                 //Disable items
                 saveToolStripMenuItem.Enabled = false;
@@ -581,7 +584,7 @@ namespace TranslationHelper
                         //MessageBox.Show("isv3=" + isv3+ ", patchdir="+ extractedpatchpath+ ", extractedpatchpath="+ extractedpatchpath);
                         if (isv3) //если есть подпапка patch, тогда это версия патча 3
                         {
-                            RPGMFunctions.THRPGMTransPatchver = "3";
+                            RPGMFunctions.RPGMTransPatchVersion = "3";
                             extractedpatchpath += "\\patch";
                             //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
                             dir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpath + "\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
@@ -589,13 +592,13 @@ namespace TranslationHelper
                         }
                         else if (Directory.Exists(extractedpatchpath + Path.GetFileName(extractedpatchpath) + "\\patch"))
                         {
-                            RPGMFunctions.THRPGMTransPatchver = "3";
+                            RPGMFunctions.RPGMTransPatchVersion = "3";
                             extractedpatchpath += Path.GetFileName(extractedpatchpath) + "\\patch";
                             dir = new DirectoryInfo(Path.GetDirectoryName(extractedpatchpath + "\\"));
                         }
                         else //иначе это версия 2
                         {
-                            RPGMFunctions.THRPGMTransPatchver = "2";
+                            RPGMFunctions.RPGMTransPatchVersion = "2";
                         }
                         //MessageBox.Show("patchdir2=" + patchdir);
 
@@ -613,7 +616,7 @@ namespace TranslationHelper
                         //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
                         //RPGMTransPatch.OpenTransFiles(files, patchver);
                         //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
-                        if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, RPGMFunctions.THRPGMTransPatchver, THFilesElementsDataset, THFilesElementsDatasetInfo))
+                        if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, RPGMFunctions.RPGMTransPatchVersion, THFilesElementsDataset, THFilesElementsDatasetInfo))
                         {
 
                             //Запись в dataGridVivwer
@@ -1885,12 +1888,12 @@ namespace TranslationHelper
             //MessageBox.Show(patchfile.ReadLine());
             if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "patch"))) //если есть подпапка patch, тогда это версия патча 3
             {
-                RPGMFunctions.THRPGMTransPatchver = "3";
+                RPGMFunctions.RPGMTransPatchVersion = "3";
                 patchdir = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(sPath), "patch"));
             }
             else //иначе это версия 2
             {
-                RPGMFunctions.THRPGMTransPatchver = "2";
+                RPGMFunctions.RPGMTransPatchVersion = "2";
             }
             patchfile.Close();
 
@@ -1907,7 +1910,7 @@ namespace TranslationHelper
             //THFilesDataGridView.Nodes.Add("main");
             //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
             //RPGMTransPatch.OpenTransFiles(files, patchver);
-            if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, RPGMFunctions.THRPGMTransPatchver, THFilesElementsDataset, THFilesElementsDatasetInfo))
+            if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, RPGMFunctions.RPGMTransPatchVersion, THFilesElementsDataset, THFilesElementsDatasetInfo))
             {
                 //MessageBox.Show(THSelectedSourceType + " loaded!");
                 //THShowMessage(THSelectedSourceType + " loaded!");
@@ -2252,7 +2255,7 @@ namespace TranslationHelper
                 }
             }
 
-            ret = Patch.CreateRPGMakerTransPatch(dir.FullName, outdir);
+            ret = RPGMTransOther.CreateRPGMakerTransPatch(dir.FullName, outdir);
 
             if (ret)
             {
@@ -2998,7 +3001,7 @@ namespace TranslationHelper
                     //save.Start();
 
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.THRPGMTransPatchver)).ConfigureAwait(true);
+                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
 
                     //MessageBox.Show("Properties.Settings.Default.THSelectedDir=" + Properties.Settings.Default.THSelectedDir);
                     //SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, THRPGMTransPatchver);
@@ -3463,8 +3466,11 @@ namespace TranslationHelper
         //    }
         //}
 
-        private void ProgressInfo(bool status, string statustext = "")
+        public void ProgressInfo(bool status, string statustext="")
         {
+            if (statustext == null /*|| THActionProgressBar == null || THInfolabel == null*/)
+                return;
+
             statustext = statustext.Length == 0 ? T._("working..") : statustext;
             try
             {
@@ -3495,7 +3501,7 @@ namespace TranslationHelper
                 {
                     if (RPGMFunctions.THSelectedSourceType == "RPGMakerTransPatch")
                     {
-                        if (SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, RPGMFunctions.THRPGMTransPatchver))
+                        if (SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, RPGMFunctions.RPGMTransPatchVersion))
                         {
                             Properties.Settings.Default.THSelectedDir = THSaveFolderBrowser.SelectedPath;
                             //MessageBox.Show("Сохранение завершено!");
@@ -4043,7 +4049,7 @@ namespace TranslationHelper
             {
                 case "RPGMakerTransPatch":
                 case "RPG Maker game with RPGMTransPatch":
-                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.THRPGMTransPatchver)).ConfigureAwait(true);
+                    await Task.Run(() => SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
                     break;
             }
 

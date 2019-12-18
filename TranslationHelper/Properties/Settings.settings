@@ -41,7 +41,7 @@
     <Setting Name="THSelectedDir" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="THRPGMTransPatchver" Type="System.String" Scope="User">
+    <Setting Name="RPGMTransPatchVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)">3</Value>
     </Setting>
     <Setting Name="THSelectedSourceType" Type="System.String" Scope="User">
