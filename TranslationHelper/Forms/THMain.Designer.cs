@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,6 +69,7 @@
             this.fixCellsTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setOriginalValueToTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allIfExistsFiledirWithNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.completeRomajiotherLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forceSameForSimularToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -131,7 +132,6 @@
             this.TableCompleteInfoLabel = new System.Windows.Forms.Label();
             this.TranslationLongestLineLenghtLabel = new System.Windows.Forms.Label();
             this.RTBInfoLengthLabel = new System.Windows.Forms.Label();
-            this.allIfExistsFiledirWithNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -347,7 +347,7 @@
             this.saveInnewFormatToolStripMenuItem.Name = "saveInnewFormatToolStripMenuItem";
             this.saveInnewFormatToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.saveInnewFormatToolStripMenuItem.Text = "SaveNEW";
-            this.saveInnewFormatToolStripMenuItem.Click += new System.EventHandler(this.saveInnewFormatToolStripMenuItem_Click);
+            this.saveInnewFormatToolStripMenuItem.Click += new System.EventHandler(this.SaveInnewFormatToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -503,6 +503,13 @@
             this.setOriginalValueToTranslationToolStripMenuItem.Text = "Original=Translation";
             this.setOriginalValueToTranslationToolStripMenuItem.Click += new System.EventHandler(this.SetOriginalValueToTranslationToolStripMenuItem_Click);
             // 
+            // allIfExistsFiledirWithNameToolStripMenuItem
+            // 
+            this.allIfExistsFiledirWithNameToolStripMenuItem.Name = "allIfExistsFiledirWithNameToolStripMenuItem";
+            this.allIfExistsFiledirWithNameToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.allIfExistsFiledirWithNameToolStripMenuItem.Text = "All, if exists file/dir with name";
+            this.allIfExistsFiledirWithNameToolStripMenuItem.Click += new System.EventHandler(this.AllIfExistsFiledirWithNameToolStripMenuItem_Click);
+            // 
             // completeRomajiotherLinesToolStripMenuItem
             // 
             this.completeRomajiotherLinesToolStripMenuItem.Enabled = false;
@@ -516,7 +523,7 @@
             this.forceSameForSimularToolStripMenuItem.Name = "forceSameForSimularToolStripMenuItem";
             this.forceSameForSimularToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
             this.forceSameForSimularToolStripMenuItem.Text = "Force same for simular";
-            this.forceSameForSimularToolStripMenuItem.Click += new System.EventHandler(this.forceSameTranslationForIdenticalToolStripMenuItem_Click);
+            this.forceSameForSimularToolStripMenuItem.Click += new System.EventHandler(this.ForceSameTranslationForIdenticalToolStripMenuItem_Click);
             // 
             // cutToolStripMenuItem1
             // 
@@ -632,7 +639,7 @@
             this.fixMessagesInTheTableToolStripMenuItem.Name = "fixMessagesInTheTableToolStripMenuItem";
             this.fixMessagesInTheTableToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
             this.fixMessagesInTheTableToolStripMenuItem.Text = "Fix messages in the table";
-            this.fixMessagesInTheTableToolStripMenuItem.Click += new System.EventHandler(this.fixMessagesInTheTableToolStripMenuItem_Click);
+            this.fixMessagesInTheTableToolStripMenuItem.Click += new System.EventHandler(this.FixMessagesInTheTableToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -731,8 +738,8 @@
             this.THFilesList.Name = "THFilesList";
             this.THFilesList.Size = new System.Drawing.Size(125, 368);
             this.THFilesList.TabIndex = 0;
-            this.THFilesList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.THFilesListBox_MouseClick);
             this.THFilesList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.THFilesList_DrawItem);
+            this.THFilesList.SelectedIndexChanged += new System.EventHandler(this.THFilesList_SelectedIndexChanged);
             // 
             // THMainResetTableButton
             // 
@@ -759,8 +766,8 @@
             this.THFileElementsDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(0, 17);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle22.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle22;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 351);
             this.THFileElementsDataGridView.TabIndex = 2;
@@ -791,26 +798,26 @@
             this.THFiltersDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFiltersDataGridView.ColumnHeadersVisible = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle23.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle23.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle23.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle23.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle23.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle23.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle23;
             this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.THFiltersDataGridView.Enabled = false;
             this.THFiltersDataGridView.Location = new System.Drawing.Point(0, 0);
             this.THFiltersDataGridView.Name = "THFiltersDataGridView";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle24.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle24.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle24.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle24.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle24.SelectionForeColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle24.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle24;
             this.THFiltersDataGridView.RowTemplate.Height = 23;
             this.THFiltersDataGridView.Size = new System.Drawing.Size(625, 18);
             this.THFiltersDataGridView.TabIndex = 3;
@@ -945,7 +952,7 @@
             this.forceSameForSimularToolStripMenuItem1.Name = "forceSameForSimularToolStripMenuItem1";
             this.forceSameForSimularToolStripMenuItem1.Size = new System.Drawing.Size(205, 22);
             this.forceSameForSimularToolStripMenuItem1.Text = "Force same for simular";
-            this.forceSameForSimularToolStripMenuItem1.Click += new System.EventHandler(this.forceSameTranslationForIdenticalToolStripMenuItem_Click);
+            this.forceSameForSimularToolStripMenuItem1.Click += new System.EventHandler(this.ForceSameTranslationForIdenticalToolStripMenuItem_Click);
             // 
             // CutToolStripMenuItem
             // 
@@ -1156,13 +1163,6 @@
             this.RTBInfoLengthLabel.Size = new System.Drawing.Size(41, 13);
             this.RTBInfoLengthLabel.TabIndex = 10;
             this.RTBInfoLengthLabel.Text = "length:";
-            // 
-            // allIfExistsFiledirWithNameToolStripMenuItem
-            // 
-            this.allIfExistsFiledirWithNameToolStripMenuItem.Name = "allIfExistsFiledirWithNameToolStripMenuItem";
-            this.allIfExistsFiledirWithNameToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-            this.allIfExistsFiledirWithNameToolStripMenuItem.Text = "All, if exists file/dir with name";
-            this.allIfExistsFiledirWithNameToolStripMenuItem.Click += new System.EventHandler(this.AllIfExistsFiledirWithNameToolStripMenuItem_Click);
             // 
             // THMain
             // 

@@ -91,17 +91,6 @@ namespace TranslationHelper.Projects
             if (ListFiles == null || thDataWork.THFilesElementsDataset == null)
                 return false;
 
-            int invalidformat = 0;
-
-            string _context = string.Empty;           //Комментарий
-            string _advice = string.Empty;            //Предел длины строки
-            string _string;// = string.Empty;            //Переменная строки
-            string _original = string.Empty;           //Непереведенный текст
-            string _translation = string.Empty;             //Переведенный текст
-            int _status = 0;             //Статус
-
-            int verok = 0;                  //версия патча
-
             bool successCreated = false;
 
             //Читаем все файлы
@@ -137,30 +126,10 @@ namespace TranslationHelper.Projects
                     case 0:
                         return false;
                 }
-
-                if (invalidformat == 1)
-                {
-                    //MessageBox.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
-                    //THMsg.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
-                    //invalidformat = 0;
-                    return false;
-                }
-
-                //progressBar.Value++;
             }
 
-            //MessageBox.Show("111");
-
-            if (successCreated && verok == 1 & invalidformat != 1)
+            if (!successCreated)
             {
-                //ConnnectLinesToGrid(0); //подозрения, что вызывается 2 раза
-                //MessageBox.Show("Готово!");
-                //FVariant = " * RPG Maker Trans Patch " + RPGMTransPatchVersion;
-            }
-            else if (invalidformat == 1)
-            {
-                //MessageBox.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
-                //THMsg.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
                 return false;
             }
 
@@ -179,22 +148,10 @@ namespace TranslationHelper.Projects
 
         public bool SaveRPGMTransPatchFiles()
         {
-            //измерение времени выполнения
-            //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
-            //Stopwatch swatch = new Stopwatch();
-            //swatch.Start();
-
             try
             {
                 StringBuilder buffer = new StringBuilder();
-
-                int originalcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
-                int translationcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
-                int contextcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Context"].Ordinal;
-                int advicecolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Advice"].Ordinal;
-                int statuscolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Status"].Ordinal;
-
-                //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
+                
                 for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
                 {
                     //ProgressInfo(true, T._("saving file: ") + thData.THFilesElementsDataset.Tables[i].TableName);
@@ -213,7 +170,8 @@ namespace TranslationHelper.Projects
                             return false;
                     }
 
-                    if (successCreated && !string.IsNullOrWhiteSpace(buffer.ToString()))
+                    string FIleData = buffer.ToString();
+                    if (successCreated && !string.IsNullOrWhiteSpace(FIleData))
                     {
                         if (Directory.Exists(Properties.Settings.Default.THSelectedDir + Path.DirectorySeparatorChar + "patch"))
                         {
@@ -222,11 +180,14 @@ namespace TranslationHelper.Projects
                         {
                             Directory.CreateDirectory(Properties.Settings.Default.THSelectedDir + Path.DirectorySeparatorChar + "patch");
                         }
-                        buffer.Remove(buffer.Length - 2, 2);//удаление лишнего символа \r\n с конца строки
-                                                            //String _path = SelectedDir + "\\patch\\" + THRPGMTransPatchFiles[i].Name + ".txt";
+
+                        if (FIleData.Length>2)
+                        {
+                            FIleData = FIleData.Remove(FIleData.Length - 2, 2);//удаление лишнего символа \r\n с конца строки
+                        }
+
                         string _path = Path.Combine(Properties.Settings.Default.THSelectedDir, "patch", thDataWork.THFilesElementsDataset.Tables[i].TableName + ".txt");
-                        File.WriteAllText(_path, buffer.ToString());
-                        //buffer = string.Empty;
+                        File.WriteAllText(_path, FIleData);
                     }
 
                     buffer.Clear();

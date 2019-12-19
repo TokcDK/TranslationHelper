@@ -2558,10 +2558,14 @@ namespace TranslationHelper
                 pi1.SetValue(THFilesList, value, null);
             }
         }
+        private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
+        {
+        }
+
 
         //int numberOfRows=500;
         private bool THFilesListBox_MouseClickBusy;
-        private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
+        private void ActionsOnTHFIlesListElementSelected()
         {
             if (THFilesListBox_MouseClickBusy && THFilesList.SelectedIndex > -1) //THFilesList.SelectedIndex > -1 - фикс исключения сразу после загрузки таблицы, когда индекс выбранной таблицы равен -1 
             {
@@ -2633,7 +2637,7 @@ namespace TranslationHelper
                     //swatch.Start();
 
                     //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
-                    THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
+                    //THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
                     //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
 
                     //THsplitContainerFilesElements.Panel2.Visible = false;//сделать невидимым родительский элемент на время
@@ -2654,9 +2658,13 @@ namespace TranslationHelper
                     //    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
                     //}
 
-                    Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.SelectedIndex;
+                    if (THFilesList.SelectedIndex > -1)
+                    {
+                        Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.SelectedIndex;
 
-                    BindToDataTableGridView(THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
+                        BindToDataTableGridView(THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
+
+                    }
 
                     ShowNonEmptyRowsCount(THFilesElementsDataset);
 
@@ -2706,7 +2714,7 @@ namespace TranslationHelper
                     //this.Cursor = Cursors.Default; ;//Поменять курсор обратно на обычный
 
                     //THFileElementsDataGridView.ResumeLayout();
-                    THFileElementsDataGridView.ResumeDrawing();
+                    //THFileElementsDataGridView.ResumeDrawing();
 
                     SetFilterDGV(); //Init Filters datagridview
 
@@ -7113,12 +7121,12 @@ namespace TranslationHelper
             MessageBox.Show(Properties.Settings.Default.IsTranslationCacheEnabled.ToString(CultureInfo.GetCultureInfo("en-US")));
         }
 
-        private void saveInnewFormatToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveInnewFormatToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void forceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ForceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int i = THFileElementsDataGridView.SelectedCells.Count;
             if (i == 1)
@@ -7184,7 +7192,7 @@ namespace TranslationHelper
             MessageBox.Show("Finished");
         }
 
-        private void fixMessagesInTheTableToolStripMenuItem_Click(object sender, EventArgs e)
+        private void FixMessagesInTheTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             for (int r = 0; r < THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows.Count; r++)
             {
@@ -7280,14 +7288,10 @@ namespace TranslationHelper
             System.Media.SystemSounds.Asterisk.Play();
         }
 
-
-
-
-
-
-
-
-
+        private void THFilesList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ActionsOnTHFIlesListElementSelected();
+        }
 
 
         //Материалы
