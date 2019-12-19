@@ -21,8 +21,8 @@ namespace TranslationHelper
         public string ReadINI(string Section, string Key)
         {
             var RetVal = new StringBuilder(255);
-            NativeMethods.GetPrivateProfileString(Section, Key, "", RetVal, 255, Path);
-            return RetVal.ToString();
+            var errorCode = NativeMethods.GetPrivateProfileString(Section, Key, "", RetVal, 255, Path);
+            return errorCode == 0 ? RetVal.ToString() : string.Empty;
         }
         //Записываем в ini-файл. Запись происходит в выбранную секцию в выбранный ключ.
         public void WriteINI(string Section, string Key, string Value)

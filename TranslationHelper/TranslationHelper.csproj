@@ -106,6 +106,7 @@
     <Compile Include="ExternalAdditions\NativeMethods.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
+    <Compile Include="Projects\RPGMGame.cs" />
     <Compile Include="Projects\RPGMTransPatch.cs" />
     <Compile Include="Translators\DeepL.cs" />
     <Compile Include="Translators\TranslatorsFunctions.cs" />
