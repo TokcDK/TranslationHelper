@@ -46,7 +46,7 @@ namespace TranslationHelper
         //internal DataSet thDataWorkTHFilesElementsDataset;
         //internal DataSet thDataWorkTHFilesElementsDatasetInfo;
         internal DataTable THFilesElementsALLDataTable;
-        internal THDataWork thDataWork;
+        public THDataWork thDataWork;
         //DataTable THFilesElementsDatatable;
         //private BindingSource THBS = new BindingSource();
 
@@ -618,7 +618,7 @@ namespace TranslationHelper
                         //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
                         //RPGMTransPatch.OpenTransFiles(files, patchver);
                         //MessageBox.Show("THRPGMTransPatchver=" + THRPGMTransPatchver);
-                        if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, RPGMFunctions.RPGMTransPatchVersion, thDataWork.THFilesElementsDataset, thDataWork.THFilesElementsDatasetInfo))
+                        if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles))
                         {
 
                             //Запись в dataGridVivwer
@@ -1912,7 +1912,7 @@ namespace TranslationHelper
             //THFilesDataGridView.Nodes.Add("main");
             //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
             //RPGMTransPatch.OpenTransFiles(files, patchver);
-            if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, RPGMFunctions.RPGMTransPatchVersion, thDataWork.THFilesElementsDataset, thDataWork.THFilesElementsDatasetInfo))
+            if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles))
             {
                 //MessageBox.Show(THSelectedSourceType + " loaded!");
                 //THShowMessage(THSelectedSourceType + " loaded!");
@@ -1963,7 +1963,7 @@ namespace TranslationHelper
             {
                 vRPGMTransPatchFiles.Add(file.FullName);
             }
-            if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles, THRPGMTransPatchverTranslated, THFilesElementsDatasetTranslated, null))
+            if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles))
             {
 
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
@@ -2272,9 +2272,9 @@ namespace TranslationHelper
         }
 
         private int invalidformat;
-        public bool OpenRPGMTransPatchFiles(List<string> ListFiles, string patchver, DataSet DS, DataSet DSInfo)
+        public bool OpenRPGMTransPatchFiles(List<string> ListFiles)
         {
-            if (ListFiles == null || DS==null)
+            if (ListFiles == null || thDataWork.THFilesElementsDataset== null)
                 return false;
 
             //измерение времени выполнения
@@ -2312,22 +2312,22 @@ namespace TranslationHelper
                 ProgressInfo(true, T._("opening file: ") + fname + ".txt");
                 _file = new StreamReader(ListFiles[i]); //Задаем файл
                 //THRPGMTransPatchFiles.Add(new THRPGMTransPatchFile(Path.GetFileNameWithoutExtension(ListFiles[i]), ListFiles[i].ToString(), string.Empty));    //Добaвляем файл
-                _ = DS.Tables.Add(fname);
-                _ = DS.Tables[i].Columns.Add("Original");
-                _ = DS.Tables[i].Columns.Add("Translation");
-                _ = DS.Tables[i].Columns.Add("Context");
-                _ = DS.Tables[i].Columns.Add("Advice");
-                _ = DS.Tables[i].Columns.Add("Status");
-                if (DSInfo == null)
+                _ = thDataWork.THFilesElementsDataset.Tables.Add(fname);
+                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Original");
+                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Translation");
+                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Context");
+                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Advice");
+                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Status");
+                if (thDataWork.THFilesElementsDatasetInfo == null)
                 {
                 }
                 else
                 {
-                    _ = DSInfo.Tables.Add(fname);
-                    _ = DSInfo.Tables[i].Columns.Add("Original");
+                    _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(fname);
+                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Columns.Add("Original");
                 }
 
-                if (patchver == "3")
+                if (RPGMFunctions.RPGMTransPatchVersion == "3")
                 {
                     verok = 1; //Версия опознана
                     while (!_file.EndOfStream)   //Читаем до конца
@@ -2383,13 +2383,13 @@ namespace TranslationHelper
                             else
                             {
                                 //THRPGMTransPatchFiles[i].blocks.Add(new Block(_context, _advice, _untrans, _trans, _status));  //Пишем
-                                _ = DS.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
-                                if (DSInfo == null)
+                                _ = thDataWork.THFilesElementsDataset.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
+                                if (thDataWork.THFilesElementsDatasetInfo == null)
                                 {
                                 }
                                 else
                                 {
-                                    _ = DSInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
+                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
                                 }
                             }
 
@@ -2404,7 +2404,7 @@ namespace TranslationHelper
                     }
                     _file.Close();  //Закрываем файл
                 }
-                else if (patchver == "2")
+                else if (RPGMFunctions.RPGMTransPatchVersion == "2")
                 {
                     string UNUSED = string.Empty;
                     verok = 1; //Версия опознана
@@ -2475,13 +2475,13 @@ namespace TranslationHelper
                                     if (_original != Environment.NewLine)
                                     {
                                         //THRPGMTransPatchFiles[i].blocks.Add(new Block(_context, _advice, _untrans, _trans, _status));//Пишем
-                                        _ = DS.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
-                                        if (DSInfo == null)
+                                        _ = thDataWork.THFilesElementsDataset.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
+                                        if (thDataWork.THFilesElementsDatasetInfo == null)
                                         {
                                         }
                                         else
                                         {
-                                            _ = DSInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
+                                            _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
                                         }
                                     }
                                 }
@@ -2521,7 +2521,7 @@ namespace TranslationHelper
             {
                 //ConnnectLinesToGrid(0); //подозрения, что вызывается 2 раза
                 //MessageBox.Show("Готово!");
-                FVariant = " * RPG Maker Trans Patch " + patchver;
+                FVariant = " * RPG Maker Trans Patch " + RPGMFunctions.RPGMTransPatchVersion;
             }
             else if (invalidformat == 1)
             {
@@ -6494,8 +6494,8 @@ namespace TranslationHelper
             Properties.Settings.Default.IsTranslationHelperWasClosed = true;
             InteruptTranslation = true;
             THToolTip.Dispose();
-            thDataWork.THFilesElementsDataset.Dispose();
-            thDataWork.THFilesElementsDatasetInfo.Dispose();
+            //thDataWork.THFilesElementsDataset.Dispose();
+            //thDataWork.THFilesElementsDatasetInfo.Dispose();
             THFilesElementsALLDataTable.Dispose();
             Settings.Dispose();
 

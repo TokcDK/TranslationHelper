@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TranslationHelper.Data
 {
-    internal class THDataWork
+    public class THDataWork
     {
         public THDataWork()
         {
@@ -15,12 +15,12 @@ namespace TranslationHelper.Data
             THFilesElementsDatasetInfo = new DataSet();
         }
 
-        internal string SPath { get; set; }
+        public string SPath { get; set; }
 
-        internal string TempPath { get; set; }
+        public string TempPath { get; set; }
 
-        internal DataSet THFilesElementsDataset { get; set; }
+        public DataSet THFilesElementsDataset { get; set; }
 
-        internal DataSet THFilesElementsDatasetInfo { get; set; }
+        public DataSet THFilesElementsDatasetInfo { get; set; }
     }
 }
