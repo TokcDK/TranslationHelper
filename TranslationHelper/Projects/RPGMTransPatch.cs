@@ -47,17 +47,17 @@ namespace TranslationHelper.Projects
 
         private bool RPGMTransPatchPrepare()
         {
-            var dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.OpenPath));
+            var dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.SPath));
 
             //Properties.Settings.Default.THSelectedDir = dir + string.Empty;
 
             var patchdir = dir;
-            StreamReader patchfile = new StreamReader(thDataWork.OpenPath);
+            StreamReader patchfile = new StreamReader(thDataWork.SPath);
 
             if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "patch"))) //если есть подпапка patch, тогда это версия патча 3
             {
                 RPGMTransPatchVersion = 3;
-                patchdir = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(thDataWork.OpenPath), "patch"));
+                patchdir = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "patch"));
             }
             else //иначе это версия 2
             {

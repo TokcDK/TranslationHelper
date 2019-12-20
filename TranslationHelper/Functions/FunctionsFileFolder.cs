@@ -13,7 +13,7 @@ namespace TranslationHelper.Main.Functions
         {
             //исключение имен с недопустимыми именами для файла или папки
             //http://www.cyberforum.ru/post5599483.html
-            if (name.Length == 0 || FunctionsStrings.IsMultiline(name) || name.Intersect(Path.GetInvalidFileNameChars()).Any())
+            if (name.Length == 0 || FunctionsString.IsMultiline(name) || name.Intersect(Path.GetInvalidFileNameChars()).Any())
             {
                 //MessageBox.Show("GetAnyFileWithTheNameExist return false because invalid! name=" + name);
                 return false;

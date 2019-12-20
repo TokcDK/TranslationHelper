@@ -7,8 +7,45 @@ using System.Threading.Tasks;
 
 namespace TranslationHelper.Main.Functions
 {
-    static class FunctionsStrings
+    static class FunctionsString
     {
+        /// <summary>
+        /// функция деления строки на равные части с остатком и запись их в строковый массив
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="chunkSize"></param>
+        /// <returns></returns>
+        public static string[] THSplit(string str, int chunkSize)
+        {
+            if (str == null)
+                return null;
+
+            string[] parts = new string[chunkSize];
+
+            int ind = 0;
+            int strLength = str.Length;
+            //памятка о приведении типов
+            //https://www.aubrett.com/article/information-technology/web-development/net-framework/csharp/csharp-division-floating-point
+            //THMsg.Show("strLength=" + strLength + ",str=" + str + ",f=" + f);
+            int substrLength = (int)Math.Ceiling((double)strLength / chunkSize);//округление числа символов в части в большую сторону
+            //THMsg.Show("f="+f+", substrLength=" + substrLength);
+            int partsLength = parts.Length;
+            for (int i = 0; i < partsLength; i++)
+            {
+                if (i == partsLength - 1)
+                {
+                    parts[i] = str.Substring(ind, strLength - ind);
+                }
+                else
+                {
+                    parts[i] = str.Substring(ind, substrLength);
+                    ind += substrLength;
+                }
+            }
+
+            return parts;
+        }
+
         public static string FixForRPGMAkerQuotationInSomeStrings(DataRow row)
         {
             string origValue = row[0] as string;
@@ -21,7 +58,7 @@ namespace TranslationHelper.Main.Functions
                  (origValue.StartsWith("\"") && origValue.EndsWith("\"") && (!cvalueStartsWith || !cvalueEndsWith))
                  ||
                  //если перевод начинается и кончается на апостроф и также апостроф есть в где-то середине
-                 (cvalueStartsWith && cvalueEndsWith && cvalue.Length > 2 && FunctionsStrings.IsStringAContainsStringB(cvalue.Remove(cvalue.Length - 1, 1).Remove(0, 1), "\"")))
+                 (cvalueStartsWith && cvalueEndsWith && cvalue.Length > 2 && FunctionsString.IsStringAContainsStringB(cvalue.Remove(cvalue.Length - 1, 1).Remove(0, 1), "\"")))
             {
                 cvalue = "\"" +
                     cvalue
@@ -38,7 +75,7 @@ namespace TranslationHelper.Main.Functions
                 (origValue.StartsWith("'") && origValue.EndsWith("'") && (!cvalueStartsWith || !cvalueEndsWith))
                 ||
                 //если перевод начинается и кончается на апостроф и также апостроф есть в где-то середине
-                (cvalueStartsWith && cvalueEndsWith && cvalue.Length > 2 && FunctionsStrings.IsStringAContainsStringB(cvalue.Remove(cvalue.Length - 1, 1).Remove(0, 1), "'")))
+                (cvalueStartsWith && cvalueEndsWith && cvalue.Length > 2 && FunctionsString.IsStringAContainsStringB(cvalue.Remove(cvalue.Length - 1, 1).Remove(0, 1), "'")))
                 {
                     cvalue = "'" +
                         cvalue

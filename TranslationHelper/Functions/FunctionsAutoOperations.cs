@@ -188,7 +188,7 @@ namespace TranslationHelper.Main.Functions
                             if (cvalue.Length > 0 && cvalue != row[cind - 1] as string)
                             {
                                 //Hardcoded rules
-                                cvalue = FunctionsStrings.FixForRPGMAkerQuotationInSomeStrings(row);
+                                cvalue = FunctionsString.FixForRPGMAkerQuotationInSomeStrings(row);
 
                                 //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
 
@@ -707,7 +707,7 @@ namespace TranslationHelper.Main.Functions
             {
                 return Line;
             }
-            return string.Join(FunctionsStrings.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Line, Limit));
+            return string.Join(FunctionsString.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Line, Limit));
         }
 
         public static string[] SplitLineIfBeyondOfLimit(string text, int max)

@@ -912,7 +912,7 @@ namespace TranslationHelper
                         rowIndex = 0;
                     }
                     string[] lines = File.ReadAllLines(filePath);
-                    if (lines.Length == 2 && !FunctionsStrings.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
+                    if (lines.Length == 2 && !FunctionsString.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
                     {
                         if (IsWrite)
                         {
@@ -971,7 +971,7 @@ namespace TranslationHelper
                         if (lineArray.Length > 4)
                         {
                             //line = lineArray[4];
-                            if (!FunctionsStrings.IsDigitsOnly(lineArray[4]) && !string.IsNullOrEmpty(lineArray[4]))
+                            if (!FunctionsString.IsDigitsOnly(lineArray[4]) && !string.IsNullOrEmpty(lineArray[4]))
                             {
                                 if (IsWrite)
                                 {
@@ -1025,7 +1025,7 @@ namespace TranslationHelper
                     {
                         string[] lines = line.Split(',');
                         //line = line.Split(',')[1];
-                        if (!FunctionsStrings.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
+                        if (!FunctionsString.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
                         {
                             if (IsWrite)
                             {
@@ -1072,9 +1072,9 @@ namespace TranslationHelper
                 while (!sr.EndOfStream)
                 {
                     line = sr.ReadLine();
-                    if (FunctionsDigitsOperations.IsEqualsAnyNumberFromArray(lineNum, lineNumbers))
+                    if (FunctionsDigit.IsEqualsAnyNumberFromArray(lineNum, lineNumbers))
                     {
-                        if (!FunctionsStrings.IsDigitsOnly(line) && !string.IsNullOrEmpty(line) && line != "\\n")
+                        if (!FunctionsString.IsDigitsOnly(line) && !string.IsNullOrEmpty(line) && line != "\\n")
                         {
                             if (IsWrite)
                             {
@@ -1130,7 +1130,7 @@ namespace TranslationHelper
 
                         for (int i = 0; i < strings.Length; i++)
                         {
-                            if (!FunctionsStrings.IsDigitsOnly(strings[i]) && !string.IsNullOrEmpty(strings[i]))
+                            if (!FunctionsString.IsDigitsOnly(strings[i]) && !string.IsNullOrEmpty(strings[i]))
                             {
                                 if (IsWrite)
                                 {
@@ -1646,7 +1646,7 @@ namespace TranslationHelper
                                     line = line.Replace("[lr_]", string.Empty).Replace("[p_]", string.Empty);
 
                                     //line = Regex.Replace(line, @"^\s*(\[[a-z\/_]+\])*((\[name\])?.+)\[(lr|p)_\]\s*$", "$2");
-                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1677,7 +1677,7 @@ namespace TranslationHelper
                                 else if (line.EndsWith("[k]")) // text ;Magic Swordsman Rene
                                 {
                                     line = line.Replace("[k]", string.Empty);
-                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1689,7 +1689,7 @@ namespace TranslationHelper
                                 else if (line.StartsWith("*")) // text ;Magic Swordsman Rene
                                 {
                                     line = line.Remove(0, 1);
-                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1701,7 +1701,7 @@ namespace TranslationHelper
                                 else if (line.EndsWith("[r]")) //text, first line ;Magic Swordsman Rene
                                 {
                                     line = line.Replace("[r]", string.Empty).Trim();
-                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1728,7 +1728,7 @@ namespace TranslationHelper
                                 else if (line.StartsWith("@notice text="))// ; Magic Swordsman Rene
                                 {
                                     line = line.Remove(0, 13);//удаление "@notice text="
-                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1740,7 +1740,7 @@ namespace TranslationHelper
                                 else if (line.StartsWith("Name = '"))// ; Magic Swordsman Rene
                                 {
                                     line = line.Remove(line.Length - 2, 2).Remove(0, 8);
-                                    if (string.IsNullOrEmpty(line) || FunctionsStrings.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
                                     {
                                     }
                                     else
@@ -1757,7 +1757,7 @@ namespace TranslationHelper
                                     foreach (var m in matches)
                                     {
                                         subline = m.ToString();
-                                        if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || FunctionsStrings.IsDigitsOnly(line.Replace("\"", string.Empty)))
+                                        if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || FunctionsString.IsDigitsOnly(line.Replace("\"", string.Empty)))
                                         {
                                         }
                                         else
@@ -3303,7 +3303,7 @@ namespace TranslationHelper
                             if (line.EndsWith("[k]")) // text
                             {
                                 string cline = line.Replace("[r]", string.Empty).Remove(line.Length - 3, 3);
-                                if (string.IsNullOrEmpty(cline) || FunctionsStrings.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsString.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -3324,7 +3324,7 @@ namespace TranslationHelper
                             else if (line.StartsWith("*")) // text
                             {
                                 string cline = line.Remove(0, 1);
-                                if (string.IsNullOrEmpty(cline) || FunctionsStrings.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsString.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -3345,7 +3345,7 @@ namespace TranslationHelper
                             else if (line.EndsWith("[r]")) //text, first line
                             {
                                 string cline = line.Replace("[r]", string.Empty);
-                                if (string.IsNullOrEmpty(cline) || FunctionsStrings.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsString.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -3390,7 +3390,7 @@ namespace TranslationHelper
                             else if (line.StartsWith("@notice text="))
                             {
                                 string cline = line.Remove(0, 13);//удаление "@notice text="
-                                if (string.IsNullOrEmpty(cline) || FunctionsStrings.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || FunctionsString.IsDigitsOnly(cline))
                                 {
                                 }
                                 else
@@ -4437,38 +4437,6 @@ namespace TranslationHelper
             //WriteJson("CommonEvents", @"C:\\000 test RPGMaker MV data\\CommonEvents.json");
         }
 
-        //моя функция деления строки на равные части с остатком и запись их в строковый массив
-        public static string[] THSplit(string str, int chunkSize)
-        {
-            if (str==null)
-                return null;
-
-            string[] parts = new string[chunkSize];
-
-            int ind = 0;
-            int strLength = str.Length;
-            //памятка о приведении типов
-            //https://www.aubrett.com/article/information-technology/web-development/net-framework/csharp/csharp-division-floating-point
-            //THMsg.Show("strLength=" + strLength + ",str=" + str + ",f=" + f);
-            int substrLength = (int)Math.Ceiling((double)strLength / chunkSize);//округление числа символов в части в большую сторону
-            //THMsg.Show("f="+f+", substrLength=" + substrLength);
-            int partsLength = parts.Length;
-            for (int i = 0; i < partsLength; i++)
-            {
-                if (i == partsLength - 1)
-                {
-                    parts[i] = str.Substring(ind, strLength - ind);
-                }
-                else
-                {
-                    parts[i] = str.Substring(ind, substrLength);
-                    ind += substrLength;
-                }
-            }
-
-            return parts;
-        }
-
         private void TestSplitToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             //string[] s = THSplit("test1test2ddd", 3);
@@ -4892,7 +4860,7 @@ namespace TranslationHelper
                                             //https://stackoverflow.com/questions/2391743/how-many-elements-of-array-are-not-null
                                             //int ymptyelementscnt = orig.Count(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", string.Empty)));
 
-                                            transA = THSplit(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
+                                            transA = FunctionsString.THSplit(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
                                         }
 
                                         //LogToFile("parameter0value=" + parameter0value);
@@ -5780,7 +5748,7 @@ namespace TranslationHelper
                                     //LogToFile("resultvalue from cache is empty. resultvalue=" + resultvalue, true);
                                     //string[] inputvaluearray = InputValue.Split(new string[2] { Environment.NewLine, @"\n" }, StringSplitOptions.None);
 
-                                    if (FunctionsStrings.IsMultiline(InputValue))
+                                    if (FunctionsString.IsMultiline(InputValue))
                                     {
                                         ResultValue = TranslateMultilineValue(InputValue.SplitToLines().ToArray(), THTranslationCache);
                                     }

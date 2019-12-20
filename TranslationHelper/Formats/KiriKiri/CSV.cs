@@ -74,7 +74,7 @@ namespace TranslationHelper.Formats.KiriKiri
                         {
                             if (name > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[name]) || FunctionsStrings.IsDigitsOnly(columns[name]))
+                                if (string.IsNullOrEmpty(columns[name]) || FunctionsString.IsDigitsOnly(columns[name]))
                                 {
                                 }
                                 else
@@ -85,7 +85,7 @@ namespace TranslationHelper.Formats.KiriKiri
                             }
                             if (detail > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[detail]) || FunctionsStrings.IsDigitsOnly(columns[detail]))
+                                if (string.IsNullOrEmpty(columns[detail]) || FunctionsString.IsDigitsOnly(columns[detail]))
                                 {
                                 }
                                 else
@@ -96,7 +96,7 @@ namespace TranslationHelper.Formats.KiriKiri
                             }
                             if (type > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[type]) || FunctionsStrings.IsDigitsOnly(columns[type]))
+                                if (string.IsNullOrEmpty(columns[type]) || FunctionsString.IsDigitsOnly(columns[type]))
                                 {
                                 }
                                 else
@@ -107,7 +107,7 @@ namespace TranslationHelper.Formats.KiriKiri
                             }
                             if (field > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[field]) || FunctionsStrings.IsDigitsOnly(columns[field]))
+                                if (string.IsNullOrEmpty(columns[field]) || FunctionsString.IsDigitsOnly(columns[field]))
                                 {
                                 }
                                 else
@@ -118,7 +118,7 @@ namespace TranslationHelper.Formats.KiriKiri
                             }
                             if (comment > -1)
                             {
-                                if (string.IsNullOrEmpty(columns[comment]) || FunctionsStrings.IsDigitsOnly(columns[comment]))
+                                if (string.IsNullOrEmpty(columns[comment]) || FunctionsString.IsDigitsOnly(columns[comment]))
                                 {
                                 }
                                 else

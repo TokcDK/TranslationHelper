@@ -37,7 +37,7 @@ namespace TranslationHelper.Formats.KiriKiri
                             for (int l = 0; l < ValuesLength; l++)
                             {
                                 string subline = Values[l];
-                                if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || FunctionsStrings.IsDigitsOnly(subline))
+                                if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || FunctionsString.IsDigitsOnly(subline))
                                 {
                                 }
                                 else

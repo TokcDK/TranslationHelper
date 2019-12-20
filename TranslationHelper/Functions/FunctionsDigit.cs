@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TranslationHelper.Main.Functions
 {
-    class FunctionsDigitsOperations
+    class FunctionsDigit
     {
         public static bool IsEqualsAnyNumberFromArray(int lineNum, int[] lineNumbers)
         {
