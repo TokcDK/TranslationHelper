@@ -13,6 +13,7 @@ namespace TranslationHelper.Data
         {
             THFilesElementsDataset = new DataSet();
             THFilesElementsDatasetInfo = new DataSet();
+            THFilesElementsALLDataTable = new DataSet();
         }
 
         public string SPath { get; set; }
@@ -22,5 +23,7 @@ namespace TranslationHelper.Data
         public DataSet THFilesElementsDataset { get; set; }
 
         public DataSet THFilesElementsDatasetInfo { get; set; }
+
+        public DataSet THFilesElementsALLDataTable { get; set; }
     }
 }
