@@ -59,7 +59,11 @@ namespace TranslationHelper
 
         //Translation cache
         //DataSet THTranslationCache;
-        internal static string THTranslationCachePath;
+        internal static string THTranslationCachePath
+        { 
+            get=> Properties.Settings.Default.THTranslationCachePath;
+            set=> Properties.Settings.Default.THTranslationCachePath = value;
+        }
 
         public THMain()
         {
@@ -5082,7 +5086,7 @@ namespace TranslationHelper
 
                 using (DataSet THTranslationCache = new DataSet())
                 {
-                    TranslationCacheInit(THTranslationCache);
+                    FunctionsTable.TranslationCacheInit(THTranslationCache);
 
                     int maxchars = 1000; //большие значения ломаю ответ сервера, например отсутствует или ломается разделитель при значении 1000, потом надо будет подстроить идеальный максимум
                     int CurrentCharsCount = 0;
@@ -5502,38 +5506,6 @@ namespace TranslationHelper
             }
         }
 
-        //DataSet THTranslationCache = new DataSet();
-        public static void TranslationCacheInit(DataSet DS)
-        {
-            if (DS == null)
-            {
-                return;
-            }
-
-            DS.Reset();
-            if (File.Exists(THTranslationCachePath))
-            {
-                FunctionsDBFile.ReadDBFile(DS, THTranslationCachePath);
-            }
-            else
-            {
-                DS.Tables.Add("TranslationCache");
-                DS.Tables["TranslationCache"].Columns.Add("Original");
-                DS.Tables["TranslationCache"].Columns.Add("Translation");
-            }
-            //MessageBox.Show("TranslationCache Rows.Count=" + THTranslationCache.Tables["TranslationCache"].Rows.Count+ "TranslationCache Columns.Count=" + THTranslationCache.Tables["TranslationCache"].Columns.Count);
-        }
-
-        public static void THTranslationCacheAdd(DataSet DS, string original, string translation)
-        {
-            if (DS != null)
-            {
-                //LogToFile("original=" + original+ ",translation=" + translation,true);
-                DS.Tables[0].Rows.Add(original, translation);
-            }
-        }
-
-
         private void THOnlineTranslate(int cind, int tableindex, int[] selindexes, string method = "s")
         {
             this.Invoke((Action)(() => translationInteruptToolStripMenuItem.Visible = true));
@@ -5545,7 +5517,7 @@ namespace TranslationHelper
             {
                 using (DataSet THTranslationCache = new DataSet())
                 {
-                    TranslationCacheInit(THTranslationCache);
+                    FunctionsTable.TranslationCacheInit(THTranslationCache);
 
                     //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
                     int tablescount;

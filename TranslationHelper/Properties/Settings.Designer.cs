@@ -214,5 +214,17 @@ namespace TranslationHelper.Properties {
                 this["THFilesListSelectedIndex"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string THTranslationCachePath {
+            get {
+                return ((string)(this["THTranslationCachePath"]));
+            }
+            set {
+                this["THTranslationCachePath"] = value;
+            }
+        }
     }
 }

@@ -23,9 +23,9 @@ namespace TranslationHelper
         {
             if (target != null)
             {
-                int errorcode = NativeMethods.SendMessage(target.Handle, WM_SETREDRAW, 1, 0);
+                _=NativeMethods.SendMessage(target.Handle, WM_SETREDRAW, 1, 0);
 
-                if (redraw && errorcode == 0)
+                if (redraw)
                 {
                     target.Refresh();
                 }

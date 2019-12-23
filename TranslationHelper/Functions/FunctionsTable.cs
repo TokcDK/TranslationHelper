@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Data;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -53,13 +54,12 @@ namespace TranslationHelper.Main.Functions
         {
             if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed)
             {
-                DataTable Table = THTranslationCache.Tables[0];
-                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(Table, Original))
+                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original))
                 {
                 }
                 else
                 {
-                    Table.Rows.Add(Original, Translation);
+                    THTranslationCache.Tables[0].Rows.Add(Original, Translation);
                 }
             }
         }
@@ -100,13 +100,26 @@ namespace TranslationHelper.Main.Functions
                 }
                 foreach (DataRow row in table.Rows)
                 {
-                    if (!GetAlreadyAddedInTableAndTableHasRowsColumns(tempTable, row[0] as string))
+                    if (!GetAlreadyAddedInTableAndTableHasRowsColumns_Slower(tempTable, row[0] as string))
                     {
                         tempTable.ImportRow(row);
                     }
                 }
                 return tempTable;
             }
+        }
+
+        private static bool GetAlreadyAddedInTableAndTableHasRowsColumns_Slower(DataTable DT, string value)
+        {
+            int DTRowsCount = DT.Rows.Count;
+            for (int i = 0; i < DTRowsCount; i++)
+            {
+                if (Equals(DT.Rows[i][0],value))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static bool GetAlreadyAddedInTableAndTableHasRowsColumns(DataTable table, string value)
@@ -143,20 +156,24 @@ namespace TranslationHelper.Main.Functions
             }
             catch (System.ArgumentException)
             {
-                //очистка таблицы от дубликатов, если задание ключа выдало исключение
-                table = RemoveAllRowsDuplicatesWithRepeatingOriginals(table);
+                table.Rows.Clear();//очистка, если не смогло восстановить строки
+                return false;//возврат false, после стирания строк
 
-                try
-                {
-                    //перезадание ключа
-                    keyColumns[0] = table.Columns[0];
-                    table.PrimaryKey = keyColumns;
-                }
-                catch
-                {
-                    table.Rows.Clear();//очистка, если не смогло восстановить строки
-                    return false;//возврат false, после стирания строк
-                }
+
+                ////очистка таблицы от дубликатов, если задание ключа выдало исключение
+                //table = RemoveAllRowsDuplicatesWithRepeatingOriginals(table);
+
+                //try
+                //{
+                //    //перезадание ключа
+                //    keyColumns[0] = table.Columns[0];
+                //    table.PrimaryKey = keyColumns;
+                //}
+                //catch
+                //{
+                //    table.Rows.Clear();//очистка, если не смогло восстановить строки
+                //    return false;//возврат false, после стирания строк
+                //}
             }
 
             //очень быстрый способ поиска дубликата значения, два нижник в разы медленней, этот почти не заметен
@@ -184,6 +201,37 @@ namespace TranslationHelper.Main.Functions
             */
             //LogToFile("Value still not in table: \r\n" + value);
             return false;
+        }
+
+        //DataSet THTranslationCache = new DataSet();
+        public static void TranslationCacheInit(DataSet DS)
+        {
+            if (DS == null)
+            {
+                return;
+            }
+
+            DS.Reset();
+            if (File.Exists(Properties.Settings.Default.THTranslationCachePath))
+            {
+                FunctionsDBFile.ReadDBFile(DS, Properties.Settings.Default.THTranslationCachePath);
+            }
+            else
+            {
+                DS.Tables.Add("TranslationCache");
+                DS.Tables["TranslationCache"].Columns.Add("Original");
+                DS.Tables["TranslationCache"].Columns.Add("Translation");
+            }
+            //MessageBox.Show("TranslationCache Rows.Count=" + THTranslationCache.Tables["TranslationCache"].Rows.Count+ "TranslationCache Columns.Count=" + THTranslationCache.Tables["TranslationCache"].Columns.Count);
+        }
+
+        public static void THTranslationCacheAdd(DataSet DS, string original, string translation)
+        {
+            if (DS != null)
+            {
+                //LogToFile("original=" + original+ ",translation=" + translation,true);
+                DS.Tables[0].Rows.Add(original, translation);
+            }
         }
 
         /// <summary>
