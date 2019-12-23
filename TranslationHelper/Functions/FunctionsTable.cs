@@ -111,7 +111,7 @@ namespace TranslationHelper.Main.Functions
 
         public static bool GetAlreadyAddedInTableAndTableHasRowsColumns(DataTable table, string value)
         {
-            if (table.Rows.Count == 0 || table.Columns.Count == 0)
+            if (string.IsNullOrEmpty(value) || table==null || table.Rows.Count == 0 || table.Columns.Count == 0)
             {
                 return false;
             }

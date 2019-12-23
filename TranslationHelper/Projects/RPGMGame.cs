@@ -94,7 +94,6 @@ namespace TranslationHelper.Projects
                 extractedpatchpath = outdir + "_patch";// Распаковывать в Work\ProjectDir\
             }
 
-            bool ret;// = false;
             //if (!Directory.Exists(outdir))
             //{
             //    Directory.CreateDirectory(outdir);
@@ -112,7 +111,7 @@ namespace TranslationHelper.Projects
                 else
                 {
                     //чистка и пересоздание папки
-                    Directory.Delete(outdir, true);
+                    RPGMTransOther.CleanInvalidRPGMakerTransPatchFolders(outdir);
                     Directory.CreateDirectory(outdir);
 
                     //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
@@ -120,18 +119,7 @@ namespace TranslationHelper.Projects
                 }
             }
 
-            ret = RPGMTransOther.CreateRPGMakerTransPatch(dir.FullName, outdir);
-
-            if (ret)
-            {
-            }
-            else
-            {
-                //чистка папок 
-                Directory.Delete(outdir, true);
-            }
-
-            return ret;
+            return RPGMTransOther.CreateRPGMakerTransPatch(dir.FullName, outdir);
         }
 
         private bool RPGMTransPatchPrepare()
