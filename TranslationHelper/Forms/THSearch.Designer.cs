@@ -34,6 +34,7 @@
             this.SearchResultsDatagridview = new System.Windows.Forms.DataGridView();
             this.lblError = new System.Windows.Forms.Label();
             this.THSearchPanel = new System.Windows.Forms.Panel();
+            this.SearchFindLinesWithPossibleIssuesCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchAlwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchModeGroupBox = new System.Windows.Forms.GroupBox();
             this.panel6 = new System.Windows.Forms.Panel();
@@ -141,6 +142,7 @@
             // 
             this.THSearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.THSearchPanel.Controls.Add(this.SearchFindLinesWithPossibleIssuesCheckBox);
             this.THSearchPanel.Controls.Add(this.SearchAlwaysOnTopCheckBox);
             this.THSearchPanel.Controls.Add(this.SearchModeGroupBox);
             this.THSearchPanel.Controls.Add(this.THSearchMatchCaseCheckBox);
@@ -150,6 +152,17 @@
             this.THSearchPanel.Name = "THSearchPanel";
             this.THSearchPanel.Size = new System.Drawing.Size(565, 304);
             this.THSearchPanel.TabIndex = 7;
+            // 
+            // SearchFindLinesWithPossibleIssuesCheckBox
+            // 
+            this.SearchFindLinesWithPossibleIssuesCheckBox.AutoSize = true;
+            this.SearchFindLinesWithPossibleIssuesCheckBox.Location = new System.Drawing.Point(135, 92);
+            this.SearchFindLinesWithPossibleIssuesCheckBox.Name = "SearchFindLinesWithPossibleIssuesCheckBox";
+            this.SearchFindLinesWithPossibleIssuesCheckBox.Size = new System.Drawing.Size(166, 17);
+            this.SearchFindLinesWithPossibleIssuesCheckBox.TabIndex = 22;
+            this.SearchFindLinesWithPossibleIssuesCheckBox.Text = "Find lines with possible issues";
+            this.SearchFindLinesWithPossibleIssuesCheckBox.UseVisualStyleBackColor = true;
+            this.SearchFindLinesWithPossibleIssuesCheckBox.CheckedChanged += new System.EventHandler(this.SearchFindLinesWithPossibleIssuesCheckBox_CheckedChanged);
             // 
             // SearchAlwaysOnTopCheckBox
             // 
@@ -513,5 +526,6 @@
         private System.Windows.Forms.TextBox SearchFormReplaceWithTextBox;
         private System.Windows.Forms.TextBox SearchFormFindWhatTextBox;
         private System.Windows.Forms.CheckBox SearchAlwaysOnTopCheckBox;
+        private System.Windows.Forms.CheckBox SearchFindLinesWithPossibleIssuesCheckBox;
     }
 }

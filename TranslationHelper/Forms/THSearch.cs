@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using System.Globalization;
+using TranslationHelper.Data;
 using TranslationHelper.ExternalAdditions;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper
 {
@@ -20,16 +16,16 @@ namespace TranslationHelper
     {
         //private readonly THMain Main;
         internal ListBox THFilesListBox;
-        internal DataSet THFilesElementsDataset;
+        THDataWork thDataWork;
         internal DataGridView THFileElementsDataGridView;
-        readonly RichTextBox THTargetRichTextBox;        
+        readonly RichTextBox THTargetRichTextBox;
 
-        public THSearch(DataSet DS, ListBox listBox, DataGridView DGV, RichTextBox TTB)
+        public THSearch(THDataWork thDataWork, ListBox listBox, DataGridView DGV, RichTextBox TTB)
         {
             InitializeComponent();
             //Main = MainForm;
             THFilesListBox = listBox;
-            THFilesElementsDataset = DS;
+            this.thDataWork = thDataWork;
             THFileElementsDataGridView = DGV;
             THTargetRichTextBox = TTB;
 
@@ -100,12 +96,12 @@ namespace TranslationHelper
             return SearchMethodTranslationRadioButton.Checked ? "Translation" : "Original";
         }
 
-        int startrowsearchindex=0;        //Индекс стартовой ячейки для поиска
+        int startrowsearchindex = 0;        //Индекс стартовой ячейки для поиска
         int tableindex;
         int rowindex;
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
-            if (SearchFormFindWhatTextBox.Text.Length==0 || THFilesElementsDataset == null)
+            if (SearchFormFindWhatTextBox.Text.Length == 0 || thDataWork.THFilesElementsDataset == null)
             {
             }
             else
@@ -123,10 +119,10 @@ namespace TranslationHelper
                     else
                     {
                         THFilesListBox.SelectedIndex = tableindex;
-                        THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
+                        THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableindex];
                     }
                     THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
-                    
+
                     //подсвечивание найденного
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                     Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(SearchFormFindWhatTextBox.Text)));
@@ -143,7 +139,7 @@ namespace TranslationHelper
                 {
                     startrowsearchindex = 0;
                     lblError.Visible = false;
-                    oDsResults = THFilesElementsDataset.Clone();
+                    oDsResults = thDataWork.THFilesElementsDataset.Clone();
                     //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
                     DataTable drFoundRowsTable = SearchNew(oDsResults);
 
@@ -157,7 +153,7 @@ namespace TranslationHelper
                             StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
 
                             oDsResults.AcceptChanges();
-                            
+
                             string searchcolumn = GetSearchColumn();
                             tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString(), CultureInfo.GetCultureInfo("en-US"));
                             rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString(), CultureInfo.GetCultureInfo("en-US"));
@@ -168,7 +164,7 @@ namespace TranslationHelper
                             else
                             {
                                 THFilesListBox.SelectedIndex = tableindex;
-                                THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
+                                THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableindex];
                             }
                             THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
 
@@ -204,7 +200,7 @@ namespace TranslationHelper
         private void StoryFoundValueToComboBox(string foundvalue)
         {
             lastfoundvalue = foundvalue;
-            for (int i=0;i< SearchFormFindWhatComboBox.Items.Count;i++)
+            for (int i = 0; i < SearchFormFindWhatComboBox.Items.Count; i++)
             {
                 if (SearchFormFindWhatComboBox.Items[i].ToString() == foundvalue)
                 {
@@ -234,7 +230,7 @@ namespace TranslationHelper
             else
             {
                 SearchResultsDatagridview.DataSource = oDsResults.Tables[0];
-                for (int c=0;c< SearchResultsDatagridview.ColumnCount; c++)
+                for (int c = 0; c < SearchResultsDatagridview.ColumnCount; c++)
                 {
                     if (c > 1)
                     {
@@ -254,20 +250,14 @@ namespace TranslationHelper
         DataSet oDsResults;
         private void FindAllButton_Click(object sender, EventArgs e)
         {
-            if (SearchFormFindWhatTextBox.Text.Length==0 || THFilesElementsDataset == null)
-            {
-            }
-            else
+            if (thDataWork.THFilesElementsDataset != null && (SearchFindLinesWithPossibleIssuesCheckBox.Checked || SearchFormFindWhatTextBox.Text.Length > 0))
             {
                 lblError.Visible = false;
-                oDsResults = THFilesElementsDataset.Clone();
+                oDsResults = thDataWork.THFilesElementsDataset.Clone();
                 //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
                 DataTable drFoundRowsTable = SearchNew(oDsResults);
 
-                if (drFoundRowsTable == null)
-                {
-                }
-                else
+                if (drFoundRowsTable != null)
                 {
                     if (drFoundRowsTable.Rows.Count > 0)
                     {
@@ -297,74 +287,83 @@ namespace TranslationHelper
 
         private DataTable SearchNew(DataSet DS)
         {
-            if (THFilesElementsDataset.Tables.Count > 0)
+            if (thDataWork.THFilesElementsDataset.Tables.Count > 0)
             {
                 string searchcolumn = GetSearchColumn();
                 string strQuery = SearchFormFindWhatTextBox.Text;
                 oDsResultsCoordinates.Rows.Clear();
-                int DatatablesCount = SearchRangeTableRadioButton.Checked ? THFilesListBox.SelectedIndex + 1 : THFilesElementsDataset.Tables.Count;
+                int DatatablesCount = SearchRangeTableRadioButton.Checked ? THFilesListBox.SelectedIndex + 1 : thDataWork.THFilesElementsDataset.Tables.Count;
                 int StartTableIndex = SearchRangeTableRadioButton.Checked ? THFilesListBox.SelectedIndex : 0;
                 for (int t = StartTableIndex; t < DatatablesCount; t++)
                 {
-                    for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                    for (int r = 0; r < thDataWork.THFilesElementsDataset.Tables[t].Rows.Count; r++)
                     {
-                        if ((THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty).Length == 0)
+                        if (((thDataWork.THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty).Length > 0) || SearchFindLinesWithPossibleIssuesCheckBox.Checked)
                         {
+                            DataRow Row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
+                            string SelectedCellValue = thDataWork.THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty;
 
-                        }
-                        else
-                        {
-                            DataRow Row = THFilesElementsDataset.Tables[t].Rows[r];
-                            string SelectedCellValue = THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty;
-                            if (SearchModeRegexRadioButton.Checked)
+                            if (SearchFindLinesWithPossibleIssuesCheckBox.Checked)
                             {
-                                try
+                                if (IsTheRowHasPossibleIssues(Row))
                                 {
-                                    if (THSearchMatchCaseCheckBox.Checked)
-                                    {
-                                        if (Regex.IsMatch(SelectedCellValue, strQuery))
-                                        {
-                                            DS.Tables[0].ImportRow(Row);
-                                            oDsResultsCoordinates.Rows.Add(t, r);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (Regex.IsMatch(SelectedCellValue, strQuery, RegexOptions.IgnoreCase))
-                                        {
-                                            DS.Tables[0].ImportRow(Row);
-                                            oDsResultsCoordinates.Rows.Add(t, r);
-                                        }
-                                    }
-                                }
-                                catch
-                                {
-                                    return null;//при ошибках регекса выходить
+                                    DS.Tables[0].ImportRow(Row);
+                                    oDsResultsCoordinates.Rows.Add(t, r);
                                 }
                             }
                             else
                             {
-                                try
+                                if (SearchModeRegexRadioButton.Checked)
                                 {
-                                    if (THSearchMatchCaseCheckBox.Checked)
+                                    try
                                     {
-                                        if (SelectedCellValue.Contains(strQuery))
+                                        if (THSearchMatchCaseCheckBox.Checked)
                                         {
-                                            DS.Tables[0].ImportRow(Row);
-                                            oDsResultsCoordinates.Rows.Add(t, r);
+                                            if (Regex.IsMatch(SelectedCellValue, strQuery))
+                                            {
+                                                DS.Tables[0].ImportRow(Row);
+                                                oDsResultsCoordinates.Rows.Add(t, r);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (Regex.IsMatch(SelectedCellValue, strQuery, RegexOptions.IgnoreCase))
+                                            {
+                                                DS.Tables[0].ImportRow(Row);
+                                                oDsResultsCoordinates.Rows.Add(t, r);
+                                            }
                                         }
                                     }
-                                    else
+                                    catch
                                     {
-                                        if (SelectedCellValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant()))
-                                        {
-                                            DS.Tables[0].ImportRow(Row);
-                                            oDsResultsCoordinates.Rows.Add(t, r);
-                                        }
+                                        return null;//при ошибках регекса выходить
                                     }
                                 }
-                                catch
+                                else
                                 {
+                                    try
+                                    {
+                                        if (THSearchMatchCaseCheckBox.Checked)
+                                        {
+                                            if (SelectedCellValue.Contains(strQuery))
+                                            {
+                                                DS.Tables[0].ImportRow(Row);
+                                                oDsResultsCoordinates.Rows.Add(t, r);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (SelectedCellValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant()))
+                                            {
+                                                DS.Tables[0].ImportRow(Row);
+                                                oDsResultsCoordinates.Rows.Add(t, r);
+                                            }
+                                        }
+                                    }
+                                    catch
+                                    {
+
+                                    }
 
                                 }
 
@@ -374,6 +373,52 @@ namespace TranslationHelper
                 }
             }
             return DS.Tables[0];
+        }
+
+        DataTable Actors;
+        private bool IsTheRowHasPossibleIssues(DataRow row)
+        {
+            string rowTranslation = (row[1] + string.Empty);
+            if (rowTranslation.Length == 0)
+            {
+                return false;
+            }
+
+            //если длина любой из строк длиннее лимита
+            if ((FunctionsAutoOperations.GetLongestLineLength(rowTranslation) > Properties.Settings.Default.THOptionLineCharLimit))
+            {
+                return true;
+            }
+
+            if (Actors == null)
+            {
+                GetActorsTable();
+            }
+
+            foreach (DataRow ActorsLine in Actors.Rows)
+            {
+                string original = ActorsLine[0] as string;
+                string translation = ActorsLine[1] + string.Empty;
+                //если оригинал содержит оригинал(Анна) из Actors, а перевод не содержит определение(Anna) из Actors
+                if (translation.Length > 0 && (original.Length<80 && (row[0] as string).Contains(original) && !rowTranslation.Contains(translation)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void GetActorsTable()
+        {
+            foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
+            {
+                if (table.TableName.StartsWith("Actors"))
+                {
+                    Actors = table;
+                    break;
+                }
+            }
         }
 
         private void LinkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -398,7 +443,7 @@ namespace TranslationHelper
             _ = Invoke(new MethodInvoker(delegate ()
             {
                 Thread.Sleep(200);
-                if (THTargetRichTextBox.Text.Length==0)
+                if (THTargetRichTextBox.Text.Length == 0)
                 {
                     //MessageBox.Show("THTargetRichTextBox.Text="+ THTargetRichTextBox.Text);
                 }
@@ -485,8 +530,8 @@ namespace TranslationHelper
             string searchcolumn = GetSearchColumn();
             tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString(), CultureInfo.GetCultureInfo("en-US"));
 
-            THFilesElementsDataset.Tables[tableindex].DefaultView.RowFilter = string.Empty;
-            THFilesElementsDataset.Tables[tableindex].DefaultView.Sort = string.Empty;
+            thDataWork.THFilesElementsDataset.Tables[tableindex].DefaultView.RowFilter = string.Empty;
+            thDataWork.THFilesElementsDataset.Tables[tableindex].DefaultView.Sort = string.Empty;
             THFileElementsDataGridView.Refresh();
 
             rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString(), CultureInfo.GetCultureInfo("en-US"));
@@ -498,10 +543,10 @@ namespace TranslationHelper
             else
             {
                 THFilesListBox.SelectedIndex = tableindex;
-                THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
+                THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableindex];
             }
             THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
-            
+
             //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
             Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(THFileElementsDataGridView.CurrentCell.Value.ToString())));
             selectstring.Start();
@@ -514,7 +559,7 @@ namespace TranslationHelper
 
         private void SearchFormReplaceButton_Click(object sender, EventArgs e)
         {
-            if (SearchFormFindWhatTextBox.Text.Length == 0 || SearchFormReplaceWithTextBox.Text.Length == 0 || THFilesElementsDataset == null)
+            if (SearchFormFindWhatTextBox.Text.Length == 0 || SearchFormReplaceWithTextBox.Text.Length == 0 || thDataWork.THFilesElementsDataset == null)
             {
             }
             else
@@ -523,7 +568,7 @@ namespace TranslationHelper
                 if (inputqualwithlatest)
                 {
                     string searchcolumn = GetSearchColumn();
-                    
+
                     if (startrowsearchindex == 0)
                     {
                     }
@@ -567,7 +612,7 @@ namespace TranslationHelper
                     else
                     {
                         THFilesListBox.SelectedIndex = tableindex;
-                        THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
+                        THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableindex];
                     }
                     THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
 
@@ -582,7 +627,7 @@ namespace TranslationHelper
                 {
                     startrowsearchindex = 0;
                     lblError.Visible = false;
-                    oDsResults = THFilesElementsDataset.Clone();
+                    oDsResults = thDataWork.THFilesElementsDataset.Clone();
                     //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
                     DataTable drFoundRowsTable = SearchNew(oDsResults);
 
@@ -607,7 +652,7 @@ namespace TranslationHelper
                             else
                             {
                                 THFilesListBox.SelectedIndex = tableindex;
-                                THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[tableindex];
+                                THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableindex];
                             }
                             THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
 
@@ -646,13 +691,13 @@ namespace TranslationHelper
 
         private void SearchFormReplaceAllButton_Click(object sender, EventArgs e)
         {
-            if (SearchFormFindWhatTextBox.Text.Length == 0 || THFilesElementsDataset == null)
+            if (SearchFormFindWhatTextBox.Text.Length == 0 || thDataWork.THFilesElementsDataset == null)
             {
             }
             else
             {
                 lblError.Visible = false;
-                oDsResults = THFilesElementsDataset.Clone();
+                oDsResults = thDataWork.THFilesElementsDataset.Clone();
                 //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
                 DataTable drFoundRowsTable = SearchNew(oDsResults);
 
@@ -673,26 +718,26 @@ namespace TranslationHelper
                         this.Height = 589;
 
                         string searchcolumn = GetSearchColumn();
-                        for (int r=0; r< oDsResults.Tables[0].Rows.Count; r++)
+                        for (int r = 0; r < oDsResults.Tables[0].Rows.Count; r++)
                         {
                             tableindex = int.Parse(oDsResultsCoordinates.Rows[r][0] + string.Empty, CultureInfo.CurrentCulture);
                             rowindex = int.Parse(oDsResultsCoordinates.Rows[r][1] + string.Empty, CultureInfo.CurrentCulture);
 
-                            string value = THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] + string.Empty;
+                            string value = thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] + string.Empty;
                             if (value.Length > 0)
                             {
                                 if (SearchModeRegexRadioButton.Checked)
                                 {
                                     if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                                     {
-                                        THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = Regex.Replace(GetFirstIfNotEmpty(THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
+                                        thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = Regex.Replace(GetFirstIfNotEmpty(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
                                     }
                                 }
                                 else
                                 {
                                     if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                                     {
-                                        THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = ReplaceEx.Replace(GetFirstIfNotEmpty(THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                        thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = ReplaceEx.Replace(GetFirstIfNotEmpty(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                                     }
                                 }
                             }
@@ -742,6 +787,20 @@ namespace TranslationHelper
         private void THSearch_FormClosing(object sender, FormClosingEventArgs e)
         {
             //oDsResults.Dispose();
+        }
+
+        private void SearchFindLinesWithPossibleIssuesCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            SearchFormFindWhatTextBox.Text = string.Empty;
+            SearchFormFindWhatTextBox.Enabled = !SearchFormFindWhatTextBox.Enabled;
+            SearchFormFindWhatComboBox.Enabled = !SearchFormFindWhatComboBox.Enabled;
+
+
+            SearchFormReplaceWithTextBox.Enabled = !SearchFormReplaceWithTextBox.Enabled;
+            SearchFormReplaceWithComboBox.Enabled = !SearchFormReplaceWithComboBox.Enabled;
+            SearchFormReplaceAllButton.Enabled = !SearchFormReplaceAllButton.Enabled;
+            SearchFormReplaceButton.Enabled = !SearchFormReplaceButton.Enabled;
+            SearchFormFindNextButton.Enabled = !SearchFormFindNextButton.Enabled;
         }
     }
 }

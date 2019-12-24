@@ -6408,7 +6408,7 @@ namespace TranslationHelper
                 {
                     if (search == null || search.IsDisposed)
                     {
-                        search = new THSearch(thDataWork.THFilesElementsDataset, THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
+                        search = new THSearch(thDataWork, THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
                     }
 
                     if (search.Visible)
@@ -6732,6 +6732,11 @@ namespace TranslationHelper
         }
 
         private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SplitSelectedLines();
+        }
+
+        private void SplitSelectedLines()
         {
             int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
             if (THFileElementsDataGridViewSelectedCellsCount > 0)
