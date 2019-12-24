@@ -594,7 +594,7 @@ namespace TranslationHelper.Main.Functions
         {
             if (char.IsLetter(DSTransCell[0]))
             {
-                return char.ToUpper(DSTransCell[0], CultureInfo.InvariantCulture) + DSTransCell.Substring(1);
+                DSTransCell = char.ToUpper(DSTransCell[0], CultureInfo.InvariantCulture) + DSTransCell.Substring(1);
             }
             else
             {
@@ -607,12 +607,40 @@ namespace TranslationHelper.Main.Functions
                     }
                     else
                     {
-                        return DSTransCell.Substring(0, c) + char.ToUpper(DSTransCell[c], CultureInfo.InvariantCulture) + (c == DSTransCellLength - 1 ? string.Empty : DSTransCell.Substring(c + 1));
+                        DSTransCell = DSTransCell.Substring(0, c) + char.ToUpper(DSTransCell[c], CultureInfo.InvariantCulture) + (c == DSTransCellLength - 1 ? string.Empty : DSTransCell.Substring(c + 1));
+                        break;
                     }
                 }
-
-                return DSTransCell;
             }
+
+            if (DSTransCell.StartsWith("[") && FunctionsString.IsMultiline(DSTransCell))
+            {
+                int lineCnt = 0;
+                string resultLine = string.Empty;
+                foreach (var line in DSTransCell.SplitToLines())
+                {
+                    if (lineCnt == 0)
+                    {
+                        resultLine += line;
+                    }
+                    else
+                    {
+                        resultLine += Environment.NewLine;
+                        if (lineCnt == 1)
+                        {
+                            resultLine += stringToUpper(line);
+                        }
+                        else
+                        {
+                            resultLine += line;
+                        }
+                    }
+                    lineCnt++;
+                }
+                DSTransCell = resultLine;
+            }
+
+            return DSTransCell;
         }
 
         /// <summary>
