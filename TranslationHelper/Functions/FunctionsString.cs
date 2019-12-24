@@ -10,6 +10,19 @@ namespace TranslationHelper.Main.Functions
     static class FunctionsString
     {
         /// <summary>
+        /// added to string split function to make line split more safe with smaller chance to brake special symbols
+        /// </summary>
+        /// <param name="cellValue"></param>
+        /// <returns></returns>
+        public static bool IsStringContainsSpecialSymbols(string cellValue)
+        {
+            return
+                cellValue.Contains("\\")
+                ;
+
+        }
+
+        /// <summary>
         /// функция деления строки на равные части с остатком и запись их в строковый массив
         /// </summary>
         /// <param name="str"></param>

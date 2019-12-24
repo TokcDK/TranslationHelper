@@ -6757,7 +6757,7 @@ namespace TranslationHelper
                     {
                         string origCellValue = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] as string;
                         string transCellValue = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
-                        if (!string.IsNullOrWhiteSpace(transCellValue) && transCellValue != origCellValue && FunctionsAutoOperations.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit)
+                        if (!string.IsNullOrWhiteSpace(transCellValue) && transCellValue != origCellValue && FunctionsAutoOperations.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit && !FunctionsString.IsStringContainsSpecialSymbols(transCellValue))
                         {
                             thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[rind][1] = FunctionsAutoOperations.SplitMultiLineIfBeyondOfLimit(transCellValue, Properties.Settings.Default.THOptionLineCharLimit);
                         }
@@ -6779,9 +6779,9 @@ namespace TranslationHelper
                 int TableRowsCount = Table.Rows.Count;
                 for (int r = 0; r < TableRowsCount; r++)
                 {
-                    var Row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
+                    var Row = Table.Rows[r];
                     string CellValue = Row[1] as string;
-                    if (Row[1] == null || string.IsNullOrEmpty(CellValue) || Equals(Row[1], Row[0]) || FunctionsAutoOperations.GetLongestLineLength(CellValue) <= Properties.Settings.Default.THOptionLineCharLimit)
+                    if (Row[1] == null || string.IsNullOrEmpty(CellValue) || Equals(Row[1], Row[0]) || FunctionsAutoOperations.GetLongestLineLength(CellValue) <= Properties.Settings.Default.THOptionLineCharLimit || FunctionsString.IsStringContainsSpecialSymbols(CellValue))
                     {
                     }
                     else
@@ -6790,7 +6790,7 @@ namespace TranslationHelper
                     }
                 }
             }
-            MessageBox.Show("Finished");
+            MessageBox.Show(T._("Finished"));
         }
 
         private void FixMessagesInTheTableToolStripMenuItem_Click(object sender, EventArgs e)
