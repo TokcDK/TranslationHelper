@@ -15,9 +15,9 @@ namespace TranslationHelper.Projects
         {
         }
 
-        internal override bool OpenDetect(string sPath)
+        internal override bool OpenDetect()
         {
-            if (Path.GetFileName(sPath) == "RPGMKTRANSPATCH")
+            if (Path.GetFileName(thDataWork.SPath) == "RPGMKTRANSPATCH")
             {
                 return true;
             }

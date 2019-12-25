@@ -17,11 +17,11 @@ namespace TranslationHelper.Projects
         {
         }
 
-        internal override bool OpenDetect(string sPath)
+        internal override bool OpenDetect()
         {
-            if (Path.GetExtension(sPath) == ".exe")
+            if (Path.GetExtension(thDataWork.SPath) == ".exe")
             {
-                DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+                DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.SPath));
 
                 if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2")) 
                     || dir.GetFiles("*.rgss3a").Length > 0 

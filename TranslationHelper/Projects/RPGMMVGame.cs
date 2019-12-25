@@ -15,9 +15,9 @@ namespace TranslationHelper.Projects
         {
         }
 
-        internal override bool OpenDetect(string sPath)
+        internal override bool OpenDetect()
         {
-            if (Path.GetExtension(sPath) == ".exe")
+            if (Path.GetExtension(thDataWork.SPath) == ".exe")
             {
                 if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", "system.json")))
                 {

@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects
         /// Conditions to detect on open
         /// </summary>
         /// <returns></returns>
-        internal abstract bool OpenDetect(string sPath);
+        internal abstract bool OpenDetect();
 
         /// <summary>
         /// Project title
