@@ -2775,7 +2775,7 @@ namespace TranslationHelper
                         //THTargetRichTextBox.Select(Properties.Settings.Default.THOptionLineCharLimit+1, THTargetRichTextBox.Text.Length);
                         //THTargetRichTextBox.SelectionColor = Color.Red;
 
-                        TranslationLongestLineLenghtLabel.Text = FunctionsAutoOperations.GetLongestLineLength(cellvalue.ToString()).ToString(CultureInfo.InvariantCulture);
+                        TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength(cellvalue.ToString()).ToString(CultureInfo.InvariantCulture);
                     }
 
                     THInfoTextBox.Text = string.Empty;
@@ -6332,17 +6332,17 @@ namespace TranslationHelper
 
         private void ToUPPERCASEToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionsAutoOperations.StringCaseMorph(thDataWork.THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 2);
+            FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 2);
         }
 
         private void FirstCharacterToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionsAutoOperations.StringCaseMorph(thDataWork.THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 1);
+            FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 1);
         }
 
         private void TolowercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionsAutoOperations.StringCaseMorph(thDataWork.THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 0);
+            FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 0);
         }
 
         bool InteruptTranslation = false;
@@ -6757,9 +6757,9 @@ namespace TranslationHelper
                     {
                         string origCellValue = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] as string;
                         string transCellValue = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
-                        if (!string.IsNullOrWhiteSpace(transCellValue) && transCellValue != origCellValue && FunctionsAutoOperations.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit && !FunctionsString.IsStringContainsSpecialSymbols(transCellValue))
+                        if (!string.IsNullOrWhiteSpace(transCellValue) && transCellValue != origCellValue && FunctionsString.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit && !FunctionsString.IsStringContainsSpecialSymbols(transCellValue))
                         {
-                            thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[rind][1] = FunctionsAutoOperations.SplitMultiLineIfBeyondOfLimit(transCellValue, Properties.Settings.Default.THOptionLineCharLimit);
+                            thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[rind][1] = FunctionsString.SplitMultiLineIfBeyondOfLimit(transCellValue, Properties.Settings.Default.THOptionLineCharLimit);
                         }
 
                     }
@@ -6781,12 +6781,12 @@ namespace TranslationHelper
                 {
                     var Row = Table.Rows[r];
                     string CellValue = Row[1] as string;
-                    if (Row[1] == null || string.IsNullOrEmpty(CellValue) || Equals(Row[1], Row[0]) || FunctionsAutoOperations.GetLongestLineLength(CellValue) <= Properties.Settings.Default.THOptionLineCharLimit || FunctionsString.IsStringContainsSpecialSymbols(CellValue))
+                    if (Row[1] == null || string.IsNullOrEmpty(CellValue) || Equals(Row[1], Row[0]) || FunctionsString.GetLongestLineLength(CellValue) <= Properties.Settings.Default.THOptionLineCharLimit || FunctionsString.IsStringContainsSpecialSymbols(CellValue))
                     {
                     }
                     else
                     {
-                        thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = FunctionsAutoOperations.SplitMultiLineIfBeyondOfLimit(CellValue, Properties.Settings.Default.THOptionLineCharLimit);
+                        thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = FunctionsString.SplitMultiLineIfBeyondOfLimit(CellValue, Properties.Settings.Default.THOptionLineCharLimit);
                     }
                 }
             }
@@ -6824,21 +6824,21 @@ namespace TranslationHelper
         private void LowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsAutoOperations.StringCaseMorph(thDataWork.THFilesElementsDataset, TIndex, THFileElementsDataGridView, 0, true)));
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, TIndex, THFileElementsDataGridView, 0, true)));
             StringCase.Start();
         }
 
         private void UppercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsAutoOperations.StringCaseMorph(thDataWork.THFilesElementsDataset, TIndex, THFileElementsDataGridView, 1, true)));
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, TIndex, THFileElementsDataGridView, 1, true)));
             StringCase.Start();
         }
 
         private void UPPERCASEallToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsAutoOperations.StringCaseMorph(thDataWork.THFilesElementsDataset, TIndex, THFileElementsDataGridView, 2, true)));
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, TIndex, THFileElementsDataGridView, 2, true)));
             StringCase.Start();
         }
 

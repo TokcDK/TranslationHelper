@@ -385,7 +385,7 @@ namespace TranslationHelper
             }
 
             //если длина любой из строк длиннее лимита
-            if ((FunctionsAutoOperations.GetLongestLineLength(rowTranslation) > Properties.Settings.Default.THOptionLineCharLimit))
+            if ((FunctionsString.GetLongestLineLength(rowTranslation) > Properties.Settings.Default.THOptionLineCharLimit))
             {
                 return true;
             }
