@@ -91,6 +91,8 @@
     <Compile Include="Formats\KiriKiri\TJS.cs" />
     <Compile Include="Formats\KiriKiri\TSV.cs" />
     <Compile Include="Formats\KiriKiri\XP3.cs" />
+    <Compile Include="Formats\Raijin7\csv\CSV.cs" />
+    <Compile Include="Formats\Raijin7\eve\TXT.cs" />
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
     <Compile Include="Formats\RPGMMV\JSON.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransOther.cs" />
@@ -112,6 +114,7 @@
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
     <Compile Include="Projects\KiriKiri\TJSfile.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
+    <Compile Include="Projects\Raijin7Game.cs" />
     <Compile Include="Projects\RPGMGame.cs" />
     <Compile Include="Projects\RPGMMVGame.cs" />
     <Compile Include="Projects\RPGMTransPatch.cs" />

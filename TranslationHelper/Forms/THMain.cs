@@ -22,6 +22,7 @@ using TranslationHelper.Formats.KiriKiri;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Formats.RPGMTrans;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
 using TranslationHelper.Translators;
 
 namespace TranslationHelper
@@ -60,9 +61,9 @@ namespace TranslationHelper
         //Translation cache
         //DataSet THTranslationCache;
         internal static string THTranslationCachePath
-        { 
-            get=> Properties.Settings.Default.THTranslationCachePath;
-            set=> Properties.Settings.Default.THTranslationCachePath = value;
+        {
+            get => Properties.Settings.Default.THTranslationCachePath;
+            set => Properties.Settings.Default.THTranslationCachePath = value;
         }
 
         public THMain()
@@ -468,6 +469,7 @@ namespace TranslationHelper
         internal DirectoryInfo mvdatadir;
         private string GetSourceType(string sPath)
         {
+            thDataWork.SPath = sPath;
             DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
             Properties.Settings.Default.THSelectedDir = dir + string.Empty;
             Properties.Settings.Default.THSelectedGameDir = dir + string.Empty;
@@ -511,7 +513,22 @@ namespace TranslationHelper
             }
             else if (Path.GetExtension(sPath) == ".exe" /*sPath.ToLower().Contains("\\game.exe") || dir.GetFiles("*.exe").Length > 0*/)
             {
-                if (Directory.Exists(Path.Combine(Path.GetDirectoryName(sPath), "data", "bin")))
+                if (new Raijin7Game(thDataWork).OpenDetect())
+                {
+                    if (new Raijin7Game(thDataWork).Open())
+                    {
+                        foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
+                        {
+                            this.Invoke((Action)(() => THFilesList.Items.Add(table.TableName)));
+                        }
+                        return new Raijin7Game(thDataWork).ProjectTitle();
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
+                }
+                else if (Directory.Exists(Path.Combine(Path.GetDirectoryName(sPath), "data", "bin")))
                 {
                     return ProceedRubyRPGGame(Path.GetDirectoryName(sPath));//RJ263914
                 }
@@ -2174,7 +2191,7 @@ namespace TranslationHelper
         private int invalidformat;
         public bool OpenRPGMTransPatchFiles(List<string> ListFiles)
         {
-            if (ListFiles == null || thDataWork.THFilesElementsDataset== null)
+            if (ListFiles == null || thDataWork.THFilesElementsDataset == null)
                 return false;
 
             //измерение времени выполнения
@@ -2793,7 +2810,11 @@ namespace TranslationHelper
                         //THInfoTextBox.Text += furigana.Expression + "\r\n";
                         //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
                         //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
-                        THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + thDataWork.THFilesElementsDatasetInfo.Tables[THFilesList.SelectedIndex].Rows[e.RowIndex][0];
+                        if (thDataWork.THFilesElementsDatasetInfo != null && thDataWork.THFilesElementsDatasetInfo.Tables.Count > THFilesList.SelectedIndex)
+                        {
+                            THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + thDataWork.THFilesElementsDatasetInfo.Tables[THFilesList.SelectedIndex].Rows[e.RowIndex][0];
+                        }
+
                         if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
                         {
                             THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
@@ -3371,7 +3392,7 @@ namespace TranslationHelper
         //    }
         //}
 
-        public void ProgressInfo(bool status, string statustext="")
+        public void ProgressInfo(bool status, string statustext = "")
         {
             if (statustext == null /*|| THActionProgressBar == null || THInfolabel == null*/)
                 return;
