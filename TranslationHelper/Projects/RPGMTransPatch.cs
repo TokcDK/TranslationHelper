@@ -100,21 +100,22 @@ namespace TranslationHelper.Projects
 
                 //ProgressInfo(true, T._("opening file: ") + fname + ".txt");
 
-                _ = thDataWork.THFilesElementsDataset.Tables.Add(fname);
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Original");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Translation");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Context");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Advice");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Status");
-                if (thDataWork.THFilesElementsDatasetInfo == null)
-                {
-                }
-                else
-                {
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(fname);
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Columns.Add("Original");
-                }
+                //_ = thDataWork.THFilesElementsDataset.Tables.Add(fname);
+                //_ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Original");
+                //_ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Translation");
+                //_ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Context");
+                //_ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Advice");
+                //_ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Status");
+                //if (thDataWork.THFilesElementsDatasetInfo == null)
+                //{
+                //}
+                //else
+                //{
+                //    _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(fname);
+                //    _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Columns.Add("Original");
+                //}
 
+                thDataWork.FilePath = ListFiles[i];
                 switch (RPGMTransPatchVersion)
                 {
                     case 3:

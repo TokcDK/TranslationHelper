@@ -286,9 +286,24 @@ namespace TranslationHelper
                             //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
                             //open.Start();
 
-
+                            bool newOpen = false; 
                             thDataWork.SPath = THFOpen.FileName;
-                            //TryToDetectSourceAndOpen();
+
+                            if (newOpen)
+                            {
+                                if (await Task.Run(() => TryToDetectSourceAndOpen()).ConfigureAwait(true))
+                                {
+                                    AfterOpenActions();
+
+                                    return;
+                                }
+                                else
+                                {
+                                    THMsg.Show(T._("Problem with source opening. Try to report to devs about it."));
+
+                                    return;
+                                }
+                            }
 
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                             await Task.Run(() => RPGMFunctions.THSelectedSourceType = GetSourceType(THFOpen.FileName)).ConfigureAwait(true);
@@ -326,36 +341,7 @@ namespace TranslationHelper
                                 //    }
                                 //}
 
-                                Properties.Settings.Default.THSelectedGameDir = GetCorrectedGameDIr(Properties.Settings.Default.THSelectedGameDir);
-
-                                if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch") || RPGMFunctions.THSelectedSourceType.Contains("KiriKiri game"))
-                                {
-                                    Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedGameDir);
-                                }
-                                else
-                                {
-                                    Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedDir);
-                                }
-                                _ = THMsg.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");
-
-                                editToolStripMenuItem.Enabled = true;
-                                viewToolStripMenuItem.Enabled = true;
-                                loadTranslationToolStripMenuItem.Enabled = true;
-                                loadTrasnlationAsToolStripMenuItem.Enabled = true;
-                                runTestGameToolStripMenuItem.Enabled = true;
-                                runTestGameToolStripMenuItem.Visible = true;
-
-                                if (FVariant.Length == 0)
-                                {
-                                    FVariant = " * " + RPGMFunctions.THSelectedSourceType;
-                                }
-                                try
-                                {
-                                    ActiveForm.Text += FVariant;
-                                }
-                                catch
-                                {
-                                }
+                                AfterOpenActions();
                             }
 
                         }
@@ -363,6 +349,40 @@ namespace TranslationHelper
                 }
 
                 IsOpeningInProcess = false;
+            }
+        }
+
+        private void AfterOpenActions()
+        {
+            Properties.Settings.Default.THSelectedGameDir = GetCorrectedGameDIr(Properties.Settings.Default.THSelectedGameDir);
+
+            if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch") || RPGMFunctions.THSelectedSourceType.Contains("KiriKiri game"))
+            {
+                Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedGameDir);
+            }
+            else
+            {
+                Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedDir);
+            }
+            _ = THMsg.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");
+
+            editToolStripMenuItem.Enabled = true;
+            viewToolStripMenuItem.Enabled = true;
+            loadTranslationToolStripMenuItem.Enabled = true;
+            loadTrasnlationAsToolStripMenuItem.Enabled = true;
+            runTestGameToolStripMenuItem.Enabled = true;
+            runTestGameToolStripMenuItem.Visible = true;
+
+            if (FVariant.Length == 0)
+            {
+                FVariant = " * " + RPGMFunctions.THSelectedSourceType;
+            }
+            try
+            {
+                ActiveForm.Text += FVariant;
+            }
+            catch
+            {
             }
         }
 
@@ -380,7 +400,7 @@ namespace TranslationHelper
                             RPGMFunctions.THSelectedSourceType = Project.ProjectTitle();
                             foreach (DataTable file in thDataWork.THFilesElementsDataset.Tables)
                             {
-                                THFilesList.Items.Add(file.TableName);
+                                this.Invoke((Action)(()=>THFilesList.Items.Add(file.TableName)));
                             }
                             return true;
                         }
@@ -391,7 +411,7 @@ namespace TranslationHelper
             return false;
         }
 
-        private string GetCorrectedGameDIr(string tHSelectedGameDir)
+        private static string GetCorrectedGameDIr(string tHSelectedGameDir)
         {
             if (tHSelectedGameDir.Length == 0)
             {
@@ -405,7 +425,6 @@ namespace TranslationHelper
                 return Path.GetDirectoryName(Path.GetDirectoryName(tHSelectedGameDir));
             }
             return tHSelectedGameDir;
-            throw new NotImplementedException();
         }
 
         private void THCleanupThings()
@@ -2622,15 +2641,7 @@ namespace TranslationHelper
                     //FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", DateTime.Now + " >>:" + THFilesListBox.SelectedItem.ToString() + "> Time:\"" + time + "\"\r\n", true);
                     //MessageBox.Show("Time: "+ time); // тут выводим результат в консоль
 
-                    if (RPGMFunctions.THSelectedSourceType.Contains("RPGMakerTransPatch") || RPGMFunctions.THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch")) //Additional tweaks for RPGMTransPatch table
-                    {
-                        THFileElementsDataGridView.Columns["Context"].Visible = false;
-                        THFileElementsDataGridView.Columns["Status"].Visible = false;
-                        if (THFileElementsDataGridView.Columns["Advice"] != null)
-                        {
-                            THFileElementsDataGridView.Columns["Advice"].Visible = false;
-                        }
-                    }
+                    HideAllColumnsExceptOriginalAndTranslation();
 
                     //this.Cursor = Cursors.Default; ;//Поменять курсор обратно на обычный
 
@@ -2653,6 +2664,32 @@ namespace TranslationHelper
 
                 THFilesListBox_MouseClickBusy = false;
             }
+        }
+
+        private void HideAllColumnsExceptOriginalAndTranslation()
+        {
+            if (THFileElementsDataGridView.Columns.Count == 2)
+            {
+                return;
+            }
+
+            foreach (DataGridViewColumn Column in THFileElementsDataGridView.Columns)
+            {
+                if (Column.Name!="Original" && Column.Name != "Translation")
+                {
+                    Column.Visible = false;
+                }
+            }
+
+            //if (RPGMFunctions.THSelectedSourceType.Contains("RPGMakerTransPatch") || RPGMFunctions.THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch")) //Additional tweaks for RPGMTransPatch table
+            //{
+            //    THFileElementsDataGridView.Columns["Context"].Visible = false;
+            //    THFileElementsDataGridView.Columns["Status"].Visible = false;
+            //    if (THFileElementsDataGridView.Columns["Advice"] != null)
+            //    {
+            //        THFileElementsDataGridView.Columns["Advice"].Visible = false;
+            //    }
+            //}
         }
 
         public void BindToDataTableGridView(DataTable DT)

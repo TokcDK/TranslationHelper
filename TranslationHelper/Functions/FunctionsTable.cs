@@ -16,14 +16,14 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="thDataWork"></param>
         /// <returns></returns>
-        public static bool SetTableAndColumns(THDataWork thDataWork)
+        public static bool SetTableAndColumns(THDataWork thDataWork, bool add=true)
         {
             if (thDataWork.FilePath.Length == 0)
                 return false;
 
             string fileName = Path.GetFileName(thDataWork.FilePath);
 
-            if (!thDataWork.THFilesElementsDataset.Tables.Contains(fileName))
+            if (add && !thDataWork.THFilesElementsDataset.Tables.Contains(fileName))
             {
                 _ = thDataWork.THFilesElementsDataset.Tables.Add(fileName);
                 _ = thDataWork.THFilesElementsDataset.Tables[fileName].Columns.Add("Original");

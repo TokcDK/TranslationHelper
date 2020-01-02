@@ -38,6 +38,9 @@ namespace TranslationHelper.Formats.RPGMTrans
                     _ = thDataWork.THFilesElementsDataset.Tables[fname].Columns.Add("Advice");
                     _ = thDataWork.THFilesElementsDataset.Tables[fname].Columns.Add("Status");
 
+                    _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(fname);
+                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[fname].Columns.Add("Original");
+
                     string UNUSED = string.Empty;
                     while (!_file.EndOfStream)   //Читаем до конца
                     {
@@ -121,11 +124,22 @@ namespace TranslationHelper.Formats.RPGMTrans
                             }
                         }
                     }
-                }
 
-                if (invalidformat != 2) //если строки не были опознаны, значит формат неверен
-                {
-                    return false; ;
+                    if (invalidformat != 2) //если строки не были опознаны, значит формат неверен
+                    {
+                        return false; ;
+                    }
+
+                    if (thDataWork.THFilesElementsDataset.Tables[fname].Rows.Count > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        thDataWork.THFilesElementsDataset.Tables.Remove(fname);
+                        thDataWork.THFilesElementsDatasetInfo.Tables.Remove(fname);
+                        return false;
+                    }
                 }
             }
             catch

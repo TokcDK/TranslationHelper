@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -20,12 +21,18 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool OpenDetect()
         {
-            throw new NotImplementedException();
+            return Path.GetExtension(thDataWork.SPath) == ".exe"
+                &&
+                FunctionsProcess.GetExeDescription(thDataWork.SPath) != null
+                &&
+                FunctionsProcess.GetExeDescription(thDataWork.SPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")
+                && 
+                new DirectoryInfo(Path.GetDirectoryName(thDataWork.SPath)).GetFiles("*.xp3").Length > 0;
         }
 
         internal override string ProjectTitle()
         {
-            throw new NotImplementedException();
+            return "KiriKiri Game";
         }
 
         internal override string ProjecFolderName()
@@ -86,10 +93,10 @@ namespace TranslationHelper.Projects.KiriKiri
 
                     thDataWork.FilePath = kiriKiriFiles[i];
 
-                    _ = thDataWork.THFilesElementsDataset.Tables.Add(filename);
-                    _ = thDataWork.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(filename);
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
+                    //_ = thDataWork.THFilesElementsDataset.Tables.Add(filename);
+                    //_ = thDataWork.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
+                    //_ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(filename);
+                    //_ = thDataWork.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
 
                     if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
                     {

@@ -60,7 +60,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 }
             }
 
-            return FunctionsTable.SetTableAndColumns(thDataWork);
+            return FunctionsTable.SetTableAndColumns(thDataWork, false);
         }
 
         internal override bool Save()

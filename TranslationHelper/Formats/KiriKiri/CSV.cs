@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
@@ -132,8 +133,15 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[comment]);
-                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("comment");
+                                    try
+                                    {
+                                        _ = thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[comment]);
+                                        _ = thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("comment");
+                                    }
+                                    catch
+                                    {
+                                        MessageBox.Show("thDataWork.THFilesElementsDataset.Tables[fileName]="+ thDataWork.THFilesElementsDataset.Tables[fileName]+ "\r\ncolumns[comment]="+ columns[comment]);
+                                    }
                                 }
                             }
                         }
@@ -141,7 +149,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 }
             }
 
-            return FunctionsTable.SetTableAndColumns(thDataWork);
+            return FunctionsTable.SetTableAndColumns(thDataWork,false);
         }
 
         internal override bool Save()

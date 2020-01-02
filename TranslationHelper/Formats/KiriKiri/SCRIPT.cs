@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.KiriKiri
 
         internal override bool Open()
         {
-            throw new NotImplementedException();
+            return KiriKiriScriptScenarioOpen();
         }
 
         string KiriKiriVariableSearchRegexPattern = string.Empty;
