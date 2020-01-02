@@ -88,8 +88,11 @@
     <Compile Include="ExternalAdditions\T.cs" />
     <Compile Include="Formats\FormatBase.cs" />
     <Compile Include="Formats\KiriKiri\CSV.cs" />
+    <Compile Include="Formats\KiriKiri\CSVOld.cs" />
+    <Compile Include="Formats\KiriKiri\SCRIPT.cs" />
     <Compile Include="Formats\KiriKiri\TJS.cs" />
     <Compile Include="Formats\KiriKiri\TSV.cs" />
+    <Compile Include="Formats\KiriKiri\TSVOld.cs" />
     <Compile Include="Formats\KiriKiri\XP3.cs" />
     <Compile Include="Formats\Raijin7\csv\CSV.cs" />
     <Compile Include="Formats\Raijin7\eve\TXT.cs" />
@@ -112,6 +115,7 @@
     <Compile Include="Functions\FunctionsThreading.cs" />
     <Compile Include="ExternalAdditions\NativeMethods.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
+    <Compile Include="Projects\KiriKiri\KiriKiriGame.cs" />
     <Compile Include="Projects\KiriKiri\TJSfile.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
     <Compile Include="Projects\Raijin7Game.cs" />

@@ -37,7 +37,7 @@ namespace TranslationHelper.Projects
             {
                 foreach (var EventTxt in Directory.GetFiles(targetDir, "*.txt"))
                 {
-                    thDataWork.TempPath = EventTxt;
+                    thDataWork.FilePath = EventTxt;
                     new TXT(thDataWork).Open();
                 }
             }
@@ -47,7 +47,7 @@ namespace TranslationHelper.Projects
             {
                 foreach (var csv in Directory.GetFiles(targetDir, "*.csv"))
                 {
-                    thDataWork.TempPath = csv;
+                    thDataWork.FilePath = csv;
                     new CSV(thDataWork).Open();
                 }
             }

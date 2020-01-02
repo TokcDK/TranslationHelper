@@ -13,15 +13,15 @@ namespace TranslationHelper.Formats.Raijin7
 
         internal override bool Open()
         {
-            if (thDataWork.TempPath.Length == 0)
+            if (thDataWork.FilePath.Length == 0)
             {
                 return false;
             }
 
-            string fileName = Path.GetFileNameWithoutExtension(thDataWork.TempPath);
+            string fileName = Path.GetFileNameWithoutExtension(thDataWork.FilePath);
             thDataWork.THFilesElementsDataset.Tables.Add(fileName).Columns.Add("Original");
 
-            using (StreamReader sr = new StreamReader(thDataWork.TempPath, Encoding.GetEncoding(932)))
+            using (StreamReader sr = new StreamReader(thDataWork.FilePath, Encoding.GetEncoding(932)))
             {
                 int variant = 0;
 

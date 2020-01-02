@@ -93,7 +93,7 @@ namespace TranslationHelper.Projects
 
                 bool ret = true;
 
-                thDataWork.TempPath = sPath;
+                thDataWork.FilePath = sPath;
                 //ret = ReadJson(Jsonname, sPath);
                 ret = new JSON(thDataWork).Open();
 

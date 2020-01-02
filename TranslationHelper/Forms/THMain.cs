@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Formats;
 using TranslationHelper.Formats.KiriKiri;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Formats.RPGMTrans;
@@ -285,6 +286,10 @@ namespace TranslationHelper
                             //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
                             //open.Start();
 
+
+                            thDataWork.SPath = THFOpen.FileName;
+                            //TryToDetectSourceAndOpen();
+
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                             await Task.Run(() => RPGMFunctions.THSelectedSourceType = GetSourceType(THFOpen.FileName)).ConfigureAwait(true);
 
@@ -359,6 +364,31 @@ namespace TranslationHelper
 
                 IsOpeningInProcess = false;
             }
+        }
+
+        private bool TryToDetectSourceAndOpen()
+        {
+            foreach (var Project in thDataWork.ProjectsList)
+            {
+                if (Project.OpenDetect())
+                {
+                    if (Project.Open())
+                    {
+                        if (thDataWork.THFilesElementsDataset.Tables.Count > 0)
+                        {
+                            thDataWork.Project = Project;
+                            RPGMFunctions.THSelectedSourceType = Project.ProjectTitle();
+                            foreach (DataTable file in thDataWork.THFilesElementsDataset.Tables)
+                            {
+                                THFilesList.Items.Add(file.TableName);
+                            }
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         private string GetCorrectedGameDIr(string tHSelectedGameDir)
@@ -1540,11 +1570,11 @@ namespace TranslationHelper
                     }
                     else if (filename.EndsWith(".csv"))
                     {
-                        DT = CSV.KiriKiriCSVOpen(kiriKiriFiles[i], thDataWork.THFilesElementsDataset.Tables[filename], thDataWork.THFilesElementsDatasetInfo.Tables[filename]);
+                        DT = CSVOld.KiriKiriCSVOpen(kiriKiriFiles[i], thDataWork.THFilesElementsDataset.Tables[filename], thDataWork.THFilesElementsDatasetInfo.Tables[filename]);
                     }
                     else if (filename.EndsWith(".tsv"))
                     {
-                        DT = TSV.KiriKiriTSVOpen(kiriKiriFiles[i], thDataWork.THFilesElementsDataset.Tables[filename], thDataWork.THFilesElementsDatasetInfo.Tables[filename]);
+                        DT = TSVOld.KiriKiriTSVOpen(kiriKiriFiles[i], thDataWork.THFilesElementsDataset.Tables[filename], thDataWork.THFilesElementsDatasetInfo.Tables[filename]);
                     }
 
                     if (DT == null || DT.Rows.Count == 0)
@@ -1819,34 +1849,6 @@ namespace TranslationHelper
                             {
                                 thDataWork.THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
 
-                                //int i = 0;
-                                //while (line.EndsWith("[k]"))
-                                //{
-                                //    if (i > 0)
-                                //    {
-                                //        original += Environment.NewLine;
-                                //    }
-
-                                //    original = original + line.Replace("[k]", string.Empty);
-
-                                //    line = file.ReadLine();
-
-                                //    if (line.EndsWith("[k]") && line.StartsWith("["))
-                                //    {
-                                //        THFilesElementsDataset.Tables[0].Rows.Add(original);
-                                //        original = string.Empty;
-                                //        i = 0;
-                                //    }
-                                //    else
-                                //    {
-                                //        i++;
-                                //    }
-                                //}
-                                //if (original.Length > 0)
-                                //{
-                                //    THFilesElementsDataset.Tables[0].Rows.Add(original);
-                                //    original = string.Empty;
-                                //}
                             }
                         }
                     }

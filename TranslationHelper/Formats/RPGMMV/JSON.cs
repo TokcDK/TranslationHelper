@@ -20,7 +20,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         internal override bool Open()
         {
-            return ReadJson(Path.GetFileNameWithoutExtension(thDataWork.TempPath), thDataWork.TempPath);
+            return ReadJson(Path.GetFileNameWithoutExtension(thDataWork.FilePath), thDataWork.FilePath);
         }
 
         private bool ReadJson(string Jsonname, string sPath)
@@ -286,7 +286,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         internal override bool Save()
         {
-            return WriteJson(Path.GetFileNameWithoutExtension(thDataWork.TempPath), thDataWork.TempPath);
+            return WriteJson(Path.GetFileNameWithoutExtension(thDataWork.FilePath), thDataWork.FilePath);
         }
 
         private bool WriteJson(string Jsonname, string sPath)

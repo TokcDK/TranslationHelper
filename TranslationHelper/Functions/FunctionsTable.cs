@@ -4,11 +4,49 @@ using System.Data;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Main.Functions
 {
     static class FunctionsTable
     {
+        /// <summary>
+        /// When table not exists it will create table with table thDataWork.TempPath name and Original Column<br>
+        /// When table is exists it will remove table if no rows there else will create Translation column
+        /// </summary>
+        /// <param name="thDataWork"></param>
+        /// <returns></returns>
+        public static bool SetTableAndColumns(THDataWork thDataWork)
+        {
+            if (thDataWork.FilePath.Length == 0)
+                return false;
+
+            string fileName = Path.GetFileName(thDataWork.FilePath);
+
+            if (!thDataWork.THFilesElementsDataset.Tables.Contains(fileName))
+            {
+                _ = thDataWork.THFilesElementsDataset.Tables.Add(fileName);
+                _ = thDataWork.THFilesElementsDataset.Tables[fileName].Columns.Add("Original");
+                _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(fileName);
+                _ = thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Columns.Add("Original");
+
+                return true;
+            }
+            else
+            {
+                if (thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Count == 0)
+                {
+                    thDataWork.THFilesElementsDataset.Tables.Remove(fileName);
+                    thDataWork.THFilesElementsDatasetInfo.Tables.Remove(fileName);
+                    return false;
+                }
+                else
+                {
+                    _ = thDataWork.THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
+                    return true;
+                }
+            }
+        }
 
         /// <summary>
         /// True if Translation cell of any row has value

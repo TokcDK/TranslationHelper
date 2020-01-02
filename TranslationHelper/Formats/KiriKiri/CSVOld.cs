@@ -1,32 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    class CSV : FormatBase
+    public static class CSVOld
     {
-        public CSV(THDataWork thDataWork) : base(thDataWork)
+        public static DataTable KiriKiriCSVOpen(string sPath, DataTable DT, DataTable DTInfo)
         {
-        }
+            if (DT == null || DTInfo == null)
+                return null;
 
-        internal override bool Open()
-        {
-            return KiriKiriCSVOpen();
-        }
-
-        public bool KiriKiriCSVOpen()
-        {
-            FunctionsTable.SetTableAndColumns(thDataWork);
-
-            using (StreamReader file = new StreamReader(thDataWork.FilePath, Encoding.GetEncoding(932)))
+            using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
             {
-                string fileName = Path.GetFileName(thDataWork.FilePath);
                 string line;
                 //string original = string.Empty;
                 //_ = THFilesElementsDataset.Tables.Add(filename);
@@ -88,8 +79,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[name]);
-                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("name");
+                                    _ = DT.Rows.Add(columns[name]);
+                                    _ = DTInfo.Rows.Add("name");
                                 }
                             }
                             if (detail > -1)
@@ -99,8 +90,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[detail]);
-                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("detail");
+                                    _ = DT.Rows.Add(columns[detail]);
+                                    _ = DTInfo.Rows.Add("detail");
                                 }
                             }
                             if (type > -1)
@@ -110,8 +101,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[type]);
-                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("type");
+                                    _ = DT.Rows.Add(columns[type]);
+                                    _ = DTInfo.Rows.Add("type");
                                 }
                             }
                             if (field > -1)
@@ -121,8 +112,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[field]);
-                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("field");
+                                    _ = DT.Rows.Add(columns[field]);
+                                    _ = DTInfo.Rows.Add("field");
                                 }
                             }
                             if (comment > -1)
@@ -132,8 +123,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[comment]);
-                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("comment");
+                                    _ = DT.Rows.Add(columns[comment]);
+                                    _ = DTInfo.Rows.Add("comment");
                                 }
                             }
                         }
@@ -141,12 +132,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 }
             }
 
-            return FunctionsTable.SetTableAndColumns(thDataWork);
-        }
-
-        internal override bool Save()
-        {
-            throw new NotImplementedException();
+            return DT;
         }
     }
 }

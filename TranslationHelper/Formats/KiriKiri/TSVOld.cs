@@ -1,32 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    class TSV : FormatBase
+    public static class TSVOld
     {
-        public TSV(THDataWork thDataWork) : base(thDataWork)
+        public static DataTable KiriKiriTSVOpen(string sPath, DataTable DT, DataTable DTInfo)
         {
-        }
+            if (DT == null || DTInfo == null)
+                return null;
 
-        internal override bool Open()
-        {
-            return KiriKiriTSVOpen();
-        }
-
-        public bool KiriKiriTSVOpen()
-        {
-            FunctionsTable.SetTableAndColumns(thDataWork);
-
-            using (StreamReader file = new StreamReader(thDataWork.FilePath, Encoding.GetEncoding(932)))
+            using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
             {
-                string fileName = Path.GetFileName(thDataWork.FilePath);
                 string line;
                 while (!file.EndOfStream)
                 {
@@ -51,8 +42,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(subline);
-                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(NameValues[0]);
+                                    _ = DT.Rows.Add(subline);
+                                    _ = DTInfo.Rows.Add(NameValues[0]);
                                 }
                             }
                         }
@@ -60,12 +51,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 }
             }
 
-            return FunctionsTable.SetTableAndColumns(thDataWork);
-        }
-
-        internal override bool Save()
-        {
-            throw new NotImplementedException();
+            return DT;
         }
     }
 }

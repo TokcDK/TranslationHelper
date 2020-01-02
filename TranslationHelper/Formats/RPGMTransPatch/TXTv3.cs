@@ -27,9 +27,9 @@ namespace TranslationHelper.Formats.RPGMTrans
                 string _translation = string.Empty;             //Переведенный текст
                 int _status = 0;             //Статус
 
-                using (StreamReader _file = new StreamReader(thDataWork.TempPath)) //Задаем файл
+                using (StreamReader _file = new StreamReader(thDataWork.FilePath)) //Задаем файл
                 {
-                    string fname = Path.GetFileNameWithoutExtension(thDataWork.TempPath);
+                    string fname = Path.GetFileNameWithoutExtension(thDataWork.FilePath);
 
                     _ = thDataWork.THFilesElementsDataset.Tables.Add(fname);
                     _ = thDataWork.THFilesElementsDataset.Tables[fname].Columns.Add("Original");
@@ -131,7 +131,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                 int translationcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
                 int contextcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Context"].Ordinal;
 
-                string fname = Path.GetFileNameWithoutExtension(thDataWork.TempPath);
+                string fname = Path.GetFileNameWithoutExtension(thDataWork.FilePath);
 
                 //ProgressInfo(true, T._("saving file: ") + thData.THFilesElementsDataset.Tables[i].TableName);
 
