@@ -26,13 +26,16 @@ namespace TranslationHelper.Data
             };
         }
 
+        //Link to main form
+        internal THMain Main;
+
         internal ProjectBase Project;
         internal List<ProjectBase> ProjectsList;
 
-        //usually selected file path in file browse dialog
+        //usually 'S'elected file 'Path' in file browse dialog
         public string SPath { get; set; }
 
-        //current processing file
+        //current processing file for open/save
         public string FilePath { get; set; }
 
         public DataSet THFilesElementsDataset { get; set; }

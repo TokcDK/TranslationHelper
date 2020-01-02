@@ -440,8 +440,12 @@ namespace TranslationHelper
                 TranslationLongestLineLenghtLabel.Text = string.Empty;
                 ControlsSwitchActivated = false;
 
-                //Init Tables
-                thDataWork = new THDataWork();
+                //Init Work Data
+                thDataWork = new THDataWork
+                {
+                    //need for use main form elements like ProgressBar
+                    Main = this
+                };
 
                 //Clean data
                 THFilesList.Items.Clear();
@@ -4176,6 +4180,9 @@ namespace TranslationHelper
             {
                 FunctionsDBFile.ReadDBFile(DBDataSet, sPath); //load new data
             }
+
+
+
             THLoadDBCompare(DBDataSet);
             ProgressInfo(false);
         }
