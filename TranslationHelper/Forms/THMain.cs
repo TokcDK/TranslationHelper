@@ -585,7 +585,7 @@ namespace TranslationHelper
                 {
                     return ProceedRubyRPGGame(Path.GetDirectoryName(sPath));//RJ263914
                 }
-                else if ((FunctionsProcess.GetExeDescription(sPath) != null && FunctionsProcess.GetExeDescription(sPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")) && dir.GetFiles("*.xp3").Length > 0)
+                else if ((FunctionsProcess.GetExeDescription(sPath) != null && FunctionsProcess.GetExeDescription(sPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")) && FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.xp3"))
                 {
                     if (KiriKiriGame(sPath))
                     {
@@ -599,7 +599,7 @@ namespace TranslationHelper
                         //Properties.Settings.Default.THSelectedDir += "\\www\\data";
                         //var MVJsonFIles = new List<string>();
                         mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
-                        foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
+                        foreach (FileInfo file in mvdatadir.EnumerateFiles("*.json"))
                         {
                             //MessageBox.Show("file.FullName=" + file.FullName);
                             //MVJsonFIles.Add(file.FullName);
@@ -626,7 +626,7 @@ namespace TranslationHelper
                         return string.Empty;
                     }
                 }
-                else if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2")) || dir.GetFiles("*.rgss3a").Length > 0 || dir.GetFiles("*.rgss2a").Length > 0 || dir.GetFiles("*.rvdata").Length > 0 || dir.GetFiles("*.rgssad").Length > 0 || dir.GetFiles("*.rxdata").Length > 0 || dir.GetFiles("*.lmt").Length > 0 || dir.GetFiles("*.lmu").Length > 0)
+                else if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2")) || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss3a") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss2a") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rvdata") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgssad") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rxdata") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmt") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmu"))
                 {
 
                     extractedpatchpath = string.Empty;
@@ -665,7 +665,7 @@ namespace TranslationHelper
 
                         var vRPGMTransPatchFiles = new List<string>();
 
-                        foreach (FileInfo file in (new DirectoryInfo(extractedpatchpath)).GetFiles("*.txt"))
+                        foreach (FileInfo file in (new DirectoryInfo(extractedpatchpath)).EnumerateFiles("*.txt"))
                         {
                             //MessageBox.Show("file.FullName=" + file.FullName);
                             vRPGMTransPatchFiles.Add(file.FullName);
@@ -785,7 +785,7 @@ namespace TranslationHelper
             string folderName = Path.GetFileName(targetDirPath);
             int rowIndex = 0;
             string processingFolderName = string.Empty;
-            foreach (var filePath in Directory.GetFiles(targetDirPath, "*." + extension, SearchOption.AllDirectories))
+            foreach (var filePath in Directory.EnumerateFiles(targetDirPath, "*." + extension, SearchOption.AllDirectories))
             {
                 string fileName = Path.GetFileName(filePath);
                 //string tableName = (extension == "onom" ? Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filePath))) + "_" + Path.GetFileName(Path.GetDirectoryName(filePath)) + "_" : string.Empty) + Path.GetFileName(filePath);
@@ -1290,7 +1290,7 @@ namespace TranslationHelper
 
             int errorsCount = 0;
             //Читаем все файлы
-            foreach (var txtFile in Directory.GetFiles(FolderPath, "*.txt", SearchOption.AllDirectories))
+            foreach (var txtFile in Directory.EnumerateFiles(FolderPath, "*.txt", SearchOption.AllDirectories))
             {
                 try
                 {
@@ -1404,7 +1404,7 @@ namespace TranslationHelper
         private void ProceedTextEHPFolders(string Folder)
         {
             string FolderName = Path.GetFileName(Folder);
-            foreach (var txtFile in Directory.GetFiles(Folder, "*.txt"))
+            foreach (var txtFile in Directory.EnumerateFiles(Folder, "*.txt"))
             {
                 string txtFilename = Path.GetFileName(txtFile);
                 if (FolderName == "TextE" && txtFilename.Length > 0 && !Regex.IsMatch(txtFilename.Substring(0, 1), @"[0-9]"))
@@ -1932,7 +1932,7 @@ namespace TranslationHelper
 
             var vRPGMTransPatchFiles = new List<string>();
 
-            foreach (FileInfo file in patchdir.GetFiles("*.txt"))
+            foreach (FileInfo file in patchdir.EnumerateFiles("*.txt"))
             {
                 //MessageBox.Show("file.FullName=" + file.FullName);
                 vRPGMTransPatchFiles.Add(file.FullName);
@@ -2192,7 +2192,7 @@ namespace TranslationHelper
             //    //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
 
             //}
-            if (Directory.Exists(outdir + "_patch") && Directory.GetFiles(outdir + "_patch", "RPGMKTRANSPATCH", SearchOption.AllDirectories).Length > 0)
+            if (Directory.Exists(outdir + "_patch") && FunctionsFileFolder.IsInDirExistsAnyFile(outdir + "_patch", "*.RPGMKTRANSPATCH", true, true))
             {
                 DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
@@ -3081,7 +3081,7 @@ namespace TranslationHelper
 
         private void WriteWOLFTRANSPATCH()
         {
-            foreach (var file in Directory.GetFiles(Properties.Settings.Default.THSelectedDir, "*.txt", SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles(Properties.Settings.Default.THSelectedDir, "*.txt", SearchOption.AllDirectories))
             {
                 string fileName = Path.GetFileName(file);
                 if (thDataWork.THFilesElementsDataset.Tables[fileName] == null)

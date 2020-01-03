@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Formats.RPGMTrans;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects
 {
@@ -24,13 +25,14 @@ namespace TranslationHelper.Projects
                 DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.SPath));
 
                 if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2")) 
-                    || dir.GetFiles("*.rgss3a").Length > 0 
-                    || dir.GetFiles("*.rgss2a").Length > 0 
-                    || dir.GetFiles("*.rvdata").Length > 0 
-                    || dir.GetFiles("*.rgssad").Length > 0 
-                    || dir.GetFiles("*.rxdata").Length > 0 
-                    || dir.GetFiles("*.lmt").Length > 0 
-                    || dir.GetFiles("*.lmu").Length > 0)
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss3a") 
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss2a")
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rvdata")
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgssad")
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rxdata")
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmt") 
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmu")
+                    )
                 {
                     return true;
                 }
@@ -144,7 +146,7 @@ namespace TranslationHelper.Projects
 
             var vRPGMTransPatchFiles = new List<string>();
 
-            foreach (FileInfo file in patchdir.GetFiles("*.txt"))
+            foreach (FileInfo file in patchdir.EnumerateFiles("*.txt"))
             {
                 //MessageBox.Show("file.FullName=" + file.FullName);
                 vRPGMTransPatchFiles.Add(file.FullName);

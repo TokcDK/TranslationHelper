@@ -26,8 +26,8 @@ namespace TranslationHelper.Projects.KiriKiri
                 FunctionsProcess.GetExeDescription(thDataWork.SPath) != null
                 &&
                 FunctionsProcess.GetExeDescription(thDataWork.SPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")
-                && 
-                new DirectoryInfo(Path.GetDirectoryName(thDataWork.SPath)).GetFiles("*.xp3").Length > 0;
+                &&
+                FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(thDataWork.SPath), "*.xp3");
         }
 
         internal override string ProjectTitle()

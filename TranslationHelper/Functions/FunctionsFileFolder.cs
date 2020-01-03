@@ -9,6 +9,35 @@ namespace TranslationHelper.Main.Functions
 {
     internal class FunctionsFileFolder
     {
+        internal static bool IsInDirExistsAnyFile(string FilderPath, string mask = "*", bool SearchFiles=true, bool Recursive = false)
+        {
+            int cnt = 0;
+            if (SearchFiles)
+            {
+                foreach (var file in Directory.EnumerateFiles(FilderPath, mask, Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+                {
+                    cnt++;
+                    if (cnt > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var folder in Directory.EnumerateDirectories(FilderPath, mask, Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+                {
+                    cnt++;
+                    if (cnt > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         internal static bool GetAnyFileWithTheNameExist(string[] array, string name)
         {
             //исключение имен с недопустимыми именами для файла или папки
