@@ -226,5 +226,17 @@ namespace TranslationHelper.Properties {
                 this["THTranslationCachePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool THAutoSetSameTranslationForSimularIsBusy {
+            get {
+                return ((bool)(this["THAutoSetSameTranslationForSimularIsBusy"]));
+            }
+            set {
+                this["THAutoSetSameTranslationForSimularIsBusy"] = value;
+            }
+        }
     }
 }

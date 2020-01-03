@@ -4966,7 +4966,7 @@ namespace TranslationHelper
         }
 
         bool savemenusNOTenabled = true;
-        private void THFileElementsDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
+        private async void THFileElementsDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
             try
             {
@@ -4990,8 +4990,10 @@ namespace TranslationHelper
                 else
                 {
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)));
-                    trans.Start();
+                    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)));
+                    //trans.Start();
+
+                    await Task.Run(() => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)).ConfigureAwait(false);
                 }
                 //if (THFilesElementsDataset.Tables[tableind].AsEnumerable().All(dr => !string.IsNullOrEmpty(dr["name"] + string.Empty)))
                 //{
