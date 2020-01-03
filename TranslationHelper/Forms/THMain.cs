@@ -2876,10 +2876,17 @@ namespace TranslationHelper
         //https://stackoverflow.com/a/31150444
         private void FormatTextBox()
         {
-            if (THTargetRichTextBox == null || THTargetRichTextBox.Text.Length == 0)
+            if (THTargetRichTextBox == null)
             {
                 return;
             }
+            int tl=0;
+            this.Invoke((Action)(() => tl = THTargetRichTextBox.Text.Length));
+            if (tl == 0)
+            {
+                return;
+            }
+
 
             // Loop over each line
             int THTargetRichTextBoxLinesCount = THTargetRichTextBox.Lines.Length;

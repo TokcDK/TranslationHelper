@@ -396,20 +396,7 @@ namespace TranslationHelper.Main.Functions
                                             {
                                                 //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
                                                 startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
-                                                                                                                    //if (startindex > -1 ??)
-                                                                                                                    //{
-                                                                                                                    //}
-                                                                                                                    //else
-                                                                                                                    //{
-                                                                                                                    //    //была ошибка когда индекс был -1. Добавил проверку индекса и
-                                                                                                                    //    failed = true;
-                                                                                                                    //}
-                                                                                                                    //string g1 = tm[m].Value;//i
-                                                                                                                    //string g2 = targetOrigMatches[m];//t
-                                                                                                                    //string g3 = inputOrigMatches[m];//i
-                                                                                                                    //string g4 = mc[m].Value;//i
-                                                                                                                    //string g5 = mc0[m].Value;//t
-                                                                                                                    //stringlength = inputOrigMatches[m].Length;
+                                                                                                                    
                                                 stringlength = tm[m].Value.Length;
                                                 stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
 
