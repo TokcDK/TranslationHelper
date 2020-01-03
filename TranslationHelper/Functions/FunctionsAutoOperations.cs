@@ -300,6 +300,11 @@ namespace TranslationHelper.Main.Functions
                 Regex reg = new Regex(regexPattern); //reg равняется любым цифрам
                 string InputOrigCellValue = FunctionsRomajiKana.THFixDigits(InputTableOriginalCell as string);
                 string InputTransCellValue = FunctionsRomajiKana.THFixDigits(InputTableTranslationCell as string);
+                
+                //Было исключение OutOfRangeException когда в оригинале присутствовали совпадения для regex, а входной перевод был пустой или равен \r\n, тогда попытка получить индекс совпадения из оригинала заканчивалась исключением, т.к. никаких совпадений не было. Похоже на неверный перевод от онлайн сервиса
+                if (string.IsNullOrWhiteSpace(InputTransCellValue) || InputTransCellValue == Environment.NewLine)
+                    return;
+
 
                 //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменяется, т.к. 万 [man] переводится как 10000.
                 if (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && Regex.Matches(InputTransCellValue, @"\d+").Count != Regex.Matches(InputOrigCellValue, @"\d+").Count)
@@ -375,6 +380,11 @@ namespace TranslationHelper.Main.Functions
                                         //переименовано и закомментировано, т.к. было убрано оборачивание в цифры. string inputtranscellvalue = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
 
                                         MatchCollection tm = reg.Matches(InputTransCellValue);
+
+                                        //количество совпадений должно быть равное для избежания исключений и прочих неверных замен
+                                        if (tm.Count != mc.Count)
+                                            return;
+
                                         int startindex;
                                         int stringoverallength = 0;
                                         int stringlength;
