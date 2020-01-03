@@ -626,7 +626,7 @@ namespace TranslationHelper
                         return string.Empty;
                     }
                 }
-                else if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2")) || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss3a") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss2a") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rvdata") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgssad") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rxdata") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmt") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmu"))
+                else if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2")) || File.Exists(Path.Combine(dir.FullName, "Data", "System.rxdata")) || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss3a") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss2a") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rvdata") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgssad") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rxdata") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmt") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmu"))
                 {
 
                     extractedpatchpath = string.Empty;
@@ -2192,7 +2192,7 @@ namespace TranslationHelper
             //    //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
 
             //}
-            if (Directory.Exists(outdir + "_patch") && FunctionsFileFolder.IsInDirExistsAnyFile(outdir + "_patch", "*.RPGMKTRANSPATCH", true, true))
+            if (Directory.Exists(outdir + "_patch") && FunctionsFileFolder.IsInDirExistsAnyFile(outdir + "_patch", "RPGMKTRANSPATCH", true, true))
             {
                 DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)

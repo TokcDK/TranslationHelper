@@ -103,7 +103,7 @@ namespace TranslationHelper.Projects
             //    //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
 
             //}
-            if (Directory.Exists(outdir + "_patch") && Directory.GetFiles(outdir + "_patch", "RPGMKTRANSPATCH", SearchOption.AllDirectories).Length > 0)
+            if (Directory.Exists(outdir + "_patch") && FunctionsFileFolder.IsInDirExistsAnyFile(outdir + "_patch", "RPGMKTRANSPATCH", true, true))
             {
                 DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
