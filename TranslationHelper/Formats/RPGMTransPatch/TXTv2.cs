@@ -146,8 +146,6 @@ namespace TranslationHelper.Formats.RPGMTrans
             {
                 return false;
             }
-
-            return true;
         }
 
         internal override bool Save()

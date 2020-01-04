@@ -238,5 +238,17 @@ namespace TranslationHelper.Properties {
                 this["THAutoSetSameTranslationForSimularIsBusy"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int OnlineTranslationCacheUseCount {
+            get {
+                return ((int)(this["OnlineTranslationCacheUseCount"]));
+            }
+            set {
+                this["OnlineTranslationCacheUseCount"] = value;
+            }
+        }
     }
 }

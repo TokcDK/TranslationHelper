@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using TranslationHelper.Functions;
 using TranslationHelper.Projects;
 using TranslationHelper.Projects.KiriKiri;
 
@@ -25,7 +26,7 @@ namespace TranslationHelper.Data
                 new Raijin7Game(this)
             };
         }
-
+        
         //Link to main form
         internal THMain Main;
 
@@ -34,6 +35,9 @@ namespace TranslationHelper.Data
 
         //usually 'S'elected file 'Path' in file browse dialog
         public string SPath { get; set; }
+
+        //Online Translation Cache
+        internal OnlineCache OnlineTranslationCache;
 
         //current processing file for open/save
         public string FilePath { get; set; }

@@ -88,16 +88,17 @@ namespace TranslationHelper.Main.Functions
             return false;
         }
 
-        public static void AddToTranslationCacheIfValid(DataSet THTranslationCache, string Original, string Translation)
+        public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/THDataWork thDataWork, string Original, string Translation)
         {
             if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed)
             {
-                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original))
+                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || thDataWork.OnlineTranslationCache.cache.ContainsKey(Original) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
                 {
                 }
                 else
                 {
-                    THTranslationCache.Tables[0].Rows.Add(Original, Translation);
+                    //THTranslationCache.Tables[0].Rows.Add(Original, Translation);
+                    thDataWork.OnlineTranslationCache.cache.Add(Original, Translation);
                 }
             }
         }

@@ -22,6 +22,7 @@ using TranslationHelper.Formats;
 using TranslationHelper.Formats.KiriKiri;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Formats.RPGMTrans;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
 using TranslationHelper.Translators;
@@ -5160,9 +5161,11 @@ namespace TranslationHelper
             {
                 this.Invoke((Action)(() => translationInteruptToolStripMenuItem.Visible = true));
 
-                using (DataSet THTranslationCache = new DataSet())
+                //using (DataSet THTranslationCache = new DataSet())
                 {
-                    FunctionsTable.TranslationCacheInit(THTranslationCache);
+                    //Init translation cache
+                    //FunctionsTable.TranslationCacheInit(THTranslationCache);
+                    CacheInitWhenNeed(thDataWork);
 
                     int maxchars = 1000; //большие значения ломаю ответ сервера, например отсутствует или ломается разделитель при значении 1000, потом надо будет подстроить идеальный максимум
                     int CurrentCharsCount = 0;
@@ -5195,8 +5198,9 @@ namespace TranslationHelper
                                     else if (InteruptTranslation)
                                     {
                                         this.Invoke((Action)(() => translationInteruptToolStripMenuItem.Visible = false));
-                                        Thread.CurrentThread.Abort();
+                                        CacheUnloadWhenNeed(thDataWork);
                                         ProgressInfo(false);
+                                        Thread.CurrentThread.Abort();
                                         return;
                                     }
                                     ProgressInfo(true, T._("translating") + ": " + t + "/" + tcount + " (" + r + "/" + rcount + ")");
@@ -5209,7 +5213,9 @@ namespace TranslationHelper
                                     var Cell = Row[1];
                                     if (Cell == null || string.IsNullOrEmpty(Cell as string))
                                     {
-                                        string InputOriginalLineFromCache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
+                                        //string InputOriginalLineFromCache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
+                                        string InputOriginalLineFromCache = thDataWork.OnlineTranslationCache.GetValueFromCacheOReturnEmpty(InputOriginalLine);
+
 
                                         if (InputOriginalLineFromCache.Length > 0)
                                         {
@@ -5231,7 +5237,8 @@ namespace TranslationHelper
                                                     string linevalue = Lines[s];
 
                                                     string Translation = string.Empty;
-                                                    cache = FunctionsTable.TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
+                                                    //cache = FunctionsTable.TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
+                                                    cache = thDataWork.OnlineTranslationCache.GetValueFromCacheOReturnEmpty(linevalue);//поиск подстроки в кеше
                                                     if (cache.Length > 0)
                                                     {
                                                         Translation = cache;
@@ -5243,7 +5250,8 @@ namespace TranslationHelper
                                                             extractedvalue = THExtractTextForTranslation(linevalue);//извлечение подстроки
 
                                                             // только если извлеченное значение отличается от оригинальной строки
-                                                            cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
+                                                            //cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
+                                                            cache = extractedvalue == linevalue ? string.Empty : thDataWork.OnlineTranslationCache.GetValueFromCacheOReturnEmpty(extractedvalue);//поиск извлеченной подстроки в кеше
                                                             if (cache.Length > 0)
                                                             {
                                                                 Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
@@ -5259,7 +5267,8 @@ namespace TranslationHelper
                                             }
                                             else
                                             {
-                                                cache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);
+                                                //cache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);
+                                                cache = thDataWork.OnlineTranslationCache.GetValueFromCacheOReturnEmpty(InputOriginalLine);
                                                 if (cache.Length > 0)
                                                 {
                                                     thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = cache;
@@ -5283,7 +5292,7 @@ namespace TranslationHelper
 
                                         if (InputLines.Rows.Count > 0)
                                         {
-                                            TranslateLinesAndSetTranslation(InputLines, InputLinesInfo, THTranslationCache);
+                                            TranslateLinesAndSetTranslation(InputLines, InputLinesInfo/*, THTranslationCache*/);
                                         }
                                         else if (InputLinesInfo.Rows.Count > 0)
                                         {
@@ -5312,13 +5321,14 @@ namespace TranslationHelper
                                                 }
                                                 else
                                                 {
-                                                    SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                                                    SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue/*, THTranslationCache*/);
                                                 }
                                                 PreviousTableIndex = NewTableIndex;
                                                 PreviousRowIndex = NewRowIndex;
                                             }
                                         }
-                                        FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
+                                        //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
+                                        thDataWork.OnlineTranslationCache.WriteCache();//промежуточная запись кеша
 
                                         InputLines.Rows.Clear();
                                         InputLinesInfo.Rows.Clear();
@@ -5328,17 +5338,43 @@ namespace TranslationHelper
                         }
                     }
 
-                    FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
+                    //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
+                    thDataWork.OnlineTranslationCache.WriteCache();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
+
+            CacheUnloadWhenNeed(thDataWork);
+
             ProgressInfo(false);
         }
 
-        private void TranslateLinesAndSetTranslation(DataTable InputLines, DataTable InputLinesInfo, DataSet THTranslationCache)
+        private void CacheInitWhenNeed(THDataWork thDataWork)
+        {
+            Properties.Settings.Default.OnlineTranslationCacheUseCount++;
+            if (thDataWork.OnlineTranslationCache == null)
+            {
+                thDataWork.OnlineTranslationCache = new OnlineCache();
+                thDataWork.OnlineTranslationCache.ReadCache();
+            }
+        }
+
+        private void CacheUnloadWhenNeed(THDataWork thDataWork)
+        {
+            Properties.Settings.Default.OnlineTranslationCacheUseCount--;
+            if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)
+            {
+                if (thDataWork.OnlineTranslationCache != null)
+                {
+                    thDataWork.OnlineTranslationCache = null;
+                }
+            }
+        }
+
+        private void TranslateLinesAndSetTranslation(DataTable InputLines, DataTable InputLinesInfo/*, DataSet THTranslationCache*/)
         {
             //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
             string[] OriginalLines = InputLines.Rows.OfType<DataRow>().Select(row => row[0].ToString()).ToArray();
@@ -5432,8 +5468,8 @@ namespace TranslationHelper
                             PreviousRowIndex
                             ,
                             ResultValue
-                            ,
-                            THTranslationCache
+                            //,
+                            //THTranslationCache
                             );
                     }
 
@@ -5476,7 +5512,7 @@ namespace TranslationHelper
                             }
                             else
                             {
-                                SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                                SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue/*, THTranslationCache*/);
                             }
 
                             //--------------------------------
@@ -5487,7 +5523,8 @@ namespace TranslationHelper
                     string extractedLineValue = InputLines.Rows[i][0] as string;
                     ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, originalLineValue, extractedLineValue));
 
-                    FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, (originalLineValue.Length == extractedLineValue.Length && originalLineValue == extractedLineValue) ? originalLineValue : extractedLineValue, TranslatedLine);
+                    //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, (originalLineValue.Length == extractedLineValue.Length && originalLineValue == extractedLineValue) ? originalLineValue : extractedLineValue, TranslatedLine);
+                    FunctionsTable.AddToTranslationCacheIfValid(thDataWork, (originalLineValue.Length == extractedLineValue.Length && originalLineValue == extractedLineValue) ? originalLineValue : extractedLineValue, TranslatedLine);
 
                     PreviousRowIndex = RowIndex;
                     PreviousTableIndex = TableIndex;
@@ -5510,7 +5547,7 @@ namespace TranslationHelper
                     }
                     else
                     {
-                        SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                        SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue/*, THTranslationCache*/);
                     }
 
                     string InfoOriginalLineValue = InfoRow[0] as string;
@@ -5528,11 +5565,11 @@ namespace TranslationHelper
                     PreviousTableIndex = TableIndex;
                     i2++;
                 }
-                SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue, THTranslationCache);
+                SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue/*, THTranslationCache*/);
             }
         }
 
-        private void SetTranslationResultToCellIfEmpty(int PreviousTableIndex, int PreviousRowIndex, StringBuilder ResultValue, DataSet THTranslationCache)
+        private void SetTranslationResultToCellIfEmpty(int PreviousTableIndex, int PreviousRowIndex, StringBuilder ResultValue/*, DataSet THTranslationCache*/)
         {
             if (ResultValue.Length > 0 && PreviousTableIndex > -1 && PreviousRowIndex > -1)
             {
@@ -5553,7 +5590,8 @@ namespace TranslationHelper
                 {
                     thDataWork.THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = s;
 
-                    FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
+                    //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
+                    FunctionsTable.AddToTranslationCacheIfValid(thDataWork, Cell as string, s);
 
                     //закоментировано для повышения производительности
                     //THAutoSetSameTranslationForSimular(PreviousTableIndex, PreviousRowIndex, 0);
@@ -5562,7 +5600,7 @@ namespace TranslationHelper
             }
         }
 
-        private string PasteTranslationBackIfExtracted(string Translation, string Original, string Extracted)
+        private static string PasteTranslationBackIfExtracted(string Translation, string Original, string Extracted)
         {
             if (Translation.Length == 0 || Original.Length == 0 || Extracted.Length == 0 || Equals(Original, Extracted))
             {
@@ -5593,7 +5631,8 @@ namespace TranslationHelper
             {
                 using (DataSet THTranslationCache = new DataSet())
                 {
-                    FunctionsTable.TranslationCacheInit(THTranslationCache);
+                    //FunctionsTable.TranslationCacheInit(THTranslationCache);
+                    CacheInitWhenNeed(thDataWork);
 
                     //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
                     int tablescount;
@@ -5632,6 +5671,7 @@ namespace TranslationHelper
                         {
                             if (Properties.Settings.Default.IsTranslationHelperWasClosed)
                             {
+                                CacheUnloadWhenNeed(thDataWork);
                                 Thread.CurrentThread.Abort();
                                 return;
                             }
@@ -5677,7 +5717,8 @@ namespace TranslationHelper
                                 //проверка наличия заданного процента romaji или other в оригинале
                                 //if ( SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString()) || SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString(), "other"))
 
-                                string ResultValue = FunctionsTable.TranslationCacheFind(THTranslationCache, InputValue);
+                                //string ResultValue = FunctionsTable.TranslationCacheFind(THTranslationCache, InputValue);
+                                string ResultValue = thDataWork.OnlineTranslationCache.GetValueFromCacheOReturnEmpty(InputValue);
 
                                 if (ResultValue.Length != 0)
                                 {
@@ -5702,11 +5743,13 @@ namespace TranslationHelper
                                             ResultValue = GoogleAPI.Translate(InputValue);
 
                                             //LogToFile("resultvalue=" + resultvalue, true);
-                                            FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
+                                            //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
+                                            FunctionsTable.AddToTranslationCacheIfValid(thDataWork, InputValue, ResultValue);
                                         }
                                         else
                                         {
-                                            string CachedExtractedValue = FunctionsTable.TranslationCacheFind(THTranslationCache, ExtractedValue);
+                                            //string CachedExtractedValue = FunctionsTable.TranslationCacheFind(THTranslationCache, ExtractedValue);
+                                            string CachedExtractedValue = thDataWork.OnlineTranslationCache.GetValueFromCacheOReturnEmpty(ExtractedValue);
                                             //LogToFile("cachedvalue=" + cachedvalue, true);
                                             if (CachedExtractedValue.Length == 0)
                                             {
@@ -5721,7 +5764,8 @@ namespace TranslationHelper
                                                     ResultValue = PasteTranslationBackIfExtracted(OnlineValue, InputValue, ExtractedValue);
 
                                                     //LogToFile("resultvalue=" + resultvalue, true);
-                                                    FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
+                                                    //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
+                                                    FunctionsTable.AddToTranslationCacheIfValid(thDataWork, InputValue, ResultValue);
                                                 }
                                             }
                                             else
@@ -5746,7 +5790,8 @@ namespace TranslationHelper
                                         {
                                             //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
 
-                                            FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
+                                            //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
+                                            FunctionsTable.AddToTranslationCacheIfValid(thDataWork, InputValue, ResultValue);
                                             //THTranslationCacheAdd(inputvalue, onlinetranslation);                                    
 
                                             //запись перевода
@@ -5760,7 +5805,8 @@ namespace TranslationHelper
                             }
                         }
                     }
-                    FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
+                    //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
+                    thDataWork.OnlineTranslationCache.WriteCache();
                 }
             }
             catch (System.ArgumentNullException)
@@ -5768,6 +5814,7 @@ namespace TranslationHelper
                 //LogToFile("Error: "+ex,true);
             }
             IsTranslating = false;
+            CacheUnloadWhenNeed(thDataWork);
             ProgressInfo(false);
         }
 
@@ -5795,7 +5842,8 @@ namespace TranslationHelper
                     if (ExtractedOriginal.Length == 0 || (ExtractedOriginal == OriginalLine))
                     {
                         Result = TranslatorsFunctions.ReturnTranslatedOrCache(cacheDS, OriginalLine);
-                        FunctionsTable.AddToTranslationCacheIfValid(cacheDS, OriginalLine, Result);
+                        //FunctionsTable.AddToTranslationCacheIfValid(cacheDS, OriginalLine, Result);
+                        FunctionsTable.AddToTranslationCacheIfValid(thDataWork, OriginalLine, Result);
                     }
                     else
                     {
@@ -5804,7 +5852,8 @@ namespace TranslationHelper
                             OriginalLine,
                             ExtractedOriginal
                             );
-                        FunctionsTable.AddToTranslationCacheIfValid(cacheDS, ExtractedOriginal, Result);
+                        //FunctionsTable.AddToTranslationCacheIfValid(cacheDS, ExtractedOriginal, Result);
+                        FunctionsTable.AddToTranslationCacheIfValid(thDataWork, ExtractedOriginal, Result);
                     }
                     ResultValue.Append(Result);
 
@@ -6969,7 +7018,6 @@ namespace TranslationHelper
         {
             ActionsOnTHFIlesListElementSelected();
         }
-
 
         //Материалы
         //по оптимизации кода
