@@ -353,7 +353,7 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// Returns false if any of Datatable row have value
+        /// Returns false if any of Datatable row's translation cell have value
         /// </summary>
         /// <param name="DT"></param>
         /// <param name="column"></param>
@@ -362,25 +362,18 @@ namespace TranslationHelper.Main.Functions
         {
             if (DT == null)
             {
-                return false;
+                return true;
             }
             int DTRowsCount = DT.Rows.Count;
             for (int r = 0; r < DTRowsCount; r++)
             {
                 var cell = DT.Rows[r][column];
-                //LogToFile("\r\nIsTableRowsCompleted Value =\"" + DT.Rows[r][column] +"\", Length=" + ((DT.Rows[r][column] + string.Empty).Length));
+
                 if (cell == null || string.IsNullOrEmpty(cell as string))
                 {
-                    //LogToFile("\r\nIsTableRowsCompleted=false");
                     return false;
                 }
             }
-            //THFilesElementsDataset.Tables[e.Index].AsEnumerable().All(dr => !string.IsNullOrEmpty(dr["Translation"] + string.Empty))
-            //if (DT.AsEnumerable().All(datarow => !string.IsNullOrEmpty(datarow[column]+string.Empty)))
-            //{
-            //    return true;
-            //}
-            //LogToFile("\r\nIsTableRowsCompleted=true");
             return true;
         }
 

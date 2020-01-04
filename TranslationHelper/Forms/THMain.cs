@@ -267,7 +267,7 @@ namespace TranslationHelper
         }
 
         internal bool IsOpeningInProcess = false;
-        private async void OpenToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FunctionsOpen(thDataWork).OpenProject();
         }
@@ -2092,20 +2092,20 @@ namespace TranslationHelper
         {
             Properties.Settings.Default.IsTranslationHelperWasClosed = true;
             InteruptTranslation = true;
-            THToolTip.Dispose();
+            //THToolTip.Dispose();
             //thDataWork.THFilesElementsDataset.Dispose();
             //thDataWork.THFilesElementsDatasetInfo.Dispose();
             //thDataWork.THFilesElementsALLDataTable.Dispose();
-            Settings.Dispose();
+            //Settings.Dispose();
 
             //global brushes with ordinary/selected colors
-            ListBoxItemForegroundBrushSelected.Dispose();
-            ListBoxItemForegroundBrush.Dispose();
-            ListBoxItemBackgroundBrushSelected.Dispose();
-            ListBoxItemBackgroundBrush1.Dispose();
-            ListBoxItemBackgroundBrush1Complete.Dispose();
-            ListBoxItemBackgroundBrush2.Dispose();
-            ListBoxItemBackgroundBrush2Complete.Dispose();
+            //ListBoxItemForegroundBrushSelected.Dispose();
+            //ListBoxItemForegroundBrush.Dispose();
+            //ListBoxItemBackgroundBrushSelected.Dispose();
+            //ListBoxItemBackgroundBrush1.Dispose();
+            //ListBoxItemBackgroundBrush1Complete.Dispose();
+            //ListBoxItemBackgroundBrush2.Dispose();
+            //ListBoxItemBackgroundBrush2Complete.Dispose();
         }
 
         private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)

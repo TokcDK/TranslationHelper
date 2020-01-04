@@ -61,6 +61,10 @@ namespace TranslationHelper.Functions
             {
                 using (var Table = thDataWork.THFilesElementsDataset.Tables[t])
                 {
+                    //skip table if there is no untranslated lines
+                    if (FunctionsTable.IsTableRowsCompleted(Table))
+                        continue;
+
                     string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
                     thDataWork.Main.ProgressInfo(true, tableprogressinfo);
 
@@ -136,24 +140,30 @@ namespace TranslationHelper.Functions
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
-                var DT = thDataWork.THFilesElementsDataset.Tables[t];
-                string tableprogressinfo = infomessage + DT.TableName + ">" + t + "/" + tcount;
-                thDataWork.Main.ProgressInfo(true, tableprogressinfo);
-
-                int rcount = DT.Rows.Count;
-                //проход по всем строкам таблицы рабочего dataset
-                for (int r = 0; r < rcount; r++)
+                using (DataTable DT = thDataWork.THFilesElementsDataset.Tables[t])
                 {
-                    thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+                    //skip table if there is no untranslated lines
+                    if (FunctionsTable.IsTableRowsCompleted(DT))
+                        continue;
 
-                    var TranslationRow = DT.Rows[r];
-                    var TranslationCell = TranslationRow[1];
-                    if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell as string))
+                    string tableprogressinfo = infomessage + DT.TableName + ">" + t + "/" + tcount;
+                    thDataWork.Main.ProgressInfo(true, tableprogressinfo);
+
+                    int rcount = DT.Rows.Count;
+                    //проход по всем строкам таблицы рабочего dataset
+                    for (int r = 0; r < rcount; r++)
                     {
-                        var DBRow = tHTempDS.Tables[t].Rows[r];
-                        if (Equals(TranslationRow[0], DBRow[0]))
+                        thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+
+                        var TranslationRow = DT.Rows[r];
+                        var TranslationCell = TranslationRow[1];
+                        if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell as string))
                         {
-                            thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = DBRow[1];
+                            var DBRow = tHTempDS.Tables[t].Rows[r];
+                            if (Equals(TranslationRow[0], DBRow[0]))
+                            {
+                                thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = DBRow[1];
+                            }
                         }
                     }
                 }
