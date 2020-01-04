@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using TranslationHelper.Data;
+using TranslationHelper.Formats.RPGMaker.Functions;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -66,6 +70,71 @@ namespace TranslationHelper.Main.Functions
                 DS.WriteXml(s);
                 s.Close();
             }
+        }
+
+        internal static string GetDBCompressionExt(THDataWork thDataWork)
+        {
+            //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"));
+            if (thDataWork.Main.Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked") == "True")
+            {
+                //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression"));
+                if (thDataWork.Main.Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "XML (none)")
+                {
+                    //MessageBox.Show(".xml");
+                    return ".xml";
+                }
+                else if (thDataWork.Main.Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "Gzip (cmx)")
+                {
+                    //MessageBox.Show(".cmx");
+                    return ".cmx";
+                }
+                else if (thDataWork.Main.Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "Deflate (cmz)")
+                {
+                    //MessageBox.Show(".cmz");
+                    return ".cmz";
+                }
+
+            }
+            //MessageBox.Show("Default .xml");
+            return ".xml";
+        }
+
+        internal static string GetProjectDBFolder()
+        {
+            string ret = string.Empty;
+            if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
+            {
+                ret = "RPGMakerMV";
+            }
+            else if (RPGMFunctions.THSelectedSourceType.Contains("RPGMaker") || RPGMFunctions.THSelectedSourceType.Contains("RPG Maker"))
+            {
+                ret = "RPGMakerTransPatch";
+            }
+            return Path.Combine(Application.StartupPath, "DB", ret);
+        }
+
+        internal static string GetDBFileName(THDataWork thDataWork, bool IsSaveAs = false)
+        {
+            string fName = Path.GetFileName(Properties.Settings.Default.THSelectedDir);
+            if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
+            {
+                if (thDataWork.Main.THFilesList.Items.Count == 1 && thDataWork.Main.THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(thDataWork.Main.THFilesList.Items[0].ToString()))
+                {
+                    if (fName == "data")
+                    {
+                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(Properties.Settings.Default.THSelectedDir))) + "_" + Path.GetFileNameWithoutExtension(thDataWork.Main.THFilesList.Items[0].ToString());
+                    }
+                    else
+                    {
+                        fName = Path.GetFileNameWithoutExtension(thDataWork.Main.THFilesList.Items[0].ToString());
+                    }
+                }
+            }
+            //else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
+            //{
+
+            //}
+            return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.GetCultureInfo("en-US")) : string.Empty);
         }
     }
 }

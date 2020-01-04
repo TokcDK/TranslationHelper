@@ -102,6 +102,7 @@
     <Compile Include="Formats\RPGMTransPatch\RPGMTransPatchBase.cs" />
     <Compile Include="Formats\RPGMTransPatch\TXTv3.cs" />
     <Compile Include="Formats\RPGMTransPatch\TXTv2.cs" />
+    <Compile Include="Functions\FunctionsLoadTranslationDB.cs" />
     <Compile Include="Functions\FunctionsOnlineTranslation.cs" />
     <Compile Include="Functions\OnlineCache.cs" />
     <Compile Include="Old elements\DoubleBufferedListBox.cs" />

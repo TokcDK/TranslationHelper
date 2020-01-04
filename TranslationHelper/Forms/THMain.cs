@@ -4018,7 +4018,7 @@ namespace TranslationHelper
         string lastautosavepath;
         private async void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            lastautosavepath = Path.Combine(GetProjectDBFolder(), GetDBFileName() + GetDBCompressionExt());
+            lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName(thDataWork) + FunctionsDBFile.GetDBCompressionExt(thDataWork));
 
             ProgressInfo(true);
 
@@ -4118,7 +4118,7 @@ namespace TranslationHelper
             {
                 IsOpeningInProcess = true;
 
-                lastautosavepath = Path.Combine(GetProjectDBFolder(), GetDBFileName() + GetDBCompressionExt());
+                lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName(thDataWork) + FunctionsDBFile.GetDBCompressionExt(thDataWork));
                 if (File.Exists(lastautosavepath))
                 {
                     LoadTranslationFromDB(lastautosavepath);
@@ -4191,177 +4191,8 @@ namespace TranslationHelper
 
 
 
-            THLoadDBCompare(DBDataSet);
+            new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
             ProgressInfo(false);
-        }
-
-        private void THLoadDBCompare(DataSet THTempDS)
-        {
-            if (!Properties.Settings.Default.IsFullComprasionDBloadEnabled && FunctionsTable.IsDataSetsElementsCountIdentical(thDataWork.THFilesElementsDataset, THTempDS))
-            {
-                CompareLiteIfIdentical(THTempDS);
-                return;
-            }
-
-            //using (DataSet THTempDS = new DataSet())
-            //{
-            //    //LogToFile("cleaning THTempDS and refreshing dgv", true);
-            //    THTempDS.Reset();//очистка временной таблицы
-            //}
-
-            //Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath); // write lastsavedpath
-
-            //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = thDataWork.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
-            if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
-            {
-                return;
-            }
-
-            //LogToFile("ocol=" + ocol);
-            //оптимизация. Не искать колонку перевода, если она по стандарту первая
-
-            int ttranscol = THTempDS.Tables[0].Columns["Translation"].Ordinal;
-            if (ttranscol == 0 || ttranscol == -1)
-            {
-                return;
-            }
-
-            //Оптимизация. Стартовые значения номера таблицы и строки для таблицы с загруженным переводом
-            int ttablestartindex = 0;
-            int trowstartindex = 0;
-
-            int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
-            string infomessage = T._("loading translation") + ":";
-            //проход по всем таблицам рабочего dataset
-            for (int t = 0; t < tcount; t++)
-            {
-                using (var Table = thDataWork.THFilesElementsDataset.Tables[t])
-                {
-                    string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
-                    ProgressInfo(true, tableprogressinfo);
-
-                    int rcount = Table.Rows.Count;
-                    //проход по всем строкам таблицы рабочего dataset
-                    for (int r = 0; r < rcount; r++)
-                    {
-                        ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
-                        var Row = Table.Rows[r];
-                        var CellTranslation = Row[otranscol];
-                        if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
-                        {
-                            bool TranslationWasSet = false;
-
-                            var DBTablesCount = THTempDS.Tables.Count;
-                            //проход по всем таблицам dataset с переводом
-                            for (int t1 = ttablestartindex; t1 < DBTablesCount; t1++)
-                            {
-                                using (var DBTable = THTempDS.Tables[t1])
-                                {
-                                    if (DBTable.Columns.Count > 1)
-                                    {
-                                        var DBTableRowsCount = THTempDS.Tables[t1].Rows.Count;
-                                        //проход по всем строкам таблицы dataset с переводом
-                                        for (int r1 = trowstartindex; r1 < DBTableRowsCount; r1++)
-                                        {
-                                            var DBRow = DBTable.Rows[r1];
-                                            var DBCellTranslation = DBRow[ttranscol];
-                                            if (DBCellTranslation == null || string.IsNullOrEmpty(DBCellTranslation as string))
-                                            {
-                                            }
-                                            else
-                                            {
-                                                try
-                                                {
-                                                    if (Equals(Row[0], DBRow[0]))
-                                                    {
-                                                        thDataWork.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = DBCellTranslation;
-                                                        TranslationWasSet = true;
-
-                                                        trowstartindex = Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
-                                                        break;
-                                                    }
-                                                }
-                                                catch
-                                                {
-                                                }
-                                            }
-                                        }
-                                        if (TranslationWasSet)//если перевод был присвоен, выйти из цикла таблицы с переводом
-                                        {
-                                            ttablestartindex = Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : t1;//запоминание последнего индекса таблицы, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            //сбрасывать индекс на ноль
-                                            trowstartindex = 0;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void CompareLiteIfIdentical(DataSet tHTempDS)
-        {
-            int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
-            string infomessage = T._("loading translation") + ":";
-            //проход по всем таблицам рабочего dataset
-            for (int t = 0; t < tcount; t++)
-            {
-                var DT = thDataWork.THFilesElementsDataset.Tables[t];
-                string tableprogressinfo = infomessage + DT.TableName + ">" + t + "/" + tcount;
-                ProgressInfo(true, tableprogressinfo);
-
-                int rcount = DT.Rows.Count;
-                //проход по всем строкам таблицы рабочего dataset
-                for (int r = 0; r < rcount; r++)
-                {
-                    ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
-
-                    var TranslationRow = DT.Rows[r];
-                    var TranslationCell = TranslationRow[1];
-                    if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell as string))
-                    {
-                        var DBRow = tHTempDS.Tables[t].Rows[r];
-                        if (Equals(TranslationRow[0], DBRow[0]))
-                        {
-                            thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = DBRow[1];
-                        }
-                    }
-                }
-            }
-        }
-
-        private string GetDBCompressionExt()
-        {
-            //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"));
-            if (Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked") == "True")
-            {
-                //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression"));
-                if (Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "XML (none)")
-                {
-                    //MessageBox.Show(".xml");
-                    return ".xml";
-                }
-                else if (Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "Gzip (cmx)")
-                {
-                    //MessageBox.Show(".cmx");
-                    return ".cmx";
-                }
-                else if (Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "Deflate (cmz)")
-                {
-                    //MessageBox.Show(".cmz");
-                    return ".cmz";
-                }
-
-            }
-            //MessageBox.Show("Default .xml");
-            return ".xml";
         }
 
         private void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4376,7 +4207,7 @@ namespace TranslationHelper
                 {
                     THFOpenBD.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
 
-                    THFOpenBD.InitialDirectory = GetProjectDBFolder();
+                    THFOpenBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
 
                     if (THFOpenBD.ShowDialog() == DialogResult.OK)
                     {
@@ -5523,8 +5354,8 @@ namespace TranslationHelper
             {
                 THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
 
-                THFSaveBDAs.InitialDirectory = GetProjectDBFolder();
-                THFSaveBDAs.FileName = GetDBFileName(true) + GetDBCompressionExt();
+                THFSaveBDAs.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
+                THFSaveBDAs.FileName = FunctionsDBFile.GetDBFileName(thDataWork,true) + FunctionsDBFile.GetDBCompressionExt(thDataWork);
 
                 if (THFSaveBDAs.ShowDialog() == DialogResult.OK)
                 {
@@ -5548,44 +5379,6 @@ namespace TranslationHelper
                     }
                 }
             }
-        }
-
-        private string GetProjectDBFolder()
-        {
-            string ret = string.Empty;
-            if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
-            {
-                ret = "RPGMakerMV";
-            }
-            else if (RPGMFunctions.THSelectedSourceType.Contains("RPGMaker") || RPGMFunctions.THSelectedSourceType.Contains("RPG Maker"))
-            {
-                ret = "RPGMakerTransPatch";
-            }
-            return Path.Combine(Application.StartupPath, "DB", ret);
-        }
-
-        private string GetDBFileName(bool IsSaveAs = false)
-        {
-            string fName = Path.GetFileName(Properties.Settings.Default.THSelectedDir);
-            if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
-            {
-                if (THFilesList.Items.Count == 1 && THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(THFilesList.Items[0].ToString()))
-                {
-                    if (fName == "data")
-                    {
-                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(Properties.Settings.Default.THSelectedDir))) + "_" + Path.GetFileNameWithoutExtension(THFilesList.Items[0].ToString());
-                    }
-                    else
-                    {
-                        fName = Path.GetFileNameWithoutExtension(THFilesList.Items[0].ToString());
-                    }
-                }
-            }
-            //else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
-            //{
-
-            //}
-            return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.GetCultureInfo("en-US")) : string.Empty);
         }
 
         bool WriteDBFileIsBusy = false;
