@@ -192,7 +192,7 @@ namespace TranslationHelper
             this.CutToolStripMenuItem.Text = T._("Cut");
             this.CopyToolStripMenuItem.Text = T._("Copy");
             this.pasteToolStripMenuItem.Text = T._("Paste");
-            this.toolStripMenuItem11.Text = T._("Clear selected cells");
+            this.CleanSelectedCellsToolStripMenuItem1.Text = T._("Clear selected cells");
             this.toolStripMenuItem14.Text = T._("UPPERCASE");
             this.uppercaseToolStripMenuItem.Text = T._("Uppercase");
             this.lowercaseToolStripMenuItem.Text = T._("lowercase");
@@ -289,7 +289,7 @@ namespace TranslationHelper
 
         //int numberOfRows=500;
         private bool THFilesListBox_MouseClickBusy;
-        private void ActionsOnTHFIlesListElementSelected()
+        internal void ActionsOnTHFIlesListElementSelected()
         {
             if (THFilesListBox_MouseClickBusy && THFilesList.SelectedIndex > -1) //THFilesList.SelectedIndex > -1 - фикс исключения сразу после загрузки таблицы, когда индекс выбранной таблицы равен -1 
             {
@@ -530,7 +530,7 @@ namespace TranslationHelper
             CutToolStripMenuItem.Enabled = true;
             CopyToolStripMenuItem.Enabled = true;
             pasteToolStripMenuItem.Enabled = true;
-            toolStripMenuItem11.Enabled = true;
+            CleanSelectedCellsToolStripMenuItem1.Enabled = true;
             toolStripMenuItem14.Enabled = true;
             uppercaseToolStripMenuItem.Enabled = true;
             lowercaseToolStripMenuItem.Enabled = true;
@@ -669,7 +669,8 @@ namespace TranslationHelper
 
 
             // Loop over each line
-            int THTargetRichTextBoxLinesCount = THTargetRichTextBox.Lines.Length;
+            int THTargetRichTextBoxLinesCount=0;
+            this.Invoke((Action)(() => THTargetRichTextBoxLinesCount = THTargetRichTextBox.Lines.Length));
             for (int i = 0; i < THTargetRichTextBoxLinesCount; i++)
             {
                 // Current line text
@@ -978,7 +979,7 @@ namespace TranslationHelper
         {
             var grid = sender as DataGridView;
 
-            string rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork.THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
+            string rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
             using (StringFormat centerFormat = new StringFormat()
@@ -1365,7 +1366,7 @@ namespace TranslationHelper
         internal bool IsTranslating = false;
         private void OnlineTranslateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            if (THFileElementsDataGridView.SelectedRows.Count > 0)
             {
                 if (IsTranslating)
                 {
@@ -1377,7 +1378,7 @@ namespace TranslationHelper
                 //координаты стартовой строк, колонки оригинала и номера таблицы
                 int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
                 int tableindex = THFilesList.SelectedIndex;
-                int[] selindexes = new int[THFileElementsDataGridView.SelectedCells.Count];
+                int[] selindexes = new int[THFileElementsDataGridView.SelectedRows.Count];
 
                 for (int i = 0; i < selindexes.Length; i++)
                 {
@@ -1390,7 +1391,7 @@ namespace TranslationHelper
                     //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                     //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                     //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                    int index = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork.THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                    int index = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedRows[i].Index);
                     selindexes[i] = index;
 
                     //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
@@ -1524,11 +1525,11 @@ namespace TranslationHelper
                 int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
                 int tableindex = THFilesList.SelectedIndex;
                 StringBuilder value = new StringBuilder();
-                int selcellscnt = THFileElementsDataGridView.SelectedCells.Count;
+                int selcellscnt = THFileElementsDataGridView.SelectedRows.Count;
                 int[] selindexes = new int[selcellscnt];
                 for (int i = 0; i < selcellscnt; i++)
                 {
-                    selindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork.THFilesElementsDataset, THFileElementsDataGridView, tableindex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                    selindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, tableindex, THFileElementsDataGridView.SelectedRows[i].Index);
                 }
                 Array.Sort(selindexes);
                 for (int i = 0; i < selcellscnt; i++)
@@ -1617,7 +1618,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsFixingCells = true;
 
-            FunctionsAutoOperations.THFixCells(thDataWork.THFilesElementsDataset, THFileElementsDataGridView, method, cind, tind, rind);
+            FunctionsAutoOperations.THFixCells(thDataWork, method, cind, tind, rind);
 
             //снять занятость по окончании
             THIsFixingCells = false;
@@ -1643,7 +1644,7 @@ namespace TranslationHelper
 
         private void SelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            if (THFileElementsDataGridView.SelectedRows.Count > 0)
             {
                 //эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
                 //на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
@@ -1694,7 +1695,7 @@ namespace TranslationHelper
 
         private void SetOriginalValueToTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
+            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedRows.Count;
             if (THFileElementsDataGridViewSelectedCellsCount > 0)
             {
                 try
@@ -1706,7 +1707,7 @@ namespace TranslationHelper
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         //координаты ячейки
-                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork.THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedRows[i].Index);
 
                     }
                     foreach (var rind in selectedRowIndexses)
@@ -1858,9 +1859,14 @@ namespace TranslationHelper
             //LogToFile("Paste End", true);
         }
 
+        bool ClearSelectedCellsIsBusy = false;
         private async void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            await Task.Run(() => FunctionsTable.CleanTableCells(THFileElementsDataGridView, thDataWork.THFilesElementsDataset, Properties.Settings.Default.THFilesListSelectedIndex)).ConfigureAwait(false);
+            if (ClearSelectedCellsIsBusy)
+                return;
+            ClearSelectedCellsIsBusy = true;
+            await Task.Run(() => FunctionsTable.CleanTableCells(thDataWork, Properties.Settings.Default.THFilesListSelectedIndex)).ConfigureAwait(true);
+            ClearSelectedCellsIsBusy = false;
         }
 
         //==============вырезать, копировать, вставить, для одной или нескольких ячеек
@@ -2058,17 +2064,17 @@ namespace TranslationHelper
 
         private void ToUPPERCASEToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 2);
+            FunctionsString.StringCaseMorph(thDataWork, THFilesList.SelectedIndex, 2);
         }
 
         private void FirstCharacterToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 1);
+            FunctionsString.StringCaseMorph(thDataWork, THFilesList.SelectedIndex, 1);
         }
 
         private void TolowercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, THFilesList.SelectedIndex, THFileElementsDataGridView, 0);
+            FunctionsString.StringCaseMorph(thDataWork, THFilesList.SelectedIndex, 0);
         }
 
         internal bool InteruptTranslation = false;
@@ -2450,10 +2456,10 @@ namespace TranslationHelper
 
         private void ForceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int i = THFileElementsDataGridView.SelectedCells.Count;
+            int i = THFileElementsDataGridView.SelectedRows.Count;
             if (i == 1)
             {
-                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork.THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.CurrentCell.RowIndex), 0, true, true);
+                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, THFileElementsDataGridView.CurrentCell.RowIndex), 0, true, true);
             }
         }
 
@@ -2464,7 +2470,7 @@ namespace TranslationHelper
 
         private void SplitSelectedLines()
         {
-            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
+            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedRows.Count;
             if (THFileElementsDataGridViewSelectedCellsCount > 0)
             {
                 try
@@ -2476,7 +2482,7 @@ namespace TranslationHelper
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         //координаты ячейки
-                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork.THFilesElementsDataset, THFileElementsDataGridView, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedRows[i].Index);
 
                     }
                     foreach (var rind in selectedRowIndexses)
@@ -2550,21 +2556,21 @@ namespace TranslationHelper
         private void LowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, TIndex, THFileElementsDataGridView, 0, true)));
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork, TIndex, 0, true)));
             StringCase.Start();
         }
 
         private void UppercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, TIndex, THFileElementsDataGridView, 1, true)));
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork, TIndex, 1, true)));
             StringCase.Start();
         }
 
         private void UPPERCASEallToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork.THFilesElementsDataset, TIndex, THFileElementsDataGridView, 2, true)));
+            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork, TIndex, 2, true)));
             StringCase.Start();
         }
 

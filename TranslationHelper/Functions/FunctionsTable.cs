@@ -2,9 +2,8 @@
 using System;
 using System.Data;
 using System.IO;
-using System.Threading;
-using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.ExternalAdditions;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -16,7 +15,7 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="thDataWork"></param>
         /// <returns></returns>
-        public static bool SetTableAndColumns(THDataWork thDataWork, bool add=true)
+        public static bool SetTableAndColumns(THDataWork thDataWork, bool add = true)
         {
             if (thDataWork.FilePath.Length == 0)
                 return false;
@@ -133,7 +132,7 @@ namespace TranslationHelper.Main.Functions
         {
             using (DataTable tempTable = new DataTable())
             {
-                foreach(DataColumn column in table.Columns)
+                foreach (DataColumn column in table.Columns)
                 {
                     tempTable.Columns.Add(column.ColumnName);
                 }
@@ -153,7 +152,7 @@ namespace TranslationHelper.Main.Functions
             int DTRowsCount = DT.Rows.Count;
             for (int i = 0; i < DTRowsCount; i++)
             {
-                if (Equals(DT.Rows[i][0],value))
+                if (Equals(DT.Rows[i][0], value))
                 {
                     return true;
                 }
@@ -163,7 +162,7 @@ namespace TranslationHelper.Main.Functions
 
         public static bool GetAlreadyAddedInTableAndTableHasRowsColumns(DataTable table, string value)
         {
-            if (string.IsNullOrEmpty(value) || table==null || table.Rows.Count == 0 || table.Columns.Count == 0)
+            if (string.IsNullOrEmpty(value) || table == null || table.Rows.Count == 0 || table.Columns.Count == 0)
             {
                 return false;
             }
@@ -281,11 +280,11 @@ namespace TranslationHelper.Main.Functions
         /// <param name="TableIndex"></param>
         /// <param name="rowIndex"></param>
         /// <returns></returns>
-        public static int GetDGVSelectedRowIndexInDatatable(DataSet TargetDataSet, DataGridView InputDataGridView, int TableIndex, int rowIndex)
+        public static int GetDGVSelectedRowIndexInDatatable(THDataWork thDataWork, int TableIndex, int rowIndex)
         {
-            return TargetDataSet.Tables[TableIndex].Rows
+            return thDataWork.THFilesElementsDataset.Tables[TableIndex].Rows
                 .IndexOf(
-                ((DataRowView)InputDataGridView.Rows[rowIndex].DataBoundItem).Row
+                ((DataRowView)thDataWork.Main.THFileElementsDataGridView.Rows[rowIndex].DataBoundItem).Row
                         );
         }
 
@@ -468,83 +467,108 @@ namespace TranslationHelper.Main.Functions
                 .Replace("-QB[BQ-", "[[]");
         }
 
-        internal static void CleanTableCells(DataGridView THFileElementsDataGridView, DataSet THFilesElementsDataset, int Tindex)
+        internal static void CleanTableCells(THDataWork thDataWork, int Tindex)
         {
-            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
+            int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.SelectedRows.Count;
             // Ensure that text is currently selected in the text box.    
-            if (THFileElementsDataGridViewSelectedCellsCount > 0)
+            if (THFileElementsDataGridViewSelectedCellsCount == 0)
             {
-                //Clear selected cells                
-                //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
-                //if (THFileElementsDataGridView.CurrentCell.ReadOnly)
-                //{
-                //}
-                //else
-                //{
-                //    foreach (DataGridViewCell dgvCell in THFileElementsDataGridView.SelectedCells)
-                //    {
-                //        dgvCell.Value = string.Empty;
-                //    }
-                //}
+                return;
+            }
 
-                try
+            //если количество выбранных строк равно числу строк в таблице, то 
+            if (THFileElementsDataGridViewSelectedCellsCount == thDataWork.THFilesElementsDataset.Tables[Tindex].Rows.Count)
+            {
+                //https://stackoverflow.com/questions/15035219/how-do-you-clear-an-entire-datagridview-column
+                //thDataWork.Main.THFileElementsDataGridView.ClearColumn(1);
+
+                //удалить колонку, потом добавить и переместить на позицию 1
+                thDataWork.THFilesElementsDataset.Tables[Tindex].Columns.Remove("Translation");
+                thDataWork.THFilesElementsDataset.Tables[Tindex].Columns.Add("Translation");
+                //https://stackoverflow.com/questions/3757997/how-to-change-datatable-columns-order
+                thDataWork.THFilesElementsDataset.Tables[Tindex].Columns["Translation"].SetOrdinal(1);
+
+                //перерисовка датагрида
+                //https://stackoverflow.com/a/29453395 частично
+                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                //thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Parent.Refresh()));
+                //thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset));
+                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
+                return;
+            }
+
+            //Clear selected cells                
+            //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
+            //if (THFileElementsDataGridView.CurrentCell.ReadOnly)
+            //{
+            //}
+            //else
+            //{
+            //    foreach (DataGridViewCell dgvCell in THFileElementsDataGridView.SelectedCells)
+            //    {
+            //        dgvCell.Value = string.Empty;
+            //    }
+            //}
+
+            try
+            {
+                int[] rindexes = new int[THFileElementsDataGridViewSelectedCellsCount];
+                int corigind = thDataWork.Main.THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
+                int ctransind = thDataWork.Main.THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
+
+                bool TableHasNotDefaultRowsOrder = true;
+                if (THFileElementsDataGridViewSelectedCellsCount > 50)
                 {
-                    int[] rindexes = new int[THFileElementsDataGridViewSelectedCellsCount];
-                    int corigind = THFileElementsDataGridView.Columns["Original"].Index;//2-поле untrans
-                    int ctransind = THFileElementsDataGridView.Columns["Translation"].Index;//2-поле untrans
-
-                    bool TableHasNotDefaultRowsOrder = true;
-                    if (THFileElementsDataGridViewSelectedCellsCount > 50)
+                    //определение, имеет ли датагрид нестандартный порядок строк, как при сортировке или фильтрах
+                    int equalIndexsesCounter = 0;
+                    for (int i = 0; i < 5; i++)
                     {
-                        //определение, имеет ли датагрид нестандартный порядок строк, как при сортировке или фильтрах
-                        int equalIndexsesCounter = 0;
-                        for (int i = 0; i < 5; i++)
+                        var rind = thDataWork.Main.THFileElementsDataGridView.SelectedRows[i].Index;
+                        if (rind == FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, Tindex, rind))
                         {
-                            var rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                            if (rind == FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, Tindex, rind))
-                            {
-                                equalIndexsesCounter++;
-                            }
+                            equalIndexsesCounter++;
                         }
-
-                        TableHasNotDefaultRowsOrder = equalIndexsesCounter < 5;//имеет, если не все 5 индексов датагрида были равны индексам дататэйбл
                     }
 
-                    for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
-                    {
-                        int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                        if ((THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).Length > 0)
-                        {
-                            if (TableHasNotDefaultRowsOrder)
-                            {
-                                rindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, Tindex, rind);
-                            }
-                            else
-                            {
-                                rindexes[i] = rind;
-                            }
-                        }
+                    TableHasNotDefaultRowsOrder = equalIndexsesCounter < 5;//имеет, если не все 5 индексов датагрида были равны индексам дататэйбл
+                }
 
+                for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
+                {
+                    int rind = thDataWork.Main.THFileElementsDataGridView.SelectedRows[i].Index;
+                    if ((thDataWork.Main.THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).Length > 0)
+                    {
+                        if (TableHasNotDefaultRowsOrder)
+                        {
+                            rindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, Tindex, rind);
+                        }
+                        else
+                        {
+                            rindexes[i] = rind;
+                        }
                     }
 
-                    var rindexesLength = rindexes.Length;
-                    for (int i = 0; i < rindexesLength; i++)
-                    {
-                        if (rindexes[i] == -1)
-                        {
-                            continue;
-                        }
+                }
 
-                        var cell = THFilesElementsDataset.Tables[Tindex].Rows[rindexes[i]][ctransind];
-                        if (cell != null && (cell as string).Length > 0)
-                        {
-                            THFilesElementsDataset.Tables[Tindex].Rows[rindexes[i]][ctransind] = string.Empty;
-                        }
+                var rindexesLength = rindexes.Length;
+                for (int i = 0; i < rindexesLength; i++)
+                {
+                    if (rindexes[i] == -1)
+                    {
+                        continue;
+                    }
+
+                    var cell = thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[rindexes[i]][ctransind];
+                    if (cell != null && (cell as string).Length > 0)
+                    {
+                        thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[rindexes[i]][ctransind] = string.Empty;
                     }
                 }
-                catch
-                {
-                }
+            }
+            catch
+            {
             }
         }
     }

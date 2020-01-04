@@ -81,7 +81,7 @@ namespace TranslationHelper.Data
                 thDataWork.Main.CutToolStripMenuItem.Enabled = false;
                 thDataWork.Main.CopyToolStripMenuItem.Enabled = false;
                 thDataWork.Main.pasteToolStripMenuItem.Enabled = false;
-                thDataWork.Main.toolStripMenuItem11.Enabled = false;
+                thDataWork.Main.CleanSelectedCellsToolStripMenuItem1.Enabled = false;
                 thDataWork.Main.toolStripMenuItem14.Enabled = false;
                 thDataWork.Main.uppercaseToolStripMenuItem.Enabled = false;
                 thDataWork.Main.lowercaseToolStripMenuItem.Enabled = false;

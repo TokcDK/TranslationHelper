@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -89,7 +90,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="tind"></param>
         /// <param name="rind"></param>
         /// <param name="selectedonly"></param>
-        public static void THFixCells(DataSet THFilesElementsDataset, DataGridView THFileElementsDataGridView, string method, int cind, int tind, int rind = 0, bool selectedonly = false)//cind - индекс столбца перевода, задан до старта потока
+        public static void THFixCells(THDataWork thDataWork, string method, int cind, int tind, int rind = 0, bool selectedonly = false)//cind - индекс столбца перевода, задан до старта потока
         {
             //если файл с правилами существует
             if (File.Exists(Path.Combine(Application.StartupPath, "TranslationHelperCellFixesRegexRules.txt")))
@@ -118,10 +119,10 @@ namespace TranslationHelper.Main.Functions
                     {
                         //cind = THFileElementsDataGridView.Columns["Translation"].Index;//-поле untrans                            
                         initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-                        selcellscnt = new int[THFileElementsDataGridView.SelectedCells.Count];//создать массив длинной числом выбранных ячеек
+                        selcellscnt = new int[thDataWork.Main.THFileElementsDataGridView.SelectedRows.Count];//создать массив длинной числом выбранных ячеек
                         for (int i = 0; i < selcellscnt.Length; i++) //записать индексы всех выбранных ячеек
                         {
-                            selcellscnt[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, tind, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                            selcellscnt[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, tind, thDataWork.Main.THFileElementsDataGridView.SelectedRows[i].Index);
                         }
                     }
                     else if (method == "t")
@@ -143,7 +144,7 @@ namespace TranslationHelper.Main.Functions
                     //LogToFile("1 rule=" + rule + ",tableindex=" + initialtableindex);
                     if (method == "a")
                     {
-                        tablescount = THFilesElementsDataset.Tables.Count;//все таблицы в dataset
+                        tablescount = thDataWork.THFilesElementsDataset.Tables.Count;//все таблицы в dataset
                     }
                     else
                     {
@@ -158,7 +159,7 @@ namespace TranslationHelper.Main.Functions
                         if (method == "a" || method == "t")
                         {
                             //все строки в выбранной таблице
-                            rowscount = THFilesElementsDataset.Tables[t].Rows.Count;
+                            rowscount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
                         }
                         else
                         {
@@ -182,7 +183,7 @@ namespace TranslationHelper.Main.Functions
                             }
 
                             //LogToFile("5 selected i row index=" + i + ", value of THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "]=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind]);
-                            var row = THFilesElementsDataset.Tables[t].Rows[rowindex];
+                            var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex];
                             string cvalue = row[cind] + string.Empty;
                             //не трогать строку перевода, если она пустая
                             if (cvalue.Length > 0 && cvalue != row[cind - 1] as string)
@@ -238,9 +239,9 @@ namespace TranslationHelper.Main.Functions
                                     }
                                 }
 
-                                if (!Equals(THFilesElementsDataset.Tables[t].Rows[rowindex][cind], cvalue))
+                                if (!Equals(thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex][cind], cvalue))
                                 {
-                                    THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
+                                    thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
                                 }
                             }
                         }

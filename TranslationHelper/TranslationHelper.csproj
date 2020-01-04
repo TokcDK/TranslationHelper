@@ -84,6 +84,7 @@
     <Compile Include="Data\CleanupData.cs" />
     <Compile Include="Data\THDataWork.cs" />
     <Compile Include="ExternalAdditions\CopyFolder.cs" />
+    <Compile Include="ExternalAdditions\DataGridViewEx.cs" />
     <Compile Include="ExternalAdditions\GDI.cs" />
     <Compile Include="ExternalAdditions\ReplaceEx.cs" />
     <Compile Include="ExternalAdditions\T.cs" />

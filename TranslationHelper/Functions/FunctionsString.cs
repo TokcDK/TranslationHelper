@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -202,18 +203,18 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="THFileElementsDataGridView"></param>
         /// <param name="variant"></param>
-        public static void StringCaseMorph(DataSet THFilesElementsDataset, int TableIndex, DataGridView THFileElementsDataGridView, int variant, bool All = false)
+        public static void StringCaseMorph(THDataWork thDataWork, int TableIndex, int variant, bool All = false)
         {
-            if (THFilesElementsDataset == null || variant > 2 || (!All && (TableIndex == -1 || THFileElementsDataGridView == null)))
+            if (thDataWork.THFilesElementsDataset == null || variant > 2 || (!All && (TableIndex == -1 || thDataWork.Main.THFileElementsDataGridView == null)))
             {
                 return;
             }
 
-            int ctransind = THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
-            int corigind = THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
+            int ctransind = thDataWork.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+            int corigind = thDataWork.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
             if (!All)
             {
-                int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.SelectedCells.Count;
+                int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.SelectedRows.Count;
                 if (THFileElementsDataGridViewSelectedCellsCount > 0)
                 {
                     try
@@ -221,16 +222,16 @@ namespace TranslationHelper.Main.Functions
                         int[] indexes = new int[THFileElementsDataGridViewSelectedCellsCount];
                         for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                         {
-                            int rind = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                            indexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesElementsDataset, THFileElementsDataGridView, TableIndex, rind);
+                            int rind = thDataWork.Main.THFileElementsDataGridView.SelectedRows[i].Index;
+                            indexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, TableIndex, rind);
                         }
                         foreach (var rindex in indexes)
                         {
-                            var DSOrigCell = THFilesElementsDataset.Tables[TableIndex].Rows[rindex][corigind] + string.Empty;
-                            var DSTransCell = THFilesElementsDataset.Tables[TableIndex].Rows[rindex][ctransind] + string.Empty;
+                            var DSOrigCell = thDataWork.THFilesElementsDataset.Tables[TableIndex].Rows[rindex][corigind] + string.Empty;
+                            var DSTransCell = thDataWork.THFilesElementsDataset.Tables[TableIndex].Rows[rindex][ctransind] + string.Empty;
                             if (!string.IsNullOrWhiteSpace(DSTransCell) && DSTransCell != DSOrigCell)
                             {
-                                THFilesElementsDataset.Tables[TableIndex].Rows[rindex][ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
+                                thDataWork.THFilesElementsDataset.Tables[TableIndex].Rows[rindex][ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
                             }
                         }
                     }
@@ -241,17 +242,17 @@ namespace TranslationHelper.Main.Functions
             }
             else
             {
-                int THFilesElementsDatasetTablesCount = THFilesElementsDataset.Tables.Count;
+                int THFilesElementsDatasetTablesCount = thDataWork.THFilesElementsDataset.Tables.Count;
                 for (int tindex = 0; tindex < THFilesElementsDatasetTablesCount; tindex++)
                 {
-                    int THFilesElementsDatasetTableRowsCount = THFilesElementsDataset.Tables[tindex].Rows.Count;
+                    int THFilesElementsDatasetTableRowsCount = thDataWork.THFilesElementsDataset.Tables[tindex].Rows.Count;
                     for (int rindex = 0; rindex < THFilesElementsDatasetTableRowsCount; rindex++)
                     {
-                        var DSOrigCell = THFilesElementsDataset.Tables[tindex].Rows[rindex][corigind] + string.Empty;
-                        var DSTransCell = THFilesElementsDataset.Tables[tindex].Rows[rindex][ctransind] + string.Empty;
+                        var DSOrigCell = thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex][corigind] + string.Empty;
+                        var DSTransCell = thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex][ctransind] + string.Empty;
                         if (!string.IsNullOrWhiteSpace(DSTransCell) && DSTransCell != DSOrigCell)
                         {
-                            THFilesElementsDataset.Tables[tindex].Rows[rindex][ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
+                            thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex][ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
                         }
 
                     }
