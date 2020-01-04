@@ -5,9 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 
@@ -135,6 +135,136 @@ namespace TranslationHelper.Main.Functions
 
             //}
             return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.GetCultureInfo("en-US")) : string.Empty);
+        }
+
+        public void WriteDictToXMLDB(Dictionary<string, string> db, string xmlPath)
+        {
+            XElement el = new XElement("TranslationCache",
+                db.Select(kv =>
+                new XElement("Value",
+                    new XElement("Original", kv.Key),
+                    new XElement("Translation", kv.Value)
+                    )
+                ));
+            //el.Save("cache.xml");
+            WriteXElementToXMLFile(el, xmlPath);
+        }
+
+        internal static Dictionary<string, string> ReadXMLDBToDictionary(string xmlPath)
+        {
+            //Dictionary<string, string> db = new Dictionary<string, string>();
+            //XElement rootElement = XElement.Parse(ReadXMLToString(xmlPath));//ошибка xml на символ x1E в значении Original, там символом &#x1E; сохранен спецсимвол
+            //foreach (var el in rootElement.Elements())
+            //{
+            //    string key = el.Element("Original").Value;
+            //    if (!db.ContainsKey(key))
+            //    {
+            //        db.Add(key, el.Element("Translation").Value);
+            //    }
+            //}
+
+            int nbr = 1;
+            Dictionary<string, string> db = new Dictionary<string, string>();
+            using (XmlReader reader = XmlReader.Create(xmlPath))
+            {
+                string orig=string.Empty;
+                string trans;
+                bool waitingTranslation = false;
+                while (reader.Read())
+                {
+                    if (reader.Name.Length==0)
+                    {
+                        continue;
+                    }
+
+                    if (reader.Name == "Original")
+                    {
+                        if (!waitingTranslation)
+                        {
+                            if (!db.ContainsKey(reader.Value))
+                            {
+                                waitingTranslation = true;
+                                orig = reader.Value;
+                            }
+                        }
+                        else
+                        {
+                            waitingTranslation = false;
+                        }
+                        continue;
+                    }
+                    else if (waitingTranslation && reader.Name == "Translation")
+                    {
+                        db.Add(orig, reader.Value);
+                        waitingTranslation = false;
+                    }
+
+                    reader.MoveToContent();
+                    //if ((reader.NodeType == XmlNodeType.EndElement) || (reader.NodeType != XmlNodeType.Element) || (reader.NodeType == XmlNodeType.Text))
+                    //{
+                    //    reader.Skip();
+                    //    reader.MoveToContent();
+
+                    //}
+                    //MessageBox.Show(reader.Name);//Just for test
+
+                }
+            }
+
+
+            return db;
+        }
+
+        internal static string ReadXMLToString(string xmlPath)
+        {
+            using (FileStream fs = new FileStream(xmlPath, FileMode.Open))
+            {
+                Stream s;
+                string fileExtension = Path.GetExtension(xmlPath);
+                if (fileExtension == ".cmx")
+                {
+                    s = new GZipStream(fs, CompressionMode.Decompress);
+                }
+                else if (fileExtension == ".cmz")
+                {
+                    s = new DeflateStream(fs, CompressionMode.Decompress);
+                }
+                else
+                {
+                    s = fs;
+                }
+                //return s;
+                string stringForReturn;
+                using (StreamReader sr = new StreamReader(s))
+                {
+                    stringForReturn = sr.ReadToEnd();
+                }
+                return stringForReturn;
+                //s.Close();
+            }
+        }
+
+        internal static void WriteXElementToXMLFile(XElement el, string xmlPath)
+        {
+            using (FileStream fs = new FileStream(xmlPath, FileMode.Create))
+            {
+                Stream s;
+                string fileExtension = Path.GetExtension(xmlPath);
+                if (fileExtension == ".cmx")
+                {
+                    s = new GZipStream(fs, CompressionMode.Compress);
+                }
+                else if (fileExtension == ".cmz")
+                {
+                    s = new DeflateStream(fs, CompressionMode.Compress);
+                }
+                else
+                {
+                    s = fs;
+                }
+                el.Save(s);
+                s.Close();
+            }
         }
     }
 }

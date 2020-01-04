@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -10,7 +7,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -18,16 +14,11 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Formats;
-using TranslationHelper.Formats.KiriKiri;
 using TranslationHelper.Formats.RPGMaker.Functions;
-using TranslationHelper.Formats.RPGMTrans;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects;
 using TranslationHelper.Projects.RPGMMV;
 using TranslationHelper.Projects.RPGMTrans;
-using TranslationHelper.Translators;
 
 namespace TranslationHelper
 {
@@ -468,7 +459,7 @@ namespace TranslationHelper
 
             foreach (DataGridViewColumn Column in THFileElementsDataGridView.Columns)
             {
-                if (Column.Name!="Original" && Column.Name != "Translation")
+                if (Column.Name != "Original" && Column.Name != "Translation")
                 {
                     Column.Visible = false;
                 }
@@ -669,7 +660,7 @@ namespace TranslationHelper
             {
                 return;
             }
-            int tl=0;
+            int tl = 0;
             this.Invoke((Action)(() => tl = THTargetRichTextBox.Text.Length));
             if (tl == 0)
             {
@@ -1258,17 +1249,16 @@ namespace TranslationHelper
         {
             if (sPath.Length == 0)
             {
-                //THFilesElementsDataset.ReadXml(Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
-                FunctionsDBFile.ReadDBFile(DBDataSet, Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath")); //load new data
-            }
-            else
-            {
-                FunctionsDBFile.ReadDBFile(DBDataSet, sPath); //load new data
+                sPath = Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath");
             }
 
-
-
+            //стандартное считывание
+            FunctionsDBFile.ReadDBFile(DBDataSet, sPath); //load new data
             new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
+
+            //считывание через словарь
+            //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(FunctionsDBFile.ReadXMLDBToDictionary(sPath));
+
             ProgressInfo(false);
         }
 
@@ -1887,7 +1877,7 @@ namespace TranslationHelper
                 THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
 
                 THFSaveBDAs.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
-                THFSaveBDAs.FileName = FunctionsDBFile.GetDBFileName(thDataWork,true) + FunctionsDBFile.GetDBCompressionExt(thDataWork);
+                THFSaveBDAs.FileName = FunctionsDBFile.GetDBFileName(thDataWork, true) + FunctionsDBFile.GetDBCompressionExt(thDataWork);
 
                 if (THFSaveBDAs.ShowDialog() == DialogResult.OK)
                 {

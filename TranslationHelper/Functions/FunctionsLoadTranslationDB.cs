@@ -169,5 +169,55 @@ namespace TranslationHelper.Functions
                 }
             }
         }
+
+        internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db)
+        {
+            //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
+            int otranscol = thDataWork.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+            if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
+            {
+                return;
+            }
+
+            //LogToFile("ocol=" + ocol);
+            //оптимизация. Не искать колонку перевода, если она по стандарту первая
+
+            //Оптимизация. Стартовые значения номера таблицы и строки для таблицы с загруженным переводом
+            int ttablestartindex = 0;
+            int trowstartindex = 0;
+
+            int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
+            string infomessage = T._("loading translation") + ":";
+            //проход по всем таблицам рабочего dataset
+            for (int t = 0; t < tcount; t++)
+            {
+                using (var Table = thDataWork.THFilesElementsDataset.Tables[t])
+                {
+                    //skip table if there is no untranslated lines
+                    if (FunctionsTable.IsTableRowsCompleted(Table))
+                        continue;
+
+                    string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
+                    thDataWork.Main.ProgressInfo(true, tableprogressinfo);
+
+                    int rcount = Table.Rows.Count;
+                    //проход по всем строкам таблицы рабочего dataset
+                    for (int r = 0; r < rcount; r++)
+                    {
+                        thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+                        var Row = Table.Rows[r];
+                        var CellTranslation = Row[otranscol];
+                        if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                        {
+                            var origCellValue = Row[0] as string;
+                            if (db.ContainsKey(origCellValue))
+                            {
+                                thDataWork.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

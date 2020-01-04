@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Xml.Linq;
+using TranslationHelper.Main.Functions;
 
 //https://stackoverflow.com/questions/1799767/easy-way-to-convert-a-dictionarystring-string-to-xml-and-vice-versa
 namespace TranslationHelper.Functions
@@ -33,12 +34,12 @@ namespace TranslationHelper.Functions
                     )
                 ));
             //el.Save("cache.xml");
-            WriteXElementToXMLFile(el);
+            FunctionsDBFile.WriteXElementToXMLFile(el, Properties.Settings.Default.THTranslationCachePath);
         }
 
         public void ReadCache()
         {
-            XElement rootElement = XElement.Parse(ReadXMLToString());
+            XElement rootElement = XElement.Parse(FunctionsDBFile.ReadXMLToString(Properties.Settings.Default.THTranslationCachePath));
             foreach (var el in rootElement.Elements())
             {
                 string key = el.Element("Original").Value;
@@ -49,57 +50,55 @@ namespace TranslationHelper.Functions
             }
         }
 
-        //https://stackoverflow.com/questions/223738/net-stream-dataset-of-xml-data-to-zip-file
-        //http://madprops.org/blog/saving-datasets-locally-with-compression/
-        private static string ReadXMLToString()
-        {
-            using (FileStream fs = new FileStream(Properties.Settings.Default.THTranslationCachePath, FileMode.Open))
-            {
-                Stream s;
-                string fileExtension = Path.GetExtension(Properties.Settings.Default.THTranslationCachePath);
-                if (fileExtension == ".cmx")
-                {
-                    s = new GZipStream(fs, CompressionMode.Decompress);
-                }
-                else if (fileExtension == ".cmz")
-                {
-                    s = new DeflateStream(fs, CompressionMode.Decompress);
-                }
-                else
-                {
-                    s = fs;
-                }
-                string stringForReturn;
-                using (StreamReader sr = new StreamReader(s))
-                {
-                    stringForReturn = sr.ReadToEnd();
-                }
-                return stringForReturn;
-                //s.Close();
-            }
-        }
+        //private static string ReadXMLToString()
+        //{
+        //    using (FileStream fs = new FileStream(Properties.Settings.Default.THTranslationCachePath, FileMode.Open))
+        //    {
+        //        Stream s;
+        //        string fileExtension = Path.GetExtension(Properties.Settings.Default.THTranslationCachePath);
+        //        if (fileExtension == ".cmx")
+        //        {
+        //            s = new GZipStream(fs, CompressionMode.Decompress);
+        //        }
+        //        else if (fileExtension == ".cmz")
+        //        {
+        //            s = new DeflateStream(fs, CompressionMode.Decompress);
+        //        }
+        //        else
+        //        {
+        //            s = fs;
+        //        }
+        //        string stringForReturn;
+        //        using (StreamReader sr = new StreamReader(s))
+        //        {
+        //            stringForReturn = sr.ReadToEnd();
+        //        }
+        //        return stringForReturn;
+        //        //s.Close();
+        //    }
+        //}
 
-        private static void WriteXElementToXMLFile(XElement el)
-        {
-            using (FileStream fs = new FileStream(Properties.Settings.Default.THTranslationCachePath, FileMode.Create))
-            {
-                Stream s;
-                string fileExtension = Path.GetExtension(Properties.Settings.Default.THTranslationCachePath);
-                if (fileExtension == ".cmx")
-                {
-                    s = new GZipStream(fs, CompressionMode.Compress);
-                }
-                else if (fileExtension == ".cmz")
-                {
-                    s = new DeflateStream(fs, CompressionMode.Compress);
-                }
-                else
-                {
-                    s = fs;
-                }
-                el.Save(s);
-                s.Close();
-            }
-        }
+        //private static void WriteXElementToXMLFile(XElement el)
+        //{
+        //    using (FileStream fs = new FileStream(Properties.Settings.Default.THTranslationCachePath, FileMode.Create))
+        //    {
+        //        Stream s;
+        //        string fileExtension = Path.GetExtension(Properties.Settings.Default.THTranslationCachePath);
+        //        if (fileExtension == ".cmx")
+        //        {
+        //            s = new GZipStream(fs, CompressionMode.Compress);
+        //        }
+        //        else if (fileExtension == ".cmz")
+        //        {
+        //            s = new DeflateStream(fs, CompressionMode.Compress);
+        //        }
+        //        else
+        //        {
+        //            s = fs;
+        //        }
+        //        el.Save(s);
+        //        s.Close();
+        //    }
+        //}
     }
 }
