@@ -81,6 +81,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\CleanupData.cs" />
     <Compile Include="Data\THDataWork.cs" />
     <Compile Include="ExternalAdditions\CopyFolder.cs" />
     <Compile Include="ExternalAdditions\GDI.cs" />
@@ -104,6 +105,8 @@
     <Compile Include="Formats\RPGMTransPatch\TXTv2.cs" />
     <Compile Include="Functions\FunctionsLoadTranslationDB.cs" />
     <Compile Include="Functions\FunctionsOnlineTranslation.cs" />
+    <Compile Include="Functions\FunctionsOpen.cs" />
+    <Compile Include="Functions\FunctionsSave.cs" />
     <Compile Include="Functions\OnlineCache.cs" />
     <Compile Include="Old elements\DoubleBufferedListBox.cs" />
     <Compile Include="Functions\FunctionsAutoOperations.cs" />
@@ -119,12 +122,18 @@
     <Compile Include="ExternalAdditions\NativeMethods.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
     <Compile Include="Projects\KiriKiri\KiriKiriGame.cs" />
+    <Compile Include="Projects\KiriKiri\KiriKiriOLD.cs" />
     <Compile Include="Projects\KiriKiri\TJSfile.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
-    <Compile Include="Projects\Raijin7Game.cs" />
-    <Compile Include="Projects\RPGMGame.cs" />
-    <Compile Include="Projects\RPGMMVGame.cs" />
-    <Compile Include="Projects\RPGMTransPatch.cs" />
+    <Compile Include="Projects\Raijin7\Raijin7Game.cs" />
+    <Compile Include="Projects\RJ263914\RJ263914OLD.cs" />
+    <Compile Include="Projects\RPGMaker\RPGMGame.cs" />
+    <Compile Include="Projects\RPGMaker\RPGMGameOLD.cs" />
+    <Compile Include="Projects\RPGMMV\RPGMMVGame.cs" />
+    <Compile Include="Projects\RPGMMV\RPGMMVOLD.cs" />
+    <Compile Include="Projects\RPGMTrans\RPGMTransPatch.cs" />
+    <Compile Include="Projects\RPGMTrans\RPGMTransOLD.cs" />
+    <Compile Include="Projects\WolfRPG\WRPGOLDOpen.cs" />
     <Compile Include="Translators\DeepL.cs" />
     <Compile Include="Translators\TranslatorsFunctions.cs" />
     <Compile Include="Translators\Google.cs" />

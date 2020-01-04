@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.KiriKiri;
@@ -13,7 +9,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.KiriKiri
 {
-    class KiriKiriGame : ProjectBase
+    internal class KiriKiriGame : ProjectBase
     {
         public KiriKiriGame(THDataWork thDataWork) : base(thDataWork)
         {
@@ -184,7 +180,6 @@ namespace TranslationHelper.Projects.KiriKiri
             }
             catch
             {
-
             }
 
             return ret;
