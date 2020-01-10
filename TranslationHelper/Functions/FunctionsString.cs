@@ -214,7 +214,7 @@ namespace TranslationHelper.Main.Functions
             int corigind = thDataWork.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
             if (!All)
             {
-                int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.SelectedRows.Count;
+                int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.GetRowsWithSelectedCellsCount();
                 if (THFileElementsDataGridViewSelectedCellsCount > 0)
                 {
                     try
@@ -222,7 +222,7 @@ namespace TranslationHelper.Main.Functions
                         int[] indexes = new int[THFileElementsDataGridViewSelectedCellsCount];
                         for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                         {
-                            int rind = thDataWork.Main.THFileElementsDataGridView.SelectedRows[i].Index;
+                            int rind = thDataWork.Main.THFileElementsDataGridView.SelectedCells[i].RowIndex;
                             indexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, TableIndex, rind);
                         }
                         foreach (var rindex in indexes)

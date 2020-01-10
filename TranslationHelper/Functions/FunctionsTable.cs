@@ -2,6 +2,8 @@
 using System;
 using System.Data;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.ExternalAdditions;
 
@@ -9,6 +11,13 @@ namespace TranslationHelper.Main.Functions
 {
     static class FunctionsTable
     {
+        internal static int GetRowsWithSelectedCellsCount(this DataGridView DGV)
+        {
+            //https://stackoverflow.com/questions/47357051/c-datagridview-how-to-get-selected-count-with-cells-and-rows
+            return DGV.SelectedCells.Cast<DataGridViewCell>()
+                                       .Select(c => c.RowIndex).Distinct().Count();
+        }
+
         /// <summary>
         /// When table not exists it will create table with table thDataWork.TempPath name and Original Column<br>
         /// When table is exists it will remove table if no rows there else will create Translation column
@@ -469,7 +478,7 @@ namespace TranslationHelper.Main.Functions
 
         internal static void CleanTableCells(THDataWork thDataWork, int Tindex)
         {
-            int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.SelectedRows.Count;
+            int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.GetRowsWithSelectedCellsCount();
             // Ensure that text is currently selected in the text box.    
             if (THFileElementsDataGridViewSelectedCellsCount == 0)
             {
@@ -525,7 +534,7 @@ namespace TranslationHelper.Main.Functions
                     int equalIndexsesCounter = 0;
                     for (int i = 0; i < 5; i++)
                     {
-                        var rind = thDataWork.Main.THFileElementsDataGridView.SelectedRows[i].Index;
+                        var rind = thDataWork.Main.THFileElementsDataGridView.SelectedCells[i].RowIndex;
                         if (rind == FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, Tindex, rind))
                         {
                             equalIndexsesCounter++;
@@ -537,7 +546,7 @@ namespace TranslationHelper.Main.Functions
 
                 for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                 {
-                    int rind = thDataWork.Main.THFileElementsDataGridView.SelectedRows[i].Index;
+                    int rind = thDataWork.Main.THFileElementsDataGridView.SelectedCells[i].RowIndex;
                     if ((thDataWork.Main.THFileElementsDataGridView.Rows[rind].Cells[ctransind].Value + string.Empty).Length > 0)
                     {
                         if (TableHasNotDefaultRowsOrder)

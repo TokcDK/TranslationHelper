@@ -119,10 +119,10 @@ namespace TranslationHelper.Main.Functions
                     {
                         //cind = THFileElementsDataGridView.Columns["Translation"].Index;//-поле untrans                            
                         initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-                        selcellscnt = new int[thDataWork.Main.THFileElementsDataGridView.SelectedRows.Count];//создать массив длинной числом выбранных ячеек
+                        selcellscnt = new int[thDataWork.Main.THFileElementsDataGridView.GetRowsWithSelectedCellsCount()];//создать массив длинной числом выбранных ячеек
                         for (int i = 0; i < selcellscnt.Length; i++) //записать индексы всех выбранных ячеек
                         {
-                            selcellscnt[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, tind, thDataWork.Main.THFileElementsDataGridView.SelectedRows[i].Index);
+                            selcellscnt[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, tind, thDataWork.Main.THFileElementsDataGridView.SelectedCells[i].RowIndex);
                         }
                     }
                     else if (method == "t")

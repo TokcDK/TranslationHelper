@@ -846,7 +846,7 @@
             this.lowercaseToolStripMenuItem,
             this.splitLinesWhichLongerOfLimitToolStripMenuItem});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(216, 334);
+            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(216, 312);
             // 
             // OpenInWebContextToolStripMenuItem
             // 
