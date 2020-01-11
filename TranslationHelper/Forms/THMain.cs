@@ -201,6 +201,10 @@ namespace TranslationHelper
         private void THMain_Load(object sender, EventArgs e)
         {
             SetTooltips();
+
+            //Disable links detection in edition textboxes
+            THSourceRichTextBox.DetectUrls = false;
+            THTargetRichTextBox.DetectUrls = false;
         }
 
         ToolTip THToolTip;
@@ -584,7 +588,7 @@ namespace TranslationHelper
                     else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
                     {
                         //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
-                        this.Invoke((Action)(() => THSourceRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty)); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        this.Invoke((Action)(() => THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty))); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
                         //https://github.com/caguiclajmg/WanaKanaSharp
                         //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
                         //{
