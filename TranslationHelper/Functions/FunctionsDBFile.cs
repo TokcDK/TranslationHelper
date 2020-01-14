@@ -163,51 +163,60 @@ namespace TranslationHelper.Main.Functions
             //    }
             //}
 
-            int nbr = 1;
+            int OriginalLength = "Original".Length;
             Dictionary<string, string> db = new Dictionary<string, string>();
+            //var settings = new XmlReaderSettings();
+            string original=string.Empty;
+            bool WaitingTranslation = false;
+
+            //https://stackoverflow.com/questions/2441673/reading-xml-with-xmlreader-in-c-sharp
             using (XmlReader reader = XmlReader.Create(xmlPath))
             {
-                string orig=string.Empty;
-                string trans;
-                bool waitingTranslation = false;
+                reader.MoveToContent();
                 while (reader.Read())
                 {
-                    if (reader.Name.Length==0)
+                    if (reader.NodeType == XmlNodeType.Element)
                     {
-                        continue;
-                    }
-
-                    if (reader.Name == "Original")
-                    {
-                        if (!waitingTranslation)
+                        if (WaitingTranslation)
                         {
-                            if (!db.ContainsKey(reader.Value))
+                            if (reader.Name == "Translation")
                             {
-                                waitingTranslation = true;
-                                orig = reader.Value;
+                                if (XNode.ReadFrom(reader) is XElement el)
+                                {
+                                    db.Add(original, el.Value);
+                                    WaitingTranslation = false;
+                                }
                             }
                         }
                         else
                         {
-                            waitingTranslation = false;
+                            if (reader.Name.Length != OriginalLength)
+                                continue;
+
+                            if (reader.Name == "Original")
+                            {
+                                try
+                                {
+                                    if (XNode.ReadFrom(reader) is XElement el)
+                                    {
+                                        if (!db.ContainsKey(el.Value))
+                                        {
+                                            original = el.Value;
+                                            WaitingTranslation = true;
+                                        }
+                                        else
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                }
+                                catch
+                                {
+                                    continue;
+                                }
+                            }
                         }
-                        continue;
                     }
-                    else if (waitingTranslation && reader.Name == "Translation")
-                    {
-                        db.Add(orig, reader.Value);
-                        waitingTranslation = false;
-                    }
-
-                    reader.MoveToContent();
-                    //if ((reader.NodeType == XmlNodeType.EndElement) || (reader.NodeType != XmlNodeType.Element) || (reader.NodeType == XmlNodeType.Text))
-                    //{
-                    //    reader.Skip();
-                    //    reader.MoveToContent();
-
-                    //}
-                    //MessageBox.Show(reader.Name);//Just for test
-
                 }
             }
 
@@ -265,6 +274,28 @@ namespace TranslationHelper.Main.Functions
                 el.Save(s);
                 s.Close();
             }
+        }
+
+        internal static Dictionary<string, string> DataSetToDictionary(DataSet dBDataSet)
+        {
+            Dictionary<string, string> db = new Dictionary<string, string>();
+
+            int TablesCount = dBDataSet.Tables.Count;
+
+            for (int t=0;t< TablesCount; t++)
+            {
+                int RowsCount = dBDataSet.Tables[t].Rows.Count;
+
+                for (int r = 0; r < RowsCount; r++)
+                {
+                    if (!db.ContainsKey(dBDataSet.Tables[t].Rows[r][0] as string))
+                    {
+                        db.Add(dBDataSet.Tables[t].Rows[r][0] as string, dBDataSet.Tables[t].Rows[r][1]+string.Empty);
+                    }
+                }
+            }
+
+            return db;
         }
     }
 }

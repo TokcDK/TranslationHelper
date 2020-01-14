@@ -179,13 +179,6 @@ namespace TranslationHelper.Functions
                 return;
             }
 
-            //LogToFile("ocol=" + ocol);
-            //оптимизация. Не искать колонку перевода, если она по стандарту первая
-
-            //Оптимизация. Стартовые значения номера таблицы и строки для таблицы с загруженным переводом
-            int ttablestartindex = 0;
-            int trowstartindex = 0;
-
             int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
             string infomessage = T._("loading translation") + ":";
             //проход по всем таблицам рабочего dataset

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -275,18 +274,28 @@ namespace TranslationHelper.Main.Functions
         static bool forcevalue;
         static int iTableIndex;
         static int iRowIndex;
-        static int iCellIndex;
-        static int[] TRC;
-        static Dictionary<int[], bool> THAutoSetSameTranslationForSimularData = new Dictionary<int[], bool>();
-        public static void THAutoSetSameTranslationForSimular(THDataWork thDataWork, int InputTableIndex, int InputRowIndex, int InputCellIndex, bool ForceSetValue = false)
+        static int iColumnIndex;
+        static string TRC;
+        static Dictionary<string, bool> THAutoSetSameTranslationForSimularData = new Dictionary<string, bool>();
+        public static void THAutoSetSameTranslationForSimular(THDataWork thDataWork, int InputTableIndex, int InputRowIndex, int InputColumnIndex, bool ForceSetValue = false)
         {
+            if (   InputTableIndex == -1 
+                || InputRowIndex == -1 
+                || InputColumnIndex == -1 
+                || thDataWork.THFilesElementsDataset == null 
+                || InputTableIndex > thDataWork.THFilesElementsDataset.Tables.Count - 1 
+                || InputRowIndex > thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows.Count - 1 
+                || (thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows[InputColumnIndex][InputColumnIndex + 1] + string.Empty).Length==0)
+            {
+                return;
+            }
             //if (Properties.Settings.Default.THAutoSetSameTranslationForSimularIsBusy)
             //{
             //    return;
             //}
-            if (!THAutoSetSameTranslationForSimularData.ContainsKey(new int[3] { InputTableIndex, InputRowIndex, InputCellIndex }))
+            if (!THAutoSetSameTranslationForSimularData.ContainsKey(InputTableIndex+"|"+InputRowIndex + "|" + InputColumnIndex))
             {
-                THAutoSetSameTranslationForSimularData.Add(new int[3] { InputTableIndex, InputRowIndex, InputCellIndex }, ForceSetValue);
+                THAutoSetSameTranslationForSimularData.Add(InputTableIndex + "|" + InputRowIndex + "|" + InputColumnIndex, ForceSetValue);
             }
 
             while (!THAutoSetSameTranslationForSimularIsBusy && THAutoSetSameTranslationForSimularData.Count > 0)
@@ -303,16 +312,16 @@ namespace TranslationHelper.Main.Functions
                     //iCellIndex = InputCellIndex;
 
                     //присвоить значения для обработки
-                    iTableIndex = THAutoSetSameTranslationForSimularData.ElementAt(0).Key[0];
-                    iRowIndex = THAutoSetSameTranslationForSimularData.ElementAt(0).Key[1];
-                    iCellIndex = THAutoSetSameTranslationForSimularData.ElementAt(0).Key[2];
-                    TRC = new int[3] { iTableIndex, iRowIndex, iCellIndex };
+                    TRC = THAutoSetSameTranslationForSimularData.ElementAt(0).Key;
+                    iTableIndex = int.Parse(TRC.Split('|')[0], CultureInfo.GetCultureInfo("en-US"));
+                    iRowIndex = int.Parse(TRC.Split('|')[1], CultureInfo.GetCultureInfo("en-US"));
+                    iColumnIndex = int.Parse(TRC.Split('|')[2], CultureInfo.GetCultureInfo("en-US"));
                     forcevalue = THAutoSetSameTranslationForSimularData[TRC];
 
                     var InputTableRow = thDataWork.THFilesElementsDataset.Tables[iTableIndex].Rows[iRowIndex];
-                    var InputTableOriginalCell = InputTableRow[iCellIndex];
-                    int TranslationCellIndex = iCellIndex + 1;
-                    var InputTableTranslationCell = InputTableRow[TranslationCellIndex];
+                    var InputTableOriginalCell = InputTableRow[iColumnIndex];
+                    int TranslationColumnIndex = iColumnIndex + 1;
+                    var InputTableTranslationCell = InputTableRow[TranslationColumnIndex];
                     if (InputTableTranslationCell == null || string.IsNullOrEmpty(InputTableTranslationCell as string))
                     {
                     }
@@ -356,8 +365,8 @@ namespace TranslationHelper.Main.Functions
                                 }
 
                                 var TRow = Table.Rows[Rindx];
-                                var TargetOriginallCell = TRow[iCellIndex];
-                                var TargetTranslationCell = TRow[TranslationCellIndex];
+                                var TargetOriginallCell = TRow[iColumnIndex];
+                                var TargetTranslationCell = TRow[TranslationColumnIndex];
                                 string TargetOriginallCellString = TargetOriginallCell as string;
                                 string TargetTranslationCellString = TargetTranslationCell + string.Empty;
                                 if ((forcevalue && Rindx != iRowIndex && /*только если оригинал и перевод целевой ячейки не равны-*/TargetTranslationCellString != TargetOriginallCellString) || string.IsNullOrEmpty(TargetTranslationCellString)) //Проверять только для пустых ячеек перевода
@@ -438,19 +447,19 @@ namespace TranslationHelper.Main.Functions
 
                                                 }
                                                 //только если ячейка пустая
-                                                TargetTranslationCell = thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex];
+                                                TargetTranslationCell = thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex];
                                                 if (!failed && (forcevalue || TargetTranslationCell == null || string.IsNullOrEmpty(TargetTranslationCell as string)))
                                                 {
-                                                    thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = InputTransCellValue;
+                                                    thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTransCellValue;
                                                 }
                                             }
                                         }
                                     }
                                     else //иначе, если в поле оригинала не было цифр, сравнить как обычно, два поля между собой 
                                     {
-                                        if (Equals(TRow[iCellIndex], InputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
+                                        if (Equals(TRow[iColumnIndex], InputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
                                         {
-                                            thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationCellIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
+                                            thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
                                         }
                                     }
                                 }

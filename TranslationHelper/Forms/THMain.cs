@@ -673,7 +673,7 @@ namespace TranslationHelper
 
 
             // Loop over each line
-            int THTargetRichTextBoxLinesCount=0;
+            int THTargetRichTextBoxLinesCount = 0;
             this.Invoke((Action)(() => THTargetRichTextBoxLinesCount = THTargetRichTextBox.Lines.Length));
             for (int i = 0; i < THTargetRichTextBoxLinesCount; i++)
             {
@@ -1258,11 +1258,23 @@ namespace TranslationHelper
             }
 
             //стандартное считывание
+            ProgressInfo(true, T._("Reading DB File")+"...");
             FunctionsDBFile.ReadDBFile(DBDataSet, sPath); //load new data
-            new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
+            //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
 
-            //считывание через словарь
+            //считывание через словарь с предварительным чтением в dataset и конвертацией в словарь
+            //Своего рода среднее решение, которое быстрее решения с сравнением из БД в DataSet
+            //и не имеет проблем решения с чтением сразу в словарь, 
+            //тут не нужно переписывать запись в xml, хотя запись таблицы в xml пишет все колонки и одинаковые значения, т.е. xml будет больше
+            //чтение из xml в dataset может занимать по нескольку секунд для больших файлов
+            new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(FunctionsDBFile.DataSetToDictionary(DBDataSet));
+
+            //считывание через словарь Чтение xml в словарь на текущий момент имеет проблемы
+            //с невозможностью чтения закодированых в hex символов(решил как костыль через try catch) и пока не может читать сжатые xml
+            //нужно постепенно доработать код, исправить проблемы и перейти полностью на этот наибыстрейший вариант
+            //т.к. с ним и xml бд будет меньше размером
             //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(FunctionsDBFile.ReadXMLDBToDictionary(sPath));
+
 
             ProgressInfo(false);
         }
@@ -1340,13 +1352,10 @@ namespace TranslationHelper
                 }
 
                 int tableind = THFilesList.SelectedIndex;
-                int rind = THFileElementsDataGridView.CurrentCell.RowIndex;
+                int rind = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, e.RowIndex);
                 int cind = THFileElementsDataGridView.Columns["Original"].Index;
 
-                if (rind > thDataWork.THFilesElementsDataset.Tables[tableind].Rows.Count)
-                {
-                }
-                else
+                if (rind>-1 && rind < thDataWork.THFilesElementsDataset.Tables[tableind].Rows.Count && (thDataWork.THFilesElementsDataset.Tables[tableind].Rows[rind][1] + string.Empty).Length > 0)
                 {
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                     //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)));
