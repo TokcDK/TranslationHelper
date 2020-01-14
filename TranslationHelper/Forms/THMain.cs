@@ -1267,7 +1267,10 @@ namespace TranslationHelper
             //и не имеет проблем решения с чтением сразу в словарь, 
             //тут не нужно переписывать запись в xml, хотя запись таблицы в xml пишет все колонки и одинаковые значения, т.е. xml будет больше
             //чтение из xml в dataset может занимать по нескольку секунд для больших файлов
-            new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(FunctionsDBFile.DataSetToDictionary(DBDataSet));
+            //основную часть времени отнимал вывод информации о файлах!!
+            new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.DBDataSetToDBDictionary());
+            //это медленнее первого варианта
+            //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary2(DBDataSet.DBDataSetToDBDictionary());
 
             //считывание через словарь Чтение xml в словарь на текущий момент имеет проблемы
             //с невозможностью чтения закодированых в hex символов(решил как костыль через try catch) и пока не может читать сжатые xml

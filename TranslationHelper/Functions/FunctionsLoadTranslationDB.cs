@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
@@ -172,6 +175,9 @@ namespace TranslationHelper.Functions
 
         internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db)
         {
+            //Stopwatch timer = new Stopwatch();
+            //timer.Start();
+
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
             int otranscol = thDataWork.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
@@ -197,13 +203,13 @@ namespace TranslationHelper.Functions
                     //проход по всем строкам таблицы рабочего dataset
                     for (int r = 0; r < rcount; r++)
                     {
-                        thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+                        //thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
                         var Row = Table.Rows[r];
                         var CellTranslation = Row[otranscol];
                         if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
                         {
                             var origCellValue = Row[0] as string;
-                            if (db.ContainsKey(origCellValue))
+                            if (db.ContainsKey(origCellValue) && db[origCellValue].Length>0)
                             {
                                 thDataWork.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
                             }
@@ -211,6 +217,50 @@ namespace TranslationHelper.Functions
                     }
                 }
             }
+
+            //0.051
+            //timer.Stop();
+            //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
+            //MessageBox.Show(difference.ToString());
+            System.Media.SystemSounds.Beep.Play();
+        }
+
+        /// <summary>
+        /// loading dict db but preget table-row data from main tables
+        /// </summary>
+        /// <param name="db"></param>
+        internal void THLoadDBCompareFromDictionary2(Dictionary<string, string> db)
+        {
+            //Stopwatch timer = new Stopwatch();
+            //timer.Start();
+
+            Dictionary<string, string> tableData = thDataWork.THFilesElementsDataset.GetTableRowsDataToDictionary();
+
+            //проход по всем таблицам рабочего dataset
+            string infomessage = T._("loading translation") + ":";
+            int tableDataKeysCount = tableData.Keys.Count;
+            int cur = 0;
+            thDataWork.Main.ProgressInfo(true, infomessage);
+            foreach (var original in tableData.Keys)
+            {
+                //thDataWork.Main.ProgressInfo(true, infomessage + cur +"/"+ tableDataKeysCount);
+                if (db.ContainsKey(original))
+                {
+                    foreach(var TableRowPair in tableData[original].Split('|'))
+                    {
+                        thDataWork.THFilesElementsDataset.Tables[int.Parse(TableRowPair.Split('!')[0], CultureInfo.GetCultureInfo("en-US"))].Rows[int.Parse(TableRowPair.Split('!')[1], CultureInfo.GetCultureInfo("en-US"))][1] = db[original];
+                    }
+                }
+                //cur++;
+            }
+            //MessageBox.Show(DT1.Rows[0][0] as string);
+
+
+            //00.1512865
+            //timer.Stop();
+            //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
+            //MessageBox.Show(difference.ToString());
+            System.Media.SystemSounds.Beep.Play();
         }
     }
 }

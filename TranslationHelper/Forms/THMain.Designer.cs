@@ -241,7 +241,7 @@
             // toXmlToolStripMenuItem
             // 
             this.toXmlToolStripMenuItem.Name = "toXmlToolStripMenuItem";
-            this.toXmlToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.toXmlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.toXmlToolStripMenuItem.Text = "xml/cmx/cmz";
             this.toXmlToolStripMenuItem.Click += new System.EventHandler(this.SaveTranslationAsToolStripMenuItem_Click);
             // 

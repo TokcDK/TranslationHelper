@@ -13,7 +13,7 @@ using TranslationHelper.Formats.RPGMaker.Functions;
 
 namespace TranslationHelper.Main.Functions
 {
-    class FunctionsDBFile
+    static class FunctionsDBFile
     {
         public static void WriteTranslationCacheIfValid(DataSet THTranslationCache, string tHTranslationCachePath)
         {
@@ -137,7 +137,7 @@ namespace TranslationHelper.Main.Functions
             return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.GetCultureInfo("en-US")) : string.Empty);
         }
 
-        public void WriteDictToXMLDB(Dictionary<string, string> db, string xmlPath)
+        public static void WriteDictToXMLDB(Dictionary<string, string> db, string xmlPath)
         {
             XElement el = new XElement("TranslationCache",
                 db.Select(kv =>
@@ -166,7 +166,7 @@ namespace TranslationHelper.Main.Functions
             int OriginalLength = "Original".Length;
             Dictionary<string, string> db = new Dictionary<string, string>();
             //var settings = new XmlReaderSettings();
-            string original=string.Empty;
+            string original = string.Empty;
             bool WaitingTranslation = false;
 
             //https://stackoverflow.com/questions/2441673/reading-xml-with-xmlreader-in-c-sharp
@@ -276,21 +276,62 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        internal static Dictionary<string, string> DataSetToDictionary(DataSet dBDataSet)
+        internal static Dictionary<string, string> DBDataSetToDBDictionary(this DataSet dBDataSet, bool DontAddEmptyTranslation = true)
         {
             Dictionary<string, string> db = new Dictionary<string, string>();
 
             int TablesCount = dBDataSet.Tables.Count;
 
-            for (int t=0;t< TablesCount; t++)
+            for (int t = 0; t < TablesCount; t++)
             {
                 int RowsCount = dBDataSet.Tables[t].Rows.Count;
 
                 for (int r = 0; r < RowsCount; r++)
                 {
-                    if (!db.ContainsKey(dBDataSet.Tables[t].Rows[r][0] as string))
+                    var row = dBDataSet.Tables[t].Rows[r];
+                    if (!db.ContainsKey(row[0] as string))
                     {
-                        db.Add(dBDataSet.Tables[t].Rows[r][0] as string, dBDataSet.Tables[t].Rows[r][1]+string.Empty);
+                        if (DontAddEmptyTranslation)
+                        {
+                            if (row[1] != null && !string.IsNullOrEmpty(row[1] + string.Empty))
+                            {
+                                db.Add(row[0] as string, row[1] + string.Empty);
+                            }
+                        }
+                        else
+                        {
+                            db.Add(row[0] as string, row[1] + string.Empty);
+                        }
+                    }
+                }
+            }
+
+            return db;
+        }
+
+        internal static Dictionary<string, string> GetTableRowsDataToDictionary(this DataSet dBDataSet)
+        {
+            Dictionary<string, string> db = new Dictionary<string, string>();
+
+            int TablesCount = dBDataSet.Tables.Count;
+
+            for (int t = 0; t < TablesCount; t++)
+            {
+                int RowsCount = dBDataSet.Tables[t].Rows.Count;
+
+                for (int r = 0; r < RowsCount; r++)
+                {
+                    var row = dBDataSet.Tables[t].Rows[r];
+                    if (db.ContainsKey(row[0] as string))
+                    {
+                        if (row[1] == null || string.IsNullOrEmpty(row[1] + string.Empty))
+                        {
+                            db[row[0] as string] = db[row[0] as string] + "|" + t + "!" + r;
+                        }
+                    }
+                    else
+                    {
+                        db.Add(row[0] as string, t + "!" + r);
                     }
                 }
             }
