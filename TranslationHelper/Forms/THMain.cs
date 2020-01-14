@@ -1734,7 +1734,7 @@ namespace TranslationHelper
         {
             if (forcevalue || (Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
-                FunctionsAutoOperations.THAutoSetSameTranslationForSimular(thDataWork.THFilesElementsDataset, InputTableIndex, InputRowIndex, InputCellIndex, forcevalue);
+                FunctionsAutoOperations.THAutoSetSameTranslationForSimular(thDataWork, InputTableIndex, InputRowIndex, InputCellIndex, forcevalue);
 
                 //LogToFile(string.Empty,true);
                 cellchanged = false;
