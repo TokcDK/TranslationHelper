@@ -120,7 +120,10 @@ namespace TranslationHelper.Main.Functions
                         }
                     }
                     cellvalue.Clear();
-                    Main.THAutoSetSameTranslationForSimular(Main.THFilesList.SelectedIndex, iRowIndex, origcolindex);
+
+                    //сильно тормозит процесс, отключил
+                    //Main.THAutoSetSameTranslationForSimular(Main.THFilesList.SelectedIndex, iRowIndex, origcolindex);
+                                        
                     origcellcurlines = 0;
                     //LogToFile("PasteClipboardValue next row, iRowIndex=" + iRowIndex);
                     iRowIndex++;
