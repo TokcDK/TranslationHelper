@@ -198,9 +198,9 @@ namespace TranslationHelper.Main.Functions
                                 for (int i = 0; i < rulesLength; i++)
                                 {
                                     //игнорировать комментарии и пустые строки
-                                    while (rules[i].Length == 0 || rules[i].StartsWith(";"))
+                                    if (rules[i].Length == 0 || rules[i].StartsWith(";"))
                                     {
-                                        i++;
+                                        continue;
                                     }
 
                                     //читать правило и результат

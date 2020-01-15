@@ -575,12 +575,17 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
+            this.Invoke((Action)(() => CellEnterActions(sender, e)));
+        }
+
+        private void CellEnterActions(object sender, DataGridViewCellEventArgs e)
+        {
             try
             {
                 //Считывание значения ячейки в текстовое поле 1, вариант 2, для DataSet, ds.Tables[0]
                 if (THSourceRichTextBox.Enabled && THFileElementsDataGridView.Rows.Count > 0 && e.RowIndex >= 0 && e.ColumnIndex >= 0) //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
                 {
-                    THTargetRichTextBox.Invoke((Action)(() => THTargetRichTextBox.Clear()));//здесь была ошибка о попытке доступа из другого потока
+                    THTargetRichTextBox.Clear();
 
                     if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty).Length == 0)
                     {
@@ -588,7 +593,7 @@ namespace TranslationHelper
                     else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
                     {
                         //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
-                        this.Invoke((Action)(() => THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty))); //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                        THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty);
                         //https://github.com/caguiclajmg/WanaKanaSharp
                         //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
                         //{
@@ -607,12 +612,11 @@ namespace TranslationHelper
                         var cellvalue = THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value;
                         if (cellvalue == null || (cellvalue as string).Length == 0)
                         {
-                            this.Invoke((Action)(() => THTargetRichTextBox.Clear()));
-
+                            THTargetRichTextBox.Clear();
                         }
 
                         //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
-                        this.Invoke((Action)(() => THTargetRichTextBox.Text = cellvalue as string));
+                        THTargetRichTextBox.Text = cellvalue as string;
 
                         FormatTextBox();
 
@@ -623,6 +627,7 @@ namespace TranslationHelper
                     }
 
                     THInfoTextBox.Text = string.Empty;
+
 
                     if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty).Length == 0)
                     {
@@ -678,7 +683,8 @@ namespace TranslationHelper
             for (int i = 0; i < THTargetRichTextBoxLinesCount; i++)
             {
                 // Current line text
-                string currentLine = THTargetRichTextBox.Lines[i];
+                string currentLine = string.Empty;
+                this.Invoke((Action)(() => currentLine = THTargetRichTextBox.Lines[i]));
 
                 // Ignore the non-assembly lines
                 if (currentLine.Length > Properties.Settings.Default.THOptionLineCharLimit)
@@ -728,6 +734,7 @@ namespace TranslationHelper
         private async void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FunctionsSave(thDataWork).PrepareToWrite();
+            Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
         }
 
         public void ProgressInfo(bool status, string statustext = "")
@@ -1258,7 +1265,7 @@ namespace TranslationHelper
             }
 
             //стандартное считывание
-            ProgressInfo(true, T._("Reading DB File")+"...");
+            ProgressInfo(true, T._("Reading DB File") + "...");
             FunctionsDBFile.ReadDBFile(DBDataSet, sPath); //load new data
             //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
 
@@ -1358,7 +1365,7 @@ namespace TranslationHelper
                 int rind = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, e.RowIndex);
                 int cind = THFileElementsDataGridView.Columns["Original"].Index;
 
-                if (rind>-1 && rind < thDataWork.THFilesElementsDataset.Tables[tableind].Rows.Count && (thDataWork.THFilesElementsDataset.Tables[tableind].Rows[rind][1] + string.Empty).Length > 0)
+                if (rind > -1 && rind < thDataWork.THFilesElementsDataset.Tables[tableind].Rows.Count && (thDataWork.THFilesElementsDataset.Tables[tableind].Rows[rind][1] + string.Empty).Length > 0)
                 {
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                     //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)));
@@ -2052,6 +2059,8 @@ namespace TranslationHelper
                                 //http://www.cyberforum.ru/windows-forms/thread31052.html
                                 // свернуть
                                 WindowState = FormWindowState.Minimized;
+
+                                Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
 
                                 await Task.Run(() => Testgame.Start()).ConfigureAwait(true);
                                 Testgame.WaitForExit();

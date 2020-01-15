@@ -175,6 +175,12 @@ namespace TranslationHelper.Functions
 
         internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db)
         {
+            //отключение DataSource для избежания проблем от изменений DataGridView
+            thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+            thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+            thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+
+
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
 
@@ -223,6 +229,8 @@ namespace TranslationHelper.Functions
             //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
             //MessageBox.Show(difference.ToString());
             System.Media.SystemSounds.Beep.Play();
+
+            thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
         }
 
         /// <summary>

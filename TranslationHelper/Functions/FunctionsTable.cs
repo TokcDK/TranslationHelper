@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.ExternalAdditions;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -488,23 +487,41 @@ namespace TranslationHelper.Main.Functions
             //если количество выбранных строк равно числу строк в таблице, то 
             if (THFileElementsDataGridViewSelectedCellsCount == thDataWork.THFilesElementsDataset.Tables[Tindex].Rows.Count)
             {
-                //https://stackoverflow.com/questions/15035219/how-do-you-clear-an-entire-datagridview-column
-                //thDataWork.Main.THFileElementsDataGridView.ClearColumn(1);
-
-                //удалить колонку, потом добавить и переместить на позицию 1
-                thDataWork.THFilesElementsDataset.Tables[Tindex].Columns.Remove("Translation");
-                thDataWork.THFilesElementsDataset.Tables[Tindex].Columns.Add("Translation");
-                //https://stackoverflow.com/questions/3757997/how-to-change-datatable-columns-order
-                thDataWork.THFilesElementsDataset.Tables[Tindex].Columns["Translation"].SetOrdinal(1);
-
-                //перерисовка датагрида
-                //https://stackoverflow.com/a/29453395 частично
+                DataColumn dc = thDataWork.THFilesElementsDataset.Tables[Tindex].Columns[1];
+                
+                //отключение датасорса для убирания тормозов с параллельной прорисовкой
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
-                //thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Parent.Refresh()));
-                //thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset));
+
+                int rowsCount = thDataWork.THFilesElementsDataset.Tables[Tindex].Rows.Count;
+
+                for (int r = 0; r < rowsCount; r++)
+                {
+                    thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[r][1] = null;
+                }
+
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
+                //thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[Tindex];
+
+
+                //https://stackoverflow.com/questions/15035219/how-do-you-clear-an-entire-datagridview-column
+                //thDataWork.Main.THFileElementsDataGridView.ClearColumn(1);
+
+                ////удалить колонку, потом добавить и переместить на позицию 1
+                //thDataWork.THFilesElementsDataset.Tables[Tindex].Columns.Remove("Translation");//КИДАЕТ ИСКЛЮЧЕНИЕ dATAGRIDVIEW
+                //thDataWork.THFilesElementsDataset.Tables[Tindex].Columns.Add("Translation");
+                ////https://stackoverflow.com/questions/3757997/how-to-change-datatable-columns-order
+                //thDataWork.THFilesElementsDataset.Tables[Tindex].Columns["Translation"].SetOrdinal(1);
+
+                ////перерисовка датагрида
+                ////https://stackoverflow.com/a/29453395 частично
+                //thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+                //thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                //thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                ////thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Parent.Refresh()));
+                ////thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset));
+                //thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
                 return;
             }
 
