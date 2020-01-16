@@ -47,5 +47,8 @@ namespace TranslationHelper.Data
         public DataSet THFilesElementsDatasetInfo { get; set; }
 
         public DataSet THFilesElementsALLDataTable { get; set; }
+
+        //target textbox control value
+        internal string TargetTextBoxPreValue;
     }
 }

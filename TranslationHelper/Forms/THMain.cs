@@ -615,8 +615,12 @@ namespace TranslationHelper
                             THTargetRichTextBox.Clear();
                         }
 
+                        //запоминание последнего значения ячейки перед считыванием в THTargetRichTextBox,
+                        //для предотвращения записи значения обратно в ячейку, если она была изменена до изменения текстбокса
+                        thDataWork.TargetTextBoxPreValue = cellvalue as string;
+
                         //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
-                        THTargetRichTextBox.Text = cellvalue as string;
+                        THTargetRichTextBox.Text = thDataWork.TargetTextBoxPreValue;
 
                         FormatTextBox();
 
@@ -1591,7 +1595,11 @@ namespace TranslationHelper
             }
             else//если текстовое поле 2 не пустое
             {
-                THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
+                //не менять, если значение текстбокса не поменялось
+                if(THTargetRichTextBox.Text!=thDataWork.TargetTextBoxPreValue)
+                {
+                    THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
+                }
             }
         }
 
@@ -2597,14 +2605,6 @@ namespace TranslationHelper
             int TIndex = THFilesList.SelectedIndex;
             Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork, TIndex, 2, true)));
             StringCase.Start();
-        }
-
-        private void THTargetRichTextBox_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void THTargetRichTextBox_Validated(object sender, EventArgs e)
-        {
         }
 
         private void AllIfExistsFiledirWithNameToolStripMenuItem_Click(object sender, EventArgs e)
