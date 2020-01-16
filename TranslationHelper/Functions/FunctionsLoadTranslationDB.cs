@@ -62,6 +62,14 @@ namespace TranslationHelper.Functions
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
+                //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
+                if (thDataWork.Main.THFileElementsDataGridView.DataSource != null && thDataWork.Main.THFilesList.SelectedIndex == t)
+                {
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                }
+
                 using (var Table = thDataWork.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
@@ -140,6 +148,14 @@ namespace TranslationHelper.Functions
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
+                //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
+                if (thDataWork.Main.THFileElementsDataGridView.DataSource != null && thDataWork.Main.THFilesList.SelectedIndex == t)
+                {
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                }
+
                 using (DataTable DT = thDataWork.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
@@ -153,7 +169,7 @@ namespace TranslationHelper.Functions
                     //проход по всем строкам таблицы рабочего dataset
                     for (int r = 0; r < rcount; r++)
                     {
-                        thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+                        //thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
 
                         var TranslationRow = DT.Rows[r];
                         var TranslationCell = TranslationRow[1];
@@ -182,12 +198,22 @@ namespace TranslationHelper.Functions
                 return;
             }
 
-            int RecordsCounter = 1;
+            //int RecordsCounter = 1;
             int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
             string infomessage = T._("loading translation") + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
+                //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
+                bool b=false;
+                thDataWork.Main.Invoke((Action)(() => b = thDataWork.Main.THFileElementsDataGridView.DataSource != null && thDataWork.Main.THFilesList.SelectedIndex == t));
+                if (b)
+                {
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                }
+
                 using (var Table = thDataWork.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines

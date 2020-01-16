@@ -19,6 +19,9 @@ namespace TranslationHelper.Data
         {
             try
             {
+                //to prevent some autooperations while project will not be opened
+                Properties.Settings.Default.ProjectIsOpened = false;
+
                 //Reset vars
                 thDataWork.Main.Text = "Translation Helper by Dev";
                 thDataWork.Main.THInfoTextBox.Text = string.Empty;

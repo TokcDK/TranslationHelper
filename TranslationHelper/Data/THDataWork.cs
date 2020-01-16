@@ -25,9 +25,6 @@ namespace TranslationHelper.Data
                 new KiriKiriGame(this),
                 new Raijin7Game(this)
             };
-
-            //to prevent some autooperations while project will not be opened
-            Properties.Settings.Default.ProjectIsOpened = false;
         }
         
         //Link to main form

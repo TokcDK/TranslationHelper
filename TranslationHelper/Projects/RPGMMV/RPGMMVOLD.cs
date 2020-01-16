@@ -315,33 +315,18 @@ namespace TranslationHelper.Projects.RPGMMV
                     return;
                 }
 
-                //if (cName == "code")
-                //{
-                //    curcode = token.ToString();
-                //    //cCode = "Code" + curcode;
-                //    //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
-                //}
-                //else if (propertyname == "id")
-                //{
-                //    if (cId != OldcId)
-                //    {
-                //        OldcId = cId;
-                //        cId = "ID" + token.ToString() + ":";
-                //    }
-                //}
-                //LogToFile("JValue: " + propertyname + "=" + token.ToString()+", token path="+token.Path);
                 string tokenvalue = token.ToString();
 
                 if (IsCommonEvents && (curcode == "401" || curcode == "405"))
                 {
                     //if (token.Type == JTokenType.String)
                     //{
-                        if (textsb.ToString().Length > 0)
-                        {
-                            textsb.AppendLine();
-                        }
-                        //LogToFile("code 401 adding valur to merge=" + tokenvalue + ", curcode=" + curcode);
-                        textsb.Append(tokenvalue);
+                    if (textsb.ToString().Length > 0)
+                    {
+                        textsb.AppendLine();
+                    }
+                    //LogToFile("code 401 adding valur to merge=" + tokenvalue + ", curcode=" + curcode);
+                    textsb.Append(tokenvalue);
                     //}
                 }
                 else
@@ -364,13 +349,6 @@ namespace TranslationHelper.Projects.RPGMMV
                                 thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(mergedstring);
                                 //TempList.Add(mergedstring);//много быстрее
 
-                                //JToken t = token;
-                                //while (!string.IsNullOrEmpty(t.Parent.Path))
-                                //{
-                                //    t = t.Parent;
-                                //    extra += "\\" + t.Path;
-                                //}
-
                                 thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
                                 //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                             }
@@ -379,56 +357,32 @@ namespace TranslationHelper.Projects.RPGMMV
                     }
                     //if (token.Type == JTokenType.String)
                     //{
-                        if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
-                        {
-                        }
-                        else
-                        {
-                            //if (IsCommonEvents && curcode == "102")
-                            //{
-                            //    cName = "Choice";
-                            //}
+                    if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
+                    {
+                    }
+                    else
+                    {
 
-                            //LogToFile("Jsonname=" + Jsonname+ ", tokenvalue=" + tokenvalue);
-                            //LogToFile(string.Empty, true);
+                        thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
 
-                            thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
-                            //TempList.Add(tokenvalue);//много быстрее
-
-                            //dsinfo.Tables[0].Rows.Add(cType+"\\"+ cId + "\\" + cCode + "\\" + cName);
-                            //JToken t = token;
-                            //while (!string.IsNullOrEmpty(t.Parent.Path))
-                            //{
-                            //    t = t.Parent;
-                            //    extra += "\\"+t.Path;
-                            //}
-
-                            thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
-                            //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
-                        }
+                        thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
+                        //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
+                    }
                     //}
                 }
-                //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(token.ToString()))];
-                //childNode.Tag = token;
             }
             else if (token is JObject obj)
             {
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 foreach (var property in obj.Properties())
                 {
-                    //cType = "JObject";
                     cName = property.Name;
-                    //LogToFile("JObject propery: " + property.Name + "=" + property.Value+ ", token.Path=" + token.Path);
-                    //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(property.Name))];
-                    //childNode.Tag = property;
 
                     if (IsCommonEvents)//asdfg skip code 108,408,356
                     {
                         if (cName.Length == 4 && cName == "code")
                         {
                             curcode = property.Value + string.Empty;
-                            //cCode = "Code" + curcode;
-                            //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
                         if (skipit)
                         {
@@ -466,10 +420,6 @@ namespace TranslationHelper.Projects.RPGMMV
                 int arrayCount = array.Count;
                 for (int i = 0; i < arrayCount; i++)
                 {
-                    //LogToFile("JArray=\r\n" + array[i] + "\r\n, token.Path=" + token.Path);
-                    //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(i.ToString()))];
-                    //childNode.Tag = array[i];
-                    //cType = "JArray";
                     ProceedJToken(array[i], Jsonname);
                 }
             }
@@ -483,13 +433,15 @@ namespace TranslationHelper.Projects.RPGMMV
         internal bool WriteJson(string Jsonname, string sPath)
         {
             thDataWork.Main.ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
-            //LogToFile("Jsonname = " + Jsonname);
+
+            //skip file if table with same name has translation cells in all lines empty
+            if (FunctionsTable.IsTableRowsAllEmpty(thDataWork.THFilesElementsDataset.Tables[Jsonname]))
+                return true;
+
             try
             {
                 //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
                 JToken root;
-                //MessageBox.Show(Properties.Settings.Default.THSelectedDir);
-                //using (var reader = new StreamReader(Properties.Settings.Default.THSelectedDir+"\\"+ Jsonname+".json"))
                 using (StreamReader reader = new StreamReader(sPath))
                 {
                     using (JsonTextReader jsonReader = new JsonTextReader(reader))
@@ -499,15 +451,6 @@ namespace TranslationHelper.Projects.RPGMMV
                         //ReadJson(root, Jsonname);
                     }
                 }
-
-                //ds.Tables.Add(Jsonname); // create table with json name
-                //ds.Tables[Jsonname].Columns.Add("Original"); //create Original column
-
-
-                //treeView1.BeginUpdate();
-                // treeView1.Nodes.Clear();
-                //var tNode = treeView1.Nodes[treeView1.Nodes.Add(new TreeNode(rootName))];
-                //tNode.Tag = root;
 
                 startingrow = 0;//сброс начальной строки поиска в табице
                 IsCommonEvents = (Jsonname == "CommonEvents");
@@ -522,8 +465,6 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 Regex regex = new Regex(@"^\[null,(.+)\]$");//Корректировка формата записываемого json так, как в файлах RPGMaker MV
                 File.WriteAllText(sPath, regex.Replace(root.ToString(Formatting.None), "[\r\nnull,\r\n$1\r\n]"));
-
-                //treeView1.ExpandAll();
             }
             catch
             {
@@ -533,12 +474,6 @@ namespace TranslationHelper.Projects.RPGMMV
             }
             finally
             {
-                //LogToFile(string.Empty, true);
-                //MessageBox.Show("sss");
-                //ds.Tables[Jsonname].Columns.Add("Translation");
-                //ds.Tables[Jsonname].Columns["Original"].ReadOnly = true;
-                //DGV.DataSource = ds.Tables[0];
-                //treeView1.EndUpdate();
             }
             //LogToFile(string.Empty, true);
             thDataWork.Main.ProgressInfo(false);
@@ -568,10 +503,6 @@ namespace TranslationHelper.Projects.RPGMMV
                 }
                 else
                 {
-                    //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
-                    //{
-                    //    //LogToFile("tokenvalue=" + tokenvalue);
-                    //}
                     string parameter0value = tokenvalue;
                     if (parameter0value.Length == 0)
                     {
@@ -639,11 +570,6 @@ namespace TranslationHelper.Projects.RPGMMV
                                         transA = FunctionsString.THSplit(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
                                     }
 
-                                    //LogToFile("parameter0value=" + parameter0value);
-                                    //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
-                                    //{
-                                    //    //LogToFile("tokenvalue=" + tokenvalue + ", tablevalue=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
-                                    //}
                                     //Подстраховочная проверка для некоторых значений из нескольких строк, полное сравнение перед построчной
                                     if (tokenvalue == thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
                                     {
@@ -656,12 +582,6 @@ namespace TranslationHelper.Projects.RPGMMV
                                     bool br = false; //это чтобы выйти потом из прохода по таблице и перейти к след. элементу json, если перевод был присвоен
                                     for (int i2 = 0; i2 < origALength; i2++)
                                     {
-                                        //LogToFile("parameter0value=" + parameter0value);
-                                        //if (Jsonname == "States" && parameter0value.Contains("自動的に付加されます"))
-                                        //{
-                                        //    //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
-                                        //}
-
                                         //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
                                         if (parameter0value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
                                         {
@@ -683,11 +603,6 @@ namespace TranslationHelper.Projects.RPGMMV
                                 }
                                 else
                                 {
-                                    //LogToFile("tokenvalue=" + tokenvalue);
-                                    //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
-                                    //{
-                                    //    //LogToFile("tokenvalue=" + tokenvalue + ", tablevalue=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
-                                    //}
                                     if (tokenvalue == thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
                                     {
                                         var t = token as JValue;
@@ -700,26 +615,18 @@ namespace TranslationHelper.Projects.RPGMMV
                         }
                     }
                 }
-                //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(token.ToString()))];
-                //childNode.Tag = token;
             }
             else if (token is JObject obj)
             {
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 foreach (var property in obj.Properties())
                 {
-                    //LogToFile("JObject propery: " + property.Name + "=" + property.Value);
-                    //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(property.Name))];
-                    //childNode.Tag = property;
-                    //cType = "JObject";
                     cName = property.Name;
                     if (IsCommonEvents)//asdfg skip code 108,408,356
                     {
                         if (cName.Length == 4 && cName == "code")
                         {
                             curcode = property.Value + string.Empty;
-                            //cCode = "Code" + curcode;
-                            //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
                         if (skipit)
                         {
@@ -757,10 +664,6 @@ namespace TranslationHelper.Projects.RPGMMV
                 int arrayCount = array.Count;
                 for (int i = 0; i < arrayCount; i++)
                 {
-                    //LogToFile("JArray=\r\n" + array[i]);
-                    //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(i.ToString()))];
-                    //childNode.Tag = array[i];
-                    //cType = "JArray";
                     WProceedJToken(array[i], Jsonname);
                 }
             }

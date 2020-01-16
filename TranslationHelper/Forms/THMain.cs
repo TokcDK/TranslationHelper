@@ -992,6 +992,9 @@ namespace TranslationHelper
         //http://qaru.site/questions/180337/show-row-number-in-row-header-of-a-datagridview
         private void THFileElementsDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
+            if (!Properties.Settings.Default.ProjectIsOpened)
+                return;
+
             var grid = sender as DataGridView;
 
             string rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
@@ -1275,17 +1278,17 @@ namespace TranslationHelper
 
 
             //отключение DataSource для избежания проблем от изменений DataGridView
-            bool tableSourceWasCleaned = false;
-            if (thDataWork.Main.THFileElementsDataGridView.DataSource != null)
-            {
-                tableSourceWasCleaned = true;
-                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
-                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
-                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
-            }
+            //bool tableSourceWasCleaned = false;
+            //if (thDataWork.Main.THFileElementsDataGridView.DataSource != null)
+            //{
+            //    tableSourceWasCleaned = true;
+            //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+            //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+            //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+            //}
 
             //стандартное считывание. Самое медленное
-            new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
+            //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
 
             //считывание через словарь с предварительным чтением в dataset и конвертацией в словарь
             //Своего рода среднее решение, которое быстрее решения с сравнением из БД в DataSet
@@ -1308,10 +1311,10 @@ namespace TranslationHelper
 
             ProgressInfo(false);
 
-            if (tableSourceWasCleaned)
-            {
-                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
-            }
+            //if (tableSourceWasCleaned)
+            //{
+            //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
+            //}
         }
 
         private void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2468,6 +2471,9 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (!Properties.Settings.Default.ProjectIsOpened)
+                return;
+
             if (ControlsSwitchActivated)
             {
             }

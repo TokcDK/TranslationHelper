@@ -360,12 +360,37 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// Returns false if any of Datatable row's translation cell have value
+        /// Returns true if translation cells in all rows have values
         /// </summary>
         /// <param name="DT"></param>
         /// <param name="column"></param>
         /// <returns></returns>
         public static bool IsTableRowsCompleted(DataTable DT, string column = "Translation")
+        {
+            if (DT == null)
+            {
+                return false;
+            }
+            int DTRowsCount = DT.Rows.Count;
+            for (int r = 0; r < DTRowsCount; r++)
+            {
+                var cell = DT.Rows[r][column];
+
+                if (cell == null || string.IsNullOrEmpty(cell as string))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Returns true if translation cells in all Datatable rows is empty
+        /// </summary>
+        /// <param name="DT"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public static bool IsTableRowsAllEmpty(DataTable DT, string column = "Translation")
         {
             if (DT == null)
             {
@@ -376,7 +401,7 @@ namespace TranslationHelper.Main.Functions
             {
                 var cell = DT.Rows[r][column];
 
-                if (cell == null || string.IsNullOrEmpty(cell as string))
+                if (cell != null && !string.IsNullOrEmpty(cell as string))
                 {
                     return false;
                 }

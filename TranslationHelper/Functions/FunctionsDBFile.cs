@@ -152,17 +152,6 @@ namespace TranslationHelper.Main.Functions
 
         internal static Dictionary<string, string> ReadXMLDBToDictionary(string xmlPath)
         {
-            //Dictionary<string, string> db = new Dictionary<string, string>();
-            //XElement rootElement = XElement.Parse(ReadXMLToString(xmlPath));//ошибка xml на символ x1E в значении Original, там символом &#x1E; сохранен спецсимвол
-            //foreach (var el in rootElement.Elements())
-            //{
-            //    string key = el.Element("Original").Value;
-            //    if (!db.ContainsKey(key))
-            //    {
-            //        db.Add(key, el.Element("Translation").Value);
-            //    }
-            //}
-
             int OriginalLength = "Original".Length;
             Dictionary<string, string> db = new Dictionary<string, string>();
             //var settings = new XmlReaderSettings();
@@ -242,14 +231,13 @@ namespace TranslationHelper.Main.Functions
                 {
                     s = fs;
                 }
-                //return s;
+
                 string stringForReturn;
                 using (StreamReader sr = new StreamReader(s))
                 {
                     stringForReturn = sr.ReadToEnd();
                 }
                 return stringForReturn;
-                //s.Close();
             }
         }
 
@@ -281,7 +269,7 @@ namespace TranslationHelper.Main.Functions
             Dictionary<string, string> db = new Dictionary<string, string>();
 
             int TablesCount = dBDataSet.Tables.Count;
-            //int RecordsCounter = 0;
+
             for (int t = 0; t < TablesCount; t++)
             {
                 int RowsCount = dBDataSet.Tables[t].Rows.Count;
@@ -303,23 +291,6 @@ namespace TranslationHelper.Main.Functions
                             db.Add(row[0] as string, row[1] + string.Empty);
                         }
                     }
-                    //else
-                    //{
-                    //    if (row[1] + string.Empty != row[0] as string)
-                    //    {
-                    //        if (DontAddEmptyTranslation)
-                    //        {
-                    //            if (row[1] != null && !string.IsNullOrEmpty(row[1] + string.Empty))
-                    //            {
-                    //                db.Add(row[0] as string + "|" + ++RecordsCounter, row[1] + string.Empty);
-                    //            }
-                    //        }
-                    //        else
-                    //        {
-                    //            db.Add(row[0] as string + "|" + ++RecordsCounter, row[1] + string.Empty);
-                    //        }
-                    //    }
-                    //}
                 }
             }
 
