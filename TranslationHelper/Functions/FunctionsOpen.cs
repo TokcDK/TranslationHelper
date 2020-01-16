@@ -381,6 +381,8 @@ namespace TranslationHelper.Functions
             catch
             {
             }
+
+            Properties.Settings.Default.ProjectIsOpened = true;
         }
     }
 }

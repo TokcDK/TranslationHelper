@@ -279,6 +279,9 @@ namespace TranslationHelper.Main.Functions
         static Dictionary<string, bool> THAutoSetSameTranslationForSimularData = new Dictionary<string, bool>();
         public static void THAutoSetSameTranslationForSimular(THDataWork thDataWork, int InputTableIndex, int InputRowIndex, int InputColumnIndex, bool ForceSetValue = false)
         {
+            if (!Properties.Settings.Default.ProjectIsOpened)
+                return;
+
             if (   InputTableIndex == -1 
                 || InputRowIndex == -1 
                 || InputColumnIndex == -1 

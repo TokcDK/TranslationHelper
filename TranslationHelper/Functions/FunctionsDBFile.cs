@@ -281,7 +281,7 @@ namespace TranslationHelper.Main.Functions
             Dictionary<string, string> db = new Dictionary<string, string>();
 
             int TablesCount = dBDataSet.Tables.Count;
-
+            //int RecordsCounter = 0;
             for (int t = 0; t < TablesCount; t++)
             {
                 int RowsCount = dBDataSet.Tables[t].Rows.Count;
@@ -303,6 +303,23 @@ namespace TranslationHelper.Main.Functions
                             db.Add(row[0] as string, row[1] + string.Empty);
                         }
                     }
+                    //else
+                    //{
+                    //    if (row[1] + string.Empty != row[0] as string)
+                    //    {
+                    //        if (DontAddEmptyTranslation)
+                    //        {
+                    //            if (row[1] != null && !string.IsNullOrEmpty(row[1] + string.Empty))
+                    //            {
+                    //                db.Add(row[0] as string + "|" + ++RecordsCounter, row[1] + string.Empty);
+                    //            }
+                    //        }
+                    //        else
+                    //        {
+                    //            db.Add(row[0] as string + "|" + ++RecordsCounter, row[1] + string.Empty);
+                    //        }
+                    //    }
+                    //}
                 }
             }
 

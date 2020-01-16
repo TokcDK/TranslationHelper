@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
@@ -312,6 +310,11 @@ namespace TranslationHelper.Projects.RPGMMV
 
             if (token is JValue)
             {
+                if (token.Type != JTokenType.String)
+                {
+                    return;
+                }
+
                 //if (cName == "code")
                 //{
                 //    curcode = token.ToString();
@@ -331,15 +334,15 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 if (IsCommonEvents && (curcode == "401" || curcode == "405"))
                 {
-                    if (token.Type == JTokenType.String)
-                    {
+                    //if (token.Type == JTokenType.String)
+                    //{
                         if (textsb.ToString().Length > 0)
                         {
                             textsb.AppendLine();
                         }
                         //LogToFile("code 401 adding valur to merge=" + tokenvalue + ", curcode=" + curcode);
                         textsb.Append(tokenvalue);
-                    }
+                    //}
                 }
                 else
                 {
@@ -374,8 +377,8 @@ namespace TranslationHelper.Projects.RPGMMV
                             textsb.Clear();
                         }
                     }
-                    if (token.Type == JTokenType.String)
-                    {
+                    //if (token.Type == JTokenType.String)
+                    //{
                         if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
                         {
                         }
@@ -403,7 +406,7 @@ namespace TranslationHelper.Projects.RPGMMV
                             thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
                             //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                         }
-                    }
+                    //}
                 }
                 //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(token.ToString()))];
                 //childNode.Tag = token;
@@ -460,7 +463,8 @@ namespace TranslationHelper.Projects.RPGMMV
             }
             else if (token is JArray array)
             {
-                for (int i = 0; i < array.Count; i++)
+                int arrayCount = array.Count;
+                for (int i = 0; i < arrayCount; i++)
                 {
                     //LogToFile("JArray=\r\n" + array[i] + "\r\n, token.Path=" + token.Path);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(i.ToString()))];
@@ -552,143 +556,144 @@ namespace TranslationHelper.Projects.RPGMMV
 
             if (token is JValue)
             {
-                //LogToFile("JValue: " + propertyname + "=" + token.ToString());
-                if (token.Type == JTokenType.String)
+                if (token.Type != JTokenType.String)
                 {
-                    string tokenvalue = token + string.Empty;
-                    if (tokenvalue.Length == 0 || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue))
+                    return;
+                }
+
+                //LogToFile("JValue: " + propertyname + "=" + token.ToString());
+                string tokenvalue = token + string.Empty;
+                if (tokenvalue.Length == 0 || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue))
+                {
+                }
+                else
+                {
+                    //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
+                    //{
+                    //    //LogToFile("tokenvalue=" + tokenvalue);
+                    //}
+                    string parameter0value = tokenvalue;
+                    if (parameter0value.Length == 0)
                     {
                     }
-                    else
+                    else //if code not equal old code and newline is not empty
                     {
+                        //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
 
-                        //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
-                        //{
-                        //    //LogToFile("tokenvalue=" + tokenvalue);
-                        //}
-                        string parameter0value = tokenvalue;
-                        if (parameter0value.Length == 0)
+                        for (int i1 = startingrow; i1 < thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
                         {
-                        }
-                        else //if code not equal old code and newline is not empty
-                        {
-                            //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
-
-                            for (int i1 = startingrow; i1 < thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            if ((thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty).Length == 0)
                             {
-                                if ((thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty).Length == 0)
+                            }
+                            else
+                            {
+                                //Where здесь формирует новый массив из входного, из элементов входного, удовлетворяющих заданному условию
+                                //https://stackoverflow.com/questions/1912128/filter-an-array-in-c-sharp
+                                string[] origA = (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
+                                    .Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/)
+                                    .Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0)
+                                    .ToArray();//Все строки, кроме пустых, чтобы потом исключить из проверки
+                                int origALength = origA.Length;
+                                if (origALength == 0)
                                 {
+                                    origA = new string[1];
+                                    origA[0] = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty;
+                                    //LogToFile("(origALength == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
+                                }
+
+                                if (origALength > 0)
+                                {
+                                    string[] transA = (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty)
+                                        .Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/)
+                                        .Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0)
+                                        .ToArray();//Все строки, кроме пустых
+                                    if (transA.Length == 0)
+                                    {
+                                        transA = new string[1];
+                                        transA[0] = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty;
+                                        //LogToFile("(transA.Length == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString());
+                                    }
+                                    string transmerged = string.Empty;
+                                    if (transA.Length == origALength)//если количество строк в оригинале и переводе равно
+                                    {
+                                        //ничего не делать
+                                    }
+                                    else // если перевод вдруг был переведен так, что не равен количеством строк оригиналу, тогда поделить его на равные строки
+                                    {
+                                        if (transA.Length > 0) // но перед этим, если перевод больше одной строки
+                                        {
+                                            foreach (string ts in transA)
+                                            {
+                                                transmerged += ts; // объединить все строки в одну
+                                            }
+                                        }
+
+                                        //Это заменил расширением Where, что выше при задании массива, пустые строки будут исключены сразу
+                                        //Проверить, есть ли в массиве хоть один пустой элемент
+                                        //https://stackoverflow.com/questions/44405411/how-can-i-check-wether-an-array-contains-any-item-or-is-completely-empty
+                                        //if (orig.Any(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", string.Empty)) ) )
+                                        //А это считает количество пустых элементов в массиве
+                                        //https://stackoverflow.com/questions/2391743/how-many-elements-of-array-are-not-null
+                                        //int ymptyelementscnt = orig.Count(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", string.Empty)));
+
+                                        transA = FunctionsString.THSplit(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
+                                    }
+
+                                    //LogToFile("parameter0value=" + parameter0value);
+                                    //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
+                                    //{
+                                    //    //LogToFile("tokenvalue=" + tokenvalue + ", tablevalue=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
+                                    //}
+                                    //Подстраховочная проверка для некоторых значений из нескольких строк, полное сравнение перед построчной
+                                    if (tokenvalue == thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
+                                    {
+                                        var t = token as JValue;
+                                        t.Value = (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty).Replace("\r", string.Empty);//убирает \r, т.к. в json присутствует только \n
+                                        startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                        break;
+                                    }
+
+                                    bool br = false; //это чтобы выйти потом из прохода по таблице и перейти к след. элементу json, если перевод был присвоен
+                                    for (int i2 = 0; i2 < origALength; i2++)
+                                    {
+                                        //LogToFile("parameter0value=" + parameter0value);
+                                        //if (Jsonname == "States" && parameter0value.Contains("自動的に付加されます"))
+                                        //{
+                                        //    //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
+                                        //}
+
+                                        //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
+                                        if (parameter0value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
+                                        {
+                                            //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
+                                            var t = token as JValue;
+                                            t.Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
+
+                                            startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                                             //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
+                                            br = true;
+                                            break;
+                                        }
+                                    }
+                                    if (br) //выход из цикла прохода по всей таблице, если значение найдено для одной из строк оригинала, и переход к следующему элементу json
+                                    {
+                                        startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                        break;
+                                    }
                                 }
                                 else
                                 {
-                                    //Where здесь формирует новый массив из входного, из элементов входного, удовлетворяющих заданному условию
-                                    //https://stackoverflow.com/questions/1912128/filter-an-array-in-c-sharp
-                                    string[] origA = (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
-                                        .Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/)
-                                        .Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0)
-                                        .ToArray();//Все строки, кроме пустых, чтобы потом исключить из проверки
-                                    int origALength = origA.Length;
-                                    if (origALength == 0)
+                                    //LogToFile("tokenvalue=" + tokenvalue);
+                                    //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
+                                    //{
+                                    //    //LogToFile("tokenvalue=" + tokenvalue + ", tablevalue=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
+                                    //}
+                                    if (tokenvalue == thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
                                     {
-                                        origA = new string[1];
-                                        origA[0] = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty;
-                                        //LogToFile("(origALength == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
-                                    }
-
-                                    if (origALength > 0)
-                                    {
-                                        string[] transA = (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty)
-                                            .Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/)
-                                            .Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0)
-                                            .ToArray();//Все строки, кроме пустых
-                                        if (transA.Length == 0)
-                                        {
-                                            transA = new string[1];
-                                            transA[0] = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty;
-                                            //LogToFile("(transA.Length == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString());
-                                        }
-                                        string transmerged = string.Empty;
-                                        if (transA.Length == origALength)//если количество строк в оригинале и переводе равно
-                                        {
-                                            //ничего не делать
-                                        }
-                                        else // если перевод вдруг был переведен так, что не равен количеством строк оригиналу, тогда поделить его на равные строки
-                                        {
-                                            if (transA.Length > 0) // но перед этим, если перевод больше одной строки
-                                            {
-                                                foreach (string ts in transA)
-                                                {
-                                                    transmerged += ts; // объединить все строки в одну
-                                                }
-                                            }
-
-                                            //Это заменил расширением Where, что выше при задании массива, пустые строки будут исключены сразу
-                                            //Проверить, есть ли в массиве хоть один пустой элемент
-                                            //https://stackoverflow.com/questions/44405411/how-can-i-check-wether-an-array-contains-any-item-or-is-completely-empty
-                                            //if (orig.Any(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", string.Empty)) ) )
-                                            //А это считает количество пустых элементов в массиве
-                                            //https://stackoverflow.com/questions/2391743/how-many-elements-of-array-are-not-null
-                                            //int ymptyelementscnt = orig.Count(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", string.Empty)));
-
-                                            transA = FunctionsString.THSplit(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
-                                        }
-
-                                        //LogToFile("parameter0value=" + parameter0value);
-                                        //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
-                                        //{
-                                        //    //LogToFile("tokenvalue=" + tokenvalue + ", tablevalue=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
-                                        //}
-                                        //Подстраховочная проверка для некоторых значений из нескольких строк, полное сравнение перед построчной
-                                        if (tokenvalue == thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
-                                        {
-                                            var t = token as JValue;
-                                            t.Value = (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty).Replace("\r", string.Empty);//убирает \r, т.к. в json присутствует только \n
-                                            startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
-                                            break;
-                                        }
-
-                                        bool br = false; //это чтобы выйти потом из прохода по таблице и перейти к след. элементу json, если перевод был присвоен
-                                        for (int i2 = 0; i2 < origALength; i2++)
-                                        {
-                                            //LogToFile("parameter0value=" + parameter0value);
-                                            //if (Jsonname == "States" && parameter0value.Contains("自動的に付加されます"))
-                                            //{
-                                            //    //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
-                                            //}
-
-                                            //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
-                                            if (parameter0value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
-                                            {
-                                                //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
-                                                var t = token as JValue;
-                                                t.Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
-
-                                                startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
-                                                //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
-                                                br = true;
-                                                break;
-                                            }
-                                        }
-                                        if (br) //выход из цикла прохода по всей таблице, если значение найдено для одной из строк оригинала, и переход к следующему элементу json
-                                        {
-                                            startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
-                                            break;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //LogToFile("tokenvalue=" + tokenvalue);
-                                        //if (Jsonname == "States" && tokenvalue.Contains("自動的に付加されます"))
-                                        //{
-                                        //    //LogToFile("tokenvalue=" + tokenvalue + ", tablevalue=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
-                                        //}
-                                        if (tokenvalue == thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
-                                        {
-                                            var t = token as JValue;
-                                            t.Value = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty;
-                                            startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
-                                            break;
-                                        }
+                                        var t = token as JValue;
+                                        t.Value = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty;
+                                        startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                        break;
                                     }
                                 }
                             }
@@ -749,7 +754,8 @@ namespace TranslationHelper.Projects.RPGMMV
             }
             else if (token is JArray array)
             {
-                for (int i = 0; i < array.Count; i++)
+                int arrayCount = array.Count;
+                for (int i = 0; i < arrayCount; i++)
                 {
                     //LogToFile("JArray=\r\n" + array[i]);
                     //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(i.ToString()))];

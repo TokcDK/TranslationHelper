@@ -1268,10 +1268,24 @@ namespace TranslationHelper
                 sPath = Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath");
             }
 
-            //стандартное считывание
             ProgressInfo(true, T._("Reading DB File") + "...");
-            FunctionsDBFile.ReadDBFile(DBDataSet, sPath); //load new data
-            //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
+
+            //load new data
+            FunctionsDBFile.ReadDBFile(DBDataSet, sPath); 
+
+
+            //отключение DataSource для избежания проблем от изменений DataGridView
+            bool tableSourceWasCleaned = false;
+            if (thDataWork.Main.THFileElementsDataGridView.DataSource != null)
+            {
+                tableSourceWasCleaned = true;
+                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+            }
+
+            //стандартное считывание. Самое медленное
+            new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
 
             //считывание через словарь с предварительным чтением в dataset и конвертацией в словарь
             //Своего рода среднее решение, которое быстрее решения с сравнением из БД в DataSet
@@ -1279,8 +1293,10 @@ namespace TranslationHelper
             //тут не нужно переписывать запись в xml, хотя запись таблицы в xml пишет все колонки и одинаковые значения, т.е. xml будет больше
             //чтение из xml в dataset может занимать по нескольку секунд для больших файлов
             //основную часть времени отнимал вывод информации о файлах!!
+            //00.051
             new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.DBDataSetToDBDictionary());
-            //это медленнее первого варианта
+            //это медленнее первого варианта 
+            //00.151
             //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary2(DBDataSet.DBDataSetToDBDictionary());
 
             //считывание через словарь Чтение xml в словарь на текущий момент имеет проблемы
@@ -1291,6 +1307,11 @@ namespace TranslationHelper
 
 
             ProgressInfo(false);
+
+            if (tableSourceWasCleaned)
+            {
+                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
+            }
         }
 
         private void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1353,6 +1374,9 @@ namespace TranslationHelper
         internal bool savemenusNOTenabled = true;
         private async void THFileElementsDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
+            if (!Properties.Settings.Default.ProjectIsOpened)
+                return;
+
             try
             {
                 if (FIleDataWasChanged && savemenusNOTenabled)

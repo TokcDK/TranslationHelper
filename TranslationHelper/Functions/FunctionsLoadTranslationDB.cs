@@ -75,7 +75,7 @@ namespace TranslationHelper.Functions
                     //проход по всем строкам таблицы рабочего dataset
                     for (int r = 0; r < rcount; r++)
                     {
-                        thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+                        //thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
                         var Row = Table.Rows[r];
                         var CellTranslation = Row[otranscol];
                         if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
@@ -96,10 +96,7 @@ namespace TranslationHelper.Functions
                                         {
                                             var DBRow = DBTable.Rows[r1];
                                             var DBCellTranslation = DBRow[ttranscol];
-                                            if (DBCellTranslation == null || string.IsNullOrEmpty(DBCellTranslation as string))
-                                            {
-                                            }
-                                            else
+                                            if (DBCellTranslation != null && !string.IsNullOrEmpty(DBCellTranslation as string))
                                             {
                                                 try
                                                 {
@@ -124,7 +121,7 @@ namespace TranslationHelper.Functions
                                         }
                                         else
                                         {
-                                            //сбрасывать индекс на ноль
+                                            //сбрасывать индекс на ноль, когда все строки были пройдены и таблица меняется, строка должна быть сброшена на ноль
                                             trowstartindex = 0;
                                         }
                                     }
@@ -175,12 +172,6 @@ namespace TranslationHelper.Functions
 
         internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db)
         {
-            //отключение DataSource для избежания проблем от изменений DataGridView
-            thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
-            thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
-            thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
-
-
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
 
@@ -191,6 +182,7 @@ namespace TranslationHelper.Functions
                 return;
             }
 
+            int RecordsCounter = 1;
             int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
             string infomessage = T._("loading translation") + ":";
             //проход по всем таблицам рабочего dataset
@@ -229,8 +221,6 @@ namespace TranslationHelper.Functions
             //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
             //MessageBox.Show(difference.ToString());
             System.Media.SystemSounds.Beep.Play();
-
-            thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
         }
 
         /// <summary>

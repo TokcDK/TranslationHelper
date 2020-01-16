@@ -250,5 +250,17 @@ namespace TranslationHelper.Properties {
                 this["OnlineTranslationCacheUseCount"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ProjectIsOpened {
+            get {
+                return ((bool)(this["ProjectIsOpened"]));
+            }
+            set {
+                this["ProjectIsOpened"] = value;
+            }
+        }
     }
 }
