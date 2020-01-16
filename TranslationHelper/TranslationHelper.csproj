@@ -149,7 +149,7 @@
     <Compile Include="Old elements\RPGMakerMVjsonActors.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonCommonEvents.cs" />
     <Compile Include="ExternalAdditions\FileWriter.cs" />
-    <Compile Include="ExternalAdditions\IniFiles.cs" />
+    <Compile Include="ExternalAdditions\INIFile.cs" />
     <Compile Include="Old elements\RPGMakerMVjson.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonSystem.cs" />
     <Compile Include="ExternalAdditions\THCreateSymlink.cs" />

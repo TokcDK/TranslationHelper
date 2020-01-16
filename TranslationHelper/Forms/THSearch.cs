@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AIHelper.Manage;
+using System;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -222,18 +223,53 @@ namespace TranslationHelper
             }
         }
 
+        private void LoadSearchQueries()
+        {
+            SearchQueries = new INIFile("TranslationHelperConfig.ini").ReadSectionValuesToArray("Search Queries");
+            if (SearchQueries != null && SearchQueries.Length > 0)
+            {
+                SearchFormFindWhatComboBox.Items.AddRange(SearchQueries);
+            }
+        }
+
+        private void WriteSearchQueries()
+        {
+            if (SearchFormFindWhatComboBox.Items.Count > 0)
+            {
+                SearchQueries = new string[SearchFormFindWhatComboBox.Items.Count];
+                SearchFormFindWhatComboBox.Items.CopyTo(SearchQueries, 0);
+                new INIFile("TranslationHelperConfig.ini").WriteArrayToSectionValues("Search Queries", SearchQueries);
+            }
+        }
+
         string lastfoundvalue = string.Empty;
+        string[] SearchQueries;
         private void StoryFoundValueToComboBox(string foundvalue)
         {
             lastfoundvalue = foundvalue;
-            for (int i = 0; i < SearchFormFindWhatComboBox.Items.Count; i++)
+            //for (int i = 0; i < SearchFormFindWhatComboBox.Items.Count; i++)
+            //{
+            //    if (SearchFormFindWhatComboBox.Items[i].ToString() == foundvalue)
+            //    {
+            //        return;
+            //    }
+            //}
+            int ItemsCount = SearchFormFindWhatComboBox.Items.Count;
+            if (ItemsCount > 0)
             {
-                if (SearchFormFindWhatComboBox.Items[i].ToString() == foundvalue)
+                if(!SearchFormFindWhatComboBox.Items.Contains(foundvalue))
                 {
-                    return;
+                    if (ItemsCount == 10)
+                    {
+                        SearchFormFindWhatComboBox.Items.RemoveAt(0);
+                    }
+                    SearchFormFindWhatComboBox.Items.Add(foundvalue);
                 }
             }
-            SearchFormFindWhatComboBox.Items.Add(foundvalue);
+            else
+            {
+                SearchFormFindWhatComboBox.Items.Add(foundvalue);
+            }
         }
 
         private bool IsContainsText(string searchobject)
@@ -461,6 +497,9 @@ namespace TranslationHelper
             oDsResultsCoordinates.Columns.Add("t");
             oDsResultsCoordinates.Columns.Add("r");
             //SearchFormFindWhatComboBox.AutoCompleteCustomSource = SearchFormFindWhatComboBoxCustomeSource.Rows.
+
+            LoadSearchQueries();
+
         }
 
         private void SelectTextinTextBox(string input)
@@ -813,6 +852,8 @@ namespace TranslationHelper
         private void THSearch_FormClosing(object sender, FormClosingEventArgs e)
         {
             //oDsResults.Dispose();
+
+            WriteSearchQueries();
         }
 
         private void SearchFindLinesWithPossibleIssuesCheckBox_CheckedChanged(object sender, EventArgs e)

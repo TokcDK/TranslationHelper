@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AIHelper.Manage;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
@@ -8,7 +9,7 @@ namespace TranslationHelper
     public partial class THSettings : Form
     {
         //Defaults
-        internal IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
+        internal INIFile THConfigINI = new INIFile("TranslationHelperConfig.ini");
 
         public THSettings()
         {
