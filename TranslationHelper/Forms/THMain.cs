@@ -2169,10 +2169,12 @@ namespace TranslationHelper
                     if (search.Visible)
                     {
                         search.Activate();//помещает на передний план
+                        search.GetSelectedText();
                     }
                     else
                     {
                         search.Show();
+                        search.GetSelectedText();
                         //поместить на передний план
                         //search.TopMost = true;
                         //search.TopMost = false;

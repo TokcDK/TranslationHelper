@@ -53,6 +53,32 @@ namespace TranslationHelper
             {
                 NativeMethods.SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
             }
+
+            GetSelectedText();
+        }
+
+        public void GetSelectedText()
+        {
+            if (thDataWork != null)
+            {
+                if (thDataWork.Main.THFileElementsDataGridView.CurrentCell.IsInEditMode)
+                {
+                    //https://stackoverflow.com/questions/41380883/retrieve-partly-selected-text-when-the-cell-is-in-edit-mode-in-datagridview
+                    if (thDataWork.Main.THFileElementsDataGridView.EditingControl is TextBox)
+                    {
+                        var textBox = (TextBox)thDataWork.Main.THFileElementsDataGridView.EditingControl;
+                        SearchFormFindWhatTextBox.Text = textBox.SelectedText;
+                    }
+                }
+                else if (thDataWork.Main.THSourceRichTextBox.SelectedText.Length > 0)
+                {
+                    SearchFormFindWhatTextBox.Text = thDataWork.Main.THSourceRichTextBox.SelectedText;
+                }
+                else if (thDataWork.Main.THTargetRichTextBox.SelectedText.Length > 0)
+                {
+                    SearchFormFindWhatTextBox.Text = thDataWork.Main.THTargetRichTextBox.SelectedText;
+                }
+            }
         }
 
         private void SearchModeNormalRadioButton_Click(object sender, EventArgs e)
