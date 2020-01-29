@@ -172,15 +172,12 @@ namespace TranslationHelper.Functions
             Properties.Settings.Default.THSelectedDir = dir + string.Empty;
             Properties.Settings.Default.THSelectedGameDir = dir + string.Empty;
             //MessageBox.Show("sPath=" + sPath);
-            if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".KS") || sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".SCN"))
+
+            if (new KiriKiriOLD(thDataWork).Detect())
             {
-                return new KiriKiriOLD(thDataWork).KiriKiriScriptScenario(sPath);
+                return new KiriKiriOLD(thDataWork).KiriKiriScriptScenario();
             }
-            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".TJS"))
-            {
-                return new KiriKiriOLD(thDataWork).KiriKiriScenarioOpen(sPath);
-            }
-            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".SCN"))
+            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".TJS") || sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".SCN"))
             {
                 return new KiriKiriOLD(thDataWork).KiriKiriScenarioOpen(sPath);
             }
@@ -228,7 +225,7 @@ namespace TranslationHelper.Functions
                 }
                 else if ((FunctionsProcess.GetExeDescription(sPath) != null && FunctionsProcess.GetExeDescription(sPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")) && FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.xp3"))
                 {
-                    if (new KiriKiriOLD(thDataWork).KiriKiriGame(sPath))
+                    if (new KiriKiriOLD(thDataWork).KiriKiriGame())
                     {
                         return "KiriKiri game";
                     }

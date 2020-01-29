@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,17 +22,26 @@ namespace TranslationHelper.Projects.KiriKiri
             this.thDataWork = thDataWork;
         }
 
-        internal string KiriKiriScriptScenario(string sPath)
+        internal bool Detect()
         {
-            string filename = Path.GetFileNameWithoutExtension(sPath);
-            string extension = Path.GetExtension(sPath);
+            return
+                thDataWork.SPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".KS")
+                ||
+                thDataWork.SPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".SCN")
+                ;
+        }
+
+        internal string KiriKiriScriptScenario()
+        {
+            string filename = Path.GetFileNameWithoutExtension(thDataWork.SPath);
+            string extension = Path.GetExtension(thDataWork.SPath);
 
             _ = thDataWork.THFilesElementsDataset.Tables.Add(filename);
             _ = thDataWork.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
             _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(filename);
             _ = thDataWork.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
 
-            DataTable DT = KiriKiriScriptScenarioOpen(sPath, thDataWork.THFilesElementsDataset.Tables[0], thDataWork.THFilesElementsDatasetInfo.Tables[0]);
+            DataTable DT = KiriKiriScriptScenarioOpen(thDataWork.SPath, thDataWork.THFilesElementsDataset.Tables[0], thDataWork.THFilesElementsDatasetInfo.Tables[0]);
             if (DT == null || DT.Rows.Count == 0)
             {
                 thDataWork.THFilesElementsDataset.Tables.Remove(filename);
@@ -53,13 +63,13 @@ namespace TranslationHelper.Projects.KiriKiri
             return string.Empty;
         }
 
-        internal bool KiriKiriGame(string sPath)
+        internal bool KiriKiriGame()
         {
             bool ret = false;
-            if (XP3.ExtractXP3files(sPath))
+            if (XP3.ExtractXP3files(thDataWork.SPath))
             {
                 var KiriKiriFiles = new List<string>();
-                string DirName = Path.GetFileName(Path.GetDirectoryName(sPath));
+                string DirName = Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath));
                 string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
 
                 foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).GetFiles("*.scn", SearchOption.AllDirectories))
@@ -118,6 +128,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     _ = thDataWork.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
 
                     DataTable DT = null;
+                    
                     if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
                     {
                         DT = KiriKiriScriptScenarioOpen(kiriKiriFiles[i], thDataWork.THFilesElementsDataset.Tables[filename], thDataWork.THFilesElementsDatasetInfo.Tables[filename]);

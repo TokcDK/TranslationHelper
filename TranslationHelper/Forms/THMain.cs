@@ -735,7 +735,7 @@ namespace TranslationHelper
 
         internal bool SaveInAction = false;
         internal bool FIleDataWasChanged = false;
-        private async void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
+        private void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FunctionsSave(thDataWork).PrepareToWrite();
             Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
