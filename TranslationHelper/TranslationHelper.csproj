@@ -89,6 +89,7 @@
     <Compile Include="ExternalAdditions\ReplaceEx.cs" />
     <Compile Include="ExternalAdditions\T.cs" />
     <Compile Include="Formats\FormatBase.cs" />
+    <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\TXT.cs" />
     <Compile Include="Formats\KiriKiri\CSV.cs" />
     <Compile Include="Formats\KiriKiri\CSVOld.cs" />
     <Compile Include="Formats\KiriKiri\SCRIPT.cs" />
@@ -226,6 +227,7 @@
   <ItemGroup>
     <Folder Include="Costura32\" />
     <Folder Include="Costura64\" />
+    <Folder Include="Projects\How To Make True Slaves -Rise of a Dark Empire-\" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.VersionCheckAnalyzer.resources.dll" />

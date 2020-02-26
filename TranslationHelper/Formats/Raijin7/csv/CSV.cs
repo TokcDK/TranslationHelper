@@ -19,6 +19,7 @@ namespace TranslationHelper.Formats.Raijin7
             }
 
             string fileName = Path.GetFileNameWithoutExtension(thDataWork.FilePath);
+
             thDataWork.THFilesElementsDataset.Tables.Add(fileName).Columns.Add("Original");
 
             using (StreamReader sr = new StreamReader(thDataWork.FilePath, Encoding.GetEncoding(932)))
