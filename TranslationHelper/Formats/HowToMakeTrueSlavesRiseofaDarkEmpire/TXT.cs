@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
@@ -61,7 +58,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         continue;
                     }
 
-                    if (line.StartsWith("#MSG,"))
+                    if (line.StartsWith("#MSG,") || line == "#MSG")
                     {
                         readmode = true;
                         continue;

@@ -14,7 +14,7 @@ namespace TranslationHelper.Functions
 
         internal string GetValueFromCacheOReturnEmpty(string keyValue)
         {
-            if (cache.ContainsKey(keyValue))
+            if (cache.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(cache[keyValue]))
             {
                 return cache[keyValue];
             }

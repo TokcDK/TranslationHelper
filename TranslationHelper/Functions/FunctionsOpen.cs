@@ -11,6 +11,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
+using TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire;
 using TranslationHelper.Projects.KiriKiri;
 using TranslationHelper.Projects.RJ263914;
 using TranslationHelper.Projects.RPGMaker;
@@ -173,7 +174,15 @@ namespace TranslationHelper.Functions
             Properties.Settings.Default.THSelectedGameDir = dir + string.Empty;
             //MessageBox.Show("sPath=" + sPath);
 
-            if (new KiriKiriOLD(thDataWork).Detect())
+            if (new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).OpenDetect())
+            {
+                if (new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).Open())
+                {
+                    return new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).ProjectTitle();
+                }
+                return string.Empty;
+            }
+            else if (new KiriKiriOLD(thDataWork).OpenDetect())
             {
                 return new KiriKiriOLD(thDataWork).KiriKiriScriptScenario();
             }
@@ -348,6 +357,14 @@ namespace TranslationHelper.Functions
 
         internal void AfterOpenActions()
         {
+            if (thDataWork.Main.THFilesList.Items.Count==0 && thDataWork.THFilesElementsDataset.Tables.Count > 0)
+            {
+                foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
+                {
+                    thDataWork.Main.THFilesList.Items.Add(table.TableName);
+                }
+            }
+
             Properties.Settings.Default.THSelectedGameDir = GetCorrectedGameDIr(Properties.Settings.Default.THSelectedGameDir);
 
             if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch") || RPGMFunctions.THSelectedSourceType.Contains("KiriKiri game"))

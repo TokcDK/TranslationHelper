@@ -100,7 +100,7 @@ namespace TranslationHelper.Main.Functions
                                     //получались двойные значения при использовании с функцией автоподстановки для похожих
                                     //LogToFile("PasteClipboardValue value=" + cbValue[rowKey][cellKey]);
                                     //cell.Value += cbValue[rowKey][cellKey];//asdfg
-                                    cellvalue.Append(cbValue[rowKey][cellKey]);//asdfg
+                                    cellvalue.AppendLine(cbValue[rowKey][cellKey]);//asdfg
                                 }
                             }
                         }

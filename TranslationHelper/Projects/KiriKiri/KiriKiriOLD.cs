@@ -22,7 +22,7 @@ namespace TranslationHelper.Projects.KiriKiri
             this.thDataWork = thDataWork;
         }
 
-        internal bool Detect()
+        internal bool OpenDetect()
         {
             return
                 thDataWork.SPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".KS")
