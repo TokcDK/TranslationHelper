@@ -293,6 +293,28 @@ namespace TranslationHelper.Functions
             }
         }
 
+        private void CacheInitWhenNeed(THDataWork thDataWork)
+        {
+            Properties.Settings.Default.OnlineTranslationCacheUseCount++;
+            if (thDataWork.OnlineTranslationCache == null)
+            {
+                thDataWork.OnlineTranslationCache = new OnlineCache();
+                thDataWork.OnlineTranslationCache.ReadCache();
+            }
+        }
+
+        private void CacheUnloadWhenNeed(THDataWork thDataWork)
+        {
+            Properties.Settings.Default.OnlineTranslationCacheUseCount--;
+            if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)
+            {
+                if (thDataWork.OnlineTranslationCache != null)
+                {
+                    thDataWork.OnlineTranslationCache = null;
+                }
+            }
+        }
+
         internal void THOnlineTranslateByBigBlocks2(int cind, int tableindex, int[] rowindexes, string range)
         {
             try
@@ -490,36 +512,16 @@ namespace TranslationHelper.Functions
             thDataWork.Main.ProgressInfo(false);
         }
 
-        private void CacheInitWhenNeed(THDataWork thDataWork)
-        {
-            Properties.Settings.Default.OnlineTranslationCacheUseCount++;
-            if (thDataWork.OnlineTranslationCache == null)
-            {
-                thDataWork.OnlineTranslationCache = new OnlineCache();
-                thDataWork.OnlineTranslationCache.ReadCache();
-            }
-        }
-
-        private void CacheUnloadWhenNeed(THDataWork thDataWork)
-        {
-            Properties.Settings.Default.OnlineTranslationCacheUseCount--;
-            if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)
-            {
-                if (thDataWork.OnlineTranslationCache != null)
-                {
-                    thDataWork.OnlineTranslationCache = null;
-                }
-            }
-        }
-
         private void TranslateLinesAndSetTranslation(DataTable InputLines, DataTable InputLinesInfo/*, DataSet THTranslationCache*/)
         {
             //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
+            //add table rows to string array
             string[] OriginalLines = InputLines.Rows.OfType<DataRow>().Select(row => row[0].ToString()).ToArray();
 
             //сброс кеша в GoogleAPI
             GoogleAPI.ResetCache();
 
+            //send string array to translation for multiline
             string[] TranslatedLines = GoogleAPI.TranslateMultiple(OriginalLines);
 
             //int infoCount = InputLinesInfo.Rows.Count;
