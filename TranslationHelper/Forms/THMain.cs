@@ -2611,6 +2611,97 @@ namespace TranslationHelper
             FunctionsTable.ShowFirstRowWithEmptyTranslation(thDataWork);
         }
 
+        private void extraFixesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int TCount = thDataWork.THFilesElementsDataset.Tables.Count;
+            for (int t = 0; t < TCount; t++)
+            {
+                int RCount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
+                for (int r = 0; r < RCount; r++)
+                {
+                    //Fix 1
+                    /////////////////////////////////	
+                    //"
+                    //「……くっ……。
+                    //　いったい何をしてるんだ。わたしは……。"
+                    /////////////////////////////////	
+                    //" 
+                    //“…………….
+                    //　What are you doing? I……."
+                    /////////////////////////////////	
+                    try
+                    {
+                        var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
+                        string OriginalValue=string.Empty;
+                        string TranslationValue=string.Empty;
+                        if (row[0] != null && !string.IsNullOrEmpty(OriginalValue = row[0] as string) && row[1] != null && !string.IsNullOrEmpty(TranslationValue = row[1] as string) && OriginalValue != TranslationValue && FunctionsString.IsMultiline(OriginalValue))
+                        {
+                            if (OriginalValue.StartsWith("\"") && OriginalValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[1].StartsWith("「"))
+                            {
+                                if (!TranslationValue.StartsWith("\""))
+                                {
+                                    continue;
+                                }
+
+                                if (FunctionsString.IsMultiline(TranslationValue))
+                                {
+                                    bool StartsWithJpQuote = false;
+                                    string secondline = TranslationValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[1];
+                                    if (secondline.StartsWith("“") || secondline.StartsWith("\"") || !(StartsWithJpQuote = secondline.StartsWith("「")))
+                                    {
+                                        if (StartsWithJpQuote)
+                                        {
+                                            continue;
+                                        }
+
+                                        string resultString = string.Empty;
+                                        int ind = 0;
+                                        foreach (string line in TranslationValue.SplitToLines())
+                                        {
+
+                                            //new line for multiline
+                                            if (ind > 0)
+                                            {
+                                                resultString += Environment.NewLine;
+                                            }
+
+                                            if (ind != 1)
+                                            {
+                                                resultString += line;
+                                            }
+                                            else
+                                            {
+                                                int lineLength = line.Length;
+                                                if (lineLength > 1 && (line.StartsWith("“") || line.StartsWith("\"")))
+                                                {
+                                                    resultString += "「" + line.Substring(1);
+                                                }
+                                                else if (lineLength == 0 || (lineLength == 1 && (line == "“" || line == "\"")))
+                                                {
+                                                    resultString += "「";
+                                                }
+                                                else if (lineLength > 0)
+                                                {
+                                                    resultString += "「" + line;
+                                                }
+                                            }
+                                            ind++;
+                                        }
+                                        thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = resultString;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                    /////////////////////////////////	
+                }
+            }
+        }
+
         //Материалы
         //по оптимизации кода
         //https://cc.davelozinski.com/c-sharp/fastest-way-to-compare-strings

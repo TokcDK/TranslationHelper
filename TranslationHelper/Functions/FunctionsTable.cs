@@ -22,8 +22,8 @@ namespace TranslationHelper.Main.Functions
                 int RCount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
                 for (int r = 0; r < RCount; r++)
                 {
-                    var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1];
-                    if (row == null || string.IsNullOrEmpty(row as string))
+                    var cell = thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1];
+                    if (cell == null || string.IsNullOrEmpty(cell as string))
                     {
                         ShowSelectedRow(thDataWork, t, "Translation", r);
                     }
@@ -40,16 +40,27 @@ namespace TranslationHelper.Main.Functions
         /// <param name="rowIndex"></param>
         internal static void ShowSelectedRow(THDataWork thDataWork, int tableIndex, string columnName, int rowIndex)
         {
-            if (tableIndex == thDataWork.Main.THFilesList.SelectedIndex)
+            int RCount = 0;//for debug purposes
+            try
             {
-            }
-            else
-            {
-                thDataWork.Main.THFilesList.SelectedIndex = tableIndex;
-                thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableIndex];
-            }
+                if (tableIndex == thDataWork.Main.THFilesList.SelectedIndex)
+                {
+                }
+                else
+                {
+                    RCount = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
+                    thDataWork.Main.THFilesList.SelectedIndex = tableIndex;
+                    thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableIndex];
+                }
 
-            thDataWork.Main.THFileElementsDataGridView.CurrentCell = thDataWork.Main.THFileElementsDataGridView[columnName, rowIndex];
+                thDataWork.Main.THFileElementsDataGridView.CurrentCell = thDataWork.Main.THFileElementsDataGridView[columnName, rowIndex];
+            }
+            catch (Exception ex)
+            {
+                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + RCount;
+                FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName), error + Environment.NewLine + Environment.NewLine);
+                MessageBox.Show(error);
+            }
         }
 
         internal static int GetRowsWithSelectedCellsCount(this DataGridView DGV)

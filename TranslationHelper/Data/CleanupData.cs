@@ -33,11 +33,13 @@ namespace TranslationHelper.Data
 
                 //Clean data
                 thDataWork.Main.THFilesList.Items.Clear();
-                //thDataWork.THFilesElementsDataset.Reset();
-                //thDataWork.THFilesElementsDatasetInfo.Reset();
-                //thDataWork.THFilesElementsALLDataTable.Reset();
+                thDataWork.THFilesElementsDataset.Reset();
+                thDataWork.THFilesElementsDatasetInfo.Reset();
+                thDataWork.THFilesElementsALLDataTable.Reset();
                 thDataWork.Main.THFileElementsDataGridView.Columns.Clear();
                 //THFileElementsDataGridView.Rows.Clear();
+                thDataWork.FilePath = string.Empty;
+                thDataWork.SPath = string.Empty;
 
                 //Dispose objects
                 //thDataWork.THFilesElementsDataset.Dispose();

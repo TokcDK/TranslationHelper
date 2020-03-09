@@ -616,7 +616,7 @@ namespace TranslationHelper
             ////{
             ////    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
             ////}
-            THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+            //THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
             FunctionsTable.ShowSelectedRow(thDataWork, tableindex, searchcolumn, rowindex);
 
             //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
