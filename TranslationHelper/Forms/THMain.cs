@@ -228,6 +228,7 @@ namespace TranslationHelper
             //Main
             THToolTip.SetToolTip(THMainResetTableButton, T._("Resets filters and tab sorting"));
             THToolTip.SetToolTip(THFiltersDataGridView, T._("Filters for columns of main table"));
+            THToolTip.SetToolTip(TableCompleteInfoLabel, T._("Shows overal number of completed lines.\nClick to show first untranslated."));
             ////////////////////////////
         }
 
@@ -1198,7 +1199,7 @@ namespace TranslationHelper
             ProgressInfo(true, T._("Reading DB File") + "...");
 
             //load new data
-            FunctionsDBFile.ReadDBFile(DBDataSet, sPath); 
+            FunctionsDBFile.ReadDBFile(DBDataSet, sPath);
 
 
             //отключение DataSource для избежания проблем от изменений DataGridView
@@ -1547,7 +1548,7 @@ namespace TranslationHelper
             else//если текстовое поле 2 не пустое
             {
                 //не менять, если значение текстбокса не поменялось
-                if(THTargetRichTextBox.Text!=thDataWork.TargetTextBoxPreValue)
+                if (THTargetRichTextBox.Text != thDataWork.TargetTextBoxPreValue)
                 {
                     THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
                 }
@@ -2603,6 +2604,11 @@ namespace TranslationHelper
         private void THFilesList_SelectedIndexChanged(object sender, EventArgs e)
         {
             ActionsOnTHFIlesListElementSelected();
+        }
+
+        private void TableCompleteInfoLabel_Click(object sender, EventArgs e)
+        {
+            FunctionsTable.ShowFirstRowWithEmptyTranslation(thDataWork);
         }
 
         //Материалы

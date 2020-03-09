@@ -10,6 +10,48 @@ namespace TranslationHelper.Main.Functions
 {
     static class FunctionsTable
     {
+        /// <summary>
+        /// shows first row where translation cell is empty
+        /// </summary>
+        /// <param name="thDataWork"></param>
+        internal static void ShowFirstRowWithEmptyTranslation(THDataWork thDataWork)
+        {
+            int TCount = thDataWork.THFilesElementsDataset.Tables.Count;
+            for (int t = 0; t < TCount; t++)
+            {
+                int RCount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
+                for (int r = 0; r < RCount; r++)
+                {
+                    var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1];
+                    if (row == null || string.IsNullOrEmpty(row as string))
+                    {
+                        ShowSelectedRow(thDataWork, t, "Translation", r);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// shows selected row in selected table
+        /// </summary>
+        /// <param name="thDataWork"></param>
+        /// <param name="tableIndex"></param>
+        /// <param name="columnName"></param>
+        /// <param name="rowIndex"></param>
+        internal static void ShowSelectedRow(THDataWork thDataWork, int tableIndex, string columnName, int rowIndex)
+        {
+            if (tableIndex == thDataWork.Main.THFilesList.SelectedIndex)
+            {
+            }
+            else
+            {
+                thDataWork.Main.THFilesList.SelectedIndex = tableIndex;
+                thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableIndex];
+            }
+
+            thDataWork.Main.THFileElementsDataGridView.CurrentCell = thDataWork.Main.THFileElementsDataGridView[columnName, rowIndex];
+        }
+
         internal static int GetRowsWithSelectedCellsCount(this DataGridView DGV)
         {
             //https://stackoverflow.com/questions/47357051/c-datagridview-how-to-get-selected-count-with-cells-and-rows

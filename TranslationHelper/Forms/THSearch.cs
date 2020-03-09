@@ -602,21 +602,22 @@ namespace TranslationHelper
             rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString(), CultureInfo.GetCultureInfo("en-US"));
 
 
-            if (tableindex == THFilesListBox.SelectedIndex)
-            {
-            }
-            else
-            {
-                THFilesListBox.SelectedIndex = tableindex;
-                THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableindex];
-            }
-
-            //проверка для избежания исключения
-            //if (rowindex < -1 && rowindex < thDataWork.THFilesElementsDataset.Tables[tableindex].Rows.Count)
+            //if (tableindex == THFilesListBox.SelectedIndex)
             //{
-            //    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
             //}
+            //else
+            //{
+            //    THFilesListBox.SelectedIndex = tableindex;
+            //    THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableindex];
+            //}
+
+            ////проверка для избежания исключения
+            ////if (rowindex < -1 && rowindex < thDataWork.THFilesElementsDataset.Tables[tableindex].Rows.Count)
+            ////{
+            ////    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+            ////}
             THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+            FunctionsTable.ShowSelectedRow(thDataWork, tableindex, searchcolumn, rowindex);
 
             //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
             Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(THFileElementsDataGridView.CurrentCell.Value.ToString())));
