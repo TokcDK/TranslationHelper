@@ -390,9 +390,10 @@ namespace TranslationHelper.Functions
                                             string extractedvalue;
                                             string cache;
 
-                                            if (Lines.Length > 1) //если строк больше одной
+                                            int LinesCount = Lines.Length;
+                                            if (LinesCount > 1) //если строк больше одной
                                             {
-                                                for (int s = 0; s < Lines.Length; s++) //добавить все непустые строки по отдельности, пустые добавить в Info
+                                                for (int s = 0; s < LinesCount; s++) //добавить все непустые строки по отдельности, пустые добавить в Info
                                                 {
                                                     string linevalue = Lines[s];
 
@@ -527,7 +528,7 @@ namespace TranslationHelper.Functions
             //int infoCount = InputLinesInfo.Rows.Count;
             //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
 
-            if (TranslatedLines != null && TranslatedLines.Length > 0)
+            if (TranslatedLines != null && TranslatedLines.Length > 0)//check if returned lines from translator is valid
             {
                 StringBuilder ResultValue = new StringBuilder();
                 int PreviousTableIndex = -1;
@@ -538,10 +539,10 @@ namespace TranslationHelper.Functions
                 int RowIndex = 0;
 
                 int TranslatedLinesLength = TranslatedLines.Length;
-                for (int i = 0; i < TranslatedLinesLength; i++)
+                for (int i = 0; i < TranslatedLinesLength; i++)//iteration through translated lines
                 {
-                    string TranslatedLine = TranslatedLines[i];
-                    var InfoRow = InputLinesInfo.Rows[i2];
+                    string TranslatedLine = TranslatedLines[i];//set translated line to string
+                    var InfoRow = InputLinesInfo.Rows[i2];//set info to datarow
                     //string fdsfsdf = TranslatedLines[i];
                     //string dfsgsdg1 = fdsfsdf;
                     //--------------------------------
@@ -562,6 +563,8 @@ namespace TranslationHelper.Functions
                     //        lastvalue = InputLinesInfo.Rows[InputLinesInfo.Rows.Count - 1][1] + string.Empty;
 
                     //    }
+
+                    //set table index and row index from inforow to integers
                     TableIndex = int.Parse(InfoRow[2] as string, CultureInfo.GetCultureInfo("en-US"));
                     RowIndex = int.Parse(InfoRow[3] as string, CultureInfo.GetCultureInfo("en-US"));
                     //}
@@ -619,18 +622,18 @@ namespace TranslationHelper.Functions
                     bool WritedFromInfo = true;
                     while (WritedFromInfo)
                     {
-                        string InfoRow0asstring = InfoRow[0] as string;
-                        string InfoRow1asstring = InfoRow[1] as string;
+                        string InfoRowOriginal = InfoRow[0] as string;
+                        string InfoRowCachedTranslation = InfoRow[1] as string;
                         WritedFromInfo = false;
-                        if (string.IsNullOrEmpty(InfoRow0asstring))
+                        if (string.IsNullOrEmpty(InfoRowOriginal))
                         {
                             //ResultValue.Append(string.Empty); //закоментировано для оптимизации, тот же эффект добавление пустой строки
                             WritedFromInfo = true;
                             i2++;
                         }
-                        else if (!string.IsNullOrEmpty(InfoRow1asstring))
+                        else if (!string.IsNullOrEmpty(InfoRowCachedTranslation))
                         {
-                            ResultValue.Append(InfoRow1asstring);
+                            ResultValue.Append(InfoRowCachedTranslation);
                             WritedFromInfo = true;
                             i2++;
                         }
