@@ -215,6 +215,11 @@ namespace TranslationHelper.Main.Functions
 
         internal static string ReadXMLToString(string xmlPath)
         {
+            if (!File.Exists(xmlPath))
+            {
+                return string.Empty;
+            }
+
             using (FileStream fs = new FileStream(xmlPath, FileMode.Open))
             {
                 Stream s;

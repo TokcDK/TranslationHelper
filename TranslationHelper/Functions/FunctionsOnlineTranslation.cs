@@ -295,6 +295,9 @@ namespace TranslationHelper.Functions
 
         private void CacheInitWhenNeed(THDataWork thDataWork)
         {
+            //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
+            //    return;
+
             Properties.Settings.Default.OnlineTranslationCacheUseCount++;
             if (thDataWork.OnlineTranslationCache == null)
             {

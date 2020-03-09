@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace TranslationHelper.Functions
 
         internal string GetValueFromCacheOReturnEmpty(string keyValue)
         {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled && cache.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(cache[keyValue]))
+            if (Properties.Settings.Default.IsTranslationCacheEnabled && cache.Count>0 && cache.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(cache[keyValue]))
             {
                 return cache[keyValue];
             }
@@ -39,7 +40,23 @@ namespace TranslationHelper.Functions
 
         public void ReadCache()
         {
-            XElement rootElement = XElement.Parse(FunctionsDBFile.ReadXMLToString(Properties.Settings.Default.THTranslationCachePath));
+            string xml = FunctionsDBFile.ReadXMLToString(Properties.Settings.Default.THTranslationCachePath);
+            if (xml.Length == 0)
+                return;
+
+            XElement rootElement=null;
+            try
+            {
+                rootElement = XElement.Parse(xml);
+            }
+            catch (Exception ex)
+            {
+                //write exception, rename broken cache file and return
+                string targetFilePath = FunctionsFileFolder.NewFilePathPlusIndex(Properties.Settings.Default.THTranslationCachePath + ".broken");
+                File.WriteAllText(Path.Combine(Path.GetDirectoryName(targetFilePath), Path.GetFileName(targetFilePath) + ".log"), ex.ToString());
+                File.Move(Properties.Settings.Default.THTranslationCachePath, targetFilePath);
+                return;
+            }
             foreach (var el in rootElement.Elements())
             {
                 string key = el.Element("Original").Value;

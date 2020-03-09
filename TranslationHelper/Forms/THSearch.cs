@@ -610,6 +610,12 @@ namespace TranslationHelper
                 THFilesListBox.SelectedIndex = tableindex;
                 THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableindex];
             }
+
+            //проверка для избежания исключения
+            //if (rowindex < -1 && rowindex < thDataWork.THFilesElementsDataset.Tables[tableindex].Rows.Count)
+            //{
+            //    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+            //}
             THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
 
             //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom

@@ -9,6 +9,23 @@ namespace TranslationHelper.Main.Functions
 {
     internal class FunctionsFileFolder
     {
+        /// <summary>
+        /// add index to end of path if file is exists
+        /// </summary>
+        /// <param name="FilePath"></param>
+        /// <returns></returns>
+        internal static string NewFilePathPlusIndex(string FilePath)
+        {
+            int index = 0;
+            string newFilePath = FilePath;
+            while (File.Exists(newFilePath))
+            {
+                index++;
+                newFilePath = FilePath + index;
+            }
+            return newFilePath;
+        }
+
         internal static bool IsInDirExistsAnyFile(string FilderPath, string mask = "*", bool SearchFiles=true, bool Recursive = false)
         {
             int cnt = 0;
