@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Main.Functions
@@ -348,7 +346,8 @@ namespace TranslationHelper.Main.Functions
             {
                 for (int N = 0; N < sublinesLength; N++)
                 {
-                    int sublinesNLength = sublines[N].Length;
+                    int sublinesNLength = sublines[N].LengthWithoutSpecSymbols();
+
                     if (sublinesNLength > 0 && sublinesNLength > ReturnLength)
                     {
                         ReturnLength = sublinesNLength;
@@ -360,6 +359,22 @@ namespace TranslationHelper.Main.Functions
                 ReturnLength = Line.TrimEnd().Length;
             }
             return ReturnLength;
+        }
+
+        /// <summary>
+        /// gets length of string without several special symbols
+        /// </summary>
+        /// <param name="inputLine"></param>
+        /// <returns></returns>
+        private static int LengthWithoutSpecSymbols(this string inputLine)
+        {
+            string newline = inputLine;
+
+            newline = Regex.Replace(newline, @"^([\s\S]+)(if|en)\([\s\S]+\)$", "$1");
+            newline = Regex.Replace(newline, @"\\\#\{\$game_actors\[.+\]\.name\}", "ActorName1");
+            newline = Regex.Replace(newline, @"\\\#\{\$game_variables\[.+\]\}", "variable10");
+
+            return newline.Length;
         }
 
         public static string SplitMultiLineIfBeyondOfLimit(string Line, int Limit)
@@ -422,11 +437,13 @@ namespace TranslationHelper.Main.Functions
 
         private static string GetSplittedLine(string Line, int Limit)
         {
-            if (Line.Length == 0 || Line.Length <= Limit)
+            string Trigger = string.Empty;
+            string newLine = ((Trigger = Regex.Match(Line, @"(if|en)\([\s\S]+\)$").Value).Length > 0 ? Line.Replace(Trigger, string.Empty) : Line);
+            if (newLine.Length == 0 || newLine.Length <= Limit)
             {
                 return Line;
             }
-            return string.Join(FunctionsString.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Line, Limit));
+            return string.Join(IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Trigger.Length > 0 ? newLine : Line, Limit)) + Trigger;
         }
 
         public static string[] SplitLineIfBeyondOfLimit(string text, int max)

@@ -10,21 +10,6 @@ namespace TranslationHelper.Main.Functions
 {
     class FunctionsProcess
     {
-        public static bool RunProgram(string ProgramPath, string Arguments)
-        {
-            bool ret = false;
-            using (Process Program = new Process())
-            {
-                //MessageBox.Show("outdir=" + outdir);
-                Program.StartInfo.FileName = ProgramPath;
-                Program.StartInfo.Arguments = Arguments;
-                ret = Program.Start();
-                Program.WaitForExit();
-            }
-
-            return ret;
-        }
-
         public static string GetExeDescription(string exepath)
         {
             if (exepath.Length == 0)
@@ -36,6 +21,21 @@ namespace TranslationHelper.Main.Functions
                 FileVersionInfo ExeInfo = FileVersionInfo.GetVersionInfo(exepath);
                 return ExeInfo.FileDescription;
             }
+        }
+
+        public static bool RunProgram(string ProgramPath, string Arguments)
+        {
+            //bool ret = false;
+            //using (Process Program = new Process())
+            //{
+            //    //MessageBox.Show("outdir=" + outdir);
+            //    Program.StartInfo.FileName = ProgramPath;
+            //    Program.StartInfo.Arguments = Arguments;
+            //    ret = Program.Start();
+            //    Program.WaitForExit();
+            //}
+
+            return RunProcess(ProgramPath, Arguments);
         }
 
         public static bool RunProcess(string ProgramPath, string Arguments)

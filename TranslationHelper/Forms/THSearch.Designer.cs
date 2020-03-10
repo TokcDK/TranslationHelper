@@ -63,6 +63,7 @@
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.ConfirmReplaceAllCheckBox = new System.Windows.Forms.CheckBox();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.SearchResultsPanel.SuspendLayout();
@@ -142,6 +143,7 @@
             // 
             this.THSearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.THSearchPanel.Controls.Add(this.ConfirmReplaceAllCheckBox);
             this.THSearchPanel.Controls.Add(this.SearchFindLinesWithPossibleIssuesCheckBox);
             this.THSearchPanel.Controls.Add(this.SearchAlwaysOnTopCheckBox);
             this.THSearchPanel.Controls.Add(this.SearchModeGroupBox);
@@ -452,6 +454,18 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
             // 
+            // ConfirmReplaceAllCheckBox
+            // 
+            this.ConfirmReplaceAllCheckBox.AutoSize = true;
+            this.ConfirmReplaceAllCheckBox.Checked = true;
+            this.ConfirmReplaceAllCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ConfirmReplaceAllCheckBox.Location = new System.Drawing.Point(438, 132);
+            this.ConfirmReplaceAllCheckBox.Name = "ConfirmReplaceAllCheckBox";
+            this.ConfirmReplaceAllCheckBox.Size = new System.Drawing.Size(87, 17);
+            this.ConfirmReplaceAllCheckBox.TabIndex = 23;
+            this.ConfirmReplaceAllCheckBox.Text = "Confirmation";
+            this.ConfirmReplaceAllCheckBox.UseVisualStyleBackColor = true;
+            // 
             // THSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -527,5 +541,6 @@
         private System.Windows.Forms.TextBox SearchFormFindWhatTextBox;
         private System.Windows.Forms.CheckBox SearchAlwaysOnTopCheckBox;
         private System.Windows.Forms.CheckBox SearchFindLinesWithPossibleIssuesCheckBox;
+        private System.Windows.Forms.CheckBox ConfirmReplaceAllCheckBox;
     }
 }

@@ -6,6 +6,28 @@ namespace TranslationHelper.Formats.KiriKiri
 {
     public static class XP3
     {
+        public static bool ExtractXP3files2(string sPath)
+        {
+            bool ret = false;
+
+            string KiriKiriEXEpath = Path.Combine(Application.StartupPath, "Res", "kirikiriunpacker", "kikiriki.exe");
+            string DirName = Path.GetFileName(Path.GetDirectoryName(sPath));
+            string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
+            DirectoryInfo directory = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\");
+            string xp3name = "data";
+            string xp3path = Path.Combine(directory.FullName, xp3name + ".xp3");
+            string KiriKiriEXEargs = "-i \"" + xp3path + "\" -o \"" + KiriKiriWorkFolder + "\"";
+
+            if (File.Exists(Path.Combine(DirName, "Data.xp3")))
+            {
+
+            }
+
+
+            return ret;
+        }
+
+
         public static bool ExtractXP3files(string sPath)
         {
             bool ret = false;

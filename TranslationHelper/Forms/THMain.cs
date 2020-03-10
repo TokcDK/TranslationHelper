@@ -1030,6 +1030,11 @@ namespace TranslationHelper
         string lastautosavepath;
         private async void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (thDataWork.Main.SaveInAction)
+            {
+                return;
+            }
+
             lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName(thDataWork) + FunctionsDBFile.GetDBCompressionExt(thDataWork));
 
             ProgressInfo(true);
@@ -1589,7 +1594,7 @@ namespace TranslationHelper
         /// <param name="tind"></param>
         /// <param name="rind"></param>
         /// <param name="selectedonly"></param>
-        private void THFixCells(string method, int cind, int tind, int rind = 0)//cind - индекс столбца перевода, задан до старта потока
+        private void THFixCells(string method, int cind, int tind, int rind = 0, bool forceApply = false)//cind - индекс столбца перевода, задан до старта потока
         {
             //возвращать, если занято, когда исправление в процессе
             if (THIsFixingCells)
@@ -1599,7 +1604,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsFixingCells = true;
 
-            FunctionsAutoOperations.THFixCells(thDataWork, method, cind, tind, rind);
+            FunctionsAutoOperations.THFixCells(thDataWork, method, cind, tind, rind, forceApply);
 
             //снять занятость по окончании
             THIsFixingCells = false;
@@ -1625,6 +1630,11 @@ namespace TranslationHelper
 
         private void SelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            FixSelectedCells();
+        }
+
+        private void FixSelectedCells(bool force = false)
+        {
             if (THFileElementsDataGridView.GetRowsWithSelectedCellsCount() > 0)
             {
                 //эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
@@ -1639,7 +1649,7 @@ namespace TranslationHelper
                 //trans.Start();
 
                 //убрал здесь выполнение во втором потоке, т.к. слишком мало править, не стоит того
-                THFixCells("s", cind, tableindex);
+                THFixCells("s", cind, tableindex, -1, force);
             }
         }
 
@@ -2632,8 +2642,8 @@ namespace TranslationHelper
                     try
                     {
                         var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
-                        string OriginalValue=string.Empty;
-                        string TranslationValue=string.Empty;
+                        string OriginalValue = string.Empty;
+                        string TranslationValue = string.Empty;
                         if (row[0] != null && !string.IsNullOrEmpty(OriginalValue = row[0] as string) && row[1] != null && !string.IsNullOrEmpty(TranslationValue = row[1] as string) && OriginalValue != TranslationValue && FunctionsString.IsMultiline(OriginalValue))
                         {
                             if (OriginalValue.StartsWith("\"") && OriginalValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[1].StartsWith("「"))
@@ -2700,6 +2710,11 @@ namespace TranslationHelper
                     /////////////////////////////////	
                 }
             }
+        }
+
+        private void selectedForceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FixSelectedCells(true);
         }
 
         //Материалы

@@ -9,7 +9,7 @@ using TranslationHelper.Main.Functions;
 //https://stackoverflow.com/questions/1799767/easy-way-to-convert-a-dictionarystring-string-to-xml-and-vice-versa
 namespace TranslationHelper.Functions
 {
-    class OnlineCache
+    class FunctionsOnlineCache
     {
         internal Dictionary<string, string> cache = new Dictionary<string, string>();
 

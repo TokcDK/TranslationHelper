@@ -79,43 +79,35 @@ namespace TranslationHelper.Functions
 
                 if (RPGMFunctions.THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
                 {
-                    DialogResult result = MessageBox.Show("Write in _translated variant of the game? This will not overwrite original game folder but can be used for test game.", "Write in translated variant", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    if (result == DialogResult.Yes)
+                    string rpgmakertranscli = Application.StartupPath + @"\Res\rpgmakertrans\rpgmt.exe";
+
+                    //параметры
+                    //parser.add_argument("input", help = "Path of input game to patch")
+                    //parser.add_argument("-p", "--patch", help = "Path of patch (directory or zip)"
+                    //        "(Defaults to input_directory_patch")
+                    //parser.add_argument("-o", "--output", help = "Path to output directory "
+                    //        "(will create) (Defaults to input_directory_translated)")
+                    //parser.add_argument('-q', '--quiet', help = 'Suppress all output',
+                    //        action = 'store_true')
+                    //parser.add_argument('-b', '--use-bom', help = 'Use UTF-8 BOM in Patch'
+                    //        'files', action = 'store_true')
+                    //parser.add_argument('-r', '--rebuild', help = "Rebuild patch against game",
+                    //        action = "store_true")
+                    //parser.add_argument('-s', '--socket', type = int, default = 27899,
+                    //        help = 'Socket to use for XP/VX/VX Ace patching'
+                    //        '(default: 27899)')
+                    //parser.add_argument('-l', '--dump-labels', action = "store_true",
+                    //        help = "Dump labels to patch file")
+                    //parser.add_argument('--dump-scripts', type = str, default = None,
+                    //        help = "Dump scripts to given directory")
+                    string rpgmakertranscliargs = "\"" + Properties.Settings.Default.THSelectedGameDir + "\" -p \"" + Properties.Settings.Default.THSelectedDir + "\"" + " -o \"" + Properties.Settings.Default.THSelectedDir.Remove(Properties.Settings.Default.THSelectedDir.Length - "_patch".Length, "_patch".Length) + "_translated\"";
+                    
+                    if (FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs))
                     {
-                        string rpgmakertranscli = Application.StartupPath + @"\Res\rpgmakertrans\rpgmt.exe";
-
-                        //параметры
-                        //parser.add_argument("input", help = "Path of input game to patch")
-                        //parser.add_argument("-p", "--patch", help = "Path of patch (directory or zip)"
-                        //        "(Defaults to input_directory_patch")
-                        //parser.add_argument("-o", "--output", help = "Path to output directory "
-                        //        "(will create) (Defaults to input_directory_translated)")
-                        //parser.add_argument('-q', '--quiet', help = 'Suppress all output',
-                        //        action = 'store_true')
-                        //parser.add_argument('-b', '--use-bom', help = 'Use UTF-8 BOM in Patch'
-                        //        'files', action = 'store_true')
-                        //parser.add_argument('-r', '--rebuild', help = "Rebuild patch against game",
-                        //        action = "store_true")
-                        //parser.add_argument('-s', '--socket', type = int, default = 27899,
-                        //        help = 'Socket to use for XP/VX/VX Ace patching'
-                        //        '(default: 27899)')
-                        //parser.add_argument('-l', '--dump-labels', action = "store_true",
-                        //        help = "Dump labels to patch file")
-                        //parser.add_argument('--dump-scripts', type = str, default = None,
-                        //        help = "Dump scripts to given directory")
-                        string rpgmakertranscliargs = "\"" + Properties.Settings.Default.THSelectedGameDir + "\" -p \"" + Properties.Settings.Default.THSelectedDir + "\"" + " -o \"" + Properties.Settings.Default.THSelectedDir.Remove(Properties.Settings.Default.THSelectedDir.Length - "_patch".Length, "_patch".Length) + "_translated\"";
-
-                        if (FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs))
-                        {
-                        }
-                        else
-                        {
-                            FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");// попытка с параметром -b
-                        }
                     }
-                    else if (result == DialogResult.No)
+                    else
                     {
-                        //code for No
+                        FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");// попытка с параметром -b
                     }
                 }
 

@@ -89,7 +89,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="tind"></param>
         /// <param name="rind"></param>
         /// <param name="selectedonly"></param>
-        public static void THFixCells(THDataWork thDataWork, string method, int cind, int tind, int rind = 0, bool selectedonly = false)//cind - индекс столбца перевода, задан до старта потока
+        public static void THFixCells(THDataWork thDataWork, string method, int cind, int tind, int rind = 0, bool forceApply = false)//cind - индекс столбца перевода, задан до старта потока
         {
             //если файл с правилами существует
             if (File.Exists(Path.Combine(Application.StartupPath, "TranslationHelperCellFixesRegexRules.txt")))
@@ -185,7 +185,7 @@ namespace TranslationHelper.Main.Functions
                             var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex];
                             string cvalue = row[cind] + string.Empty;
                             //не трогать строку перевода, если она пустая
-                            if (cvalue.Length > 0 && cvalue != row[cind - 1] as string)
+                            if (cvalue.Length > 0 && (forceApply || cvalue != row[cind - 1] as string))
                             {
                                 //Hardcoded rules
                                 cvalue = FunctionsString.FixForRPGMAkerQuotationInSomeStrings(row);

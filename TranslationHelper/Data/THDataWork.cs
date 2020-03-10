@@ -37,7 +37,7 @@ namespace TranslationHelper.Data
         public string SPath { get; set; }
 
         //Online Translation Cache
-        internal OnlineCache OnlineTranslationCache;
+        internal FunctionsOnlineCache OnlineTranslationCache;
 
         //current processing file for open/save
         public string FilePath { get; set; }

@@ -301,7 +301,7 @@ namespace TranslationHelper.Functions
             Properties.Settings.Default.OnlineTranslationCacheUseCount++;
             if (thDataWork.OnlineTranslationCache == null)
             {
-                thDataWork.OnlineTranslationCache = new OnlineCache();
+                thDataWork.OnlineTranslationCache = new FunctionsOnlineCache();
                 thDataWork.OnlineTranslationCache.ReadCache();
             }
         }

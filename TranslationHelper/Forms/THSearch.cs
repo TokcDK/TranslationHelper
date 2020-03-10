@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.ExternalAdditions;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper
@@ -765,63 +766,68 @@ namespace TranslationHelper
         {
             if (SearchFormFindWhatTextBox.Text.Length == 0 || thDataWork.THFilesElementsDataset == null)
             {
+                return;
+            }
+
+            if (ConfirmReplaceAllCheckBox.Checked && !FunctionsMessage.ShowConfirmationDialog(T._("Replace All") + "?", T._("Confirmation")))
+            {
+                return;
+            }
+
+
+            lblError.Visible = false;
+            oDsResults = thDataWork.THFilesElementsDataset.Clone();
+            //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
+            DataTable drFoundRowsTable = SearchNew(oDsResults);
+
+            if (drFoundRowsTable == null)
+            {
             }
             else
             {
-                lblError.Visible = false;
-                oDsResults = thDataWork.THFilesElementsDataset.Clone();
-                //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
-                DataTable drFoundRowsTable = SearchNew(oDsResults);
+                if (drFoundRowsTable.Rows.Count > 0)
+                {
+                    StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
 
-                if (drFoundRowsTable == null)
-                {
-                }
-                else
-                {
-                    if (drFoundRowsTable.Rows.Count > 0)
+                    oDsResults.AcceptChanges();
+                    PopulateGrid(oDsResults);
+
+                    lblError.Visible = true;
+                    lblError.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
+                    this.Height = 589;
+
+                    string searchcolumn = GetSearchColumn();
+                    for (int r = 0; r < oDsResults.Tables[0].Rows.Count; r++)
                     {
-                        StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
+                        tableindex = int.Parse(oDsResultsCoordinates.Rows[r][0] + string.Empty, CultureInfo.CurrentCulture);
+                        rowindex = int.Parse(oDsResultsCoordinates.Rows[r][1] + string.Empty, CultureInfo.CurrentCulture);
 
-                        oDsResults.AcceptChanges();
-                        PopulateGrid(oDsResults);
-
-                        lblError.Visible = true;
-                        lblError.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
-                        this.Height = 589;
-
-                        string searchcolumn = GetSearchColumn();
-                        for (int r = 0; r < oDsResults.Tables[0].Rows.Count; r++)
+                        string value = thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] + string.Empty;
+                        if (value.Length > 0)
                         {
-                            tableindex = int.Parse(oDsResultsCoordinates.Rows[r][0] + string.Empty, CultureInfo.CurrentCulture);
-                            rowindex = int.Parse(oDsResultsCoordinates.Rows[r][1] + string.Empty, CultureInfo.CurrentCulture);
-
-                            string value = thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] + string.Empty;
-                            if (value.Length > 0)
+                            if (SearchModeRegexRadioButton.Checked)
                             {
-                                if (SearchModeRegexRadioButton.Checked)
+                                if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                                 {
-                                    if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
-                                    {
-                                        thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = Regex.Replace(GetFirstIfNotEmpty(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
-                                    }
+                                    thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = Regex.Replace(GetFirstIfNotEmpty(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
                                 }
-                                else
+                            }
+                            else
+                            {
+                                if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                                 {
-                                    if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
-                                    {
-                                        thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = ReplaceEx.Replace(GetFirstIfNotEmpty(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
-                                    }
+                                    thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = ReplaceEx.Replace(GetFirstIfNotEmpty(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                                 }
                             }
                         }
                     }
-                    else
-                    {
-                        //PopulateGrid(null);
-                        lblError.Visible = true;
-                        lblError.Text = T._("Nothing Found");
-                        this.Height = 368;
-                    }
+                }
+                else
+                {
+                    //PopulateGrid(null);
+                    lblError.Visible = true;
+                    lblError.Text = T._("Nothing Found");
+                    this.Height = 368;
                 }
             }
         }
