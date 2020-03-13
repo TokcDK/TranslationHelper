@@ -340,6 +340,8 @@ namespace TranslationHelper
                         //PopulateGrid(null);
                         lblError.Visible = true;
                         lblError.Text = T._("Nothing Found");
+                        SearchResultsDatagridview.DataSource = null;
+                        SearchResultsDatagridview.Refresh();
                         this.Height = 368;
                     }
                 }
@@ -353,6 +355,7 @@ namespace TranslationHelper
             if (thDataWork.THFilesElementsDataset.Tables.Count > 0)
             {
                 string searchcolumn = GetSearchColumn();
+                bool info = SearchInInfoCheckBox.Checked;
                 string strQuery = SearchFormFindWhatTextBox.Text;
                 oDsResultsCoordinates.Rows.Clear();
                 int DatatablesCount = SearchRangeTableRadioButton.Checked ? THFilesListBox.SelectedIndex + 1 : thDataWork.THFilesElementsDataset.Tables.Count;
@@ -366,7 +369,16 @@ namespace TranslationHelper
                             DataRow Row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
                             string SelectedCellValue = thDataWork.THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty;
 
-                            if (SearchFindLinesWithPossibleIssuesCheckBox.Checked)
+                            if (info)
+                            {
+                                if ((thDataWork.THFilesElementsDatasetInfo.Tables[t].Rows[r][0] + string.Empty).Contains(strQuery))
+                                {
+                                    DS.Tables[0].ImportRow(Row);
+                                    oDsResultsCoordinates.Rows.Add(t, r);
+                                }
+
+                            }
+                            else if (SearchFindLinesWithPossibleIssuesCheckBox.Checked)
                             {
                                 if (IsTheRowHasPossibleIssues(Row))
                                 {
@@ -594,7 +606,15 @@ namespace TranslationHelper
         private void SearchResultsDatagridview_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             string searchcolumn = GetSearchColumn();
-            tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString(), CultureInfo.GetCultureInfo("en-US"));
+            try
+            {
+                //было исключение, отсутствует позиция, хотя позицияприсутствовала
+                tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString(), CultureInfo.GetCultureInfo("en-US"));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\r\n"+ex+ "e.RowIndex="+ e.RowIndex+ "\r\noDsResultsCoordinates.Rows count="+ oDsResultsCoordinates.Rows.Count);
+            }
 
             thDataWork.THFilesElementsDataset.Tables[tableindex].DefaultView.RowFilter = string.Empty;
             thDataWork.THFilesElementsDataset.Tables[tableindex].DefaultView.Sort = string.Empty;
@@ -881,6 +901,16 @@ namespace TranslationHelper
             SearchFormReplaceAllButton.Enabled = !SearchFormReplaceAllButton.Enabled;
             SearchFormReplaceButton.Enabled = !SearchFormReplaceButton.Enabled;
             SearchFormFindNextButton.Enabled = !SearchFormFindNextButton.Enabled;
+        }
+
+        private void ClearFindWhatTextBoxLabel_Click(object sender, EventArgs e)
+        {
+            SearchFormFindWhatTextBox.Clear();
+        }
+
+        private void ClearReplaceWithTextBoxLabel_Click(object sender, EventArgs e)
+        {
+            SearchFormReplaceWithTextBox.Clear();
         }
     }
 }

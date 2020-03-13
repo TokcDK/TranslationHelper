@@ -34,6 +34,7 @@
             this.SearchResultsDatagridview = new System.Windows.Forms.DataGridView();
             this.lblError = new System.Windows.Forms.Label();
             this.THSearchPanel = new System.Windows.Forms.Panel();
+            this.ConfirmReplaceAllCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchFindLinesWithPossibleIssuesCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchAlwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchModeGroupBox = new System.Windows.Forms.GroupBox();
@@ -63,7 +64,9 @@
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.ConfirmReplaceAllCheckBox = new System.Windows.Forms.CheckBox();
+            this.ClearFindWhatTextBoxLabel = new System.Windows.Forms.Label();
+            this.ClearReplaceWithTextBoxLabel = new System.Windows.Forms.Label();
+            this.SearchInInfoCheckBox = new System.Windows.Forms.CheckBox();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.SearchResultsPanel.SuspendLayout();
@@ -143,6 +146,9 @@
             // 
             this.THSearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.THSearchPanel.Controls.Add(this.SearchInInfoCheckBox);
+            this.THSearchPanel.Controls.Add(this.ClearReplaceWithTextBoxLabel);
+            this.THSearchPanel.Controls.Add(this.ClearFindWhatTextBoxLabel);
             this.THSearchPanel.Controls.Add(this.ConfirmReplaceAllCheckBox);
             this.THSearchPanel.Controls.Add(this.SearchFindLinesWithPossibleIssuesCheckBox);
             this.THSearchPanel.Controls.Add(this.SearchAlwaysOnTopCheckBox);
@@ -154,6 +160,18 @@
             this.THSearchPanel.Name = "THSearchPanel";
             this.THSearchPanel.Size = new System.Drawing.Size(565, 304);
             this.THSearchPanel.TabIndex = 7;
+            // 
+            // ConfirmReplaceAllCheckBox
+            // 
+            this.ConfirmReplaceAllCheckBox.AutoSize = true;
+            this.ConfirmReplaceAllCheckBox.Checked = true;
+            this.ConfirmReplaceAllCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ConfirmReplaceAllCheckBox.Location = new System.Drawing.Point(438, 132);
+            this.ConfirmReplaceAllCheckBox.Name = "ConfirmReplaceAllCheckBox";
+            this.ConfirmReplaceAllCheckBox.Size = new System.Drawing.Size(87, 17);
+            this.ConfirmReplaceAllCheckBox.TabIndex = 23;
+            this.ConfirmReplaceAllCheckBox.Text = "Confirmation";
+            this.ConfirmReplaceAllCheckBox.UseVisualStyleBackColor = true;
             // 
             // SearchFindLinesWithPossibleIssuesCheckBox
             // 
@@ -454,17 +472,35 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
             // 
-            // ConfirmReplaceAllCheckBox
+            // ClearFindWhatTextBoxLabel
             // 
-            this.ConfirmReplaceAllCheckBox.AutoSize = true;
-            this.ConfirmReplaceAllCheckBox.Checked = true;
-            this.ConfirmReplaceAllCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ConfirmReplaceAllCheckBox.Location = new System.Drawing.Point(438, 132);
-            this.ConfirmReplaceAllCheckBox.Name = "ConfirmReplaceAllCheckBox";
-            this.ConfirmReplaceAllCheckBox.Size = new System.Drawing.Size(87, 17);
-            this.ConfirmReplaceAllCheckBox.TabIndex = 23;
-            this.ConfirmReplaceAllCheckBox.Text = "Confirmation";
-            this.ConfirmReplaceAllCheckBox.UseVisualStyleBackColor = true;
+            this.ClearFindWhatTextBoxLabel.AutoSize = true;
+            this.ClearFindWhatTextBoxLabel.Location = new System.Drawing.Point(419, 18);
+            this.ClearFindWhatTextBoxLabel.Name = "ClearFindWhatTextBoxLabel";
+            this.ClearFindWhatTextBoxLabel.Size = new System.Drawing.Size(13, 13);
+            this.ClearFindWhatTextBoxLabel.TabIndex = 24;
+            this.ClearFindWhatTextBoxLabel.Text = "x";
+            this.ClearFindWhatTextBoxLabel.Click += new System.EventHandler(this.ClearFindWhatTextBoxLabel_Click);
+            // 
+            // ClearReplaceWithTextBoxLabel
+            // 
+            this.ClearReplaceWithTextBoxLabel.AutoSize = true;
+            this.ClearReplaceWithTextBoxLabel.Location = new System.Drawing.Point(419, 45);
+            this.ClearReplaceWithTextBoxLabel.Name = "ClearReplaceWithTextBoxLabel";
+            this.ClearReplaceWithTextBoxLabel.Size = new System.Drawing.Size(13, 13);
+            this.ClearReplaceWithTextBoxLabel.TabIndex = 25;
+            this.ClearReplaceWithTextBoxLabel.Text = "x";
+            this.ClearReplaceWithTextBoxLabel.Click += new System.EventHandler(this.ClearReplaceWithTextBoxLabel_Click);
+            // 
+            // SearchInInfoCheckBox
+            // 
+            this.SearchInInfoCheckBox.AutoSize = true;
+            this.SearchInInfoCheckBox.Location = new System.Drawing.Point(219, 69);
+            this.SearchInInfoCheckBox.Name = "SearchInInfoCheckBox";
+            this.SearchInInfoCheckBox.Size = new System.Drawing.Size(59, 17);
+            this.SearchInInfoCheckBox.TabIndex = 26;
+            this.SearchInInfoCheckBox.Text = "In Info";
+            this.SearchInInfoCheckBox.UseVisualStyleBackColor = true;
             // 
             // THSearch
             // 
@@ -542,5 +578,8 @@
         private System.Windows.Forms.CheckBox SearchAlwaysOnTopCheckBox;
         private System.Windows.Forms.CheckBox SearchFindLinesWithPossibleIssuesCheckBox;
         private System.Windows.Forms.CheckBox ConfirmReplaceAllCheckBox;
+        private System.Windows.Forms.CheckBox SearchInInfoCheckBox;
+        private System.Windows.Forms.Label ClearReplaceWithTextBoxLabel;
+        private System.Windows.Forms.Label ClearFindWhatTextBoxLabel;
     }
 }

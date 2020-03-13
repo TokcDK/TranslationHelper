@@ -188,7 +188,9 @@ namespace TranslationHelper.Main.Functions
                             if (cvalue.Length > 0 && (forceApply || cvalue != row[cind - 1] as string))
                             {
                                 //Hardcoded rules
-                                cvalue = FunctionsString.FixForRPGMAkerQuotationInSomeStrings(row);
+                                //cvalue = FunctionsString.FixForRPGMAkerQuotationInSomeStrings(row);
+                                //cvalue = FunctionsString.FixBrokeNameVar(cvalue);
+                                //cvalue = FunctionsString.FixENJPQuoteOnStringStart1stLine(row[0] + string.Empty, row[1] + string.Empty);
 
                                 //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
 

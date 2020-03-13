@@ -2004,7 +2004,7 @@ namespace TranslationHelper
                     }
                     if (success)
                     {
-                        using (Process Testgame = new Process())
+                        //using (Process Testgame = new Process())
                         {
                             try
                             {
@@ -2022,7 +2022,7 @@ namespace TranslationHelper
                                 }
                                 //MessageBox.Show("outdir=" + outdir);
                                 //Testgame.StartInfo.FileName = Path.Combine(Properties.Settings.Default.THSelectedDir,"game.exe");
-                                Testgame.StartInfo.FileName = largestexe;
+                                //Testgame.StartInfo.FileName = largestexe;
                                 //RPGMakerTransPatch.StartInfo.Arguments = string.Empty;
                                 //Testgame.StartInfo.UseShellExecute = true;
 
@@ -2032,8 +2032,10 @@ namespace TranslationHelper
 
                                 Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
 
-                                await Task.Run(() => Testgame.Start()).ConfigureAwait(true);
-                                Testgame.WaitForExit();
+                                FunctionsProcess.RunProcess(largestexe);
+
+                                //await Task.Run(() => Testgame.Start()).ConfigureAwait(true);
+                                //Testgame.WaitForExit();
 
                                 // Показать
                                 WindowState = FormWindowState.Normal;
@@ -2629,6 +2631,14 @@ namespace TranslationHelper
                 int RCount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
                 for (int r = 0; r < RCount; r++)
                 {
+                    var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
+                    string original;
+                    string translation;
+                    if (string.IsNullOrEmpty(original = row[0] + string.Empty) || string.IsNullOrEmpty(translation = row[1] + string.Empty) || original == translation)
+                    {
+                        continue;
+                    }
+
                     //Fix 1
                     /////////////////////////////////	
                     //"
@@ -2639,75 +2649,28 @@ namespace TranslationHelper
                     //“…………….
                     //　What are you doing? I……."
                     /////////////////////////////////	
-                    try
-                    {
-                        var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
-                        string OriginalValue = string.Empty;
-                        string TranslationValue = string.Empty;
-                        if (row[0] != null && !string.IsNullOrEmpty(OriginalValue = row[0] as string) && row[1] != null && !string.IsNullOrEmpty(TranslationValue = row[1] as string) && OriginalValue != TranslationValue && FunctionsString.IsMultiline(OriginalValue))
-                        {
-                            if (OriginalValue.StartsWith("\"") && OriginalValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[1].StartsWith("「"))
-                            {
-                                if (!TranslationValue.StartsWith("\""))
-                                {
-                                    continue;
-                                }
+                    translation = FunctionsString.FixENJPQuoteOnStringStart2ndLine(original, translation);
 
-                                if (FunctionsString.IsMultiline(TranslationValue))
-                                {
-                                    bool StartsWithJpQuote = false;
-                                    string secondline = TranslationValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[1];
-                                    if (secondline.StartsWith("“") || secondline.StartsWith("\"") || !(StartsWithJpQuote = secondline.StartsWith("「")))
-                                    {
-                                        if (StartsWithJpQuote)
-                                        {
-                                            continue;
-                                        }
+                    //fix
+                    /* 「一攫千金を狙ってスロットに挑戦する？
+　\\C[16]１プレイ \\C[0]\\V[7] \\C[16]\\G\\C[0]よ。
 
-                                        string resultString = string.Empty;
-                                        int ind = 0;
-                                        foreach (string line in TranslationValue.SplitToLines())
-                                        {
+"Challenge the slots for a quick getaway?
+　\\C[16]1 play \\C[0]\\V[7]\\C[16]\\G\\C[0] */
+                    translation = FunctionsString.FixENJPQuoteOnStringStart1stLine(original, translation);
 
-                                            //new line for multiline
-                                            if (ind > 0)
-                                            {
-                                                resultString += Environment.NewLine;
-                                            }
+                    /////////////////////////////////
+                    //Fix 2 Quotation
+                    translation = FunctionsString.FixForRPGMAkerQuotationInSomeStrings(original, translation);
 
-                                            if (ind != 1)
-                                            {
-                                                resultString += line;
-                                            }
-                                            else
-                                            {
-                                                int lineLength = line.Length;
-                                                if (lineLength > 1 && (line.StartsWith("“") || line.StartsWith("\"")))
-                                                {
-                                                    resultString += "「" + line.Substring(1);
-                                                }
-                                                else if (lineLength == 0 || (lineLength == 1 && (line == "“" || line == "\"")))
-                                                {
-                                                    resultString += "「";
-                                                }
-                                                else if (lineLength > 0)
-                                                {
-                                                    resultString += "「" + line;
-                                                }
-                                            }
-                                            ind++;
-                                        }
-                                        thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = resultString;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch
-                    {
+                    // fix
+                    //orig = \\N[1]いったい何をしてるんだ
+                    //trans = \\NBlablabla[1]blabla
+                    translation = FunctionsString.FixBrokeNameVar(translation);
 
-                    }
-                    /////////////////////////////////	
+
+                    //Set result value
+                    thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = translation;
                 }
             }
         }

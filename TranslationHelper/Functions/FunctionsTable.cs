@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 
@@ -576,7 +577,10 @@ namespace TranslationHelper.Main.Functions
 
                 for (int r = 0; r < rowsCount; r++)
                 {
-                    thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[r][1] = null;
+                    //типа многопоточная очистка ячеек
+                    Task.Run(() => thDataWork.Main.Invoke((Action)(() => thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[r][1] = null))).ConfigureAwait(false);
+
+                    //thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[r][1] = null;
                 }
 
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
