@@ -238,7 +238,7 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="translation"></param>
         /// <returns></returns>
-        internal static string FixBrokeNameVar(string translation)
+        internal static string FixBrokenNameVar(string translation)
         {
             //вот такой пипец теоритически возможен
             //\\N\\N[\\V[122]]
@@ -311,6 +311,27 @@ namespace TranslationHelper.Main.Functions
             newValue = Regex.Replace(newValue, @"([a-zA-Z])\\\\N\[([0-9]+)\]", @"$1 \\N[$2]");
 
             return newValue;
+        }
+
+        internal static string FixBrokenNameVar2(string original, string translation)
+        {
+            if (Regex.IsMatch(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]"))
+            {
+                if (Regex.IsMatch(original, @"\\\\N\[[0-9]{1,3}\]"))
+                {
+                    return Regex.Replace(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]", @"\\N[$2]");
+                }
+                else
+                {
+                    var mc = Regex.Matches(original, @"\\\\([A-Za-z])\[[0-9]{1,3}\]");
+                    if (mc.Count == 1)
+                    {
+                        return Regex.Replace(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]", @"\"+mc[0].Value);
+                    }
+                }
+            }
+
+            return translation;
         }
 
         /// <summary>

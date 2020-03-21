@@ -2666,8 +2666,12 @@ namespace TranslationHelper
                     // fix
                     //orig = \\N[1]いったい何をしてるんだ
                     //trans = \\NBlablabla[1]blabla
-                    translation = FunctionsString.FixBrokeNameVar(translation);
+                    translation = FunctionsString.FixBrokenNameVar(translation);
 
+                    //\\\\[0-9]\[[0-9]{1,3}\]
+                    //\\3[3] in some strings
+                    //\\N[3]
+                    translation = FunctionsString.FixBrokenNameVar2(original, translation);
 
                     //Set result value
                     thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = translation;
