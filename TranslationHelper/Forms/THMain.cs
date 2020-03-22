@@ -2632,49 +2632,9 @@ namespace TranslationHelper
                 for (int r = 0; r < RCount; r++)
                 {
                     var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
-                    string original;
-                    string translation;
-                    if (string.IsNullOrEmpty(original = row[0] + string.Empty) || string.IsNullOrEmpty(translation = row[1] + string.Empty) || original == translation)
-                    {
-                        continue;
-                    }
-
-                    //Fix 1
-                    /////////////////////////////////	
-                    //"
-                    //「……くっ……。
-                    //　いったい何をしてるんだ。わたしは……。"
-                    /////////////////////////////////	
-                    //" 
-                    //“…………….
-                    //　What are you doing? I……."
-                    /////////////////////////////////	
-                    translation = FunctionsString.FixENJPQuoteOnStringStart2ndLine(original, translation);
-
-                    //fix
-                    /* 「一攫千金を狙ってスロットに挑戦する？
-　\\C[16]１プレイ \\C[0]\\V[7] \\C[16]\\G\\C[0]よ。
-
-"Challenge the slots for a quick getaway?
-　\\C[16]1 play \\C[0]\\V[7]\\C[16]\\G\\C[0] */
-                    translation = FunctionsString.FixENJPQuoteOnStringStart1stLine(original, translation);
-
-                    /////////////////////////////////
-                    //Fix 2 Quotation
-                    translation = FunctionsString.FixForRPGMAkerQuotationInSomeStrings(original, translation);
-
-                    // fix
-                    //orig = \\N[1]いったい何をしてるんだ
-                    //trans = \\NBlablabla[1]blabla
-                    translation = FunctionsString.FixBrokenNameVar(translation);
-
-                    //\\\\[0-9]\[[0-9]{1,3}\]
-                    //\\3[3] in some strings
-                    //\\N[3]
-                    translation = FunctionsString.FixBrokenNameVar2(original, translation);
 
                     //Set result value
-                    thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = translation;
+                    thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
                 }
             }
         }

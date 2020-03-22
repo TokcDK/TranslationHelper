@@ -111,6 +111,7 @@
     <Compile Include="Functions\FunctionsOpen.cs" />
     <Compile Include="Functions\FunctionsSave.cs" />
     <Compile Include="Functions\FunctionsOnlineCache.cs" />
+    <Compile Include="Functions\FunctionsStringsFixes.cs" />
     <Compile Include="Old elements\DoubleBufferedListBox.cs" />
     <Compile Include="Functions\FunctionsAutoOperations.cs" />
     <Compile Include="Functions\FunctionsCopyPaste.cs" />
