@@ -1203,41 +1203,48 @@ namespace TranslationHelper
 
             ProgressInfo(true, T._("Reading DB File") + "...");
 
-            //load new data
-            FunctionsDBFile.ReadDBFile(DBDataSet, sPath);
+            try
+            {
+                //load new data
+                FunctionsDBFile.ReadDBFile(DBDataSet, sPath);
 
 
-            //отключение DataSource для избежания проблем от изменений DataGridView
-            //bool tableSourceWasCleaned = false;
-            //if (thDataWork.Main.THFileElementsDataGridView.DataSource != null)
-            //{
-            //    tableSourceWasCleaned = true;
-            //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
-            //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
-            //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
-            //}
+                //отключение DataSource для избежания проблем от изменений DataGridView
+                //bool tableSourceWasCleaned = false;
+                //if (thDataWork.Main.THFileElementsDataGridView.DataSource != null)
+                //{
+                //    tableSourceWasCleaned = true;
+                //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+                //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                //}
 
-            //стандартное считывание. Самое медленное
-            //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
+                //стандартное считывание. Самое медленное
+                //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompare(DBDataSet);
 
-            //считывание через словарь с предварительным чтением в dataset и конвертацией в словарь
-            //Своего рода среднее решение, которое быстрее решения с сравнением из БД в DataSet
-            //и не имеет проблем решения с чтением сразу в словарь, 
-            //тут не нужно переписывать запись в xml, хотя запись таблицы в xml пишет все колонки и одинаковые значения, т.е. xml будет больше
-            //чтение из xml в dataset может занимать по нескольку секунд для больших файлов
-            //основную часть времени отнимал вывод информации о файлах!!
-            //00.051
-            new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.DBDataSetToDBDictionary());
-            //это медленнее первого варианта 
-            //00.151
-            //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary2(DBDataSet.DBDataSetToDBDictionary());
+                //считывание через словарь с предварительным чтением в dataset и конвертацией в словарь
+                //Своего рода среднее решение, которое быстрее решения с сравнением из БД в DataSet
+                //и не имеет проблем решения с чтением сразу в словарь, 
+                //тут не нужно переписывать запись в xml, хотя запись таблицы в xml пишет все колонки и одинаковые значения, т.е. xml будет больше
+                //чтение из xml в dataset может занимать по нескольку секунд для больших файлов
+                //основную часть времени отнимал вывод информации о файлах!!
+                //00.051
+                new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.DBDataSetToDBDictionary());
+                //это медленнее первого варианта 
+                //00.151
+                //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary2(DBDataSet.DBDataSetToDBDictionary());
 
-            //считывание через словарь Чтение xml в словарь на текущий момент имеет проблемы
-            //с невозможностью чтения закодированых в hex символов(решил как костыль через try catch) и пока не может читать сжатые xml
-            //нужно постепенно доработать код, исправить проблемы и перейти полностью на этот наибыстрейший вариант
-            //т.к. с ним и xml бд будет меньше размером
-            //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(FunctionsDBFile.ReadXMLDBToDictionary(sPath));
+                //считывание через словарь Чтение xml в словарь на текущий момент имеет проблемы
+                //с невозможностью чтения закодированых в hex символов(решил как костыль через try catch) и пока не может читать сжатые xml
+                //нужно постепенно доработать код, исправить проблемы и перейти полностью на этот наибыстрейший вариант
+                //т.к. с ним и xml бд будет меньше размером
+                //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(FunctionsDBFile.ReadXMLDBToDictionary(sPath));
 
+            }
+            catch
+            {
+
+            }
 
             ProgressInfo(false);
 
