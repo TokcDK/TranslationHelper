@@ -44,7 +44,9 @@ namespace TranslationHelper.Main.Functions
                 {
                     s = fs;
                 }
-                DS.ReadXml(s);
+                XmlReader xr;
+                DS.ReadXml(xr=XmlReader.Create(s));
+                xr.Close();
                 s.Close();
             }
         }
@@ -157,9 +159,12 @@ namespace TranslationHelper.Main.Functions
             //var settings = new XmlReaderSettings();
             string original = string.Empty;
             bool WaitingTranslation = false;
-
+            XmlReaderSettings settings = new XmlReaderSettings
+            {
+                XmlResolver = null
+            };
             //https://stackoverflow.com/questions/2441673/reading-xml-with-xmlreader-in-c-sharp
-            using (XmlReader reader = XmlReader.Create(xmlPath))
+            using (XmlReader reader = XmlReader.Create(xmlPath, settings))
             {
                 reader.MoveToContent();
                 while (reader.Read())
