@@ -48,7 +48,20 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         internal override bool Save()
         {
-            throw new NotImplementedException();
+            return SaveFiles();
+        }
+
+        private bool SaveFiles()
+        {
+            foreach (string txt in Directory.EnumerateFiles(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data"), "*.txt", SearchOption.AllDirectories))
+            {
+                thDataWork.FilePath = txt;
+                thDataWork.Main.ProgressInfo(true, Path.GetFileName(txt));
+                new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(thDataWork).Save();
+            }
+
+            thDataWork.Main.ProgressInfo(false, string.Empty);
+            return true;
         }
     }
 }

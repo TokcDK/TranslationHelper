@@ -158,6 +158,23 @@ namespace TranslationHelper.Main.Functions
             return true;
         }
 
+        //https://stackoverflow.com/a/2567623
+        //В моем случае этот вариант самый быстрый
+        internal static int GetLinesCount(string input)
+        {            
+            int count = -1;
+            int index = -1;
+
+            do
+            {
+                count++;
+                index = input.IndexOf('\n', index + 1);
+            }
+            while (index != -1);
+
+            return count + 1;
+        }
+
         /// <summary>
         /// Changing string to uppercase(first char or all) or lowercase.
         /// variant 0 - lowercase / 

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions
@@ -58,8 +55,12 @@ namespace TranslationHelper.Functions
             {
                 if (FunctionsString.IsMultiline(OriginalValue))
                 {
-                    if (/*OriginalValue.StartsWith("\"") &&*/ OriginalValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[1].StartsWith("「"))
+                    string origSecondLine = OriginalValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[1];
+                    bool quote1 = false;
+                    bool quote2 = false;
+                    if (/*OriginalValue.StartsWith("\"") &&*/ (quote1 = origSecondLine.StartsWith("「")) || (quote2 = origSecondLine.StartsWith("『")))
                     {
+                        bool endsWith = false;
                         //if (!TranslationValue.StartsWith("\""))
                         //{
                         //    return TranslationValue;
@@ -67,14 +68,77 @@ namespace TranslationHelper.Functions
 
                         if (FunctionsString.IsMultiline(TranslationValue))
                         {
-                            bool StartsWithJpQuote = false;
-                            string secondline = TranslationValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[1];
-                            if (secondline.StartsWith("“") || secondline.StartsWith("\"") || !(StartsWithJpQuote = secondline.StartsWith("「")))
+                            string quoteString;
+                            bool StartsWithJpQuote1 = false;
+                            bool StartsWithJpQuote2 = false;
+                            string secondline;
+                            try
                             {
-                                if (StartsWithJpQuote)
+                                secondline = TranslationValue.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.None)[1];
+                            }
+                            catch
+                            {
+                                return TranslationValue;
+                            }
+
+                            string StartQuoteStringEN = string.Empty;
+                            string EndQuoteStringEN = string.Empty;
+
+                            if (secondline.StartsWith("''"))
+                            {
+                                StartQuoteStringEN = "''";
+                            }
+                            else if (secondline.StartsWith("'"))
+                            {
+                                StartQuoteStringEN = "'";
+                            }
+                            else if (secondline.StartsWith("“"))
+                            {
+                                StartQuoteStringEN = "“";
+                            }
+                            else if (secondline.StartsWith("\""))
+                            {
+                                StartQuoteStringEN = "\"";
+                            }
+
+                            if (StartQuoteStringEN.Length > 0 || !((quote1 && (StartsWithJpQuote1 = secondline.StartsWith("「"))) || (quote2 && (StartsWithJpQuote2 = secondline.StartsWith("『")))))
+                            {
+                                if (StartsWithJpQuote1 || StartsWithJpQuote2)
                                 {
                                     return TranslationValue;
                                 }
+                                if (quote1)
+                                {
+                                    quoteString = "「";
+                                }
+                                else if (quote2)
+                                {
+                                    quoteString = "『";
+                                }
+                                else
+                                {
+                                    return TranslationValue;
+                                }
+
+                                if (TranslationValue.EndsWith("''"))
+                                {
+                                    EndQuoteStringEN = "''";
+                                }
+                                else if (TranslationValue.EndsWith("'"))
+                                {
+                                    EndQuoteStringEN = "'";
+                                }
+                                else if (TranslationValue.EndsWith("“"))
+                                {
+                                    EndQuoteStringEN = "“";
+                                }
+                                else if (TranslationValue.EndsWith("\""))
+                                {
+                                    EndQuoteStringEN = "\"";
+                                }
+
+                                int EndQuoteStringENLength = EndQuoteStringEN.Length;
+                                endsWith = EndQuoteStringENLength>0;
 
                                 string resultString = string.Empty;
                                 int ind = 0;
@@ -94,20 +158,27 @@ namespace TranslationHelper.Functions
                                     else
                                     {
                                         int lineLength = line.Length;
-                                        if (lineLength > 1 && (line.StartsWith("“") || line.StartsWith("\"")))
+                                        if (lineLength > 1 && (line.StartsWith(StartQuoteStringEN) /*line.StartsWith("'") || line.StartsWith("“") || line.StartsWith("\"")*/))
                                         {
-                                            resultString += "「" + line.Substring(1);
+                                            resultString += quoteString + line.Substring(1);
                                         }
-                                        else if (lineLength == 0 || (lineLength == 1 && (line == "“" || line == "\"")))
+                                        else if (lineLength == 0 || (lineLength == 1 && (line == StartQuoteStringEN /*line == "'" || line == "“" || line == "\""*/)))
                                         {
-                                            resultString += "「";
+                                            resultString += quoteString;
                                         }
                                         else if (lineLength > 0)
                                         {
-                                            resultString += "「" + line;
+                                            resultString += quoteString + line;
                                         }
                                     }
                                     ind++;
+                                }
+
+                                string EndQuoteString = (quote1 ? "」" : "』");
+                                resultString = resultString.TrimEnd();
+                                if (OriginalValue.EndsWith(EndQuoteString) && !resultString.EndsWith(EndQuoteString))
+                                {
+                                    resultString = (endsWith ? resultString.Remove(resultString.Length - EndQuoteStringENLength, EndQuoteStringENLength) : resultString) + EndQuoteString;
                                 }
 
                                 return resultString;

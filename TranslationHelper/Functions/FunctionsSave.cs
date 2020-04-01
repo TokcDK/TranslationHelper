@@ -11,6 +11,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
+using TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire;
 using TranslationHelper.Projects.KiriKiri;
 using TranslationHelper.Projects.RJ263914;
 using TranslationHelper.Projects.RPGMaker;
@@ -39,7 +40,12 @@ namespace TranslationHelper.Functions
             thDataWork.Main.FIleDataWasChanged = false;
 
             //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
-            if (RPGMFunctions.THSelectedSourceType == "RubyRPGGame")
+
+            if (RPGMFunctions.THSelectedSourceType == new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).ProjectTitle())
+            {
+                await Task.Run(() => new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).Save()).ConfigureAwait(true);
+            }
+            else if (RPGMFunctions.THSelectedSourceType == "RubyRPGGame")
             {
                 new RJ263914OLD(thDataWork).ProceedRubyRPGGame(Properties.Settings.Default.THSelectedGameDir, true);
                 MessageBox.Show("Finished");
