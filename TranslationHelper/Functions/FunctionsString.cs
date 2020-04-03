@@ -273,7 +273,7 @@ namespace TranslationHelper.Main.Functions
                 for (int c = 0; c < DSTransCellLength; c++)
                 {
                     char Char = DSTransCell[c];
-                    if (char.IsWhiteSpace(Char) || char.IsPunctuation(Char))
+                    if (char.IsWhiteSpace(Char) || char.IsPunctuation(Char) || Char== '「' || Char== '『')
                     {
                     }
                     else

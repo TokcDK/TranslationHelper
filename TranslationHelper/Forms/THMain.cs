@@ -2630,7 +2630,12 @@ namespace TranslationHelper
             FunctionsTable.ShowFirstRowWithEmptyTranslation(thDataWork);
         }
 
-        private void extraFixesToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void extraFixesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await Task.Run(()=>ProceedHardcodedFixes()).ConfigureAwait(false);
+        }
+
+        private void ProceedHardcodedFixes()
         {
             int TCount = thDataWork.THFilesElementsDataset.Tables.Count;
             for (int t = 0; t < TCount; t++)
