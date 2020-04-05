@@ -19,6 +19,26 @@ namespace TranslationHelper.Data
         {
             try
             {
+                //Close other forms
+                if (thDataWork.Main.search != null)
+                {
+                    if (!thDataWork.Main.search.IsDisposed)
+                    {
+                        thDataWork.Main.search.Close();
+                        thDataWork.Main.search.Dispose();
+                    }
+                    thDataWork.Main.search = null;
+                }
+                //if (thDataWork.Main.Settings != null)
+                //{
+                //    if (!thDataWork.Main.Settings.IsDisposed)
+                //    {
+                //        thDataWork.Main.Settings.Close();
+                //        thDataWork.Main.Settings.Dispose();
+                //    }
+                //    thDataWork.Main.Settings = null;
+                //}
+
                 //to prevent some autooperations while project will not be opened
                 Properties.Settings.Default.ProjectIsOpened = false;
 

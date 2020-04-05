@@ -29,85 +29,87 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             {
                 string line;
                 bool readmode = false;
-                int readmodelines = 0;
                 StringBuilder sb = new StringBuilder();
                 while (!sr.EndOfStream)
                 {
                     line = sr.ReadLine();
 
-                    //commented or empty
-                    if (!readmode && string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("//"))
+                    if (readmode)
                     {
-                        continue;
-                    }
-                    else if (readmode)
-                    {
-                        if (string.IsNullOrEmpty(line) || line.StartsWith("#") || line.StartsWith("//") /*string.IsNullOrEmpty(line)*/)
+                        bool startswithsharp = line.StartsWith("#");
+                        bool startswithOther = StartsWithOther(line);
+                        if (startswithsharp || startswithOther /*string.IsNullOrEmpty(line)*/)
                         {
-                            if(!string.IsNullOrWhiteSpace(sb.ToString()))
+                            if (!string.IsNullOrWhiteSpace(sb.ToString()))
                             {
-                                thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(sb.ToString());
+                                thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(sb.ToString().TrimEnd());
                             }
 
                             readmode = false;
-                            readmodelines = 0;
                             sb.Clear();
+
+                            if (startswithsharp)
+                            {
+                                if (line.StartsWith("#MSG,") || line == "#MSG")
+                                {
+                                    readmode = true;
+                                    continue;
+                                }
+                                else if (line.StartsWith("#MSGVOICE,"))
+                                {
+                                    sr.ReadLine();
+                                    readmode = true;
+                                    continue;
+                                }
+                                else if (line.StartsWith("#SELECT,"))
+                                {
+                                    int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+                                    for (int i = 0; i < selectioncnt; i++)
+                                    {
+                                        thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), @"([^	]+)(	+[0-9]{1,2}.*)", "$1"));
+                                    }
+                                    continue;
+                                }
+                            }
                         }
                         else
                         {
-                            if (readmodelines > 0)
+                            if (sb.Length > 0)
                             {
                                 sb.Append(Environment.NewLine);
                             }
                             sb.Append(line);
-                            readmodelines++;
-                        }
-
-                        if (line.StartsWith("#"))
-                        {
-                            if (line.StartsWith("#MSG,") || line == "#MSG")
-                            {
-                                readmode = true;
-                                continue;
-                            }
-                            else if (line.StartsWith("#MSGVOICE,"))
-                            {
-                                sr.ReadLine();
-                                readmode = true;
-                                continue;
-                            }
-                            else if (line.StartsWith("#SELECT,"))
-                            {
-                                int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
-                                for (int i = 0; i < selectioncnt; i++)
-                                {
-                                    thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), @"([^	]+)(	+[0-9]{1,2}.*)", "$1"));
-                                }
-                                continue;
-                            }
                         }
 
                         continue;
                     }
-                    else if (line.StartsWith("#MSG,") || line == "#MSG")
+                    else
                     {
-                        readmode = true;
-                        continue;
-                    }
-                    else if (line.StartsWith("#MSGVOICE,"))
-                    {
-                        sr.ReadLine();
-                        readmode = true;
-                        continue;
-                    }
-                    else if (line.StartsWith("#SELECT,"))
-                    {
-                        int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
-                        for (int i=0; i< selectioncnt; i++)
+                        //commented or empty
+                        if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("//"))
                         {
-                            thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), @"([^	]+)(	+[0-9]{1,2}.*)", "$1"));
+                            continue;
                         }
-                        continue;
+                        else if (line.StartsWith("#MSG,") || line == "#MSG")
+                        {
+                            readmode = true;
+                            continue;
+                        }
+                        else if (line.StartsWith("#MSGVOICE,"))
+                        {
+                            sr.ReadLine();
+                            readmode = true;
+                            continue;
+                        }
+                        else if (line.StartsWith("#SELECT,"))
+                        {
+                            int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+                            for (int i = 0; i < selectioncnt; i++)
+                            {
+                                thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), @"([^	]+)(	+[0-9]{1,2}.*)", "$1"));
+                            }
+                            continue;
+                        }
                     }
                 }
             }
@@ -124,6 +126,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
         }
 
+        private bool StartsWithOther(string line)
+        {
+            return line.StartsWith("//") || line.StartsWith("[") || line.StartsWith("}");
+        }
+
         internal override bool Save()
         {
             if (thDataWork.FilePath.Length == 0)
@@ -137,60 +144,57 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             int r = 0;
             bool WriteIt = false;
-            string LastMSGType= string.Empty;
+            string LastMSGType = string.Empty;
             using (StreamReader sr = new StreamReader(thDataWork.FilePath, Encoding.GetEncoding(932)))
             {
                 string line;
                 bool readmode = false;
-                int readmodelines = 0;
                 StringBuilder sb = new StringBuilder();
                 while (!sr.EndOfStream)
                 {
                     line = sr.ReadLine();
 
-                    //commented or empty
-                    if (!readmode && string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("//"))
+                    if (readmode)
                     {
-                        sbWrite.AppendLine(line);
-                        continue;
-                    }
-                    else if (readmode)
-                    {
-                        if (string.IsNullOrEmpty(line) || line.StartsWith("#") || line.StartsWith("//") /*string.IsNullOrEmpty(line)*/)
+                        bool startswithsharp = line.StartsWith("#");
+                        bool startswithOther = StartsWithOther(line);
+                        if (startswithsharp || startswithOther /*string.IsNullOrEmpty(line)*/)
                         {
                             if (!string.IsNullOrWhiteSpace(sb.ToString()))
                             {
+                                string trimmedSB = sb.ToString().TrimEnd();//строка с обрезаной пустотой на конце
+                                string extraEmptyLinesForWrite = sb.ToString().Replace(trimmedSB, string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
+
                                 var row = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[r];
-                                if ((row[0] as string) == sb.ToString() && !string.IsNullOrEmpty(row[1] + string.Empty))
+                                if ((row[0] as string) == trimmedSB && !string.IsNullOrEmpty(row[1] + string.Empty))
                                 {
-                                    string newLine = FunctionsString.SplitMultiLineIfBeyondOfLimit(thDataWork.THFilesElementsDataset.Tables[fileName].Rows[r][1] + Environment.NewLine, 37);
-                                    //int origLinesCount = FunctionsString.GetLinesCount(sb.ToString());
+                                    string newLine = FunctionsString.SplitMultiLineIfBeyondOfLimit(thDataWork.THFilesElementsDataset.Tables[fileName].Rows[r][1] + string.Empty, 37);
                                     int newLinesCount = FunctionsString.GetLinesCount(newLine);
-
-                                    if (newLinesCount > 4)
+                                    int cnt = 0;
+                                    int cntMax = 5;
+                                    string retLine = string.Empty;
+                                    newLine = TransformString(newLine);
+                                    LastMSGType = LastMSGType.Replace("#MSGVOICE,", "#MSG,");
+                                    foreach (var subline in newLine.SplitToLines())
                                     {
-                                        int cnt = 0;
-                                        int cntMax = 5;
-                                        string retLine = string.Empty;
-                                        newLine = TransformString(newLine);
-                                        LastMSGType = LastMSGType.Replace("#MSGVOICE,", "#MSG,");
-                                        foreach (var subline in newLine.SplitToLines())
+                                        string cleanedSubline = PostTransFormLineCleaning(subline);
+                                        cnt++;
+                                        if (cnt == cntMax)
                                         {
-                                            cnt++;
-                                            if (cnt == cntMax)
-                                            {
-                                                cntMax += 4;
-                                                retLine += Environment.NewLine + LastMSGType + Environment.NewLine;
-                                            }
-                                            retLine += subline + Environment.NewLine;
+                                            cntMax += 4;
+                                            retLine += Environment.NewLine
+                                                + Environment.NewLine
+                                                + LastMSGType
+                                                + Environment.NewLine;
                                         }
+                                        else if (cnt > 1 && cnt <= newLinesCount)
+                                        {
+                                            retLine += Environment.NewLine;
+                                        }
+                                        retLine += cleanedSubline;
+                                    }
 
-                                        sbWrite.AppendLine(retLine);
-                                    }
-                                    else
-                                    {
-                                        sbWrite.AppendLine(TransformString(newLine) + Environment.NewLine);
-                                    }
+                                    sbWrite.AppendLine(retLine + extraEmptyLinesForWrite);
 
                                 }
                                 else
@@ -200,22 +204,20 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 r++;
                             }
                             readmode = false;
-                            readmodelines = 0;
                             sb.Clear();
                             WriteIt = true;
                             LastMSGType = string.Empty;
                         }
                         else
                         {
-                            if (readmodelines > 0)
+                            if (sb.Length > 0)
                             {
                                 sb.Append(Environment.NewLine);
                             }
                             sb.Append(line);
-                            readmodelines++;
                         }
 
-                        if (line.StartsWith("#"))
+                        if (startswithsharp)
                         {
                             if (line.StartsWith("#MSG,") || line == "#MSG")
                             {
@@ -257,46 +259,61 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             }
                         }
 
-                        continue;
-                    }
-                    else if (line.StartsWith("#MSG,") || line == "#MSG")
-                    {
-                        LastMSGType = line;
-                        sbWrite.AppendLine(line);
-                        readmode = true;
-                        continue;
-                    }
-                    else if (line.StartsWith("#MSGVOICE,"))
-                    {
-                        LastMSGType = line;
-                        sbWrite.AppendLine(line);
-                        sbWrite.AppendLine(sr.ReadLine());
-                        readmode = true;
-                        continue;
-                    }
-                    else if (line.StartsWith("#SELECT,"))
-                    {
-                        sbWrite.AppendLine(line);
-                        int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
-                        string[] selectionsLine;
-                        for (int i = 0; i < selectioncnt; i++)
+                        if (startswithsharp || startswithOther)
                         {
-                            selectionsLine = Regex.Replace(sr.ReadLine(), @"([^	]+)([	]+[0-9]{1,2}.*)", "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
-                            var row = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[r];
-                            if ((row[0] as string) == selectionsLine[0] && !string.IsNullOrEmpty(row[1] + string.Empty))
-                            {
-                                sbWrite.AppendLine(TransformString(row[1] + string.Empty) + selectionsLine[1]);
-                            }
-                            else
-                            {
-                                sbWrite.AppendLine(selectionsLine[0]);
-                            }
-                            r++;
+                            sbWrite.AppendLine(line);
                         }
-                        //sbWrite.AppendLine(Environment.NewLine);
-                        WriteIt = true;
+
                         continue;
                     }
+                    else
+                    {
+                        //commented or empty
+                        if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("//"))
+                        {
+                            sbWrite.AppendLine(line);
+                            continue;
+                        }
+                        else if (line.StartsWith("#MSG,") || line == "#MSG")
+                        {
+                            LastMSGType = line;
+                            sbWrite.AppendLine(line);
+                            readmode = true;
+                            continue;
+                        }
+                        else if (line.StartsWith("#MSGVOICE,"))
+                        {
+                            LastMSGType = line;
+                            sbWrite.AppendLine(line);
+                            sbWrite.AppendLine(sr.ReadLine());
+                            readmode = true;
+                            continue;
+                        }
+                        else if (line.StartsWith("#SELECT,"))
+                        {
+                            sbWrite.AppendLine(line);
+                            int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+                            string[] selectionsLine;
+                            for (int i = 0; i < selectioncnt; i++)
+                            {
+                                selectionsLine = Regex.Replace(sr.ReadLine(), @"([^	]+)([	]+[0-9]{1,2}.*)", "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
+                                var row = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[r];
+                                if ((row[0] as string) == selectionsLine[0] && !string.IsNullOrEmpty(row[1] + string.Empty))
+                                {
+                                    sbWrite.AppendLine(TransformString(row[1] + string.Empty) + selectionsLine[1]);
+                                }
+                                else
+                                {
+                                    sbWrite.AppendLine(selectionsLine[0]);
+                                }
+                                r++;
+                            }
+                            //sbWrite.AppendLine(Environment.NewLine);
+                            WriteIt = true;
+                            continue;
+                        }
+                    }
+
                     sbWrite.AppendLine(line);
                 }
             }
@@ -310,6 +327,33 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             {
                 return false;
             }
+        }
+
+        private string PostTransFormLineCleaning(string s)
+        {
+            return s
+                .Trim()
+                .Trim('_')
+                //.Replace("´", string.Empty)
+                .Replace("。。", "。")
+                .Replace("。。", "。")
+                .Replace("…_", "…")
+                .Replace("_…", "…")
+                .Replace("_…_", "…")
+                .Replace("_~", "~")
+                .Replace("_~_", "~")
+                .Replace("「…", "「")
+                .Replace("…「", "「")
+                .Replace("……", "…")
+                .Replace("……", "…")
+                .Replace("!!", "!")
+                .Replace("!!", "!")
+                .Replace("??", "?")
+                .Replace("”", string.Empty);
+                //.Replace("_", "　");
+                //.Replace("「``", "「")
+                //.Replace("「\"", "「")
+                //.Replace("「`", "「");
         }
 
         readonly string[][] ENJPcharPairs = new string[][] {
@@ -372,30 +416,50 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                new string[2]{ ",", "、" },
                new string[2]{ ". ", "。" },
                new string[2]{ ".", "。" },
-               new string[2]{ "\"", "”" },
+               new string[2]{ "\"", string.Empty },
+               //new string[2]{ "\"", "”" },
                new string[2]{ "...", "…" },
+               new string[2]{ "……", "…" },
+               new string[2]{ "……", "…" },
                new string[2]{ "……", "…" },
                new string[2]{ "……", "…" },
                new string[2]{ "? ", "？" },
                new string[2]{ "! ", "！" },
-               new string[2]{ " '", "´" },
-               new string[2]{ " ’", "´" },
-               new string[2]{ "'", "´" },
-               new string[2]{ "’", "´" },
-               new string[2]{ " ", "_" }
+               new string[2]{ " '", string.Empty },
+               new string[2]{ " ’", string.Empty },
+               new string[2]{ "'", string.Empty },
+               new string[2]{ "’", string.Empty },
+               new string[2]{ "{", string.Empty },
+               new string[2]{ "}", string.Empty },
+               new string[2]{ " [", "（" },
+               new string[2]{ "] ", "）" },
+               new string[2]{ "[", "（" },
+               new string[2]{ "]", "）" },
+               //new string[2]{ " [", "【" },
+               //new string[2]{ "] ", "】" },
+               //new string[2]{ "[", "【" },
+               //new string[2]{ "]", "】" },
+               new string[2]{ "#", string.Empty },
+               new string[2]{ "$", string.Empty },
+               new string[2]{ "@", string.Empty },
+               new string[2]{ "/", "／" },
+               new string[2]{ "\\", "＼" },
+               new string[2]{ "(", "（" },
+               new string[2]{ ")", "）" },
+               new string[2]{ ":", "：" },
+               new string[2]{ ";", "；" },
+               new string[2]{ "*", "＊" },
+               //new string[2]{ " '", "´" },
+               //new string[2]{ " ’", "´" },,
+               //new string[2]{ "'", "´" },
+               //new string[2]{ "’", "´" },
+               new string[2]{ " ", "_" },
                //new string[2]{ "#", "＃" },
                //new string[2]{ "$", "＄" },
-               //new string[2]{ "%", "％" },
-               //new string[2]{ "&", "＆" },
-               //new string[2]{ "(", "（" },
-               //new string[2]{ ")", "）" },
-               //new string[2]{ "*", "＊" },
+               new string[2]{ "%", "％" },
+               new string[2]{ "&", "＆" }
                //new string[2]{ ",", "，" },
-               //new string[2]{ "/", "／" },
-               //new string[2]{ ":", "：" },
-               //new string[2]{ ";", "；" },
                //new string[2]{ "@", "＠" },
-               //new string[2]{ "\\", "＼" },
                //new string[2]{ "[", "［" },
                //new string[2]{ "[", "［" },
                //new string[2]{ "^", "＾" },
@@ -409,10 +473,66 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         private string TransformString(string input)
         {
             string ret = input;
+            ret = TransformStringWords(ret);
             int charsLength = ENJPcharPairs.Length;
             for (int i = 0; i < charsLength; i++)
             {
                 ret = ret.Replace(ENJPcharPairs[i][0], ENJPcharPairs[i][1]);
+            }
+
+            return ret;
+        }
+
+        readonly string[][] ENJPWordsReplacementPairs = new string[][] {
+               new string[2]{ "First", "1st" },
+               new string[2]{ "Second", "2nd" },
+               new string[2]{ "Third", "3rd" },
+               new string[2]{ "Fourth", "4th" },
+               new string[2]{ "Fifth", "5th" },
+               new string[2]{ "Sixth", "6th" },
+               new string[2]{ "Seventh", "7th" },
+               new string[2]{ "Eighth", "8th" },
+               new string[2]{ "Ninth", "9th" },
+               new string[2]{ "Tenth", "10th" },
+               new string[2]{ "Eleventh", "11th" },
+               new string[2]{ "Twelfth", "12th" },
+               new string[2]{ "Thirteenth", "13th" },
+               new string[2]{ "Fourteenth", "14th" },
+               new string[2]{ "Fifteenth", "15th" },
+               new string[2]{ "Sixteenth", "16th" },
+               new string[2]{ "Seventeenth", "17th" },
+               new string[2]{ "Eighteenth", "18th" },
+               new string[2]{ "Nineteenth", "19th" },
+               new string[2]{ "Twentieth", "20th" },
+               new string[2]{ "Twenty-first", "21st" },
+               new string[2]{ "Twenty-second", "22nd" },
+               new string[2]{ "Twenty-third", "23rd" },
+               new string[2]{ "Twenty-fourth", "24th" },
+               new string[2]{ "Twenty-fifth", "25th" },
+               new string[2]{ "Thirtieth", "30th" },
+               new string[2]{ "Thirty-first", "31st" },
+               new string[2]{ "Thirty-second", "32nd" },
+               new string[2]{ "Thirty-third", "33rd" },
+               new string[2]{ "Thirty-fourth", "34th" },
+               new string[2]{ "Fortieth", "40th" },
+               new string[2]{ "Fiftieth", "50th" },
+               new string[2]{ "Sixtieth", "60th" },
+               new string[2]{ "Seventieth", "70th" },
+               new string[2]{ "Eightieth", "80th" },
+               new string[2]{ "Ninetieth", "90th" },
+               new string[2]{ "Hundredth", "100th" },
+               new string[2]{ "Thousandth", "1000th" },
+               new string[2]{ "ho-ho-ho-ho", "ho-ho" },
+               new string[2]{ "ho-ho-ho", "ho-ho" }
+            };
+
+        private string TransformStringWords(string input)
+        {
+            string ret = input;
+            int charsLength = ENJPWordsReplacementPairs.Length;
+            for (int i = 0; i < charsLength; i++)
+            {
+                ret = ret.Replace(ENJPWordsReplacementPairs[i][0], ENJPWordsReplacementPairs[i][1], StringComparison.OrdinalIgnoreCase);
             }
 
             return ret;

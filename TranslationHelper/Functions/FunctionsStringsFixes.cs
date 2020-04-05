@@ -65,10 +65,24 @@ namespace TranslationHelper.Functions
             //\\N[3] in some strings was broken to \\3[3]
             translation = FixBrokenNameVar2(original, translation);
 
+            //Lialua temp fix
+            //translation = LuaLiaFix(original, translation);
+
             return translation;
         }
 
-        private static string FixForRPGMAkerQuotationInSomeStrings2(string original, string translation)
+        internal static string LuaLiaFix(string original, string translation)
+        {
+            bool Lia;
+            if (original.StartsWith("ルア") && ((Lia = translation.StartsWith("Lia")) || translation.StartsWith("Lila")))
+            {
+                translation = "Lua" + translation.Remove(0, Lia ? 3 : 4);
+            }
+
+            return translation;
+        }
+
+        internal static string FixForRPGMAkerQuotationInSomeStrings2(string original, string translation)
         {            /////////////////////////////////
             /* 
 『先日、あなたが施した解呪の作用のようですね。
@@ -152,7 +166,17 @@ namespace TranslationHelper.Functions
             {
                 if (FunctionsString.IsMultiline(OriginalValue))
                 {
-                    string origSecondLine = OriginalValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)[1];
+                    string[] valueArray = OriginalValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                    string origSecondLine = valueArray[1];
+                    for (int i = 1; i < valueArray.Length; i++)
+                    {
+                        if (!string.IsNullOrWhiteSpace(valueArray[i]))
+                        {
+                            origSecondLine = valueArray[i];
+                            break;
+                        }
+                    }
+
                     bool quote1 = false;
                     bool quote2 = false;
                     if (/*OriginalValue.StartsWith("\"") &&*/ (quote1 = origSecondLine.StartsWith("「")) || (quote2 = origSecondLine.StartsWith("『")))
@@ -169,9 +193,20 @@ namespace TranslationHelper.Functions
                             bool StartsWithJpQuote1 = false;
                             bool StartsWithJpQuote2 = false;
                             string secondline;
+                            int secondlineIndex = 1;
                             try
                             {
-                                secondline = TranslationValue.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.None)[1];
+                                string[] valueArrayTrans = TranslationValue.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.None);
+                                secondline = valueArrayTrans[1];
+                                for (int i = 1; i < valueArrayTrans.Length; i++)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(valueArrayTrans[i]))
+                                    {
+                                        secondline = valueArrayTrans[i];
+                                        secondlineIndex = i;
+                                        break;
+                                    }
+                                };
                             }
                             catch
                             {
@@ -248,24 +283,29 @@ namespace TranslationHelper.Functions
                                         resultString += Environment.NewLine;
                                     }
 
-                                    if (ind != 1)
+                                    if (ind != secondlineIndex)
                                     {
                                         resultString += line;
                                     }
                                     else
                                     {
                                         int lineLength = line.Length;
-                                        if (lineLength > 1 && (line.StartsWith(StartQuoteStringEN) /*line.StartsWith("'") || line.StartsWith("“") || line.StartsWith("\"")*/))
+                                        int StartQuoteStringENLength = StartQuoteStringEN.Length;
+                                        if (lineLength > 1 && StartQuoteStringENLength > 0 && line.StartsWith(StartQuoteStringEN))
                                         {
-                                            resultString += quoteString + line.Substring(1);
+                                            resultString += quoteString + line.Remove(0, StartQuoteStringENLength);
                                         }
-                                        else if (lineLength == 0 || (lineLength == 1 && (line == StartQuoteStringEN /*line == "'" || line == "“" || line == "\""*/)))
+                                        else if (lineLength == 0 || (lineLength == 1 && StartQuoteStringENLength > 0 && line == StartQuoteStringEN))
                                         {
                                             resultString += quoteString;
                                         }
                                         else if (lineLength > 0)
                                         {
                                             resultString += quoteString + line;
+                                        }
+                                        else
+                                        {
+                                            resultString += line;
                                         }
                                     }
                                     ind++;

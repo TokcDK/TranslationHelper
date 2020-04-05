@@ -2130,7 +2130,7 @@ namespace TranslationHelper
             //THFileElementsDataGridView.DataSource = THFilesElementsDataset.Relations["ALL"].ParentTable;
         }
 
-        THSearch search;
+        internal THSearch search;
         private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (THFilesList.SelectedIndex == -1)

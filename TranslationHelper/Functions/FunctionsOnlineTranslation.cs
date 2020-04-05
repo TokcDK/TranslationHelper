@@ -241,23 +241,32 @@ namespace TranslationHelper.Functions
                     string ExtractedOriginal = thDataWork.Main.THExtractTextForTranslation(OriginalLine);
                     //LogToFile("2 extractedvalue=" + extractedvalue);
                     string Result;
-                    if (ExtractedOriginal.Length == 0 || (ExtractedOriginal == OriginalLine))
+                    if (ExtractedOriginal.Length == 0 || ExtractedOriginal == OriginalLine)
                     {
                         //Result = TranslatorsFunctions.ReturnTranslatedOrCache(cacheDS, OriginalLine);
-                        Result = thDataWork.OnlineTranslationCache.GetValueFromCacheOReturnEmpty(OriginalLine);                        
+                        Result = thDataWork.OnlineTranslationCache.GetValueFromCacheOReturnEmpty(OriginalLine);
                         //FunctionsTable.AddToTranslationCacheIfValid(cacheDS, OriginalLine, Result);
+                        if (Result.Length==0 || Result == OriginalLine)
+                        {
+                            Result = GoogleAPI.Translate(OriginalLine);
+                        }
                         FunctionsTable.AddToTranslationCacheIfValid(thDataWork, OriginalLine, Result);
                     }
                     else
                     {
+                        string ExtractedTranslation = thDataWork.OnlineTranslationCache.GetValueFromCacheOReturnEmpty(ExtractedOriginal);
+                        if (ExtractedTranslation.Length == 0 || ExtractedTranslation == ExtractedOriginal)
+                        {
+                            ExtractedTranslation = GoogleAPI.Translate(ExtractedOriginal);
+                        }
                         Result = PasteTranslationBackIfExtracted(
                             //TranslatorsFunctions.ReturnTranslatedOrCache(cacheDS, ExtractedOriginal),
-                            thDataWork.OnlineTranslationCache.GetValueFromCacheOReturnEmpty(ExtractedOriginal),
+                            ExtractedTranslation,
                             OriginalLine,
                             ExtractedOriginal
                             );
                         //FunctionsTable.AddToTranslationCacheIfValid(cacheDS, ExtractedOriginal, Result);
-                        FunctionsTable.AddToTranslationCacheIfValid(thDataWork, ExtractedOriginal, Result);
+                        FunctionsTable.AddToTranslationCacheIfValid(thDataWork, ExtractedOriginal, ExtractedTranslation);
                     }
                     ResultValue.Append(Result);
 

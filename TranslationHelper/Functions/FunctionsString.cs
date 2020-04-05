@@ -59,7 +59,7 @@ namespace TranslationHelper.Main.Functions
 
             return parts;
         }
-        
+
         /// <summary>
         /// true if count of symbol A in string A == count of symbol B in string B equals
         /// </summary>
@@ -161,7 +161,7 @@ namespace TranslationHelper.Main.Functions
         //https://stackoverflow.com/a/2567623
         //В моем случае этот вариант самый быстрый
         internal static int GetLinesCount(string input)
-        {            
+        {
             int count = -1;
             int index = -1;
 
@@ -273,7 +273,7 @@ namespace TranslationHelper.Main.Functions
                 for (int c = 0; c < DSTransCellLength; c++)
                 {
                     char Char = DSTransCell[c];
-                    if (char.IsWhiteSpace(Char) || char.IsPunctuation(Char) || Char== '「' || Char== '『')
+                    if (char.IsWhiteSpace(Char) || char.IsPunctuation(Char) || Char == '「' || Char == '『')
                     {
                     }
                     else
@@ -379,6 +379,18 @@ namespace TranslationHelper.Main.Functions
                         int LasLineIndex = Lines.Count - 1;
                         if (Lines[LasLineIndex].Length > 0)
                         {
+                            //когда последняя строка, к которой присоединится новая, кончается не на пробел или другой разделитель, добавить пробел перед добавляемой строкой
+                            if (Lines[LasLineIndex].Length > 0 && char.IsLetterOrDigit(Convert.ToChar(Lines[LasLineIndex].Substring(Lines[LasLineIndex].Length - 1), CultureInfo.InvariantCulture)))
+                            {
+                                string trimmedSubline = subline.TrimStart();
+                                //сделать перву букву добавляемой строки в нижнем регистре
+                                if (trimmedSubline.Length > 1 && char.IsUpper(Convert.ToChar(trimmedSubline.Substring(0, 1), CultureInfo.InvariantCulture)))
+                                {
+                                    trimmedSubline = trimmedSubline.Substring(0, 1).ToLowerInvariant() + trimmedSubline.Substring(1);
+                                }
+
+                                subline = " " + trimmedSubline;
+                            }
                             subline = Lines[LasLineIndex] + subline;
                             Lines.RemoveAt(LasLineIndex);
                         }
@@ -393,21 +405,9 @@ namespace TranslationHelper.Main.Functions
 
                     if (i > 1)
                     {
-                        //если i>1 значит строка была разделена
+                        //если i>1 значит строка была разделена, сверху больше одного прохода цикла с i++
                         lastLineWasSplitted = true;
                     }
-                    //if (N == sublinesLength - 1)
-                    //{
-                    //    foreach(var line in GetSplittedLine(subline, Limit).SplitToLines())
-                    //    {
-                    //        Lines.Add(line);
-                    //    }
-                    //    ReturnLine.Append(string.Join(Environment.NewLine, Lines));
-                    //}
-                    //else
-                    //{
-                    //    ReturnLine.AppendLine(GetSplittedLine(subline, Limit));
-                    //}
                 }
             }
             else

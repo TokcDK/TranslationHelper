@@ -373,7 +373,14 @@ namespace TranslationHelper.Functions
             }
             else
             {
-                thDataWork.Main.Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedDir);
+                try
+                {
+                    thDataWork.Main.Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedDir);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occured:"+Environment.NewLine+ex);
+                }
             }
             _ = THMsg.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");
 

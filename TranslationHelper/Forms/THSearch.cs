@@ -231,6 +231,11 @@ namespace TranslationHelper
             {
                 SearchFormFindWhatComboBox.Items.AddRange(SearchQueries);
             }
+            SearchReplacers = new INIFile("TranslationHelperConfig.ini").ReadSectionValuesToArray("Search Replacers");
+            if (SearchReplacers != null && SearchReplacers.Length > 0)
+            {
+                SearchFormReplaceWithComboBox.Items.AddRange(SearchReplacers);
+            }
         }
 
         private void WriteSearchQueries()
@@ -241,47 +246,55 @@ namespace TranslationHelper
                 SearchFormFindWhatComboBox.Items.CopyTo(SearchQueries, 0);
                 new INIFile("TranslationHelperConfig.ini").WriteArrayToSectionValues("Search Queries", SearchQueries);
             }
+            if (SearchFormReplaceWithComboBox.Items.Count > 0)
+            {
+                SearchReplacers = new string[SearchFormReplaceWithComboBox.Items.Count];
+                SearchFormReplaceWithComboBox.Items.CopyTo(SearchReplacers, 0);
+                new INIFile("TranslationHelperConfig.ini").WriteArrayToSectionValues("Search Replacers", SearchReplacers);
+            }
         }
 
         string lastfoundvalue = string.Empty;
+        string lastfoundreplacedvalue = string.Empty;
         string[] SearchQueries;
-        private void StoryFoundValueToComboBox(string foundvalue)
+        string[] SearchReplacers;
+        private void StoryFoundValueToComboBox(string foundvalue, string replaceWithValue="")
         {
+            //store found value
             lastfoundvalue = foundvalue;
-            //for (int i = 0; i < SearchFormFindWhatComboBox.Items.Count; i++)
-            //{
-            //    if (SearchFormFindWhatComboBox.Items[i].ToString() == foundvalue)
-            //    {
-            //        return;
-            //    }
-            //}
-            int ItemsCount = SearchFormFindWhatComboBox.Items.Count;
+            StoreFoundReplaceValues(foundvalue, SearchFormFindWhatComboBox);
+
+            //store replace value
+            lastfoundreplacedvalue = replaceWithValue;
+            StoreFoundReplaceValues(replaceWithValue, SearchFormReplaceWithComboBox);
+
+            //write found values
+            WriteSearchQueries();
+        }
+
+        private static void StoreFoundReplaceValues(string value, ComboBox ComboBox)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+
+            //lastvalue = value;
+            int ItemsCount = ComboBox.Items.Count;
             if (ItemsCount > 0)
             {
-                if(!SearchFormFindWhatComboBox.Items.Contains(foundvalue))
+                if (!ComboBox.Items.Contains(value))
                 {
                     if (ItemsCount == 10)
                     {
-                        SearchFormFindWhatComboBox.Items.RemoveAt(0);
+                        ComboBox.Items.RemoveAt(0);
                     }
-                    SearchFormFindWhatComboBox.Items.Add(foundvalue);
+                    ComboBox.Items.Add(value);
                 }
             }
             else
             {
-                SearchFormFindWhatComboBox.Items.Add(foundvalue);
-            }
-        }
-
-        private bool IsContainsText(string searchobject)
-        {
-            if (THSearchMatchCaseCheckBox.Checked)
-            {
-                return searchobject.Contains(SearchFormFindWhatTextBox.Text);
-            }
-            else
-            {
-                return searchobject.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant());
+                ComboBox.Items.Add(value);
             }
         }
 
@@ -468,6 +481,10 @@ namespace TranslationHelper
             if (Actors == null)
             {
                 GetActorsTable();
+            }
+            if (Actors == null || Actors.Rows.Count==0)
+            {
+                return false;
             }
 
             foreach (DataRow ActorsLine in Actors.Rows)
@@ -676,6 +693,7 @@ namespace TranslationHelper
                                 {
                                     if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                                     {
+                                        StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
                                         THFileElementsDataGridView["Translation", rowindex].Value = Regex.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView["Translation", rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
                                     }
                                 }
@@ -683,6 +701,7 @@ namespace TranslationHelper
                                 {
                                     if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                                     {
+                                        StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
                                         THFileElementsDataGridView["Translation", rowindex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView["Translation", rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                                     }
                                 }
@@ -731,7 +750,7 @@ namespace TranslationHelper
                     {
                         if (drFoundRowsTable.Rows.Count > 0)
                         {
-                            StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
+                            StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
 
                             oDsResults.AcceptChanges();
 
@@ -807,7 +826,7 @@ namespace TranslationHelper
             {
                 if (drFoundRowsTable.Rows.Count > 0)
                 {
-                    StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
+                    StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
 
                     oDsResults.AcceptChanges();
                     PopulateGrid(oDsResults);

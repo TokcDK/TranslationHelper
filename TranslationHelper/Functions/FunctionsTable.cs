@@ -55,6 +55,10 @@ namespace TranslationHelper.Main.Functions
                 }
 
                 thDataWork.Main.THFileElementsDataGridView.CurrentCell = thDataWork.Main.THFileElementsDataGridView[columnName, rowIndex];
+                               
+                //scrool to selected cell
+                //https://stackoverflow.com/a/51399750
+                thDataWork.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
             }
             catch (Exception ex)
             {
@@ -566,7 +570,7 @@ namespace TranslationHelper.Main.Functions
             //если количество выбранных строк равно числу строк в таблице, то 
             if (THFileElementsDataGridViewSelectedCellsCount == thDataWork.THFilesElementsDataset.Tables[Tindex].Rows.Count)
             {
-                DataColumn dc = thDataWork.THFilesElementsDataset.Tables[Tindex].Columns[1];
+                //DataColumn dc = thDataWork.THFilesElementsDataset.Tables[Tindex].Columns[1];
                 
                 //отключение датасорса для убирания тормозов с параллельной прорисовкой
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
@@ -575,13 +579,30 @@ namespace TranslationHelper.Main.Functions
 
                 int rowsCount = thDataWork.THFilesElementsDataset.Tables[Tindex].Rows.Count;
 
-                for (int r = 0; r < rowsCount; r++)
-                {
-                    //типа многопоточная очистка ячеек
-                    Task.Run(() => thDataWork.Main.Invoke((Action)(() => thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[r][1] = null))).ConfigureAwait(false);
+                Parallel.For(0, rowsCount, 
+                    r => {
+                        try
+                        {
+                            thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[r][1] = null;
+                        }
+                        catch
+                        {
+                        }
+                });
 
-                    //thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[r][1] = null;
-                }
+                //for (int r = 0; r < rowsCount; r++)
+                //{
+                //    try
+                //    {
+                //        //типа многопоточная очистка ячеек
+                //        Task.Run(() => thDataWork.Main.Invoke((Action)(() => thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[r][1] = null))).ConfigureAwait(false);
+                //    }
+                //    catch
+                //    {
+                //    }
+
+                //    //thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[r][1] = null;
+                //}
 
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
                 //thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[Tindex];
