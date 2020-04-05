@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -205,7 +203,7 @@ namespace TranslationHelper.Functions
             for (int t = 0; t < tcount; t++)
             {
                 //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
-                bool b=false;
+                bool b = false;
                 thDataWork.Main.Invoke((Action)(() => b = thDataWork.Main.THFileElementsDataGridView.DataSource != null && thDataWork.Main.THFilesList.SelectedIndex == t));
                 if (b)
                 {
@@ -233,7 +231,7 @@ namespace TranslationHelper.Functions
                         if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
                         {
                             var origCellValue = Row[0] as string;
-                            if (db.ContainsKey(origCellValue) && db[origCellValue].Length>0)
+                            if (db.ContainsKey(origCellValue) && db[origCellValue].Length > 0)
                             {
                                 thDataWork.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
                             }
@@ -270,7 +268,7 @@ namespace TranslationHelper.Functions
                 //thDataWork.Main.ProgressInfo(true, infomessage + cur +"/"+ tableDataKeysCount);
                 if (db.ContainsKey(original))
                 {
-                    foreach(var TableRowPair in tableData[original].Split('|'))
+                    foreach (var TableRowPair in tableData[original].Split('|'))
                     {
                         thDataWork.THFilesElementsDataset.Tables[int.Parse(TableRowPair.Split('!')[0], CultureInfo.GetCultureInfo("en-US"))].Rows[int.Parse(TableRowPair.Split('!')[1], CultureInfo.GetCultureInfo("en-US"))][1] = db[original];
                     }

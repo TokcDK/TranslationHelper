@@ -1047,7 +1047,7 @@ namespace TranslationHelper
                     break;
             }
 
-            WriteDBFileLite(thDataWork.THFilesElementsDataset, lastautosavepath);
+            await Task.Run(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, lastautosavepath)).ConfigureAwait(true);
             //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
 
             Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
@@ -1068,7 +1068,29 @@ namespace TranslationHelper
 
                 dbpath = Path.Combine(Application.StartupPath, "DB");
                 string dbfilename = Path.GetFileNameWithoutExtension(Properties.Settings.Default.THSelectedDir) + "_autosave";
-                string autosavepath = Path.Combine(dbpath, "Auto", dbfilename + ".cmx");
+                string autosavepath = Path.Combine(dbpath, "Auto", dbfilename + ".bak1" + ".cmx");
+                if (File.Exists(autosavepath))
+                {
+                    int saveindexmax = 5;
+                    for (int index = saveindexmax; index > 0; index--)
+                    {
+                        if (index == saveindexmax)
+                        {
+                            if (File.Exists(Path.Combine(dbpath, "Auto", dbfilename + ".bak" + index + ".cmx")))
+                            {
+                                File.Delete(Path.Combine(dbpath, "Auto", dbfilename + ".bak" + index + ".cmx"));
+                            }
+                        }
+                        else
+                        {
+                            if (File.Exists(Path.Combine(dbpath, "Auto", dbfilename + ".bak" + index + ".cmx")))
+                            {
+                                File.Move(Path.Combine(dbpath, "Auto", dbfilename + ".bak" + index + ".cmx")
+                                    , Path.Combine(dbpath, "Auto", dbfilename + ".bak" + (index + 1) + ".cmx"));
+                            }
+                        }
+                    }
+                }
 
                 Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
                 IndicateSave.Start();
@@ -1874,7 +1896,7 @@ namespace TranslationHelper
             thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.Sort = string.Empty;
         }
 
-        private void SaveTranslationAsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void SaveTranslationAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
             {
@@ -1897,9 +1919,18 @@ namespace TranslationHelper
 
                         ProgressInfo(true);
 
+                        switch (RPGMFunctions.THSelectedSourceType)
+                        {
+                            case "RPGMakerTransPatch":
+                            case "RPG Maker game with RPGMTransPatch":
+                                await Task.Run(() => new RPGMTransOLD(thDataWork).SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+                                break;
+                        }
+
                         //SaveNEWDB(THFilesElementsDataset, THFSaveBDAs.FileName);
                         //WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
-                        WriteDBFileLite(thDataWork.THFilesElementsDataset, THFSaveBDAs.FileName);
+                        await Task.Run(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, THFSaveBDAs.FileName)).ConfigureAwait(true);
+                        
                         MessageBox.Show("finished");
                         ProgressInfo(false);
                     }
@@ -2632,23 +2663,48 @@ namespace TranslationHelper
 
         private async void extraFixesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            await Task.Run(()=>ProceedHardcodedFixes()).ConfigureAwait(false);
+            await Task.Run(() => ProceedHardcodedFixes()).ConfigureAwait(false);
         }
 
+        bool HardcodedFixesExecuting = false;
         private void ProceedHardcodedFixes()
         {
-            int TCount = thDataWork.THFilesElementsDataset.Tables.Count;
-            for (int t = 0; t < TCount; t++)
-            {
-                int RCount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
-                for (int r = 0; r < RCount; r++)
-                {
-                    var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
+            if (HardcodedFixesExecuting)
+                return;
 
-                    //Set result value
-                    thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
-                }
-            }
+            HardcodedFixesExecuting = true;
+
+            int TCount = thDataWork.THFilesElementsDataset.Tables.Count;
+
+            Parallel.For(0, TCount, t =>
+                {
+                    int RCount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
+                    Parallel.For(0, RCount,
+                        r =>
+                        {
+                            var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
+                            //Set result value
+                            string result = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
+                            if (!Equals(result, row[1]))
+                            {
+                                thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = result;
+                            }
+                        });
+                });
+
+            //for (int t = 0; t < TCount; t++)
+            //{
+            //    int RCount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
+            //    for (int r = 0; r < RCount; r++)
+            //    {
+            //        var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
+
+            //        //Set result value
+            //        thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
+            //    }
+            //}
+
+            HardcodedFixesExecuting = false;
         }
 
         private void selectedForceToolStripMenuItem_Click(object sender, EventArgs e)

@@ -168,7 +168,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 var row = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[r];
                                 if ((row[0] as string) == trimmedSB && !string.IsNullOrEmpty(row[1] + string.Empty))
                                 {
-                                    string newLine = FunctionsString.SplitMultiLineIfBeyondOfLimit(thDataWork.THFilesElementsDataset.Tables[fileName].Rows[r][1] + string.Empty, 37);
+                                    string newLine = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[r][1] + string.Empty;
+                                    //bool startsWithJPQuote1 = newLine.Contains("「");
+                                    //bool startsWithJPQuote2 = newLine.Contains("『");
+                                    newLine = PreReduceTranslation(newLine);
+                                    newLine = FunctionsString.SplitMultiLineIfBeyondOfLimit(newLine, 37);
                                     int newLinesCount = FunctionsString.GetLinesCount(newLine);
                                     int cnt = 0;
                                     int cntMax = 5;
@@ -182,10 +186,12 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                         if (cnt == cntMax)
                                         {
                                             cntMax += 4;
-                                            retLine += Environment.NewLine
+                                            retLine += /*(startsWithJPQuote1 ? "」" : (startsWithJPQuote2? "』" : string.Empty))
+                                                + */Environment.NewLine
                                                 + Environment.NewLine
                                                 + LastMSGType
-                                                + Environment.NewLine;
+                                                + Environment.NewLine
+                                                /*+ (startsWithJPQuote1 ? "「" : (startsWithJPQuote2 ? "『" : string.Empty))*/;
                                         }
                                         else if (cnt > 1 && cnt <= newLinesCount)
                                         {
@@ -329,6 +335,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
         }
 
+        private string PreReduceTranslation(string newLine)
+        {
+            return newLine
+                .Replace(" a ", string.Empty)
+                .Replace("The ", string.Empty)
+                .Replace(" the ", string.Empty);
+        }
+
         private string PostTransFormLineCleaning(string s)
         {
             return s
@@ -350,10 +364,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 .Replace("!!", "!")
                 .Replace("??", "?")
                 .Replace("”", string.Empty);
-                //.Replace("_", "　");
-                //.Replace("「``", "「")
-                //.Replace("「\"", "「")
-                //.Replace("「`", "「");
+            //.Replace("_", "　");
+            //.Replace("「``", "「")
+            //.Replace("「\"", "「")
+            //.Replace("「`", "「");
         }
 
         readonly string[][] ENJPcharPairs = new string[][] {
@@ -457,18 +471,22 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                //new string[2]{ "#", "＃" },
                //new string[2]{ "$", "＄" },
                new string[2]{ "%", "％" },
-               new string[2]{ "&", "＆" }
-               //new string[2]{ ",", "，" },
-               //new string[2]{ "@", "＠" },
-               //new string[2]{ "[", "［" },
-               //new string[2]{ "[", "［" },
-               //new string[2]{ "^", "＾" },
-               //new string[2]{ "_", "＿" },
-               //new string[2]{ "~", "～" },
-               //new string[2]{ "¨", "￣" },
-               //new string[2]{ "\"", "〃" },
-               //new string[2]{ " ", "・" }
-            };
+               new string[2]{ "&", "＆" },
+               new string[2]{ "「", string.Empty },
+               new string[2]{ "『", string.Empty },
+               new string[2]{ "」", string.Empty },
+               new string[2]{ "』", string.Empty }
+        //new string[2]{ ",", "，" },
+        //new string[2]{ "@", "＠" },
+        //new string[2]{ "[", "［" },
+        //new string[2]{ "[", "［" },
+        //new string[2]{ "^", "＾" },
+        //new string[2]{ "_", "＿" },
+        //new string[2]{ "~", "～" },
+        //new string[2]{ "¨", "￣" },
+        //new string[2]{ "\"", "〃" },
+        //new string[2]{ " ", "・" }
+    };
 
         private string TransformString(string input)
         {
