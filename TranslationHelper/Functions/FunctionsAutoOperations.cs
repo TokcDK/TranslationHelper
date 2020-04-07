@@ -40,21 +40,6 @@ namespace TranslationHelper.Main.Functions
                             if (result.Contains("$"))
                             {
                                 ret = Regex.Replace(ret, rule, result);
-                                //ret = Regex.Replace(ret, rule, Regex.Replace(result, @"(\$\d+)","$1{{AND}}"));//new for regex split rules
-
-                                //задать правило
-                                //Regex regexrule = new Regex(rule);
-
-                                ////найти совпадение с заданным правилом в выбранной ячейке
-                                //MatchCollection mc = regexrule.Matches(input);
-
-                                ////перебрать все найденные совпадения
-                                //foreach (Match m in mc)
-                                //{
-                                //    //исправить значения по найденным совпадениям в выбранной ячейке
-                                //    //ret = ret.Replace(m.Value.ToString(), regexrule.Replace(m.Value.ToString(), result));
-                                //    ret = Regex.Replace(ret, rule, result);
-                                //}
                                 if (ret == input)
                                 {
                                 }
@@ -64,7 +49,6 @@ namespace TranslationHelper.Main.Functions
                                 }
                             }
                         }
-                        //LogToFile(string.Empty,true);
                     }
                     catch
                     {
@@ -244,7 +228,8 @@ namespace TranslationHelper.Main.Functions
 
                                 if (!Equals(thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex][cind], cvalue))
                                 {
-                                    thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
+                                    //thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
+                                    row[cind] = cvalue;
                                 }
                             }
                         }
@@ -253,7 +238,7 @@ namespace TranslationHelper.Main.Functions
                 }
                 catch
                 {
-                }
+                }                
             }
         }
 
@@ -457,7 +442,8 @@ namespace TranslationHelper.Main.Functions
                                                 TargetTranslationCell = thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex];
                                                 if (!failed && (forcevalue || TargetTranslationCell == null || string.IsNullOrEmpty(TargetTranslationCell as string)))
                                                 {
-                                                    thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTransCellValue;
+                                                    //thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTransCellValue;
+                                                    TRow[TranslationColumnIndex] = InputTransCellValue;
                                                 }
                                             }
                                         }
@@ -466,7 +452,8 @@ namespace TranslationHelper.Main.Functions
                                     {
                                         if (Equals(TRow[iColumnIndex], InputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
                                         {
-                                            thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
+                                            //thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
+                                            TRow[TranslationColumnIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
                                         }
                                     }
                                 }
