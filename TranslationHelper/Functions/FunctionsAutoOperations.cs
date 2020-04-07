@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Functions;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -238,7 +237,7 @@ namespace TranslationHelper.Main.Functions
                 }
                 catch
                 {
-                }                
+                }
             }
         }
 
@@ -271,13 +270,13 @@ namespace TranslationHelper.Main.Functions
             if (!Properties.Settings.Default.ProjectIsOpened)
                 return;
 
-            if (   InputTableIndex == -1 
-                || InputRowIndex == -1 
-                || InputColumnIndex == -1 
-                || thDataWork.THFilesElementsDataset == null 
-                || InputTableIndex > thDataWork.THFilesElementsDataset.Tables.Count - 1 
-                || InputRowIndex > thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows.Count - 1 
-                || (thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows[InputColumnIndex][InputColumnIndex + 1] + string.Empty).Length==0)
+            if (InputTableIndex == -1
+                || InputRowIndex == -1
+                || InputColumnIndex == -1
+                || thDataWork.THFilesElementsDataset == null
+                || InputTableIndex > thDataWork.THFilesElementsDataset.Tables.Count - 1
+                || InputRowIndex > thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows.Count - 1
+                || (thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows[InputColumnIndex][InputColumnIndex + 1] + string.Empty).Length == 0)
             {
                 return;
             }
@@ -285,7 +284,7 @@ namespace TranslationHelper.Main.Functions
             //{
             //    return;
             //}
-            if (!THAutoSetSameTranslationForSimularData.ContainsKey(InputTableIndex+"|"+InputRowIndex + "|" + InputColumnIndex))
+            if (!THAutoSetSameTranslationForSimularData.ContainsKey(InputTableIndex + "|" + InputRowIndex + "|" + InputColumnIndex))
             {
                 THAutoSetSameTranslationForSimularData.Add(InputTableIndex + "|" + InputRowIndex + "|" + InputColumnIndex, ForceSetValue);
             }
