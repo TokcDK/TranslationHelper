@@ -8,14 +8,42 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Main.Functions
 {
-    static class FunctionsString
+    internal static class FunctionsString
     {
+        /// <summary>
+        /// replaces chars in selected string by replacement pairs from string[][2] array
+        /// </summary>
+        /// <param name="workString"></param>
+        /// <param name="ArrayPairs"></param>
+        /// <returns></returns>
+        internal static string CharsReplacementByPairsFromArray(string workString, string[][] ArrayPairs)
+        {
+            int ArrayPairsLength = ArrayPairs.Length;
+
+            if (ArrayPairsLength == 0)
+            {
+                return workString;
+            }
+
+            for (int i = 0; i < ArrayPairsLength; i++)
+            {
+                if (ArrayPairs[i].Length != 2)
+                {
+                    continue;
+                }
+
+                workString = workString.Replace(ArrayPairs[i][0], ArrayPairs[i][1]);
+            }
+
+            return workString;
+        }
+
         /// <summary>
         /// added to string split function to make line split more safe with smaller chance to brake special symbols
         /// </summary>
         /// <param name="cellValue"></param>
         /// <returns></returns>
-        public static bool IsStringContainsSpecialSymbols(string cellValue)
+        internal static bool IsStringContainsSpecialSymbols(string cellValue)
         {
             return
                 cellValue.Contains("\\")
@@ -29,7 +57,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="str"></param>
         /// <param name="chunkSize"></param>
         /// <returns></returns>
-        public static string[] THSplit(string str, int chunkSize)
+        internal static string[] THSplit(string str, int chunkSize)
         {
             if (str == null)
                 return null;
@@ -78,7 +106,7 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static IEnumerable<string> SplitToLines(this string input)
+        internal static IEnumerable<string> SplitToLines(this string input)
         {
             //https://stackoverflow.com/a/23408020
             if (input == null)
@@ -96,7 +124,7 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        public static bool IsMultiline(string input)
+        internal static bool IsMultiline(string input)
         {
             if (input != null)
             {
@@ -124,7 +152,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="StringAWhereSearch"></param>
         /// <param name="StringBToSearch"></param>
         /// <returns></returns>
-        public static bool IsStringAContainsStringB(string StringAWhereSearch, string StringBToSearch)
+        internal static bool IsStringAContainsStringB(string StringAWhereSearch, string StringBToSearch)
         {
             int StringAInWhichSearchLength = StringAWhereSearch.Length;
             if (StringAInWhichSearchLength > 0 && StringBToSearch.Length > 0)//safe check for empty values
@@ -136,7 +164,7 @@ namespace TranslationHelper.Main.Functions
 
         }
 
-        public static bool IsDigitsOnly(string str)
+        internal static bool IsDigitsOnly(string str)
         {
             if (string.IsNullOrEmpty(str))
             {
@@ -183,7 +211,7 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="THFileElementsDataGridView"></param>
         /// <param name="variant"></param>
-        public static void StringCaseMorph(THDataWork thDataWork, int TableIndex, int variant, bool All = false)
+        internal static void StringCaseMorph(THDataWork thDataWork, int TableIndex, int variant, bool All = false)
         {
             if (thDataWork.THFilesElementsDataset == null || variant > 2 || (!All && (TableIndex == -1 || thDataWork.Main.THFileElementsDataGridView == null)))
             {
@@ -319,7 +347,7 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="Line"></param>
         /// <returns></returns>
-        public static int GetLongestLineLength(string Line)
+        internal static int GetLongestLineLength(string Line)
         {
             int ReturnLength = 0;
             string[] sublines = Line.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
@@ -348,7 +376,7 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="inputLine"></param>
         /// <returns></returns>
-        private static int LengthWithoutSpecSymbols(this string inputLine)
+        internal static int LengthWithoutSpecSymbols(this string inputLine)
         {
             string newline = inputLine;
 
@@ -360,7 +388,7 @@ namespace TranslationHelper.Main.Functions
             return newline.Length;
         }
 
-        public static string SplitMultiLineIfBeyondOfLimit(string Line, int Limit)
+        internal static string SplitMultiLineIfBeyondOfLimit(string Line, int Limit)
         {
             //StringBuilder ReturnLine = new StringBuilder();
             string[] sublines = Line.Split(new string[2] { Environment.NewLine, "\n" }, StringSplitOptions.None);
@@ -418,7 +446,7 @@ namespace TranslationHelper.Main.Functions
             return string.Join(Environment.NewLine, Lines); //ReturnLine.ToString();
         }
 
-        private static string GetSplittedLine(string Line, int Limit)
+        internal static string GetSplittedLine(string Line, int Limit)
         {
             string Trigger = string.Empty;
             string newLine = ((Trigger = Regex.Match(Line, @"(if|en)\([\s\S]+\)$").Value).Length > 0 ? Line.Replace(Trigger, string.Empty) : Line);
@@ -429,7 +457,7 @@ namespace TranslationHelper.Main.Functions
             return string.Join(IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Trigger.Length > 0 ? newLine : Line, Limit)) + Trigger;
         }
 
-        public static string[] SplitLineIfBeyondOfLimit(string text, int max)
+        internal static string[] SplitLineIfBeyondOfLimit(string text, int max)
         {
             //https://ru.stackoverflow.com/questions/707937/c-%D0%BF%D0%B5%D1%80%D0%B5%D0%BD%D0%BE%D1%81-%D1%81%D0%BB%D0%BE%D0%B2-%D0%B2-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B5-%D1%81-%D1%80%D0%B0%D0%B7%D0%B1%D0%B8%D0%B2%D0%BA%D0%BE%D0%B9-%D0%BD%D0%B0-%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D1%83%D1%8E-%D0%B4%D0%BB%D0%B8%D0%BD%D1%83
             var charCount = 0;

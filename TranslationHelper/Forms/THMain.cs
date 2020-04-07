@@ -1047,13 +1047,10 @@ namespace TranslationHelper
                     break;
             }
 
-            await Task.Run(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, lastautosavepath)).ConfigureAwait(true);
+            Task task = new Task(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, lastautosavepath));
+            task.Start();
+            task.Wait();
             //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
-
-            Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
-
-            System.Media.SystemSounds.Beep.Play();
-            ProgressInfo(false);
         }
 
         bool AutosaveActivated = false;
@@ -1194,6 +1191,10 @@ namespace TranslationHelper
 
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                 await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath)).ConfigureAwait(true);
+
+                Task task = new Task(() => FunctionsDBFile.WriteDBFile(liteds, fileName));
+                task.Start();
+                task.Wait();
             }
 
             THFileElementsDataGridView.Refresh();
@@ -1929,10 +1930,13 @@ namespace TranslationHelper
 
                         //SaveNEWDB(THFilesElementsDataset, THFSaveBDAs.FileName);
                         //WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
-                        await Task.Run(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, THFSaveBDAs.FileName)).ConfigureAwait(true);
-                        
+
+                        Task task = new Task(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, THFSaveBDAs.FileName));
+                        task.Start();
+                        task.Wait();
+
                         MessageBox.Show("finished");
-                        ProgressInfo(false);
+                        //ProgressInfo(false);
                     }
                 }
             }
@@ -1946,20 +1950,37 @@ namespace TranslationHelper
             {
                 return;
             }
-            while (WriteDBFileIsBusy && WriteDBFileLiteLastFileName != fileName)
+
+            Task task = new Task(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, lastautosavepath));
+            try
             {
-                await Task.Run(() => FunctionsThreading.WaitThreaded(5000)).ConfigureAwait(true);
+                while (WriteDBFileIsBusy && WriteDBFileLiteLastFileName != fileName)
+                {
+                    task = new Task(() => FunctionsThreading.WaitThreaded(5000));
+                    task.Start();
+                    task.Wait();
+                }
+
+                Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
+                IndicateSave.Start();
+
+                WriteDBFileIsBusy = true;
+                WriteDBFileLiteLastFileName = fileName;
+                using (DataSet liteds = FunctionsTable.FillTempDB(ds))
+                {
+                    task = new Task(() => FunctionsDBFile.WriteDBFile(liteds, fileName));
+                    task.Start();
+                    task.Wait();
+                }
+
+                Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
+                System.Media.SystemSounds.Beep.Play();
+                ProgressInfo(false);
+            }
+            catch
+            {
             }
 
-            Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
-            IndicateSave.Start();
-
-            WriteDBFileIsBusy = true;
-            WriteDBFileLiteLastFileName = fileName;
-            using (DataSet liteds = FunctionsTable.FillTempDB(ds))
-            {
-                await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(true);
-            }
             WriteDBFileIsBusy = false;
             WriteDBFileLiteLastFileName = string.Empty;
         }
