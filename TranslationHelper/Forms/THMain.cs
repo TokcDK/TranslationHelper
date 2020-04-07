@@ -998,6 +998,8 @@ namespace TranslationHelper
 
             var grid = sender as DataGridView;
 
+            if (THFilesList.SelectedIndex == -1)
+                return;
             string rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
@@ -1251,6 +1253,11 @@ namespace TranslationHelper
                 //основную часть времени отнимал вывод информации о файлах!!
                 //00.051
                 new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.DBDataSetToDBDictionary());
+                
+                //многопоточный вариант предыдущего, но т.к. datatable is threadunsafe то возникают разные ошибки и повреждение внутреннего индекса таблицы, хоть это и быстрее, но после добавления lock разницы не видно
+                //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallel(DBDataSet.DBDataSetToDBDictionary());
+                
+                
                 //это медленнее первого варианта 
                 //00.151
                 //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary2(DBDataSet.DBDataSetToDBDictionary());

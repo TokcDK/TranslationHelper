@@ -415,7 +415,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         private string PreReduceTranslation(string newLine)
         {
-            newLine = WordsReplacement(newLine);
+            //newLine = WordsReplacement(newLine);
             return Regex.Replace(newLine, @"([a-zA-Z])\1{3,}", "$1-$1")
                 .Replace("!!", "!")
                 .Replace("!!", "!")

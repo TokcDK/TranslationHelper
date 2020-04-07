@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
@@ -233,12 +231,90 @@ namespace TranslationHelper.Functions
                             var origCellValue = Row[0] as string;
                             if (db.ContainsKey(origCellValue) && db[origCellValue].Length > 0)
                             {
-                                thDataWork.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
+                                //thDataWork.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
+                                Row[otranscol] = db[origCellValue];
                             }
                         }
                     }
                 }
+
+                if (b)
+                {
+                    thDataWork.Main.Invoke((Action)(() => b = thDataWork.Main.THFileElementsDataGridView.DataSource == null && thDataWork.Main.THFilesList.SelectedIndex == -1));
+                    if (b)
+                    {
+                        thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[t]));
+                        thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                        thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                    }
+                }
             }
+
+            //0.051
+            //timer.Stop();
+            //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
+            //MessageBox.Show(difference.ToString());
+            System.Media.SystemSounds.Beep.Play();
+        }
+
+        internal void THLoadDBCompareFromDictionaryParallel(Dictionary<string, string> db)
+        {
+            //Stopwatch timer = new Stopwatch();
+            //timer.Start();
+
+            //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
+            int otranscol = thDataWork.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+            if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
+            {
+                return;
+            }
+
+            //int RecordsCounter = 1;
+            int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
+            string infomessage = T._("loading translation") + ":";
+            //проход по всем таблицам рабочего dataset
+            for(int t=0; t<tcount; t++)
+            {
+                //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
+                bool b = false;
+                thDataWork.Main.Invoke((Action)(() => b = thDataWork.Main.THFileElementsDataGridView.DataSource != null && thDataWork.Main.THFilesList.SelectedIndex == t));
+                if (b)
+                {
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                }
+                //skip table if there is no untranslated lines
+                if (!FunctionsTable.IsTableRowsCompleted(thDataWork.THFilesElementsDataset.Tables[t]))
+                {
+                    string tableprogressinfo = infomessage + thDataWork.THFilesElementsDataset.Tables[t].TableName + ">" + t + "/" + tcount;
+                    thDataWork.Main.ProgressInfo(true, tableprogressinfo);
+
+                    int rcount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
+                    //проход по всем строкам таблицы рабочего dataset
+                    Parallel.For(0, rcount, r =>
+                    {
+                        //thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+                        var Row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
+                        var CellTranslation = Row[otranscol];
+                        if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                        {
+                            var origCellValue = Row[0] as string;
+                            string dbvalue;
+                            if (db.ContainsKey(origCellValue) && (dbvalue = db[origCellValue]).Length > 0)
+                            {
+                                //ссылка о проблемах
+                                //https://stackoverflow.com/questions/29541767/index-out-of-range-exception-in-using-parallelfor-loop
+                                lock (Row)
+                                {
+                                    //thDataWork.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = dbvalue;
+                                    Row[otranscol] = dbvalue;
+                                }
+                            }
+                        }
+                    });
+                }
+            };
 
             //0.051
             //timer.Stop();
