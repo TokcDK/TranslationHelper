@@ -1047,9 +1047,11 @@ namespace TranslationHelper
                     break;
             }
 
-            Task task = new Task(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, lastautosavepath));
-            task.Start();
-            task.Wait();
+            await Task.Run(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, lastautosavepath)).ConfigureAwait(true);
+
+            System.Media.SystemSounds.Beep.Play();
+            ProgressInfo(false);
+
             //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
         }
 
@@ -1191,10 +1193,6 @@ namespace TranslationHelper
 
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                 await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath)).ConfigureAwait(true);
-
-                Task task = new Task(() => FunctionsDBFile.WriteDBFile(liteds, fileName));
-                task.Start();
-                task.Wait();
             }
 
             THFileElementsDataGridView.Refresh();
@@ -1931,12 +1929,14 @@ namespace TranslationHelper
                         //SaveNEWDB(THFilesElementsDataset, THFSaveBDAs.FileName);
                         //WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
 
-                        Task task = new Task(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, THFSaveBDAs.FileName));
-                        task.Start();
-                        task.Wait();
+                        await Task.Run(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, THFSaveBDAs.FileName)).ConfigureAwait(true);
+                        //Task task = new Task(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, THFSaveBDAs.FileName));
+                        //task.Start();
+                        //task.Wait();
 
+                        System.Media.SystemSounds.Beep.Play();
+                        ProgressInfo(false);
                         MessageBox.Show("finished");
-                        //ProgressInfo(false);
                     }
                 }
             }
@@ -1951,14 +1951,11 @@ namespace TranslationHelper
                 return;
             }
 
-            Task task = new Task(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, lastautosavepath));
             try
             {
                 while (WriteDBFileIsBusy && WriteDBFileLiteLastFileName != fileName)
                 {
-                    task = new Task(() => FunctionsThreading.WaitThreaded(5000));
-                    task.Start();
-                    task.Wait();
+                    await Task.Run(() => FunctionsThreading.WaitThreaded(5000)).ConfigureAwait(true);
                 }
 
                 Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
@@ -1968,14 +1965,10 @@ namespace TranslationHelper
                 WriteDBFileLiteLastFileName = fileName;
                 using (DataSet liteds = FunctionsTable.FillTempDB(ds))
                 {
-                    task = new Task(() => FunctionsDBFile.WriteDBFile(liteds, fileName));
-                    task.Start();
-                    task.Wait();
+                    await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(true);
                 }
 
                 Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
-                System.Media.SystemSounds.Beep.Play();
-                ProgressInfo(false);
             }
             catch
             {

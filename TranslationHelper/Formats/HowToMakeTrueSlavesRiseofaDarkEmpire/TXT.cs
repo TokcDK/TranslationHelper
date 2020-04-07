@@ -52,23 +52,23 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
                             if (startswithsharp)
                             {
-                                if (line.StartsWith("#MSG,") || line == "#MSG")
+                                if (IsMessage(line))
                                 {
                                     readmode = true;
                                     continue;
                                 }
-                                else if (line.StartsWith("#MSGVOICE,"))
+                                else if (IsVoicedMessage(line))
                                 {
                                     sr.ReadLine();
                                     readmode = true;
                                     continue;
                                 }
-                                else if (line.StartsWith("#SELECT,"))
+                                else if (IsChoiceVariants(line))
                                 {
                                     int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
                                     for (int i = 0; i < selectioncnt; i++)
                                     {
-                                        thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), @"([^	]+)(	+[0-9]{1,2}.*)", "$1"));
+                                        thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1"));
                                         thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("Choice variant " + i);
                                     }
                                     continue;
@@ -87,29 +87,28 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         continue;
                     }
                     else
-                    {
-                        //commented or empty
-                        if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("//"))
+                    {                        
+                        if (IsCommentary(line))//commented or empty
                         {
                             continue;
                         }
-                        else if (line.StartsWith("#MSG,") || line == "#MSG")
+                        else if (IsMessage(line))
                         {
                             readmode = true;
                             continue;
                         }
-                        else if (line.StartsWith("#MSGVOICE,"))
+                        else if (IsVoicedMessage(line))
                         {
                             sr.ReadLine();
                             readmode = true;
                             continue;
                         }
-                        else if (line.StartsWith("#SELECT,"))
+                        else if (IsChoiceVariants(line))
                         {
                             int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
                             for (int i = 0; i < selectioncnt; i++)
                             {
-                                thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), @"([^	]+)(	+[0-9]{1,2}.*)", "$1"));
+                                thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1"));
                                 thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("Choice variant " + i);
                             }
                             continue;
@@ -176,9 +175,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     string newLine = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex][1] + string.Empty;
                                     //bool startsWithJPQuote1 = newLine.Contains("「");
                                     //bool startsWithJPQuote2 = newLine.Contains("『");
-                                    newLine = PreReduceTranslation(newLine);
+                                    
+                                    //split lines
                                     newLine = FunctionsString.SplitMultiLineIfBeyondOfLimit(newLine, 60);//37 if transform all en chars to jp variants
-                                    newLine = newLine.Replace(" ", "_");//whitespaces forbidden
+                                    
+                                    //required edits
+                                    newLine = PreReduceTranslation(newLine);
+                                    newLine = ApplyRequiredCharReplacements(newLine);
+                                    
                                     int newLinesCount = FunctionsString.GetLinesCount(newLine);
                                     int linesCount = 0;
                                     int linesCountMax = 5;
@@ -233,14 +237,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
                         if (startswithsharp)
                         {
-                            if (line.StartsWith("#MSG,") || line == "#MSG")
+                            if (IsMessage(line))
                             {
                                 LastMSGType = line;
                                 sbWrite.AppendLine(line);
                                 readmode = true;
                                 continue;
                             }
-                            else if (line.StartsWith("#MSGVOICE,"))
+                            else if (IsVoicedMessage(line))
                             {
                                 LastMSGType = line;
                                 sbWrite.AppendLine(line);
@@ -248,14 +252,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 readmode = true;
                                 continue;
                             }
-                            else if (line.StartsWith("#SELECT,"))
+                            else if (IsChoiceVariants(line))
                             {
                                 sbWrite.AppendLine(line);
                                 int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
                                 string[] selectionsLine;
                                 for (int i = 0; i < selectioncnt; i++)
                                 {
-                                    selectionsLine = Regex.Replace(sr.ReadLine(), @"([^	]+)([	]+[0-9]{1,2}.*)", "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
+                                    selectionsLine = Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
                                     var row = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
                                     if ((row[0] as string) == selectionsLine[0] && !string.IsNullOrEmpty(row[1] + string.Empty))
                                     {
@@ -281,21 +285,20 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         continue;
                     }
                     else
-                    {
-                        //commented or empty
-                        if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("//"))
+                    {                        
+                        if (IsCommentary(line))//commented or empty
                         {
                             sbWrite.AppendLine(line);
                             continue;
                         }
-                        else if (line.StartsWith("#MSG,") || line == "#MSG")
+                        else if (IsMessage(line))
                         {
                             LastMSGType = line;
                             sbWrite.AppendLine(line);
                             readmode = true;
                             continue;
                         }
-                        else if (line.StartsWith("#MSGVOICE,"))
+                        else if (IsVoicedMessage(line))
                         {
                             LastMSGType = line;
                             sbWrite.AppendLine(line);
@@ -303,14 +306,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             readmode = true;
                             continue;
                         }
-                        else if (line.StartsWith("#SELECT,"))
+                        else if (IsChoiceVariants(line))
                         {
                             sbWrite.AppendLine(line);
                             int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
                             string[] selectionsLine;
                             for (int i = 0; i < selectioncnt; i++)
                             {
-                                selectionsLine = Regex.Replace(sr.ReadLine(), @"([^	]+)([	]+[0-9]{1,2}.*)", "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
+                                selectionsLine = Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
                                 var row = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
                                 if ((row[0] as string) == selectionsLine[0] && !string.IsNullOrEmpty(row[1] + string.Empty))
                                 {
@@ -343,6 +346,39 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
         }
 
+        private bool IsCommentary(string line)
+        {
+            return string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("//");
+        }
+
+        private bool IsMessage(string line)
+        {
+            return line.StartsWith("#MSG,") || line == "#MSG";
+        }
+
+        private bool IsVoicedMessage(string line)
+        {
+            return line.StartsWith("#MSGVOICE,");
+        }
+
+        private bool IsChoiceVariants(string line)
+        {
+            return line.StartsWith("#SELECT,");
+        }
+
+        private string ChoiceTextExtractionRegex()
+        {
+            return @"([^	]+)([	 ]+[0-9]{1,2}.*)";
+        }
+
+        private string ApplyRequiredCharReplacements(string newLine)
+        {
+            return newLine
+                .Replace(" ", "_")//whitespaces forbidden
+                .Replace(",", "、")//message will stop with en symbol
+                ;
+        }
+
         private string CheckFirstCharIsLatinAndTransform(string cleanedSubline)
         {
             if (string.IsNullOrEmpty(cleanedSubline))
@@ -359,7 +395,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             return cleanedSubline;
         }
 
-        private string TransformFirstChar(string firstletter)
+        private static string TransformFirstChar(string firstletter)
         {
             return firstletter
                 .Replace("1", "１")
@@ -393,12 +429,36 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 .Replace(" [", " ")
                 .Replace("] ", " ")
                 .Replace("''", string.Empty)
+                .Replace("“", string.Empty)
+                .Replace("”", string.Empty)
                 .Replace(" a ", " ")
                 .Replace("The ", string.Empty)
                 .Replace(" the ", " ")
                 .Replace("  ", " ")
                 .Replace("  ", " ")
                 .Replace("  ", " ")
+                .Replace(" '", string.Empty)
+                .Replace("' ", string.Empty)
+                .Replace(" ' ", string.Empty)
+                .Replace(" '", string.Empty)
+                .Replace("' ", string.Empty)
+                .Replace("'", string.Empty)
+                .Replace("’", string.Empty)
+                .Replace(" , ", ",")
+                .Replace(" ,", ",")
+                .Replace(", ", ",")
+                .Replace(" . ", ".")
+                .Replace(" .", ".")
+                .Replace(". ", ".")
+                .Replace(" ! ", "!")
+                .Replace(" !", "!")
+                .Replace("! ", "!")
+                .Replace(" ? ", "?")
+                .Replace(" ?", "?")
+                .Replace("? ", "?")
+                .Replace("...", "…")
+                .Replace("……", "…")
+                .Replace("……", "…")
                 ;
         }
 
