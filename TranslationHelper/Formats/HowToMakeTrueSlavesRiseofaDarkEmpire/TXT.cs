@@ -374,7 +374,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         private string ApplyRequiredCharReplacements(string newLine)
         {
             return newLine
-                .Replace(" ", "_")//whitespaces forbidden
+                .Replace("　", "_").Replace(" ", "_")//whitespaces forbidden
                 .Replace(",", "、")//message will stop with en symbol
                 ;
         }
@@ -431,12 +431,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 .Replace("''", string.Empty)
                 .Replace("“", string.Empty)
                 .Replace("”", string.Empty)
+                .Replace("\"", string.Empty)
                 .Replace(" a ", " ")
                 .Replace("The ", string.Empty)
                 .Replace(" the ", " ")
-                .Replace("  ", " ")
-                .Replace("  ", " ")
-                .Replace("  ", " ")
                 .Replace(" '", string.Empty)
                 .Replace("' ", string.Empty)
                 .Replace(" ' ", string.Empty)
@@ -444,6 +442,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 .Replace("' ", string.Empty)
                 .Replace("'", string.Empty)
                 .Replace("’", string.Empty)
+                .Replace("*", string.Empty)
                 .Replace(" , ", ",")
                 .Replace(" ,", ",")
                 .Replace(", ", ",")
@@ -456,9 +455,15 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 .Replace(" ? ", "?")
                 .Replace(" ?", "?")
                 .Replace("? ", "?")
+                .Replace(" ... ", "…")
+                .Replace("... ", "…")
+                .Replace(" ...", "…")
                 .Replace("...", "…")
                 .Replace("……", "…")
                 .Replace("……", "…")
+                .Replace("  ", " ")
+                .Replace("  ", " ")
+                .Replace("  ", " ")
                 ;
         }
 
@@ -466,8 +471,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         {
             return s
                 .Trim()
-                .Trim('_')
-                //.Replace("、_", "、")
+                .TrimStart('_', '…', '.', ',', '?', '!', '-')
+                .Replace("…_", "…")
+                .Replace("_…", "…")
+                .Replace("、_", "、")
+                .Replace("._", ".")
                 //.Replace("´", string.Empty)
                 //.Replace("「…", "「")
                 //.Replace("…「", "「")

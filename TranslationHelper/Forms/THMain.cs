@@ -2400,20 +2400,6 @@ namespace TranslationHelper
             e.DrawFocusRectangle();
         }
 
-        private void TestTimingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
-            Stopwatch swatch = new System.Diagnostics.Stopwatch();
-            swatch.Start();
-            //if (IsTableRowsCompleted(THFilesElementsDataset.Tables[THFilesList.SelectedIndex], "Translation"))
-            //{
-
-            //}
-
-            swatch.Stop();
-            LogToFile("Time=" + swatch.Elapsed, true);
-        }
-
         private void THFiltersDataGridView_MouseEnter(object sender, EventArgs e)
         {
             ControlsSwitch();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
 
@@ -35,15 +36,38 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         private bool OpenFiles()
         {
-            foreach(string txt in Directory.EnumerateFiles(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data"), "*.txt", SearchOption.AllDirectories))
+            OpenFilesSerial();
+            return thDataWork.THFilesElementsDataset.Tables.Count > 0;
+        }
+
+        /// <summary>
+        /// IsOpen=true = Open, else Save
+        /// </summary>
+        /// <param name="IsOpen"></param>
+        private void OpenFilesSerial(bool IsOpen = true, string openPath="")
+        {
+            if (openPath.Length == 0)
+            {
+                openPath = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data");
+            }
+
+            var txtFormat = new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(thDataWork);
+            foreach (string txt in Directory.EnumerateFiles(openPath, "*.txt", SearchOption.AllDirectories))
             {
                 thDataWork.FilePath = txt;
                 thDataWork.Main.ProgressInfo(true, Path.GetFileName(txt));
-                new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(thDataWork).Open();
+
+                if (IsOpen)
+                {
+                    txtFormat.Open();
+                }
+                else
+                {
+                    txtFormat.Save();
+                }
             }
 
             thDataWork.Main.ProgressInfo(false, string.Empty);
-            return thDataWork.THFilesElementsDataset.Tables.Count > 0;
         }
 
         internal override bool Save()
@@ -53,14 +77,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         private bool SaveFiles()
         {
-            foreach (string txt in Directory.EnumerateFiles(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data"), "*.txt", SearchOption.AllDirectories))
-            {
-                thDataWork.FilePath = txt;
-                thDataWork.Main.ProgressInfo(true, Path.GetFileName(txt));
-                new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(thDataWork).Save();
-            }
-
-            thDataWork.Main.ProgressInfo(false, string.Empty);
+            OpenFilesSerial(false);
             return true;
         }
     }

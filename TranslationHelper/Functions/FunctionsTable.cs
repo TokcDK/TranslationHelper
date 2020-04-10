@@ -55,7 +55,7 @@ namespace TranslationHelper.Main.Functions
                 }
 
                 thDataWork.Main.THFileElementsDataGridView.CurrentCell = thDataWork.Main.THFileElementsDataGridView[columnName, rowIndex];
-                               
+
                 //scrool to selected cell
                 //https://stackoverflow.com/a/51399750
                 thDataWork.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
@@ -571,24 +571,47 @@ namespace TranslationHelper.Main.Functions
             if (THFileElementsDataGridViewSelectedCellsCount == thDataWork.THFilesElementsDataset.Tables[Tindex].Rows.Count)
             {
                 //DataColumn dc = thDataWork.THFilesElementsDataset.Tables[Tindex].Columns[1];
-                
+
                 //отключение датасорса для убирания тормозов с параллельной прорисовкой
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
 
-                int rowsCount = thDataWork.THFilesElementsDataset.Tables[Tindex].Rows.Count;
+                var table = thDataWork.THFilesElementsDataset.Tables[Tindex];
 
-                Parallel.For(0, rowsCount, 
-                    r => {
-                        try
-                        {
-                            thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[r][1] = null;
-                        }
-                        catch
-                        {
-                        }
-                });
+                foreach (DataRow row in table.Rows)
+                {
+                    if (row[1] == null || string.IsNullOrEmpty(row[1] as string))
+                    {
+                    }
+                    else
+                    {
+                        row[1] = null;
+                    }
+                }
+
+                //int rowsCount = table.Rows.Count;
+                //Parallel.For(0, rowsCount,
+                //    r =>
+                //    {
+                //        try
+                //        {
+                //            var row = table.Rows[r];
+                //            if (row[1] == null || string.IsNullOrEmpty(row[1] as string))
+                //            {
+                //            }
+                //            else
+                //            {
+                //                lock (row)
+                //                {
+                //                    row[1] = null;
+                //                }
+                //            }
+                //        }
+                //        catch
+                //        {
+                //        }
+                //    });
 
                 //for (int r = 0; r < rowsCount; r++)
                 //{

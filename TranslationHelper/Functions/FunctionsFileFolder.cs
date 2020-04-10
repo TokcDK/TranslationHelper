@@ -1,14 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TranslationHelper.Main.Functions
 {
     internal class FunctionsFileFolder
     {
+        /// <summary>
+        /// True if the file is using by other program.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        internal static bool FileInUse(string path)
+        {
+            FileStream stream = null;
+
+            try
+            {
+                stream = new FileInfo(path).Open(FileMode.Open, FileAccess.Read, FileShare.None);
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Close();
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// add index to end of path if file is exists
         /// </summary>
@@ -26,7 +50,7 @@ namespace TranslationHelper.Main.Functions
             return newFilePath;
         }
 
-        internal static bool IsInDirExistsAnyFile(string FilderPath, string mask = "*", bool SearchFiles=true, bool Recursive = false)
+        internal static bool IsInDirExistsAnyFile(string FilderPath, string mask = "*", bool SearchFiles = true, bool Recursive = false)
         {
             int cnt = 0;
             if (SearchFiles)
