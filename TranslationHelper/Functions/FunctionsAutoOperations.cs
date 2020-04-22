@@ -49,7 +49,10 @@ namespace TranslationHelper.Main.Functions
                                 ReadRule = !ReadRule;
                             }
 
-                            returnValue = Regex.Replace(returnValue, regexPattern, regexReplacement);
+                            if (Regex.IsMatch(returnValue, regexPattern))
+                            {
+                                returnValue = Regex.Replace(returnValue, regexPattern, regexReplacement);
+                            }
                             //if (returnValue == input)
                             //{
                             //}
