@@ -1253,11 +1253,11 @@ namespace TranslationHelper
                 //основную часть времени отнимал вывод информации о файлах!!
                 //00.051
                 new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.DBDataSetToDBDictionary());
-                
+
                 //многопоточный вариант предыдущего, но т.к. datatable is threadunsafe то возникают разные ошибки и повреждение внутреннего индекса таблицы, хоть это и быстрее, но после добавления lock разницы не видно
                 //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallel(DBDataSet.DBDataSetToDBDictionary());
-                
-                
+
+
                 //это медленнее первого варианта 
                 //00.151
                 //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary2(DBDataSet.DBDataSetToDBDictionary());
@@ -1388,11 +1388,11 @@ namespace TranslationHelper
             int selectedRowsCount = THFileElementsDataGridView.GetRowsWithSelectedCellsCount();
             if (selectedRowsCount > 0)
             {
-                if (IsTranslating)
-                {
-                    THMsg.Show(T._("Already in process.."));
-                    return;
-                }
+                //if (IsTranslating)
+                //{
+                //    THMsg.Show(T._("Already in process.."));
+                //    return;
+                //}
                 IsTranslating = true;
 
                 //координаты стартовой строк, колонки оригинала и номера таблицы
@@ -1417,6 +1417,8 @@ namespace TranslationHelper
                     //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
                 }
 
+                Array.Sort(selindexes);//сортировка номеров строк, для порядка
+
                 //THMsg.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
 
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
@@ -1424,7 +1426,8 @@ namespace TranslationHelper
                 //await Task.Run(() => OnlineTranslateSelected(cind, tableindex, selindexes));  
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslate(cind, tableindex, selindexes, "s")));
+                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslate(cind, tableindex, selindexes, "s")));
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "s")));
                 //
                 //..и фикс ошибки:
                 //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1441,11 +1444,11 @@ namespace TranslationHelper
 
         private void OnlineTranslateTableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            if (IsTranslating)
-            {
-                THMsg.Show(T._("Already in process.."));
-                return;
-            }
+            //if (IsTranslating)
+            //{
+            //    THMsg.Show(T._("Already in process.."));
+            //    return;
+            //}
             IsTranslating = true;
 
             try
@@ -1461,7 +1464,8 @@ namespace TranslationHelper
                 int[] selindexes = new int[1];
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslate(cind, tableindex, selindexes, "t")));
+                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslate(cind, tableindex, selindexes, "t")));
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "t")));
                 //
                 //..и фикс ошибки:
                 //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1478,11 +1482,11 @@ namespace TranslationHelper
 
         private void OnlineTranslateAllToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            if (IsTranslating)
-            {
-                THMsg.Show(T._("Already in process.."));
-                return;
-            }
+            //if (IsTranslating)
+            //{
+            //    THMsg.Show(T._("Already in process.."));
+            //    return;
+            //}
             IsTranslating = true;
 
             try
@@ -1616,13 +1620,13 @@ namespace TranslationHelper
         bool THIsFixingCells;
         /// <summary>
         /// Исправления формата спецсимволов в заданной ячейке перевода
-        /// Для выбранных ячеек, таблицы или для всех значений задать:
-        /// method:
-        /// "a" - All
-        /// "t" - Table
-        /// "s" - Selected
-        /// ..а также cind - индекс колонки, где ячейки перевода и tind - индекс таблицы, для вариантов Table и Selected
-        /// Для одной выбранной ячейки, когда, например, определенная обрабатывается в коде, задать tind, cind и rind, а также true для onselectedonly
+        /// <br/>Для выбранных ячеек, таблицы или для всех значений задать:
+        /// <br/>method:
+        /// <br/>"a" - All
+        /// <br/>"t" - Table
+        /// <br/>"s" - Selected
+        /// <br/>..а также cind - индекс колонки, где ячейки перевода и tind - индекс таблицы, для вариантов Table и Selected
+        /// <br/>Для одной выбранной ячейки, когда, например, определенная обрабатывается в коде, <br/>задать tind, cind и rind, а также true для onselectedonly
         /// </summary>
         /// <param name="method"></param>
         /// <param name="cind"></param>
@@ -1799,7 +1803,7 @@ namespace TranslationHelper
 
         private void CutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CellBeginEditStarted)//если ячейка в режиме редактирования
+            if (DGVCellInEditMode)//если ячейка в режиме редактирования
             {
                 //вылючение действий для ячеек при выходе из режима редактирования
                 ControlsSwitch();
@@ -1835,7 +1839,7 @@ namespace TranslationHelper
 
         private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CellBeginEditStarted)//если ячейка в режиме редактирования
+            if (DGVCellInEditMode)//если ячейка в режиме редактирования
             {
                 //вылючение действий для ячеек при выходе из режима редактирования
                 ControlsSwitch();
@@ -1856,7 +1860,7 @@ namespace TranslationHelper
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CellBeginEditStarted)//если ячейка в режиме редактирования
+            if (DGVCellInEditMode)//если ячейка в режиме редактирования
             {
                 //вылючение действий для ячеек при выходе из режима редактирования
                 ControlsSwitch();
@@ -1888,7 +1892,7 @@ namespace TranslationHelper
         bool ClearSelectedCellsIsBusy = false;
         private async void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ClearSelectedCellsIsBusy)
+            if (ClearSelectedCellsIsBusy || Properties.Settings.Default.DGVCellInEditMode)
                 return;
             ClearSelectedCellsIsBusy = true;
             await Task.Run(() => FunctionsTable.CleanTableCells(thDataWork, Properties.Settings.Default.THFilesListSelectedIndex)).ConfigureAwait(true);
@@ -2254,24 +2258,29 @@ namespace TranslationHelper
             MessageBox.Show("FOUND=\r\n" + o + "\r\n, matchCollection count=" + matchCollection.Count);
         }
 
-        private bool CellBeginEditStarted = false;
+        private bool DGVCellInEditMode
+        {
+            get => Properties.Settings.Default.DGVCellInEditMode;
+            set => Properties.Settings.Default.DGVCellInEditMode = value;
+        }
+
         private void THFileElementsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            CellBeginEditStarted = true;
+            DGVCellInEditMode = true;
             //отключение действий для ячеек при входе в режим редктирования
             ControlsSwitch();
         }
 
         private void THFileElementsDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            CellBeginEditStarted = false;
+            DGVCellInEditMode = false;
             //влючение действий для ячеек при выходе из режима редктирования
             ControlsSwitch(true);
         }
 
         private void THSourceRichTextBox_MouseEnter(object sender, EventArgs e)
         {
-            if (CellBeginEditStarted)
+            if (DGVCellInEditMode)
             {
             }
             else
@@ -2286,7 +2295,7 @@ namespace TranslationHelper
 
         private void THSourceRichTextBox_MouseLeave(object sender, EventArgs e)
         {
-            if (CellBeginEditStarted)
+            if (DGVCellInEditMode)
             {
             }
             else
@@ -2690,12 +2699,20 @@ namespace TranslationHelper
                         r =>
                         {
                             var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
-                            //Set result value
-                            string result = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
-                            if (!Equals(result, row[1]))
+                            var translation = row[1] + string.Empty;
+                            if (!string.IsNullOrWhiteSpace(row[0] + string.Empty))
                             {
-                                thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = result;
+                                //Set result value
+                                string result = FunctionsStringFixes.ApplyHardFixes(row[0] as string, translation);
+                                if (!Equals(result, translation))
+                                {
+                                    lock (row[1])
+                                    {
+                                        row[1] = result;
+                                    }
+                                }
                             }
+
                         });
                 });
 
@@ -2707,7 +2724,7 @@ namespace TranslationHelper
             //        var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
 
             //        //Set result value
-            //        thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
+            //        row[1] = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
             //    }
             //}
 

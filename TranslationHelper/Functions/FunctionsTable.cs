@@ -712,10 +712,10 @@ namespace TranslationHelper.Main.Functions
                         continue;
                     }
 
-                    var cell = thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[rindexes[i]][ctransind];
-                    if (cell != null && (cell as string).Length > 0)
+                    var row = thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[rindexes[i]];
+                    if (row[ctransind] != null && !string.IsNullOrEmpty(row[ctransind] as string))
                     {
-                        thDataWork.THFilesElementsDataset.Tables[Tindex].Rows[rindexes[i]][ctransind] = string.Empty;
+                        row[ctransind] = string.Empty;
                     }
                 }
             }

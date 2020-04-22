@@ -3,7 +3,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Translators
 {
-    public static class TranslatorsFunctions
+    public static class Translators
     {
         public static string ReturnTranslatedOrCache(DataSet cacheDS, string InputLine)
         {

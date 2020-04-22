@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -26,7 +27,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             thDataWork.THFilesElementsDataset.Tables.Add(fileName).Columns.Add("Original");
             thDataWork.THFilesElementsDatasetInfo.Tables.Add(fileName).Columns.Add("Original");
 
-            using (StreamReader sr = new StreamReader(thDataWork.FilePath, Encoding.GetEncoding(932)))
+            using (StreamReader sr = new StreamReader(GetOriginalWhenExists(), Encoding.GetEncoding(932)))
             {
                 string line;
                 bool readmode = false;
@@ -87,7 +88,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         continue;
                     }
                     else
-                    {                        
+                    {
                         if (IsCommentary(line))//commented or empty
                         {
                             continue;
@@ -130,6 +131,15 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
         }
 
+        private string GetOriginalWhenExists()
+        {
+            if (File.Exists(thDataWork.FilePath + ".orig"))
+            {
+                return thDataWork.FilePath + ".orig";
+            }
+            return thDataWork.FilePath;
+        }
+
         private bool StartsWithOther(string line)
         {
             return line.StartsWith("//") || line.StartsWith("[") || line.StartsWith("}");
@@ -149,7 +159,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             int TableRowIndex = 0;
             bool WriteIt = false;
             string LastMSGType = string.Empty;
-            using (StreamReader sr = new StreamReader(thDataWork.FilePath, Encoding.GetEncoding(932)))
+            using (StreamReader sr = new StreamReader(GetOriginalWhenExists(), Encoding.GetEncoding(932)))
             {
                 string line;
                 bool readmode = false;
@@ -175,14 +185,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     string newLine = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex][1] + string.Empty;
                                     //bool startsWithJPQuote1 = newLine.Contains("「");
                                     //bool startsWithJPQuote2 = newLine.Contains("『");
-                                    
+
                                     //split lines
                                     newLine = FunctionsString.SplitMultiLineIfBeyondOfLimit(newLine, 60);//37 if transform all en chars to jp variants
-                                    
+
                                     //required edits
                                     newLine = PreReduceTranslation(newLine);
                                     newLine = ApplyRequiredCharReplacements(newLine);
-                                    
+
                                     int newLinesCount = FunctionsString.GetLinesCount(newLine);
                                     int linesCount = 0;
                                     int linesCountMax = 5;
@@ -285,7 +295,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         continue;
                     }
                     else
-                    {                        
+                    {
                         if (IsCommentary(line))//commented or empty
                         {
                             sbWrite.AppendLine(line);
@@ -335,8 +345,13 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 }
             }
 
-            if (WriteIt && sbWrite.ToString().Length > 0)
+            if (WriteIt && sbWrite.ToString().Length > 0 && !FunctionsFileFolder.FileInUse(thDataWork.FilePath))
             {
+                if (!File.Exists(thDataWork.FilePath + ".orig"))
+                {
+                    File.Move(thDataWork.FilePath, thDataWork.FilePath + ".orig");
+                }
+
                 File.WriteAllText(thDataWork.FilePath, sbWrite.ToString(), Encoding.GetEncoding(932));
                 return true;
             }
@@ -376,6 +391,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             return newLine
                 .Replace("　", "_").Replace(" ", "_")//whitespaces forbidden
                 .Replace(",", "、")//message will stop with en symbol
+                .Replace("[", "_")
+                .Replace("]", "_")
                 ;
         }
 
@@ -470,7 +487,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         private string PostTransFormLineCleaning(string s)
         {
             return s
-                .Trim()
+                .TrimStart()
                 .TrimStart('_', '…', '.', ',', '?', '!', '-')
                 .Replace("…_", "…")
                 .Replace("_…", "…")
@@ -487,6 +504,92 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 //.Replace("「`", "「");
                 ;
         }
+
+
+        Dictionary<string, string> ENtoJPReplacementPairsOneLetterDict = new Dictionary<string, string>
+            {
+                { "a", "ａ" },
+                { "A", "Ａ" },
+                { "b", "ｂ" },
+                { "B", "Ｂ" },
+                { "c", "ｃ" },
+                { "C", "Ｃ" },
+                { "d", "ｄ" },
+                { "D", "Ｄ" },
+                { "e", "ｅ" },
+                { "E", "Ｅ" },
+                { "f", "ｆ" },
+                { "F", "Ｆ" },
+                { "g", "ｇ" },
+                { "G", "Ｇ" },
+                { "h", "ｈ" },
+                { "H", "Ｈ" },
+                { "i", "ｉ" },
+                { "I", "Ｉ" },
+                { "j", "ｊ" },
+                { "J", "Ｊ" },
+                { "k", "ｋ" },
+                { "K", "Ｋ" },
+                { "l", "ｌ" },
+                { "L", "Ｌ" },
+                { "m", "ｍ" },
+                { "M", "Ｍ" },
+                { "n", "ｎ" },
+                { "N", "Ｎ" },
+                { "o", "ｏ" },
+                { "O", "Ｏ" },
+                { "p", "ｐ" },
+                { "P", "Ｐ" },
+                { "q", "ｑ" },
+                { "Q", "Ｑ" },
+                { "r", "ｒ" },
+                { "R", "Ｒ" },
+                { "s", "ｓ" },
+                { "S", "Ｓ" },
+                { "t", "ｔ" },
+                { "T", "Ｔ" },
+                { "u", "ｕ" },
+                { "U", "Ｕ" },
+                { "v", "ｖ" },
+                { "V", "Ｖ" },
+                { "w", "ｗ" },
+                { "W", "Ｗ" },
+                { "x", "ｘ" },
+                { "X", "Ｘ" },
+                { "y", "ｙ" },
+                { "Y", "Ｙ" },
+                { "z", "ｚ" },
+                { "Z", "Ｚ" },
+                { "0", "０" },
+                { "1", "１" },
+                { "2", "２" },
+                { "3", "３" },
+                { "4", "４" },
+                { "5", "５" },
+                { "6", "６" },
+                { "7", "７" },
+                { "8", "８" },
+                { "9", "９" },
+                { ",", "、" },
+                { ".", "。" },
+                { "\"", string.Empty },
+                { "”", " " },
+                { "'", string.Empty },
+                { "’", string.Empty },
+                { "{", string.Empty },
+                { "}", string.Empty },
+                { "[", " " },
+                { "]", " " },
+                { "(", "（" },
+                { ")", "）" },
+                { "#", string.Empty },
+                { "「", " " },
+                { "『", " " },
+                { "」", " " },
+                { "』", " " },
+                { "　", " " },
+                { " ", "_" }
+            };
 
         readonly string[][] ENtoJPReplacementPairsOneLetter = new string[][] {
                new string[2]{ "a", "ａ" },
@@ -541,6 +644,16 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                new string[2]{ "Y", "Ｙ" },
                new string[2]{ "z", "ｚ" },
                new string[2]{ "Z", "Ｚ" },
+               new string[2]{ "0", "０" },
+               new string[2]{ "1", "１" },
+               new string[2]{ "2", "２" },
+               new string[2]{ "3", "３" },
+               new string[2]{ "4", "４" },
+               new string[2]{ "5", "５" },
+               new string[2]{ "6", "６" },
+               new string[2]{ "7", "７" },
+               new string[2]{ "8", "８" },
+               new string[2]{ "9", "９" },
                new string[2]{ ",", "、" },
                new string[2]{ ".", "。" },
                new string[2]{ "\"", string.Empty },
@@ -551,6 +664,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                new string[2]{ "}", string.Empty },
                new string[2]{ "[", " " },
                new string[2]{ "]", " " },
+               new string[2]{ "(", "（" },
+               new string[2]{ ")", "）" },
                new string[2]{ "#", string.Empty },
                new string[2]{ "「", " " },
                new string[2]{ "『", " " },
@@ -718,7 +833,28 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 return workString;
             }
 
-            return FunctionsString.CharsReplacementByPairsFromArray(workString.Substring(0, 1), ENtoJPReplacementPairsOneLetter) + (workString.Length > 1 ? workString.Substring(1) : string.Empty);
+            if (workString.Substring(0, 1) == "_")
+            {
+                while (workString.Substring(0, 1) == "_")
+                {
+                    workString = workString.Remove(0, 1);
+                    if (string.IsNullOrEmpty(workString))
+                    {
+                        return workString;
+                    }
+                }
+            }
+
+            string firstLetter = workString.Substring(0, 1);
+
+            if (ENtoJPReplacementPairsOneLetterDict.ContainsKey(firstLetter))
+            {
+                firstLetter = ENtoJPReplacementPairsOneLetterDict[firstLetter];
+            }
+
+            return firstLetter + (workString.Length > 1 ? workString.Substring(1) : string.Empty);
+
+            //return FunctionsString.CharsReplacementByPairsFromArray(workString.Substring(0, 1), ENtoJPReplacementPairsOneLetter) + (workString.Length > 1 ? workString.Substring(1) : string.Empty);
         }
 
         readonly string[][] ENJPWordsReplacementPairs = new string[][] {

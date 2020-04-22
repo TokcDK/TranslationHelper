@@ -12,23 +12,25 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         internal static bool FileInUse(string path)
         {
-            FileStream stream = null;
+            //FileStream stream = null;
 
             try
             {
-                stream = new FileInfo(path).Open(FileMode.Open, FileAccess.Read, FileShare.None);
+                using (FileStream stream = new FileInfo(path).Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                }
             }
             catch (IOException)
             {
                 return true;
             }
-            finally
-            {
-                if (stream != null)
-                {
-                    stream.Close();
-                }
-            }
+            //finally
+            //{
+            //    if (stream != null)
+            //    {
+            //        stream.Close();
+            //    }
+            //}
 
             return false;
         }

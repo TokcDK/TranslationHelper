@@ -188,7 +188,12 @@ namespace TranslationHelper.Main.Functions
 
         //https://stackoverflow.com/a/2567623
         //В моем случае этот вариант самый быстрый
-        internal static int GetLinesCount(string input)
+        /// <summary>
+        /// Get count of lines in the inputString
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal static int GetLinesCount(this string inputString)
         {
             int count = -1;
             int index = -1;
@@ -196,7 +201,7 @@ namespace TranslationHelper.Main.Functions
             do
             {
                 count++;
-                index = input.IndexOf('\n', index + 1);
+                index = inputString.IndexOf('\n', index + 1);
             }
             while (index != -1);
 
@@ -256,13 +261,13 @@ namespace TranslationHelper.Main.Functions
                     int THFilesElementsDatasetTableRowsCount = thDataWork.THFilesElementsDataset.Tables[tindex].Rows.Count;
                     for (int rindex = 0; rindex < THFilesElementsDatasetTableRowsCount; rindex++)
                     {
-                        var DSOrigCell = thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex][corigind] + string.Empty;
-                        var DSTransCell = thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex][ctransind] + string.Empty;
+                        var row = thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex];
+                        var DSOrigCell = row[corigind] + string.Empty;
+                        var DSTransCell = row[ctransind] + string.Empty;
                         if (!string.IsNullOrWhiteSpace(DSTransCell) && DSTransCell != DSOrigCell)
                         {
-                            thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex][ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
+                            row[ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
                         }
-
                     }
                 }
             }

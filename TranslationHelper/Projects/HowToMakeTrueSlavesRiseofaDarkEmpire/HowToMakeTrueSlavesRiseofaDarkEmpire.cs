@@ -57,6 +57,12 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
                 thDataWork.FilePath = txt;
                 thDataWork.Main.ProgressInfo(true, Path.GetFileName(txt));
 
+                //if (File.Exists(txt + ".orig"))
+                //{
+                //    File.Delete(txt);
+                //    File.Move(txt + ".orig", txt);
+                //}
+
                 if (IsOpen)
                 {
                     txtFormat.Open();

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Xml.Linq;
 using TranslationHelper.Main.Functions;
@@ -13,9 +12,9 @@ namespace TranslationHelper.Functions
     {
         internal Dictionary<string, string> cache = new Dictionary<string, string>();
 
-        internal string GetValueFromCacheOReturnEmpty(string keyValue)
+        internal string GetValueFromCacheOrReturnEmpty(string keyValue)
         {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled && cache.Count>0 && cache.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(cache[keyValue]))
+            if (Properties.Settings.Default.IsTranslationCacheEnabled && cache.Count > 0 && cache.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(cache[keyValue]))
             {
                 return cache[keyValue];
             }
@@ -27,11 +26,16 @@ namespace TranslationHelper.Functions
 
         public void WriteCache()
         {
+            if (cache == null || cache.Count < 1)
+            {
+                return;
+            }
+
             XElement el = new XElement("TranslationCache",
-                cache.Select(kv => 
+                cache.Select(KeyValue =>
                 new XElement("Value",
-                    new XElement("Original", kv.Key),
-                    new XElement("Translation", kv.Value)
+                    new XElement("Original", KeyValue.Key),
+                    new XElement("Translation", KeyValue.Value)
                     )
                 ));
             //el.Save("cache.xml");
@@ -44,7 +48,7 @@ namespace TranslationHelper.Functions
             if (xml.Length == 0)
                 return;
 
-            XElement rootElement=null;
+            XElement rootElement = null;
             try
             {
                 rootElement = XElement.Parse(xml);

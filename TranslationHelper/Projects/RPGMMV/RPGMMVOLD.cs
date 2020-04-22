@@ -333,7 +333,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 {
                     if (IsCommonEvents)
                     {
-                        if (string.IsNullOrWhiteSpace(textsb.ToString()))
+                        if (string.IsNullOrWhiteSpace(textsb.ToString())/* || token.Path.Contains("switches") || token.Path.Contains("variables")*/)
                         {
                         }
                         else
@@ -513,14 +513,15 @@ namespace TranslationHelper.Projects.RPGMMV
 
                         for (int i1 = startingrow; i1 < thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
                         {
-                            if ((thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty).Length == 0)
+                            var row = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1];
+                            if ((row[1] + string.Empty).Length == 0)
                             {
                             }
                             else
                             {
                                 //Where здесь формирует новый массив из входного, из элементов входного, удовлетворяющих заданному условию
                                 //https://stackoverflow.com/questions/1912128/filter-an-array-in-c-sharp
-                                string[] origA = (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
+                                string[] origA = (row[0] + string.Empty)
                                     .Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/)
                                     .Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0)
                                     .ToArray();//Все строки, кроме пустых, чтобы потом исключить из проверки
@@ -528,20 +529,20 @@ namespace TranslationHelper.Projects.RPGMMV
                                 if (origALength == 0)
                                 {
                                     origA = new string[1];
-                                    origA[0] = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty;
+                                    origA[0] = row[0] + string.Empty;
                                     //LogToFile("(origALength == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
                                 }
 
                                 if (origALength > 0)
                                 {
-                                    string[] transA = (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty)
+                                    string[] transA = (row[1] + string.Empty)
                                         .Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/)
                                         .Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0)
                                         .ToArray();//Все строки, кроме пустых
                                     if (transA.Length == 0)
                                     {
                                         transA = new string[1];
-                                        transA[0] = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty;
+                                        transA[0] = row[1] + string.Empty;
                                         //LogToFile("(transA.Length == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString());
                                     }
                                     string transmerged = string.Empty;
@@ -571,10 +572,10 @@ namespace TranslationHelper.Projects.RPGMMV
                                     }
 
                                     //Подстраховочная проверка для некоторых значений из нескольких строк, полное сравнение перед построчной
-                                    if (tokenvalue == thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
+                                    if (tokenvalue == row[0] + string.Empty)
                                     {
-                                        var t = token as JValue;
-                                        t.Value = (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty).Replace("\r", string.Empty);//убирает \r, т.к. в json присутствует только \n
+                                        //var t = token as JValue;
+                                        (token as JValue).Value = (row[1] + string.Empty).Replace("\r", string.Empty);//убирает \r, т.к. в json присутствует только \n
                                         startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
                                         break;
                                     }
@@ -586,8 +587,8 @@ namespace TranslationHelper.Projects.RPGMMV
                                         if (parameter0value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
                                         {
                                             //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
-                                            var t = token as JValue;
-                                            t.Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
+                                            //var t = token as JValue;
+                                            (token as JValue).Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
 
                                             startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
                                                              //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
@@ -603,10 +604,10 @@ namespace TranslationHelper.Projects.RPGMMV
                                 }
                                 else
                                 {
-                                    if (tokenvalue == thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][0] + string.Empty)
+                                    if (tokenvalue == row[0] + string.Empty)
                                     {
-                                        var t = token as JValue;
-                                        t.Value = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1][1] + string.Empty;
+                                        //var t = token as JValue;
+                                        (token as JValue).Value = row[1] + string.Empty;
                                         startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
                                         break;
                                     }

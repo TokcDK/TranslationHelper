@@ -13,67 +13,78 @@ namespace TranslationHelper.Main.Functions
     {
         public static string THExtractTextForTranslation(string input)
         {
-            string ret = input;
+            string returnValue = input;
             //если файл с правилами существует
             if (File.Exists(Path.Combine(Application.StartupPath, "TranslationHelperTranslationRegexRules.txt")))
             {
                 //читать файл с правилами
                 using (StreamReader rules = new StreamReader(Path.Combine(Application.StartupPath, "TranslationHelperTranslationRegexRules.txt")))
                 {
-                    try
+                    //regex правило и результат из файла
+                    string regexPattern = string.Empty;
+                    string regexReplacement = string.Empty;
+                    bool ReadRule = true;
+                    while (!rules.EndOfStream)
                     {
-                        //regex правило и результат из файла
-                        string rule;
-                        string result = string.Empty;
-                        while (!rules.EndOfStream)
+                        try
                         {
                             //читать правило и результат
-                            rule = rules.ReadLine();
-                            if (rule.Length == 0 || rule.StartsWith(";"))//игнорировать комментарии
+                            if (ReadRule)
                             {
+                                regexPattern = rules.ReadLine();
+                                if (string.IsNullOrWhiteSpace(regexPattern) || regexPattern.TrimStart().StartsWith(";"))//игнорировать комментарии
+                                {
+                                    continue;
+                                }
+                                ReadRule = !ReadRule;
                                 continue;
                             }
-                            result = rules.ReadLine();
-
-                            //проверить, есть ли правило и результат, если вдруг файле будет нечетное количество строк, по ошибке юзера
-                            if (result.Contains("$"))
+                            else
                             {
-                                ret = Regex.Replace(ret, rule, result);
-                                if (ret == input)
+                                regexReplacement = rules.ReadLine();
+                                if (string.IsNullOrWhiteSpace(regexPattern) || regexReplacement.TrimStart().StartsWith(";") || !FunctionsString.IsStringAContainsStringB(regexReplacement, "$"))//игнорировать комментарии
                                 {
+                                    continue;
                                 }
-                                else
-                                {
-                                    break;
-                                }
+                                ReadRule = !ReadRule;
                             }
+
+                            returnValue = Regex.Replace(returnValue, regexPattern, regexReplacement);
+                            //if (returnValue == input)
+                            //{
+                            //}
+                            //else
+                            //{
+                            //    break;
+                            //}
                         }
-                    }
-                    catch
-                    {
+                        catch
+                        {
+
+                        }
                     }
                 }
             }
 
-            return ret;
+            return returnValue;
         }
 
         /// <summary>
         /// Исправления формата спецсимволов в заданной ячейке перевода
-        /// Для выбранных ячеек, таблицы или для всех значений задать:
-        /// method:
-        /// "a" - All
-        /// "t" - Table
-        /// "s" - Selected
-        /// ..а также cind - индекс колонки, где ячейки перевода и tind - индекс таблицы, для вариантов Table и Selected
-        /// Для одной выбранной ячейки, когда, например, определенная обрабатывается в коде, задать tind, cind и rind, а также true для onselectedonly
+        /// <br/>Для выбранных ячеек, таблицы или для всех значений задать:
+        /// <br/>method:
+        /// <br/>"a" - All
+        /// <br/>"t" - Table
+        /// <br/>"s" - Selected
+        /// <br/>..а также cind - индекс колонки, где ячейки перевода и tind - индекс таблицы, для вариантов Table и Selected
+        /// <br/>Для одной выбранной ячейки, когда, например, определенная обрабатывается в коде, <br/>задать tind, cind и rind, а также true для onselectedonly
         /// </summary>
-        /// <param name="method"></param>
+        /// <param name="Method"></param>
         /// <param name="cind"></param>
         /// <param name="tind"></param>
         /// <param name="rind"></param>
         /// <param name="selectedonly"></param>
-        public static void THFixCells(THDataWork thDataWork, string method, int cind, int tind, int rind = 0, bool forceApply = false)//cind - индекс столбца перевода, задан до старта потока
+        public static void THFixCells(THDataWork thDataWork, string Method, int cind, int tind, int rind = 0, bool forceApply = false)//cind - индекс столбца перевода, задан до старта потока
         {
             //если файл с правилами существует
             if (File.Exists(Path.Combine(Application.StartupPath, "TranslationHelperCellFixesRegexRules.txt")))
@@ -98,7 +109,7 @@ namespace TranslationHelper.Main.Functions
                     //t - Table
                     //s - Selected
 
-                    if (method == "s")
+                    if (Method == "s")
                     {
                         //cind = THFileElementsDataGridView.Columns["Translation"].Index;//-поле untrans                            
                         initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
@@ -108,7 +119,7 @@ namespace TranslationHelper.Main.Functions
                             selcellscnt[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, tind, thDataWork.Main.THFileElementsDataGridView.SelectedCells[i].RowIndex);
                         }
                     }
-                    else if (method == "t")
+                    else if (Method == "t")
                     {
                         initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
                                                  //cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns["Translation"].Ordinal;
@@ -125,7 +136,7 @@ namespace TranslationHelper.Main.Functions
                     int rowindex;
 
                     //LogToFile("1 rule=" + rule + ",tableindex=" + initialtableindex);
-                    if (method == "a")
+                    if (Method == "a")
                     {
                         tablescount = thDataWork.THFilesElementsDataset.Tables.Count;//все таблицы в dataset
                     }
@@ -139,7 +150,7 @@ namespace TranslationHelper.Main.Functions
                     for (int t = initialtableindex; t < tablescount; t++)
                     {
                         //LogToFile("3 selected table index=" + t);
-                        if (method == "a" || method == "t")
+                        if (Method == "a" || Method == "t")
                         {
                             //все строки в выбранной таблице
                             rowscount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
@@ -154,7 +165,7 @@ namespace TranslationHelper.Main.Functions
                         //перебор строк таблицы
                         for (int r = 0; r < rowscount; r++)
                         {
-                            if (method == "s")
+                            if (Method == "s")
                             {
                                 //индекс = первому из заданного списка выбранных индексов
                                 rowindex = selcellscnt[r];
@@ -225,7 +236,7 @@ namespace TranslationHelper.Main.Functions
                                     }
                                 }
 
-                                if (!Equals(thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex][cind], cvalue))
+                                if (!Equals(row[cind], cvalue))
                                 {
                                     //thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
                                     row[cind] = cvalue;
@@ -276,7 +287,7 @@ namespace TranslationHelper.Main.Functions
                 || thDataWork.THFilesElementsDataset == null
                 || InputTableIndex > thDataWork.THFilesElementsDataset.Tables.Count - 1
                 || InputRowIndex > thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows.Count - 1
-                || (thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows[InputColumnIndex][InputColumnIndex + 1] + string.Empty).Length == 0)
+                || (thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows[InputRowIndex][InputColumnIndex + 1] + string.Empty).Length == 0)
             {
                 return;
             }
@@ -295,12 +306,13 @@ namespace TranslationHelper.Main.Functions
 
                 try
                 {
-
-                    //re-set input variables to prevent break of work while concurent execution
-                    //forcevalue = ForceSetValue;
-                    //iTableIndex = InputTableIndex;
-                    //iRowIndex = InputRowIndex;
-                    //iCellIndex = InputCellIndex;
+                    {
+                        //re-set input variables to prevent break of work while concurent execution
+                        //forcevalue = ForceSetValue;
+                        //iTableIndex = InputTableIndex;
+                        //iRowIndex = InputRowIndex;
+                        //iCellIndex = InputCellIndex;
+                    }
 
                     //присвоить значения для обработки
                     TRC = THAutoSetSameTranslationForSimularData.ElementAt(0).Key;
@@ -388,21 +400,23 @@ namespace TranslationHelper.Main.Functions
                                             //если поле перевода равно только что измененному во входной, без учета цифр
                                             if ((TargetOrigCellValueWithRemovedPatternMatches == InputOrigCellValueWithRemovedPatternMatches) && mccount == mc0Count && IsAllMatchesInIdenticalPlaces(mc, mc0))
                                             {
-                                                ////инициализация основных целевого и входного массивов
-                                                //string[] inputOrigMatches = new string[mccount];
-                                                //string[] targetOrigMatches = new string[mccount];
-                                                ////присваивание цифр из совпадений в массивы, в основной входного и во временный целевого
-                                                //for (int r = 0; r < mccount; r++)
-                                                //{
-                                                //    inputOrigMatches[r] = RomajiKana.THFixDigits(mc[r].Value/*.Replace(mc[r].Value, mc[r].Value)*/);
-                                                //    targetOrigMatches[r] = RomajiKana.THFixDigits(mc0[r].Value/*.Replace(mc0[r].Value, mc0[r].Value)*/);
-                                                //}
-                                                //также инфо о другом способе:
-                                                //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
-                                                //там же все тесты и for, как у здесь меня - наиболее быстрый вариант
+                                                {
+                                                    ////инициализация основных целевого и входного массивов
+                                                    //string[] inputOrigMatches = new string[mccount];
+                                                    //string[] targetOrigMatches = new string[mccount];
+                                                    ////присваивание цифр из совпадений в массивы, в основной входного и во временный целевого
+                                                    //for (int r = 0; r < mccount; r++)
+                                                    //{
+                                                    //    inputOrigMatches[r] = RomajiKana.THFixDigits(mc[r].Value/*.Replace(mc[r].Value, mc[r].Value)*/);
+                                                    //    targetOrigMatches[r] = RomajiKana.THFixDigits(mc0[r].Value/*.Replace(mc0[r].Value, mc0[r].Value)*/);
+                                                    //}
+                                                    //также инфо о другом способе:
+                                                    //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
+                                                    //там же все тесты и for, как у здесь меня - наиболее быстрый вариант
 
-                                                //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
-                                                //переименовано и закомментировано, т.к. было убрано оборачивание в цифры. string inputtranscellvalue = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+                                                    //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+                                                    //переименовано и закомментировано, т.к. было убрано оборачивание в цифры. string inputtranscellvalue = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+                                                }
 
                                                 MatchCollection tm = reg.Matches(InputTransCellValue);
 
