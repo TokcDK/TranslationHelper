@@ -1660,7 +1660,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsExtractingTextForTranslation = true;
 
-            string ret = FunctionsAutoOperations.THExtractTextForTranslation(input);
+            string ret = FunctionsAutoOperations.THExtractTextForTranslation(thDataWork, input);
 
             //снять занятость по окончании
             THIsExtractingTextForTranslation = false;
@@ -2734,6 +2734,126 @@ namespace TranslationHelper
         private void selectedForceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FixSelectedCells(true);
+        }
+
+        private void reloadRulesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReloadTranslationRegexRules();
+            ReloadCellFixesRegexRules();            
+        }
+
+        internal void ReloadTranslationRegexRules()
+        {
+            //Reload TranslationRegexRules
+            if (thDataWork.TranslationRegexRules.Count > 0)
+            {
+                thDataWork.TranslationRegexRules.Clear();
+            }
+
+            //если файл с правилами существует
+            if (File.Exists(Path.Combine(Application.StartupPath, "TranslationHelperTranslationRegexRules.txt")))
+            {
+                //читать файл с правилами
+                using (StreamReader rules = new StreamReader(Path.Combine(Application.StartupPath, "TranslationHelperTranslationRegexRules.txt")))
+                {
+                    //regex правило и результат из файла
+                    string regexPattern = string.Empty;
+                    string regexReplacement = string.Empty;
+                    bool ReadRule = true;
+                    while (!rules.EndOfStream)
+                    {
+                        try
+                        {
+                            //читать правило и результат
+                            if (ReadRule)
+                            {
+                                regexPattern = rules.ReadLine();
+                                if (string.IsNullOrWhiteSpace(regexPattern) || regexPattern.TrimStart().StartsWith(";"))//игнорировать комментарии
+                                {
+                                    continue;
+                                }
+                                ReadRule = !ReadRule;
+                                continue;
+                            }
+                            else
+                            {
+                                regexReplacement = rules.ReadLine();
+                                if (string.IsNullOrWhiteSpace(regexPattern) || regexReplacement.TrimStart().StartsWith(";") || !FunctionsString.IsStringAContainsStringB(regexReplacement, "$"))//игнорировать комментарии
+                                {
+                                    continue;
+                                }
+                                ReadRule = !ReadRule;
+                            }
+
+                            if(!thDataWork.TranslationRegexRules.ContainsKey(regexPattern))
+                            {
+                                thDataWork.TranslationRegexRules.Add(regexPattern, regexReplacement);
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+            }
+        }
+
+        internal void ReloadCellFixesRegexRules()
+        {
+            //Reload TranslationRegexRules
+            if (thDataWork.CellFixesRegexRules.Count > 0)
+            {
+                thDataWork.CellFixesRegexRules.Clear();
+            }
+
+            //если файл с правилами существует
+            if (File.Exists(Path.Combine(Application.StartupPath, "TranslationHelperCellFixesRegexRules.txt")))
+            {
+                //читать файл с правилами
+                using (StreamReader rules = new StreamReader(Path.Combine(Application.StartupPath, "TranslationHelperCellFixesRegexRules.txt")))
+                {
+                    //regex правило и результат из файла
+                    string regexPattern = string.Empty;
+                    string regexReplacement = string.Empty;
+                    bool ReadRule = true;
+                    while (!rules.EndOfStream)
+                    {
+                        try
+                        {
+                            //читать правило и результат
+                            if (ReadRule)
+                            {
+                                regexPattern = rules.ReadLine();
+                                if (string.IsNullOrEmpty(regexPattern) || regexPattern.TrimStart().StartsWith(";"))//игнорировать комментарии
+                                {
+                                    continue;
+                                }
+                                ReadRule = !ReadRule;
+                                continue;
+                            }
+                            else
+                            {
+                                regexReplacement = rules.ReadLine();
+                                if (string.IsNullOrEmpty(regexPattern) || regexReplacement.TrimStart().StartsWith(";"))//игнорировать комментарии
+                                {
+                                    continue;
+                                }
+                                ReadRule = !ReadRule;
+                            }
+
+                            if (!thDataWork.TranslationRegexRules.ContainsKey(regexPattern))
+                            {
+                                thDataWork.CellFixesRegexRules.Add(regexPattern, regexReplacement);
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+            }
         }
 
         //Материалы

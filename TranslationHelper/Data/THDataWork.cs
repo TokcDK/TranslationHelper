@@ -25,8 +25,14 @@ namespace TranslationHelper.Data
                 new KiriKiriGame(this),
                 new Raijin7Game(this)
             };
+
+            TranslationRegexRules = new Dictionary<string, string>();
+            CellFixesRegexRules = new Dictionary<string, string>();
         }
-        
+
+        internal Dictionary<string, string> TranslationRegexRules;
+        internal Dictionary<string, string> CellFixesRegexRules;
+
         //Link to main form
         internal THMain Main;
 

@@ -61,6 +61,10 @@ namespace TranslationHelper.Data
                 thDataWork.FilePath = string.Empty;
                 thDataWork.SPath = string.Empty;
 
+                //Reload regex rules
+                thDataWork.Main.ReloadTranslationRegexRules();
+                thDataWork.Main.ReloadCellFixesRegexRules();
+
                 //Dispose objects
                 //thDataWork.THFilesElementsDataset.Dispose();
                 //thDataWork.THFilesElementsDatasetInfo.Dispose();
