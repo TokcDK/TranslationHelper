@@ -50,5 +50,14 @@ namespace TranslationHelper.Projects
         /// <param name="thData"></param>
         /// <returns></returns>
         internal abstract bool Save();
+
+        /// <summary>
+        /// Project folder name to locate files in DB and Work folders
+        /// </summary>
+        /// <returns></returns>
+        internal virtual string NewlineSymbol()
+        {
+            return Environment.NewLine;
+        }
     }
 }

@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="Data\CleanupData.cs" />
     <Compile Include="Data\THDataWork.cs" />
+    <Compile Include="Extensions\ExtensionsString.cs" />
     <Compile Include="ExternalAdditions\CopyFolder.cs" />
     <Compile Include="ExternalAdditions\DataGridViewEx.cs" />
     <Compile Include="ExternalAdditions\GDI.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Formats\Raijin7\csv\CSV.cs" />
     <Compile Include="Formats\Raijin7\eve\TXT.cs" />
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
+    <Compile Include="Formats\RPGMMV\PLUGINS_JS.cs" />
     <Compile Include="Formats\RPGMMV\JSON.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransOther.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransPatchBase.cs" />
@@ -112,6 +114,7 @@
     <Compile Include="Functions\FunctionsSave.cs" />
     <Compile Include="Functions\FunctionsOnlineCache.cs" />
     <Compile Include="Functions\FunctionsStringsFixes.cs" />
+    <Compile Include="InputLinesInfoData.cs" />
     <Compile Include="Old elements\DoubleBufferedListBox.cs" />
     <Compile Include="Functions\FunctionsAutoOperations.cs" />
     <Compile Include="Functions\FunctionsCopyPaste.cs" />

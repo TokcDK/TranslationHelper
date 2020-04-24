@@ -25,9 +25,18 @@ namespace TranslationHelper.Formats.RPGMMV
 
         private bool ReadJson(string Jsonname, string sPath)
         {
+            bool success = true;
             //LogToFile("Jsonname = " + Jsonname);
             try
             {
+                if (!thDataWork.THFilesElementsDataset.Tables.Contains(Jsonname))
+                {
+                    thDataWork.THFilesElementsDataset.Tables.Add(Jsonname); // create table with json name
+                    thDataWork.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Original"); //create Original column
+                    thDataWork.THFilesElementsDatasetInfo.Tables.Add(Jsonname); // create table with json name
+                    thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Columns.Add("Original"); //create Original column
+                }
+
                 //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
                 JToken root;
                 //MessageBox.Show(Properties.Settings.Default.THSelectedDir);
@@ -84,8 +93,8 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             catch
             {
+                success = false;
                 //LogToFile(string.Empty, true);
-                return false;
             }
             finally
             {
@@ -97,8 +106,18 @@ namespace TranslationHelper.Formats.RPGMMV
                 //treeView1.EndUpdate();
             }
             //LogToFile(string.Empty, true);
-            return true;
 
+            if (success && thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Count > 0)
+            {
+                thDataWork.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Translation");
+                return true;
+            }
+            else
+            {
+                thDataWork.THFilesElementsDataset.Tables.Remove(Jsonname); // remove table if was no items added
+                thDataWork.THFilesElementsDatasetInfo.Tables.Remove(Jsonname); // remove table if was no items added
+                return false;
+            }
         }
 
         //List<string> TempList;
@@ -120,6 +139,11 @@ namespace TranslationHelper.Formats.RPGMMV
 
             if (token is JValue)
             {
+                if (token.Type != JTokenType.String)
+                {
+                    return;
+                }
+
                 //if (cName == "code")
                 //{
                 //    curcode = token.ToString();
@@ -139,15 +163,12 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 if (IsCommonEvents && (curcode == "401" || curcode == "405"))
                 {
-                    if (token.Type == JTokenType.String)
+                    if (textsb.ToString().Length > 0)
                     {
-                        if (textsb.ToString().Length > 0)
-                        {
-                            textsb.AppendLine();
-                        }
-                        //LogToFile("code 401 adding valur to merge=" + tokenvalue + ", curcode=" + curcode);
-                        textsb.Append(tokenvalue);
+                        textsb.AppendLine();
                     }
+                    //LogToFile("code 401 adding valur to merge=" + tokenvalue + ", curcode=" + curcode);
+                    textsb.Append(tokenvalue);
                 }
                 else
                 {
@@ -159,7 +180,7 @@ namespace TranslationHelper.Formats.RPGMMV
                         else
                         {
                             string mergedstring = textsb.ToString();
-                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(mergedstring))
+                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(mergedstring))
                             {
                             }
                             else
@@ -182,35 +203,32 @@ namespace TranslationHelper.Formats.RPGMMV
                             textsb.Clear();
                         }
                     }
-                    if (token.Type == JTokenType.String)
+                    if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
                     {
-                        if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
-                        {
-                        }
-                        else
-                        {
-                            //if (IsCommonEvents && curcode == "102")
-                            //{
-                            //    cName = "Choice";
-                            //}
+                    }
+                    else
+                    {
+                        //if (IsCommonEvents && curcode == "102")
+                        //{
+                        //    cName = "Choice";
+                        //}
 
-                            //LogToFile("Jsonname=" + Jsonname+ ", tokenvalue=" + tokenvalue);
-                            //LogToFile(string.Empty, true);
+                        //LogToFile("Jsonname=" + Jsonname+ ", tokenvalue=" + tokenvalue);
+                        //LogToFile(string.Empty, true);
 
-                            thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
-                            //TempList.Add(tokenvalue);//много быстрее
+                        thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
+                        //TempList.Add(tokenvalue);//много быстрее
 
-                            //dsinfo.Tables[0].Rows.Add(cType+"\\"+ cId + "\\" + cCode + "\\" + cName);
-                            //JToken t = token;
-                            //while (!string.IsNullOrEmpty(t.Parent.Path))
-                            //{
-                            //    t = t.Parent;
-                            //    extra += "\\"+t.Path;
-                            //}
+                        //dsinfo.Tables[0].Rows.Add(cType+"\\"+ cId + "\\" + cCode + "\\" + cName);
+                        //JToken t = token;
+                        //while (!string.IsNullOrEmpty(t.Parent.Path))
+                        //{
+                        //    t = t.Parent;
+                        //    extra += "\\"+t.Path;
+                        //}
 
-                            thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
-                            //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
-                        }
+                        thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
+                        //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                     }
                 }
                 //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(token.ToString()))];
@@ -443,7 +461,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                             //https://stackoverflow.com/questions/2391743/how-many-elements-of-array-are-not-null
                                             //int ymptyelementscnt = orig.Count(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", string.Empty)));
 
-                                            transA = FunctionsString.THSplit(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
+                                            transA = FunctionsString.SplitStringByEqualParts(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
                                         }
 
                                         //LogToFile("parameter0value=" + parameter0value);

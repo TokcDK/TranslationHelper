@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
@@ -193,7 +194,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     newLine = PreReduceTranslation(newLine);
                                     newLine = ApplyRequiredCharReplacements(newLine);
 
-                                    int newLinesCount = FunctionsString.GetLinesCount(newLine);
+                                    int newLinesCount = newLine.GetLinesCount();
                                     int linesCount = 0;
                                     int linesCountMax = 5;
                                     string retLine = string.Empty;

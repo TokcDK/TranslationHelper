@@ -94,7 +94,6 @@ namespace TranslationHelper.Main.Functions
         /// <param name="selectedonly"></param>
         public static void THFixCells(THDataWork thDataWork, string Method, int cind, int tind, int rind = 0, bool forceApply = false)//cind - индекс столбца перевода, задан до старта потока
         {
-
             try
             {
                 if (thDataWork.CellFixesRegexRules.Count == 0)
@@ -374,8 +373,8 @@ namespace TranslationHelper.Main.Functions
                                         int mc0Count = mc0.Count;
                                         if (mc0Count > 0) //если количество совпадений в mc0 больше нуля, т.е. цифры были в поле untrans проверяемой на совпадение ячейки
                                         {
-                                            string TargetTransCellValueWithRemovedPatternMatches = Regex.Replace(TargetTranslationCellString, regexPattern, string.Empty);
-                                            string InputTransCellValueWithRemovedPatternMatches = Regex.Replace(InputTransCellValue, regexPattern, string.Empty);
+                                            string TargetTransCellValueWithRemovedPatternMatches = Regex.Replace(TargetTranslationCellString, regexPattern, string.Empty, RegexOptions.Compiled);
+                                            string InputTransCellValueWithRemovedPatternMatches = Regex.Replace(InputTransCellValue, regexPattern, string.Empty, RegexOptions.Compiled);
 
                                             //Если значение ячеек перевода без паттернов равны, идти дальше
                                             if (TargetTransCellValueWithRemovedPatternMatches == InputTransCellValueWithRemovedPatternMatches)
@@ -383,8 +382,8 @@ namespace TranslationHelper.Main.Functions
                                                 continue;
                                             }
 
-                                            string TargetOrigCellValueWithRemovedPatternMatches = Regex.Replace(TargetOriginallCellString, regexPattern, string.Empty);
-                                            string InputOrigCellValueWithRemovedPatternMatches = Regex.Replace(InputOrigCellValue, regexPattern, string.Empty);
+                                            string TargetOrigCellValueWithRemovedPatternMatches = Regex.Replace(TargetOriginallCellString, regexPattern, string.Empty, RegexOptions.Compiled);
+                                            string InputOrigCellValueWithRemovedPatternMatches = Regex.Replace(InputOrigCellValue, regexPattern, string.Empty, RegexOptions.Compiled);
 
                                             //LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
                                             //если поле перевода равно только что измененному во входной, без учета цифр

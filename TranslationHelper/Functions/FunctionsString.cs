@@ -5,9 +5,13 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Main.Functions
 {
+    /// <summary>
+    /// Functions for work with strings
+    /// </summary>
     internal static class FunctionsString
     {
         /// <summary>
@@ -57,7 +61,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="str"></param>
         /// <param name="chunkSize"></param>
         /// <returns></returns>
-        internal static string[] THSplit(string str, int chunkSize)
+        internal static string[] SplitStringByEqualParts(string str, int chunkSize)
         {
             if (str == null)
                 return null;
@@ -99,29 +103,6 @@ namespace TranslationHelper.Main.Functions
         internal static bool GetCountOfTheSymbolInStringAandBIsEqual(string AValue, string BValue, string SymbolA, string SymbolB)
         {
             return !(string.IsNullOrEmpty(AValue) || string.IsNullOrEmpty(BValue) || string.IsNullOrEmpty(SymbolA) || string.IsNullOrEmpty(SymbolB)) && AValue.Length - AValue.Replace(SymbolA, string.Empty).Length == BValue.Length - BValue.Replace(SymbolB, string.Empty).Length;
-        }
-
-        /// <summary>
-        /// Split string to lines
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        internal static IEnumerable<string> SplitToLines(this string input)
-        {
-            //https://stackoverflow.com/a/23408020
-            if (input == null)
-            {
-                yield break;
-            }
-
-            using (System.IO.StringReader reader = new System.IO.StringReader(input))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    yield return line;
-                }
-            }
         }
 
         internal static bool IsMultiline(string input)
@@ -184,28 +165,6 @@ namespace TranslationHelper.Main.Functions
             }
 
             return true;
-        }
-
-        //https://stackoverflow.com/a/2567623
-        //В моем случае этот вариант самый быстрый
-        /// <summary>
-        /// Get count of lines in the inputString
-        /// </summary>
-        /// <param name="inputString"></param>
-        /// <returns></returns>
-        internal static int GetLinesCount(this string inputString)
-        {
-            int count = -1;
-            int index = -1;
-
-            do
-            {
-                count++;
-                index = inputString.IndexOf('\n', index + 1);
-            }
-            while (index != -1);
-
-            return count + 1;
         }
 
         /// <summary>
@@ -376,23 +335,6 @@ namespace TranslationHelper.Main.Functions
             return ReturnLength;
         }
 
-        /// <summary>
-        /// gets length of string without several special symbols
-        /// </summary>
-        /// <param name="inputLine"></param>
-        /// <returns></returns>
-        internal static int LengthWithoutSpecSymbols(this string inputLine)
-        {
-            string newline = inputLine;
-
-            newline = Regex.Replace(newline, @"^([\s\S]+)(if|en)\([\s\S]+\)$", "$1");
-            newline = Regex.Replace(newline, @"\\\#\{\$game_actors\[.+\]\.name\}", "ActorName1");
-            newline = Regex.Replace(newline, @"\\\#\{\$game_variables\[.+\]\}", "variable10");
-            newline = Regex.Replace(newline, @"\\\\[A-Za-z]\[.+\]", string.Empty);
-
-            return newline.Length;
-        }
-
         internal static string SplitMultiLineIfBeyondOfLimit(string Line, int Limit)
         {
             //StringBuilder ReturnLine = new StringBuilder();
@@ -453,13 +395,13 @@ namespace TranslationHelper.Main.Functions
 
         internal static string GetSplittedLine(string Line, int Limit)
         {
-            string Trigger = string.Empty;
+            string Trigger/* = string.Empty*/;
             string newLine = ((Trigger = Regex.Match(Line, @"(if|en)\([\s\S]+\)$").Value).Length > 0 ? Line.Replace(Trigger, string.Empty) : Line);
             if (newLine.Length == 0 || newLine.Length <= Limit)
             {
                 return Line;
             }
-            return string.Join(IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n " : Environment.NewLine, SplitLineIfBeyondOfLimit(Trigger.Length > 0 ? newLine : Line, Limit)) + Trigger;
+            return string.Join(IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n" : Environment.NewLine, SplitLineIfBeyondOfLimit(Trigger.Length > 0 ? newLine : Line, Limit)) + Trigger;
         }
 
         internal static string[] SplitLineIfBeyondOfLimit(string text, int max)

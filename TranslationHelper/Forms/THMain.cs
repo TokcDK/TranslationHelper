@@ -485,12 +485,18 @@ namespace TranslationHelper
         {
             if (THFilesList != null && THFilesList.SelectedIndex > -1)//вторая попытка исправить исключение при выборе элемента списка
             {
-                THFileElementsDataGridView.DataSource = DT;
+                try
+                {
+                    THFileElementsDataGridView.DataSource = DT;
 
-                //во время прокрутки DGV чернела полоса прокрутки и в результате было получено исключение
-                //добавил это для возможного фикса
-                //https://fooobar.com/questions/1404812/datagridview-scrollbar-throwing-argumentoutofrange-exception
-                THFileElementsDataGridView.PerformLayout();
+                    //во время прокрутки DGV чернела полоса прокрутки и в результате было получено исключение
+                    //добавил это для возможного фикса
+                    //https://fooobar.com/questions/1404812/datagridview-scrollbar-throwing-argumentoutofrange-exception
+                    THFileElementsDataGridView.PerformLayout();
+                }
+                catch
+                {
+                }
             }
         }
 
@@ -2030,41 +2036,51 @@ namespace TranslationHelper
             if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
             {
                 CopyFolder.Copy(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data_bak"));
+                File.Copy(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js.bak"));
+
                 try
                 {
                     bool success = false;
-                    for (int f = 0; f < THFilesList.Items.Count; f++)
+                    if (thDataWork.CurrentProject != null)
                     {
-                        //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
-                        //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
-
-                        bool changed = false;
-                        for (int r = 0; r < thDataWork.THFilesElementsDataset.Tables[f].Rows.Count; r++)
+                        success = thDataWork.CurrentProject.Save();
+                    }
+                    else
+                    {
+                        for (int f = 0; f < THFilesList.Items.Count; f++)
                         {
-                            if ((thDataWork.THFilesElementsDataset.Tables[f].Rows[r]["Translation"] + string.Empty).Length == 0)
-                            {
-                            }
-                            else
-                            {
-                                changed = true;
-                                break;
-                            }
-                        }
-                        //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                        if (changed)
-                        {
+                            //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
+                            //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
 
-                            //THMsg.Show("start writing");
-
-                            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            success = await Task.Run(() => new RPGMMVOLD(thDataWork).WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(true);
-                            if (!success)
+                            bool changed = false;
+                            for (int r = 0; r < thDataWork.THFilesElementsDataset.Tables[f].Rows.Count; r++)
                             {
-                                break;
+                                if ((thDataWork.THFilesElementsDataset.Tables[f].Rows[r]["Translation"] + string.Empty).Length == 0)
+                                {
+                                }
+                                else
+                                {
+                                    changed = true;
+                                    break;
+                                }
                             }
-                            //success = WriteJson(THFilesListBox.Items[f].ToString(), Properties.Settings.Default.THWorkProjectDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
+                            //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                            if (changed)
+                            {
+
+                                //THMsg.Show("start writing");
+
+                                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                                success = await Task.Run(() => new RPGMMVOLD(thDataWork).WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(true);
+                                if (!success)
+                                {
+                                    break;
+                                }
+                                //success = WriteJson(THFilesListBox.Items[f].ToString(), Properties.Settings.Default.THWorkProjectDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
+                            }
                         }
                     }
+
                     if (success)
                     {
                         //using (Process Testgame = new Process())
@@ -2117,6 +2133,8 @@ namespace TranslationHelper
                 }
                 Directory.Delete(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data"), true);
                 Directory.Move(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data_bak"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data"));
+                File.Delete(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js"));
+                File.Move(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js.bak"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js"));
             }
         }
 

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMMV;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects
 {
@@ -21,7 +17,7 @@ namespace TranslationHelper.Projects
             {
                 if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", "system.json")))
                 {
-                    return true;                    
+                    return true;
                 }
             }
 
@@ -42,6 +38,9 @@ namespace TranslationHelper.Projects
         {
             try
             {
+                thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js");
+                new PLUGINS_JS(thDataWork).Open();
+
                 var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
                 foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
                 {
@@ -53,12 +52,6 @@ namespace TranslationHelper.Projects
                         return false;
                     }
                 }
-
-                //for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
-                //{
-                //    //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
-                //    THFilesList.Invoke((Action)(() => THFilesList.Items.Add(THFilesElementsDataset.Tables[i].TableName)));
-                //}
 
                 return true;
             }
@@ -76,36 +69,16 @@ namespace TranslationHelper.Projects
                 //источник: https://stackoverflow.com/questions/23763446/how-to-display-the-json-data-in-datagridview-in-c-sharp-windows-application-from
 
                 string Jsonname = Path.GetFileNameWithoutExtension(sPath); // get json file name
-                if (thDataWork.THFilesElementsDataset.Tables.Contains(Jsonname))
-                {
-                    //MessageBox.Show("true!");
-                    return true;
-                }
 
                 //ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
 
                 string jsondata = File.ReadAllText(sPath); // get json data
-
-                thDataWork.THFilesElementsDataset.Tables.Add(Jsonname); // create table with json name
-                thDataWork.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Original"); //create Original column
-                thDataWork.THFilesElementsDatasetInfo.Tables.Add(Jsonname); // create table with json name
-                thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Columns.Add("Original"); //create Original column
 
                 bool ret = true;
 
                 thDataWork.FilePath = sPath;
                 //ret = ReadJson(Jsonname, sPath);
                 ret = new JSON(thDataWork).Open();
-
-                if (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Count > 0)
-                {
-                    thDataWork.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Translation");
-                }
-                else
-                {
-                    thDataWork.THFilesElementsDataset.Tables.Remove(Jsonname); // remove table if was no items added
-                    thDataWork.THFilesElementsDatasetInfo.Tables.Remove(Jsonname); // remove table if was no items added
-                }
 
                 return ret;
             }
@@ -118,7 +91,43 @@ namespace TranslationHelper.Projects
 
         internal override bool Save()
         {
-            throw new NotImplementedException();
+            for (int f = 0; f < thDataWork.Main.THFilesList.Items.Count; f++)
+            {
+                //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
+                //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
+
+                var table = thDataWork.THFilesElementsDataset.Tables[f];
+                bool changed = false;
+
+                if (!FunctionsTable.IsTableRowsAllEmpty(table))
+                {
+                    changed = true;
+                }
+
+                //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                if (changed)
+                {
+                    if (table.TableName == "plugins")
+                    {
+                        thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", table.TableName + ".js");
+                        new PLUGINS_JS(thDataWork).Save();
+                    }
+                    else
+                    {
+                        thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", table.TableName + ".json");
+                        new JSON(thDataWork).Save();
+                    }
+                }
+            }
+
+            return true;
         }
+
+        internal override string NewlineSymbol()
+        {
+            return "\\n";
+        }
+
     }
 }
+

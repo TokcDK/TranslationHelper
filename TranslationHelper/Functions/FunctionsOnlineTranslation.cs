@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions
@@ -355,225 +358,154 @@ namespace TranslationHelper.Functions
                     int CurrentCharsCount = 0;
                     string InputOriginalLine;
 
-                    using (DataTable InputLines = new DataTable())
+                    List<string> InputLines = new List<string>();
+                    List<InputLinesInfoData> InputLinesInfo = new List<InputLinesInfoData>();
+
+                    //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
+                    int TableMaxIndex;
+                    int RowsCountInTable;
+                    int CurrentRowIndex;
+                    TableMaxIndex = (Method == "a") ? thDataWork.THFilesElementsDataset.Tables.Count : TableMaxIndex = TableIndex + 1;
+
+                    //int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
+                    //for (int t = 0; t < tcount; t++)
+                    for (int t = TableIndex; t < TableMaxIndex; t++)
                     {
-                        using (DataTable InputLinesInfo = new DataTable())
+                        var Table = thDataWork.THFilesElementsDataset.Tables[t];
+
+                        if (FunctionsTable.IsTableRowsCompleted(Table))
                         {
-                            InputLines.Columns.Add("Original");
+                            continue;
+                        }
 
-                            InputLinesInfo.Columns.Add("Original");
-                            InputLinesInfo.Columns.Add("Translation");
-                            InputLinesInfo.Columns.Add("Table");
-                            InputLinesInfo.Columns.Add("Row");
-                            InputLinesInfo.Columns.Add("IsLastLineInCell");
-                            InputLinesInfo.Columns.Add("IsExtracted");
+                        Task.Run(()=> thDataWork.Main.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
 
-                            //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
-                            int TableMaxIndex;
-                            int RowsCountInTable;
-                            int CurrentRowIndex;
-                            TableMaxIndex = (Method == "a") ? thDataWork.THFilesElementsDataset.Tables.Count : TableMaxIndex = TableIndex + 1;
+                        RowsCountInTable = (Method == "a" || Method == "t") ? Table.Rows.Count : SelectedIndexes.Length;
 
-                            //int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
-                            //for (int t = 0; t < tcount; t++)
-                            for (int t = TableIndex; t < TableMaxIndex; t++)
+                        //int rcount = Table.Rows.Count;
+                        //for (int r = 0; r < rcount; r++)
+                        for (int r = 0; r < RowsCountInTable; r++)
+                        {
+                            if (Properties.Settings.Default.IsTranslationHelperWasClosed)
                             {
-                                var Table = thDataWork.THFilesElementsDataset.Tables[t];
+                                Thread.CurrentThread.Abort();
+                                return;
+                            }
+                            else if (thDataWork.Main.InteruptTranslation)
+                            {
+                                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.translationInteruptToolStripMenuItem.Visible = false));
+                                CacheUnloadWhenNeed(thDataWork);
+                                thDataWork.Main.ProgressInfo(false);
+                                Thread.CurrentThread.Abort();
+                                return;
+                            }
 
-                                if (FunctionsTable.IsTableRowsCompleted(Table))
+                            //string progressinfo;
+                            if (Method == "s")
+                            {
+                                //progressinfo = T._("getting translation: ") + (r + 1) + "/" + RowsCountInTable;
+                                //индекс = первому из заданного списка выбранных индексов
+                                CurrentRowIndex = SelectedIndexes[r];
+                            }
+                            else if (Method == "t")
+                            {
+                                //progressinfo = T._("getting translation: ") + (r + 1) + "/" + RowsCountInTable;
+                                //индекс с нуля и до последней строки
+                                CurrentRowIndex = r;
+                            }
+                            else
+                            {
+                                //progressinfo = T._("getting translation: ") + t + "/" + TableMaxIndex + "::" + (r + 1) + "/" + RowsCountInTable;
+                                //индекс с нуля и до последней строки
+                                CurrentRowIndex = r;
+                            }
+
+                            var Row = Table.Rows[CurrentRowIndex];
+                            //thDataWork.Main.ProgressInfo(true, progressinfo);
+                            //thDataWork.Main.ProgressInfo(true, T._("translating") + ": " + t + "/" + tcount + " (" + r + "/" + rcount + ")");
+
+                            InputOriginalLine = Row[OrigColIndex] as string;
+                            if (string.IsNullOrWhiteSpace(InputOriginalLine))
+                            {
+                                continue;
+                            }
+
+                            bool TranslateIt = false;
+                            TranslateIt = (CurrentCharsCount + InputOriginalLine.Length) >= maxchars || (t == TableMaxIndex/*tcount*/ - 1 && r == RowsCountInTable/*rcount*/ - 1);
+
+                            var Cell = Row[OrigColIndex + 1];
+                            if (Cell == null || string.IsNullOrEmpty(Cell as string))
+                            {
+                                //string InputOriginalLineFromCache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
+                                string InputOriginalLineFromCache = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(InputOriginalLine);
+
+
+                                if (InputOriginalLineFromCache.Length > 0)
                                 {
+                                    thDataWork.THFilesElementsDataset.Tables[t].Rows[CurrentRowIndex][OrigColIndex + 1] = InputOriginalLineFromCache;
                                     continue;
                                 }
-
-                                thDataWork.Main.ProgressInfo(true, T._("getting translation: ") + t+"/"+ TableMaxIndex);
-
-                                RowsCountInTable = (Method == "a" || Method == "t") ? Table.Rows.Count : SelectedIndexes.Length;
-
-                                //int rcount = Table.Rows.Count;
-                                //for (int r = 0; r < rcount; r++)
-                                for (int r = 0; r < RowsCountInTable; r++)
+                                else
                                 {
-                                    if (Properties.Settings.Default.IsTranslationHelperWasClosed)
-                                    {
-                                        Thread.CurrentThread.Abort();
-                                        return;
-                                    }
-                                    else if (thDataWork.Main.InteruptTranslation)
-                                    {
-                                        thDataWork.Main.Invoke((Action)(() => thDataWork.Main.translationInteruptToolStripMenuItem.Visible = false));
-                                        CacheUnloadWhenNeed(thDataWork);
-                                        thDataWork.Main.ProgressInfo(false);
-                                        Thread.CurrentThread.Abort();
-                                        return;
-                                    }
+                                    CurrentCharsCount += InputOriginalLine.Length;
 
-                                    string progressinfo;
-                                    if (Method == "s")
+                                    string extractedvalue;
+                                    string cache;
+
+                                    int LinesCount = InputOriginalLine.GetLinesCount();
+                                    int currentLineNumber = 0;
+                                    bool IsExtracted = false;
+                                    foreach (var linevalue in InputOriginalLine.SplitToLines())
                                     {
-                                        //progressinfo = T._("getting translation: ") + (r + 1) + "/" + RowsCountInTable;
-                                        //индекс = первому из заданного списка выбранных индексов
-                                        CurrentRowIndex = SelectedIndexes[r];
-                                    }
-                                    else if (Method == "t")
-                                    {
-                                        //progressinfo = T._("getting translation: ") + (r + 1) + "/" + RowsCountInTable;
-                                        //индекс с нуля и до последней строки
-                                        CurrentRowIndex = r;
-                                    }
-                                    else
-                                    {
-                                        //progressinfo = T._("getting translation: ") + t + "/" + TableMaxIndex + "::" + (r + 1) + "/" + RowsCountInTable;
-                                        //индекс с нуля и до последней строки
-                                        CurrentRowIndex = r;
-                                    }
+                                        currentLineNumber++;
+                                        //string linevalue = Lines[s];
 
-                                    var Row = Table.Rows[CurrentRowIndex];
-                                    //thDataWork.Main.ProgressInfo(true, progressinfo);
-                                    //thDataWork.Main.ProgressInfo(true, T._("translating") + ": " + t + "/" + tcount + " (" + r + "/" + rcount + ")");
-
-                                    InputOriginalLine = Row[OrigColIndex] as string;
-                                    if (string.IsNullOrWhiteSpace(InputOriginalLine))
-                                    {
-                                        continue;
-                                    }
-
-                                    bool TranslateIt = false;
-                                    TranslateIt = (CurrentCharsCount + InputOriginalLine.Length) >= maxchars || (t == TableMaxIndex/*tcount*/ - 1 && r == RowsCountInTable/*rcount*/ - 1);
-
-                                    var Cell = Row[OrigColIndex + 1];
-                                    if (Cell == null || string.IsNullOrEmpty(Cell as string))
-                                    {
-                                        //string InputOriginalLineFromCache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
-                                        string InputOriginalLineFromCache = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(InputOriginalLine);
-
-
-                                        if (InputOriginalLineFromCache.Length > 0)
+                                        string Translation = string.Empty;
+                                        //cache = FunctionsTable.TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
+                                        cache = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(linevalue);//поиск подстроки в кеше
+                                        if (cache.Length > 0)
                                         {
-                                            thDataWork.THFilesElementsDataset.Tables[t].Rows[CurrentRowIndex][OrigColIndex + 1] = InputOriginalLineFromCache;
-                                            continue;
+                                            Translation = cache;//если нашло в кеше, присвоить как перевод
                                         }
                                         else
                                         {
-                                            CurrentCharsCount += InputOriginalLine.Length;
-
-                                            string extractedvalue;
-                                            string cache;
-
-                                            int LinesCount = InputOriginalLine.GetLinesCount();
-                                            int currentLineNumber = 0;
-                                            int IsExtracted = 0;
-                                            foreach (var linevalue in InputOriginalLine.SplitToLines())
+                                            if (linevalue.Length > 0)
                                             {
-                                                currentLineNumber++;
-                                                //string linevalue = Lines[s];
+                                                extractedvalue = thDataWork.Main.THExtractTextForTranslation(linevalue);//извлечение подстроки
 
-                                                string Translation = string.Empty;
-                                                //cache = FunctionsTable.TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
-                                                cache = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(linevalue);//поиск подстроки в кеше
+                                                // только если извлеченное значение отличается от оригинальной строки
+                                                //cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
+                                                cache = extractedvalue == linevalue ? string.Empty : thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue);//поиск извлеченной подстроки в кеше
                                                 if (cache.Length > 0)
                                                 {
-                                                    Translation = cache;//если нашло в кеше, присвоить как перевод
+                                                    Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
                                                 }
                                                 else
                                                 {
-                                                    if (linevalue.Length > 0)
-                                                    {
-                                                        extractedvalue = thDataWork.Main.THExtractTextForTranslation(linevalue);//извлечение подстроки
-
-                                                        // только если извлеченное значение отличается от оригинальной строки
-                                                        //cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
-                                                        cache = extractedvalue == linevalue ? string.Empty : thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue);//поиск извлеченной подстроки в кеше
-                                                        if (cache.Length > 0)
-                                                        {
-                                                            Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
-                                                        }
-                                                        else
-                                                        {
-                                                            IsExtracted = extractedvalue.Length == 0 ? 0 : 1;
-                                                            InputLines.Rows.Add(extractedvalue.Length == 0 ? linevalue : extractedvalue);
-                                                        }
-                                                    }
+                                                    IsExtracted = extractedvalue.Length > 0;
+                                                    InputLines.Add(extractedvalue.Length == 0 ? linevalue : extractedvalue);
                                                 }
-                                                //original, translation(when exists in cache), table number, row number
-                                                InputLinesInfo.Rows.Add(linevalue, Translation, t, CurrentRowIndex, (currentLineNumber == LinesCount ? 1 : 0), IsExtracted);
                                             }
-
-                                            {
-                                                //old code
-                                                //string[] Lines = InputOriginalLine.Split(new string[2] { Environment.NewLine, "\n" }, StringSplitOptions.None);
-                                                //int LinesCount = Lines.Length;
-                                                //if (LinesCount > 1) //если строк больше одной
-                                                //{
-                                                //    for (int s = 0; s < LinesCount; s++) //добавить все непустые строки по отдельности, пустые добавить в Info
-                                                //    {
-                                                //        string linevalue = Lines[s];
-
-                                                //        string Translation = string.Empty;
-                                                //        //cache = FunctionsTable.TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
-                                                //        cache = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(linevalue);//поиск подстроки в кеше
-                                                //        if (cache.Length > 0)
-                                                //        {
-                                                //            Translation = cache;
-                                                //        }
-                                                //        else
-                                                //        {
-                                                //            if (linevalue.Length > 0)
-                                                //            {
-                                                //                extractedvalue = thDataWork.Main.THExtractTextForTranslation(linevalue);//извлечение подстроки
-
-                                                //                // только если извлеченное значение отличается от оригинальной строки
-                                                //                //cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
-                                                //                cache = extractedvalue == linevalue ? string.Empty : thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue);//поиск извлеченной подстроки в кеше
-                                                //                if (cache.Length > 0)
-                                                //                {
-                                                //                    Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
-                                                //                }
-                                                //                else
-                                                //                {
-                                                //                    InputLines.Rows.Add(extractedvalue.Length == 0 ? linevalue : extractedvalue);
-                                                //                }
-                                                //            }
-                                                //        }
-                                                //        InputLinesInfo.Rows.Add(linevalue, Translation, t, CurrentRowIndex);
-                                                //    }
-                                                //}
-                                                //else
-                                                //{
-                                                //    //cache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);
-                                                //    cache = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(InputOriginalLine);
-                                                //    if (cache.Length > 0)
-                                                //    {
-                                                //        thDataWork.THFilesElementsDataset.Tables[t].Rows[CurrentRowIndex][OrigColIndex + 1] = cache;
-                                                //    }
-                                                //    else
-                                                //    {
-                                                //        //с одной строкой просто добавить её в таблицы
-                                                //        extractedvalue = thDataWork.Main.THExtractTextForTranslation(InputOriginalLine);
-                                                //        InputLines.Rows.Add(extractedvalue.Length == 0 ? InputOriginalLine : extractedvalue);
-                                                //        InputLinesInfo.Rows.Add(InputOriginalLine, string.Empty, t, CurrentRowIndex);
-                                                //    }
-
-                                                //}
-                                            }
-
                                         }
-                                    }
-
-                                    if (TranslateIt)
-                                    {
-                                        CurrentCharsCount = 0;
-
-                                        TranslateItNow(InputLines, InputLinesInfo);
+                                        //original, translation(when exists in cache), table number, row number
+                                        InputLinesInfo.Add(new InputLinesInfoData(linevalue, Translation, t, CurrentRowIndex, currentLineNumber == LinesCount, IsExtracted));
                                     }
                                 }
                             }
 
-                            //перевести, если после прохода по всем таблицам добавленные строки так и не были переведены
-                            if (InputLines.Rows.Count>0)
+                            if (TranslateIt)
                             {
+                                CurrentCharsCount = 0;
+
                                 TranslateItNow(InputLines, InputLinesInfo);
                             }
                         }
+                    }
+
+                    //перевести, если после прохода по всем таблицам добавленные строки так и не были переведены
+                    if (InputLines.Count > 0)
+                    {
+                        TranslateItNow(InputLines, InputLinesInfo);
                     }
 
                     //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
@@ -590,32 +522,32 @@ namespace TranslationHelper.Functions
             thDataWork.Main.ProgressInfo(false);
         }
 
-        private void TranslateItNow(DataTable InputLines, DataTable InputLinesInfo)
+        private void TranslateItNow(List<string> InputLines, List<InputLinesInfoData> InputLinesInfo)
         {
-            if (InputLines.Rows.Count > 0)
+            if (InputLines.Count > 0)
             {
                 TranslateLinesAndSetTranslation(InputLines, InputLinesInfo/*, THTranslationCache*/);
             }
-            else if (InputLinesInfo.Rows.Count > 0)
+            else if (InputLinesInfo.Count > 0)
             {
                 int PreviousTableIndex = -1;
                 int PreviousRowIndex = -1;
                 int NewTableIndex;
                 int NewRowIndex;
-                int rowscount = InputLinesInfo.Rows.Count;
+                int rowscount = InputLinesInfo.Count;
                 StringBuilder ResultValue = new StringBuilder(rowscount);
                 for (int i = 0; i < rowscount; i++)
                 {
-                    var rowInfo = InputLinesInfo.Rows[i];
-                    NewTableIndex = int.Parse(rowInfo[2] as string, CultureInfo.GetCultureInfo("en-US"));
-                    NewRowIndex = int.Parse(rowInfo[3] as string, CultureInfo.GetCultureInfo("en-US"));
-                    if (string.IsNullOrEmpty(rowInfo[0] as string))
+                    var rowInfo = InputLinesInfo[i];
+                    NewTableIndex = rowInfo.GetTableIndex;
+                    NewRowIndex = rowInfo.GetRowIndex;
+                    if (string.IsNullOrEmpty(rowInfo.GetOriginal))
                     {
                         ResultValue.Append(Environment.NewLine);
                     }
-                    else if (!string.IsNullOrEmpty(rowInfo[1] as string))
+                    else if (!string.IsNullOrEmpty(rowInfo.GetCachedTranslation))
                     {
-                        ResultValue.Append(rowInfo[1]);
+                        ResultValue.Append(rowInfo.GetCachedTranslation);
                     }
                     if (NewRowIndex == PreviousRowIndex && i < rowscount - 1)
                     {
@@ -632,15 +564,15 @@ namespace TranslationHelper.Functions
             //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
             thDataWork.OnlineTranslationCache.WriteCache();//промежуточная запись кеша
 
-            InputLines.Rows.Clear();
-            InputLinesInfo.Rows.Clear();
+            InputLines.Clear();
+            InputLinesInfo.Clear();
         }
 
-        private void TranslateLinesAndSetTranslation(DataTable InputLines, DataTable InputLinesInfo/*, DataSet THTranslationCache*/)
+        private void TranslateLinesAndSetTranslation(List<string> InputLines, List<InputLinesInfoData> InputLinesInfo)
         {
             //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
             //add table rows to string array
-            string[] OriginalLines = InputLines.Rows.OfType<DataRow>().Select(row => row[0].ToString()).ToArray();
+            string[] OriginalLines = InputLines.ToArray();
 
             //сброс кеша в GoogleAPI
             GoogleAPI.ResetCache();
@@ -651,16 +583,16 @@ namespace TranslationHelper.Functions
             //int infoCount = InputLinesInfo.Rows.Count;
             //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
 
-            if (TranslatedLines != null && TranslatedLines.Length > 0 && InputLines.Rows.Count == TranslatedLines.Length)
+            if (TranslatedLines != null && TranslatedLines.Length > 0 && InputLines.Count == TranslatedLines.Length)
             {
                 StringBuilder ResultValue = new StringBuilder();
                 int TranslatedLinesIndex = 0;
-                for (int InfoIndex = 0; InfoIndex < InputLinesInfo.Rows.Count; InfoIndex++)
+                for (int InfoIndex = 0; InfoIndex < InputLinesInfo.Count; InfoIndex++)
                 {
-                    var InfoRow = InputLinesInfo.Rows[InfoIndex];
+                    var InfoRow = InputLinesInfo[InfoIndex];
 
                     string newLine;
-                    if (InfoRow[4] as string == "0")
+                    if (!InfoRow.GetIsLastLineInString)
                     {
                         newLine = Environment.NewLine;
                     }
@@ -669,16 +601,16 @@ namespace TranslationHelper.Functions
                         newLine = string.Empty;
                     }
 
-                    if (!string.IsNullOrEmpty(InfoRow[1] + string.Empty))//перевод найден в кеше
+                    if (!string.IsNullOrEmpty(InfoRow.GetCachedTranslation))//перевод найден в кеше
                     {
-                        ResultValue.Append(InfoRow[1] + string.Empty);
+                        ResultValue.Append(InfoRow.GetCachedTranslation);
                     }
-                    else if (string.IsNullOrEmpty(InfoRow[0] + string.Empty))//пустая строка в оригинале
+                    else if (string.IsNullOrEmpty(InfoRow.GetOriginal))//пустая строка в оригинале
                     {
                     }
                     else
                     {
-                        if (Equals(InputLines.Rows[TranslatedLinesIndex][0], InfoRow[0]))
+                        if (InputLines[TranslatedLinesIndex]==InfoRow.GetOriginal)
                         {
                             ResultValue.Append(TranslatedLines[TranslatedLinesIndex]);
                         }
@@ -689,9 +621,9 @@ namespace TranslationHelper.Functions
                             (
                                 TranslatedLines[TranslatedLinesIndex]
                             ,
-                                InfoRow[0] as string
+                                InfoRow.GetOriginal
                             ,
-                                InputLines.Rows[TranslatedLinesIndex][0] as string
+                                InputLines[TranslatedLinesIndex]
                             ));
                         }
                         TranslatedLinesIndex++;
@@ -701,214 +633,16 @@ namespace TranslationHelper.Functions
                     if (newLine.Length == 0)
                     {
                         SetTranslationResultToCellIfEmpty(
-                            int.Parse(InfoRow[2] as string, CultureInfo.GetCultureInfo("en-US"))
+                            InfoRow.GetTableIndex
                             ,
-                            int.Parse(InfoRow[3] as string, CultureInfo.GetCultureInfo("en-US"))
+                            InfoRow.GetRowIndex
                             ,
                             ResultValue
-                            //,
-                            //THTranslationCache
                             );
                         ResultValue.Clear();
                     }
                 }
             }
-
-            {
-                //if (TranslatedLines != null && TranslatedLines.Length > 0)//check if returned lines from translator is valid
-                //{
-                //    StringBuilder ResultValue = new StringBuilder();
-
-                //    int PreviousTableIndex = -1;
-                //    int PreviousRowIndex = -1;
-                //    int i2 = 0;
-
-                //    int TableIndex = 0;
-                //    int RowIndex = 0;
-
-                //    int TranslatedLinesLength = TranslatedLines.Length;
-                //    for (int i = 0; i < TranslatedLinesLength; i++)//iteration through translated lines
-                //    {
-                //        string TranslatedLine = TranslatedLines[i];//set translated line to string
-                //        var InfoRow = InputLinesInfo.Rows[i2];//set info to datarow
-                //        {
-                //            {
-                //                //string fdsfsdf = TranslatedLines[i];
-                //                //string dfsgsdg1 = fdsfsdf;
-                //                //--------------------------------
-                //                //Блок считывания индеков таблицы и строки
-                //                //добавление переноса, если строка той же ячейки, либо запись результата, если уже новая ячейка
-                //                //string prelastvalue="";
-                //                //string lastvalue = "";
-                //                //try
-                //                //{
-                //                //    int inforowscount = InputLinesInfo.Rows.Count;
-                //                //    if (inforowscount > 0)
-                //                //    {
-                //                //        if (inforowscount > 1)
-                //                //        {
-                //                //            prelastvalue = InputLinesInfo.Rows[InputLines.Rows.Count - 2][1] + string.Empty;
-
-                //                //        }
-                //                //        lastvalue = InputLinesInfo.Rows[InputLinesInfo.Rows.Count - 1][1] + string.Empty;
-
-                //                //    }
-                //            }
-                //        }
-                //        //set table index and row index from inforow to integers
-                //        TableIndex = int.Parse(InfoRow[2] as string, CultureInfo.GetCultureInfo("en-US"));
-                //        RowIndex = int.Parse(InfoRow[3] as string, CultureInfo.GetCultureInfo("en-US"));
-                //        {
-                //            {
-                //                //}
-                //                //catch(Exception ex)
-                //                //{
-                //                //    MessageBox.Show(ex.ToString());
-                //                //}
-                //                //string asdasd = prelastvalue;
-                //                //string adsasdaaa = lastvalue;
-                //            }
-                //        }
-
-                //        if (TableIndex == PreviousTableIndex && (RowIndex == PreviousRowIndex /*|| (i2 + 1 < InputLinesInfo.Rows.Count && TableIndex== int.Parse(InputLinesInfo.Rows[i2 + 1][2] as string)  && RowIndex == int.Parse(InputLinesInfo.Rows[i2 + 1][3] as string))*/))
-                //        {
-                //            ResultValue.Append(Environment.NewLine);
-                //        }
-                //        else
-                //        {
-                //            {
-                //                //string originalValue = InfoRow[0] as string;
-                //                //string extractedValue = InputLines.Rows[i][0] as string;
-                //                //SetTranslationResultToCellIfEmpty(
-                //                //    PreviousTableIndex == -1
-                //                //    ?
-                //                //    TableIndex
-                //                //    : 
-                //                //    PreviousTableIndex
-                //                //    , 
-                //                //    PreviousRowIndex == -1
-                //                //    ? 
-                //                //    RowIndex
-                //                //    : 
-                //                //    PreviousRowIndex
-                //                //    , 
-                //                //    PreviousRowIndex == -1 && ResultValue.ToString().Length == 0
-                //                //    ? 
-                //                //    ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, originalValue, extractedValue))
-                //                //    : 
-                //                //    ResultValue
-                //                //    ,
-                //                //    THTranslationCache
-                //                //    );
-                //            }
-
-                //            SetTranslationResultToCellIfEmpty(
-                //                PreviousTableIndex
-                //                ,
-                //                PreviousRowIndex
-                //                ,
-                //                ResultValue
-                //                //,
-                //                //THTranslationCache
-                //                );
-                //        }
-
-                //        //--------------------------------
-                //        //Блок записи пустой строки или кеша из информации, если они были и увеличение i2 на 1
-
-                //        bool WritedFromInfo = true;
-                //        while (WritedFromInfo)
-                //        {
-                //            string InfoRowOriginal = InfoRow[0] as string;
-                //            string InfoRowCachedTranslation = InfoRow[1] as string;
-                //            WritedFromInfo = false;
-                //            if (string.IsNullOrEmpty(InfoRowOriginal))
-                //            {
-                //                //ResultValue.Append(string.Empty); //закоментировано для оптимизации, тот же эффект добавление пустой строки
-                //                WritedFromInfo = true;
-                //                i2++;
-                //            }
-                //            else if (!string.IsNullOrEmpty(InfoRowCachedTranslation))
-                //            {
-                //                ResultValue.Append(InfoRowCachedTranslation);
-                //                WritedFromInfo = true;
-                //                i2++;
-                //            }
-
-                //            if (WritedFromInfo)//контроль, когда было записано из Info , предотвращает запись лишнего переноса
-                //            {
-                //                PreviousRowIndex = RowIndex;
-                //                PreviousTableIndex = TableIndex;
-                //                //--------------------------------
-                //                //Блок считывания индеков таблицы и строки
-                //                //добавление переноса, если строка той же ячейки, либо запись результата, если уже новая ячейка
-                //                InfoRow = InputLinesInfo.Rows[i2];//еще раз переприсваивание, т.к. i2 поменялось
-                //                TableIndex = int.Parse(InfoRow[2] as string, CultureInfo.CurrentCulture);
-                //                RowIndex = int.Parse(InfoRow[3] as string, CultureInfo.CurrentCulture);
-
-                //                if (RowIndex == PreviousRowIndex && TableIndex == PreviousTableIndex)
-                //                {
-                //                    ResultValue.AppendLine();
-                //                }
-                //                else
-                //                {
-                //                    SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue/*, THTranslationCache*/);
-                //                }
-
-                //                //--------------------------------
-                //            }
-                //        }
-
-                //        string originalLineValue = InfoRow[0] as string;
-                //        string extractedLineValue = InputLines.Rows[i][0] as string;
-                //        ResultValue.Append(PasteTranslationBackIfExtracted(TranslatedLine, originalLineValue, extractedLineValue));
-
-                //        //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, (originalLineValue.Length == extractedLineValue.Length && originalLineValue == extractedLineValue) ? originalLineValue : extractedLineValue, TranslatedLine);
-                //        FunctionsTable.AddToTranslationCacheIfValid(thDataWork, (originalLineValue.Length == extractedLineValue.Length && originalLineValue == extractedLineValue) ? originalLineValue : extractedLineValue, TranslatedLine);
-
-                //        PreviousRowIndex = RowIndex;
-                //        PreviousTableIndex = TableIndex;
-                //        i2++;
-                //    }
-
-                //    //--------------------------------ВТОРОЙ БЛОК
-                //    //-когда строки в переводчике закончились а InputLinesInfo.Rows еще нет
-                //    int InputLinesInfoRowsCount = InputLinesInfo.Rows.Count;
-                //    while (i2 < InputLinesInfoRowsCount)
-                //    {
-                //        var InfoRow = InputLinesInfo.Rows[i2];
-
-                //        TableIndex = int.Parse(InfoRow[2] as string, CultureInfo.CurrentCulture);
-                //        RowIndex = int.Parse(InfoRow[3] as string, CultureInfo.CurrentCulture);
-
-                //        if (TableIndex == PreviousTableIndex && RowIndex == PreviousRowIndex)
-                //        {
-                //            ResultValue.AppendLine();
-                //        }
-                //        else
-                //        {
-                //            SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue/*, THTranslationCache*/);
-                //        }
-
-                //        string InfoOriginalLineValue = InfoRow[0] as string;
-                //        string InfoCacheValue = InfoRow[1] as string;
-                //        if (string.IsNullOrEmpty(InfoOriginalLineValue))
-                //        {
-                //            //ResultValue.Append(string.Empty); //закоментировано для оптимизации, тот же эффект добавление пустой строки                      
-                //        }
-                //        else if (!string.IsNullOrEmpty(InfoCacheValue))
-                //        {
-                //            ResultValue.Append(InfoCacheValue);
-                //        }
-
-                //        PreviousRowIndex = RowIndex;
-                //        PreviousTableIndex = TableIndex;
-                //        i2++;
-                //    }
-                //    SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue/*, THTranslationCache*/);
-                //}
-            }
-
         }
 
         private void SetTranslationResultToCellIfEmpty(int PreviousTableIndex, int PreviousRowIndex, StringBuilder ResultValue/*, DataSet THTranslationCache*/)
@@ -940,6 +674,29 @@ namespace TranslationHelper.Functions
                 }
                 ResultValue.Clear();
             }
+        }
+    }
+
+    /// <summary>
+    /// for translation by big blocks
+    /// </summary>
+    internal class InputLinesInfoData
+    {
+        internal string GetOriginal { get; }
+        internal string GetCachedTranslation { get; }
+        internal int GetTableIndex { get; }
+        internal int GetRowIndex { get; }
+        internal bool GetIsLastLineInString { get; }
+        internal bool GetIsExtracted { get; }
+
+        internal InputLinesInfoData(string Original, string CachedTranslation, int TableIndex, int RowIndex, bool IsLastLineInString, bool IsExtracted)
+        {
+            GetOriginal = Original;
+            GetCachedTranslation = CachedTranslation;
+            GetTableIndex = TableIndex;
+            GetRowIndex = RowIndex;
+            GetIsLastLineInString = IsLastLineInString;
+            GetIsExtracted = IsExtracted;
         }
     }
 }

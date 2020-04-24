@@ -568,7 +568,7 @@ namespace TranslationHelper.Projects.RPGMMV
                                         //https://stackoverflow.com/questions/2391743/how-many-elements-of-array-are-not-null
                                         //int ymptyelementscnt = orig.Count(emptyvalue => string.IsNullOrEmpty(emptyvalue.Replace("\r", string.Empty)));
 
-                                        transA = FunctionsString.THSplit(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
+                                        transA = FunctionsString.SplitStringByEqualParts(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
                                     }
 
                                     //Подстраховочная проверка для некоторых значений из нескольких строк, полное сравнение перед построчной

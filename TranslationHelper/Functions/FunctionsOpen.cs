@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -176,9 +174,10 @@ namespace TranslationHelper.Functions
 
             if (new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).OpenDetect())
             {
-                if (new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).Open())
+                thDataWork.CurrentProject = new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork);
+                if (thDataWork.CurrentProject.Open())
                 {
-                    return new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).ProjectTitle();
+                    return thDataWork.CurrentProject.ProjectTitle();
                 }
                 return string.Empty;
             }
@@ -203,11 +202,11 @@ namespace TranslationHelper.Functions
             {
                 if (new RPGMMVOLD(thDataWork).OpenRPGMakerMVjson(sPath))
                 {
-                    for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
-                    {
-                        thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(thDataWork.THFilesElementsDataset.Tables[i].TableName)));//add all dataset tables names to the ListBox
+                    //for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
+                    //{
+                    //    thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(thDataWork.THFilesElementsDataset.Tables[i].TableName)));//add all dataset tables names to the ListBox
 
-                    }
+                    //}
                     return "RPG Maker MV json";
                 }
             }
@@ -215,13 +214,14 @@ namespace TranslationHelper.Functions
             {
                 if (new Raijin7Game(thDataWork).OpenDetect())
                 {
-                    if (new Raijin7Game(thDataWork).Open())
+                    thDataWork.CurrentProject = new Raijin7Game(thDataWork);
+                    if (thDataWork.CurrentProject.Open())
                     {
-                        foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
-                        {
-                            thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(table.TableName)));
-                        }
-                        return new Raijin7Game(thDataWork).ProjectTitle();
+                        //foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
+                        //{
+                        //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(table.TableName)));
+                        //}
+                        return thDataWork.CurrentProject.ProjectTitle();
                     }
                     else
                     {
@@ -243,28 +243,44 @@ namespace TranslationHelper.Functions
                 {
                     try
                     {
-                        //Properties.Settings.Default.THSelectedDir += "\\www\\data";
-                        //var MVJsonFIles = new List<string>();
-                        mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
-                        foreach (FileInfo file in mvdatadir.EnumerateFiles("*.json"))
+                        if (new RPGMMVGame(thDataWork).OpenDetect())
                         {
-                            //MessageBox.Show("file.FullName=" + file.FullName);
-                            //MVJsonFIles.Add(file.FullName);
-
-                            if (new RPGMMVOLD(thDataWork).OpenRPGMakerMVjson(file.FullName))
+                            thDataWork.CurrentProject = new RPGMMVGame(thDataWork);
+                            if (thDataWork.CurrentProject.Open())
                             {
+                                return thDataWork.CurrentProject.ProjectTitle();
                             }
                             else
                             {
                                 return string.Empty;
                             }
                         }
-
-                        for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
+                        else
                         {
-                            //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
-                            thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(thDataWork.THFilesElementsDataset.Tables[i].TableName)));
+                            //Properties.Settings.Default.THSelectedDir += "\\www\\data";
+                            //var MVJsonFIles = new List<string>();
+                            mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
+                            foreach (FileInfo file in mvdatadir.EnumerateFiles("*.json"))
+                            {
+                                //MessageBox.Show("file.FullName=" + file.FullName);
+                                //MVJsonFIles.Add(file.FullName);
+
+                                if (new RPGMMVOLD(thDataWork).OpenRPGMakerMVjson(file.FullName))
+                                {
+                                }
+                                else
+                                {
+                                    return string.Empty;
+                                }
+                            }
+
+                            for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
+                            {
+                                //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
+                                thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(thDataWork.THFilesElementsDataset.Tables[i].TableName)));
+                            }
                         }
+
 
                         return "RPG Maker MV";
                     }
@@ -296,7 +312,7 @@ namespace TranslationHelper.Functions
                             thDataWork.Main.extractedpatchpath += "\\patch";
                             //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
                             dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.Main.extractedpatchpath + "\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
-                                                                                                       //MessageBox.Show("patchdir1=" + patchdir);
+                                                                                                                       //MessageBox.Show("patchdir1=" + patchdir);
                         }
                         else if (Directory.Exists(thDataWork.Main.extractedpatchpath + Path.GetFileName(thDataWork.Main.extractedpatchpath) + "\\patch"))
                         {
@@ -357,7 +373,7 @@ namespace TranslationHelper.Functions
 
         internal void AfterOpenActions()
         {
-            if (thDataWork.Main.THFilesList.Items.Count==0 && thDataWork.THFilesElementsDataset.Tables.Count > 0)
+            if (thDataWork.Main.THFilesList.Items.Count == 0 && thDataWork.THFilesElementsDataset.Tables.Count > 0)
             {
                 foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
                 {
@@ -379,7 +395,7 @@ namespace TranslationHelper.Functions
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("An error occured:"+Environment.NewLine+ex);
+                    MessageBox.Show("An error occured:" + Environment.NewLine + ex);
                 }
             }
             _ = THMsg.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");

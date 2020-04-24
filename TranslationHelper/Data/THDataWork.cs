@@ -56,5 +56,8 @@ namespace TranslationHelper.Data
 
         //target textbox control value
         internal string TargetTextBoxPreValue;
+
+        //CurrentProject
+        internal ProjectBase CurrentProject;
     }
 }
