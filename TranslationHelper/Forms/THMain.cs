@@ -144,7 +144,7 @@ namespace TranslationHelper
             this.saveTranslationAsToolStripMenuItem.Text = T._("Save Translation as");
             this.loadTranslationToolStripMenuItem.Text = T._("Load Translation");
             this.loadTrasnlationAsToolStripMenuItem.Text = T._("Load Translation as");
-            this.runTestGameToolStripMenuItem.Text = T._("Run Test RPGMaker MV Game");
+            this.runTestGameToolStripMenuItem.Text = T._("Test");
             //Menu Edit
             this.editToolStripMenuItem.Text = T._("Edit");
             this.openInWebToolStripMenuItem.Text = T._("Open in Web");
