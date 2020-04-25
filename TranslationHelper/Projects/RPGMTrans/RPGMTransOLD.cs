@@ -316,7 +316,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                 else
                 {
                     //MessageBox.Show(LangF.THStrRPGMTransPatchInvalidVersionMsg);
-                    //THMsg.Show(LangF.THStrRPGMTransPatchInvalidVersionMsg);
+                    ///*THMsg*/MessageBox.Show(LangF.THStrRPGMTransPatchInvalidVersionMsg);
                     _file.Close();  //Закрываем файл
                     return false;
                 }
@@ -324,7 +324,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                 if (invalidformat == 1)
                 {
                     //MessageBox.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
-                    //THMsg.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
+                    ///*THMsg*/MessageBox.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
                     invalidformat = 0;
                     return false;
                 }
@@ -343,7 +343,7 @@ namespace TranslationHelper.Projects.RPGMTrans
             else if (invalidformat == 1)
             {
                 //MessageBox.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
-                //THMsg.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
+                ///*THMsg*/MessageBox.Show(LangF.THStrRPGMTransPatchInvalidFormatMsg);
                 return false;
             }
 
@@ -353,7 +353,7 @@ namespace TranslationHelper.Projects.RPGMTrans
             //остановка таймера и запись времени
             //swatch.Stop();
             //LogToFile("time=" + swatch.Elapsed.ToString(), true);//asdf
-            //THMsg.Show("time=" + time);
+            ///*THMsg*/MessageBox.Show("time=" + time);
 
             return true;
         }
@@ -566,7 +566,7 @@ namespace TranslationHelper.Projects.RPGMTrans
             //остановка таймера и запись времени
             //swatch.Stop();
             //LogToFile("time=" + swatch.Elapsed.ToString(), true);//asdf
-            //THMsg.Show("time=" + time);
+            ///*THMsg*/MessageBox.Show("time=" + time);
 
             return true;
 

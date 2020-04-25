@@ -426,7 +426,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     }
                     else
                     {
-                        THMsg.Show(T._("Nothing to add"));
+                        /*THMsg*/MessageBox.Show(T._("Nothing to add"));
                         return string.Empty;
                     }
                 }

@@ -23,7 +23,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
 
 
             string fileName = Path.GetFileNameWithoutExtension(thDataWork.FilePath);
-            thDataWork.THFilesElementsDataset.Tables.Add(fileName).Columns.Add("Original");
+            AddTables(fileName);
             using (StreamReader sr = new StreamReader(thDataWork.FilePath, Encoding.GetEncoding(932)))
             {
                 string line;
@@ -83,16 +83,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
                 }
             }
 
-            if (thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Count > 0)
-            {
-                thDataWork.THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
-                return true;
-            }
-            else
-            {
-                thDataWork.THFilesElementsDataset.Tables.Remove(fileName);
-                return false;
-            }
+            return CheckTablesContent(fileName);
         }
 
         internal override bool Save()

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -15,7 +14,7 @@ namespace TranslationHelper.Main.Functions
         {
             string returnValue = input;
 
-            foreach(var PatternReplacementPair in thDataWork.TranslationRegexRules)
+            foreach (var PatternReplacementPair in thDataWork.TranslationRegexRules)
             {
                 if (Regex.IsMatch(returnValue, PatternReplacementPair.Key))
                 {
@@ -115,11 +114,7 @@ namespace TranslationHelper.Main.Functions
                 {
                     //cind = THFileElementsDataGridView.Columns["Translation"].Index;//-поле untrans                            
                     initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-                    selcellscnt = new int[thDataWork.Main.THFileElementsDataGridView.GetRowsWithSelectedCellsCount()];//создать массив длинной числом выбранных ячеек
-                    for (int i = 0; i < selcellscnt.Length; i++) //записать индексы всех выбранных ячеек
-                    {
-                        selcellscnt[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, tind, thDataWork.Main.THFileElementsDataGridView.SelectedCells[i].RowIndex);
-                    }
+                    selcellscnt = FunctionsTable.GetDGVRowIndexsesInDataSetTable(thDataWork);
                 }
                 else if (Method == "t")
                 {

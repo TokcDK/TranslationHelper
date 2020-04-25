@@ -31,15 +31,9 @@ namespace TranslationHelper.Formats.RPGMTrans
                 {
                     string fname = Path.GetFileNameWithoutExtension(thDataWork.FilePath);
 
-                    _ = thDataWork.THFilesElementsDataset.Tables.Add(fname);
-                    _ = thDataWork.THFilesElementsDataset.Tables[fname].Columns.Add("Original");
-                    _ = thDataWork.THFilesElementsDataset.Tables[fname].Columns.Add("Translation");
-                    _ = thDataWork.THFilesElementsDataset.Tables[fname].Columns.Add("Context");
-                    _ = thDataWork.THFilesElementsDataset.Tables[fname].Columns.Add("Advice");
-                    _ = thDataWork.THFilesElementsDataset.Tables[fname].Columns.Add("Status");
-
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(fname);
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[fname].Columns.Add("Original");
+                    AddTables(fname, new string[] { "Context", "Advice", "Status" });
+                    var Table = thDataWork.THFilesElementsDataset.Tables[fname];
+                    var TableInfo = thDataWork.THFilesElementsDatasetInfo.Tables[fname];
 
                     while (!_file.EndOfStream)   //Читаем до конца
                     {
@@ -94,19 +88,20 @@ namespace TranslationHelper.Formats.RPGMTrans
                             }
                             else
                             {
-                                _ = thDataWork.THFilesElementsDataset.Tables[fname].Rows.Add(_original, _translation, _context, _advice, _status);
-                                if (thDataWork.THFilesElementsDatasetInfo == null)
+                                Table.Rows.Add(_original, _translation, _context, _advice, _status);
+                                if (TableInfo == null)
                                 {
                                 }
                                 else
                                 {
-                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[fname].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
+                                    TableInfo.Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
                                 }
                             }
 
-                            _context = string.Empty;  //Чистим
-                            _original = string.Empty;  //Чистим
-                            _translation = string.Empty;    //Чистим
+                            //Чистка
+                            _context = string.Empty;
+                            _original = string.Empty;
+                            _translation = string.Empty;
                         }
                     }
 
@@ -115,16 +110,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                         return false;
                     }
 
-                    if (thDataWork.THFilesElementsDataset.Tables[fname].Rows.Count > 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        thDataWork.THFilesElementsDataset.Tables.Remove(fname);
-                        thDataWork.THFilesElementsDatasetInfo.Tables.Remove(fname);
-                        return false;
-                    }
+                    return CheckTablesContent(fname);
                 }
             }
             catch
@@ -149,15 +135,17 @@ namespace TranslationHelper.Formats.RPGMTrans
 
                 buffer.AppendLine("> RPGMAKER TRANS PATCH FILE VERSION 3.2");// + Environment.NewLine);
 
-                for (int y = 0; y < thDataWork.THFilesElementsDataset.Tables[fname].Rows.Count; y++)
+                int TableRowsCount = thDataWork.THFilesElementsDataset.Tables[fname].Rows.Count;
+                for (int y = 0; y < TableRowsCount; y++)
                 {
+                    var row = thDataWork.THFilesElementsDataset.Tables[fname].Rows[y];
                     buffer.AppendLine("> BEGIN STRING");// + Environment.NewLine);
 
-                    buffer.AppendLine(base.thDataWork.THFilesElementsDataset.Tables[fname].Rows[y][originalcolumnindex] + string.Empty);// + Environment.NewLine);
+                    buffer.AppendLine(row[originalcolumnindex] + string.Empty);// + Environment.NewLine);
 
-                    string[] CONTEXT = (thDataWork.THFilesElementsDataset.Tables[fname].Rows[y][contextcolumnindex] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
+                    string[] CONTEXT = (row[contextcolumnindex] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
                     
-                    string TRANSLATION = thDataWork.THFilesElementsDataset.Tables[fname].Rows[y][translationcolumnindex] + string.Empty;
+                    string TRANSLATION = row[translationcolumnindex] + string.Empty;
                     for (int g = 0; g < CONTEXT.Length; g++)
                     {
 

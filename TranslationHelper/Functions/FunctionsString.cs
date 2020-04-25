@@ -72,9 +72,9 @@ namespace TranslationHelper.Main.Functions
             int strLength = str.Length;
             //памятка о приведении типов
             //https://www.aubrett.com/article/information-technology/web-development/net-framework/csharp/csharp-division-floating-point
-            //THMsg.Show("strLength=" + strLength + ",str=" + str + ",f=" + f);
+            ///*THMsg*/MessageBox.Show("strLength=" + strLength + ",str=" + str + ",f=" + f);
             int substrLength = (int)Math.Ceiling((double)strLength / chunkSize);//округление числа символов в части в большую сторону
-            //THMsg.Show("f="+f+", substrLength=" + substrLength);
+            ///*THMsg*/MessageBox.Show("f="+f+", substrLength=" + substrLength);
             int partsLength = parts.Length;
             for (int i = 0; i < partsLength; i++)
             {
@@ -186,17 +186,12 @@ namespace TranslationHelper.Main.Functions
             int corigind = thDataWork.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
             if (!All)
             {
-                int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.GetRowsWithSelectedCellsCount();
+                int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
                 if (THFileElementsDataGridViewSelectedCellsCount > 0)
                 {
                     try
                     {
-                        int[] indexes = new int[THFileElementsDataGridViewSelectedCellsCount];
-                        for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
-                        {
-                            int rind = thDataWork.Main.THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                            indexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, TableIndex, rind);
-                        }
+                        int[] indexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable(thDataWork);
                         foreach (var rindex in indexes)
                         {
                             var DSOrigCell = thDataWork.THFilesElementsDataset.Tables[TableIndex].Rows[rindex][corigind] + string.Empty;

@@ -12,7 +12,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
-    class JSON : FormatBase
+    class JSON : RPGMMVBase
     {
         public JSON(THDataWork thDataWork) : base(thDataWork)
         {
@@ -29,13 +29,7 @@ namespace TranslationHelper.Formats.RPGMMV
             //LogToFile("Jsonname = " + Jsonname);
             try
             {
-                if (!thDataWork.THFilesElementsDataset.Tables.Contains(Jsonname))
-                {
-                    thDataWork.THFilesElementsDataset.Tables.Add(Jsonname); // create table with json name
-                    thDataWork.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Original"); //create Original column
-                    thDataWork.THFilesElementsDatasetInfo.Tables.Add(Jsonname); // create table with json name
-                    thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Columns.Add("Original"); //create Original column
-                }
+                AddTables(Jsonname);
 
                 //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
                 JToken root;
@@ -107,21 +101,16 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             //LogToFile(string.Empty, true);
 
-            if (success && thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Count > 0)
+            if (success && CheckTablesContent(Jsonname))
             {
-                thDataWork.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Translation");
                 return true;
             }
             else
             {
-                thDataWork.THFilesElementsDataset.Tables.Remove(Jsonname); // remove table if was no items added
-                thDataWork.THFilesElementsDatasetInfo.Tables.Remove(Jsonname); // remove table if was no items added
                 return false;
             }
         }
 
-        //List<string> TempList;
-        //List<string> TempListInfo;
         private StringBuilder textsb;
         private string curcode = string.Empty;
         //string cType;
@@ -187,9 +176,6 @@ namespace TranslationHelper.Formats.RPGMMV
                             {
                                 //LogToFile("textsb is not empty. add. value=" + mergedstring + ", curcode=" + curcode);
 
-                                thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(mergedstring);
-                                //TempList.Add(mergedstring);//много быстрее
-
                                 //JToken t = token;
                                 //while (!string.IsNullOrEmpty(t.Parent.Path))
                                 //{
@@ -197,8 +183,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                 //    extra += "\\" + t.Path;
                                 //}
 
-                                thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
-                                //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
+                                AddData(Jsonname, mergedstring, "JsonPath: " + token.Path);
                             }
                             textsb.Clear();
                         }
@@ -216,9 +201,6 @@ namespace TranslationHelper.Formats.RPGMMV
                         //LogToFile("Jsonname=" + Jsonname+ ", tokenvalue=" + tokenvalue);
                         //LogToFile(string.Empty, true);
 
-                        thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
-                        //TempList.Add(tokenvalue);//много быстрее
-
                         //dsinfo.Tables[0].Rows.Add(cType+"\\"+ cId + "\\" + cCode + "\\" + cName);
                         //JToken t = token;
                         //while (!string.IsNullOrEmpty(t.Parent.Path))
@@ -227,8 +209,7 @@ namespace TranslationHelper.Formats.RPGMMV
                         //    extra += "\\"+t.Path;
                         //}
 
-                        thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
-                        //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
+                        AddData(Jsonname, tokenvalue, "JsonPath: " + token.Path);
                     }
                 }
                 //var childNode = inTreeNode.Nodes[inTreeNode.Nodes.Add(new TreeNode(token.ToString()))];
@@ -300,6 +281,18 @@ namespace TranslationHelper.Formats.RPGMMV
                 //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
             }
         }
+
+        //List<string> TempList;
+        //List<string> TempListInfo;
+        private void AddData(string Jsonname, string Value, string Info)
+        {
+            thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(Value);
+            //TempList.Add(Value);//много быстрее
+
+            thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(Info);
+            //TempListInfo.Add(Info);//много быстрее
+        }
+
         bool skipit = false;
 
         internal override bool Save()
@@ -309,6 +302,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         private bool WriteJson(string Jsonname, string sPath)
         {
+            thDataWork.Main.ProgressInfo(true, T._("Writing")+ ": " + Jsonname + ".json");
             //ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
             //LogToFile("Jsonname = " + Jsonname);
             try

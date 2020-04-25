@@ -84,6 +84,7 @@
     <Compile Include="Data\CleanupData.cs" />
     <Compile Include="Data\THDataWork.cs" />
     <Compile Include="Extensions\ExtensionsString.cs" />
+    <Compile Include="Extensions\ExtensionsTable.cs" />
     <Compile Include="ExternalAdditions\CopyFolder.cs" />
     <Compile Include="ExternalAdditions\DataGridViewEx.cs" />
     <Compile Include="ExternalAdditions\GDI.cs" />
@@ -91,18 +92,22 @@
     <Compile Include="ExternalAdditions\T.cs" />
     <Compile Include="Formats\FormatBase.cs" />
     <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\TXT.cs" />
-    <Compile Include="Formats\KiriKiri\CSV.cs" />
-    <Compile Include="Formats\KiriKiri\CSVOld.cs" />
-    <Compile Include="Formats\KiriKiri\SCRIPT.cs" />
-    <Compile Include="Formats\KiriKiri\TJS.cs" />
-    <Compile Include="Formats\KiriKiri\TSV.cs" />
-    <Compile Include="Formats\KiriKiri\TSVOld.cs" />
-    <Compile Include="Formats\KiriKiri\XP3.cs" />
+    <Compile Include="Formats\KiriKiri\Overall\CSV.cs" />
+    <Compile Include="Formats\KiriKiri\Old\CSVOld.cs" />
+    <Compile Include="Formats\KiriKiri\Overall\SCRIPT.cs" />
+    <Compile Include="Formats\KiriKiri\Overall\TJS.cs" />
+    <Compile Include="Formats\KiriKiri\Overall\TSV.cs" />
+    <Compile Include="Formats\KiriKiri\Old\TSVOld.cs" />
+    <Compile Include="Formats\KiriKiri\Overall\XP3.cs" />
     <Compile Include="Formats\Raijin7\csv\CSV.cs" />
     <Compile Include="Formats\Raijin7\eve\TXT.cs" />
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
-    <Compile Include="Formats\RPGMMV\PLUGINS_JS.cs" />
+    <Compile Include="Formats\RPGMMV\JS\JSBase.cs" />
+    <Compile Include="Formats\RPGMMV\JS\PLUGINS.cs" />
     <Compile Include="Formats\RPGMMV\JSON.cs" />
+    <Compile Include="Formats\RPGMMV\JS\RecollectionMode.cs" />
+    <Compile Include="Formats\RPGMMV\JS\JSSharedDataRPGMMV.cs" />
+    <Compile Include="Formats\RPGMMV\RPGMMVBase.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransOther.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransPatchBase.cs" />
     <Compile Include="Formats\RPGMTransPatch\TXTv3.cs" />
@@ -233,6 +238,7 @@
   <ItemGroup>
     <Folder Include="Costura32\" />
     <Folder Include="Costura64\" />
+    <Folder Include="Formats\KiriKiri\Games\" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.VersionCheckAnalyzer.resources.dll" />

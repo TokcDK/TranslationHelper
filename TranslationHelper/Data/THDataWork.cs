@@ -2,7 +2,6 @@
 using System.Data;
 using TranslationHelper.Functions;
 using TranslationHelper.Projects;
-using TranslationHelper.Projects.KiriKiri;
 
 namespace TranslationHelper.Data
 {
@@ -17,14 +16,7 @@ namespace TranslationHelper.Data
             SPath = string.Empty;
             FilePath = string.Empty;
 
-            ProjectsList = new List<ProjectBase>()
-            {
-                new RPGMTransPatch(this),
-                new RPGMGame(this),
-                new RPGMMVGame(this),
-                new KiriKiriGame(this),
-                new Raijin7Game(this)
-            };
+            ProjectsList = ProjectBase.GetListOfProjects(this);
 
             TranslationRegexRules = new Dictionary<string, string>();
             CellFixesRegexRules = new Dictionary<string, string>();

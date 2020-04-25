@@ -2,15 +2,44 @@
 using System;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Main.Functions
 {
     static class FunctionsTable
     {
+        /// <summary>
+        /// Will return array with real indexes of rows in dataset which currently selected in datagridview
+        /// </summary>
+        /// <param name="selectedRowsCount"></param>
+        /// <returns></returns>
+        internal static int[] GetDGVRowIndexsesInDataSetTable(THDataWork thDataWork)
+        {
+            int[] selindexes = new int[thDataWork.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
+            for (int i = 0; i < selindexes.Length; i++)
+            {
+                //по нахождению верного индекса строки
+                //https://stackoverflow.com/questions/50999121/displaying-original-rowindex-after-filter-in-datagridview
+                //https://stackoverflow.com/questions/27125494/get-index-of-selected-row-in-filtered-datagrid
+                //DataRow r = ((DataRowView)BindingContext[THFileElementsDataGridView.DataSource].).Row;
+                //selindexes[i] = r.Table.Rows.IndexOf(r); //находит верный но только длявыбранной ячейки
+                //
+                //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
+                //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
+                //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
+                int index = GetDGVSelectedRowIndexInDatatable(thDataWork, thDataWork.Main.THFilesList.SelectedIndex, thDataWork.Main.THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                selindexes[i] = index;
+
+                //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+            }
+
+            Array.Sort(selindexes);//сортировка номеров строк, для порядка
+
+            return selindexes;
+        }
+
         /// <summary>
         /// shows first row where translation cell is empty
         /// </summary>
@@ -66,13 +95,6 @@ namespace TranslationHelper.Main.Functions
                 FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName), error + Environment.NewLine + Environment.NewLine);
                 MessageBox.Show(error);
             }
-        }
-
-        internal static int GetRowsWithSelectedCellsCount(this DataGridView DGV)
-        {
-            //https://stackoverflow.com/questions/47357051/c-datagridview-how-to-get-selected-count-with-cells-and-rows
-            return DGV.SelectedCells.Cast<DataGridViewCell>()
-                                       .Select(c => c.RowIndex).Distinct().Count();
         }
 
         /// <summary>
@@ -560,7 +582,7 @@ namespace TranslationHelper.Main.Functions
 
         internal static void CleanTableCells(THDataWork thDataWork, int Tindex)
         {
-            int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.GetRowsWithSelectedCellsCount();
+            int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
             // Ensure that text is currently selected in the text box.    
             if (THFileElementsDataGridViewSelectedCellsCount == 0)
             {

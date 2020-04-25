@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Projects
@@ -58,6 +56,40 @@ namespace TranslationHelper.Projects
         internal virtual string NewlineSymbol()
         {
             return Environment.NewLine;
+        }
+
+        internal virtual bool IsTestRunEnabled => false;
+
+        /// <summary>
+        /// Get all inherited classes of an abstract class
+        /// </summary>
+        /// <returns></returns>
+        internal static List<ProjectBase> GetListOfProjects(THDataWork thDataWork)
+        {
+            //ProjectsList = new List<ProjectBase>()
+            //{
+            //    new RPGMTransPatch(this)
+            //    ,
+            //    new RPGMGame(this)
+            //    ,
+            //    new RPGMMVGame(this)
+            //    ,
+            //    new KiriKiriGame(this)
+            //    ,
+            //    new Raijin7Game(this)
+            //    ,
+            //    new HowToMakeTrueSlavesRiseofaDarkEmpire(this)
+            //};
+
+            //https://stackoverflow.com/a/5411981
+            //Get all inherited classes of an abstract class
+            IEnumerable<ProjectBase> SubclassesOfProjectBase = typeof(ProjectBase)
+            .Assembly.GetTypes()
+            .Where(t => t.IsSubclassOf(typeof(ProjectBase)) && !t.IsAbstract)
+            .Select(t => (ProjectBase)Activator.CreateInstance(t, thDataWork));
+
+            return (from ProjectBase SubClass in SubclassesOfProjectBase
+                    select SubClass).ToList();
         }
     }
 }

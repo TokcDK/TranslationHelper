@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
+using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects.RPGMMV;
@@ -787,7 +789,8 @@ namespace TranslationHelper
                         {
                             Properties.Settings.Default.THSelectedDir = THSaveFolderBrowser.SelectedPath;
                             //MessageBox.Show("Сохранение завершено!");
-                            THMsg.Show(T._("Save complete!"));
+                            /*THMsg*/
+                            MessageBox.Show(T._("Save complete!"));
                         }
                     }
                 }
@@ -1342,7 +1345,7 @@ namespace TranslationHelper
             //    infoabouts += ", s[" + i + "]=" + s[i];
             //}
 
-            //THMsg.Show("s.Length=" + s.Length + infoabouts);
+            ///*THMsg*/MessageBox.Show("s.Length=" + s.Length + infoabouts);
         }
 
         internal bool savemenusNOTenabled = true;
@@ -1391,12 +1394,11 @@ namespace TranslationHelper
         internal bool IsTranslating = false;
         private void OnlineTranslateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int selectedRowsCount = THFileElementsDataGridView.GetRowsWithSelectedCellsCount();
-            if (selectedRowsCount > 0)
+            if (THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount() > 0)
             {
                 //if (IsTranslating)
                 //{
-                //    THMsg.Show(T._("Already in process.."));
+                //    /*THMsg*/MessageBox.Show(T._("Already in process.."));
                 //    return;
                 //}
                 IsTranslating = true;
@@ -1404,28 +1406,9 @@ namespace TranslationHelper
                 //координаты стартовой строк, колонки оригинала и номера таблицы
                 int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
                 int tableindex = THFilesList.SelectedIndex;
-                int[] selindexes = new int[selectedRowsCount];
+                int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable(thDataWork);
 
-                for (int i = 0; i < selindexes.Length; i++)
-                {
-                    //по нахождению верного индекса строки
-                    //https://stackoverflow.com/questions/50999121/displaying-original-rowindex-after-filter-in-datagridview
-                    //https://stackoverflow.com/questions/27125494/get-index-of-selected-row-in-filtered-datagrid
-                    //DataRow r = ((DataRowView)BindingContext[THFileElementsDataGridView.DataSource].).Row;
-                    //selindexes[i] = r.Table.Rows.IndexOf(r); //находит верный но только длявыбранной ячейки
-                    //
-                    //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
-                    //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
-                    //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                    int index = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
-                    selindexes[i] = index;
-
-                    //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
-                }
-
-                Array.Sort(selindexes);//сортировка номеров строк, для порядка
-
-                //THMsg.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
+                ///*THMsg*/MessageBox.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
 
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                 //почемуто так не переводит, переводчик кидает ошибку при заппуске в другом потоке
@@ -1452,7 +1435,7 @@ namespace TranslationHelper
         {
             //if (IsTranslating)
             //{
-            //    THMsg.Show(T._("Already in process.."));
+            //    /*THMsg*/MessageBox.Show(T._("Already in process.."));
             //    return;
             //}
             IsTranslating = true;
@@ -1490,7 +1473,7 @@ namespace TranslationHelper
         {
             //if (IsTranslating)
             //{
-            //    THMsg.Show(T._("Already in process.."));
+            //    /*THMsg*/MessageBox.Show(T._("Already in process.."));
             //    return;
             //}
             IsTranslating = true;
@@ -1543,7 +1526,7 @@ namespace TranslationHelper
         {
             try
             {
-                int dgvSelectedRowsCount = THFileElementsDataGridView.GetRowsWithSelectedCellsCount();
+                int dgvSelectedRowsCount = THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
                 if (dgvSelectedRowsCount == 0)
                 {
                     return;
@@ -1680,7 +1663,7 @@ namespace TranslationHelper
 
         private void FixSelectedCells(bool force = false)
         {
-            if (THFileElementsDataGridView.GetRowsWithSelectedCellsCount() > 0)
+            if (THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount() > 0)
             {
                 //эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
                 //на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
@@ -1731,7 +1714,7 @@ namespace TranslationHelper
 
         private void SetOriginalValueToTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.GetRowsWithSelectedCellsCount();
+            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
             if (THFileElementsDataGridViewSelectedCellsCount > 0)
             {
                 try
@@ -1953,7 +1936,7 @@ namespace TranslationHelper
 
                         System.Media.SystemSounds.Beep.Play();
                         ProgressInfo(false);
-                        MessageBox.Show("finished");
+                        //MessageBox.Show("finished");
                     }
                 }
             }
@@ -2033,17 +2016,19 @@ namespace TranslationHelper
 
         private async void RunTestGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
+            if (thDataWork.CurrentProject != null || RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
             {
-                CopyFolder.Copy(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data_bak"));
-                File.Copy(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js.bak"));
+                ProgressInfo(true, "Creating buckups");
+
+                var buckup = new PLUGINS(thDataWork);
+                buckup.MakeFilesBuckup();
 
                 try
                 {
                     bool success = false;
                     if (thDataWork.CurrentProject != null)
                     {
-                        success = thDataWork.CurrentProject.Save();
+                        success = await Task.Run(() => thDataWork.CurrentProject.Save()).ConfigureAwait(true);
                     }
                     else
                     {
@@ -2064,11 +2049,11 @@ namespace TranslationHelper
                                     break;
                                 }
                             }
-                            //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                            ///*THMsg*/MessageBox.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
                             if (changed)
                             {
 
-                                //THMsg.Show("start writing");
+                                ///*THMsg*/MessageBox.Show("start writing");
 
                                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                                 success = await Task.Run(() => new RPGMMVOLD(thDataWork).WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(true);
@@ -2131,10 +2116,8 @@ namespace TranslationHelper
                 catch
                 {
                 }
-                Directory.Delete(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data"), true);
-                Directory.Move(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data_bak"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data"));
-                File.Delete(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js"));
-                File.Move(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js.bak"), Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js"));
+
+                buckup.RestoreFromBakIfNeed();
             }
         }
 
@@ -2528,10 +2511,16 @@ namespace TranslationHelper
 
         private void ForceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int i = THFileElementsDataGridView.GetRowsWithSelectedCellsCount();
-            if (i == 1)
+            if (THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount() < 1)
             {
-                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, THFileElementsDataGridView.CurrentCell.RowIndex), 0, true, true);
+                return;
+            }
+
+            int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable(thDataWork);
+
+            foreach (int index in selindexes)
+            {
+                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, index), 0, true, true);
             }
         }
 
@@ -2542,7 +2531,7 @@ namespace TranslationHelper
 
         private void SplitSelectedLines()
         {
-            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.GetRowsWithSelectedCellsCount();
+            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
             if (THFileElementsDataGridViewSelectedCellsCount > 0)
             {
                 try
@@ -2757,7 +2746,7 @@ namespace TranslationHelper
         private void reloadRulesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ReloadTranslationRegexRules();
-            ReloadCellFixesRegexRules();            
+            ReloadCellFixesRegexRules();
         }
 
         internal void ReloadTranslationRegexRules()
@@ -2803,7 +2792,7 @@ namespace TranslationHelper
                                 ReadRule = !ReadRule;
                             }
 
-                            if(!thDataWork.TranslationRegexRules.ContainsKey(regexPattern))
+                            if (!thDataWork.TranslationRegexRules.ContainsKey(regexPattern))
                             {
                                 thDataWork.TranslationRegexRules.Add(regexPattern, regexReplacement);
                             }

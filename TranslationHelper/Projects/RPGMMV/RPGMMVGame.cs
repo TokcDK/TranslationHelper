@@ -1,14 +1,18 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMMV;
+using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects
 {
     class RPGMMVGame : ProjectBase
     {
+        readonly List<JSBase> ListOfJS;
         public RPGMMVGame(THDataWork thDataWork) : base(thDataWork)
         {
+            ListOfJS = new JSSharedData(thDataWork).ListOfJS;
         }
 
         internal override bool OpenDetect()
@@ -34,31 +38,39 @@ namespace TranslationHelper.Projects
             return "RPGMakerMV";
         }
 
+        internal override bool IsTestRunEnabled => true;
+
         internal override bool Open()
         {
+            bool IsAnyFileCompleted = false;
             try
             {
-                thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", "plugins.js");
-                new PLUGINS_JS(thDataWork).Open();
+                //Proceeed js-files
+                foreach (var JS in ListOfJS)
+                {
+                    thDataWork.Main.ProgressInfo(true, T._("opening file: ") + JS.JSName);
+                    thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
+                    if (JS.Open())
+                    {
+                        IsAnyFileCompleted = true;
+                    }
+                }
 
+                //Proceed json-files
                 var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
                 foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
                 {
                     if (OpenRPGMakerMVjson(file.FullName))
                     {
-                    }
-                    else
-                    {
-                        return false;
+                        IsAnyFileCompleted = true;
                     }
                 }
-
-                return true;
             }
             catch
             {
-                return false;
             }
+
+            return IsAnyFileCompleted;
         }
 
         private bool OpenRPGMakerMVjson(string sPath)
@@ -70,7 +82,7 @@ namespace TranslationHelper.Projects
 
                 string Jsonname = Path.GetFileNameWithoutExtension(sPath); // get json file name
 
-                //ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
+                thDataWork.Main.ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
 
                 string jsondata = File.ReadAllText(sPath); // get json data
 
@@ -104,13 +116,17 @@ namespace TranslationHelper.Projects
                     changed = true;
                 }
 
-                //THMsg.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                ///*THMsg*/MessageBox.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
                 if (changed)
                 {
-                    if (table.TableName == "plugins")
+                    if (table.TableName.EndsWith(".js"))
                     {
-                        thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", table.TableName + ".js");
-                        new PLUGINS_JS(thDataWork).Save();
+                        JSBase JS = GetCorrectJSbyName(table.TableName);
+                        if (JS != null)
+                        {
+                            thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
+                            JS.Save();
+                        }
                     }
                     else
                     {
@@ -121,6 +137,18 @@ namespace TranslationHelper.Projects
             }
 
             return true;
+        }
+
+        private JSBase GetCorrectJSbyName(string tableName)
+        {
+            foreach (var JS in new JSSharedData(thDataWork).ListOfJS)
+            {
+                if (tableName == JS.JSName)
+                {
+                    return JS;
+                }
+            }
+            return null;
         }
 
         internal override string NewlineSymbol()

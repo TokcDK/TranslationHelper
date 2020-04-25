@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
-using TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire;
 using TranslationHelper.Projects.KiriKiri;
 using TranslationHelper.Projects.RJ263914;
 using TranslationHelper.Projects.RPGMaker;
@@ -69,7 +69,8 @@ namespace TranslationHelper.Functions
                                 }
                                 else
                                 {
-                                    THMsg.Show(T._("Problem with source opening. Try to report to devs about it."));
+                                    /*THMsg*/
+                                    MessageBox.Show(T._("Problem with source opening. Try to report to devs about it."));
 
                                     return;
                                 }
@@ -85,7 +86,8 @@ namespace TranslationHelper.Functions
 
                             if (RPGMFunctions.THSelectedSourceType.Length == 0)
                             {
-                                THMsg.Show(T._("Problem with source opening. Try to report to devs about it."));
+                                /*THMsg*/
+                                MessageBox.Show(T._("Problem with source opening. Try to report to devs about it."));
                             }
                             else
                             {
@@ -167,21 +169,40 @@ namespace TranslationHelper.Functions
         private string GetSourceType(string sPath)
         {
             thDataWork.SPath = sPath;
-            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-            Properties.Settings.Default.THSelectedDir = dir + string.Empty;
-            Properties.Settings.Default.THSelectedGameDir = dir + string.Empty;
-            //MessageBox.Show("sPath=" + sPath);
+            var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+            Properties.Settings.Default.THSelectedDir = dir.FullName;
+            Properties.Settings.Default.THSelectedGameDir = dir.FullName;
 
-            if (new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).OpenDetect())
+            //ShowProjectsList();
+
+            //Try detect and open new type projects
+            foreach (ProjectBase Project in thDataWork.ProjectsList)
             {
-                thDataWork.CurrentProject = new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork);
-                if (thDataWork.CurrentProject.Open())
+                if (TryDetectProject(Project))
                 {
-                    return thDataWork.CurrentProject.ProjectTitle();
+                    return TryOpenProject();
                 }
-                return string.Empty;
             }
-            else if (new KiriKiriOLD(thDataWork).OpenDetect())
+
+            //Old projects
+            return TryDetectOpenOldProjects(sPath);
+        }
+
+        private void ShowProjectsList()
+        {
+            StringBuilder titles = new StringBuilder();
+            foreach (ProjectBase Project in thDataWork.ProjectsList)
+            {
+                titles.AppendLine(Project.ProjectTitle());
+            }
+            MessageBox.Show(titles.ToString());
+        }
+
+        private string TryDetectOpenOldProjects(string sPath)
+        {
+            var dir = Properties.Settings.Default.THSelectedDir;
+
+            if (new KiriKiriOLD(thDataWork).OpenDetect())
             {
                 return new KiriKiriOLD(thDataWork).KiriKiriScriptScenario();
             }
@@ -212,27 +233,11 @@ namespace TranslationHelper.Functions
             }
             else if (Path.GetExtension(sPath) == ".exe" /*sPath.ToLower().Contains("\\game.exe") || dir.GetFiles("*.exe").Length > 0*/)
             {
-                if (new Raijin7Game(thDataWork).OpenDetect())
-                {
-                    thDataWork.CurrentProject = new Raijin7Game(thDataWork);
-                    if (thDataWork.CurrentProject.Open())
-                    {
-                        //foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
-                        //{
-                        //    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(table.TableName)));
-                        //}
-                        return thDataWork.CurrentProject.ProjectTitle();
-                    }
-                    else
-                    {
-                        return string.Empty;
-                    }
-                }
-                else if (Directory.Exists(Path.Combine(Path.GetDirectoryName(sPath), "data", "bin")))
+                if (Directory.Exists(Path.Combine(Path.GetDirectoryName(sPath), "data", "bin")))
                 {
                     return new RJ263914OLD(thDataWork).ProceedRubyRPGGame(Path.GetDirectoryName(sPath));//RJ263914
                 }
-                else if ((FunctionsProcess.GetExeDescription(sPath) != null && FunctionsProcess.GetExeDescription(sPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")) && FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.xp3"))
+                else if ((FunctionsProcess.GetExeDescription(sPath) != null && FunctionsProcess.GetExeDescription(sPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")) && FunctionsFileFolder.IsInDirExistsAnyFile(dir, "*.xp3"))
                 {
                     if (new KiriKiriOLD(thDataWork).KiriKiriGame())
                     {
@@ -243,44 +248,28 @@ namespace TranslationHelper.Functions
                 {
                     try
                     {
-                        if (new RPGMMVGame(thDataWork).OpenDetect())
+                        //Properties.Settings.Default.THSelectedDir += "\\www\\data";
+                        //var MVJsonFIles = new List<string>();
+                        mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
+                        foreach (FileInfo file in mvdatadir.EnumerateFiles("*.json"))
                         {
-                            thDataWork.CurrentProject = new RPGMMVGame(thDataWork);
-                            if (thDataWork.CurrentProject.Open())
+                            //MessageBox.Show("file.FullName=" + file.FullName);
+                            //MVJsonFIles.Add(file.FullName);
+
+                            if (new RPGMMVOLD(thDataWork).OpenRPGMakerMVjson(file.FullName))
                             {
-                                return thDataWork.CurrentProject.ProjectTitle();
                             }
                             else
                             {
                                 return string.Empty;
                             }
                         }
-                        else
+
+                        for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
                         {
-                            //Properties.Settings.Default.THSelectedDir += "\\www\\data";
-                            //var MVJsonFIles = new List<string>();
-                            mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
-                            foreach (FileInfo file in mvdatadir.EnumerateFiles("*.json"))
-                            {
-                                //MessageBox.Show("file.FullName=" + file.FullName);
-                                //MVJsonFIles.Add(file.FullName);
-
-                                if (new RPGMMVOLD(thDataWork).OpenRPGMakerMVjson(file.FullName))
-                                {
-                                }
-                                else
-                                {
-                                    return string.Empty;
-                                }
-                            }
-
-                            for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
-                            {
-                                //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
-                                thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(thDataWork.THFilesElementsDataset.Tables[i].TableName)));
-                            }
+                            //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
+                            thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(thDataWork.THFilesElementsDataset.Tables[i].TableName)));
                         }
-
 
                         return "RPG Maker MV";
                     }
@@ -289,9 +278,16 @@ namespace TranslationHelper.Functions
                         return string.Empty;
                     }
                 }
-                else if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2")) || File.Exists(Path.Combine(dir.FullName, "Data", "System.rxdata")) || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss3a") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss2a") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rvdata") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgssad") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rxdata") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmt") || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmu"))
+                else if (File.Exists(Path.Combine(dir, "Data", "System.rvdata2"))
+                    || File.Exists(Path.Combine(dir, "Data", "System.rxdata"))
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir, "*.rgss3a")
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir, "*.rgss2a")
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir, "*.rvdata")
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir, "*.rgssad")
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir, "*.rxdata")
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir, "*.lmt")
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir, "*.lmu"))
                 {
-
                     thDataWork.Main.extractedpatchpath = string.Empty;
                     bool result = new RPGMGameOLD(thDataWork).TryToExtractToRPGMakerTransPatch(sPath);
                     //MessageBox.Show("result=" + result);
@@ -304,21 +300,21 @@ namespace TranslationHelper.Functions
 
                         //var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
                         //string patchver;
-                        bool isv3 = Directory.Exists(thDataWork.Main.extractedpatchpath + "\\patch");
+                        bool isv3 = Directory.Exists(thDataWork.Main.extractedpatchpath + Path.DirectorySeparatorChar + "patch");
                         //MessageBox.Show("isv3=" + isv3+ ", patchdir="+ extractedpatchpath+ ", extractedpatchpath="+ extractedpatchpath);
                         if (isv3) //если есть подпапка patch, тогда это версия патча 3
                         {
                             RPGMFunctions.RPGMTransPatchVersion = "3";
-                            thDataWork.Main.extractedpatchpath += "\\patch";
+                            thDataWork.Main.extractedpatchpath += Path.DirectorySeparatorChar + "patch";
                             //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
-                            dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.Main.extractedpatchpath + "\\")); //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
+                            dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.Main.extractedpatchpath + Path.DirectorySeparatorChar)).FullName; //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
                                                                                                                        //MessageBox.Show("patchdir1=" + patchdir);
                         }
-                        else if (Directory.Exists(thDataWork.Main.extractedpatchpath + Path.GetFileName(thDataWork.Main.extractedpatchpath) + "\\patch"))
+                        else if (Directory.Exists(thDataWork.Main.extractedpatchpath + Path.GetFileName(thDataWork.Main.extractedpatchpath) + Path.DirectorySeparatorChar + "patch"))
                         {
                             RPGMFunctions.RPGMTransPatchVersion = "3";
-                            thDataWork.Main.extractedpatchpath += Path.GetFileName(thDataWork.Main.extractedpatchpath) + "\\patch";
-                            dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.Main.extractedpatchpath + "\\"));
+                            thDataWork.Main.extractedpatchpath += Path.GetFileName(thDataWork.Main.extractedpatchpath) + Path.DirectorySeparatorChar + "patch";
+                            dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.Main.extractedpatchpath + Path.DirectorySeparatorChar)).FullName;
                         }
                         else //иначе это версия 2
                         {
@@ -357,7 +353,7 @@ namespace TranslationHelper.Functions
                             }
 
                             Properties.Settings.Default.THSelectedGameDir = Properties.Settings.Default.THSelectedDir;
-                            Properties.Settings.Default.THSelectedDir = thDataWork.Main.extractedpatchpath.Replace("\\patch", string.Empty);
+                            Properties.Settings.Default.THSelectedDir = thDataWork.Main.extractedpatchpath.Replace(Path.DirectorySeparatorChar + "patch", string.Empty);
                             //MessageBox.Show(THSelectedSourceType + " loaded!");
                             //ProgressInfo(false, string.Empty);
                             return "RPG Maker game with RPGMTransPatch";
@@ -367,8 +363,35 @@ namespace TranslationHelper.Functions
 
             }
 
-            //MessageBox.Show("Uncompatible source or problem with opening.");
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Try to open project and return project name if open is success
+        /// </summary>
+        /// <returns></returns>
+        private string TryOpenProject()
+        {
+            if (thDataWork.CurrentProject.Open())
+            {
+                return thDataWork.CurrentProject.ProjectTitle();
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Try to detect project and if success<br/> then set it to current and return true
+        /// </summary>
+        /// <param name="Project"></param>
+        /// <returns></returns>
+        private bool TryDetectProject(ProjectBase Project)
+        {
+            if (Project.OpenDetect())
+            {
+                thDataWork.CurrentProject = Project;
+                return true;
+            }
+            return false;
         }
 
         internal void AfterOpenActions()
@@ -398,14 +421,13 @@ namespace TranslationHelper.Functions
                     MessageBox.Show("An error occured:" + Environment.NewLine + ex);
                 }
             }
-            _ = THMsg.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");
+            _ = /*THMsg*/MessageBox.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");
 
             thDataWork.Main.editToolStripMenuItem.Enabled = true;
             thDataWork.Main.viewToolStripMenuItem.Enabled = true;
             thDataWork.Main.loadTranslationToolStripMenuItem.Enabled = true;
             thDataWork.Main.loadTrasnlationAsToolStripMenuItem.Enabled = true;
-            thDataWork.Main.runTestGameToolStripMenuItem.Enabled = true;
-            thDataWork.Main.runTestGameToolStripMenuItem.Visible = true;
+            thDataWork.Main.runTestGameToolStripMenuItem.Enabled = thDataWork.CurrentProject != null && thDataWork.CurrentProject.IsTestRunEnabled;
 
             if (thDataWork.Main.FVariant.Length == 0)
             {
