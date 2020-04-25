@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Text;
 using TranslationHelper.Data;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
@@ -69,7 +68,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             rowindex = 0;
             string tablename = Path.GetFileName(thDataWork.FilePath);
 
-            thDataWork.Main.ProgressInfo(true, T._("Writing") +": " + "plugins.js");
+            thDataWork.Main.ProgressInfo(true, T._("Writing") + ": " + "plugins.js");
 
             using (StreamReader reader = new StreamReader(thDataWork.FilePath))
             {

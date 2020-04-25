@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMTrans
@@ -31,7 +28,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                 {
                     string fname = Path.GetFileNameWithoutExtension(thDataWork.FilePath);
 
-                    AddTables(fname, new string[] { "Context", "Advice" , "Status" });
+                    AddTables(fname, new string[] { "Context", "Advice", "Status" });
                     var Table = thDataWork.THFilesElementsDataset.Tables[fname];
                     var TableInfo = thDataWork.THFilesElementsDatasetInfo.Tables[fname];
 

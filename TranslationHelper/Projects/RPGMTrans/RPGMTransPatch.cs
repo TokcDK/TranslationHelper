@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using TranslationHelper.Data;
@@ -152,7 +151,7 @@ namespace TranslationHelper.Projects
             try
             {
                 StringBuilder buffer = new StringBuilder();
-                
+
                 for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
                 {
                     //ProgressInfo(true, T._("saving file: ") + thData.THFilesElementsDataset.Tables[i].TableName);
@@ -182,7 +181,7 @@ namespace TranslationHelper.Projects
                             Directory.CreateDirectory(Properties.Settings.Default.THSelectedDir + Path.DirectorySeparatorChar + "patch");
                         }
 
-                        if (FIleData.Length>2)
+                        if (FIleData.Length > 2)
                         {
                             FIleData = FIleData.Remove(FIleData.Length - 2, 2);//удаление лишнего символа \r\n с конца строки
                         }

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Formats.RPGMTrans;
 using TranslationHelper.Main.Functions;
 
@@ -24,13 +22,13 @@ namespace TranslationHelper.Projects
             {
                 DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.SPath));
 
-                if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2")) 
-                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss3a") 
+                if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2"))
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss3a")
                     || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss2a")
                     || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rvdata")
                     || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgssad")
                     || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rxdata")
-                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmt") 
+                    || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmt")
                     || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.lmu")
                     )
                 {
@@ -66,11 +64,11 @@ namespace TranslationHelper.Projects
                     //for (int i = 0; i < THFilesElementsDataset.Tables.Count; i++)
                     //{
                     //    THFilesList.Invoke((Action)(() => THFilesList.Items.Add(THFilesElementsDataset.Tables[i].TableName)));
-                        
+
                     //}
 
                     Properties.Settings.Default.THSelectedGameDir = Properties.Settings.Default.THSelectedDir;
-                    Properties.Settings.Default.THSelectedDir = extractedpatchpath.Replace(Path.DirectorySeparatorChar+"patch", string.Empty);
+                    Properties.Settings.Default.THSelectedDir = extractedpatchpath.Replace(Path.DirectorySeparatorChar + "patch", string.Empty);
 
                     return true;
                 }
@@ -230,7 +228,7 @@ namespace TranslationHelper.Projects
             try
             {
                 StringBuilder buffer = new StringBuilder();
-                
+
                 for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
                 {
                     //ProgressInfo(true, T._("saving file: ") + thData.THFilesElementsDataset.Tables[i].TableName);
@@ -260,7 +258,7 @@ namespace TranslationHelper.Projects
                             Directory.CreateDirectory(Properties.Settings.Default.THSelectedDir + Path.DirectorySeparatorChar + "patch");
                         }
 
-                        if (FIleData.Length>2)
+                        if (FIleData.Length > 2)
                         {
                             FIleData = FIleData.Remove(FIleData.Length - 2, 2);//удаление лишнего символа \r\n с конца строки
                         }

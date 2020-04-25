@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -378,7 +377,7 @@ namespace TranslationHelper.Functions
                             continue;
                         }
 
-                        Task.Run(()=> thDataWork.Main.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
+                        Task.Run(() => thDataWork.Main.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
 
                         RowsCountInTable = (Method == "a" || Method == "t") ? Table.Rows.Count : SelectedIndexes.Length;
 
@@ -610,7 +609,7 @@ namespace TranslationHelper.Functions
                     }
                     else
                     {
-                        if (InputLines[TranslatedLinesIndex]==InfoRow.GetOriginal)
+                        if (InputLines[TranslatedLinesIndex] == InfoRow.GetOriginal)
                         {
                             ResultValue.Append(TranslatedLines[TranslatedLinesIndex]);
                         }

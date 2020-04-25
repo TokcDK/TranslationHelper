@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.IO;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
@@ -44,7 +38,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
         /// IsOpen=true = Open, else Save
         /// </summary>
         /// <param name="IsOpen"></param>
-        private void OpenFilesSerial(bool IsOpen = true, string openPath="")
+        private void OpenFilesSerial(bool IsOpen = true, string openPath = "")
         {
             if (openPath.Length == 0)
             {

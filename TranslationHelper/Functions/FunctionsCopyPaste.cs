@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TranslationHelper.Main.Functions
@@ -123,7 +121,7 @@ namespace TranslationHelper.Main.Functions
 
                     //сильно тормозит процесс, отключил
                     //Main.THAutoSetSameTranslationForSimular(Main.THFilesList.SelectedIndex, iRowIndex, origcolindex);
-                                        
+
                     origcellcurlines = 0;
                     //LogToFile("PasteClipboardValue next row, iRowIndex=" + iRowIndex);
                     iRowIndex++;

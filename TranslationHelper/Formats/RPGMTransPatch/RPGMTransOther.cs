@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Forms;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Main.Functions;
@@ -107,7 +106,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                             FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
 
                             ret = GetIsRPGMakerTransPatchCreatedAndValid(outdir);
-                            
+
                             if (ret)
                             {
                             }

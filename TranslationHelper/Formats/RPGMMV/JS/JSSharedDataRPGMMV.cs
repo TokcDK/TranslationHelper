@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
@@ -19,6 +15,6 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 ,
                 new RECOLLECTIONMODE(thDataWork)
             };
-        }        
+        }
     }
 }

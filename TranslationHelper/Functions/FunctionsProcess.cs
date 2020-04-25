@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -23,7 +18,7 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        public static bool RunProgram(string ProgramPath, string Arguments="")
+        public static bool RunProgram(string ProgramPath, string Arguments = "")
         {
             //bool ret = false;
             //using (Process Program = new Process())
@@ -38,7 +33,7 @@ namespace TranslationHelper.Main.Functions
             return RunProcess(ProgramPath, Arguments);
         }
 
-        public static bool RunProcess(string ProgramPath, string Arguments="")
+        public static bool RunProcess(string ProgramPath, string Arguments = "")
         {
             bool ret = false;
             if (File.Exists(ProgramPath))

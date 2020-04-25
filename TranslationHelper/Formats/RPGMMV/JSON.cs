@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
@@ -302,7 +300,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         private bool WriteJson(string Jsonname, string sPath)
         {
-            thDataWork.Main.ProgressInfo(true, T._("Writing")+ ": " + Jsonname + ".json");
+            thDataWork.Main.ProgressInfo(true, T._("Writing") + ": " + Jsonname + ".json");
             //ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
             //LogToFile("Jsonname = " + Jsonname);
             try

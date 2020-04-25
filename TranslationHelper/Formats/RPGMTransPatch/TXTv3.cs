@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMTrans
@@ -144,7 +141,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                     buffer.AppendLine(row[originalcolumnindex] + string.Empty);// + Environment.NewLine);
 
                     string[] CONTEXT = (row[contextcolumnindex] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
-                    
+
                     string TRANSLATION = row[translationcolumnindex] + string.Empty;
                     for (int g = 0; g < CONTEXT.Length; g++)
                     {
