@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
@@ -10,9 +13,26 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
         }
 
+        /// <summary>
+        /// Get all inherited classes of an abstract class
+        /// </summary>
+        /// <returns></returns>
+        internal static List<JSBase> GetListOfJS(THDataWork thDataWork)
+        {
+            //https://stackoverflow.com/a/5411981
+            //Get all inherited classes of an abstract class
+            IEnumerable<JSBase> SubclassesOfJSBase = typeof(JSBase)
+            .Assembly.GetTypes()
+            .Where(t => t.IsSubclassOf(typeof(JSBase)) && !t.IsAbstract)
+            .Select(t => (JSBase)Activator.CreateInstance(t, thDataWork));
+
+            return (from JSBase SubClass in SubclassesOfJSBase
+                    select SubClass).ToList();
+        }
+
         internal abstract string JSName { get; }
 
-        internal virtual string JSSubfolder => string.Empty;
+        internal virtual string JSSubfolder => "plugins";
 
         protected static bool IsValidToken(JToken token)
         {

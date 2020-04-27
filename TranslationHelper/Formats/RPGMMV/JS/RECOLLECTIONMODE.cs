@@ -126,11 +126,17 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
             }
 
-            File.WriteAllText(thDataWork.FilePath, TranslatedResult.ToString());
+            try
+            {
+                File.WriteAllText(thDataWork.FilePath, TranslatedResult.ToString());
+            }
+            catch
+            {
+                return false;
+            }
             return true;
         }
 
         internal override string JSName => "RecollectionMode.js";
-        internal override string JSSubfolder => "plugins";
     }
 }

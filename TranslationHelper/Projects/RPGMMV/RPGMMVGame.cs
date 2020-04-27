@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects
         readonly List<JSBase> ListOfJS;
         public RPGMMVGame(THDataWork thDataWork) : base(thDataWork)
         {
-            ListOfJS = new JSSharedData(thDataWork).ListOfJS;
+            ListOfJS = JSBase.GetListOfJS(thDataWork);
         }
 
         internal override bool OpenDetect()
@@ -70,6 +70,7 @@ namespace TranslationHelper.Projects
             {
             }
 
+            thDataWork.Main.ProgressInfo(false);
             return IsAnyFileCompleted;
         }
 
@@ -136,12 +137,13 @@ namespace TranslationHelper.Projects
                 }
             }
 
+            thDataWork.Main.ProgressInfo(false);
             return true;
         }
 
         private JSBase GetCorrectJSbyName(string tableName)
         {
-            foreach (var JS in new JSSharedData(thDataWork).ListOfJS)
+            foreach (var JS in ListOfJS)
             {
                 if (tableName == JS.JSName)
                 {

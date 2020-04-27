@@ -120,5 +120,6 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         }
 
         internal override string JSName => "plugins.js";
+        internal override string JSSubfolder => string.Empty;
     }
 }

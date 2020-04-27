@@ -34,7 +34,7 @@ namespace TranslationHelper.Functions
 
             if (thDataWork.CurrentProject != null)
             {
-                thDataWork.CurrentProject.Save();
+                await Task.Run(() => thDataWork.CurrentProject.Save()).ConfigureAwait(true);
             }
             else
             {

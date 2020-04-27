@@ -103,6 +103,7 @@
     <Compile Include="Formats\Raijin7\csv\CSV.cs" />
     <Compile Include="Formats\Raijin7\eve\TXT.cs" />
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
+    <Compile Include="Formats\RPGMMV\JS\ConfigEx.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\PLUGINS.cs" />
     <Compile Include="Formats\RPGMMV\JSON.cs" />

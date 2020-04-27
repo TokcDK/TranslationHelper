@@ -11,6 +11,11 @@ namespace TranslationHelper.Formats
             this.thDataWork = thDataWork;
         }
 
+        internal virtual bool Detect()
+        {
+            return false;
+        }
+
         internal abstract bool Open();
 
         internal abstract bool Save();

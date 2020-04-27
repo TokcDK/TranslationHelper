@@ -49,13 +49,16 @@ namespace TranslationHelper.Main.Functions
             int TCount = thDataWork.THFilesElementsDataset.Tables.Count;
             for (int t = 0; t < TCount; t++)
             {
-                int RCount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
+                var table = thDataWork.THFilesElementsDataset.Tables[t];
+
+                int RCount = table.Rows.Count;
                 for (int r = 0; r < RCount; r++)
                 {
-                    var cell = thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1];
+                    var cell = table.Rows[r][1];
                     if (cell == null || string.IsNullOrEmpty(cell as string))
                     {
                         ShowSelectedRow(thDataWork, t, "Translation", r);
+                        return;
                     }
                 }
             }
@@ -81,6 +84,7 @@ namespace TranslationHelper.Main.Functions
                     RCount = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
                     thDataWork.Main.THFilesList.SelectedIndex = tableIndex;
                     thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableIndex];
+
                 }
 
                 thDataWork.Main.THFileElementsDataGridView.CurrentCell = thDataWork.Main.THFileElementsDataGridView[columnName, rowIndex];
