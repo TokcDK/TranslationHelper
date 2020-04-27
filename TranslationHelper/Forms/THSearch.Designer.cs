@@ -34,14 +34,15 @@
             this.SearchResultsDatagridview = new System.Windows.Forms.DataGridView();
             this.lblError = new System.Windows.Forms.Label();
             this.THSearchPanel = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.ConfirmReplaceAllCheckBox = new System.Windows.Forms.CheckBox();
+            this.SearchAlwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.THSearchMatchCaseCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchInInfoCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchFindLinesWithPossibleIssuesCheckBox = new System.Windows.Forms.CheckBox();
             this.ClearReplaceWithTextBoxLabel = new System.Windows.Forms.Label();
             this.ClearFindWhatTextBoxLabel = new System.Windows.Forms.Label();
-            this.ConfirmReplaceAllCheckBox = new System.Windows.Forms.CheckBox();
-            this.SearchAlwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchModeGroupBox = new System.Windows.Forms.GroupBox();
             this.panel6 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -68,12 +69,12 @@
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.SearchResultsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SearchResultsDatagridview)).BeginInit();
             this.THSearchPanel.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.SearchModeGroupBox.SuspendLayout();
             this.panel6.SuspendLayout();
@@ -82,7 +83,6 @@
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // THSearchTabs
@@ -162,6 +162,46 @@
             this.THSearchPanel.Size = new System.Drawing.Size(565, 304);
             this.THSearchPanel.TabIndex = 7;
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.Controls.Add(this.ConfirmReplaceAllCheckBox, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.SearchAlwaysOnTopCheckBox, 0, 2);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(438, 132);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 3;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(108, 47);
+            this.tableLayoutPanel2.TabIndex = 28;
+            // 
+            // ConfirmReplaceAllCheckBox
+            // 
+            this.ConfirmReplaceAllCheckBox.AutoSize = true;
+            this.ConfirmReplaceAllCheckBox.Checked = true;
+            this.ConfirmReplaceAllCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ConfirmReplaceAllCheckBox.Location = new System.Drawing.Point(3, 3);
+            this.ConfirmReplaceAllCheckBox.Name = "ConfirmReplaceAllCheckBox";
+            this.ConfirmReplaceAllCheckBox.Size = new System.Drawing.Size(87, 17);
+            this.ConfirmReplaceAllCheckBox.TabIndex = 23;
+            this.ConfirmReplaceAllCheckBox.Text = "Confirmation";
+            this.ConfirmReplaceAllCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // SearchAlwaysOnTopCheckBox
+            // 
+            this.SearchAlwaysOnTopCheckBox.AutoSize = true;
+            this.SearchAlwaysOnTopCheckBox.Checked = true;
+            this.SearchAlwaysOnTopCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.SearchAlwaysOnTopCheckBox.Location = new System.Drawing.Point(3, 26);
+            this.SearchAlwaysOnTopCheckBox.Name = "SearchAlwaysOnTopCheckBox";
+            this.SearchAlwaysOnTopCheckBox.Size = new System.Drawing.Size(96, 17);
+            this.SearchAlwaysOnTopCheckBox.TabIndex = 21;
+            this.SearchAlwaysOnTopCheckBox.Text = "Always on Top";
+            this.SearchAlwaysOnTopCheckBox.UseVisualStyleBackColor = true;
+            this.SearchAlwaysOnTopCheckBox.CheckedChanged += new System.EventHandler(this.SearchAlwaysOnTopCheckBox_CheckedChanged);
+            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
@@ -228,31 +268,6 @@
             this.ClearFindWhatTextBoxLabel.TabIndex = 24;
             this.ClearFindWhatTextBoxLabel.Text = "x";
             this.ClearFindWhatTextBoxLabel.Click += new System.EventHandler(this.ClearFindWhatTextBoxLabel_Click);
-            // 
-            // ConfirmReplaceAllCheckBox
-            // 
-            this.ConfirmReplaceAllCheckBox.AutoSize = true;
-            this.ConfirmReplaceAllCheckBox.Checked = true;
-            this.ConfirmReplaceAllCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ConfirmReplaceAllCheckBox.Location = new System.Drawing.Point(3, 3);
-            this.ConfirmReplaceAllCheckBox.Name = "ConfirmReplaceAllCheckBox";
-            this.ConfirmReplaceAllCheckBox.Size = new System.Drawing.Size(87, 17);
-            this.ConfirmReplaceAllCheckBox.TabIndex = 23;
-            this.ConfirmReplaceAllCheckBox.Text = "Confirmation";
-            this.ConfirmReplaceAllCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // SearchAlwaysOnTopCheckBox
-            // 
-            this.SearchAlwaysOnTopCheckBox.AutoSize = true;
-            this.SearchAlwaysOnTopCheckBox.Checked = true;
-            this.SearchAlwaysOnTopCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.SearchAlwaysOnTopCheckBox.Location = new System.Drawing.Point(3, 26);
-            this.SearchAlwaysOnTopCheckBox.Name = "SearchAlwaysOnTopCheckBox";
-            this.SearchAlwaysOnTopCheckBox.Size = new System.Drawing.Size(96, 17);
-            this.SearchAlwaysOnTopCheckBox.TabIndex = 21;
-            this.SearchAlwaysOnTopCheckBox.Text = "Always on Top";
-            this.SearchAlwaysOnTopCheckBox.UseVisualStyleBackColor = true;
-            this.SearchAlwaysOnTopCheckBox.CheckedChanged += new System.EventHandler(this.SearchAlwaysOnTopCheckBox_CheckedChanged);
             // 
             // SearchModeGroupBox
             // 
@@ -509,6 +524,7 @@
             this.SearchFormReplaceWithComboBox.Name = "SearchFormReplaceWithComboBox";
             this.SearchFormReplaceWithComboBox.Size = new System.Drawing.Size(278, 21);
             this.SearchFormReplaceWithComboBox.TabIndex = 2;
+            this.SearchFormReplaceWithComboBox.SelectedIndexChanged += new System.EventHandler(this.SearchFormReplaceWithComboBox_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -518,21 +534,6 @@
             this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.ColumnCount = 1;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.Controls.Add(this.ConfirmReplaceAllCheckBox, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.SearchAlwaysOnTopCheckBox, 0, 2);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(438, 132);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 3;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(108, 47);
-            this.tableLayoutPanel2.TabIndex = 28;
             // 
             // THSearch
             // 
@@ -557,6 +558,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.SearchResultsDatagridview)).EndInit();
             this.THSearchPanel.ResumeLayout(false);
             this.THSearchPanel.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.SearchModeGroupBox.ResumeLayout(false);
@@ -570,8 +573,6 @@
             this.panel4.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
 
         }

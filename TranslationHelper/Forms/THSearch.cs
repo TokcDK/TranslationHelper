@@ -66,9 +66,8 @@ namespace TranslationHelper
                 if (thDataWork.Main.THFileElementsDataGridView.CurrentCell.IsInEditMode)
                 {
                     //https://stackoverflow.com/questions/41380883/retrieve-partly-selected-text-when-the-cell-is-in-edit-mode-in-datagridview
-                    if (thDataWork.Main.THFileElementsDataGridView.EditingControl is TextBox)
+                    if (thDataWork.Main.THFileElementsDataGridView.EditingControl is TextBox textBox)
                     {
-                        var textBox = (TextBox)thDataWork.Main.THFileElementsDataGridView.EditingControl;
                         SearchFormFindWhatTextBox.Text = textBox.SelectedText;
                     }
                 }
@@ -224,7 +223,7 @@ namespace TranslationHelper
             }
         }
 
-        private void LoadSearchQueries()
+        private void LoadSearchQueriesReplacers()
         {
             SearchQueries = new INIFile("TranslationHelperConfig.ini").ReadSectionValuesToArray("Search Queries");
             if (SearchQueries != null && SearchQueries.Length > 0)
@@ -238,7 +237,7 @@ namespace TranslationHelper
             }
         }
 
-        private void WriteSearchQueries()
+        private void WriteSearchQueriesReplacers()
         {
             if (SearchFormFindWhatComboBox.Items.Count > 0)
             {
@@ -269,7 +268,7 @@ namespace TranslationHelper
             StoreFoundReplaceValues(replaceWithValue, SearchFormReplaceWithComboBox);
 
             //write found values
-            WriteSearchQueries();
+            WriteSearchQueriesReplacers();
         }
 
         private static void StoreFoundReplaceValues(string value, ComboBox ComboBox)
@@ -287,14 +286,41 @@ namespace TranslationHelper
                 {
                     if (ItemsCount == 10)
                     {
-                        ComboBox.Items.RemoveAt(0);
+                        ComboBox.Items.RemoveAt(9);
                     }
-                    ComboBox.Items.Add(value);
+
+                    AddRestComboBoxValuesWithNew(ComboBox.Items, value);
+                }
+                else
+                {
+                    if (ComboBox.Items.IndexOf(value) != 0)
+                    {
+                        ComboBox.Items.Remove(value);
+                        AddRestComboBoxValuesWithNew(ComboBox.Items, value);
+                    }
                 }
             }
             else
             {
                 ComboBox.Items.Add(value);
+            }
+        }
+
+        /// <summary>
+        /// set old values to tem array, clear combobox, adda new and after add old values
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="tempArray"></param>
+        /// <param name="value"></param>
+        private static void AddRestComboBoxValuesWithNew(ComboBox.ObjectCollection items, string value)
+        {
+            object[] oldItems=new object[items.Count];
+            items.CopyTo(oldItems, 0);
+            items.Clear();
+            items.Add(value);
+            foreach (var oldvalue in oldItems)
+            {
+                items.Add(oldvalue);
             }
         }
 
@@ -528,7 +554,7 @@ namespace TranslationHelper
             oDsResultsCoordinates.Columns.Add("r");
             //SearchFormFindWhatComboBox.AutoCompleteCustomSource = SearchFormFindWhatComboBoxCustomeSource.Rows.
 
-            LoadSearchQueries();
+            LoadSearchQueriesReplacers();
 
         }
 
@@ -826,7 +852,8 @@ namespace TranslationHelper
             {
                 if (drFoundRowsTable.Rows.Count > 0)
                 {
-                    StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
+                    //StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
+                    bool StoreQueryAndReplacer = false;
 
                     oDsResults.AcceptChanges();
                     PopulateGrid(oDsResults);
@@ -836,29 +863,37 @@ namespace TranslationHelper
                     this.Height = 589;
 
                     string searchcolumn = GetSearchColumn();
-                    for (int r = 0; r < oDsResults.Tables[0].Rows.Count; r++)
+                    int oDsResultsCount = oDsResults.Tables[0].Rows.Count;
+                    for (int r = 0; r < oDsResultsCount; r++)
                     {
                         tableindex = int.Parse(oDsResultsCoordinates.Rows[r][0] + string.Empty, CultureInfo.CurrentCulture);
                         rowindex = int.Parse(oDsResultsCoordinates.Rows[r][1] + string.Empty, CultureInfo.CurrentCulture);
-
-                        string value = thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex][searchcolumn] + string.Empty;
+                        var row = thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex];
+                        string value = row[searchcolumn] + string.Empty;
                         if (value.Length > 0)
                         {
                             if (SearchModeRegexRadioButton.Checked)
                             {
                                 if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                                 {
-                                    thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = Regex.Replace(GetFirstIfNotEmpty(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
+                                    StoreQueryAndReplacer = true;
+                                    row["Translation"] = Regex.Replace(GetFirstIfNotEmpty(row["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
                                 }
                             }
                             else
                             {
                                 if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                                 {
-                                    thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] = ReplaceEx.Replace(GetFirstIfNotEmpty(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[rowindex]["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                    StoreQueryAndReplacer = true;
+                                    row["Translation"] = ReplaceEx.Replace(GetFirstIfNotEmpty(row["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                                 }
                             }
                         }
+                    }
+
+                    if (StoreQueryAndReplacer)
+                    {
+                        StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
                     }
                 }
                 else
@@ -905,7 +940,7 @@ namespace TranslationHelper
         {
             //oDsResults.Dispose();
 
-            WriteSearchQueries();
+            WriteSearchQueriesReplacers();
         }
 
         private void SearchFindLinesWithPossibleIssuesCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -930,6 +965,11 @@ namespace TranslationHelper
         private void ClearReplaceWithTextBoxLabel_Click(object sender, EventArgs e)
         {
             SearchFormReplaceWithTextBox.Clear();
+        }
+
+        private void SearchFormReplaceWithComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SearchFormReplaceWithTextBox.Text = (sender as ComboBox).SelectedItem.ToString();
         }
     }
 }

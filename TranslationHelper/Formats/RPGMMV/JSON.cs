@@ -396,9 +396,10 @@ namespace TranslationHelper.Formats.RPGMMV
                         {
                             //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
 
-                            for (int i1 = startingrow; i1 < thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                            int rcount = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Count;
+                            for (int r = startingrow; r < rcount; r++)
                             {
-                                var row = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1];
+                                var row = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[r];
                                 if ((row[1] + string.Empty).Length == 0)
                                 {
                                 }
@@ -466,7 +467,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                         {
                                             //var t = token as JValue;
                                             (token as JValue).Value = (row[1] + string.Empty).Replace("\r", string.Empty);//убирает \r, т.к. в json присутствует только \n
-                                            startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                            startingrow = r;//запоминание строки, чтобы не пробегало всё с нуля
                                             break;
                                         }
 
@@ -486,7 +487,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                                 //var t = token as JValue;
                                                 (token as JValue).Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
 
-                                                startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                                startingrow = r;//запоминание строки, чтобы не пробегало всё с нуля
                                                 //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
                                                 br = true;
                                                 break;
@@ -494,7 +495,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                         }
                                         if (br) //выход из цикла прохода по всей таблице, если значение найдено для одной из строк оригинала, и переход к следующему элементу json
                                         {
-                                            startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                            startingrow = r;//запоминание строки, чтобы не пробегало всё с нуля
                                             break;
                                         }
                                     }
@@ -509,7 +510,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                         {
                                             //var t = token as JValue;
                                             (token as JValue).Value = row[1] + string.Empty;
-                                            startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                            startingrow = r;//запоминание строки, чтобы не пробегало всё с нуля
                                             break;
                                         }
                                     }
