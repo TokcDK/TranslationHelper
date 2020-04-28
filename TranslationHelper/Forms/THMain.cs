@@ -1871,7 +1871,7 @@ namespace TranslationHelper
                     {
                         //LogToFile("DGV sel cells > 0");
                         //Perform paste Operation
-                        FunctionsCopyPaste.PasteClipboardValue(THFileElementsDataGridView, this);
+                        FunctionsCopyPaste.PasteClipboardValue(THFileElementsDataGridView);
                     }
                 }
             }

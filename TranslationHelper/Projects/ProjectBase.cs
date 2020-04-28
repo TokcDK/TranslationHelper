@@ -53,10 +53,7 @@ namespace TranslationHelper.Projects
         /// Project folder name to locate files in DB and Work folders
         /// </summary>
         /// <returns></returns>
-        internal virtual string NewlineSymbol()
-        {
-            return Environment.NewLine;
-        }
+        internal virtual string NewlineSymbol => Environment.NewLine;
 
         internal virtual bool IsTestRunEnabled => false;
 

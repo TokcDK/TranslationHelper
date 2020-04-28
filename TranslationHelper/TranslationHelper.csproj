@@ -150,7 +150,7 @@
     <Compile Include="Projects\RPGMTrans\RPGMTransOLD.cs" />
     <Compile Include="Projects\WolfRPG\WRPGOLDOpen.cs" />
     <Compile Include="Translators\DeepL.cs" />
-    <Compile Include="Translators\Translators.cs" />
+    <Compile Include="Translators\TranslatorsBase.cs" />
     <Compile Include="Translators\Google.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
     <Compile Include="ExternalAdditions\SimpleJSON.cs" />

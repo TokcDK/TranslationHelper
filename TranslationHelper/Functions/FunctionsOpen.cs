@@ -308,7 +308,7 @@ namespace TranslationHelper.Functions
                             thDataWork.Main.extractedpatchpath += Path.DirectorySeparatorChar + "patch";
                             //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
                             dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.Main.extractedpatchpath + Path.DirectorySeparatorChar)).FullName; //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
-                                                                                                                       //MessageBox.Show("patchdir1=" + patchdir);
+                                                                                                                                                       //MessageBox.Show("patchdir1=" + patchdir);
                         }
                         else if (Directory.Exists(thDataWork.Main.extractedpatchpath + Path.GetFileName(thDataWork.Main.extractedpatchpath) + Path.DirectorySeparatorChar + "patch"))
                         {
@@ -440,6 +440,12 @@ namespace TranslationHelper.Functions
             catch
             {
             }
+
+            Properties.Settings.Default.ProjectNewLineSymbol = (thDataWork != null && thDataWork.CurrentProject != null)
+                ?
+                thDataWork.CurrentProject.NewlineSymbol
+                :
+                FunctionsString.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n" : Environment.NewLine;
 
             Properties.Settings.Default.ProjectIsOpened = true;
         }

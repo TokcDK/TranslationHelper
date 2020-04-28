@@ -388,7 +388,7 @@ namespace TranslationHelper.Main.Functions
             return string.Join(Environment.NewLine, Lines); //ReturnLine.ToString();
         }
 
-        internal static string GetSplittedLine(string Line, int Limit)
+        internal static string GetSplittedLine(string Line, int Limit, THDataWork thDataWork = null)
         {
             string Trigger/* = string.Empty*/;
             string newLine = ((Trigger = Regex.Match(Line, @"(if|en)\([\s\S]+\)$").Value).Length > 0 ? Line.Replace(Trigger, string.Empty) : Line);
@@ -396,7 +396,9 @@ namespace TranslationHelper.Main.Functions
             {
                 return Line;
             }
-            return string.Join(IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n" : Environment.NewLine, SplitLineIfBeyondOfLimit(Trigger.Length > 0 ? newLine : Line, Limit)) + Trigger;
+            return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+                , SplitLineIfBeyondOfLimit(Trigger.Length > 0 ? newLine : Line, Limit)
+                ) + Trigger;
         }
 
         internal static string[] SplitLineIfBeyondOfLimit(string text, int max)
@@ -408,6 +410,29 @@ namespace TranslationHelper.Main.Functions
                             ? max - (charCount % max) : 0) + w.Length + 1) / max)
                         .Select(g => string.Join(" ", g.ToArray()))
                         .ToArray();
+        }
+
+        internal static string[] GetAllNonEmptyLines(string inputstring)
+        {
+            //Where здесь формирует новый массив из входного, из элементов входного, удовлетворяющих заданному условию
+            //https://stackoverflow.com/questions/1912128/filter-an-array-in-c-sharp
+
+            //обычный способ быстрее
+            List<string> values = new List<string>();
+            foreach (string line in inputstring.SplitToLines())
+            {
+                if (line.Length > 0)
+                {
+                    values.Add(line);
+                }
+            }
+
+            return values.ToArray();
+
+            //способ с linq, который обычно медленнее
+            //return inputstring.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/)
+            //                                .Where(emptyvalues => (emptyvalues/*.Replace("\r", string.Empty)*/).Length != 0)
+            //                                .ToArray();//Все строки, кроме пустых
         }
     }
 }

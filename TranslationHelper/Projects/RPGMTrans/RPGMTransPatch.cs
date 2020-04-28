@@ -95,7 +95,7 @@ namespace TranslationHelper.Projects
             //Читаем все файлы
             for (int i = 0; i < ListFiles.Count; i++)   //Обрабатываем всю строку
             {
-                string fname = Path.GetFileNameWithoutExtension(ListFiles[i]);
+                //string fname = Path.GetFileNameWithoutExtension(ListFiles[i]);
 
                 //ProgressInfo(true, T._("opening file: ") + fname + ".txt");
 

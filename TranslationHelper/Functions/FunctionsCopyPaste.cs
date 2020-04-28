@@ -27,9 +27,8 @@ namespace TranslationHelper.Main.Functions
         /// Модифицированная функция учитывает количество строк в ячейке оригинала
         /// и вставляет столько же строк из буфера в ячейку перевода
         /// </summary>
-        public static void PasteClipboardValue(DataGridView THFileElementsDataGridView, THMain Main)
+        public static void PasteClipboardValue(DataGridView THFileElementsDataGridView)
         {
-
             //LogToFile("PasteClipboardValue Enter");
             //Show Error if no cell is selected
             if (THFileElementsDataGridView.SelectedCells.Count == 0)

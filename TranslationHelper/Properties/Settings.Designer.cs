@@ -229,6 +229,18 @@ namespace TranslationHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ProjectNewLineSymbol {
+            get {
+                return ((string)(this["ProjectNewLineSymbol"]));
+            }
+            set {
+                this["ProjectNewLineSymbol"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool THAutoSetSameTranslationForSimularIsBusy {
             get {

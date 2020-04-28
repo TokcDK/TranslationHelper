@@ -14,3 +14,12 @@ dotnet_style_require_accessibility_modifiers = for_non_interface_members:none
 
 # CA1308: Нормализуйте строки до прописных букв
 dotnet_diagnostic.CA1308.severity = none
+
+# CA1812: RPGMMVGame является внутренним классом, экземпляр которого никогда не создается. Если это так, удалите код из сборки. Если этот класс должен содержать только статические методы, сделайте его статическим (Shared в Visual Basic).
+dotnet_diagnostic.CA1812.severity = none
+
+# CA1822: Член Open_mapBynaryFromDirFile не обращается к данным экземпляров, поэтому его можно пометить как статический (Shared в Visual Basic).
+dotnet_diagnostic.CA1822.severity = none
+
+# CA1801: Параметр Main метода PasteClipboardValue не используется. Удалите этот параметр или используйте его в теле метода.
+dotnet_diagnostic.CA1801.severity = none

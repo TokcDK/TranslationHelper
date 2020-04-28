@@ -336,8 +336,8 @@ namespace TranslationHelper.Functions
 
             //проход по всем таблицам рабочего dataset
             string infomessage = T._("loading translation") + ":";
-            int tableDataKeysCount = tableData.Keys.Count;
-            int cur = 0;
+            //int tableDataKeysCount = tableData.Keys.Count;
+            //int cur/* = 0*/;
             thDataWork.Main.ProgressInfo(true, infomessage);
             foreach (var original in tableData.Keys)
             {

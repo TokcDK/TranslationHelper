@@ -301,7 +301,7 @@ namespace TranslationHelper.Projects.RPGMMV
         //private string cId = string.Empty;
         //private string OldcId = "none";
         bool IsCommonEvents = false;
-        private void ProceedJToken(JToken token, string Jsonname, string propertyname = "")
+        private void ProceedJToken(JToken token, string Jsonname/*, string propertyname = ""*/)
         {
             if (token == null)
             {
@@ -412,7 +412,7 @@ namespace TranslationHelper.Projects.RPGMMV
                             }
                         }
                     }
-                    ProceedJToken(property.Value, Jsonname, property.Name);
+                    ProceedJToken(property.Value, Jsonname/*, property.Name*/);
                 }
             }
             else if (token is JArray array)
@@ -482,7 +482,7 @@ namespace TranslationHelper.Projects.RPGMMV
         }
 
         int startingrow = 0;//оптимизация. начальная строка, когда идет поиск по файлу, чтобы не искало каждый раз сначала при нахождении перевода будет переприсваиваться начальная строка на последнюю
-        private void WProceedJToken(JToken token, string Jsonname, string propertyname = "")
+        private void WProceedJToken(JToken token, string Jsonname/*, string propertyname = ""*/)
         {
             if (token == null)
             {
@@ -657,7 +657,7 @@ namespace TranslationHelper.Projects.RPGMMV
                             }
                         }
                     }
-                    WProceedJToken(property.Value, Jsonname, property.Name);
+                    WProceedJToken(property.Value, Jsonname/*, property.Name*/);
                 }
             }
             else if (token is JArray array)

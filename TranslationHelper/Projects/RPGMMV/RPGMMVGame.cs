@@ -153,10 +153,7 @@ namespace TranslationHelper.Projects
             return null;
         }
 
-        internal override string NewlineSymbol()
-        {
-            return "\\n";
-        }
+        internal override string NewlineSymbol => "\\n";
 
     }
 }
