@@ -21,8 +21,9 @@ namespace TranslationHelper
         THDataWork thDataWork;
         internal DataGridView THFileElementsDataGridView;
         readonly RichTextBox THTargetRichTextBox;
+        readonly INIFile Config;
 
-        public THSearch(THDataWork thDataWork, ListBox listBox, DataGridView DGV, RichTextBox TTB)
+        internal THSearch(THDataWork thDataWork, ListBox listBox, DataGridView DGV, RichTextBox TTB)
         {
             InitializeComponent();
             //Main = MainForm;
@@ -30,6 +31,8 @@ namespace TranslationHelper
             this.thDataWork = thDataWork;
             THFileElementsDataGridView = DGV;
             THTargetRichTextBox = TTB;
+
+            Config = thDataWork.Main.Settings.THConfigINI;
 
             //translation
             this.THSearch1st.Text = T._("Find and Replace");
@@ -225,39 +228,100 @@ namespace TranslationHelper
 
         private void LoadSearchQueriesReplacers()
         {
-            SearchQueries = new INIFile("TranslationHelperConfig.ini").ReadSectionValuesToArray("Search Queries");
-            if (SearchQueries != null && SearchQueries.Length > 0)
+            try
             {
-                SearchFormFindWhatComboBox.Items.AddRange(SearchQueries);
+                SearchQueries = Config.ReadSectionValuesToArray("Search Queries");
+                if (SearchQueries != null && SearchQueries.Length > 0)
+                {
+                    RemoveQuotesFromLoadedSearchValues(ref SearchQueries);
+                    SearchFormFindWhatComboBox.Items.Clear();
+                    SearchFormFindWhatComboBox.Items.AddRange(SearchQueries);
+                }
+                SearchReplacers = Config.ReadSectionValuesToArray("Search Replacers");
+                if (SearchReplacers != null && SearchReplacers.Length > 0)
+                {
+                    RemoveQuotesFromLoadedSearchValues(ref SearchReplacers);
+                    SearchFormReplaceWithComboBox.Items.Clear();
+                    SearchFormReplaceWithComboBox.Items.AddRange(SearchReplacers);
+                }
             }
-            SearchReplacers = new INIFile("TranslationHelperConfig.ini").ReadSectionValuesToArray("Search Replacers");
-            if (SearchReplacers != null && SearchReplacers.Length > 0)
+            catch
             {
-                SearchFormReplaceWithComboBox.Items.AddRange(SearchReplacers);
+            }
+        }
+
+        private void RemoveQuotesFromLoadedSearchValues(ref string[] searchQueriesReplacers)
+        {
+            for (int i = 0; i < searchQueriesReplacers.Length; i++)
+            {
+                if (searchQueriesReplacers[i].StartsWith("\"") && searchQueriesReplacers[i].EndsWith("\""))
+                {
+                    searchQueriesReplacers[i] = searchQueriesReplacers[i].Remove(searchQueriesReplacers[i].Length - 1, 1).Remove(0, 1);
+                }
+
+                //if (Regex.IsMatch(searchQueriesReplacers[i], @"\\\$[1-9]{1,2}"))
+                //{
+                //    Regex.Replace(searchQueriesReplacers[i], @"\\\$([1-9]{1,2})", @"\$$1");
+                //}
+            }
+        }
+
+        private void AddQuotesToWritingSearchValues(ref string[] searchQueriesReplacers)
+        {
+            for (int i = 0; i < searchQueriesReplacers.Length; i++)
+            {
+                searchQueriesReplacers[i] = "\"" + searchQueriesReplacers[i] + "\"";
             }
         }
 
         private void WriteSearchQueriesReplacers()
         {
-            if (SearchFormFindWhatComboBox.Items.Count > 0)
+            try
             {
-                SearchQueries = new string[SearchFormFindWhatComboBox.Items.Count];
-                SearchFormFindWhatComboBox.Items.CopyTo(SearchQueries, 0);
-                new INIFile("TranslationHelperConfig.ini").WriteArrayToSectionValues("Search Queries", SearchQueries);
+                if (SearchFormFindWhatComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(SearchQueries, SearchFormFindWhatComboBox.Items))
+                {
+                    SearchQueries = new string[SearchFormFindWhatComboBox.Items.Count];
+                    SearchFormFindWhatComboBox.Items.CopyTo(SearchQueries, 0);
+                    AddQuotesToWritingSearchValues(ref SearchQueries);
+                    Config.WriteArrayToSectionValues("Search Queries", SearchQueries);
+                }
+                if (SearchFormReplaceWithComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(SearchReplacers, SearchFormReplaceWithComboBox.Items))
+                {
+                    SearchReplacers = new string[SearchFormReplaceWithComboBox.Items.Count];
+                    SearchFormReplaceWithComboBox.Items.CopyTo(SearchReplacers, 0);
+                    AddQuotesToWritingSearchValues(ref SearchReplacers);
+                    Config.WriteArrayToSectionValues("Search Replacers", SearchReplacers);
+                }
             }
-            if (SearchFormReplaceWithComboBox.Items.Count > 0)
+            catch
             {
-                SearchReplacers = new string[SearchFormReplaceWithComboBox.Items.Count];
-                SearchFormReplaceWithComboBox.Items.CopyTo(SearchReplacers, 0);
-                new INIFile("TranslationHelperConfig.ini").WriteArrayToSectionValues("Search Replacers", SearchReplacers);
             }
+        }
+
+        private bool IsSearchQueriesReplacersListChanged(string[] OldList, ComboBox.ObjectCollection items)
+        {
+            if (OldList.Length != items.Count)
+            {
+                return true;
+            }
+            else
+            {
+                for (int i = 0; i < OldList.Length; i++)
+                {
+                    if (OldList[i] != items[i].ToString())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         string lastfoundvalue = string.Empty;
         string lastfoundreplacedvalue = string.Empty;
         string[] SearchQueries;
         string[] SearchReplacers;
-        private void StoryFoundValueToComboBox(string foundvalue, string replaceWithValue="")
+        private void StoryFoundValueToComboBox(string foundvalue, string replaceWithValue = "")
         {
             //store found value
             lastfoundvalue = foundvalue;
@@ -284,9 +348,9 @@ namespace TranslationHelper
             {
                 if (!ComboBox.Items.Contains(value))
                 {
-                    if (ItemsCount == 10)
+                    if (ItemsCount == Properties.Settings.Default.THSavedSearchQueriesReplacersCount)
                     {
-                        ComboBox.Items.RemoveAt(9);
+                        ComboBox.Items.RemoveAt(Properties.Settings.Default.THSavedSearchQueriesReplacersCount - 1);
                     }
 
                     AddRestComboBoxValuesWithNew(ComboBox.Items, value);
@@ -307,14 +371,14 @@ namespace TranslationHelper
         }
 
         /// <summary>
-        /// set old values to tem array, clear combobox, adda new and after add old values
+        /// set old values to item array, clear combobox, adda new and after add old values
         /// </summary>
         /// <param name="items"></param>
         /// <param name="tempArray"></param>
         /// <param name="value"></param>
         private static void AddRestComboBoxValuesWithNew(ComboBox.ObjectCollection items, string value)
         {
-            object[] oldItems=new object[items.Count];
+            object[] oldItems = new object[items.Count];
             items.CopyTo(oldItems, 0);
             items.Clear();
             items.Add(value);
@@ -508,7 +572,7 @@ namespace TranslationHelper
             {
                 GetActorsTable();
             }
-            if (Actors == null || Actors.Rows.Count==0)
+            if (Actors == null || Actors.Rows.Count == 0)
             {
                 return false;
             }
@@ -518,7 +582,7 @@ namespace TranslationHelper
                 string original = ActorsLine[0] as string;
                 string translation = ActorsLine[1] + string.Empty;
                 //если оригинал содержит оригинал(Анна) из Actors, а перевод не содержит определение(Anna) из Actors
-                if (translation.Length > 0 && (original.Length<80 && (row[0] as string).Contains(original) && !rowTranslation.Contains(translation)))
+                if (translation.Length > 0 && (original.Length < 80 && (row[0] as string).Contains(original) && !rowTranslation.Contains(translation)))
                 {
                     return true;
                 }
@@ -656,7 +720,7 @@ namespace TranslationHelper
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error:\r\n"+ex+ "e.RowIndex="+ e.RowIndex+ "\r\noDsResultsCoordinates.Rows count="+ oDsResultsCoordinates.Rows.Count);
+                MessageBox.Show("Error:\r\n" + ex + "e.RowIndex=" + e.RowIndex + "\r\noDsResultsCoordinates.Rows count=" + oDsResultsCoordinates.Rows.Count);
             }
 
             thDataWork.THFilesElementsDataset.Tables[tableindex].DefaultView.RowFilter = string.Empty;
@@ -683,9 +747,12 @@ namespace TranslationHelper
             //THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
             FunctionsTable.ShowSelectedRow(thDataWork, tableindex, searchcolumn, rowindex);
 
-            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(THFileElementsDataGridView.CurrentCell.Value.ToString())));
-            selectstring.Start();
+            if (THFileElementsDataGridView.DataSource != null)
+            {
+                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(THFileElementsDataGridView.CurrentCell.Value.ToString())));
+                selectstring.Start();
+            }
         }
 
         private void SearchFormFindWhatComboBox_SelectedValueChanged(object sender, EventArgs e)

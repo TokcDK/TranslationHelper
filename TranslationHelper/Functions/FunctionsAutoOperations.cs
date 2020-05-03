@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Functions;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -180,6 +181,7 @@ namespace TranslationHelper.Main.Functions
                         if (cvalue.Length > 0 && (forceApply || cvalue != row[cind - 1] as string))
                         {
                             //Hardcoded rules
+                            cvalue = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
                             //cvalue = FunctionsStringFixes.FixENJPQuoteOnStringStart2ndLine(row[0] + string.Empty, row[1] + string.Empty);
                             //cvalue = FunctionsString.FixForRPGMAkerQuotationInSomeStrings(row);
                             //cvalue = FunctionsString.FixBrokeNameVar(cvalue);

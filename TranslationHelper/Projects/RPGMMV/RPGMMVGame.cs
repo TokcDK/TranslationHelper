@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMMV;
@@ -50,9 +51,21 @@ namespace TranslationHelper.Projects
                 {
                     thDataWork.Main.ProgressInfo(true, T._("opening file: ") + JS.JSName);
                     thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
-                    if (JS.Open())
+
+                    if (!File.Exists(thDataWork.FilePath))
                     {
-                        IsAnyFileCompleted = true;
+                        continue;
+                    }
+
+                    try
+                    {
+                        if (JS.Open())
+                        {
+                            IsAnyFileCompleted = true;
+                        }
+                    }
+                    catch
+                    {
                     }
                 }
 
@@ -60,9 +73,15 @@ namespace TranslationHelper.Projects
                 var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
                 foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
                 {
-                    if (OpenRPGMakerMVjson(file.FullName))
+                    try
                     {
-                        IsAnyFileCompleted = true;
+                        if (OpenRPGMakerMVjson(file.FullName))
+                        {
+                            IsAnyFileCompleted = true;
+                        }
+                    }
+                    catch
+                    {
                     }
                 }
             }
@@ -104,12 +123,14 @@ namespace TranslationHelper.Projects
 
         internal override bool Save()
         {
-            for (int f = 0; f < thDataWork.Main.THFilesList.Items.Count; f++)
+            //thDataWork.CurrentProject.FillTHFilesElementsDictionary();
+
+            foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
             {
                 //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
                 //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
 
-                var table = thDataWork.THFilesElementsDataset.Tables[f];
+                //var table = thDataWork.THFilesElementsDataset.Tables[f];
                 bool changed = false;
 
                 if (!FunctionsTable.IsTableRowsAllEmpty(table))
@@ -136,6 +157,8 @@ namespace TranslationHelper.Projects
                     }
                 }
             }
+
+            //thDataWork.THFilesElementsDictionary.Clear();
 
             thDataWork.Main.ProgressInfo(false);
             return true;

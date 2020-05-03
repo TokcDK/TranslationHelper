@@ -105,7 +105,15 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             JToken root = JToken.Parse(RRMSvar.ToString());
                             try
                             {
-                                WriteStringsToJToken(root, tablename);
+                                SplitTableCellValuesToDictionaryLines(tablename);
+                                if (TableLines != null && TableLines.Count > 0)
+                                {
+                                    WriteStringsToJTokenWithPreSplitlines(root, tablename);
+                                }
+                                else
+                                {
+                                    WriteStringsToJToken(root, tablename);
+                                }
                             }
                             catch
                             {

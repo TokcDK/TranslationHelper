@@ -28,7 +28,7 @@ namespace TranslationHelper.Functions
                 return;
             }
             thDataWork.Main.SaveInAction = true;
-            thDataWork.Main.FIleDataWasChanged = false;
+            thDataWork.Main.FileDataWasChanged = false;
 
             //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
 

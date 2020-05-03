@@ -35,7 +35,6 @@ namespace TranslationHelper.Functions
             else
             {
                 thDataWork.Main.IsOpeningInProcess = true;
-
                 //об сообщении Освобождаемый объект никогда не освобождается и почему using здесь
                 //https://stackoverflow.com/questions/2926869/do-you-need-to-dispose-of-objects-and-set-them-to-null
                 using (OpenFileDialog THFOpen = new OpenFileDialog())
@@ -45,78 +44,81 @@ namespace TranslationHelper.Functions
 
                     if (THFOpen.ShowDialog() == DialogResult.OK)
                     {
-                        if (THFOpen.OpenFile() != null)
+                        if (THFOpen.FileName != null)
                         {
-                            //THActionProgressBar.Visible = true;
-                            thDataWork.Main.ProgressInfo(true, T._("opening.."));
-
                             new CleanupData(thDataWork).THCleanupThings();
 
-                            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                            //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
-                            //open.Start();
-
-                            bool newOpen = false;
                             thDataWork.SPath = THFOpen.FileName;
-
-                            if (newOpen)
-                            {
-                                if (await Task.Run(() => TryToDetectSourceAndOpen()).ConfigureAwait(true))
-                                {
-                                    AfterOpenActions();
-
-                                    return;
-                                }
-                                else
-                                {
-                                    /*THMsg*/
-                                    MessageBox.Show(T._("Problem with source opening. Try to report to devs about it."));
-
-                                    return;
-                                }
-                            }
-
-                            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => RPGMFunctions.THSelectedSourceType = GetSourceType(THFOpen.FileName)).ConfigureAwait(true);
-
-                            //THSelectedSourceType = GetSourceType(THFOpen.FileName);
-
-                            //THActionProgressBar.Visible = false;
-                            thDataWork.Main.ProgressInfo(false, string.Empty);
-
-                            if (RPGMFunctions.THSelectedSourceType.Length == 0)
-                            {
-                                /*THMsg*/
-                                MessageBox.Show(T._("Problem with source opening. Try to report to devs about it."));
-                            }
-                            else
-                            {
-                                //if (THSelectedSourceType == "RPG Maker MV")
-                                //{
-                                //    THMakeRPGMakerMVWorkProjectDir(THFOpen.FileName);
-                                //}
-
-                                //Попытка добавить открытие сразу всех таблиц в одной
-                                //if (setAsDatasourceAllToolStripMenuItem.Visible)
-                                //{
-                                //    for (int c = 0; c < THFilesElementsDataset.Tables[0].Columns.Count; c++)
-                                //    {
-                                //        THFilesElementsALLDataTable.Columns.Add(THFilesElementsDataset.Tables[0].Columns[c].ColumnName);//asdfgh
-                                //    }
-
-                                //    for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
-                                //    {
-                                //        for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
-                                //        {
-                                //            THFilesElementsALLDataTable.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r].ItemArray);
-                                //        }
-                                //    }
-                                //}
-
-                                AfterOpenActions();
-                            }
-
                         }
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(thDataWork.SPath))
+                {
+                    //THActionProgressBar.Visible = true;
+                    //thDataWork.Main.ProgressInfo(true, T._("opening.."));
+
+                    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                    //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
+                    //open.Start();
+
+                    //bool newOpen = false;
+
+                    //if (newOpen)
+                    //{
+                    //    if (await Task.Run(() => TryToDetectSourceAndOpen()).ConfigureAwait(true))
+                    //    {
+                    //        AfterOpenActions();
+
+                    //        return;
+                    //    }
+                    //    else
+                    //    {
+                    //        /*THMsg*/
+                    //        MessageBox.Show(T._("Problem with source opening. Try to report to devs about it."));
+
+                    //        return;
+                    //    }
+                    //}
+
+                    //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                    await Task.Run(() => RPGMFunctions.THSelectedSourceType = GetSourceType(thDataWork.SPath)).ConfigureAwait(true);
+
+                    //THSelectedSourceType = GetSourceType(THFOpen.FileName);
+
+                    //THActionProgressBar.Visible = false;
+                    thDataWork.Main.ProgressInfo(false, string.Empty);
+
+                    if (RPGMFunctions.THSelectedSourceType.Length == 0)
+                    {
+                        /*THMsg*/
+                        MessageBox.Show(T._("Problem with source opening. Try to report to devs about it."));
+                    }
+                    else
+                    {
+                        //if (THSelectedSourceType == "RPG Maker MV")
+                        //{
+                        //    THMakeRPGMakerMVWorkProjectDir(THFOpen.FileName);
+                        //}
+
+                        //Попытка добавить открытие сразу всех таблиц в одной
+                        //if (setAsDatasourceAllToolStripMenuItem.Visible)
+                        //{
+                        //    for (int c = 0; c < THFilesElementsDataset.Tables[0].Columns.Count; c++)
+                        //    {
+                        //        THFilesElementsALLDataTable.Columns.Add(THFilesElementsDataset.Tables[0].Columns[c].ColumnName);//asdfgh
+                        //    }
+
+                        //    for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
+                        //    {
+                        //        for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                        //        {
+                        //            THFilesElementsALLDataTable.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r].ItemArray);
+                        //        }
+                        //    }
+                        //}
+
+                        AfterOpenActions();
                     }
                 }
 

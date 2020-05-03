@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using TranslationHelper.Data;
 
@@ -87,6 +88,21 @@ namespace TranslationHelper.Projects
 
             return (from ProjectBase SubClass in SubclassesOfProjectBase
                     select SubClass).ToList();
+        }
+
+        internal void FillTHFilesElementsDictionary()
+        {
+            foreach(DataTable table in thDataWork.THFilesElementsDataset.Tables)
+            {
+                foreach(DataRow row in table.Rows)
+                {
+                    string orig;
+                    if (!string.IsNullOrEmpty(orig = row[0] + string.Empty) && !thDataWork.THFilesElementsDictionary.ContainsKey(orig))
+                    {
+                        thDataWork.THFilesElementsDictionary.Add(orig, row[1] + string.Empty);
+                    }
+                }
+            }
         }
     }
 }

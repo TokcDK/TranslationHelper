@@ -100,7 +100,15 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             JToken root;
                             root = JToken.Parse(line);
 
-                            WriteStringsToJToken(root, tablename);
+                            SplitTableCellValuesToDictionaryLines(tablename);
+                            if (TableLines != null && TableLines.Count > 0)
+                            {
+                                WriteStringsToJTokenWithPreSplitlines(root, tablename);
+                            }
+                            else
+                            {
+                                WriteStringsToJToken(root, tablename);
+                            }
 
                             line = root.ToString(Formatting.None) + (isJsonNotLast ? "," : string.Empty);
                         }

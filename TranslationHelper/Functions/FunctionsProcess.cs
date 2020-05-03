@@ -13,7 +13,7 @@ namespace TranslationHelper.Main.Functions
             }
             else
             {
-                FileVersionInfo ExeInfo = FileVersionInfo.GetVersionInfo(exepath);
+                var ExeInfo = FileVersionInfo.GetVersionInfo(exepath);
                 return ExeInfo.FileDescription;
             }
         }

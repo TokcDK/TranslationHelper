@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
@@ -22,14 +18,25 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return ParseConfigExJS();
         }
 
-        private bool ParseConfigExJS(bool Iswrite=false)
+        private bool ParseConfigExJS(bool Iswrite = false)
         {
+            if (thDataWork.FilePath.Length == 0 || !File.Exists(thDataWork.FilePath))
+            {
+                return false;
+            }
+
             string line;
 
             string tablename = Path.GetFileName(thDataWork.FilePath);
 
+            bool UseDict = false;
             if (Iswrite)
             {
+                SplitTableCellValuesToDictionaryLines(tablename);
+                if (TableLines != null && TableLines.Count > 0)
+                {
+                    UseDict = true;
+                }
             }
             else
             {
@@ -54,7 +61,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                 IsComment = false;
                             }
                         }
-                        else 
+                        else
                         {
                             if (line.Contains("/*"))
                             {
@@ -68,19 +75,31 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                 {
                                     if (Iswrite)
                                     {
-                                        var row = thDataWork.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
-                                        if (row[0] as string == StringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
+                                        if (UseDict)
                                         {
-                                            line = line.Replace(StringToAdd, row[1] as string);
+                                            if (TableLines.ContainsKey(StringToAdd) && !string.IsNullOrEmpty(TableLines[StringToAdd]) && TableLines[StringToAdd] != StringToAdd)
+                                            {
+                                                line = line.Replace(StringToAdd, TableLines[StringToAdd]);
+                                            }
                                         }
+                                        else
+                                        {
 
-                                        RowIndex++;
+                                            var row = thDataWork.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
+                                            if (row[0] as string == StringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
+                                            {
+                                                line = line.Replace(StringToAdd, row[1] as string);
+                                            }
+
+                                            RowIndex++;
+                                        }
                                     }
                                     else
                                     {
                                         string StringForInfo = Regex.Replace(line, @"\.addCommand\('[^']+', '([^']+)'\);", "$2");
-                                        thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
-                                        thDataWork.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
+                                        AddRowData(tablename, StringToAdd, "addCommand\\" + StringForInfo);
+                                        //thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
+                                        //thDataWork.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
                                     }
                                 }
                             }

@@ -1,10 +1,37 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Extensions
 {
     internal static class ExtensionsString
     {
+        /// <summary>
+        /// If string is multiline
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        internal static bool IsMultiline(this string input)
+        {
+            if (input != null)
+            {
+                using (System.IO.StringReader reader = new System.IO.StringReader(input))
+                {
+                    int i = 0;
+                    while (reader.ReadLine() != null)
+                    {
+                        i++;
+                        if (i > 1)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
         //https://stackoverflow.com/a/2567623
         //В моем случае этот вариант самый быстрый
         /// <summary>

@@ -1,6 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMMV.JS;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.RPGMMV
 {

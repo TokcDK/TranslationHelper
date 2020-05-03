@@ -15,10 +15,12 @@ namespace TranslationHelper.Functions
     class FunctionsOnlineTranslation
     {
         readonly THDataWork thDataWork;
+        readonly GoogleAPI Translator;
 
         public FunctionsOnlineTranslation(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
+            Translator = new GoogleAPI();
         }
 
         /// <summary>
@@ -57,7 +59,7 @@ namespace TranslationHelper.Functions
                     //}
 
                     //сброс кеша в GoogleAPI
-                    GoogleAPI.ResetCache();
+                    Translator.ResetCache();
 
                     //перебор таблиц dataset
                     for (int t = TableIndex; t < TableMaxIndex; t++)
@@ -139,7 +141,7 @@ namespace TranslationHelper.Functions
                                     //LogToFile("resultvalue from cache is empty. resultvalue=" + resultvalue, true);
                                     //string[] inputvaluearray = InputValue.Split(new string[2] { Environment.NewLine, @"\n" }, StringSplitOptions.None);
 
-                                    if (FunctionsString.IsMultiline(InputValue))
+                                    if (InputValue.IsMultiline())
                                     {
                                         ResultValue = TranslateMultilineValue(InputValue.SplitToLines().ToArray()/*, THTranslationCache*/);
                                     }
@@ -149,7 +151,7 @@ namespace TranslationHelper.Functions
                                         //LogToFile("extractedvalue="+ extractedvalue,true);
                                         if (ExtractedValue.Length == 0 || ExtractedValue == InputValue)
                                         {
-                                            ResultValue = GoogleAPI.Translate(InputValue);
+                                            ResultValue = Translator.Translate(InputValue);
 
                                             //LogToFile("resultvalue=" + resultvalue, true);
                                             //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
@@ -162,7 +164,7 @@ namespace TranslationHelper.Functions
                                             //LogToFile("cachedvalue=" + cachedvalue, true);
                                             if (CachedExtractedValue.Length == 0)
                                             {
-                                                string OnlineValue = GoogleAPI.Translate(ExtractedValue);//из исходников ESPTranslator 
+                                                string OnlineValue = Translator.Translate(ExtractedValue);//из исходников ESPTranslator 
 
                                                 if (Equals(ExtractedValue, OnlineValue))
                                                 {
@@ -255,7 +257,7 @@ namespace TranslationHelper.Functions
                         //FunctionsTable.AddToTranslationCacheIfValid(cacheDS, OriginalLine, Result);
                         if (Result.Length == 0 || Result == OriginalLine)
                         {
-                            Result = GoogleAPI.Translate(OriginalLine);
+                            Result = Translator.Translate(OriginalLine);
                         }
                         FunctionsTable.AddToTranslationCacheIfValid(thDataWork, OriginalLine, Result);
                     }
@@ -264,7 +266,7 @@ namespace TranslationHelper.Functions
                         string ExtractedTranslation = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(ExtractedOriginal);
                         if (ExtractedTranslation.Length == 0 || ExtractedTranslation == ExtractedOriginal)
                         {
-                            ExtractedTranslation = GoogleAPI.Translate(ExtractedOriginal);
+                            ExtractedTranslation = Translator.Translate(ExtractedOriginal);
                         }
                         Result = PasteTranslationBackIfExtracted(
                             //TranslatorsFunctions.ReturnTranslatedOrCache(cacheDS, ExtractedOriginal),
@@ -424,7 +426,7 @@ namespace TranslationHelper.Functions
                             //thDataWork.Main.ProgressInfo(true, T._("translating") + ": " + t + "/" + tcount + " (" + r + "/" + rcount + ")");
 
                             InputOriginalLine = Row[OrigColIndex] as string;
-                            if (string.IsNullOrWhiteSpace(InputOriginalLine))
+                            if (string.IsNullOrWhiteSpace(InputOriginalLine) || FunctionsRomajiKana.IsTheStringMostlyRomajiOrOther(InputOriginalLine))
                             {
                                 continue;
                             }
@@ -470,19 +472,33 @@ namespace TranslationHelper.Functions
                                         {
                                             if (linevalue.Length > 0)
                                             {
-                                                extractedvalue = thDataWork.Main.THExtractTextForTranslation(linevalue);//извлечение подстроки
-
-                                                // только если извлеченное значение отличается от оригинальной строки
-                                                //cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
-                                                cache = extractedvalue == linevalue ? string.Empty : thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue);//поиск извлеченной подстроки в кеше
-                                                if (cache.Length > 0)
+                                                if (FunctionsRomajiKana.IsTheStringMostlyRomajiOrOther(linevalue))
                                                 {
-                                                    Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
+                                                    Translation = linevalue;//если большинством ромаджи или прочее
                                                 }
                                                 else
                                                 {
-                                                    IsExtracted = extractedvalue.Length > 0;
-                                                    InputLines.Add(extractedvalue.Length == 0 ? linevalue : extractedvalue);
+                                                    extractedvalue = thDataWork.Main.THExtractTextForTranslation(linevalue);//извлечение подстроки
+
+                                                    // только если извлеченное значение отличается от оригинальной строки
+                                                    //cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
+                                                    cache = extractedvalue == linevalue ? string.Empty : thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue);//поиск извлеченной подстроки в кеше
+                                                    if (cache.Length > 0)
+                                                    {
+                                                        Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
+                                                    }
+                                                    else
+                                                    {
+                                                        if (FunctionsRomajiKana.IsTheStringMostlyRomajiOrOther(extractedvalue))
+                                                        {
+                                                            Translation = linevalue;//если извлеченное значение большинством ромаджи или прочее
+                                                        }
+                                                        else
+                                                        {
+                                                            IsExtracted = extractedvalue.Length > 0 && extractedvalue != linevalue;
+                                                            InputLines.Add(extractedvalue.Length == 0 ? linevalue : extractedvalue);
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -574,10 +590,10 @@ namespace TranslationHelper.Functions
             string[] OriginalLines = InputLines.ToArray();
 
             //сброс кеша в GoogleAPI
-            GoogleAPI.ResetCache();
+            Translator.ResetCache();
 
             //send string array to translation for multiline
-            string[] TranslatedLines = GoogleAPI.TranslateMultiple(OriginalLines);
+            string[] TranslatedLines = Translator.Translate(OriginalLines);
 
             //int infoCount = InputLinesInfo.Rows.Count;
             //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
@@ -586,9 +602,10 @@ namespace TranslationHelper.Functions
             {
                 StringBuilder ResultValue = new StringBuilder();
                 int TranslatedLinesIndex = 0;
+                InputLinesInfoData InfoRow = null;
                 for (int InfoIndex = 0; InfoIndex < InputLinesInfo.Count; InfoIndex++)
                 {
-                    var InfoRow = InputLinesInfo[InfoIndex];
+                    InfoRow = InputLinesInfo[InfoIndex];
 
                     string newLine;
                     if (!InfoRow.GetIsLastLineInString)
@@ -641,6 +658,17 @@ namespace TranslationHelper.Functions
                         ResultValue.Clear();
                     }
                 }
+                if (ResultValue.Length > 0 && InfoRow != null)
+                {
+                    SetTranslationResultToCellIfEmpty(
+                        InfoRow.GetTableIndex
+                        ,
+                        InfoRow.GetRowIndex
+                        ,
+                        ResultValue
+                        );
+                    ResultValue.Clear();
+                }
             }
         }
 
@@ -653,7 +681,7 @@ namespace TranslationHelper.Functions
                 var Cell = Row[0];
                 if (Equals(Cell, ResultValue))
                 {
-                    s = GoogleAPI.Translate(Cell as string);
+                    s = Translator.Translate(Cell as string);
                 }
                 else
                 {

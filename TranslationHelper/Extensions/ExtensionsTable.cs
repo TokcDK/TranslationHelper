@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,25 @@ namespace TranslationHelper.Extensions
 {
     static class ExtensionsTable
     {
+        /// <summary>
+        /// Fills datatable with values from dictionary
+        /// </summary>
+        /// <param name="inputDictionary">Dictionary from which fill</param>
+        /// <param name="inputDataTable">Datatable which need to fill</param>
+        internal static bool FillWithDictionary(this DataTable inputDataTable, Dictionary<string, string> inputDictionary)
+        {
+            if (inputDataTable == null)
+                return false;
+
+            bool ret = false;
+            foreach (var KeyValue in inputDictionary)
+            {
+                inputDataTable.Rows.Add(KeyValue.Key, KeyValue.Value);
+                ret = true;
+            }
+            return ret;
+        }
+
         /// <summary>
         /// Will return count of selected rows in datagridview
         /// </summary>

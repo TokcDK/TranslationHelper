@@ -550,7 +550,7 @@
             // allToolStripMenuItem4
             // 
             this.allToolStripMenuItem4.Name = "allToolStripMenuItem4";
-            this.allToolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
+            this.allToolStripMenuItem4.Size = new System.Drawing.Size(85, 22);
             this.allToolStripMenuItem4.Text = "All";
             this.allToolStripMenuItem4.Click += new System.EventHandler(this.UPPERCASEallToolStripMenuItem_Click);
             // 
@@ -671,14 +671,14 @@
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
             // 
             // reloadRulesToolStripMenuItem
             // 
             this.reloadRulesToolStripMenuItem.Name = "reloadRulesToolStripMenuItem";
-            this.reloadRulesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reloadRulesToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.reloadRulesToolStripMenuItem.Text = "Reload rules";
             this.reloadRulesToolStripMenuItem.Click += new System.EventHandler(this.reloadRulesToolStripMenuItem_Click);
             // 
@@ -694,7 +694,7 @@
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
@@ -771,6 +771,7 @@
             this.THFileElementsDataGridView.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellValidated);
             this.THFileElementsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellValueChanged);
             this.THFileElementsDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFileElementsDataGridView_RowPostPaint);
+            this.THFileElementsDataGridView.SelectionChanged += new System.EventHandler(this.THFileElementsDataGridView_SelectionChanged);
             this.THFileElementsDataGridView.MouseEnter += new System.EventHandler(this.THFileElementsDataGridView_MouseEnter);
             this.THFileElementsDataGridView.MouseLeave += new System.EventHandler(this.THFileElementsDataGridView_MouseLeave);
             // 
@@ -1052,6 +1053,7 @@
             this.THTargetRichTextBox.Size = new System.Drawing.Size(344, 98);
             this.THTargetRichTextBox.TabIndex = 1;
             this.THTargetRichTextBox.Text = "";
+            this.THTargetRichTextBox.TextChanged += new System.EventHandler(this.THTargetRichTextBox_TextChanged);
             this.THTargetRichTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
             this.THTargetRichTextBox.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
             this.THTargetRichTextBox.MouseEnter += new System.EventHandler(this.THTargetRichTextBox_MouseEnter);

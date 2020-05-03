@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Threading;
+using System.Windows.Forms;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper
 {
@@ -9,7 +11,7 @@ namespace TranslationHelper
 
         public static void WriteData(string filePath, string data, bool DebugMode = false)
         {
-            if (string.IsNullOrEmpty(filePath) || (!DebugMode && filePath.Contains("TranslationHelper.log")))
+            if (string.IsNullOrEmpty(filePath) || (!DebugMode && FunctionsString.IsStringAContainsStringB(filePath, Application.ProductName + ".log")))
             {
                 return;
             }

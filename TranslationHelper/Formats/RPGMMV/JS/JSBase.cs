@@ -51,8 +51,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 if (!IsValidToken(token))
                     return;
 
-                thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(token.ToString());
-                thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(token.Path);
+                AddRowData(Jsonname, token.ToString(), token.Path);
+                //thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(token.ToString());
+                //thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(token.Path);
             }
             else if (token is JObject obj)
             {
@@ -109,6 +110,47 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 for (int i = 0; i < arrayCount; i++)
                 {
                     WriteStringsToJToken(array[i], Jsonname);
+                }
+            }
+            else
+            {
+            }
+        }
+
+        protected void WriteStringsToJTokenWithPreSplitlines(JToken token, string Jsonname)
+        {
+            if (token == null)
+            {
+                return;
+            }
+
+            if (token is JValue)
+            {
+                if (!IsValidToken(token))
+                    return;
+
+                string TokenValue = token.ToString();
+                if (TableLines.ContainsKey(TokenValue)
+                    && !string.IsNullOrEmpty(TableLines[TokenValue])
+                    && TableLines[TokenValue] != TokenValue)
+                {
+                    (token as JValue).Value = TableLines[TokenValue];
+                }
+            }
+            else if (token is JObject obj)
+            {
+                //LogToFile("JObject Properties: \r\n" + obj.Properties());
+                foreach (var property in obj.Properties())
+                {
+                    WriteStringsToJTokenWithPreSplitlines(property.Value, Jsonname);
+                }
+            }
+            else if (token is JArray array)
+            {
+                var arrayCount = array.Count;
+                for (int i = 0; i < arrayCount; i++)
+                {
+                    WriteStringsToJTokenWithPreSplitlines(array[i], Jsonname);
                 }
             }
             else

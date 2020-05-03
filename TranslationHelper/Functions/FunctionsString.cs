@@ -63,29 +63,40 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         internal static string[] SplitStringByEqualParts(string str, int chunkSize)
         {
-            if (str == null)
+            if (str == null || chunkSize<1)
                 return null;
 
             string[] parts = new string[chunkSize];
-
-            int ind = 0;
-            int strLength = str.Length;
-            //памятка о приведении типов
-            //https://www.aubrett.com/article/information-technology/web-development/net-framework/csharp/csharp-division-floating-point
-            ///*THMsg*/MessageBox.Show("strLength=" + strLength + ",str=" + str + ",f=" + f);
-            int substrLength = (int)Math.Ceiling((double)strLength / chunkSize);//округление числа символов в части в большую сторону
-            ///*THMsg*/MessageBox.Show("f="+f+", substrLength=" + substrLength);
-            int partsLength = parts.Length;
-            for (int i = 0; i < partsLength; i++)
+            parts[0] = string.Empty;
+            if (chunkSize == 1)
             {
-                if (i == partsLength - 1)
+                foreach(var line in str.SplitToLines())
                 {
-                    parts[i] = str.Substring(ind, strLength - ind);
+                    parts[0] += line;
                 }
-                else
+            }
+            else
+            {
+
+                int ind = 0;
+                int strLength = str.Length;
+                //памятка о приведении типов
+                //https://www.aubrett.com/article/information-technology/web-development/net-framework/csharp/csharp-division-floating-point
+                ///*THMsg*/MessageBox.Show("strLength=" + strLength + ",str=" + str + ",f=" + f);
+                int substrLength = (int)Math.Ceiling((double)strLength / chunkSize);//округление числа символов в части в большую сторону
+                ///*THMsg*/MessageBox.Show("f="+f+", substrLength=" + substrLength);
+                int partsLength = parts.Length;
+                for (int i = 0; i < partsLength; i++)
                 {
-                    parts[i] = str.Substring(ind, substrLength);
-                    ind += substrLength;
+                    if (i == partsLength - 1)
+                    {
+                        parts[i] = str.Substring(ind, strLength - ind);
+                    }
+                    else
+                    {
+                        parts[i] = str.Substring(ind, substrLength);
+                        ind += substrLength;
+                    }
                 }
             }
 
@@ -103,27 +114,6 @@ namespace TranslationHelper.Main.Functions
         internal static bool GetCountOfTheSymbolInStringAandBIsEqual(string AValue, string BValue, string SymbolA, string SymbolB)
         {
             return !(string.IsNullOrEmpty(AValue) || string.IsNullOrEmpty(BValue) || string.IsNullOrEmpty(SymbolA) || string.IsNullOrEmpty(SymbolB)) && AValue.Length - AValue.Replace(SymbolA, string.Empty).Length == BValue.Length - BValue.Replace(SymbolB, string.Empty).Length;
-        }
-
-        internal static bool IsMultiline(string input)
-        {
-            if (input != null)
-            {
-                using (System.IO.StringReader reader = new System.IO.StringReader(input))
-                {
-                    int i = 0;
-                    while (reader.ReadLine() != null)
-                    {
-                        i++;
-                        if (i > 1)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -271,7 +261,7 @@ namespace TranslationHelper.Main.Functions
                 }
             }
 
-            if (DSTransCell.StartsWith("[") && FunctionsString.IsMultiline(DSTransCell))
+            if (DSTransCell.StartsWith("[") && DSTransCell.IsMultiline())
             {
                 int lineCnt = 0;
                 string resultLine = string.Empty;
@@ -410,6 +400,17 @@ namespace TranslationHelper.Main.Functions
                             ? max - (charCount % max) : 0) + w.Length + 1) / max)
                         .Select(g => string.Join(" ", g.ToArray()))
                         .ToArray();
+        }
+
+        internal static string[] SplitStringToArray(string str)
+        {
+            List<string> lineslist = new List<string>();
+            foreach(var line in str.SplitToLines())
+            {
+                lineslist.Add(line);
+            }
+
+            return lineslist.ToArray();
         }
 
         internal static string[] GetAllNonEmptyLines(string inputstring)

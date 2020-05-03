@@ -17,13 +17,14 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool OpenDetect()
         {
-            return Path.GetExtension(thDataWork.SPath) == ".exe"
-                &&
-                FunctionsProcess.GetExeDescription(thDataWork.SPath) != null
-                &&
-                FunctionsProcess.GetExeDescription(thDataWork.SPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")
-                &&
-                FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(thDataWork.SPath), "*.xp3");
+            return false;
+            //Path.GetExtension(thDataWork.SPath) == ".exe"
+            //    &&
+            //    FunctionsProcess.GetExeDescription(thDataWork.SPath) != null
+            //    &&
+            //    FunctionsProcess.GetExeDescription(thDataWork.SPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")
+            //    &&
+            //    FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(thDataWork.SPath), "*.xp3");
         }
 
         internal override string ProjectTitle()

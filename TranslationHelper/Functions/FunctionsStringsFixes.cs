@@ -189,7 +189,7 @@ namespace TranslationHelper.Functions
         {
             try
             {
-                if (FunctionsString.IsMultiline(OriginalValue))
+                if (OriginalValue.IsMultiline())
                 {
                     string origSecondLine = string.Empty;
                     int origSecondlineIndex = 0;
@@ -225,7 +225,7 @@ namespace TranslationHelper.Functions
                         //    return TranslationValue;
                         //}
 
-                        if (FunctionsString.IsMultiline(TranslationValue))
+                        if (TranslationValue.IsMultiline())
                         {
                             string quoteString;
                             bool StartsWithJpQuote1 = false;
@@ -465,14 +465,14 @@ namespace TranslationHelper.Functions
                 ||
                 //если перевод начинается и кончается на ' и также ' есть в где-то середине
                 (cvalueStartsWith && cvalueEndsWith && NewtransValue.Length > 2
-                && FunctionsString.IsStringAContainsStringB(NewtransValue.Remove(NewtransValue.Length - 1, 1).Remove(0, 1), "'")
+                //&& FunctionsString.IsStringAContainsStringB(NewtransValue.Remove(NewtransValue.Length - 1, 1).Remove(0, 1), "'")
                  //это, чтобы только когда количество ' не равно количеству в оригинале
-                 && FunctionsString.GetCountOfTheSymbolInStringAandBIsEqual(origValue, NewtransValue, "'", "'")))
+                 && !FunctionsString.GetCountOfTheSymbolInStringAandBIsEqual(origValue, NewtransValue, "'", "'")))
                 {
                     NewtransValue = "'" +
                         NewtransValue
-                        .Replace("do n't", "do not")
-                        .Replace("don't", "do not")
+                        .Replace("do n't", "dont")
+                        .Replace("don't", "dont")
                         .Replace("n’t", "not")
                         .Replace("'ve", " have")
                         .Replace("I'm", "I am")

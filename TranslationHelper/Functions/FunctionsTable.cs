@@ -2,6 +2,7 @@
 using System;
 using System.Data;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -76,12 +77,12 @@ namespace TranslationHelper.Main.Functions
             int RCount = 0;//for debug purposes
             try
             {
-                if (tableIndex == thDataWork.Main.THFilesList.SelectedIndex)
+                RCount = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
+                if (tableIndex == thDataWork.Main.THFilesList.SelectedIndex && RCount>0 && thDataWork.Main.THFileElementsDataGridView.DataSource!=null)
                 {
                 }
                 else
                 {
-                    RCount = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
                     thDataWork.Main.THFilesList.SelectedIndex = tableIndex;
                     thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableIndex];
 

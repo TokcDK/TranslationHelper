@@ -157,6 +157,18 @@ namespace TranslationHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int THSavedSearchQueriesReplacersCount {
+            get {
+                return ((int)(this["THSavedSearchQueriesReplacersCount"]));
+            }
+            set {
+                this["THSavedSearchQueriesReplacersCount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string THSelectedGameDir {
             get {
@@ -241,6 +253,18 @@ namespace TranslationHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string THProjectWorkDir {
+            get {
+                return ((string)(this["THProjectWorkDir"]));
+            }
+            set {
+                this["THProjectWorkDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool THAutoSetSameTranslationForSimularIsBusy {
             get {
@@ -265,6 +289,30 @@ namespace TranslationHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int DGVSelectedRowIndex {
+            get {
+                return ((int)(this["DGVSelectedRowIndex"]));
+            }
+            set {
+                this["DGVSelectedRowIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int DGVSelectedColumnIndex {
+            get {
+                return ((int)(this["DGVSelectedColumnIndex"]));
+            }
+            set {
+                this["DGVSelectedColumnIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ProjectIsOpened {
             get {
@@ -284,6 +332,18 @@ namespace TranslationHelper.Properties {
             }
             set {
                 this["DGVCellInEditMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DebugMode {
+            get {
+                return ((bool)(this["DebugMode"]));
+            }
+            set {
+                this["DebugMode"] = value;
             }
         }
     }

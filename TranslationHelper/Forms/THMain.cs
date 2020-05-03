@@ -236,7 +236,12 @@ namespace TranslationHelper
 
         //readonly bool THdebug = true;
         StringBuilder THsbLog;// = new StringBuilder();
-        public void LogToFile(string s, bool w = false)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="TextToLog">TextToLog</param>
+        /// <param name="WriteNow">If True then text will be now writed to log else only added to be writed later<br/></param>
+        public void LogToFile(string TextToLog, bool WriteNow = true)
         {
             if (THsbLog == null)
             {
@@ -244,22 +249,22 @@ namespace TranslationHelper
             }
             if (Properties.Settings.Default.THdebug)
             {
-                if (w)
+                if (WriteNow)
                 {
                     if (THsbLog.Length == 0)
                     {
-                        FileWriter.WriteData(Application.StartupPath + "\\TranslationHelper.log", DateTime.Now + " >>" + s + Environment.NewLine, true);
+                        FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log"), DateTime.Now + " >>" + TextToLog + Environment.NewLine, Properties.Settings.Default.DebugMode);
                     }
                     else
                     {
-                        FileWriter.WriteData(Path.Combine(Application.StartupPath, "TranslationHelper.log"), DateTime.Now + " >>" + THsbLog + Environment.NewLine, true);
+                        FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log"), DateTime.Now + " >>" + THsbLog + Environment.NewLine + TextToLog + Environment.NewLine, Properties.Settings.Default.DebugMode);
                         //File.Move(Application.StartupPath + "\\TranslationHelper.log", Application.StartupPath + "\\TranslationHelper" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") + ".log");
                         THsbLog.Clear();
                     }
                 }
                 else
                 {
-                    THsbLog.Append(DateTime.Now + " >>" + s + Environment.NewLine);
+                    THsbLog.Append(DateTime.Now + " >>" + TextToLog + Environment.NewLine);
                 }
             }
         }
@@ -589,20 +594,47 @@ namespace TranslationHelper
 
         private void CellEnterActions(object sender, DataGridViewCellEventArgs e)
         {
+            //UpdateTextboxes(sender, e);
+        }
+
+        private void UpdateTextboxes()
+        {
             try
             {
+                if (THFileElementsDataGridView.CurrentCell == null)
+                {
+                    return;
+                }
+
+                Properties.Settings.Default.DGVSelectedRowIndex = THFileElementsDataGridView.CurrentCell.RowIndex;
+                Properties.Settings.Default.DGVSelectedColumnIndex = THFileElementsDataGridView.CurrentCell.ColumnIndex;
+                Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.SelectedIndex;
+
+                if (THFileElementsDataGridView.DataSource == null || Properties.Settings.Default.DGVSelectedRowIndex == -1 || Properties.Settings.Default.THFilesListSelectedIndex == -1)
+                {
+                    THSourceRichTextBox.Clear();
+                    THTargetRichTextBox.Clear();
+                    return;
+                }
+
+
                 //Считывание значения ячейки в текстовое поле 1, вариант 2, для DataSet, ds.Tables[0]
-                if (THSourceRichTextBox.Enabled && THFileElementsDataGridView.Rows.Count > 0 && e.RowIndex >= 0 && e.ColumnIndex >= 0) //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
+                //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
+                if (THSourceRichTextBox.Enabled
+                    && THFileElementsDataGridView.Rows.Count > 0
+                    && Properties.Settings.Default.DGVSelectedRowIndex > -1
+                    && Properties.Settings.Default.DGVSelectedColumnIndex > -1)
                 {
                     THTargetRichTextBox.Clear();
 
-                    if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty).Length == 0)
+                    if ((THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells["Original"].Value + string.Empty).Length == 0)
                     {
+                        THSourceRichTextBox.Clear();
                     }
                     else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
                     {
                         //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
-                        THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[e.RowIndex].Cells["Original"].Value + string.Empty);
+                        THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells["Original"].Value + string.Empty);
                         //https://github.com/caguiclajmg/WanaKanaSharp
                         //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
                         //{
@@ -613,20 +645,16 @@ namespace TranslationHelper
                         //также по японо ыфуригане
                         //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
                     }
-                    if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value + string.Empty).Length == 0)
+                    string TranslationCellValue;
+                    if ((TranslationCellValue = THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells["Translation"].Value + string.Empty).Length == 0)
                     {
+                        THTargetRichTextBox.Clear();
                     }
                     else//проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
                     {
-                        var cellvalue = THFileElementsDataGridView.Rows[e.RowIndex].Cells["Translation"].Value;
-                        if (cellvalue == null || (cellvalue as string).Length == 0)
-                        {
-                            THTargetRichTextBox.Clear();
-                        }
-
                         //запоминание последнего значения ячейки перед считыванием в THTargetRichTextBox,
                         //для предотвращения записи значения обратно в ячейку, если она была изменена до изменения текстбокса
-                        thDataWork.TargetTextBoxPreValue = cellvalue as string;
+                        thDataWork.TargetTextBoxPreValue = TranslationCellValue;
 
                         //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
                         THTargetRichTextBox.Text = thDataWork.TargetTextBoxPreValue;
@@ -636,15 +664,14 @@ namespace TranslationHelper
                         //THTargetRichTextBox.Select(Properties.Settings.Default.THOptionLineCharLimit+1, THTargetRichTextBox.Text.Length);
                         //THTargetRichTextBox.SelectionColor = Color.Red;
 
-                        TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength(cellvalue.ToString()).ToString(CultureInfo.InvariantCulture);
+                        TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength(TranslationCellValue.ToString()).ToString(CultureInfo.InvariantCulture);
                     }
 
                     THInfoTextBox.Text = string.Empty;
 
-
-                    if ((THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty).Length == 0)
+                    string SelectedCellValue;
+                    if ((SelectedCellValue = THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells[Properties.Settings.Default.DGVSelectedColumnIndex].Value + string.Empty).Length == 0)
                     {
-
                     }
                     else
                     {
@@ -655,9 +682,9 @@ namespace TranslationHelper
                         //THInfoTextBox.Text += furigana.Expression + "\r\n";
                         //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
                         //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
-                        if (thDataWork.THFilesElementsDatasetInfo != null && thDataWork.THFilesElementsDatasetInfo.Tables.Count > THFilesList.SelectedIndex)
+                        if (thDataWork.THFilesElementsDatasetInfo != null && thDataWork.THFilesElementsDatasetInfo.Tables.Count > Properties.Settings.Default.THFilesListSelectedIndex)
                         {
-                            THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + thDataWork.THFilesElementsDatasetInfo.Tables[THFilesList.SelectedIndex].Rows[e.RowIndex][0];
+                            THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + thDataWork.THFilesElementsDatasetInfo.Tables[Properties.Settings.Default.THFilesListSelectedIndex].Rows[Properties.Settings.Default.DGVSelectedRowIndex][0];
                         }
 
                         if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
@@ -665,7 +692,7 @@ namespace TranslationHelper
                             THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
                         }
                         THInfoTextBox.Text += Environment.NewLine + Environment.NewLine;
-                        THInfoTextBox.Text += FunctionsRomajiKana.THShowLangsOfString(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty, "all"); //Show all detected languages count info
+                        THInfoTextBox.Text += FunctionsRomajiKana.THShowLangsOfString(SelectedCellValue, "all"); //Show all detected languages count info
                     }
                 }
                 //--------Считывание значения ячейки в текстовое поле 1
@@ -743,7 +770,7 @@ namespace TranslationHelper
         }
 
         internal bool SaveInAction = false;
-        internal bool FIleDataWasChanged = false;
+        internal bool FileDataWasChanged = false;
         private void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FunctionsSave(thDataWork).PrepareToWrite();
@@ -1030,10 +1057,14 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            if (Properties.Settings.Default.DGVCellInEditMode)
+            {
+                THTargetRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty;
+            }
             if (e.ColumnIndex > 0)
             {
                 cellchanged = true;
-                FIleDataWasChanged = true;
+                FileDataWasChanged = true;
             }
         }
 
@@ -1356,7 +1387,7 @@ namespace TranslationHelper
 
             try
             {
-                if (FIleDataWasChanged && savemenusNOTenabled)
+                if (FileDataWasChanged && savemenusNOTenabled)
                 {
                     writeTranslationInGameToolStripMenuItem.Enabled = true;
                     saveToolStripMenuItem.Enabled = true;
@@ -1575,17 +1606,17 @@ namespace TranslationHelper
         private void THTargetTextBox_Leave(object sender, EventArgs e)
         {
             //int sel = dataGridView1.CurrentRow.Index; //присвоить перевенной номер выбранной строки в таблице
-            if (THSourceRichTextBox.Text.Length == 0)
-            {
-            }
-            else//если текстовое поле 2 не пустое
-            {
-                //не менять, если значение текстбокса не поменялось
-                if (THTargetRichTextBox.Text != thDataWork.TargetTextBoxPreValue)
-                {
-                    THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
-                }
-            }
+            //if (THSourceRichTextBox.Text.Length == 0)
+            //{
+            //}
+            //else//если текстовое поле 2 не пустое
+            //{
+            //    //не менять, если значение текстбокса не поменялось
+            //    if (THTargetRichTextBox.Text != thDataWork.TargetTextBoxPreValue)
+            //    {
+            //        THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
+            //    }
+            //}
         }
 
         private void THFiltersDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
@@ -1980,24 +2011,30 @@ namespace TranslationHelper
 
         private void IndicateSaveProcess(string InfoText = "")
         {
-            bool THInfolabelEnabled = false;
-            if (!Properties.Settings.Default.IsTranslationHelperWasClosed && !THInfolabel.Enabled)
+            try
             {
-                THInfolabelEnabled = true;
-                THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = true));
+                bool THInfolabelEnabled = false;
+                if (!Properties.Settings.Default.IsTranslationHelperWasClosed && !THInfolabel.Enabled)
+                {
+                    THInfolabelEnabled = true;
+                    THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = true));
+                }
+
+                if (!Properties.Settings.Default.IsTranslationHelperWasClosed)
+                {
+                    THInfolabel.Invoke((Action)(() => THInfolabel.Text = InfoText));
+                }
+
+                FunctionsThreading.WaitThreaded(1000);
+
+                if (THInfolabelEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THInfolabel.Enabled)
+                {
+                    THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
+                    THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
+                }
             }
-
-            if (!Properties.Settings.Default.IsTranslationHelperWasClosed)
+            catch
             {
-                THInfolabel.Invoke((Action)(() => THInfolabel.Text = InfoText));
-            }
-
-            FunctionsThreading.WaitThreaded(1000);
-
-            if (THInfolabelEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THInfolabel.Enabled)
-            {
-                THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
-                THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
             }
         }
 
@@ -2861,6 +2898,19 @@ namespace TranslationHelper
                     }
                 }
             }
+        }
+
+        private void THTargetRichTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (!Properties.Settings.Default.DGVCellInEditMode && (sender as RichTextBox).Focused && THFileElementsDataGridView.CurrentRow.Index > -1)
+            {
+                THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells["Translation"].Value = (sender as RichTextBox).Text;
+            }
+        }
+
+        private void THFileElementsDataGridView_SelectionChanged(object sender, EventArgs e)
+        {
+            UpdateTextboxes();
         }
 
         //Материалы

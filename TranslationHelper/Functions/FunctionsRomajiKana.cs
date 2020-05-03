@@ -7,6 +7,15 @@ namespace TranslationHelper.Main.Functions
 {
     public static class FunctionsRomajiKana
     {
+        /// <summary>
+        /// True if language is Japanese and procent of Romaji or Other characters in input string is lesser of set value in Settings
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal static bool IsTheStringMostlyRomajiOrOther(string inputString)
+        {
+            return (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(inputString));
+        }
 
         /// <summary>
         /// True if procent of Romaji or Other characters in input string is lesser of set value in Settings

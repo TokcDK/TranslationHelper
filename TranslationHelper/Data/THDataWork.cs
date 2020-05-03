@@ -5,13 +5,15 @@ using TranslationHelper.Projects;
 
 namespace TranslationHelper.Data
 {
-    public class THDataWork
+    internal class THDataWork
     {
-        public THDataWork()
+        internal THDataWork()
         {
             THFilesElementsDataset = new DataSet();
             THFilesElementsDatasetInfo = new DataSet();
             THFilesElementsALLDataTable = new DataSet();
+            THFilesElementsDictionary = new Dictionary<string, string>();
+            THFilesElementsDictionaryInfo = new Dictionary<string, string>();
 
             SPath = string.Empty;
             FilePath = string.Empty;
@@ -32,19 +34,22 @@ namespace TranslationHelper.Data
         internal List<ProjectBase> ProjectsList;
 
         //usually 'S'elected file 'Path' in file browse dialog
-        public string SPath { get; set; }
+        internal string SPath { get; set; }
 
         //Online Translation Cache
         internal FunctionsOnlineCache OnlineTranslationCache;
 
         //current processing file for open/save
-        public string FilePath { get; set; }
+        internal string FilePath { get; set; }
 
-        public DataSet THFilesElementsDataset { get; set; }
+        internal DataSet THFilesElementsDataset { get; set; }
 
-        public DataSet THFilesElementsDatasetInfo { get; set; }
+        internal DataSet THFilesElementsDatasetInfo { get; set; }
 
-        public DataSet THFilesElementsALLDataTable { get; set; }
+        internal DataSet THFilesElementsALLDataTable { get; set; }
+
+        internal Dictionary<string, string> THFilesElementsDictionary { get; set; }
+        internal Dictionary<string, string> THFilesElementsDictionaryInfo { get; set; }
 
         //target textbox control value
         internal string TargetTextBoxPreValue;
