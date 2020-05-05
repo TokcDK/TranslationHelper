@@ -63,14 +63,14 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         internal static string[] SplitStringByEqualParts(string str, int chunkSize)
         {
-            if (str == null || chunkSize<1)
+            if (str == null || chunkSize < 1)
                 return null;
 
             string[] parts = new string[chunkSize];
             parts[0] = string.Empty;
             if (chunkSize == 1)
             {
-                foreach(var line in str.SplitToLines())
+                foreach (var line in str.SplitToLines())
                 {
                     parts[0] += line;
                 }
@@ -184,11 +184,12 @@ namespace TranslationHelper.Main.Functions
                         int[] indexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable(thDataWork);
                         foreach (var rindex in indexes)
                         {
-                            var DSOrigCell = thDataWork.THFilesElementsDataset.Tables[TableIndex].Rows[rindex][corigind] + string.Empty;
-                            var DSTransCell = thDataWork.THFilesElementsDataset.Tables[TableIndex].Rows[rindex][ctransind] + string.Empty;
+                            var row = thDataWork.THFilesElementsDataset.Tables[TableIndex].Rows[rindex];
+                            var DSOrigCell = row[corigind] + string.Empty;
+                            var DSTransCell = row[ctransind] + string.Empty;
                             if (!string.IsNullOrWhiteSpace(DSTransCell) && DSTransCell != DSOrigCell)
                             {
-                                thDataWork.THFilesElementsDataset.Tables[TableIndex].Rows[rindex][ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
+                                row[ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
                             }
                         }
                     }
@@ -229,7 +230,7 @@ namespace TranslationHelper.Main.Functions
                 case 1:
                     //Uppercase
                     //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1
-                    return stringToUpper(DSTransCell);
+                    return StringToUpper(DSTransCell);
                 case 2:
                     //UPPERCASE
                     return DSTransCell.ToUpperInvariant();
@@ -238,34 +239,34 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        private static string stringToUpper(string DSTransCell)
+        private static string StringToUpper(string inputString)
         {
-            if (char.IsLetter(DSTransCell[0]))
+            if (char.IsLetter(inputString[0]))
             {
-                DSTransCell = char.ToUpper(DSTransCell[0], CultureInfo.InvariantCulture) + DSTransCell.Substring(1);
+                inputString = char.ToUpper(inputString[0], CultureInfo.InvariantCulture) + inputString.Substring(1);
             }
             else
             {
-                int DSTransCellLength = DSTransCell.Length;
+                int DSTransCellLength = inputString.Length;
                 for (int c = 0; c < DSTransCellLength; c++)
                 {
-                    char Char = DSTransCell[c];
-                    if (char.IsWhiteSpace(Char) || char.IsPunctuation(Char) || Char == '「' || Char == '『')
+                    char @char = inputString[c];
+                    if (IsCustomSymbol(@char) ||  char.IsWhiteSpace(@char) || char.IsPunctuation(@char))
                     {
                     }
                     else
                     {
-                        DSTransCell = DSTransCell.Substring(0, c) + char.ToUpper(DSTransCell[c], CultureInfo.InvariantCulture) + (c == DSTransCellLength - 1 ? string.Empty : DSTransCell.Substring(c + 1));
+                        inputString = inputString.Substring(0, c) + char.ToUpper(inputString[c], CultureInfo.InvariantCulture) + (c == DSTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
                         break;
                     }
                 }
             }
 
-            if (DSTransCell.StartsWith("[") && DSTransCell.IsMultiline())
+            if (inputString.StartsWith("[") && inputString.IsMultiline())
             {
                 int lineCnt = 0;
                 string resultLine = string.Empty;
-                foreach (var line in DSTransCell.SplitToLines())
+                foreach (var line in inputString.SplitToLines())
                 {
                     if (lineCnt == 0)
                     {
@@ -276,7 +277,7 @@ namespace TranslationHelper.Main.Functions
                         resultLine += Environment.NewLine;
                         if (lineCnt == 1)
                         {
-                            resultLine += stringToUpper(line);
+                            resultLine += StringToUpper(line);
                         }
                         else
                         {
@@ -285,10 +286,15 @@ namespace TranslationHelper.Main.Functions
                     }
                     lineCnt++;
                 }
-                DSTransCell = resultLine;
+                inputString = resultLine;
             }
 
-            return DSTransCell;
+            return inputString;
+        }
+
+        private static bool IsCustomSymbol(char @char)
+        {
+            return @char == '「' || @char == '『' || @char == '"';
         }
 
         /// <summary>
@@ -405,7 +411,7 @@ namespace TranslationHelper.Main.Functions
         internal static string[] SplitStringToArray(string str)
         {
             List<string> lineslist = new List<string>();
-            foreach(var line in str.SplitToLines())
+            foreach (var line in str.SplitToLines())
             {
                 lineslist.Add(line);
             }

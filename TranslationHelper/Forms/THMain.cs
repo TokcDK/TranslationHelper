@@ -606,9 +606,12 @@ namespace TranslationHelper
                     return;
                 }
 
-                Properties.Settings.Default.DGVSelectedRowIndex = THFileElementsDataGridView.CurrentCell.RowIndex;
-                Properties.Settings.Default.DGVSelectedColumnIndex = THFileElementsDataGridView.CurrentCell.ColumnIndex;
                 Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.SelectedIndex;
+                Properties.Settings.Default.DGVSelectedColumnIndex = THFileElementsDataGridView.CurrentCell.ColumnIndex;
+                Properties.Settings.Default.DGVSelectedRowIndex = THFileElementsDataGridView.CurrentCell.RowIndex;
+                Properties.Settings.Default.DGVSelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, Properties.Settings.Default.THFilesListSelectedIndex, THFileElementsDataGridView.CurrentCell.RowIndex);
+                int i1 = Properties.Settings.Default.DGVSelectedRowIndex;
+                int i2 = Properties.Settings.Default.DGVSelectedRowRealIndex;
 
                 if (THFileElementsDataGridView.DataSource == null || Properties.Settings.Default.DGVSelectedRowIndex == -1 || Properties.Settings.Default.THFilesListSelectedIndex == -1)
                 {
@@ -617,17 +620,17 @@ namespace TranslationHelper
                     return;
                 }
 
-
                 //Считывание значения ячейки в текстовое поле 1, вариант 2, для DataSet, ds.Tables[0]
                 //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
                 if (THSourceRichTextBox.Enabled
+                    && THFileElementsDataGridView.CurrentCell!=null
                     && THFileElementsDataGridView.Rows.Count > 0
                     && Properties.Settings.Default.DGVSelectedRowIndex > -1
                     && Properties.Settings.Default.DGVSelectedColumnIndex > -1)
                 {
                     THTargetRichTextBox.Clear();
 
-                    if ((THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells["Original"].Value + string.Empty).Length == 0)
+                    if (string.IsNullOrEmpty(THFileElementsDataGridView.Rows[THFileElementsDataGridView.CurrentCell.RowIndex].Cells["Original"].Value + string.Empty))
                     {
                         THSourceRichTextBox.Clear();
                     }
@@ -646,7 +649,7 @@ namespace TranslationHelper
                         //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
                     }
                     string TranslationCellValue;
-                    if ((TranslationCellValue = THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells["Translation"].Value + string.Empty).Length == 0)
+                    if (string.IsNullOrEmpty(TranslationCellValue = THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells["Translation"].Value + string.Empty))
                     {
                         THTargetRichTextBox.Clear();
                     }
@@ -665,6 +668,7 @@ namespace TranslationHelper
                         //THTargetRichTextBox.SelectionColor = Color.Red;
 
                         TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength(TranslationCellValue.ToString()).ToString(CultureInfo.InvariantCulture);
+                        TargetTextBoxLinePositionLabelData.Text = string.Empty;
                     }
 
                     THInfoTextBox.Text = string.Empty;
@@ -1029,14 +1033,17 @@ namespace TranslationHelper
         //http://qaru.site/questions/180337/show-row-number-in-row-header-of-a-datagridview
         private void THFileElementsDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
-            if (!Properties.Settings.Default.ProjectIsOpened)
+            PaintDigitInFrontOfRow(sender, e);
+        }
+
+        private void PaintDigitInFrontOfRow(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            if (!Properties.Settings.Default.ProjectIsOpened || THFilesList.SelectedIndex == -1)
                 return;
 
             var grid = sender as DataGridView;
 
-            if (THFilesList.SelectedIndex == -1)
-                return;
-            string rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, e.RowIndex) + 1 + string.Empty;//здесь получаю реальный индекс из Datatable
+            int rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, e.RowIndex);//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
             using (StringFormat centerFormat = new StringFormat()
@@ -1048,7 +1055,7 @@ namespace TranslationHelper
             {
 
                 Rectangle headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
-                e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
+                e.Graphics.DrawString((rowIdx + 1) + string.Empty, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
             }
         }
 
@@ -1057,14 +1064,24 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (Properties.Settings.Default.DGVCellInEditMode)
-            {
-                THTargetRichTextBox.Text = THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty;
-            }
-            if (e.ColumnIndex > 0)
+            UpdateTranslationTextBoxValue(sender, e);
+            CellChangedRegistration(e.ColumnIndex);
+        }
+
+        private void CellChangedRegistration(int ColumnIndex=-1)
+        {
+            if (ColumnIndex > 0)
             {
                 cellchanged = true;
                 FileDataWasChanged = true;
+            }
+        }
+
+        private void UpdateTranslationTextBoxValue(object sender, DataGridViewCellEventArgs e)
+        {
+            if (Properties.Settings.Default.DGVCellInEditMode && sender is DataGridView DGV)
+            {
+                THTargetRichTextBox.Text = DGV.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty;
             }
         }
 
@@ -1091,7 +1108,7 @@ namespace TranslationHelper
 
             await Task.Run(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, lastautosavepath)).ConfigureAwait(true);
 
-            System.Media.SystemSounds.Beep.Play();
+            FunctionsSounds.SaveDBComplete();
             ProgressInfo(false);
 
             //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
@@ -1255,6 +1272,8 @@ namespace TranslationHelper
 
 
             LoadTranslationToolStripMenuItem_ClickIsBusy = false;
+            FunctionsSounds.LoadDBCompleted();
+            THFilesList.Refresh();
         }
 
         private void ReadDBAndLoadDBCompare(DataSet DBDataSet, string sPath)
@@ -1789,6 +1808,7 @@ namespace TranslationHelper
             }
         }
 
+        int SelectedRowRealIndex=-1;
         private void THFileElementsDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             //использован код отсюда:https://stackoverflow.com/a/22912594
@@ -1816,6 +1836,27 @@ namespace TranslationHelper
                         THFileElementsDataGridViewContextMenuStrip.Show(THFileElementsDataGridView, mousePosition);
                     }
                 }
+            }
+            if (e.RowIndex == -1)
+            {
+                RememberLastCellSelection();
+            }
+        }
+
+        /// <summary>
+        /// remember last selected real rowindex
+        /// used materials:https://stackoverflow.com/questions/4819573/selected-rows-when-sorting-datagridview-in-winform-application
+        /// </summary>
+        private void RememberLastCellSelection()
+        {
+            if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            {
+                SelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable
+                    (
+                    thDataWork,
+                    THFilesList.SelectedIndex,
+                    THFileElementsDataGridView.SelectedCells[0].RowIndex
+                    );
             }
         }
 
@@ -1965,7 +2006,7 @@ namespace TranslationHelper
                         //task.Start();
                         //task.Wait();
 
-                        System.Media.SystemSounds.Beep.Play();
+                        FunctionsSounds.SaveDBComplete();
                         ProgressInfo(false);
                         //MessageBox.Show("finished");
                     }
@@ -2263,18 +2304,42 @@ namespace TranslationHelper
         {
             if (THFiltersDataGridView.Columns.Count > 0)
             {
-                for (int c = 0; c < THFiltersDataGridView.Columns.Count; c++)
+                try
                 {
-                    THFiltersDataGridView.Rows[0].Cells[c].Value = string.Empty;
-                }
-                if (THFilesList.SelectedItem == null)
-                {
-                }
-                else
-                {
-                    thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.RowFilter = string.Empty;
-                    thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.Sort = string.Empty;
+
+                    int realRowIndex = -1;
+                    string columnName = string.Empty;
+
+                    if (THFilesList.SelectedIndex==-1)
+                    {
+                        return;
+                    }
+                    int tableindex = THFilesList.SelectedIndex;
+                    var cell = THFileElementsDataGridView.CurrentCell;
+
+                    if (tableindex > -1 && cell != null)
+                    {
+                        columnName = THFileElementsDataGridView.Columns[cell.ColumnIndex].Name;
+                        realRowIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, tableindex, cell.RowIndex);
+                    }
+
+                    for (int c = 0; c < THFiltersDataGridView.Columns.Count; c++)
+                    {
+                        THFiltersDataGridView.Rows[0].Cells[c].Value = string.Empty;
+                    }
+
+                    var table = thDataWork.THFilesElementsDataset.Tables[tableindex];
+                    table.DefaultView.RowFilter = string.Empty;
+                    table.DefaultView.Sort = string.Empty;
                     THFileElementsDataGridView.Refresh();
+
+                    if (realRowIndex > -1 && tableindex > -1 && columnName.Length > 0)
+                    {
+                        FunctionsTable.ShowSelectedRow(thDataWork, tableindex, columnName, realRowIndex);
+                    }
+                }
+                catch
+                {
                 }
             }
         }
@@ -2906,11 +2971,56 @@ namespace TranslationHelper
             {
                 THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells["Translation"].Value = (sender as RichTextBox).Text;
             }
+
+            TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength((sender as RichTextBox).Text).ToString(CultureInfo.InvariantCulture);
         }
 
         private void THFileElementsDataGridView_SelectionChanged(object sender, EventArgs e)
         {
             UpdateTextboxes();
+        }
+
+        private void THTargetRichTextBox_SelectionChanged(object sender, EventArgs e)
+        {
+            TargetTextBoxLinePositionLabelData.Text = (sender as RichTextBox).CurrentCharacterPosition().X.ToString(CultureInfo.InvariantCulture);
+            TargetTextBoxColumnPositionLabelData.Text = (sender as RichTextBox).CurrentCharacterPosition().Y.ToString(CultureInfo.InvariantCulture);
+            TranslationLongestLineLenghtLabel.Text = (sender as RichTextBox).CurrentSelectedTextLength().ToString(CultureInfo.InvariantCulture);
+        }
+
+        private void THFileElementsDataGridView_Sorted(object sender, EventArgs e)
+        {
+            ReselectCellSelectedBeforeSorting();
+        }
+
+        /// <summary>
+        /// reselect cell which was selected before column was sorted
+        /// used materials:https://stackoverflow.com/questions/4819573/selected-rows-when-sorting-datagridview-in-winform-application
+        /// </summary>
+        private void ReselectCellSelectedBeforeSorting()
+        {
+            if (SelectedRowRealIndex > -1)
+            {
+                foreach (DataGridViewRow row in THFileElementsDataGridView.Rows)
+                {
+                    int rowindex;
+                    int realrowindex;
+                    //int i = Properties.Settings.Default.DGVSelectedRowIndex;
+                    //int r = Properties.Settings.Default.DGVSelectedRowRealIndex;
+                    if (SelectedRowRealIndex ==
+                        (realrowindex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork,
+                        Properties.Settings.Default.THFilesListSelectedIndex,
+                        rowindex = row.Index))
+                        )
+                    {
+                        FunctionsTable.ShowSelectedRow(thDataWork, THFilesList.SelectedIndex, Properties.Settings.Default.DGVSelectedColumnIndex, rowindex);
+                        Properties.Settings.Default.DGVSelectedRowIndex = rowindex;
+                        Properties.Settings.Default.DGVSelectedRowRealIndex = realrowindex;
+                        SelectedRowRealIndex = realrowindex;
+                        UpdateTextboxes();//fixes incorrect row text displaying
+                        break;
+                    }
+                }
+            }
         }
 
         //Материалы

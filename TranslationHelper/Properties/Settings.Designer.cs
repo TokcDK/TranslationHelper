@@ -302,6 +302,18 @@ namespace TranslationHelper.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int DGVSelectedRowRealIndex {
+            get {
+                return ((int)(this["DGVSelectedRowRealIndex"]));
+            }
+            set {
+                this["DGVSelectedRowRealIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
         public int DGVSelectedColumnIndex {
             get {
                 return ((int)(this["DGVSelectedColumnIndex"]));

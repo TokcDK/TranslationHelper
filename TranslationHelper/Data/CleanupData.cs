@@ -117,6 +117,9 @@ namespace TranslationHelper.Data
 
                 thDataWork.Main.runTestGameToolStripMenuItem.Enabled = false;
 
+                thDataWork.Main.TargetTextBoxLinePositionLabelData.Text = string.Empty;
+                thDataWork.Main.TargetTextBoxColumnPositionLabelData.Text = string.Empty;
+
                 //reset vars
 
                 //memory cleaning thing.

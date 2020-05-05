@@ -85,6 +85,7 @@
     <Compile Include="Data\THDataWork.cs" />
     <Compile Include="Extensions\ExtensionsString.cs" />
     <Compile Include="Extensions\ExtensionsTable.cs" />
+    <Compile Include="Extensions\ExtensionsElements.cs" />
     <Compile Include="ExternalAdditions\CopyFolder.cs" />
     <Compile Include="ExternalAdditions\DataGridViewEx.cs" />
     <Compile Include="ExternalAdditions\GDI.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Functions\FunctionsOpen.cs" />
     <Compile Include="Functions\FunctionsSave.cs" />
     <Compile Include="Functions\FunctionsOnlineCache.cs" />
+    <Compile Include="Functions\FunctionsSounds.cs" />
     <Compile Include="Functions\FunctionsStringsFixes.cs" />
     <Compile Include="InputLinesInfoData.cs" />
     <Compile Include="Old elements\DoubleBufferedListBox.cs" />

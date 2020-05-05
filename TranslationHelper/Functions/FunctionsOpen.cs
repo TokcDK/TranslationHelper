@@ -92,6 +92,7 @@ namespace TranslationHelper.Functions
                     if (RPGMFunctions.THSelectedSourceType.Length == 0)
                     {
                         /*THMsg*/
+                        FunctionsSounds.OpenProjectFailed();
                         MessageBox.Show(T._("Problem with source opening. Try to report to devs about it."));
                     }
                     else
@@ -423,7 +424,7 @@ namespace TranslationHelper.Functions
                     MessageBox.Show("An error occured:" + Environment.NewLine + ex);
                 }
             }
-            _ = /*THMsg*/MessageBox.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");
+            //_ = /*THMsg*/MessageBox.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");
 
             thDataWork.Main.editToolStripMenuItem.Enabled = true;
             thDataWork.Main.viewToolStripMenuItem.Enabled = true;
@@ -450,6 +451,7 @@ namespace TranslationHelper.Functions
                 FunctionsString.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n" : Environment.NewLine;
 
             Properties.Settings.Default.ProjectIsOpened = true;
+            FunctionsSounds.OpenProjectComplete();
         }
     }
 }

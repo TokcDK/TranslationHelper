@@ -133,6 +133,11 @@
             this.TableCompleteInfoLabel = new System.Windows.Forms.Label();
             this.TranslationLongestLineLenghtLabel = new System.Windows.Forms.Label();
             this.RTBInfoLengthLabel = new System.Windows.Forms.Label();
+            this.BottomInfoTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.TargetTextBoxLinePositionLabel = new System.Windows.Forms.Label();
+            this.TargetTextBoxLinePositionLabelData = new System.Windows.Forms.Label();
+            this.TargetTextBoxColumnPositionLabel = new System.Windows.Forms.Label();
+            this.TargetTextBoxColumnPositionLabelData = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -376,7 +381,7 @@
             this.selectedToolStripMenuItem1.Enabled = false;
             this.selectedToolStripMenuItem1.Name = "selectedToolStripMenuItem1";
             this.selectedToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
-            this.selectedToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
+            this.selectedToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.selectedToolStripMenuItem1.Text = "Selected";
             this.selectedToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateSelectedToolStripMenuItem_Click);
             // 
@@ -384,21 +389,21 @@
             // 
             this.tableToolStripMenuItem1.Enabled = false;
             this.tableToolStripMenuItem1.Name = "tableToolStripMenuItem1";
-            this.tableToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
+            this.tableToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.tableToolStripMenuItem1.Text = "Table";
             this.tableToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateTableToolStripMenuItem1_Click);
             // 
             // allToolStripMenuItem1
             // 
             this.allToolStripMenuItem1.Name = "allToolStripMenuItem1";
-            this.allToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
+            this.allToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.allToolStripMenuItem1.Text = "All";
             this.allToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateAllToolStripMenuItem1_Click);
             // 
             // translationInteruptToolStripMenuItem
             // 
             this.translationInteruptToolStripMenuItem.Name = "translationInteruptToolStripMenuItem";
-            this.translationInteruptToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.translationInteruptToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.translationInteruptToolStripMenuItem.Text = "Interupt";
             this.translationInteruptToolStripMenuItem.Visible = false;
             this.translationInteruptToolStripMenuItem.Click += new System.EventHandler(this.InteruptToolStripMenuItem_Click);
@@ -567,7 +572,7 @@
             // allToolStripMenuItem3
             // 
             this.allToolStripMenuItem3.Name = "allToolStripMenuItem3";
-            this.allToolStripMenuItem3.Size = new System.Drawing.Size(85, 22);
+            this.allToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
             this.allToolStripMenuItem3.Text = "All";
             this.allToolStripMenuItem3.Click += new System.EventHandler(this.UppercaseAllToolStripMenuItem_Click);
             // 
@@ -772,6 +777,7 @@
             this.THFileElementsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellValueChanged);
             this.THFileElementsDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFileElementsDataGridView_RowPostPaint);
             this.THFileElementsDataGridView.SelectionChanged += new System.EventHandler(this.THFileElementsDataGridView_SelectionChanged);
+            this.THFileElementsDataGridView.Sorted += new System.EventHandler(this.THFileElementsDataGridView_Sorted);
             this.THFileElementsDataGridView.MouseEnter += new System.EventHandler(this.THFileElementsDataGridView_MouseEnter);
             this.THFileElementsDataGridView.MouseLeave += new System.EventHandler(this.THFileElementsDataGridView_MouseLeave);
             // 
@@ -1022,6 +1028,7 @@
             // 
             // THEditElementsSplitContainer.Panel1
             // 
+            this.THEditElementsSplitContainer.Panel1.Controls.Add(this.BottomInfoTableLayoutPanel);
             this.THEditElementsSplitContainer.Panel1.Controls.Add(this.THSourceRichTextBox);
             // 
             // THEditElementsSplitContainer.Panel2
@@ -1053,6 +1060,7 @@
             this.THTargetRichTextBox.Size = new System.Drawing.Size(344, 98);
             this.THTargetRichTextBox.TabIndex = 1;
             this.THTargetRichTextBox.Text = "";
+            this.THTargetRichTextBox.SelectionChanged += new System.EventHandler(this.THTargetRichTextBox_SelectionChanged);
             this.THTargetRichTextBox.TextChanged += new System.EventHandler(this.THTargetRichTextBox_TextChanged);
             this.THTargetRichTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
             this.THTargetRichTextBox.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
@@ -1126,9 +1134,9 @@
             this.THInfolabel.AutoSize = true;
             this.THInfolabel.Location = new System.Drawing.Point(100, 495);
             this.THInfolabel.Name = "THInfolabel";
-            this.THInfolabel.Size = new System.Drawing.Size(19, 13);
+            this.THInfolabel.Size = new System.Drawing.Size(45, 13);
             this.THInfolabel.TabIndex = 7;
-            this.THInfolabel.Text = "...";
+            this.THInfolabel.Text = "infotext";
             this.THInfolabel.Visible = false;
             // 
             // contextMenuStrip1
@@ -1141,32 +1149,85 @@
             // 
             this.TableCompleteInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.TableCompleteInfoLabel.AutoSize = true;
-            this.TableCompleteInfoLabel.Location = new System.Drawing.Point(715, 495);
+            this.TableCompleteInfoLabel.Location = new System.Drawing.Point(690, 495);
             this.TableCompleteInfoLabel.Name = "TableCompleteInfoLabel";
-            this.TableCompleteInfoLabel.Size = new System.Drawing.Size(19, 13);
+            this.TableCompleteInfoLabel.Size = new System.Drawing.Size(23, 13);
             this.TableCompleteInfoLabel.TabIndex = 8;
-            this.TableCompleteInfoLabel.Text = "...";
+            this.TableCompleteInfoLabel.Text = "0/0";
             this.TableCompleteInfoLabel.Click += new System.EventHandler(this.TableCompleteInfoLabel_Click);
             // 
             // TranslationLongestLineLenghtLabel
             // 
             this.TranslationLongestLineLenghtLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.TranslationLongestLineLenghtLabel.AutoSize = true;
-            this.TranslationLongestLineLenghtLabel.Location = new System.Drawing.Point(515, 495);
+            this.TranslationLongestLineLenghtLabel.Location = new System.Drawing.Point(479, 495);
             this.TranslationLongestLineLenghtLabel.Name = "TranslationLongestLineLenghtLabel";
-            this.TranslationLongestLineLenghtLabel.Size = new System.Drawing.Size(19, 13);
+            this.TranslationLongestLineLenghtLabel.Size = new System.Drawing.Size(13, 13);
             this.TranslationLongestLineLenghtLabel.TabIndex = 9;
-            this.TranslationLongestLineLenghtLabel.Text = "...";
+            this.TranslationLongestLineLenghtLabel.Text = "0";
             // 
             // RTBInfoLengthLabel
             // 
             this.RTBInfoLengthLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RTBInfoLengthLabel.AutoSize = true;
-            this.RTBInfoLengthLabel.Location = new System.Drawing.Point(468, 495);
+            this.RTBInfoLengthLabel.Location = new System.Drawing.Point(441, 495);
             this.RTBInfoLengthLabel.Name = "RTBInfoLengthLabel";
             this.RTBInfoLengthLabel.Size = new System.Drawing.Size(41, 13);
             this.RTBInfoLengthLabel.TabIndex = 10;
             this.RTBInfoLengthLabel.Text = "length:";
+            // 
+            // BottomInfoTableLayoutPanel
+            // 
+            this.BottomInfoTableLayoutPanel.ColumnCount = 2;
+            this.BottomInfoTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.BottomInfoTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.BottomInfoTableLayoutPanel.Location = new System.Drawing.Point(-143, 96);
+            this.BottomInfoTableLayoutPanel.Name = "BottomInfoTableLayoutPanel";
+            this.BottomInfoTableLayoutPanel.RowCount = 1;
+            this.BottomInfoTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.BottomInfoTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.BottomInfoTableLayoutPanel.Size = new System.Drawing.Size(785, 13);
+            this.BottomInfoTableLayoutPanel.TabIndex = 11;
+            // 
+            // TargetTextBoxLinePositionLabel
+            // 
+            this.TargetTextBoxLinePositionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.TargetTextBoxLinePositionLabel.AutoSize = true;
+            this.TargetTextBoxLinePositionLabel.Location = new System.Drawing.Point(525, 495);
+            this.TargetTextBoxLinePositionLabel.Name = "TargetTextBoxLinePositionLabel";
+            this.TargetTextBoxLinePositionLabel.Size = new System.Drawing.Size(29, 13);
+            this.TargetTextBoxLinePositionLabel.TabIndex = 12;
+            this.TargetTextBoxLinePositionLabel.Text = "row:";
+            // 
+            // TargetTextBoxLinePositionLabelData
+            // 
+            this.TargetTextBoxLinePositionLabelData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.TargetTextBoxLinePositionLabelData.AutoSize = true;
+            this.TargetTextBoxLinePositionLabelData.Location = new System.Drawing.Point(551, 495);
+            this.TargetTextBoxLinePositionLabelData.Name = "TargetTextBoxLinePositionLabelData";
+            this.TargetTextBoxLinePositionLabelData.Size = new System.Drawing.Size(13, 13);
+            this.TargetTextBoxLinePositionLabelData.TabIndex = 11;
+            this.TargetTextBoxLinePositionLabelData.Text = "0";
+            // 
+            // TargetTextBoxColumnPositionLabel
+            // 
+            this.TargetTextBoxColumnPositionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.TargetTextBoxColumnPositionLabel.AutoSize = true;
+            this.TargetTextBoxColumnPositionLabel.Location = new System.Drawing.Point(581, 495);
+            this.TargetTextBoxColumnPositionLabel.Name = "TargetTextBoxColumnPositionLabel";
+            this.TargetTextBoxColumnPositionLabel.Size = new System.Drawing.Size(24, 13);
+            this.TargetTextBoxColumnPositionLabel.TabIndex = 14;
+            this.TargetTextBoxColumnPositionLabel.Text = "col:";
+            // 
+            // TargetTextBoxColumnPositionLabelData
+            // 
+            this.TargetTextBoxColumnPositionLabelData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.TargetTextBoxColumnPositionLabelData.AutoSize = true;
+            this.TargetTextBoxColumnPositionLabelData.Location = new System.Drawing.Point(602, 495);
+            this.TargetTextBoxColumnPositionLabelData.Name = "TargetTextBoxColumnPositionLabelData";
+            this.TargetTextBoxColumnPositionLabelData.Size = new System.Drawing.Size(13, 13);
+            this.TargetTextBoxColumnPositionLabelData.TabIndex = 13;
+            this.TargetTextBoxColumnPositionLabelData.Text = "0";
             // 
             // THMain
             // 
@@ -1175,6 +1236,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(790, 509);
+            this.Controls.Add(this.TargetTextBoxColumnPositionLabel);
+            this.Controls.Add(this.TargetTextBoxColumnPositionLabelData);
+            this.Controls.Add(this.TargetTextBoxLinePositionLabel);
+            this.Controls.Add(this.TargetTextBoxLinePositionLabelData);
             this.Controls.Add(this.RTBInfoLengthLabel);
             this.Controls.Add(this.TranslationLongestLineLenghtLabel);
             this.Controls.Add(this.TableCompleteInfoLabel);
@@ -1317,6 +1382,11 @@
         private System.Windows.Forms.ToolStripMenuItem extraHardFixesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectedForceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadRulesToolStripMenuItem;
+        private System.Windows.Forms.TableLayoutPanel BottomInfoTableLayoutPanel;
+        internal System.Windows.Forms.Label TargetTextBoxLinePositionLabel;
+        internal System.Windows.Forms.Label TargetTextBoxLinePositionLabelData;
+        internal System.Windows.Forms.Label TargetTextBoxColumnPositionLabel;
+        internal System.Windows.Forms.Label TargetTextBoxColumnPositionLabelData;
     }
 }
 

@@ -2,7 +2,6 @@
 using System;
 using System.Data;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -74,11 +73,16 @@ namespace TranslationHelper.Main.Functions
         /// <param name="rowIndex"></param>
         internal static void ShowSelectedRow(THDataWork thDataWork, int tableIndex, string columnName, int rowIndex)
         {
+            if (tableIndex == -1 || tableIndex > thDataWork.THFilesElementsDataset.Tables.Count - 1 || string.IsNullOrEmpty(columnName) || !thDataWork.THFilesElementsDataset.Tables[tableIndex].Columns.Contains(columnName))
+            {
+                return;
+            }
+
             int RCount = 0;//for debug purposes
             try
             {
                 RCount = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
-                if (tableIndex == thDataWork.Main.THFilesList.SelectedIndex && RCount>0 && thDataWork.Main.THFileElementsDataGridView.DataSource!=null)
+                if (tableIndex == thDataWork.Main.THFilesList.SelectedIndex && RCount > 0 && thDataWork.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
@@ -89,6 +93,48 @@ namespace TranslationHelper.Main.Functions
                 }
 
                 thDataWork.Main.THFileElementsDataGridView.CurrentCell = thDataWork.Main.THFileElementsDataGridView[columnName, rowIndex];
+
+                //scrool to selected cell
+                //https://stackoverflow.com/a/51399750
+                thDataWork.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
+            }
+            catch (Exception ex)
+            {
+                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + RCount;
+                FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName), error + Environment.NewLine + Environment.NewLine);
+                MessageBox.Show(error);
+            }
+        }
+
+        /// <summary>
+        /// shows selected row in selected table
+        /// </summary>
+        /// <param name="thDataWork"></param>
+        /// <param name="tableIndex"></param>
+        /// <param name="columnIndex"></param>
+        /// <param name="rowIndex"></param>
+        internal static void ShowSelectedRow(THDataWork thDataWork, int tableIndex, int columnIndex, int rowIndex)
+        {
+            if (tableIndex == -1 || tableIndex > thDataWork.THFilesElementsDataset.Tables.Count - 1 || columnIndex == -1 || columnIndex > thDataWork.THFilesElementsDataset.Tables[tableIndex].Columns.Count - 1)
+            {
+                return;
+            }
+
+            int RCount = 0;//for debug purposes
+            try
+            {
+                RCount = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
+                if (tableIndex == thDataWork.Main.THFilesList.SelectedIndex && RCount > 0 && thDataWork.Main.THFileElementsDataGridView.DataSource != null)
+                {
+                }
+                else
+                {
+                    thDataWork.Main.THFilesList.SelectedIndex = tableIndex;
+                    thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableIndex];
+
+                }
+
+                thDataWork.Main.THFileElementsDataGridView.CurrentCell = thDataWork.Main.THFileElementsDataGridView[columnIndex, rowIndex];
 
                 //scrool to selected cell
                 //https://stackoverflow.com/a/51399750
@@ -375,7 +421,13 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         public static int GetDGVSelectedRowIndexInDatatable(THDataWork thDataWork, int TableIndex, int rowIndex)
         {
-            return thDataWork.THFilesElementsDataset.Tables[TableIndex].Rows
+            var table = thDataWork.THFilesElementsDataset.Tables[TableIndex];
+            if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
+            {
+                return rowIndex;
+            }
+
+            return table.Rows
                 .IndexOf(
                 ((DataRowView)thDataWork.Main.THFileElementsDataGridView.Rows[rowIndex].DataBoundItem).Row
                         );
