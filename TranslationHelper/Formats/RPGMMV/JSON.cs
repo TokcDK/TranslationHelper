@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.RPGMMV
@@ -57,7 +59,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 //TempList = new List<string>();
                 //TempListInfo = new List<string>();
-                IsCommonEvents = (Jsonname == "CommonEvents");
+                IsWithMergedMessages = IsContainsLinedMessages(Jsonname);//отказалось, что сообщения есть не только в CommonEvents, но и в maps,troops и возможно других файлах
 
                 MessageMerged = new StringBuilder();
 
@@ -214,7 +216,7 @@ namespace TranslationHelper.Formats.RPGMMV
         private string propertyName = string.Empty;
         //private string cId = string.Empty;
         //private string OldcId = "none";
-        bool IsCommonEvents = false;
+        bool IsWithMergedMessages = false;
         private void ProceedJToken(JToken JsonToken, string JsonName/*, string propertyname = ""*/)
         {
             if (JsonToken == null)
@@ -234,7 +236,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 string tokenvalue = JsonToken.ToString();
 
-                if (IsCommonEvents && IsMessageCode(curcode))
+                if (IsWithMergedMessages && IsMessageCode(curcode))
                 {
                     if (MessageMerged.ToString().Length > 0)
                     {
@@ -245,7 +247,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
                 else
                 {
-                    if (IsCommonEvents)
+                    if (IsWithMergedMessages)
                     {
                         if (string.IsNullOrWhiteSpace(MessageMerged.ToString())/* || token.Path.Contains("switches") || token.Path.Contains("variables")*/)
                         {
@@ -258,10 +260,13 @@ namespace TranslationHelper.Formats.RPGMMV
                             }
                             else
                             {
+                                string c;
                                 AddData(JsonName, mergedstring, "JsonPath: "
                                     + Environment.NewLine
                                     + JsonToken.Path
-                                    + (IsCommonEvents ? Environment.NewLine + "Code=" + curcode : string.Empty)
+                                    + ((c = GetCodeValueOfParent(JsonToken, true)).Length > 0 ? Environment.NewLine + "Code=" + c :
+                                    IsWithMergedMessages ? Environment.NewLine + "Code=" + curcode : string.Empty)
+                                    + (c.Length > 0 && (c == "402" || c == "102") ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                                     );
                             }
                             MessageMerged.Clear();
@@ -272,11 +277,14 @@ namespace TranslationHelper.Formats.RPGMMV
                     }
                     else
                     {
+                        string c;
                         AddData(JsonName, tokenvalue, "JsonPath: "
-                                    + Environment.NewLine
-                                    + JsonToken.Path
-                                    + (IsCommonEvents ? Environment.NewLine + "Code=" + curcode : string.Empty)
-                                    );
+                            + Environment.NewLine
+                            + JsonToken.Path
+                            + ((c = GetCodeValueOfParent(JsonToken)).Length > 0 ? Environment.NewLine + "Code=" + c :
+                            IsWithMergedMessages ? Environment.NewLine + "Code=" + curcode : string.Empty)
+                            + (c.Length > 0 && (c == "402" || c == "102") ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                            );
                     }
                 }
             }
@@ -287,7 +295,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 {
                     propertyName = property.Name;
 
-                    if (IsCommonEvents)//asdfg skip code 108,408,356
+                    if (IsWithMergedMessages)//asdfg skip code 108,408,356
                     {
                         if (propertyName.Length == 4 && propertyName == "code")
                         {
@@ -336,6 +344,33 @@ namespace TranslationHelper.Formats.RPGMMV
             {
                 //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
             }
+        }
+
+        /// <summary>
+        /// get jobject with code jproperty
+        /// </summary>
+        /// <param name="jsonToken"></param>
+        /// <param name="previous">true means get previous jobject before this</param>
+        /// <returns></returns>
+        private string GetCodeValueOfParent(JToken jsonToken, bool previous=false)
+        {
+            if (previous)
+            {
+                if (jsonToken.Parent != null 
+                    && jsonToken.Parent.Parent != null 
+                    && jsonToken.Parent.Parent.Parent != null 
+                    && (jsonToken.Parent.Parent.Parent is JObject obj) 
+                    && obj.Previous!=null 
+                    && obj.Previous is JObject obj1
+                    && obj1.ContainsKey("code")
+                    )
+                    return obj1.Value<long>("code") + string.Empty;
+            }
+            else if (jsonToken.Parent != null && jsonToken.Parent.Parent != null && jsonToken.Parent.Parent.Parent != null && (jsonToken.Parent.Parent.Parent is JObject obj) && obj.ContainsKey("code"))
+            {
+                return obj.Value<long>("code") + string.Empty;
+            }
+            return string.Empty;
         }
 
         /// <summary>
@@ -394,16 +429,22 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
 
                 StartingRow = 0;//сброс начальной строки поиска в табице
-                IsCommonEvents = (Jsonname == "CommonEvents");
-                if (IsCommonEvents)
+                IsWithMergedMessages = IsContainsLinedMessages(Jsonname);//разбитые на строки сообщения есть и в других файлах, вроде maps,troops, может еще где
+                if (IsWithMergedMessages)
                 {
                     //сброс значений для CommonEvents
                     curcode = string.Empty;
                     propertyName = string.Empty;
                     skipit = false;
+
+                    //только в CommonEvents была сборка строк в сообщение
+                    SplitTableCellValuesAndTheirLinesToDictionary(Jsonname, false);
+                }
+                else
+                {
+                    SplitTableCellValuesToDictionaryLines(Jsonname);
                 }
 
-                SplitTableCellValuesToDictionaryLines(Jsonname);
                 if (TableLines != null && TableLines.Count > 0)
                 {
                     WProceedJTokenWithPreSplitlines(root, Jsonname);
@@ -413,8 +454,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     WProceedJToken(root, Jsonname);
                 }
 
-                Regex regex = new Regex(@"^\[null,(.+)\]$");//Корректировка формата записываемого json так, как в файлах RPGMaker MV
-                File.WriteAllText(sPath, regex.Replace(root.ToString(Formatting.None), "[\r\nnull,\r\n$1\r\n]"));
+                File.WriteAllText(sPath, CorrectJsonFormatToRPGMMV(root));
 
             }
             catch
@@ -426,6 +466,23 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             return true;
 
+        }
+
+        private bool IsContainsLinedMessages(string Jsonname)
+        {
+            //return true;
+            return Jsonname == "CommonEvents";
+            //return Jsonname == "CommonEvents" || Jsonname.StartsWith("Map") || Jsonname == "Troops";
+        }
+
+        /// <summary>
+        /// Корректировка формата записываемого json так, как в файлах RPGMaker MV
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        private string CorrectJsonFormatToRPGMMV(JToken root)
+        {
+            return Regex.Replace(root.ToString(Formatting.None), @"^\[null,(.+)\]$", "[\r\nnull,\r\n$1\r\n]");
         }
 
         int StartingRow = 0;//оптимизация. начальная строка, когда идет поиск по файлу, чтобы не искало каждый раз сначала при нахождении перевода будет переприсваиваться начальная строка на последнюю
@@ -467,7 +524,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     }
                     else
                     {
-                        string[] origA = FunctionsString.GetAllNonEmptyLines(row[0] + string.Empty);//Все строки, кроме пустых, чтобы потом исключить из проверки
+                        string[] origA = FunctionsString.GetAllNonEmptyLinesToArray(row[0] + string.Empty);//Все строки, кроме пустых, чтобы потом исключить из проверки
                         int origALength = origA.Length;
                         if (origALength == 0)
                         {
@@ -478,7 +535,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
                         if (origALength > 0)
                         {
-                            string[] transA = FunctionsString.GetAllNonEmptyLines(row[1] + string.Empty);
+                            string[] transA = FunctionsString.GetAllNonEmptyLinesToArray(row[1] + string.Empty);
 
                             if (transA.Length == 0)
                             {
@@ -551,7 +608,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 foreach (var property in JsonObject.Properties())
                 {
                     propertyName = property.Name;
-                    if (IsCommonEvents)//asdfg skip code 108,408,356
+                    if (IsWithMergedMessages)//asdfg skip code 108,408,356
                     {
                         if (propertyName.Length == 4 && propertyName == "code")
                         {
@@ -627,7 +684,66 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 if (TableLines.ContainsKey(tokenvalue) && TableLines[tokenvalue].Length > 0)
                 {
-                    (JsonToken as JValue).Value = TableLines[tokenvalue];
+                    try
+                    {
+                        bool test = true;
+                        if (test && JsonToken.Parent != null && JsonToken.Parent.Parent != null && JsonToken.Parent.Parent.Parent != null && (JsonToken.Parent.Parent.Parent is JObject thisCodeObject) && TableLines[tokenvalue].GetLinesCount() > tokenvalue.GetLinesCount())
+                        {
+                            int tokenvalueLinesCount = tokenvalue.GetLinesCount();
+                            int ind = 0;
+                            List<string> stringToWrite = new List<string>();
+                            bool NotWrited = true;
+                            //JsonToken.Parent.Add(",\""+ ExtraLineValue + "\"");
+                            //JsonToken.Parent.Parent.Add("{\"code\":401,\"indent\":0,\"parameters\":[\"" + ExtraLineValue +"\"]}");
+                            foreach (var line in TableLines[tokenvalue].SplitToLines())
+                            {
+                                if (ind < tokenvalueLinesCount)
+                                {
+                                    stringToWrite.Add(line);
+                                    ind++;
+                                }
+                                else
+                                {
+                                    if (NotWrited)
+                                    {
+                                        (JsonToken as JValue).Value = string.Join(Environment.NewLine, stringToWrite);
+                                        NotWrited = false;
+                                    }
+
+                                    //добавить новый объект с экстра строкой сразу после текущего
+                                    //new JObject("{\"code\":401,\"indent\":0,\"parameters\":[\"" + line + "\"]}")
+
+                                    //if(thisCodeObject.ContainsKey("code"))
+                                    //{
+                                    //    //var t = thisCodeObject.Value<long>("code");
+                                    //}
+                                    var NewJObject = GetNewJObject(thisCodeObject, line);
+                                    thisCodeObject.AddAfterSelf(NewJObject);
+                                    thisCodeObject = NewJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
+                                    //thisCodeObject.AddAfterSelf(
+                                    //    new JObject
+                                    //(
+                                    //    new JProperty("code", new JValue(401)),
+                                    //    new JProperty("indent", new JValue(0)),
+                                    //    new JProperty("parameters", new JArray(new JValue(line)))
+                                    //)
+                                    //    );
+                                    //var j = JsonToken.Parent;
+                                    //add extra as child parameter value
+                                    //(JsonToken.Parent as JProperty).Add(",\"" + line + "\"");
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            (JsonToken as JValue).Value = TableLines[tokenvalue];
+                        }
+                    }
+                    catch
+                    {
+
+                    }
                 }
                 else
                 {
@@ -640,7 +756,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 foreach (var property in JsonObject.Properties())
                 {
                     propertyName = property.Name;
-                    if (IsCommonEvents)//asdfg skip code 108,408,356
+                    if (IsWithMergedMessages)//asdfg skip code 108,408,356
                     {
                         if (propertyName.Length == 4 && propertyName == "code")
                         {
@@ -691,6 +807,54 @@ namespace TranslationHelper.Formats.RPGMMV
             {
                 //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
             }
+        }
+
+        private JObject GetNewJObject(JContainer thisCodeObject, string line)
+        {
+            JObject ret = new JObject();
+            foreach (var JsonProperty in (thisCodeObject as JObject).Properties())
+            {
+                if (JsonProperty.Name == "parameters")
+                {
+                    if (JsonProperty.Value is JValue)
+                    {
+                        ret.Add(new JProperty(JsonProperty.Name, new JValue(line)));
+                    }
+                    else if (JsonProperty.Value is JObject)
+                    {
+                        ret.Add(new JProperty(JsonProperty.Name, new JObject("{" + line + "}")));
+                    }
+                    else if (JsonProperty.Value is JArray)
+                    {
+                        ret.Add(new JProperty(JsonProperty.Name, new JArray(new object[] { line })));
+                    }
+                }
+                else
+                {
+                    if (JsonProperty.Value is JValue val)
+                    {
+                        ret.Add(new JProperty(JsonProperty.Name, new JValue(val)));
+                    }
+                    else if (JsonProperty.Value is JObject obj)
+                    {
+                        ret.Add(new JProperty(JsonProperty.Name, new JObject(obj)));
+                    }
+                    else if (JsonProperty.Value is JArray arr)
+                    {
+                        ret.Add(new JProperty(JsonProperty.Name, new JArray(arr)));
+                    }
+                }
+            }
+
+            return ret;
+
+            //new JObject
+            //                        (
+            //                            new JProperty("code", new JValue(401)),
+            //                            new JProperty("indent", new JValue(0)),
+            //                            new JProperty("parameters", new JArray(new JValue(line)))
+            //                        )
+            //                            );
         }
     }
 }

@@ -451,6 +451,10 @@ namespace TranslationHelper
                     CheckFilterDGV(); //Apply filters if they is not empty
 
                     //ProgressInfo(false, string.Empty);
+                    if (THFiltersDataGridView.CurrentCell != null)
+                    {
+                        UpdateTextboxes();
+                    }
                 }
                 catch (Exception)
                 {
@@ -597,7 +601,7 @@ namespace TranslationHelper
             //UpdateTextboxes(sender, e);
         }
 
-        private void UpdateTextboxes()
+        internal void UpdateTextboxes()
         {
             try
             {
@@ -2098,8 +2102,7 @@ namespace TranslationHelper
             {
                 ProgressInfo(true, "Creating buckups");
 
-                var buckup = new PLUGINS(thDataWork);
-                buckup.MakeFilesBuckup();
+                thDataWork.CurrentProject.MakeFilesBuckup();
 
                 try
                 {
@@ -2195,7 +2198,7 @@ namespace TranslationHelper
                 {
                 }
 
-                buckup.RestoreFromBakIfNeed();
+                thDataWork.CurrentProject.RestoreFromBakIfNeed();
             }
         }
 
@@ -2554,7 +2557,7 @@ namespace TranslationHelper
                     var row = table.Rows[r];
                     //if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)//убрал проверку пустой ячейки, чтобы насильно переприсваивать
                     //{
-                    if ((row[1] == null || string.IsNullOrEmpty(row[1] as string) || !Equals(row[1], row[0])) && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(row[0] as string))
+                    if ((row[1] == null || string.IsNullOrEmpty(row[1] as string) || !Equals(row[1], row[0])) && (row[0] as string).HaveMostOfRomajiOtherChars())
                     {
                         thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = row[0];
                     }
@@ -3016,7 +3019,6 @@ namespace TranslationHelper
                         Properties.Settings.Default.DGVSelectedRowIndex = rowindex;
                         Properties.Settings.Default.DGVSelectedRowRealIndex = realrowindex;
                         SelectedRowRealIndex = realrowindex;
-                        UpdateTextboxes();//fixes incorrect row text displaying
                         break;
                     }
                 }

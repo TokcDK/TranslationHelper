@@ -358,5 +358,17 @@ namespace TranslationHelper.Properties {
                 this["DebugMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DBTryToCheckLinesOfEachMultilineValue {
+            get {
+                return ((bool)(this["DBTryToCheckLinesOfEachMultilineValue"]));
+            }
+            set {
+                this["DBTryToCheckLinesOfEachMultilineValue"] = value;
+            }
+        }
     }
 }

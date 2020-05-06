@@ -426,7 +426,7 @@ namespace TranslationHelper.Functions
                             //thDataWork.Main.ProgressInfo(true, T._("translating") + ": " + t + "/" + tcount + " (" + r + "/" + rcount + ")");
 
                             InputOriginalLine = Row[OrigColIndex] as string;
-                            if (string.IsNullOrWhiteSpace(InputOriginalLine) || FunctionsRomajiKana.IsTheStringMostlyRomajiOrOther(InputOriginalLine))
+                            if (string.IsNullOrWhiteSpace(InputOriginalLine) || InputOriginalLine.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                             {
                                 continue;
                             }
@@ -472,7 +472,7 @@ namespace TranslationHelper.Functions
                                         {
                                             if (linevalue.Length > 0)
                                             {
-                                                if (FunctionsRomajiKana.IsTheStringMostlyRomajiOrOther(linevalue))
+                                                if (linevalue.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                                                 {
                                                     Translation = linevalue;//если большинством ромаджи или прочее
                                                 }
@@ -489,7 +489,7 @@ namespace TranslationHelper.Functions
                                                     }
                                                     else
                                                     {
-                                                        if (FunctionsRomajiKana.IsTheStringMostlyRomajiOrOther(extractedvalue))
+                                                        if (extractedvalue.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                                                         {
                                                             Translation = linevalue;//если извлеченное значение большинством ромаджи или прочее
                                                         }

@@ -7,6 +7,71 @@ namespace TranslationHelper.Extensions
     internal static class ExtensionsString
     {
         /// <summary>
+        /// true if in string only digits 0-9
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        internal static bool IsDigitsOnly(this string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return false;
+            }
+
+            str = str.Replace(".", string.Empty);
+            //https://stackoverflow.com/questions/7461080/fastest-way-to-check-if-string-contains-only-digits
+            //наибыстрейший метод 
+            int strLength = str.Length;//и моя оптимизация, ускоряющая с 2.19 до 1.62 при 100млн. итераций
+            for (int i = 0; i < strLength; i++)
+            {
+                if ((str[i] ^ '0') > 9)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// True if procent of Romaji or Other characters in input string is lesser of set value in Settings
+        /// when string mostly contains japanese chars
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        public static bool HaveMostOfRomajiOtherChars(this string inputString)
+        {
+            if (string.IsNullOrEmpty(inputString))
+                return true;
+
+            return FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(inputString)
+                || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(inputString, "other")
+                || (FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji") + FunctionsRomajiKana.GetLocaleLangCount(inputString, "other")) == inputString.Length
+                || FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji") == inputString.Length
+                || FunctionsRomajiKana.GetLocaleLangCount(inputString, "other") == inputString.Length;
+        }
+
+        /// <summary>
+        /// True if language is Japanese and procent of Romaji or Other characters in input string is lesser of set value in Settings
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal static bool IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther(this string inputString)
+        {
+            return Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && inputString.HaveMostOfRomajiOtherChars();
+        }
+
+        /// <summary>
+        /// True if string not empty/null and for selected JP language have most of japanese chars
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal static bool IsNotEmptyAndNotMostlyRomajiiOther(this string inputString)
+        {
+            return !string.IsNullOrEmpty(inputString) && !inputString.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther();
+        }
+
+        /// <summary>
         /// If string is multiline
         /// </summary>
         /// <param name="input"></param>
@@ -92,6 +157,33 @@ namespace TranslationHelper.Extensions
             newline = Regex.Replace(newline, @"\\\\[A-Za-z]\[.+\]", string.Empty);
 
             return newline.Length;
+        }
+
+        /// <summary> 
+        /// Get string lines to string array
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="OnlyNonEmpty">Add only non empty</param>
+        /// <returns></returns>
+        internal static string[] GetAllLinesToArray(this string str, bool OnlyNonEmpty = false)
+        {
+            List<string> lineslist = new List<string>();
+            foreach (var line in str.SplitToLines())
+            {
+                if (OnlyNonEmpty)
+                {
+                    if (line.Length > 0)
+                    {
+                        lineslist.Add(line);
+                    }
+                }
+                else
+                {
+                    lineslist.Add(line);
+                }
+            }
+
+            return lineslist.ToArray();
         }
     }
 }

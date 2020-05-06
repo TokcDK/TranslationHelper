@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Translators
@@ -39,7 +40,7 @@ namespace TranslationHelper.Translators
                     }).Last();
                 }
 
-                if (languageFrom == "jp" && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(OriginalText))
+                if (OriginalText.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                 {
                     return OriginalText;
                 }

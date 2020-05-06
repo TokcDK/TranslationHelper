@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TranslationHelper.Data;
-using TranslationHelper.Main.Functions;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
@@ -36,7 +36,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         protected static bool IsValidToken(JToken token)
         {
-            return token.Type == JTokenType.String && !string.IsNullOrWhiteSpace(token.ToString()) && !(Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(token.ToString()));
+            return token.Type == JTokenType.String && !string.IsNullOrWhiteSpace(token.ToString()) && !(Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && token.ToString().HaveMostOfRomajiOtherChars());
         }
 
         protected void GetStringsFromJToken(JToken token, string Jsonname)

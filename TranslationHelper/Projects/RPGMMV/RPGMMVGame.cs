@@ -97,6 +97,8 @@ namespace TranslationHelper.Projects
         {
             try
             {
+                RestoreFromBakIfNeed();
+
                 //Вроде прочитало в DGV
                 //источник: https://stackoverflow.com/questions/23763446/how-to-display-the-json-data-in-datagridview-in-c-sharp-windows-application-from
 
@@ -176,7 +178,79 @@ namespace TranslationHelper.Projects
             return null;
         }
 
-        internal override string NewlineSymbol => "\\n";
+        internal override void MakeFilesBuckup()
+        {
+            RestoreFromBakIfNeedData();
+            try
+            {
+                string dataPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data");
+                CopyFolder.Copy(dataPath, dataPath + "_bak");
+            }
+            catch
+            {
+            }
+            foreach (JSBase JS in ListOfJS)
+            {
+                try
+                {
+                    string jsPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
+                    RestoreFromBakIfNeedJS(JS);
+                    File.Copy(jsPath, jsPath + ".bak");
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        internal override void RestoreFromBakIfNeed()
+        {
+            RestoreFromBakIfNeedData();
+            foreach (JSBase JS in ListOfJS)
+            {
+                RestoreFromBakIfNeedJS(JS);
+            }
+        }
+
+        internal static void RestoreFromBakIfNeedData()
+        {
+            string dataPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data");
+            if (Directory.Exists(dataPath + "_bak"))
+            {
+                try
+                {
+                    if (Directory.Exists(dataPath))
+                    {
+                        Directory.Delete(dataPath, true);
+                    }
+
+                    Directory.Move(dataPath + "_bak", dataPath);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        internal static void RestoreFromBakIfNeedJS(JSBase JS)
+        {
+            string jsPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
+            if (File.Exists(jsPath + ".bak"))
+            {
+                try
+                {
+                    if (File.Exists(jsPath))
+                    {
+                        File.Delete(jsPath);
+                    }
+
+                    File.Move(jsPath + ".bak", jsPath);
+                }
+                catch
+                {
+                }
+            }
+        }
 
     }
 }

@@ -4,6 +4,7 @@ using System.Data;
 using System.Globalization;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions
@@ -234,6 +235,33 @@ namespace TranslationHelper.Functions
                                 //thDataWork.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
                                 Row[otranscol] = db[origCellValue];
                             }
+                            else if (Properties.Settings.Default.DBTryToCheckLinesOfEachMultilineValue)
+                            {
+                                if (origCellValue.IsMultiline())
+                                {
+                                    bool IsAllLinesTranslated = true;
+                                    List<string> mergedlines = new List<string>();
+                                    foreach (var line in origCellValue.SplitToLines())
+                                    {
+                                        if (line.HaveMostOfRomajiOtherChars())
+                                        {
+                                            mergedlines.Add(line);
+                                        }
+                                        else if (db.ContainsKey(line) && db[line].Length > 0)
+                                        {
+                                            mergedlines.Add(db[line]);
+                                        }
+                                        else
+                                        {
+                                            IsAllLinesTranslated = false;
+                                        }
+                                    }
+                                    if (IsAllLinesTranslated && mergedlines.Count > 0)
+                                    {
+                                        Row[otranscol] = string.Join(Environment.NewLine, mergedlines);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -273,7 +301,7 @@ namespace TranslationHelper.Functions
             int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
             string infomessage = T._("loading translation") + ":";
             //проход по всем таблицам рабочего dataset
-            for(int t=0; t<tcount; t++)
+            for (int t = 0; t < tcount; t++)
             {
                 //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
                 bool b = false;

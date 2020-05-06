@@ -405,7 +405,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
 
             var Firstletter = cleanedSubline.Substring(0, 1);
-            if (FunctionsString.IsDigitsOnly(Firstletter) || Firstletter == "!" || Firstletter == "?")
+            if (Firstletter.IsDigitsOnly() || Firstletter == "!" || Firstletter == "?")
             {
                 return TransformFirstChar(Firstletter) + (cleanedSubline.Length > 1 ? cleanedSubline.Substring(1) : string.Empty);
             }

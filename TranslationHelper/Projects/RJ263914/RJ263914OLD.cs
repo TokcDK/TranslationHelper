@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.RJ263914
@@ -282,7 +280,7 @@ namespace TranslationHelper.Projects.RJ263914
                         rowIndex = 0;
                     }
                     string[] lines = File.ReadAllLines(filePath);
-                    if (lines.Length == 2 && !FunctionsString.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
+                    if (lines.Length == 2 && !lines[1].IsDigitsOnly() && !string.IsNullOrEmpty(lines[1]))
                     {
                         if (IsWrite)
                         {
@@ -341,7 +339,7 @@ namespace TranslationHelper.Projects.RJ263914
                         if (lineArray.Length > 4)
                         {
                             //line = lineArray[4];
-                            if (!FunctionsString.IsDigitsOnly(lineArray[4]) && !string.IsNullOrEmpty(lineArray[4]))
+                            if (!lineArray[4].IsDigitsOnly() && !string.IsNullOrEmpty(lineArray[4]))
                             {
                                 if (IsWrite)
                                 {
@@ -395,7 +393,7 @@ namespace TranslationHelper.Projects.RJ263914
                     {
                         string[] lines = line.Split(',');
                         //line = line.Split(',')[1];
-                        if (!FunctionsString.IsDigitsOnly(lines[1]) && !string.IsNullOrEmpty(lines[1]))
+                        if (!lines[1].IsDigitsOnly() && !string.IsNullOrEmpty(lines[1]))
                         {
                             if (IsWrite)
                             {
@@ -444,7 +442,7 @@ namespace TranslationHelper.Projects.RJ263914
                     line = sr.ReadLine();
                     if (FunctionsDigit.IsEqualsAnyNumberFromArray(lineNum, lineNumbers))
                     {
-                        if (!FunctionsString.IsDigitsOnly(line) && !string.IsNullOrEmpty(line) && line != "\\n")
+                        if (!line.IsDigitsOnly() && !string.IsNullOrEmpty(line) && line != "\\n")
                         {
                             if (IsWrite)
                             {
@@ -500,7 +498,7 @@ namespace TranslationHelper.Projects.RJ263914
 
                         for (int i = 0; i < strings.Length; i++)
                         {
-                            if (!FunctionsString.IsDigitsOnly(strings[i]) && !string.IsNullOrEmpty(strings[i]))
+                            if (!strings[i].IsDigitsOnly() && !string.IsNullOrEmpty(strings[i]))
                             {
                                 if (IsWrite)
                                 {

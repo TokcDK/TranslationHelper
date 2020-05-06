@@ -135,28 +135,6 @@ namespace TranslationHelper.Main.Functions
 
         }
 
-        internal static bool IsDigitsOnly(string str)
-        {
-            if (string.IsNullOrEmpty(str))
-            {
-                return false;
-            }
-
-            str = str.Replace(".", string.Empty);
-            //https://stackoverflow.com/questions/7461080/fastest-way-to-check-if-string-contains-only-digits
-            //наибыстрейший метод 
-            int strLength = str.Length;//и моя оптимизация, ускоряющая с 2.19 до 1.62 при 100млн. итераций
-            for (int i = 0; i < strLength; i++)
-            {
-                if ((str[i] ^ '0') > 9)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         /// <summary>
         /// Changing string to uppercase(first char or all) or lowercase.
         /// variant 0 - lowercase / 
@@ -408,33 +386,28 @@ namespace TranslationHelper.Main.Functions
                         .ToArray();
         }
 
-        internal static string[] SplitStringToArray(string str)
+        /// <summary>
+        /// Get all not empty lines to string array
+        /// </summary>
+        /// <param name="inputstring"></param>
+        /// <returns></returns>
+        internal static string[] GetAllNonEmptyLinesToArray(string inputstring)
         {
-            List<string> lineslist = new List<string>();
-            foreach (var line in str.SplitToLines())
-            {
-                lineslist.Add(line);
-            }
-
-            return lineslist.ToArray();
-        }
-
-        internal static string[] GetAllNonEmptyLines(string inputstring)
-        {
+            return inputstring.GetAllLinesToArray(true);
             //Where здесь формирует новый массив из входного, из элементов входного, удовлетворяющих заданному условию
             //https://stackoverflow.com/questions/1912128/filter-an-array-in-c-sharp
 
             //обычный способ быстрее
-            List<string> values = new List<string>();
-            foreach (string line in inputstring.SplitToLines())
-            {
-                if (line.Length > 0)
-                {
-                    values.Add(line);
-                }
-            }
+            //List<string> values = new List<string>();
+            //foreach (string line in inputstring.SplitToLines())
+            //{
+            //    if (line.Length > 0)
+            //    {
+            //        values.Add(line);
+            //    }
+            //}
 
-            return values.ToArray();
+            //return values.ToArray();
 
             //способ с linq, который обычно медленнее
             //return inputstring.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/)

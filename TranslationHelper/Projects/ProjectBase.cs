@@ -59,6 +59,16 @@ namespace TranslationHelper.Projects
         internal virtual bool IsTestRunEnabled => false;
 
         /// <summary>
+        /// here is project can place code buckup of translating original files for test run
+        /// </summary>
+        internal virtual void MakeFilesBuckup() { }
+
+        /// <summary>
+        /// here is project can place code restore buckup of translating original files after test run
+        /// </summary>
+        internal virtual void RestoreFromBakIfNeed() { }
+
+        /// <summary>
         /// Get all inherited classes of an abstract class
         /// </summary>
         /// <returns></returns>

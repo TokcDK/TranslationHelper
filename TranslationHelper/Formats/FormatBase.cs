@@ -27,7 +27,7 @@ namespace TranslationHelper.Formats
 
         protected bool ValidString(string inputString)
         {
-            return !string.IsNullOrWhiteSpace(inputString) && !(Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(inputString));
+            return !string.IsNullOrWhiteSpace(inputString) && !(Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && inputString.HaveMostOfRomajiOtherChars());
         }
 
         protected void AddRowData(string tablename, string RowData, string RowInfo, bool CheckInput = true, bool AddToDictionary = false)
@@ -102,7 +102,42 @@ namespace TranslationHelper.Formats
         }
 
         protected Dictionary<string, string> TableLines = new Dictionary<string, string>();
-        protected void SplitTableCellValuesToDictionaryLines(string TableName)
+
+        /// <summary>
+        /// add all original\translation pairs of datatable rows in Dictionary<br/>
+        /// also split multiline values and add all of their lines in Dictionary
+        /// </summary>
+        /// <param name="TableName"></param>
+        internal void SplitTableCellValuesToDictionaryLines(string TableName)
+        {
+            if (!thDataWork.THFilesElementsDataset.Tables.Contains(TableName))
+                return;
+
+            if (TableLines.Count > 0)
+            {
+                TableLines.Clear();
+            }
+
+            foreach (DataRow Row in thDataWork.THFilesElementsDataset.Tables[TableName].Rows)
+            {
+                string Original;
+                string Translation;
+                if (TableLines.ContainsKey(Original = Row[0] + string.Empty) || (Translation = Row[1] + string.Empty).Length == 0 || Translation == Original)
+                {
+                    continue;
+                }
+
+                TableLines.Add(Original, Translation);
+            }
+        }
+
+        /// <summary>
+        /// add all original\translation pairs of datatable rows in Dictionary<br/>
+        /// also split multiline values and add all of their lines in Dictionary
+        /// </summary>
+        /// <param name="TableName"></param>
+        /// <param name="MakeLinesCountEqual">if true, line count will be made equal in translation before add original else it will be made only for multiline and rigth after line by line check</param>
+        internal void SplitTableCellValuesAndTheirLinesToDictionary(string TableName, bool MakeLinesCountEqual=true)
         {
             if (!thDataWork.THFilesElementsDataset.Tables.Contains(TableName))
                 return;
@@ -128,23 +163,85 @@ namespace TranslationHelper.Formats
                 }
 
                 int TranslationLinesCount = Translation.GetLinesCount();
-                if (OriginalLinesCount != TranslationLinesCount)
+                bool LinesCountisEqual = OriginalLinesCount == TranslationLinesCount;
+                if (!LinesCountisEqual && MakeLinesCountEqual)
+                {
+                    Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
+                }
+
+                //Сначала добавить полный вариант
+                if (!TableLines.ContainsKey(Original) && Translation != Original)
+                {
+                    TableLines.Add(Original, Translation);
+                    if (OriginalLinesCount == 1)
+                    {
+                        continue;//когда одна строка не тратить время на её разбор
+                    }
+                }
+
+                if (!MakeLinesCountEqual && OriginalLinesCount > TranslationLinesCount)
                 {
                     Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
                 }
 
                 //string[] OriginalLines = FunctionsString.SplitStringToArray(Original);
-                string[] TranslationLines = FunctionsString.SplitStringToArray(Translation);
-
-                int lineNumber = 0;
-                foreach (string line in Original.SplitToLines())
+                string[] TranslationLines = Translation.GetAllLinesToArray();
+                string[] OriginalLines = Original.GetAllLinesToArray();
+                List<string> extralines = new List<string>();
+                for (int lineNumber = 0; lineNumber < TranslationLinesCount; lineNumber++)
                 {
-                    if (!TableLines.ContainsKey(line) && TranslationLines[lineNumber].Length > 0)
+                    if (LinesCountisEqual)
                     {
-                        TableLines.Add(line, TranslationLines[lineNumber]);
+                        if (!TableLines.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
+                        {
+                            TableLines.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]);
+                        }
                     }
-                    lineNumber++;
+                    else
+                    {
+                        if (lineNumber < OriginalLinesCount - 1)
+                        {
+                            if (!TableLines.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
+                            {
+                                TableLines.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]);
+                            }
+                        }
+                        else
+                        {
+                            if (lineNumber == TranslationLinesCount - 1)
+                            {
+                                if (extralines.Count > 0)
+                                {
+                                    extralines.Add(TranslationLines[lineNumber]);
+                                    string result = string.Join(Environment.NewLine, extralines);
+                                    if (!TableLines.ContainsKey(OriginalLines[OriginalLinesCount-1]) && result.Length > 0 && OriginalLines[OriginalLinesCount - 1] != result)
+                                    {
+                                        TableLines.Add(OriginalLines[OriginalLinesCount - 1], result);
+                                    }
+                                }
+                                else
+                                {
+                                    if (!TableLines.ContainsKey(OriginalLines[OriginalLinesCount - 1]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[OriginalLinesCount - 1] != TranslationLines[lineNumber])
+                                    {
+                                        TableLines.Add(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                extralines.Add(TranslationLines[lineNumber]);
+                            }
+                        }
+                    }
                 }
+                //foreach (string line in Original.SplitToLines())
+                //{
+                //    if (!TableLines.ContainsKey(line) && TranslationLines[lineNumber].Length > 0 && TranslationLines[lineNumber] != line)
+                //    {
+                //        TableLines.Add(line, TranslationLines[lineNumber]);
+                //    }
+                //    lineNumber++;
+                //}
             }
         }
     }

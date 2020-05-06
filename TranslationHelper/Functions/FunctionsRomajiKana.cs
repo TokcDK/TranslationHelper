@@ -8,33 +8,6 @@ namespace TranslationHelper.Main.Functions
     public static class FunctionsRomajiKana
     {
         /// <summary>
-        /// True if language is Japanese and procent of Romaji or Other characters in input string is lesser of set value in Settings
-        /// </summary>
-        /// <param name="inputString"></param>
-        /// <returns></returns>
-        internal static bool IsTheStringMostlyRomajiOrOther(string inputString)
-        {
-            return (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(inputString));
-        }
-
-        /// <summary>
-        /// True if procent of Romaji or Other characters in input string is lesser of set value in Settings
-        /// </summary>
-        /// <param name="inputString"></param>
-        /// <returns></returns>
-        public static bool SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(string inputString)
-        {
-            if (string.IsNullOrEmpty(inputString))
-                return true;
-
-            return SelectedLocalePercentFromStringIsNotValid(inputString)
-                || SelectedLocalePercentFromStringIsNotValid(inputString, "other")
-                || (GetLocaleLangCount(inputString, "romaji") + GetLocaleLangCount(inputString, "other")) == inputString.Length
-                || GetLocaleLangCount(inputString, "romaji") == inputString.Length
-                || GetLocaleLangCount(inputString, "other") == inputString.Length;
-        }
-
-        /// <summary>
         /// True if procent of selected locale characters in target string is lesser of set value in Settings
         /// </summary>
         /// <param name="target"></param>
@@ -72,38 +45,27 @@ namespace TranslationHelper.Main.Functions
             }
             else
             {
-                string ret = input;
-                //Перевод японских(и не только) цифр в стандартные--------------------------
-                string[][] ReplaceData = new string[19][]
-                {
-                new string[2] { "０", "0" },
-                new string[2] { "１", "1" },
-                new string[2] { "２", "2" },
-                new string[2] { "３", "3" },
-                new string[2] { "４", "4" },
-                new string[2] { "５", "5" },
-                new string[2] { "６", "6" },
-                new string[2] { "７", "7" },
-                new string[2] { "８", "8" },
-                new string[2] { "９", "9" },
-                new string[2] { "①", "1" },
-                new string[2] { "②", "2" },
-                new string[2] { "③", "3" },
-                new string[2] { "④", "4" },
-                new string[2] { "⑤", "5" },
-                new string[2] { "⑥", "6" },
-                new string[2] { "⑦", "7" },
-                new string[2] { "⑧", "8" },
-                new string[2] { "⑨", "9" }
-                };
-
-                int ReplaceDataCount = ReplaceData.Length / 2;
-                for (int a = 0; a < ReplaceDataCount; a++)
-                {
-                    ret = ret.Replace(ReplaceData[a][0], ReplaceData[a][1]);
-                }
-
-                return ret;
+                return input
+                .Replace("０", "0")
+                .Replace("１", "1")
+                .Replace("２", "2")
+                .Replace("３", "3")
+                .Replace("４", "4")
+                .Replace("５", "5")
+                .Replace("６", "6")
+                .Replace("７", "7")
+                .Replace("８", "8")
+                .Replace("９", "9")
+                .Replace("①", "1")
+                .Replace("②", "2")
+                .Replace("③", "3")
+                .Replace("④", "4")
+                .Replace("⑤", "5")
+                .Replace("⑥", "6")
+                .Replace("⑦", "7")
+                .Replace("⑧", "8")
+                .Replace("⑨", "9")
+                ;
             }
         }
 

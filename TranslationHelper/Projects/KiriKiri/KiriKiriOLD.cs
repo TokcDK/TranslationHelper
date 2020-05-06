@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.KiriKiri;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.KiriKiri
 {
@@ -128,7 +126,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     _ = thDataWork.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
 
                     DataTable DT = null;
-                    
+
                     if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
                     {
                         DT = KiriKiriScriptScenarioOpen(kiriKiriFiles[i], thDataWork.THFilesElementsDataset.Tables[filename], thDataWork.THFilesElementsDatasetInfo.Tables[filename]);
@@ -250,7 +248,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                     line = line.Replace("[lr_]", string.Empty).Replace("[p_]", string.Empty);
 
                                     //line = Regex.Replace(line, @"^\s*(\[[a-z\/_]+\])*((\[name\])?.+)\[(lr|p)_\]\s*$", "$2");
-                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || line.IsDigitsOnly())
                                     {
                                     }
                                     else
@@ -281,7 +279,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 else if (line.EndsWith("[k]")) // text ;Magic Swordsman Rene
                                 {
                                     line = line.Replace("[k]", string.Empty);
-                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || line.IsDigitsOnly())
                                     {
                                     }
                                     else
@@ -293,7 +291,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 else if (line.StartsWith("*")) // text ;Magic Swordsman Rene
                                 {
                                     line = line.Remove(0, 1);
-                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || line.IsDigitsOnly())
                                     {
                                     }
                                     else
@@ -305,7 +303,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 else if (line.EndsWith("[r]")) //text, first line ;Magic Swordsman Rene
                                 {
                                     line = line.Replace("[r]", string.Empty).Trim();
-                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || line.IsDigitsOnly())
                                     {
                                     }
                                     else
@@ -332,7 +330,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 else if (line.StartsWith("@notice text="))// ; Magic Swordsman Rene
                                 {
                                     line = line.Remove(0, 13);//удаление "@notice text="
-                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || line.IsDigitsOnly())
                                     {
                                     }
                                     else
@@ -344,7 +342,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 else if (line.StartsWith("Name = '"))// ; Magic Swordsman Rene
                                 {
                                     line = line.Remove(line.Length - 2, 2).Remove(0, 8);
-                                    if (string.IsNullOrEmpty(line) || FunctionsString.IsDigitsOnly(line))
+                                    if (string.IsNullOrEmpty(line) || line.IsDigitsOnly())
                                     {
                                     }
                                     else
@@ -361,7 +359,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                     foreach (var m in matches)
                                     {
                                         subline = m.ToString();
-                                        if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || FunctionsString.IsDigitsOnly(line.Replace("\"", string.Empty)))
+                                        if (string.IsNullOrWhiteSpace(subline.Replace("\"", string.Empty)) || line.Replace("\"", string.Empty).IsDigitsOnly())
                                         {
                                         }
                                         else
@@ -426,7 +424,8 @@ namespace TranslationHelper.Projects.KiriKiri
                     }
                     else
                     {
-                        /*THMsg*/MessageBox.Show(T._("Nothing to add"));
+                        /*THMsg*/
+                        MessageBox.Show(T._("Nothing to add"));
                         return string.Empty;
                     }
                 }
@@ -476,7 +475,7 @@ namespace TranslationHelper.Projects.KiriKiri
                             if (line.EndsWith("[k]")) // text
                             {
                                 string cline = line.Replace("[r]", string.Empty).Remove(line.Length - 3, 3);
-                                if (string.IsNullOrEmpty(cline) || FunctionsString.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || cline.IsDigitsOnly())
                                 {
                                 }
                                 else
@@ -497,7 +496,7 @@ namespace TranslationHelper.Projects.KiriKiri
                             else if (line.StartsWith("*")) // text
                             {
                                 string cline = line.Remove(0, 1);
-                                if (string.IsNullOrEmpty(cline) || FunctionsString.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || cline.IsDigitsOnly())
                                 {
                                 }
                                 else
@@ -518,7 +517,7 @@ namespace TranslationHelper.Projects.KiriKiri
                             else if (line.EndsWith("[r]")) //text, first line
                             {
                                 string cline = line.Replace("[r]", string.Empty);
-                                if (string.IsNullOrEmpty(cline) || FunctionsString.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || cline.IsDigitsOnly())
                                 {
                                 }
                                 else
@@ -563,7 +562,7 @@ namespace TranslationHelper.Projects.KiriKiri
                             else if (line.StartsWith("@notice text="))
                             {
                                 string cline = line.Remove(0, 13);//удаление "@notice text="
-                                if (string.IsNullOrEmpty(cline) || FunctionsString.IsDigitsOnly(cline))
+                                if (string.IsNullOrEmpty(cline) || cline.IsDigitsOnly())
                                 {
                                 }
                                 else

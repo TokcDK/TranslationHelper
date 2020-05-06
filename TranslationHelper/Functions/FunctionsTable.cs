@@ -97,6 +97,8 @@ namespace TranslationHelper.Main.Functions
                 //scrool to selected cell
                 //https://stackoverflow.com/a/51399750
                 thDataWork.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
+
+                thDataWork.Main.UpdateTextboxes();
             }
             catch (Exception ex)
             {

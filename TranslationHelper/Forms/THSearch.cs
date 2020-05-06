@@ -712,6 +712,11 @@ namespace TranslationHelper
 
         private void SearchResultsDatagridview_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            //ShowSelectedCellInMainTable(sender, e);
+        }
+
+        private void ShowSelectedCellInMainTable(object sender, DataGridViewCellEventArgs e)
+        {
             string searchcolumn = GetSearchColumn();
             try
             {
@@ -1037,6 +1042,11 @@ namespace TranslationHelper
         private void SearchFormReplaceWithComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             SearchFormReplaceWithTextBox.Text = (sender as ComboBox).SelectedItem.ToString();
+        }
+
+        private void SearchResultsDatagridview_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            ShowSelectedCellInMainTable(sender, e);
         }
     }
 }

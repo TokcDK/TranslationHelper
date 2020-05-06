@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using TranslationHelper.Main.Functions;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
@@ -37,7 +33,7 @@ namespace TranslationHelper.Formats.KiriKiri
                             for (int l = 0; l < ValuesLength; l++)
                             {
                                 string subline = Values[l];
-                                if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || FunctionsString.IsDigitsOnly(subline))
+                                if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || subline.IsDigitsOnly())
                                 {
                                 }
                                 else
