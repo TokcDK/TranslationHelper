@@ -21,7 +21,7 @@ namespace TranslationHelper.Functions
 {
     class FunctionsOpen
     {
-        THDataWork thDataWork;
+        readonly THDataWork thDataWork;
         public FunctionsOpen(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
@@ -127,30 +127,30 @@ namespace TranslationHelper.Functions
             }
         }
 
-        private bool TryToDetectSourceAndOpen()
-        {
-            foreach (var Project in thDataWork.ProjectsList)
-            {
-                if (Project.OpenDetect())
-                {
-                    if (Project.Open())
-                    {
-                        if (thDataWork.THFilesElementsDataset.Tables.Count > 0)
-                        {
-                            thDataWork.Project = Project;
-                            RPGMFunctions.THSelectedSourceType = Project.ProjectTitle();
-                            foreach (DataTable file in thDataWork.THFilesElementsDataset.Tables)
-                            {
-                                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(file.TableName)));
-                            }
-                            return true;
-                        }
-                    }
-                }
-            }
+        //private bool TryToDetectSourceAndOpen()
+        //{
+        //    foreach (var Project in thDataWork.ProjectsList)
+        //    {
+        //        if (Project.OpenDetect())
+        //        {
+        //            if (Project.Open())
+        //            {
+        //                if (thDataWork.THFilesElementsDataset.Tables.Count > 0)
+        //                {
+        //                    thDataWork.Project = Project;
+        //                    RPGMFunctions.THSelectedSourceType = Project.ProjectTitle();
+        //                    foreach (DataTable file in thDataWork.THFilesElementsDataset.Tables)
+        //                    {
+        //                        thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(file.TableName)));
+        //                    }
+        //                    return true;
+        //                }
+        //            }
+        //        }
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         private static string GetCorrectedGameDIr(string tHSelectedGameDir)
         {
@@ -191,15 +191,15 @@ namespace TranslationHelper.Functions
             return TryDetectOpenOldProjects(sPath);
         }
 
-        private void ShowProjectsList()
-        {
-            StringBuilder titles = new StringBuilder();
-            foreach (ProjectBase Project in thDataWork.ProjectsList)
-            {
-                titles.AppendLine(Project.ProjectTitle());
-            }
-            MessageBox.Show(titles.ToString());
-        }
+        //private void ShowProjectsList()
+        //{
+        //    StringBuilder titles = new StringBuilder();
+        //    foreach (ProjectBase Project in thDataWork.ProjectsList)
+        //    {
+        //        titles.AppendLine(Project.ProjectTitle());
+        //    }
+        //    MessageBox.Show(titles.ToString());
+        //}
 
         private string TryDetectOpenOldProjects(string sPath)
         {
@@ -401,6 +401,18 @@ namespace TranslationHelper.Functions
         {
             if (thDataWork.Main.THFilesList.Items.Count == 0 && thDataWork.THFilesElementsDataset.Tables.Count > 0)
             {
+                //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
+                //foreach (DataColumn col in thDataWork.THFilesElementsDataset.Tables[0].Columns)
+                //{
+                //    thDataWork.THFilesElementsDataset.Tables["[ALL]"].Columns.Add(col.ColumnName);
+                //}
+                //using (DataSet newdataset = new DataSet())
+                //{
+                //    newdataset.Tables.Add("[ALL]");
+                //    newdataset.Merge(thDataWork.THFilesElementsDataset);
+                //    thDataWork.THFilesElementsDataset.Clear();
+                //    thDataWork.THFilesElementsDataset.Merge(newdataset);
+                //}
                 foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
                 {
                     thDataWork.Main.THFilesList.Items.Add(table.TableName);
@@ -445,10 +457,8 @@ namespace TranslationHelper.Functions
             }
 
             Properties.Settings.Default.ProjectNewLineSymbol = (thDataWork != null && thDataWork.CurrentProject != null)
-                ?
-                thDataWork.CurrentProject.NewlineSymbol
-                :
-                FunctionsString.IsStringAContainsStringB(Properties.Settings.Default.THSelectedSourceType, "RPG Maker MV") ? "\\n" : Environment.NewLine;
+                ? thDataWork.CurrentProject.NewlineSymbol
+                : Environment.NewLine;
 
             Properties.Settings.Default.ProjectIsOpened = true;
             FunctionsSounds.OpenProjectComplete();

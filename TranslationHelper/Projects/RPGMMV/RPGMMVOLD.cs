@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.RPGMMV
 {
     class RPGMMVOLD
     {
-        THDataWork thDataWork;
+        readonly THDataWork thDataWork;
         public RPGMMVOLD(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
@@ -293,7 +293,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         //List<string> TempList;
         //List<string> TempListInfo;
-        private StringBuilder textsb = new StringBuilder();
+        private readonly StringBuilder textsb = new StringBuilder();
         private string curcode = string.Empty;
         //string cType;
         //private string cCode = string.Empty;

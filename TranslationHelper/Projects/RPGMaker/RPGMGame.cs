@@ -46,7 +46,7 @@ namespace TranslationHelper.Projects
 
         internal override string ProjecFolderName()
         {
-            return "RPGMTransPatch";
+            return "RPGMakerTransPatch";
         }
 
         string extractedpatchpath;
@@ -80,18 +80,34 @@ namespace TranslationHelper.Projects
         private bool TryToExtractToRPGMakerTransPatch(string sPath, string extractdir = "Work")
         {
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-            string workdir = Path.Combine(Application.StartupPath, extractdir, "RPGMakerTrans");
-            if (!Directory.Exists(workdir))
-            {
-                Directory.CreateDirectory(workdir);
-            }
+            var DBDir = Path.Combine(Application.StartupPath, extractdir, "RPGMakerTrans");
+            //if (!Directory.Exists(DBDir))
+            //{
+            //    Directory.CreateDirectory(DBDir);
+            //}
             //MessageBox.Show("tempdir=" + tempdir);
-            string outdir = Path.Combine(workdir, Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath)));
-
+            var workdirName = Path.GetFileNameWithoutExtension(Path.GetDirectoryName(sPath));
+            var workdirPath = Path.Combine(DBDir, workdirName);
+            Properties.Settings.Default.THProjectWorkDir = workdirPath;
+            var outdirpatchPath = Path.Combine(workdirPath, workdirName + "_patch");
+            if (!Directory.Exists(workdirPath))
+            {
+                Directory.CreateDirectory(workdirPath);
+            }
 
             if (extractdir == "Work")
             {
-                extractedpatchpath = outdir + "_patch";// Распаковывать в Work\ProjectDir\
+                extractedpatchpath = outdirpatchPath;// Распаковывать в Work\ProjectDir\
+            }
+
+            if(Directory.Exists(workdirPath + "_patch"))
+            {
+                Directory.Move(workdirPath + "_patch", outdirpatchPath);
+            }
+
+            if(Directory.Exists(workdirPath + "_translated"))
+            {
+                Directory.Move(workdirPath + "_translated", Path.Combine(workdirPath, workdirName + "_translated"));
             }
 
             //if (!Directory.Exists(outdir))
@@ -101,7 +117,7 @@ namespace TranslationHelper.Projects
             //    //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
 
             //}
-            if (Directory.Exists(outdir + "_patch") && FunctionsFileFolder.IsInDirExistsAnyFile(outdir + "_patch", "RPGMKTRANSPATCH", true, true))
+            if (Directory.Exists(outdirpatchPath) && FunctionsFileFolder.IsInDirExistsAnyFile(outdirpatchPath, "RPGMKTRANSPATCH", true, true))
             {
                 DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
@@ -111,87 +127,69 @@ namespace TranslationHelper.Projects
                 else
                 {
                     //чистка и пересоздание папки
-                    RPGMTransOther.CleanInvalidRPGMakerTransPatchFolders(outdir);
-                    Directory.CreateDirectory(outdir);
+                    RPGMTransOther.CleanInvalidRPGMakerTransPatchFolders(workdirPath);
+                    Directory.CreateDirectory(workdirPath);
 
                     //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
 
                 }
             }
 
-            return RPGMTransOther.CreateRPGMakerTransPatch(dir.FullName, outdir);
+            return RPGMTransOther.CreateRPGMakerTransPatch(dir.FullName, workdirPath);
         }
 
         private bool RPGMTransPatchPrepare()
         {
-            var dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.SPath));
+            //var dir = new DirectoryInfo(Path.GetDirectoryName(thDataWork.SPath));
 
             //Properties.Settings.Default.THSelectedDir = dir + string.Empty;
 
-            var patchdir = dir;
-            StreamReader patchfile = new StreamReader(thDataWork.SPath);
-
-            if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "patch"))) //если есть подпапка patch, тогда это версия патча 3
+            var patchdir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileName(Properties.Settings.Default.THProjectWorkDir) + "_patch");
+            if (!Directory.Exists(patchdir))
             {
-                RPGMTransPatchVersion = 3;
-                patchdir = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "patch"));
+                return false;
             }
-            else //иначе это версия 2
+            Properties.Settings.Default.THSelectedDir = Path.GetDirectoryName(thDataWork.SPath);
+            Properties.Settings.Default.THSelectedGameDir = Path.GetDirectoryName(thDataWork.SPath);
+            using (var patchfile = new StreamReader(Path.Combine(patchdir, "RPGMKTRANSPATCH")))
             {
-                RPGMTransPatchVersion = 2;
-            }
-            patchfile.Close();
-
-            var vRPGMTransPatchFiles = new List<string>();
-
-            foreach (FileInfo file in patchdir.EnumerateFiles("*.txt"))
-            {
-                //MessageBox.Show("file.FullName=" + file.FullName);
-                vRPGMTransPatchFiles.Add(file.FullName);
+                if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(Path.Combine(patchdir, "patch"))) //если есть подпапка patch, тогда это версия патча 3
+                {
+                    RPGMTransPatchVersion = 3;
+                    patchdir = Path.Combine(patchdir, "patch");
+                }
+                else //иначе это версия 2
+                {
+                    RPGMTransPatchVersion = 2;
+                }
             }
 
-            //var RPGMTransPatch = new THRPGMTransPatchLoad(this);
+            //var vRPGMTransPatchFiles = new List<string>();
 
-            //THFilesDataGridView.Nodes.Add("main");
-            //THRPGMTransPatchLoad RPGMTransPatch = new THRPGMTransPatchLoad();
-            //RPGMTransPatch.OpenTransFiles(files, RPGMTransPatchVersion);
-            if (OpenRPGMTransPatchFiles(vRPGMTransPatchFiles))
+            //foreach (var file in Directory.EnumerateFileSystemEntries(patchdir, "*.txt"))
+            //{
+            //    //MessageBox.Show("file.FullName=" + file.FullName);
+            //    vRPGMTransPatchFiles.Add(file);
+            //}
+
+            if (OpenRPGMTransPatchFiles(patchdir))
             {
                 return true;
             }
-            //}
+
             return false;
         }
 
-        public bool OpenRPGMTransPatchFiles(List<string> ListFiles)
+        public bool OpenRPGMTransPatchFiles(string patchdir)
         {
-            if (ListFiles == null || thDataWork.THFilesElementsDataset == null)
+            if (string.IsNullOrWhiteSpace(patchdir) || thDataWork.THFilesElementsDataset == null)
                 return false;
 
-            bool successCreated = false;
+            var successCreated = false;
 
-            //Читаем все файлы
-            for (int i = 0; i < ListFiles.Count; i++)   //Обрабатываем всю строку
+            foreach (var file in Directory.EnumerateFileSystemEntries(patchdir, "*.txt"))
             {
-                string fname = Path.GetFileNameWithoutExtension(ListFiles[i]);
-
-                //ProgressInfo(true, T._("opening file: ") + fname + ".txt");
-
-                _ = thDataWork.THFilesElementsDataset.Tables.Add(fname);
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Original");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Translation");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Context");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Advice");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Status");
-                if (thDataWork.THFilesElementsDatasetInfo == null)
-                {
-                }
-                else
-                {
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(fname);
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Columns.Add("Original");
-                }
-
+                thDataWork.FilePath = file;
                 switch (RPGMTransPatchVersion)
                 {
                     case 3:

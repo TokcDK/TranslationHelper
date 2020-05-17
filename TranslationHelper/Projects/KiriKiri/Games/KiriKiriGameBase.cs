@@ -16,7 +16,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         protected bool DetectBaseFiles()
         {
             return
-            Path.GetExtension(thDataWork.SPath) == ".exe"
+            Path.GetExtension(thDataWork.SPath).ToUpperInvariant() == ".EXE"
                 &&
                 FunctionsProcess.GetExeDescription(thDataWork.SPath) != null
                 &&
@@ -81,7 +81,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             }
 
             string KiriKiriEXEpath = Path.Combine(Application.StartupPath, "Res", "kirikiriunpacker", "kikiriki.exe");
-            
+
 
             if (ProjectXP3List == null)
             {
@@ -91,10 +91,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             string PatchName = "patch" + GetLastIndexOfPatch();
 
             string KiriKiriEXEargs = "-c -i \"" + PatchDir.FullName + "\" -o \"" + Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchName + ".xp3") + "\"";
-            
+
             FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
 
-            if(File.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchName + ".xp3")))
+            if (File.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchName + ".xp3")))
             {
                 Directory.Move(PatchDir.FullName, Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchName));
                 File.Copy(Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchName + ".xp3"), Path.Combine(Properties.Settings.Default.THSelectedGameDir, PatchName + ".xp3"));
@@ -124,30 +124,41 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 dataFiles.Add("data.xp3");
             }
 
-            int number = 0;
+            int number = -1;
             int notFound = 0;
-            string name = "patch.xp3";
+            string name;
             while (number < 99 && notFound < 10)
             {
                 number++;
-                if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name)))
+                foreach (var prefix in new[] { " ", "_", string.Empty })
                 {
-                    if (File.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name)))
+                    if (number > 0)
                     {
-                        File.Delete(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name));
-                        File.Delete(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name));
-                        Directory.Delete(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name.Replace(".xp3",string.Empty)));
+                        name = "patch" + prefix + number + ".xp3";
                     }
                     else
                     {
-                        dataFiles.Add(name);
+                        name = "patch.xp3";
+                    }
+
+                    if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name)))
+                    {
+                        if (File.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name)))
+                        {
+                            File.Delete(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name));
+                            File.Delete(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name));
+                            Directory.Delete(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name.Replace(".xp3", string.Empty)));
+                        }
+                        else
+                        {
+                            dataFiles.Add(name);
+                        }
+                    }
+                    else
+                    {
+                        notFound++;
                     }
                 }
-                else
-                {
-                    notFound++;
-                }
-                name = "patch" + number + ".xp3";
             }
 
             return dataFiles.ToArray();

@@ -9,7 +9,7 @@ namespace TranslationHelper.Projects.RPGMTrans
 {
     class RPGMTransOLD
     {
-        THDataWork thDataWork;
+        readonly THDataWork thDataWork;
         public RPGMTransOLD(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;

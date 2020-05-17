@@ -37,6 +37,15 @@ namespace TranslationHelper.Projects
         }
 
         /// <summary>
+        /// Returns project's DB file name for save/load
+        /// </summary>
+        /// <returns></returns>
+        internal virtual string GetProjectDBFileName()
+        {
+            return string.Empty;
+        }
+
+        /// <summary>
         /// Open project files
         /// </summary>
         /// <param name="thData"></param>
@@ -59,14 +68,22 @@ namespace TranslationHelper.Projects
         internal virtual bool IsTestRunEnabled => false;
 
         /// <summary>
-        /// here is project can place code buckup of translating original files for test run
+        /// Must make buckup of project translating original files<br/>if any code exit here else will return false
         /// </summary>
-        internal virtual void MakeFilesBuckup() { }
+        /// <returns></returns>
+        internal virtual bool BuckupCreate()
+        {
+            return false;
+        }
 
         /// <summary>
-        /// here is project can place code restore buckup of translating original files after test run
+        /// Will restore made buckup of project translating original files<br/>if any code exit here and buckup exists<br/>else will return false
         /// </summary>
-        internal virtual void RestoreFromBakIfNeed() { }
+        /// <returns></returns>
+        internal virtual bool BuckupRestore()
+        {
+            return false;
+        }
 
         /// <summary>
         /// Get all inherited classes of an abstract class
@@ -102,9 +119,9 @@ namespace TranslationHelper.Projects
 
         internal void FillTHFilesElementsDictionary()
         {
-            foreach(DataTable table in thDataWork.THFilesElementsDataset.Tables)
+            foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
             {
-                foreach(DataRow row in table.Rows)
+                foreach (DataRow row in table.Rows)
                 {
                     string orig;
                     if (!string.IsNullOrEmpty(orig = row[0] + string.Empty) && !thDataWork.THFilesElementsDictionary.ContainsKey(orig))

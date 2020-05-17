@@ -43,6 +43,8 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             JToken root;
                             root = JToken.Parse(line);
 
+                            PluginsJSnameFound = false;
+
                             GetStringsFromJToken(root, tablename);
                         }
                         catch
@@ -100,8 +102,10 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             JToken root;
                             root = JToken.Parse(line);
 
-                            SplitTableCellValuesToDictionaryLines(tablename);
-                            if (TableLines != null && TableLines.Count > 0)
+                            PluginsJSnameFound = false;
+
+                            SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
+                            if (TablesLinesDict != null && TablesLinesDict.Count > 0)
                             {
                                 WriteStringsToJTokenWithPreSplitlines(root, tablename);
                             }

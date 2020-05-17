@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Windows.Forms;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Main.Functions;
 
@@ -32,7 +33,9 @@ namespace TranslationHelper.Formats.RPGMTrans
             //        help = "Dump labels to patch file")
             //parser.add_argument('--dump-scripts', type = str, default = None,
             //        help = "Dump scripts to given directory")
-            string rpgmakertranscliargs = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
+            var workdirName = Path.GetFileNameWithoutExtension(outdir);
+            outdir = Path.Combine(outdir, workdirName);//изменение на субпапку в рабочей папке проекта
+            var rpgmakertranscliargs = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
 
             FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
             ret = GetIsRPGMakerTransPatchCreatedAndValid(outdir);
@@ -168,8 +171,10 @@ namespace TranslationHelper.Formats.RPGMTrans
         {
             return File.Exists(Path.Combine(outdir + "_patch", "RPGMKTRANSPATCH"))
                 && File.Exists(Path.Combine(outdir + "_translated", "rpgmktranslated"))
-                && Directory.Exists(Path.Combine(outdir + "_patch", "patch"))
-                && Directory.GetFiles(Path.Combine(outdir + "_patch", "patch"), "*.txt").Length > 0;
+                && (
+                (Directory.Exists(Path.Combine(outdir + "_patch", "patch")) && Path.Combine(outdir + "_patch", "patch").IsTheDirContainsFiles("*.txt"))
+                || (outdir + "_patch").IsTheDirContainsFiles("*.txt")
+                );
         }
     }
 }

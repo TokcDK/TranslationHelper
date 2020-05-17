@@ -39,6 +39,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return token.Type == JTokenType.String && !string.IsNullOrWhiteSpace(token.ToString()) && !(Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && token.ToString().HaveMostOfRomajiOtherChars());
         }
 
+        protected bool PluginsJSnameFound = false;
         protected void GetStringsFromJToken(JToken token, string Jsonname)
         {
             if (token == null)
@@ -51,7 +52,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 if (!IsValidToken(token))
                     return;
 
-                AddRowData(Jsonname, token.ToString(), token.Path);
+                AddRowData(Jsonname, token.ToString(), token.Path, true);
                 //thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(token.ToString());
                 //thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(token.Path);
             }
@@ -60,6 +61,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 foreach (var property in obj.Properties())
                 {
+                    if (!PluginsJSnameFound && Jsonname == "plugins.js" && property.Name == "name")
+                    {
+                        PluginsJSnameFound = true;
+                        continue;
+                    }
                     GetStringsFromJToken(property.Value, Jsonname);
                 }
             }
@@ -101,13 +107,17 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 foreach (var property in obj.Properties())
                 {
+                    if (!PluginsJSnameFound && Jsonname == "plugins.js" && property.Name == "name")
+                    {
+                        PluginsJSnameFound = true;
+                        continue;
+                    }
                     WriteStringsToJToken(property.Value, Jsonname);
                 }
             }
             else if (token is JArray array)
             {
-                var arrayCount = array.Count;
-                for (int i = 0; i < arrayCount; i++)
+                for (int i = 0; i < array.Count; i++)
                 {
                     WriteStringsToJToken(array[i], Jsonname);
                 }
@@ -130,11 +140,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                     return;
 
                 string TokenValue = token.ToString();
-                if (TableLines.ContainsKey(TokenValue)
-                    && !string.IsNullOrEmpty(TableLines[TokenValue])
-                    && TableLines[TokenValue] != TokenValue)
+                if (TablesLinesDict.ContainsKey(TokenValue)
+                    && !string.IsNullOrEmpty(TablesLinesDict[TokenValue])
+                    && TablesLinesDict[TokenValue] != TokenValue)
                 {
-                    (token as JValue).Value = TableLines[TokenValue];
+                    (token as JValue).Value = TablesLinesDict[TokenValue];
                 }
             }
             else if (token is JObject obj)
@@ -142,13 +152,17 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 foreach (var property in obj.Properties())
                 {
+                    if (!PluginsJSnameFound && Jsonname == "plugins.js" && property.Name == "name")
+                    {
+                        PluginsJSnameFound = true;
+                        continue;
+                    }
                     WriteStringsToJTokenWithPreSplitlines(property.Value, Jsonname);
                 }
             }
             else if (token is JArray array)
             {
-                var arrayCount = array.Count;
-                for (int i = 0; i < arrayCount; i++)
+                for (int i = 0; i < array.Count; i++)
                 {
                     WriteStringsToJTokenWithPreSplitlines(array[i], Jsonname);
                 }

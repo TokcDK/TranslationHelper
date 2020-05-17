@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -94,7 +93,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
                             }
                             else
                             {
-                                string data = line.Replace("[phr]",string.Empty);
+                                string data = line.Replace("[phr]", string.Empty);
                                 string extra = GetExtraSymbol(line);
                                 data = ExtraLineCorrection(data);
                                 Message.Append(data);
@@ -311,11 +310,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
 
                         if (statusInfoParse)
                         {
-                            if (line== "[s]")
+                            if (line == "[s]")
                             {
                                 statusInfoParse = false;
                             }
-                            else if (line.EndsWith("[r]") && line.Length>3)
+                            else if (line.EndsWith("[r]") && line.Length > 3)
                             {
                                 string data = line.Remove(line.Length - 3, 3);
                                 data = ExtraLineCorrection(data);
@@ -373,7 +372,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
                                     Message.Append(data);
                                     MessageInfo.Append(line);
                                 }
-                                
+
 
                                 ResultForWrite.AppendLine(GetTranslation(tablename, Message, MessageInfo/*, ref RowIndex*/));
 
@@ -542,7 +541,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
             bool IsTranslated = false;
             if (ValidString(cleanedMessage))
             {
-                
+
                 if (IsTranslationValidFor(cleanedMessage))
                 {
                     string[] TranslatedLines = (thDataWork.THFilesElementsDictionary[cleanedMessage]).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);

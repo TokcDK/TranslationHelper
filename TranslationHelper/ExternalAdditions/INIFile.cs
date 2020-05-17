@@ -125,7 +125,7 @@ namespace AIHelper.Manage
         //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.
         public void WriteArrayToSectionValues(string Section, string[] Values, bool CleanSectionBeforeWrite = true, bool DoSaveINI = true)
         {
-            if (INIData == null || string.IsNullOrEmpty(Section) || Values==null || Values.Length==0)
+            if (INIData == null || string.IsNullOrEmpty(Section) || Values == null || Values.Length == 0)
                 return;
 
             if (CleanSectionBeforeWrite)
@@ -133,11 +133,11 @@ namespace AIHelper.Manage
                 INIData[Section].RemoveAllKeys();
             }
 
-            for (int i=0;i< Values.Length; i++)
+            for (int i = 0; i < Values.Length; i++)
             {
                 INIData[Section][i.ToString(CultureInfo.GetCultureInfo("en-US"))] = Values[i];
             }
-            
+
             if (DoSaveINI)
             {
                 INIParser.WriteFile(Path, INIData, Encoding.UTF8);

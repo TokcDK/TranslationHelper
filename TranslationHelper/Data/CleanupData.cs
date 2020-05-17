@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TranslationHelper.Data
 {
     class CleanupData
     {
-        THDataWork thDataWork;
+        readonly THDataWork thDataWork;
         public CleanupData(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
@@ -57,6 +53,7 @@ namespace TranslationHelper.Data
                 thDataWork.THFilesElementsDatasetInfo.Reset();
                 thDataWork.THFilesElementsALLDataTable.Reset();
                 thDataWork.Main.THFileElementsDataGridView.Columns.Clear();
+                thDataWork.hashes.Clear();
                 //THFileElementsDataGridView.Rows.Clear();
                 thDataWork.FilePath = string.Empty;
                 thDataWork.SPath = string.Empty;

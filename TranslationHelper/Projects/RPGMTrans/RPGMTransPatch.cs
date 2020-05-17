@@ -31,7 +31,7 @@ namespace TranslationHelper.Projects
 
         internal override string ProjecFolderName()
         {
-            return "RPGMTransPatch";
+            return "RPGMakerTransPatch";
         }
 
         internal override bool Open()

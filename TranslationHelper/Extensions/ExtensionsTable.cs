@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TranslationHelper.Extensions
@@ -36,6 +33,12 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static int GetCountOfRowsWithSelectedCellsCount(this DataGridView DGV)
         {
+            int cnt;
+            if (DGV.SelectedRows.Count == (cnt = DGV.Rows.Count))
+            {
+                return cnt;
+            }
+
             //https://stackoverflow.com/questions/47357051/c-datagridview-how-to-get-selected-count-with-cells-and-rows
             return DGV.SelectedCells.Cast<DataGridViewCell>()
                                        .Select(c => c.RowIndex).Distinct().Count();

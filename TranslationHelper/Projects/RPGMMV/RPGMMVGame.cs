@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
-using TranslationHelper.Main.Functions;
 
-namespace TranslationHelper.Projects
+namespace TranslationHelper.Projects.RPGMMV
 {
     class RPGMMVGame : ProjectBase
     {
@@ -43,13 +41,30 @@ namespace TranslationHelper.Projects
 
         internal override bool Open()
         {
+            return ParseProjectFiles();
+        }
+
+        string ParseFileMessage;
+        /// <summary>
+        /// Parsing the Project files
+        /// </summary>
+        /// <param name="Write">Use Save() instead of Open()</param>
+        /// <returns></returns>
+        private bool ParseProjectFiles(bool Write = false)
+        {
+            if (!Write)
+            {
+                BuckupRestore();
+            }
+
+            ParseFileMessage = Write ? T._("write file: ") : T._("opening file: ");
             bool IsAnyFileCompleted = false;
             try
             {
                 //Proceeed js-files
                 foreach (var JS in ListOfJS)
                 {
-                    thDataWork.Main.ProgressInfo(true, T._("opening file: ") + JS.JSName);
+                    thDataWork.Main.ProgressInfo(true, ParseFileMessage + JS.JSName);
                     thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
 
                     if (!File.Exists(thDataWork.FilePath))
@@ -59,7 +74,11 @@ namespace TranslationHelper.Projects
 
                     try
                     {
-                        if (JS.Open())
+                        if (Write && JS.Save())
+                        {
+                            IsAnyFileCompleted = true;
+                        }
+                        else if (JS.Open())
                         {
                             IsAnyFileCompleted = true;
                         }
@@ -75,7 +94,7 @@ namespace TranslationHelper.Projects
                 {
                     try
                     {
-                        if (OpenRPGMakerMVjson(file.FullName))
+                        if (ParseRPGMakerMVjson(file.FullName, Write))
                         {
                             IsAnyFileCompleted = true;
                         }
@@ -90,29 +109,28 @@ namespace TranslationHelper.Projects
             }
 
             thDataWork.Main.ProgressInfo(false);
-            return IsAnyFileCompleted;
+            return IsAnyFileCompleted; ;
         }
 
-        private bool OpenRPGMakerMVjson(string sPath)
+        private bool ParseRPGMakerMVjson(string FilePath, bool Write = false)
         {
             try
             {
-                RestoreFromBakIfNeed();
-
                 //Вроде прочитало в DGV
                 //источник: https://stackoverflow.com/questions/23763446/how-to-display-the-json-data-in-datagridview-in-c-sharp-windows-application-from
 
-                string Jsonname = Path.GetFileNameWithoutExtension(sPath); // get json file name
+                string Jsonname = Path.GetFileNameWithoutExtension(FilePath); // get json file name
 
-                thDataWork.Main.ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
+                thDataWork.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
 
-                string jsondata = File.ReadAllText(sPath); // get json data
+                //string jsondata = File.ReadAllText(FilePath); // get json data
 
                 bool ret = true;
 
-                thDataWork.FilePath = sPath;
+                thDataWork.FilePath = FilePath;
                 //ret = ReadJson(Jsonname, sPath);
-                ret = new JSON(thDataWork).Open();
+
+                ret = Write ? new JSON(thDataWork).Save() : new JSON(thDataWork).Open();
 
                 return ret;
             }
@@ -120,65 +138,26 @@ namespace TranslationHelper.Projects
             {
                 return false;
             }
-
         }
 
         internal override bool Save()
         {
-            //thDataWork.CurrentProject.FillTHFilesElementsDictionary();
-
-            foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
-            {
-                //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
-                //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
-
-                //var table = thDataWork.THFilesElementsDataset.Tables[f];
-                bool changed = false;
-
-                if (!FunctionsTable.IsTableRowsAllEmpty(table))
-                {
-                    changed = true;
-                }
-
-                ///*THMsg*/MessageBox.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                if (changed)
-                {
-                    if (table.TableName.EndsWith(".js"))
-                    {
-                        JSBase JS = GetCorrectJSbyName(table.TableName);
-                        if (JS != null)
-                        {
-                            thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
-                            JS.Save();
-                        }
-                    }
-                    else
-                    {
-                        thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", table.TableName + ".json");
-                        new JSON(thDataWork).Save();
-                    }
-                }
-            }
-
-            //thDataWork.THFilesElementsDictionary.Clear();
-
-            thDataWork.Main.ProgressInfo(false);
-            return true;
+            return ParseProjectFiles(true);
         }
 
-        private JSBase GetCorrectJSbyName(string tableName)
-        {
-            foreach (var JS in ListOfJS)
-            {
-                if (tableName == JS.JSName)
-                {
-                    return JS;
-                }
-            }
-            return null;
-        }
+        //private JSBase GetCorrectJSbyName(string tableName)
+        //{
+        //    foreach (var JS in ListOfJS)
+        //    {
+        //        if (tableName == JS.JSName)
+        //        {
+        //            return JS;
+        //        }
+        //    }
+        //    return null;
+        //}
 
-        internal override void MakeFilesBuckup()
+        internal override bool BuckupCreate()
         {
             RestoreFromBakIfNeedData();
             try
@@ -194,22 +173,28 @@ namespace TranslationHelper.Projects
                 try
                 {
                     string jsPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
+
                     RestoreFromBakIfNeedJS(JS);
-                    File.Copy(jsPath, jsPath + ".bak");
+                    if (File.Exists(jsPath))
+                    {
+                        File.Copy(jsPath, jsPath + ".bak");
+                    }
                 }
                 catch
                 {
                 }
             }
+            return true;
         }
 
-        internal override void RestoreFromBakIfNeed()
+        internal override bool BuckupRestore()
         {
             RestoreFromBakIfNeedData();
             foreach (JSBase JS in ListOfJS)
             {
                 RestoreFromBakIfNeedJS(JS);
             }
+            return true;
         }
 
         internal static void RestoreFromBakIfNeedData()

@@ -17,6 +17,7 @@ namespace TranslationHelper.ExternalAdditions
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5351:Не используйте взломанные алгоритмы шифрования", Justification = "<Ожидание>")]
         internal static string CreateMd5ForFolder(string path)
         {
             // assuming you want to include nested folders

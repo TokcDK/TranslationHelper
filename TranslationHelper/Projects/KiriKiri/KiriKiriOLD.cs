@@ -14,7 +14,7 @@ namespace TranslationHelper.Projects.KiriKiri
 {
     class KiriKiriOLD
     {
-        THDataWork thDataWork;
+        readonly THDataWork thDataWork;
         public KiriKiriOLD(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
@@ -164,7 +164,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
         string KiriKiriVariableSearchRegexPattern = string.Empty;
         string KiriKiriVariableSearchRegexFullPattern = string.Empty;
-        string KiriKiriQuotePattern = string.Empty;
+        string KiriKiriQuotePattern;
 
         private DataTable KiriKiriScriptScenarioOpen(string sPath, DataTable DT = null, DataTable DTInfo = null)
         {

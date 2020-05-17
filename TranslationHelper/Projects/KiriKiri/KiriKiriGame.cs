@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -39,7 +38,6 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Open()
         {
-            bool ret = false;
             if (ExtractXP3files(thDataWork.SPath))
             {
                 var KiriKiriFiles = new List<string>();

@@ -1,8 +1,8 @@
 ﻿using AIHelper.Manage;
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 
 namespace TranslationHelper
 {
@@ -10,21 +10,24 @@ namespace TranslationHelper
     {
         //Defaults
         internal INIFile THConfigINI = new INIFile("TranslationHelperConfig.ini");
-
-        public THSettings()
+        readonly THDataWork thDataWork;
+        internal THSettings(THDataWork thDataWork)
         {
             InitializeComponent();
+
+            this.thDataWork = thDataWork;
 
             SetTooltips();
 
             SetUIStrings();
+
         }
 
         private void SetUIStrings()
         {
             //translation
             THOptionFullComprasionDBload.Text = T._("Full recursive scan while translation DB loading (slower)");
-            THOptionLineCharLimitLabel.Text = "- "+T._("char limit of line length (for line split functions)");
+            THOptionLineCharLimitLabel.Text = "- " + T._("char limit of line length (for line split functions)");
             this.THSettingsMainTabPage.Text = T._("General");
             //this.label3.Text = T._("Translation  Helper support:");
             this.THSettingsOptimizationsTabPage.Text = T._("Optimizations");
@@ -62,7 +65,7 @@ namespace TranslationHelper
             THToolTip.SetToolTip(THOptionFullComprasionDBload, T._("In time of DB loading will be checked all DB lines for each line of table for translation."));
             //Optimization
             THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBox, T._("String will not be loaded for translation if this string contains romaji characters in text more of specified percent."));
-            
+
             //THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen, "Is true while opening. Always true for RPGMaker MV files or jsons for strings filtering purposes.");
             //THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation, T._("Is true while online translating. Will be used both with other chars like .!/? and other same"));
             THToolTip.SetToolTip(THOptionDBCompressionCheckBox, T._("Format for DB files: standard not compressed xml and compressed xml for both other"));
@@ -83,13 +86,14 @@ namespace TranslationHelper
             {
                 //General
                 THOptionFullComprasionDBload.Checked = FullComprasionDBloadINI;
+                LineCharLimitTextBox.Text = LineCharLimitINI.ToString(CultureInfo.InvariantCulture);
 
                 //Optimizations
                 THOptionDontLoadStringIfRomajiPercentCheckBox.Checked = DontLoadStringIfRomajiPercentINI;
-                THOptionDontLoadStringIfRomajiPercentTextBox.Text = DontLoadStringIfRomajiPercentNumINI.ToString(CultureInfo.GetCultureInfo("en-US"));                
+                THOptionDontLoadStringIfRomajiPercentTextBox.Text = DontLoadStringIfRomajiPercentNumINI.ToString(CultureInfo.InvariantCulture);
                 THOptionDBCompressionCheckBox.Checked = DBCompressionINI;
                 THOptionDBCompressionComboBox.SelectedItem = DBCompressionTypeINI;
-                
+
                 //Tools
                 THSettingsWebTransLinkTextBox.Text = WebTransLinkINI;
                 THOptionEnableTranslationCacheCheckBox.Checked = EnableTranslationCacheINI;
@@ -168,7 +172,7 @@ namespace TranslationHelper
         public int LineCharLimitINI
         {
             get => THConfigINI.KeyExists("THOptionLineCharLimit", "General")
-                    ? int.Parse(THConfigINI.ReadINI("General", "LineCharLimit"), CultureInfo.GetCultureInfo("en-US"))
+                    ? int.Parse(THConfigINI.ReadINI("General", "THOptionLineCharLimit"), CultureInfo.GetCultureInfo("en-US"))
                     : 60;
             set => THConfigINI.WriteINI("General", "THOptionLineCharLimit", value.ToString(CultureInfo.GetCultureInfo("en-US")));
         }
@@ -184,7 +188,7 @@ namespace TranslationHelper
             {
                 int newvalue = int.Parse(THOptionDontLoadStringIfRomajiPercentTextBox.Text, CultureInfo.GetCultureInfo("en-US"));
                 Properties.Settings.Default.DontLoadStringIfRomajiPercentNum = newvalue;
-                DontLoadStringIfRomajiPercentNumINI = newvalue;                
+                DontLoadStringIfRomajiPercentNumINI = newvalue;
             }
             else
             {
@@ -201,7 +205,7 @@ namespace TranslationHelper
         {
             bool newvalue = THOptionDontLoadStringIfRomajiPercentCheckBox.Checked;
             Properties.Settings.Default.DontLoadStringIfRomajiPercent = newvalue;
-            DontLoadStringIfRomajiPercentINI = newvalue;            
+            DontLoadStringIfRomajiPercentINI = newvalue;
         }
 
         private void THOptionDBCompressionComboBox_SelectionChangeCommitted(object sender, EventArgs e)
@@ -211,7 +215,7 @@ namespace TranslationHelper
 
         private void THOptionDBCompressionCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            DBCompressionINI = THOptionDBCompressionCheckBox.Checked;           
+            DBCompressionINI = THOptionDBCompressionCheckBox.Checked;
         }
 
         private void THSettingsWebTransLinkTextBox_Validated(object sender, EventArgs e)
@@ -238,7 +242,7 @@ namespace TranslationHelper
         private void THOptionEnableTranslationCacheCheckBox_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.IsTranslationCacheEnabled = THOptionEnableTranslationCacheCheckBox.Checked;
-            EnableTranslationCacheINI = THOptionEnableTranslationCacheCheckBox.Checked;            
+            EnableTranslationCacheINI = THOptionEnableTranslationCacheCheckBox.Checked;
         }
 
         private void THSettings_FormClosed(object sender, FormClosedEventArgs e)

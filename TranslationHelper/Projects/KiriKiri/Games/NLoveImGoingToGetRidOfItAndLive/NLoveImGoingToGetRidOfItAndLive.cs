@@ -1,9 +1,6 @@
-﻿using System;
-using System.Data;
-using System.Globalization;
-using System.IO;
+﻿using System.IO;
 using TranslationHelper.Data;
-using TranslationHelper.Main.Functions;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive
 {
@@ -23,7 +20,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         private bool OpenFiles()
         {
             bool ret = false;
-            foreach (var file in Directory.EnumerateFileSystemEntries(Properties.Settings.Default.THProjectWorkDir,"*.ks",SearchOption.AllDirectories)) 
+            foreach (var file in Directory.EnumerateFileSystemEntries(Properties.Settings.Default.THProjectWorkDir, "*.ks", SearchOption.AllDirectories))
             {
                 thDataWork.FilePath = file;
                 thDataWork.Main.ProgressInfo(true, T._("opening file: ") + Path.GetFileName(file));
@@ -49,7 +46,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         {
             if (DetectBaseFiles())
             {
-                if(FunctionsFileFolder.GetMD5(thDataWork.SPath) == "a83b58570eee4fabfd0e91f3fc67beab")
+                if (thDataWork.SPath.GetMD5() == "a83b58570eee4fabfd0e91f3fc67beab")
                 {
                     return true;
                 }
@@ -69,7 +66,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
             thDataWork.CurrentProject.FillTHFilesElementsDictionary();
 
             //PatchDir
-            var PatchDir = Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "_patch"));
+            //var PatchDir = Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "_patch"));
 
             foreach (var file in Directory.EnumerateFileSystemEntries(Properties.Settings.Default.THProjectWorkDir, "*.ks", SearchOption.AllDirectories))
             {

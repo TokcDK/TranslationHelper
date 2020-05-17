@@ -78,6 +78,52 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
+        /// Extract all values for $1-$99 matches
+        /// Work in progress
+        /// </summary>
+        /// <param name="thDataWork"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string[] THExtractTextForTranslationSplit(THDataWork thDataWork, string input)
+        {
+            foreach (var PatternReplacementPair in thDataWork.TranslationRegexRules)
+            {
+                if (Regex.IsMatch(input, PatternReplacementPair.Key))
+                {
+                    MatchCollection Results = Regex.Matches(PatternReplacementPair.Value, @"\$[0-9]{1,2}");
+                    if (Results.Count > 0)
+                    {
+                        List<string> Ret = new List<string>
+                        {
+                            PatternReplacementPair.Key,
+                            PatternReplacementPair.Value
+                        };
+                        Dictionary<string, string> FoundValues = new Dictionary<string, string>();
+                        foreach (Match Result in Results)
+                        {
+                            if (FoundValues.ContainsKey(Result.Value))
+                            {
+                                continue;
+                            }
+                            string candidate = Regex.Replace(input, PatternReplacementPair.Key, Result.Value);
+                            if (!string.IsNullOrEmpty(candidate))
+                            {
+                                FoundValues.Add(Result.Value, candidate);
+                            }
+                        }
+                        foreach (var val in FoundValues.Values)
+                        {
+                            Ret.Add(val);
+                        }
+                        return Ret.ToArray();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Исправления формата спецсимволов в заданной ячейке перевода
         /// <br/>Для выбранных ячеек, таблицы или для всех значений задать:
         /// <br/>method:
@@ -181,7 +227,7 @@ namespace TranslationHelper.Main.Functions
                         if (cvalue.Length > 0 && (forceApply || cvalue != row[cind - 1] as string))
                         {
                             //Hardcoded rules
-                            cvalue = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
+                            //cvalue = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
                             //cvalue = FunctionsStringFixes.FixENJPQuoteOnStringStart2ndLine(row[0] + string.Empty, row[1] + string.Empty);
                             //cvalue = FunctionsString.FixForRPGMAkerQuotationInSomeStrings(row);
                             //cvalue = FunctionsString.FixBrokeNameVar(cvalue);
@@ -199,10 +245,10 @@ namespace TranslationHelper.Main.Functions
                                 result = PatternReplacementPair.Value;
 
                                 //задать правило
-                                Regex regexrule = new Regex(rule);
+                                var regexrule = new Regex(rule);
 
                                 //найти совпадение с заданным правилом в выбранной ячейке
-                                MatchCollection mc = regexrule.Matches(cvalue);
+                                var mc = regexrule.Matches(cvalue);
                                 //перебрать все айденные совпадения
                                 foreach (Match m in mc)
                                 {
@@ -261,7 +307,7 @@ namespace TranslationHelper.Main.Functions
         static int iRowIndex;
         static int iColumnIndex;
         static string TRC;
-        static Dictionary<string, bool> THAutoSetSameTranslationForSimularData = new Dictionary<string, bool>();
+        static readonly Dictionary<string, bool> THAutoSetSameTranslationForSimularData = new Dictionary<string, bool>();
         public static void THAutoSetSameTranslationForSimular(THDataWork thDataWork, int InputTableIndex, int InputRowIndex, int InputColumnIndex, bool ForceSetValue = false)
         {
             if (!Properties.Settings.Default.ProjectIsOpened)

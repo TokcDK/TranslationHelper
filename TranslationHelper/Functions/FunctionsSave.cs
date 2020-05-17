@@ -14,7 +14,7 @@ namespace TranslationHelper.Functions
 {
     class FunctionsSave
     {
-        THDataWork thDataWork;
+        readonly THDataWork thDataWork;
         public FunctionsSave(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
@@ -45,17 +45,17 @@ namespace TranslationHelper.Functions
                 else if (RPGMFunctions.THSelectedSourceType == "RubyRPGGame")
                 {
                     new RJ263914OLD(thDataWork).ProceedRubyRPGGame(Properties.Settings.Default.THSelectedGameDir, true);
-                    MessageBox.Show("Finished");
+                    //MessageBox.Show("Finished");
                 }
                 else if (RPGMFunctions.THSelectedSourceType == "Wolf RPG txt")
                 {
                     new WRPGOLDOpen(thDataWork).ProceedWriteWolfRPGtxt();
-                    MessageBox.Show("Finished");
+                    //MessageBox.Show("Finished");
                 }
                 else if (RPGMFunctions.THSelectedSourceType == "WOLF TRANS PATCH")
                 {
                     new WRPGOLDOpen(thDataWork).WriteWOLFTRANSPATCH();
-                    MessageBox.Show("Finished");
+                    //MessageBox.Show("Finished");
                 }
                 else if (RPGMFunctions.THSelectedSourceType == "RPGMakerTransPatch" || RPGMFunctions.THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
                 {
@@ -151,7 +151,7 @@ namespace TranslationHelper.Functions
                         }
                     }
                     /*THMsg*/
-                    MessageBox.Show(T._("finished") + "!");
+                    //MessageBox.Show(T._("finished") + "!");
                 }
                 else if (RPGMFunctions.THSelectedSourceType == "KiriKiri scenario")
                 {
@@ -168,6 +168,7 @@ namespace TranslationHelper.Functions
 
 
             thDataWork.Main.SaveInAction = false;
+            FunctionsSounds.PlayAsterisk();
         }
     }
 }

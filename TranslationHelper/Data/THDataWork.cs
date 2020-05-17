@@ -19,18 +19,19 @@ namespace TranslationHelper.Data
             FilePath = string.Empty;
 
             ProjectsList = ProjectBase.GetListOfProjects(this);
-
-            TranslationRegexRules = new Dictionary<string, string>();
-            CellFixesRegexRules = new Dictionary<string, string>();
         }
 
-        internal Dictionary<string, string> TranslationRegexRules;
-        internal Dictionary<string, string> CellFixesRegexRules;
+        internal Dictionary<string, string> TranslationRegexRules = new Dictionary<string, string>();
+        internal Dictionary<string, string> TranslationRegexRulesGroup = new Dictionary<string, string>();
+        internal Dictionary<string, string> CellFixesRegexRules = new Dictionary<string, string>();
 
         //Link to main form
         internal THMain Main;
 
-        internal ProjectBase Project;
+
+        //CurrentProject
+        internal ProjectBase CurrentProject;
+        //internal ProjectBase Project;
         internal List<ProjectBase> ProjectsList;
 
         //usually 'S'elected file 'Path' in file browse dialog
@@ -54,7 +55,10 @@ namespace TranslationHelper.Data
         //target textbox control value
         internal string TargetTextBoxPreValue;
 
-        //CurrentProject
-        internal ProjectBase CurrentProject;
+        //для целей удаления дубликатов записей, добавляемых в таблицу
+        internal HashSet<string> hashes = new HashSet<string>();
+
+        //для целей записи, скидывание сюда данных таблицы
+        internal Dictionary<string, string> TablesLinesDict = new Dictionary<string, string>();
     }
 }

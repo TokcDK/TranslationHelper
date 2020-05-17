@@ -23,7 +23,7 @@ namespace TranslationHelper
         {
             if (target != null)
             {
-                _=NativeMethods.SendMessage(target.Handle, WM_SETREDRAW, 1, 0);
+                _ = NativeMethods.SendMessage(target.Handle, WM_SETREDRAW, 1, 0);
 
                 if (redraw)
                 {

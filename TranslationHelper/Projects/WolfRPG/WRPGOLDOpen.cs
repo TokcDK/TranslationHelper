@@ -10,7 +10,7 @@ namespace TranslationHelper.Projects.WolfRPG
 {
     class WRPGOLDOpen
     {
-        THDataWork thDataWork;
+        readonly THDataWork thDataWork;
         public WRPGOLDOpen(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;

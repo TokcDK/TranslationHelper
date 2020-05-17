@@ -134,7 +134,7 @@
             this.SearchResultsDatagridview.RowTemplate.Height = 23;
             this.SearchResultsDatagridview.Size = new System.Drawing.Size(565, 216);
             this.SearchResultsDatagridview.TabIndex = 19;
-            this.SearchResultsDatagridview.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SearchResultsDatagridview_CellClick);
+            this.SearchResultsDatagridview.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SearchResultsDatagridview_CellClick_1);
             this.SearchResultsDatagridview.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.SearchResultsDatagridview_CellEnter);
             // 
             // lblError

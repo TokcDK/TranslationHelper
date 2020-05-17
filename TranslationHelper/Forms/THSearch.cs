@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.ExternalAdditions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
@@ -18,7 +17,7 @@ namespace TranslationHelper
     {
         //private readonly THMain Main;
         internal ListBox THFilesListBox;
-        THDataWork thDataWork;
+        readonly THDataWork thDataWork;
         internal DataGridView THFileElementsDataGridView;
         readonly RichTextBox THTargetRichTextBox;
         readonly INIFile Config;
@@ -56,7 +55,7 @@ namespace TranslationHelper
 
             if (SearchAlwaysOnTopCheckBox.Checked)
             {
-                NativeMethods.SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
+                ExternalAdditions.NativeMethods.SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
             }
 
             GetSelectedText();
@@ -1000,11 +999,11 @@ namespace TranslationHelper
         {
             if (SearchAlwaysOnTopCheckBox.Checked)
             {
-                NativeMethods.SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
+                ExternalAdditions.NativeMethods.SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
             }
             else
             {
-                NativeMethods.SetWindowPos(this.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
+                ExternalAdditions.NativeMethods.SetWindowPos(this.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
             }
         }
 
@@ -1045,6 +1044,11 @@ namespace TranslationHelper
         }
 
         private void SearchResultsDatagridview_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            //ShowSelectedCellInMainTable(sender, e);//если здесь, то после последних изменений после нахождения результатов сразу отображает первый
+        }
+
+        private void SearchResultsDatagridview_CellClick_1(object sender, DataGridViewCellEventArgs e)
         {
             ShowSelectedCellInMainTable(sender, e);
         }

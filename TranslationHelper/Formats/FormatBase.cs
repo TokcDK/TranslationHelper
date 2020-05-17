@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
@@ -11,9 +12,13 @@ namespace TranslationHelper.Formats
     {
         protected THDataWork thDataWork;
 
+        protected Dictionary<string, string> TablesLinesDict;
+
         protected FormatBase(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
+            TablesLinesDict = thDataWork.TablesLinesDict;
+            hashes = thDataWork.hashes;
         }
 
         internal virtual bool Detect()
@@ -30,9 +35,22 @@ namespace TranslationHelper.Formats
             return !string.IsNullOrWhiteSpace(inputString) && !(Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && inputString.HaveMostOfRomajiOtherChars());
         }
 
-        protected void AddRowData(string tablename, string RowData, string RowInfo, bool CheckInput = true, bool AddToDictionary = false)
+        protected HashSet<string> hashes;
+        protected void AddRowData(string RowData, string RowInfo, bool CheckAddHashes=false)
+        {
+            if (!string.IsNullOrEmpty(thDataWork.FilePath))
+            {
+                AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes);
+            }
+        }
+        protected void AddRowData(string tablename, string RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
         {
             if (CheckInput && !ValidString(RowData))
+            {
+                return;
+            }
+
+            if(CheckAddHashes && hashes != null && hashes.Contains(RowData))
             {
                 return;
             }
@@ -49,9 +67,20 @@ namespace TranslationHelper.Formats
             {
                 thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
                 thDataWork.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
+                if (CheckAddHashes && hashes != null)
+                {
+                    hashes.Add(RowData);
+                }
             }
         }
 
+        protected void AddTables()
+        {
+            if (!string.IsNullOrEmpty(thDataWork.FilePath))
+            {
+                AddTables(Path.GetFileName(thDataWork.FilePath));
+            }
+        }
         protected void AddTables(string tablename, string[] extraColumns = null)
         {
             if (!thDataWork.THFilesElementsDataset.Tables.Contains(tablename))
@@ -101,8 +130,6 @@ namespace TranslationHelper.Formats
             }
         }
 
-        protected Dictionary<string, string> TableLines = new Dictionary<string, string>();
-
         /// <summary>
         /// add all original\translation pairs of datatable rows in Dictionary<br/>
         /// also split multiline values and add all of their lines in Dictionary
@@ -113,21 +140,21 @@ namespace TranslationHelper.Formats
             if (!thDataWork.THFilesElementsDataset.Tables.Contains(TableName))
                 return;
 
-            if (TableLines.Count > 0)
+            if (TablesLinesDict != null && TablesLinesDict.Count > 0)
             {
-                TableLines.Clear();
+                TablesLinesDict.Clear();
             }
 
             foreach (DataRow Row in thDataWork.THFilesElementsDataset.Tables[TableName].Rows)
             {
                 string Original;
                 string Translation;
-                if (TableLines.ContainsKey(Original = Row[0] + string.Empty) || (Translation = Row[1] + string.Empty).Length == 0 || Translation == Original)
+                if (TablesLinesDict.ContainsKey(Original = Row[0] + string.Empty) || (Translation = Row[1] + string.Empty).Length == 0 || Translation == Original)
                 {
                     continue;
                 }
 
-                TableLines.Add(Original, Translation);
+                TablesLinesDict.Add(Original, Translation);
             }
         }
 
@@ -137,111 +164,137 @@ namespace TranslationHelper.Formats
         /// </summary>
         /// <param name="TableName"></param>
         /// <param name="MakeLinesCountEqual">if true, line count will be made equal in translation before add original else it will be made only for multiline and rigth after line by line check</param>
-        internal void SplitTableCellValuesAndTheirLinesToDictionary(string TableName, bool MakeLinesCountEqual=true)
+        internal void SplitTableCellValuesAndTheirLinesToDictionary(string TableName, bool MakeLinesCountEqual = true, bool OnlyOneTable = true)
         {
-            if (!thDataWork.THFilesElementsDataset.Tables.Contains(TableName))
-                return;
-
-            if (TableLines.Count > 0)
+            if (OnlyOneTable)
             {
-                TableLines.Clear();
+                if (!thDataWork.THFilesElementsDataset.Tables.Contains(TableName))
+                    return;
+
+                if (TablesLinesDict.Count > 0)
+                {
+                    TablesLinesDict.Clear();
+                }
+            }
+            else
+            {
+                if (TablesLinesDict != null && TablesLinesDict.Count > 0)
+                {
+                    return;
+                }
             }
 
-            foreach (DataRow Row in thDataWork.THFilesElementsDataset.Tables[TableName].Rows)
+
+            foreach (DataTable Table in thDataWork.THFilesElementsDataset.Tables)
             {
-                string Original = (Row[0] + string.Empty);
-                int OriginalLinesCount = Original.GetLinesCount();
-                if (OriginalLinesCount == 1 && TableLines.ContainsKey(Original))
+                if (OnlyOneTable && Table.TableName != TableName)
                 {
                     continue;
                 }
 
-                string Translation = (Row[1] + string.Empty);
-                if (Translation.Length == 0)
+                foreach (DataRow Row in Table.Rows)
                 {
-                    continue;
-                }
-
-                int TranslationLinesCount = Translation.GetLinesCount();
-                bool LinesCountisEqual = OriginalLinesCount == TranslationLinesCount;
-                if (!LinesCountisEqual && MakeLinesCountEqual)
-                {
-                    Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
-                }
-
-                //Сначала добавить полный вариант
-                if (!TableLines.ContainsKey(Original) && Translation != Original)
-                {
-                    TableLines.Add(Original, Translation);
-                    if (OriginalLinesCount == 1)
+                    string Original = (Row[0] + string.Empty);
+                    int OriginalLinesCount = Original.GetLinesCount();
+                    if (OriginalLinesCount == 1 && TablesLinesDict.ContainsKey(Original))
                     {
-                        continue;//когда одна строка не тратить время на её разбор
+                        continue;
                     }
-                }
 
-                if (!MakeLinesCountEqual && OriginalLinesCount > TranslationLinesCount)
-                {
-                    Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
-                }
-
-                //string[] OriginalLines = FunctionsString.SplitStringToArray(Original);
-                string[] TranslationLines = Translation.GetAllLinesToArray();
-                string[] OriginalLines = Original.GetAllLinesToArray();
-                List<string> extralines = new List<string>();
-                for (int lineNumber = 0; lineNumber < TranslationLinesCount; lineNumber++)
-                {
-                    if (LinesCountisEqual)
+                    string Translation = (Row[1] + string.Empty);
+                    if (Translation.Length == 0)
                     {
-                        if (!TableLines.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
+                        continue;
+                    }
+
+                    int TranslationLinesCount = Translation.GetLinesCount();
+                    bool LinesCountisEqual = OriginalLinesCount == TranslationLinesCount;
+                    if (!LinesCountisEqual && MakeLinesCountEqual)
+                    {
+                        Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
+                    }
+
+                    //Сначала добавить полный вариант
+                    if (!TablesLinesDict.ContainsKey(Original) && Translation != Original)
+                    {
+                        TablesLinesDict.Add(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                        if (OriginalLinesCount == 1)
                         {
-                            TableLines.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]);
+                            continue;//когда одна строка не тратить время на её разбор
                         }
                     }
-                    else
+
+                    if (!MakeLinesCountEqual && OriginalLinesCount > TranslationLinesCount)
                     {
-                        if (lineNumber < OriginalLinesCount - 1)
+                        Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
+                    }
+
+                    //string[] OriginalLines = FunctionsString.SplitStringToArray(Original);
+                    string[] TranslationLines = Translation.GetAllLinesToArray();
+                    string[] OriginalLines = Original.GetAllLinesToArray();
+                    List<string> extralines = new List<string>();
+                    for (int lineNumber = 0; lineNumber < TranslationLinesCount; lineNumber++)
+                    {
+                        try
                         {
-                            if (!TableLines.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
+                            if (LinesCountisEqual)
                             {
-                                TableLines.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]);
-                            }
-                        }
-                        else
-                        {
-                            if (lineNumber == TranslationLinesCount - 1)
-                            {
-                                if (extralines.Count > 0)
+                                if (!TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
                                 {
-                                    extralines.Add(TranslationLines[lineNumber]);
-                                    string result = string.Join(Environment.NewLine, extralines);
-                                    if (!TableLines.ContainsKey(OriginalLines[OriginalLinesCount-1]) && result.Length > 0 && OriginalLines[OriginalLinesCount - 1] != result)
-                                    {
-                                        TableLines.Add(OriginalLines[OriginalLinesCount - 1], result);
-                                    }
-                                }
-                                else
-                                {
-                                    if (!TableLines.ContainsKey(OriginalLines[OriginalLinesCount - 1]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[OriginalLinesCount - 1] != TranslationLines[lineNumber])
-                                    {
-                                        TableLines.Add(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]);
-                                    }
+                                    TablesLinesDict.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                 }
                             }
                             else
                             {
-                                extralines.Add(TranslationLines[lineNumber]);
+                                if (lineNumber < OriginalLinesCount - 1)
+                                {
+                                    if (!TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
+                                    {
+                                        TablesLinesDict.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                    }
+                                }
+                                else
+                                {
+                                    if (lineNumber == TranslationLinesCount - 1)
+                                    {
+                                        if (extralines.Count > 0)
+                                        {
+                                            extralines.Add(TranslationLines[lineNumber]);
+                                            string result = string.Join(Environment.NewLine, extralines);
+                                            if (!TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) && result.Length > 0 && OriginalLines[OriginalLinesCount - 1] != result)
+                                            {
+                                                TablesLinesDict.Add(OriginalLines[OriginalLinesCount - 1], result/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (!TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[OriginalLinesCount - 1] != TranslationLines[lineNumber])
+                                            {
+                                                TablesLinesDict.Add(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        extralines.Add(TranslationLines[lineNumber]);
+                                    }
+                                }
                             }
                         }
+                        catch
+                        {
+
+                        }
                     }
+                    //foreach (string line in Original.SplitToLines())
+                    //{
+                    //    if (!TableLines.ContainsKey(line) && TranslationLines[lineNumber].Length > 0 && TranslationLines[lineNumber] != line)
+                    //    {
+                    //        TableLines.Add(line, TranslationLines[lineNumber]);
+                    //    }
+                    //    lineNumber++;
+                    //}
                 }
-                //foreach (string line in Original.SplitToLines())
-                //{
-                //    if (!TableLines.ContainsKey(line) && TranslationLines[lineNumber].Length > 0 && TranslationLines[lineNumber] != line)
-                //    {
-                //        TableLines.Add(line, TranslationLines[lineNumber]);
-                //    }
-                //    lineNumber++;
-                //}
             }
         }
     }

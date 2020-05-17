@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TranslationHelper
 {
@@ -12,13 +8,13 @@ namespace TranslationHelper
     {
         //static void Main(string[] args)
         //{
-            //string sourceDirectory = @"C:\temp\source";
-            //string targetDirectory = @"C:\temp\destination";
+        //string sourceDirectory = @"C:\temp\source";
+        //string targetDirectory = @"C:\temp\destination";
 
-            //Copy(sourceDirectory, targetDirectory);
+        //Copy(sourceDirectory, targetDirectory);
 
-            //Console.WriteLine("\r\nEnd of program");
-            //Console.ReadKey();
+        //Console.WriteLine("\r\nEnd of program");
+        //Console.ReadKey();
         //}
 
         public static void Copy(string sourceDirectory, string targetDirectory)

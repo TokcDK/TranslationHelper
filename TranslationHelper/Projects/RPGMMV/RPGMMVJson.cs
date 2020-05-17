@@ -1,0 +1,112 @@
+﻿using System.Collections.Generic;
+using System.IO;
+using TranslationHelper.Data;
+using TranslationHelper.Formats.RPGMMV;
+using TranslationHelper.Formats.RPGMMV.JS;
+
+namespace TranslationHelper.Projects.RPGMMV
+{
+    class RPGMMVjson : ProjectBase
+    {
+        public RPGMMVjson(THDataWork thDataWork) : base(thDataWork)
+        {
+        }
+
+        internal override bool OpenDetect()
+        {
+            if (Path.GetExtension(thDataWork.SPath).ToUpperInvariant() == ".JSON")
+            {
+                if (Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath))=="data")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal override string ProjectTitle()
+        {
+            return "RPG Maker MV Json";
+        }
+
+        internal override string ProjecFolderName()
+        {
+            return "RPGMakerMV";
+        }
+
+        internal override bool Open()
+        {
+            return ParseProjectFiles();
+        }
+
+        string ParseFileMessage;
+        /// <summary>
+        /// Parsing the Project files
+        /// </summary>
+        /// <param name="Write">Use Save() instead of Open()</param>
+        /// <returns></returns>
+        private bool ParseProjectFiles(bool Write = false)
+        {
+            if (!Write)
+            {
+                BuckupRestore();
+            }
+
+            ParseFileMessage = Write ? T._("write file: ") : T._("opening file: ");
+            try
+            {
+                if (ParseRPGMakerMVjson(thDataWork.SPath, Write))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+
+            thDataWork.Main.ProgressInfo(false);
+            return false;
+        }
+
+        private bool ParseRPGMakerMVjson(string FilePath, bool Write = false)
+        {
+            try
+            {
+                string Jsonname = Path.GetFileNameWithoutExtension(FilePath); // get json file name
+
+                thDataWork.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
+
+                //string jsondata = File.ReadAllText(FilePath); // get json data
+
+                bool ret = true;
+
+                thDataWork.FilePath = FilePath;
+                //ret = ReadJson(Jsonname, sPath);
+
+                ret = Write ? new JSON(thDataWork).Save() : new JSON(thDataWork).Open();
+
+                return ret;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal override bool Save()
+        {
+            return ParseProjectFiles(true);
+        }
+
+        internal override bool BuckupCreate()
+        {
+            return false;
+        }
+
+        internal override bool BuckupRestore()
+        {
+            return false;
+        }
+    }
+}

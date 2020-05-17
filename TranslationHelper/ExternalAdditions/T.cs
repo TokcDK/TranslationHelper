@@ -1,7 +1,5 @@
-using System;
-using System.Globalization;
-using System.IO;
 using NGettext;
+using System.IO;
 
 //
 // Usage:
@@ -14,8 +12,8 @@ using NGettext;
 //  https://github.com/VitaliiTsilnyk/NGettext
 namespace TranslationHelper
 {
-	internal class T
-	{
+    internal class T
+    {
         static Catalog GetGlobal()
         {
             var localesDir = Path.Combine(Directory.GetCurrentDirectory(), "Locale");

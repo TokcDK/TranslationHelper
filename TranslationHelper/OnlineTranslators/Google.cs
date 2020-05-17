@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -7,7 +6,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Windows.Forms;
-using TranslationHelper.Main.Functions;
 using TranslationHelper.Translators;
 
 namespace TranslationHelper

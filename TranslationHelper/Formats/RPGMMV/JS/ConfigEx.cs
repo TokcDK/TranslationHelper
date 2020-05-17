@@ -32,8 +32,8 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             bool UseDict = false;
             if (Iswrite)
             {
-                SplitTableCellValuesToDictionaryLines(tablename);
-                if (TableLines != null && TableLines.Count > 0)
+                SplitTableCellValuesAndTheirLinesToDictionary(tablename, false,false);
+                if (TablesLinesDict != null && TablesLinesDict.Count > 0)
                 {
                     UseDict = true;
                 }
@@ -77,9 +77,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                     {
                                         if (UseDict)
                                         {
-                                            if (TableLines.ContainsKey(StringToAdd) && !string.IsNullOrEmpty(TableLines[StringToAdd]) && TableLines[StringToAdd] != StringToAdd)
+                                            if (TablesLinesDict.ContainsKey(StringToAdd) && !string.IsNullOrEmpty(TablesLinesDict[StringToAdd]) && TablesLinesDict[StringToAdd] != StringToAdd)
                                             {
-                                                line = line.Replace(StringToAdd, TableLines[StringToAdd]);
+                                                line = line.Replace(StringToAdd, TablesLinesDict[StringToAdd]);
                                             }
                                         }
                                         else
@@ -97,7 +97,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                     else
                                     {
                                         string StringForInfo = Regex.Replace(line, @"\.addCommand\('[^']+', '([^']+)'\);", "$2");
-                                        AddRowData(tablename, StringToAdd, "addCommand\\" + StringForInfo);
+                                        AddRowData(tablename, StringToAdd, "addCommand\\" + StringForInfo, true);
                                         //thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
                                         //thDataWork.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
                                     }

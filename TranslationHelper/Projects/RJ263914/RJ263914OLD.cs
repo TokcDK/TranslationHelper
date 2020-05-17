@@ -9,7 +9,7 @@ namespace TranslationHelper.Projects.RJ263914
 {
     class RJ263914OLD
     {
-        THDataWork thDataWork;
+        readonly THDataWork thDataWork;
         public RJ263914OLD(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;

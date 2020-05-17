@@ -3,7 +3,6 @@ using System.Data;
 using System.IO;
 using System.Text;
 using TranslationHelper.Extensions;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {

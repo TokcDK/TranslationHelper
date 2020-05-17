@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMTrans;
@@ -13,7 +8,7 @@ namespace TranslationHelper.Projects.RPGMaker
 {
     class RPGMGameOLD
     {
-        THDataWork thDataWork;
+        readonly THDataWork thDataWork;
         public RPGMGameOLD(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;

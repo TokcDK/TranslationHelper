@@ -627,7 +627,7 @@
             this.extraHardFixesToolStripMenuItem.Name = "extraHardFixesToolStripMenuItem";
             this.extraHardFixesToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
             this.extraHardFixesToolStripMenuItem.Text = "Extra Fixes (All)";
-            this.extraHardFixesToolStripMenuItem.Click += new System.EventHandler(this.extraFixesToolStripMenuItem_Click);
+            this.extraHardFixesToolStripMenuItem.Click += new System.EventHandler(this.ExtraFixesToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -685,7 +685,7 @@
             this.reloadRulesToolStripMenuItem.Name = "reloadRulesToolStripMenuItem";
             this.reloadRulesToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.reloadRulesToolStripMenuItem.Text = "Reload rules";
-            this.reloadRulesToolStripMenuItem.Click += new System.EventHandler(this.reloadRulesToolStripMenuItem_Click);
+            this.reloadRulesToolStripMenuItem.Click += new System.EventHandler(this.ReloadRulesToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -932,7 +932,7 @@
             this.selectedForceToolStripMenuItem.Name = "selectedForceToolStripMenuItem";
             this.selectedForceToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.selectedForceToolStripMenuItem.Text = "Selected (Force)";
-            this.selectedForceToolStripMenuItem.Click += new System.EventHandler(this.selectedForceToolStripMenuItem_Click);
+            this.selectedForceToolStripMenuItem.Click += new System.EventHandler(this.SelectedForceToolStripMenuItem_Click);
             // 
             // OriginalToTransalationContextToolStripMenuItem
             // 

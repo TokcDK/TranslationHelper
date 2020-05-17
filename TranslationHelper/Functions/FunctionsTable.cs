@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Windows.Forms;
@@ -17,8 +18,11 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         internal static int[] GetDGVRowIndexsesInDataSetTable(THDataWork thDataWork)
         {
-            int[] selindexes = new int[thDataWork.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
-            for (int i = 0; i < selindexes.Length; i++)
+            //int[] selindexes = new int[thDataWork.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
+
+            int[] selindexes = GetRowIndexesOfSelectedDGVCells(thDataWork.Main.THFileElementsDataGridView.SelectedCells);
+            var selindexesLength = selindexes.Length;
+            for (int i = 0; i < selindexesLength; i++)
             {
                 //по нахождению верного индекса строки
                 //https://stackoverflow.com/questions/50999121/displaying-original-rowindex-after-filter-in-datagridview
@@ -29,8 +33,7 @@ namespace TranslationHelper.Main.Functions
                 //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                 //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                 //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                int index = GetDGVSelectedRowIndexInDatatable(thDataWork, thDataWork.Main.THFilesList.SelectedIndex, thDataWork.Main.THFileElementsDataGridView.SelectedCells[i].RowIndex);
-                selindexes[i] = index;
+                selindexes[i] = GetDGVSelectedRowIndexInDatatable(thDataWork, thDataWork.Main.THFilesList.SelectedIndex, selindexes[i]);
 
                 //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
             }
@@ -38,6 +41,20 @@ namespace TranslationHelper.Main.Functions
             Array.Sort(selindexes);//сортировка номеров строк, для порядка
 
             return selindexes;
+        }
+
+        internal static int[] GetRowIndexesOfSelectedDGVCells(DataGridViewSelectedCellCollection selectedCells)
+        {
+            var rowindexes = new List<int>();
+            foreach (DataGridViewCell cell in selectedCells)
+            {
+                var rowIndex = cell.RowIndex;
+                if (!rowindexes.Contains(rowIndex))
+                {
+                    rowindexes.Add(rowIndex);
+                }
+            }
+            return rowindexes.ToArray();
         }
 
         /// <summary>

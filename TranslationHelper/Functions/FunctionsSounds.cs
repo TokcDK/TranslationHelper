@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TranslationHelper.Functions
+﻿namespace TranslationHelper.Functions
 {
     class FunctionsSounds
     {
@@ -26,6 +24,14 @@ namespace TranslationHelper.Functions
         internal static void OpenProjectComplete()
         {
             PlayAsterisk();
+        }
+
+        /// <summary>
+        /// pla sound after global function finished work
+        /// </summary>
+        internal static void GlobalFunctionFinishedWork()
+        {
+            PlayBeep();
         }
 
         /// <summary>

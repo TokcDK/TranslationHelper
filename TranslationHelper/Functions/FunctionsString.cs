@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
@@ -154,6 +151,7 @@ namespace TranslationHelper.Main.Functions
             int corigind = thDataWork.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
             if (!All)
             {
+                bool IsAnimations = thDataWork.THFilesElementsDataset.Tables[TableIndex].TableName == "Animations";
                 int THFileElementsDataGridViewSelectedCellsCount = thDataWork.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
                 if (THFileElementsDataGridViewSelectedCellsCount > 0)
                 {
@@ -167,7 +165,19 @@ namespace TranslationHelper.Main.Functions
                             var DSTransCell = row[ctransind] + string.Empty;
                             if (!string.IsNullOrWhiteSpace(DSTransCell) && DSTransCell != DSOrigCell)
                             {
-                                row[ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
+                                if (IsAnimations && variant == 1 && DSTransCell.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
+                                {
+                                    string[] parts = DSTransCell.Split('/');
+                                    for (int i = 0; i < parts.Length; i++)
+                                    {
+                                        parts[i] = ChangeRegistryCaseForTheCell(parts[i], variant);
+                                    }
+                                    row[ctransind] = string.Join("/", parts);
+                                }
+                                else
+                                {
+                                    row[ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
+                                }
                             }
                         }
                     }
@@ -178,18 +188,32 @@ namespace TranslationHelper.Main.Functions
             }
             else
             {
-                int THFilesElementsDatasetTablesCount = thDataWork.THFilesElementsDataset.Tables.Count;
+                var THFilesElementsDatasetTablesCount = thDataWork.THFilesElementsDataset.Tables.Count;
                 for (int tindex = 0; tindex < THFilesElementsDatasetTablesCount; tindex++)
                 {
-                    int THFilesElementsDatasetTableRowsCount = thDataWork.THFilesElementsDataset.Tables[tindex].Rows.Count;
+                    var table = thDataWork.THFilesElementsDataset.Tables[tindex];
+                    var THFilesElementsDatasetTableRowsCount = table.Rows.Count;
+                    bool IsAnimations = table.TableName == "Animations";
                     for (int rindex = 0; rindex < THFilesElementsDatasetTableRowsCount; rindex++)
                     {
-                        var row = thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex];
+                        var row = table.Rows[rindex];
                         var DSOrigCell = row[corigind] + string.Empty;
                         var DSTransCell = row[ctransind] + string.Empty;
                         if (!string.IsNullOrWhiteSpace(DSTransCell) && DSTransCell != DSOrigCell)
                         {
-                            row[ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
+                            if (IsAnimations && variant == 1 && DSTransCell.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
+                            {
+                                string[] parts = DSTransCell.Split('/');
+                                for (int i = 0; i < parts.Length; i++)
+                                {
+                                    parts[i] = ChangeRegistryCaseForTheCell(parts[i], variant);
+                                }
+                                row[ctransind] = string.Join("/", parts);
+                            }
+                            else
+                            {
+                                row[ctransind] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
+                            }
                         }
                     }
                 }
@@ -229,7 +253,7 @@ namespace TranslationHelper.Main.Functions
                 for (int c = 0; c < DSTransCellLength; c++)
                 {
                     char @char = inputString[c];
-                    if (IsCustomSymbol(@char) ||  char.IsWhiteSpace(@char) || char.IsPunctuation(@char))
+                    if (IsCustomSymbol(@char) || char.IsWhiteSpace(@char) || char.IsPunctuation(@char))
                     {
                     }
                     else
@@ -302,88 +326,6 @@ namespace TranslationHelper.Main.Functions
                 ReturnLength = Line.TrimEnd().Length;
             }
             return ReturnLength;
-        }
-
-        internal static string SplitMultiLineIfBeyondOfLimit(string Line, int Limit)
-        {
-            //StringBuilder ReturnLine = new StringBuilder();
-            string[] sublines = Line.Split(new string[2] { Environment.NewLine, "\n" }, StringSplitOptions.None);
-            int sublinesLength = sublines.Length;
-            List<string> Lines = new List<string>();
-            if (sublinesLength > 1)
-            {
-                bool lastLineWasSplitted = false;
-                for (int N = 0; N < sublinesLength; N++)
-                {
-                    string subline = sublines[N];
-                    if (lastLineWasSplitted && subline.Length > 0)
-                    {
-                        //lastLineWasSplitted значит, что соединять только когда предыдущая была разделена, если нет, не нужно трогать порядок переноса из оригинала
-                        //когда не первая строка, соединяем эту строку с последним элементом в Lines и удаляем последний элемент, обрабатываем такую новую строку
-                        int LasLineIndex = Lines.Count - 1;
-                        if (Lines[LasLineIndex].Length > 0)
-                        {
-                            //когда последняя строка, к которой присоединится новая, кончается не на пробел или другой разделитель, добавить пробел перед добавляемой строкой
-                            if (Lines[LasLineIndex].Length > 0 && char.IsLetterOrDigit(Convert.ToChar(Lines[LasLineIndex].Substring(Lines[LasLineIndex].Length - 1), CultureInfo.InvariantCulture)))
-                            {
-                                string trimmedSubline = subline.TrimStart();
-                                //сделать перву букву добавляемой строки в нижнем регистре
-                                if (trimmedSubline.Length > 1 && char.IsUpper(Convert.ToChar(trimmedSubline.Substring(0, 1), CultureInfo.InvariantCulture)))
-                                {
-                                    trimmedSubline = trimmedSubline.Substring(0, 1).ToLowerInvariant() + trimmedSubline.Substring(1);
-                                }
-
-                                subline = " " + trimmedSubline;
-                            }
-                            subline = Lines[LasLineIndex] + subline;
-                            Lines.RemoveAt(LasLineIndex);
-                        }
-                    }
-                    int i = 0;
-                    lastLineWasSplitted = false;
-                    foreach (var line in GetSplittedLine(subline, Limit).SplitToLines())
-                    {
-                        i++;
-                        Lines.Add(line);
-                    }
-
-                    if (i > 1)
-                    {
-                        //если i>1 значит строка была разделена, сверху больше одного прохода цикла с i++
-                        lastLineWasSplitted = true;
-                    }
-                }
-            }
-            else
-            {
-                return GetSplittedLine(Line, Limit);
-            }
-
-            return string.Join(Environment.NewLine, Lines); //ReturnLine.ToString();
-        }
-
-        internal static string GetSplittedLine(string Line, int Limit, THDataWork thDataWork = null)
-        {
-            string Trigger/* = string.Empty*/;
-            string newLine = ((Trigger = Regex.Match(Line, @"(if|en)\([\s\S]+\)$").Value).Length > 0 ? Line.Replace(Trigger, string.Empty) : Line);
-            if (newLine.Length == 0 || newLine.Length <= Limit)
-            {
-                return Line;
-            }
-            return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
-                , SplitLineIfBeyondOfLimit(Trigger.Length > 0 ? newLine : Line, Limit)
-                ) + Trigger;
-        }
-
-        internal static string[] SplitLineIfBeyondOfLimit(string text, int max)
-        {
-            //https://ru.stackoverflow.com/questions/707937/c-%D0%BF%D0%B5%D1%80%D0%B5%D0%BD%D0%BE%D1%81-%D1%81%D0%BB%D0%BE%D0%B2-%D0%B2-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B5-%D1%81-%D1%80%D0%B0%D0%B7%D0%B1%D0%B8%D0%B2%D0%BA%D0%BE%D0%B9-%D0%BD%D0%B0-%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D1%83%D1%8E-%D0%B4%D0%BB%D0%B8%D0%BD%D1%83
-            var charCount = 0;
-            var lines = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            return lines.GroupBy(w => (charCount += (((charCount % max) + w.Length + 1 >= max)
-                            ? max - (charCount % max) : 0) + w.Length + 1) / max)
-                        .Select(g => string.Join(" ", g.ToArray()))
-                        .ToArray();
         }
 
         /// <summary>

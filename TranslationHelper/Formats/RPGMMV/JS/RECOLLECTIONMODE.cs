@@ -105,8 +105,8 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             JToken root = JToken.Parse(RRMSvar.ToString());
                             try
                             {
-                                SplitTableCellValuesToDictionaryLines(tablename);
-                                if (TableLines != null && TableLines.Count > 0)
+                                SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
+                                if (TablesLinesDict != null && TablesLinesDict.Count > 0)
                                 {
                                     WriteStringsToJTokenWithPreSplitlines(root, tablename);
                                 }
@@ -120,7 +120,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             }
 
                             StartReadingRRMSvar = false;
-                            TranslatedResult.AppendLine(root.ToString(Formatting.Indented)+ ";");
+                            TranslatedResult.AppendLine(root.ToString(Formatting.Indented) + ";");
                         }
                         else
                         {

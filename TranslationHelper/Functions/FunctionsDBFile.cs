@@ -4,8 +4,6 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -25,8 +23,10 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
+
         //https://stackoverflow.com/questions/223738/net-stream-dataset-of-xml-data-to-zip-file
         //http://madprops.org/blog/saving-datasets-locally-with-compression/
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5366:Использовать XmlReader для чтения XML из набора данных", Justification = "<Ожидание>")]
         public static void ReadDBFile(DataSet DS, string fileName)
         {
             using (FileStream fs = new FileStream(fileName, FileMode.Open))
@@ -45,11 +45,12 @@ namespace TranslationHelper.Main.Functions
                 {
                     s = fs;
                 }
-
-                //XmlReader xr;
-                //DS.ReadXml(xr=XmlReader.Create(s));//с этим не может читать hex в xml
+                //XmlReaderSettings set = new XmlReaderSettings();
+                //using (var xr = XmlReader.Create(s/*, set*/))
+                //{
+                //    DS.ReadXml(xr);//с этим не может читать hex в xml и не грузит многострочные
+                //}
                 DS.ReadXml(s);
-                //xr.Close();
                 s.Close();
             }
         }
@@ -57,41 +58,41 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Remove illegal XML characters from a string.
         /// </summary>
-        public static string SanitizeXmlString(string xml)
-        {
-            if (xml == null)
-            {
-                throw new ArgumentNullException(nameof(xml));
-            }
+        //public static string SanitizeXmlString(string xml)
+        //{
+        //    if (xml == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(xml));
+        //    }
 
-            StringBuilder buffer = new StringBuilder(xml.Length);
+        //    StringBuilder buffer = new StringBuilder(xml.Length);
 
-            foreach (char c in xml)
-            {
-                if (IsLegalXmlChar(c))
-                {
-                    buffer.Append(c);
-                }
-            }
+        //    foreach (char c in xml)
+        //    {
+        //        if (IsLegalXmlChar(c))
+        //        {
+        //            buffer.Append(c);
+        //        }
+        //    }
 
-            return buffer.ToString();
-        }
+        //    return buffer.ToString();
+        //}
 
         /// <summary>
         /// Whether a given character is allowed by XML 1.0.
         /// </summary>
-        public static bool IsLegalXmlChar(int character)
-        {
-            return
-            (
-                 character == 0x9 /* == '\t' == 9   */          ||
-                 character == 0xA /* == '\n' == 10  */          ||
-                 character == 0xD /* == '\r' == 13  */          ||
-                (character >= 0x20 && character <= 0xD7FF) ||
-                (character >= 0xE000 && character <= 0xFFFD) ||
-                (character >= 0x10000 && character <= 0x10FFFF)
-            );
-        }
+        //public static bool IsLegalXmlChar(int character)
+        //{
+        //    return
+        //    (
+        //         character == 0x9 /* == '\t' == 9   */          ||
+        //         character == 0xA /* == '\n' == 10  */          ||
+        //         character == 0xD /* == '\r' == 13  */          ||
+        //        (character >= 0x20 && character <= 0xD7FF) ||
+        //        (character >= 0xE000 && character <= 0xFFFD) ||
+        //        (character >= 0x10000 && character <= 0x10FFFF)
+        //    );
+        //}
 
         public static void WriteDBFile(DataSet DS, string fileName)
         {
@@ -143,10 +144,14 @@ namespace TranslationHelper.Main.Functions
             return ".xml";
         }
 
-        internal static string GetProjectDBFolder()
+        internal static string GetProjectDBFolder(THDataWork thDataWork = null)
         {
             string ret = string.Empty;
-            if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
+            if (thDataWork != null && thDataWork.CurrentProject != null)
+            {
+                ret = thDataWork.CurrentProject.ProjecFolderName();
+            }
+            else if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
             {
                 ret = "RPGMakerMV";
             }
@@ -154,13 +159,24 @@ namespace TranslationHelper.Main.Functions
             {
                 ret = "RPGMakerTransPatch";
             }
-            return Path.Combine(Application.StartupPath, "DB", ret);
+
+            ret = Path.Combine(Application.StartupPath, "DB", ret.Length > 0 ? ret : "Other");
+            if (!Directory.Exists(ret))
+            {
+                Directory.CreateDirectory(ret);
+            }
+
+            return ret;
         }
 
         internal static string GetDBFileName(THDataWork thDataWork, bool IsSaveAs = false)
         {
             string fName = Path.GetFileName(Properties.Settings.Default.THSelectedDir);
-            if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
+            if (thDataWork.CurrentProject != null && thDataWork.CurrentProject.GetProjectDBFileName().Length > 0)
+            {
+                fName = thDataWork.CurrentProject.GetProjectDBFileName();
+            }
+            else if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
             {
                 if (thDataWork.Main.THFilesList.Items.Count == 1 && thDataWork.Main.THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(thDataWork.Main.THFilesList.Items[0].ToString()))
                 {
@@ -181,18 +197,29 @@ namespace TranslationHelper.Main.Functions
             return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.GetCultureInfo("en-US")) : string.Empty);
         }
 
-        public static void WriteDictToXMLDB(Dictionary<string, string> db, string xmlPath)
-        {
-            XElement el = new XElement("TranslationCache",
-                db.Select(kv =>
-                new XElement("Value",
-                    new XElement("Original", kv.Key),
-                    new XElement("Translation", kv.Value)
-                    )
-                ));
-            //el.Save("cache.xml");
-            WriteXElementToXMLFile(el, xmlPath);
-        }
+        //public static void WriteDictToXMLDB(Dictionary<string, string> db, string xmlPath)
+        //{
+        //    XElement el = new XElement("TranslationCache",
+        //        db.Select(kv =>
+        //        new XElement("Value",
+        //            new XElement("Original", kv.Key),
+        //            new XElement("Translation", kv.Value)
+        //            )
+        //        ));
+
+        //    //el = new XElement("TranslationCache");
+        //    //foreach (var kv in db)
+        //    //{
+        //    //    el.Add(new XElement("Value",
+        //    //        new XElement("Original", kv.Key),
+        //    //        new XElement("Translation", kv.Value)
+        //    //        ));
+        //    //}
+
+        //    //el.Save("cache.xml");
+
+        //    WriteXElementToXMLFile(el, xmlPath);
+        //}
 
         internal static Dictionary<string, string> ReadXMLDBToDictionary(string xmlPath)
         {

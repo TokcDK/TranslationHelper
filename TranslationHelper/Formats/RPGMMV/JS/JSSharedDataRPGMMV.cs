@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using TranslationHelper.Data;
-
-namespace TranslationHelper.Formats.RPGMMV.JS
+﻿namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class JSSharedData
     {

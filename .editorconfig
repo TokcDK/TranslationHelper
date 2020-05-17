@@ -23,3 +23,6 @@ dotnet_diagnostic.CA1822.severity = none
 
 # CA1801: Параметр Main метода PasteClipboardValue не используется. Удалите этот параметр или используйте его в теле метода.
 dotnet_diagnostic.CA1801.severity = none
+
+# CA3075: Небезопасная обработка DTD в формате XML
+dotnet_diagnostic.CA3075.severity = silent

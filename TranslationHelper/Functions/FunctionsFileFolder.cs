@@ -3,9 +3,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -14,7 +13,7 @@ namespace TranslationHelper.Main.Functions
         private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        private struct WIN32_FIND_DATA
+        internal struct WIN32_FIND_DATA
         {
             public uint dwFileAttributes;
             public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
@@ -29,15 +28,6 @@ namespace TranslationHelper.Main.Functions
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
             public string cAlternateFileName;
         }
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern IntPtr FindFirstFile(string lpFileName, out WIN32_FIND_DATA lpFindFileData);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        private static extern bool FindNextFile(IntPtr hFindFile, out WIN32_FIND_DATA lpFindFileData);
-
-        [DllImport("kernel32.dll")]
-        private static extern bool FindClose(IntPtr hFindFile);
 
         //https://stackoverflow.com/a/757925
         //быстро проверить, пуста ли папка
@@ -56,7 +46,7 @@ namespace TranslationHelper.Main.Functions
             //    return true;
             //}
 
-            if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            if (path.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
             {
                 path += Mask;
             }
@@ -65,7 +55,7 @@ namespace TranslationHelper.Main.Functions
                 path += Path.DirectorySeparatorChar + Mask;
             }
 
-            var findHandle = FindFirstFile(path, out WIN32_FIND_DATA findData);
+            var findHandle = NativeMethods.FindFirstFile(path, out WIN32_FIND_DATA findData);
 
             if (findHandle != INVALID_HANDLE_VALUE)
             {
@@ -78,39 +68,19 @@ namespace TranslationHelper.Main.Functions
                         {
                             empty = false;
                         }
-                    } while (empty && FindNextFile(findHandle, out findData));
+                    } while (empty && NativeMethods.FindNextFile(findHandle, out findData));
 
                     return empty;
                 }
                 finally
                 {
-                    FindClose(findHandle);
+                    NativeMethods.FindClose(findHandle);
                 }
             }
 
             throw new Exception("Failed to get directory first file",
                 Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
             //throw new DirectoryNotFoundException();
-        }
-
-        internal static string GetMD5(string fileName)
-        {
-            using (FileStream file = new FileStream(fileName, FileMode.Open))
-            {
-                using (MD5 md5 = new MD5CryptoServiceProvider())
-                {
-                    byte[] retVal = md5.ComputeHash(file);
-                    file.Close();
-
-                    StringBuilder BuildedMD5Value = new StringBuilder();
-                    int retValLength = retVal.Length;
-                    for (int i = 0; i < retValLength; i++)
-                    {
-                        BuildedMD5Value.Append(retVal[i].ToString("x2", CultureInfo.InvariantCulture));
-                    }
-                    return BuildedMD5Value.ToString();
-                }
-            }
         }
 
         /// <summary>
@@ -160,33 +130,9 @@ namespace TranslationHelper.Main.Functions
             return newFilePath;
         }
 
-        internal static bool IsInDirExistsAnyFile(string FilderPath, string mask = "*", bool SearchFiles = true, bool Recursive = false)
+        internal static bool IsInDirExistsAnyFile(string FolderPath, string mask = "*", bool SearchFiles = true, bool Recursive = false)
         {
-            int cnt = 0;
-            if (SearchFiles)
-            {
-                foreach (var file in Directory.EnumerateFiles(FilderPath, mask, Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
-                {
-                    cnt++;
-                    if (cnt > 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                foreach (var folder in Directory.EnumerateDirectories(FilderPath, mask, Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
-                {
-                    cnt++;
-                    if (cnt > 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return FolderPath.IsTheDirContainsFiles(mask, SearchFiles, Recursive);
         }
 
         internal static bool GetAnyFileWithTheNameExist(string[] array, string name)

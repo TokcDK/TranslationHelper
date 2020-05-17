@@ -465,7 +465,7 @@ namespace TranslationHelper.Functions
                 ||
                 //если перевод начинается и кончается на ' и также ' есть в где-то середине
                 (cvalueStartsWith && cvalueEndsWith && NewtransValue.Length > 2
-                //&& FunctionsString.IsStringAContainsStringB(NewtransValue.Remove(NewtransValue.Length - 1, 1).Remove(0, 1), "'")
+                 //&& FunctionsString.IsStringAContainsStringB(NewtransValue.Remove(NewtransValue.Length - 1, 1).Remove(0, 1), "'")
                  //это, чтобы только когда количество ' не равно количеству в оригинале
                  && !FunctionsString.GetCountOfTheSymbolInStringAandBIsEqual(origValue, NewtransValue, "'", "'")))
                 {
