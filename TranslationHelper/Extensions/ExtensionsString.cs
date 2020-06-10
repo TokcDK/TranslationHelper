@@ -12,7 +12,7 @@ namespace TranslationHelper.Extensions
     {
         internal static string SplitMultiLineIfBeyondOfLimit(this string Line, int Limit)
         {
-            if (string.IsNullOrWhiteSpace(Line) || !Line.IsMultiline())
+            if (string.IsNullOrWhiteSpace(Line)/* || !Line.IsMultiline()*/)
             {
                 return Line;
             }
