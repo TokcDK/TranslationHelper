@@ -7,7 +7,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions
 {
-    class FunctionsStringFixes
+    static class FunctionsStringFixes
     {
         internal static string ApplyHardFixes(string original, string translation)
         {

@@ -34,6 +34,7 @@ namespace TranslationHelper.Functions
 
             if (thDataWork.CurrentProject != null)
             {
+                thDataWork.CurrentProject.BuckupCreate();
                 await Task.Run(() => thDataWork.CurrentProject.Save()).ConfigureAwait(true);
             }
             else

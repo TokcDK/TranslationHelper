@@ -370,5 +370,17 @@ namespace TranslationHelper.Properties {
                 this["DBTryToCheckLinesOfEachMultilineValue"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ApplyFixesOnTranslation {
+            get {
+                return ((bool)(this["ApplyFixesOnTranslation"]));
+            }
+            set {
+                this["ApplyFixesOnTranslation"] = value;
+            }
+        }
     }
 }

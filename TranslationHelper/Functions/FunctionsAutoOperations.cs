@@ -9,7 +9,7 @@ using TranslationHelper.Functions;
 
 namespace TranslationHelper.Main.Functions
 {
-    class FunctionsAutoOperations
+    static class FunctionsAutoOperations
     {
         public static string THExtractTextForTranslation(THDataWork thDataWork, string input)
         {
@@ -90,7 +90,7 @@ namespace TranslationHelper.Main.Functions
             {
                 if (Regex.IsMatch(input, PatternReplacementPair.Key))
                 {
-                    MatchCollection Results = Regex.Matches(PatternReplacementPair.Value, @"\$[0-9]{1,2}");
+                    MatchCollection Results = Regex.Matches(PatternReplacementPair.Value, @"\$([0-9]{1,2}|(\{.+\}))");
                     if (Results.Count > 0)
                     {
                         List<string> Ret = new List<string>
@@ -105,7 +105,7 @@ namespace TranslationHelper.Main.Functions
                             {
                                 continue;
                             }
-                            string candidate = Regex.Replace(input, PatternReplacementPair.Key, Result.Value);
+                            var candidate = Regex.Replace(input, PatternReplacementPair.Key, Result.Value);
                             if (!string.IsNullOrEmpty(candidate))
                             {
                                 FoundValues.Add(Result.Value, candidate);
@@ -121,6 +121,51 @@ namespace TranslationHelper.Main.Functions
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Fixes selected value
+        /// </summary>
+        /// <param name="thDataWork"></param>
+        /// <param name="cvalue"></param>
+        /// <returns></returns>
+        public static string THFixCells(this string cvalue, THDataWork thDataWork) 
+        {
+            string rule;
+            string result;
+
+            foreach (var PatternReplacementPair in thDataWork.CellFixesRegexRules)
+            {
+                //читать правило и результат
+                rule = PatternReplacementPair.Key;
+                result = PatternReplacementPair.Value;
+
+                //задать правило
+                var regexrule = new Regex(rule);
+
+                //найти совпадение с заданным правилом в выбранной ячейке
+                var mc = regexrule.Matches(cvalue);
+                //перебрать все айденные совпадения
+                foreach (Match m in mc)
+                {
+                    try//если будет корявый регекс и выдаст исключение
+                    {
+                        //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
+
+                        //исправить значения по найденным совпадениям в выбранной ячейке
+                        cvalue = cvalue.Replace(m.Value + string.Empty, regexrule.Replace(m.Value + string.Empty, result));
+                        //THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = Regex.Replace(THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString(), m.Value.ToString(), result);
+
+                        //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
+                    }
+                    catch
+                    {
+                        MessageBox.Show(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
+                    }
+                }
+            }
+
+            return cvalue;
         }
 
         /// <summary>

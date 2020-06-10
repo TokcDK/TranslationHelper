@@ -1,9 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
@@ -170,6 +174,182 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             else
             {
             }
+        }
+
+        protected bool ParseJSVarInJson(string SvarIdentifier)
+        {
+            string line;
+
+            string tablename = Path.GetFileName(thDataWork.FilePath);
+
+            AddTables(tablename);
+
+            bool StartReadingSvar = false;
+            bool IsComment = false;
+            StringBuilder Svar = new StringBuilder();
+            using (StreamReader reader = new StreamReader(thDataWork.FilePath))
+            {
+                while (!reader.EndOfStream)
+                {
+                    line = reader.ReadLine();
+                    if (StartReadingSvar)
+                    {
+                        if (line.TrimStart().StartsWith("};"))
+                        {
+                            Svar.Append("}");
+
+                            try
+                            {
+                                JToken root;
+                                root = JToken.Parse(Svar.ToString());
+
+                                GetStringsFromJToken(root, tablename);
+                            }
+                            catch
+                            {
+                            }
+
+                            break;
+                        }
+                        else
+                        {
+                            Svar.AppendLine(line);
+                        }
+                    }
+                    else
+                    {
+                        //comments
+                        if (IsComment)
+                        {
+                            if (line.Contains("*/"))
+                            {
+                                IsComment = false;
+                            }
+                            continue;
+                        }
+                        else if (line.TrimStart().StartsWith("//"))
+                        {
+                            continue;
+                        }
+                        else if (line.TrimStart().StartsWith("/*"))
+                        {
+                            if (!line.Contains("*/"))
+                            {
+                                IsComment = true;
+                                continue;
+                            }
+                        }//endcomments
+                        else if (line.TrimStart().StartsWith(SvarIdentifier))
+                        {
+                            StartReadingSvar = true;
+                            Svar.AppendLine("{");
+                        }
+                    }
+                }
+            }
+
+            return CheckTablesContent(tablename);
+        }
+
+        protected bool ParseJSVarInJsonWrite(string SvarIdentifier)
+        {
+            StringBuilder TranslatedResult = new StringBuilder();
+            string line;
+            rowindex = 0;
+
+            string tablename = Path.GetFileName(thDataWork.FilePath);
+            if (FunctionsTable.IsTableRowsAllEmpty(thDataWork.THFilesElementsDataset.Tables[tablename]))
+            {
+                return false;
+            }
+
+            bool StartReadingSvar = false;
+            bool IsComment = false;
+            StringBuilder Svar = new StringBuilder();
+            using (StreamReader reader = new StreamReader(thDataWork.FilePath))
+            {
+                while (!reader.EndOfStream)
+                {
+                    line = reader.ReadLine();
+                    if (StartReadingSvar)
+                    {
+                        if (line.TrimStart().StartsWith("};"))
+                        {
+                            Svar.Append("}");
+
+                            JToken root = JToken.Parse(Svar.ToString());
+                            try
+                            {
+                                SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
+                                if (TablesLinesDict != null/* && TablesLinesDict.Count > 0*/)
+                                {
+                                    WriteStringsToJTokenWithPreSplitlines(root, tablename);
+                                }
+                                else
+                                {
+                                    WriteStringsToJToken(root, tablename);
+                                }
+                            }
+                            catch
+                            {
+                            }
+
+                            StartReadingSvar = false;
+                            TranslatedResult.AppendLine(root.ToString(Formatting.Indented) + ";");
+                            continue;
+                        }
+                        else
+                        {
+                            Svar.AppendLine(line);
+                        }
+                    }
+                    else
+                    {
+                        //comments
+                        if (IsComment)
+                        {
+                            if (line.Contains("*/"))
+                            {
+                                IsComment = false;
+                            }
+                            //continue;
+                        }
+                        else if (line.TrimStart().StartsWith("//"))
+                        {
+                            //continue;
+                        }
+                        else if (line.TrimStart().StartsWith("/*"))
+                        {
+                            if (!line.Contains("*/"))
+                            {
+                                IsComment = true;
+                                //continue;
+                            }
+                        }//endcomments
+                        else if (!IsComment && line.TrimStart().StartsWith(SvarIdentifier))
+                        {
+                            StartReadingSvar = true;
+                            TranslatedResult.Append(line.Remove(line.Length - 1, 1));
+                            Svar.AppendLine("{");
+                        }
+                    }
+
+                    if (!StartReadingSvar)
+                    {
+                        TranslatedResult.AppendLine(line);
+                    }
+                }
+            }
+
+            try
+            {
+                File.WriteAllText(thDataWork.FilePath, TranslatedResult.ToString());
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

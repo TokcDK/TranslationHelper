@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Text;
 using TranslationHelper.Data;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
@@ -69,6 +70,10 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             string line;
             rowindex = 0;
             string tablename = Path.GetFileName(thDataWork.FilePath);
+            if (FunctionsTable.IsTableRowsAllEmpty(thDataWork.THFilesElementsDataset.Tables[tablename]))
+            {
+                return false;
+            }
 
             thDataWork.Main.ProgressInfo(true, T._("Writing") + ": " + "plugins.js");
 
@@ -105,7 +110,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             PluginsJSnameFound = false;
 
                             SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
-                            if (TablesLinesDict != null && TablesLinesDict.Count > 0)
+                            if (TablesLinesDict != null/* && TablesLinesDict.Count > 0*/)
                             {
                                 WriteStringsToJTokenWithPreSplitlines(root, tablename);
                             }

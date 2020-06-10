@@ -485,6 +485,11 @@ namespace TranslationHelper.Formats.RPGMMV
 
         private bool WriteJson(string Jsonname, string sPath)
         {
+            if (FunctionsTable.IsTableRowsAllEmpty(thDataWork.THFilesElementsDataset.Tables[Jsonname]))
+            {
+                return false;
+            }
+
             thDataWork.Main.ProgressInfo(true, T._("Writing") + ": " + Jsonname + ".json");
             try
             {

@@ -199,7 +199,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal static void RestoreFromBakIfNeedData()
         {
-            string dataPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data");
+            var dataPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data");
             if (Directory.Exists(dataPath + "_bak"))
             {
                 try

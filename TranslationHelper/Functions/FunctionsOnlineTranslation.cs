@@ -291,7 +291,34 @@ namespace TranslationHelper.Functions
             return ResultValue.ToString();
         }
 
-        private static string PasteTranslationBackIfExtracted(string Translation, string Original, string Extracted)
+        private string PasteTranslationBackIfExtracted(string Translation, string Original, string Extracted)
+        {
+            if (Translation.Length == 0 || Original.Length == 0 || Extracted.Length == 0 || Equals(Original, Extracted))
+            {
+                return Properties.Settings.Default.ApplyFixesOnTranslation ?
+                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork)) : Translation;
+            }
+            //переделано через удаление и вставку строки, чтобы точно вставлялась нужная
+            //строка в нужное место и с рассчетом на будущее, когда возможно строки будут выдираться из исходной
+            //, а потом вставляться обратно
+            int IndexOfTheString = Original.IndexOf(Extracted);
+            if (IndexOfTheString > -1)
+            {
+                return Original
+                    .Remove(IndexOfTheString, Extracted.Length)
+                    .Insert(IndexOfTheString,
+                    Properties.Settings.Default.ApplyFixesOnTranslation ?
+                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork)) : Translation
+                    );
+            }
+            else
+            {
+                return Properties.Settings.Default.ApplyFixesOnTranslation ?
+                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork)) : Translation;
+            }
+        }
+
+        private static string PasteTranslationBackIfExtractedSplit(string Translation, string Original, string Extracted)
         {
             if (Translation.Length == 0 || Original.Length == 0 || Extracted.Length == 0 || Equals(Original, Extracted))
             {
@@ -563,7 +590,7 @@ namespace TranslationHelper.Functions
                     string InputOriginalLine;
 
                     List<string> InputLines = new List<string>();
-                    List<InputLinesInfoData> InputLinesInfo = new List<InputLinesInfoData>();
+                    List<InputLinesInfoDataMultiExtracted> InputLinesInfo = new List<InputLinesInfoDataMultiExtracted>();
 
                     //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
                     int TableMaxIndex;
@@ -665,11 +692,14 @@ namespace TranslationHelper.Functions
                                         //string linevalue = Lines[s];
 
                                         string Translation = string.Empty;
+                                        List<string> Translations = new List<string>();
+
                                         //cache = FunctionsTable.TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
                                         cache = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(linevalue);//поиск подстроки в кеше
                                         if (cache.Length > 0)
                                         {
                                             Translation = cache;//если нашло в кеше, присвоить как перевод
+                                            Translations.Add(Translation);
                                         }
                                         else
                                         {
@@ -678,6 +708,7 @@ namespace TranslationHelper.Functions
                                                 if (linevalue.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                                                 {
                                                     Translation = linevalue;//если большинством ромаджи или прочее
+                                                    Translations.Add(Translation);
                                                 }
                                                 else
                                                 {
@@ -686,7 +717,7 @@ namespace TranslationHelper.Functions
                                                     {
                                                         // только если извлеченное значение отличается от оригинальной строки
                                                         //cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
-                                                        cache = IsExtracted ? string.Empty : thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue[2]);//поиск извлеченной подстроки в кеше
+                                                        cache = extractedvalue[2] == linevalue ? string.Empty : thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue[2]);//поиск извлеченной подстроки в кеше
                                                         if (cache.Length > 0)
                                                         {
                                                             Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue[2]);
@@ -708,16 +739,18 @@ namespace TranslationHelper.Functions
                                                     {
                                                         for (int e = 2; e < extractedvalue.Length; e++)
                                                         {
-                                                            cache = IsExtracted && extractedvalue[e] != linevalue ? string.Empty : thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue[e]);//поиск извлеченной подстроки в кеше
+                                                            cache = extractedvalue[e] == linevalue ? string.Empty : thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue[e]);//поиск извлеченной подстроки в кеше
                                                             if (cache.Length > 0)
                                                             {
-                                                                Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue[2]);
+                                                                Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue[e]);
+                                                                Translations.Add(Translation);
                                                             }
                                                             else
                                                             {
-                                                                if (extractedvalue[2].IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
+                                                                if (extractedvalue[e].IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                                                                 {
                                                                     Translation = linevalue;//если извлеченное значение большинством ромаджи или прочее
+                                                                    Translations.Add(Translation);
                                                                 }
                                                                 else
                                                                 {
@@ -731,7 +764,7 @@ namespace TranslationHelper.Functions
                                             }
                                         }
                                         //original, translation(when exists in cache), table number, row number
-                                        //InputLinesInfo.Add(new InputLinesInfoDataMultiExtracted(linevalue, Translation, t, CurrentRowIndex, currentLineNumber == LinesCount, IsExtracted));
+                                        InputLinesInfo.Add(new InputLinesInfoDataMultiExtracted(linevalue, Translations, t, CurrentRowIndex, currentLineNumber == LinesCount, IsExtracted));
                                     }
                                 }
                             }
@@ -740,7 +773,7 @@ namespace TranslationHelper.Functions
                             {
                                 CurrentCharsCount = 0;
 
-                                TranslateItNow(InputLines, InputLinesInfo);
+                                TranslateItNowMulti(InputLines, InputLinesInfo);
                             }
                         }
                     }
@@ -748,7 +781,9 @@ namespace TranslationHelper.Functions
                     //перевести, если после прохода по всем таблицам добавленные строки так и не были переведены
                     if (InputLines.Count > 0)
                     {
-                        TranslateItNow(InputLines, InputLinesInfo);
+                        CurrentCharsCount = 0;
+
+                        TranslateItNowMulti(InputLines, InputLinesInfo);
                     }
 
                     //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
@@ -781,6 +816,64 @@ namespace TranslationHelper.Functions
                 }
             }
             return false;
+        }
+
+        private void TranslateItNowMulti(List<string> InputLines, List<InputLinesInfoDataMultiExtracted> InputLinesInfo)
+        {
+            if (InputLines.Count > 0)
+            {
+                TranslateLinesAndSetTranslationMulti(InputLines, InputLinesInfo/*, THTranslationCache*/);
+            }
+            else if (InputLinesInfo.Count > 0)
+            {
+                int PreviousTableIndex = -1;
+                int PreviousRowIndex = -1;
+                int NewTableIndex;
+                int NewRowIndex;
+                int rowscount = InputLinesInfo.Count;
+                StringBuilder ResultValue = new StringBuilder(rowscount);
+                for (int i = 0; i < rowscount; i++)
+                {
+                    var rowInfo = InputLinesInfo[i];
+                    string CachedTranslation = BuildExtractedToTranslated(rowInfo.GetCachedTranslation);
+                    NewTableIndex = rowInfo.GetTableIndex;
+                    NewRowIndex = rowInfo.GetRowIndex;
+                    if (string.IsNullOrEmpty(rowInfo.GetOriginal))
+                    {
+                        ResultValue.Append(Environment.NewLine);
+                    }
+                    else if (!string.IsNullOrEmpty(CachedTranslation))
+                    {
+                        ResultValue.Append(CachedTranslation);
+                    }
+                    if (NewRowIndex == PreviousRowIndex && i < rowscount - 1)
+                    {
+                        ResultValue.Append(Environment.NewLine);
+                    }
+                    else
+                    {
+                        SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue/*, THTranslationCache*/);
+                    }
+                    PreviousTableIndex = NewTableIndex;
+                    PreviousRowIndex = NewRowIndex;
+                }
+            }
+            //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
+            thDataWork.OnlineTranslationCache.WriteCache();//промежуточная запись кеша
+
+            InputLines.Clear();
+            InputLinesInfo.Clear();
+        }
+
+        private string BuildExtractedToTranslated(List<string> getCachedTranslation)
+        {
+            var result = string.Empty;
+            foreach (var str in getCachedTranslation)
+            {
+
+            }
+
+            return result;
         }
 
         private void TranslateItNow(List<string> InputLines, List<InputLinesInfoData> InputLinesInfo)
@@ -829,6 +922,95 @@ namespace TranslationHelper.Functions
             InputLinesInfo.Clear();
         }
 
+        private void TranslateLinesAndSetTranslationMulti(List<string> InputLines, List<InputLinesInfoDataMultiExtracted> InputLinesInfo)
+        {
+            //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
+            //add table rows to string array
+            string[] OriginalLines = InputLines.ToArray();
+
+            //сброс кеша в GoogleAPI
+            Translator.ResetCache();
+
+            //send string array to translation for multiline
+            string[] TranslatedLines = Translator.Translate(OriginalLines);
+
+            //int infoCount = InputLinesInfo.Rows.Count;
+            //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
+
+            if (TranslatedLines != null && TranslatedLines.Length > 0 && InputLines.Count == TranslatedLines.Length)
+            {
+                StringBuilder ResultValue = new StringBuilder();
+                int TranslatedLinesIndex = 0;
+                InputLinesInfoDataMultiExtracted InfoRow = null;
+                for (int InfoIndex = 0; InfoIndex < InputLinesInfo.Count; InfoIndex++)
+                {
+                    InfoRow = InputLinesInfo[InfoIndex];
+
+                    string newLine;
+                    if (!InfoRow.GetIsLastLineInString)
+                    {
+                        newLine = Environment.NewLine;
+                    }
+                    else
+                    {
+                        newLine = string.Empty;
+                    }
+
+                    if (!string.IsNullOrEmpty(InfoRow.GetCachedTranslation[0]))//перевод найден в кеше
+                    {
+                        ResultValue.Append(InfoRow.GetCachedTranslation[0]);
+                    }
+                    else if (string.IsNullOrEmpty(InfoRow.GetOriginal))//пустая строка в оригинале
+                    {
+                    }
+                    else
+                    {
+                        if (InputLines[TranslatedLinesIndex] == InfoRow.GetOriginal)
+                        {
+                            ResultValue.Append(TranslatedLines[TranslatedLinesIndex]);
+                        }
+                        else
+                        {
+                            ResultValue.Append(
+                                PasteTranslationBackIfExtracted
+                            (
+                                TranslatedLines[TranslatedLinesIndex]
+                            ,
+                                InfoRow.GetOriginal
+                            ,
+                                InputLines[TranslatedLinesIndex]
+                            ));
+                        }
+                        TranslatedLinesIndex++;
+                    }
+                    ResultValue.Append(newLine);
+
+                    if (newLine.Length == 0)
+                    {
+                        SetTranslationResultToCellIfEmpty(
+                            InfoRow.GetTableIndex
+                            ,
+                            InfoRow.GetRowIndex
+                            ,
+                            ResultValue
+                            );
+                        ResultValue.Clear();
+                    }
+                }
+                if (ResultValue.Length > 0 && InfoRow != null)
+                {
+                    SetTranslationResultToCellIfEmpty(
+                        InfoRow.GetTableIndex
+                        ,
+                        InfoRow.GetRowIndex
+                        ,
+                        ResultValue
+                        );
+                    ResultValue.Clear();
+                }
+            }
+        }
+
         private void TranslateLinesAndSetTranslation(List<string> InputLines, List<InputLinesInfoData> InputLinesInfo)
         {
             //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
@@ -865,7 +1047,11 @@ namespace TranslationHelper.Functions
 
                     if (!string.IsNullOrEmpty(InfoRow.GetCachedTranslation))//перевод найден в кеше
                     {
-                        ResultValue.Append(InfoRow.GetCachedTranslation);
+                        ResultValue.Append(
+                            Properties.Settings.Default.ApplyFixesOnTranslation ?
+                                FunctionsStringFixes.ApplyHardFixes(TranslatedLines[TranslatedLinesIndex], InfoRow.GetCachedTranslation.THFixCells(thDataWork))
+                                : InfoRow.GetCachedTranslation
+                            );
                     }
                     else if (string.IsNullOrEmpty(InfoRow.GetOriginal))//пустая строка в оригинале
                     {
@@ -980,13 +1166,13 @@ namespace TranslationHelper.Functions
     internal class InputLinesInfoDataMultiExtracted
     {
         internal string GetOriginal { get; }
-        internal string GetCachedTranslation { get; }
+        internal List<string> GetCachedTranslation { get; }
         internal int GetTableIndex { get; }
         internal int GetRowIndex { get; }
         internal bool GetIsLastLineInString { get; }
         internal bool GetIsExtracted { get; }
 
-        internal InputLinesInfoDataMultiExtracted(string Original, string CachedTranslation, int TableIndex, int RowIndex, bool IsLastLineInString, bool IsExtracted, int ExtractedNum, int ExtractedMax)
+        internal InputLinesInfoDataMultiExtracted(string Original, List<string> CachedTranslation, int TableIndex, int RowIndex, bool IsLastLineInString, bool IsExtracted)
         {
             GetOriginal = Original;
             GetCachedTranslation = CachedTranslation;

@@ -800,6 +800,11 @@ namespace TranslationHelper
         internal bool FileDataWasChanged = false;
         private void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if(thDataWork.TablesLinesDict!=null && thDataWork.TablesLinesDict.Count>0)
+            {
+                thDataWork.TablesLinesDict.Clear();
+            }
+
             new FunctionsSave(thDataWork).PrepareToWrite();
             Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
         }
@@ -2139,6 +2144,11 @@ namespace TranslationHelper
 
         private async void RunTestGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (thDataWork.TablesLinesDict != null && thDataWork.TablesLinesDict.Count > 0)
+            {
+                thDataWork.TablesLinesDict.Clear();
+            }
+
             if (thDataWork.CurrentProject != null || RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
             {
                 bool BuckupCreated = false;
@@ -2721,6 +2731,11 @@ namespace TranslationHelper
             for (int t = 0; t < TablesCount; t++)
             {
                 var Table = thDataWork.THFilesElementsDataset.Tables[t];
+                if (Table.TableName.ToUpperInvariant() == "PLUGINS.JS")
+                {
+                    continue;
+                }
+
                 int TableRowsCount = Table.Rows.Count;
                 for (int r = 0; r < TableRowsCount; r++)
                 {
