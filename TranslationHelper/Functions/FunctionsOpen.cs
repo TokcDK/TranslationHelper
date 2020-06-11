@@ -462,6 +462,8 @@ namespace TranslationHelper.Functions
 
             Properties.Settings.Default.ProjectIsOpened = true;
             FunctionsSounds.OpenProjectComplete();
+
+            FunctionsLoadTranslationDB.LoadTranslationIfNeed(thDataWork);
         }
     }
 }

@@ -102,6 +102,7 @@
   <ItemGroup>
     <Compile Include="Data\CleanupData.cs" />
     <Compile Include="Data\THDataWork.cs" />
+    <Compile Include="Extensions\ExtensionsDictionary.cs" />
     <Compile Include="Extensions\ExtensionsFileFolder.cs" />
     <Compile Include="Extensions\ExtensionsString.cs" />
     <Compile Include="Extensions\ExtensionsTable.cs" />

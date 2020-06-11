@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
@@ -387,6 +389,19 @@ namespace TranslationHelper.Functions
             //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
             //MessageBox.Show(difference.ToString());
             System.Media.SystemSounds.Beep.Play();
+        }
+
+        internal static void LoadTranslationIfNeed(THDataWork thDataWork)
+        {
+            var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(thDataWork), FunctionsDBFile.GetDBFileName(thDataWork) + FunctionsDBFile.GetDBCompressionExt(thDataWork));
+            if (File.Exists(lastautosavepath))
+            {
+                var result = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    thDataWork.Main.LoadTranslationFromDB(lastautosavepath);
+                }
+            }
         }
     }
 }

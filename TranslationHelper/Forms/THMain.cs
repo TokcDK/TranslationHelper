@@ -1254,7 +1254,7 @@ namespace TranslationHelper
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy = false;
-        private async void LoadTranslationFromDB(string sPath = "")
+        internal async void LoadTranslationFromDB(string sPath = "")
         {
             if (LoadTranslationToolStripMenuItem_ClickIsBusy)
             {
@@ -2915,6 +2915,7 @@ namespace TranslationHelper
         {
             ReloadTranslationRegexRules();
             ReloadCellFixesRegexRules();
+            FunctionsSounds.LoadDBCompleted();
         }
 
         internal void ReloadTranslationRegexRules()
@@ -3017,10 +3018,7 @@ namespace TranslationHelper
                                 ReadRule = !ReadRule;
                             }
 
-                            if (!thDataWork.TranslationRegexRules.ContainsKey(regexPattern))
-                            {
-                                thDataWork.CellFixesRegexRules.Add(regexPattern, regexReplacement);
-                            }
+                            thDataWork.CellFixesRegexRules.AddTry(regexPattern, regexReplacement);
                         }
                         catch
                         {
