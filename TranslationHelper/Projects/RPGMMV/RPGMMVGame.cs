@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
+using TranslationHelper.Functions;
+using TranslationHelper.Translators;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
@@ -235,6 +239,43 @@ namespace TranslationHelper.Projects.RPGMMV
                 {
                 }
             }
+        }
+
+        /// <summary>
+        /// Hardcoded fixes for RPGMakerMV
+        /// </summary>
+        /// <returns></returns>
+        internal override string HardcodedFixes(string original, string translation)
+        {
+            if (translation.StartsWith(@"\n<>"))
+            {
+                if (thDataWork.OnlineTranslationCache == null)
+                {
+                    thDataWork.OnlineTranslationCache = new FunctionsOnlineCache(thDataWork);
+                    thDataWork.OnlineTranslationCache.ReadCache();
+                }
+
+                FillTablesLinesDict();
+
+                var name = Regex.Replace(original, @"^\\n<(.+)>[\s\S]*$", "$1");
+
+                var translatedname = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(name);
+
+                if (translatedname.Length > 0)
+                {
+                    return translation.Insert(3, translatedname);
+                }
+                else
+                {
+                    if (thDataWork.TablesLinesDict.ContainsKey(name))
+                    {
+                        return translation.Insert(3, thDataWork.TablesLinesDict[name]);
+                    }
+                    return translation.Insert(3, name);
+                }
+            }
+
+            return translation;
         }
 
     }

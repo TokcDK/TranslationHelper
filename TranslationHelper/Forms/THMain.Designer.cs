@@ -122,6 +122,7 @@
             this.lowercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongerOfLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THEditElementsSplitContainer = new System.Windows.Forms.SplitContainer();
+            this.BottomInfoTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.THSourceRichTextBox = new System.Windows.Forms.RichTextBox();
             this.THTargetRichTextBox = new System.Windows.Forms.RichTextBox();
             this.THWorkSpaceSplitContainer = new System.Windows.Forms.SplitContainer();
@@ -133,7 +134,6 @@
             this.TableCompleteInfoLabel = new System.Windows.Forms.Label();
             this.TranslationLongestLineLenghtLabel = new System.Windows.Forms.Label();
             this.RTBInfoLengthLabel = new System.Windows.Forms.Label();
-            this.BottomInfoTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.TargetTextBoxLinePositionLabel = new System.Windows.Forms.Label();
             this.TargetTextBoxLinePositionLabelData = new System.Windows.Forms.Label();
             this.TargetTextBoxColumnPositionLabel = new System.Windows.Forms.Label();
@@ -381,7 +381,7 @@
             this.selectedToolStripMenuItem1.Enabled = false;
             this.selectedToolStripMenuItem1.Name = "selectedToolStripMenuItem1";
             this.selectedToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
-            this.selectedToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.selectedToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
             this.selectedToolStripMenuItem1.Text = "Selected";
             this.selectedToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateSelectedToolStripMenuItem_Click);
             // 
@@ -389,21 +389,21 @@
             // 
             this.tableToolStripMenuItem1.Enabled = false;
             this.tableToolStripMenuItem1.Name = "tableToolStripMenuItem1";
-            this.tableToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.tableToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
             this.tableToolStripMenuItem1.Text = "Table";
             this.tableToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateTableToolStripMenuItem1_Click);
             // 
             // allToolStripMenuItem1
             // 
             this.allToolStripMenuItem1.Name = "allToolStripMenuItem1";
-            this.allToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.allToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
             this.allToolStripMenuItem1.Text = "All";
             this.allToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateAllToolStripMenuItem1_Click);
             // 
             // translationInteruptToolStripMenuItem
             // 
             this.translationInteruptToolStripMenuItem.Name = "translationInteruptToolStripMenuItem";
-            this.translationInteruptToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.translationInteruptToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.translationInteruptToolStripMenuItem.Text = "Interupt";
             this.translationInteruptToolStripMenuItem.Visible = false;
             this.translationInteruptToolStripMenuItem.Click += new System.EventHandler(this.InteruptToolStripMenuItem_Click);
@@ -572,7 +572,7 @@
             // allToolStripMenuItem3
             // 
             this.allToolStripMenuItem3.Name = "allToolStripMenuItem3";
-            this.allToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.allToolStripMenuItem3.Size = new System.Drawing.Size(85, 22);
             this.allToolStripMenuItem3.Text = "All";
             this.allToolStripMenuItem3.Click += new System.EventHandler(this.UppercaseAllToolStripMenuItem_Click);
             // 
@@ -1038,6 +1038,19 @@
             this.THEditElementsSplitContainer.SplitterDistance = 291;
             this.THEditElementsSplitContainer.TabIndex = 4;
             // 
+            // BottomInfoTableLayoutPanel
+            // 
+            this.BottomInfoTableLayoutPanel.ColumnCount = 2;
+            this.BottomInfoTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.BottomInfoTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.BottomInfoTableLayoutPanel.Location = new System.Drawing.Point(-143, 96);
+            this.BottomInfoTableLayoutPanel.Name = "BottomInfoTableLayoutPanel";
+            this.BottomInfoTableLayoutPanel.RowCount = 1;
+            this.BottomInfoTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.BottomInfoTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 13F));
+            this.BottomInfoTableLayoutPanel.Size = new System.Drawing.Size(785, 13);
+            this.BottomInfoTableLayoutPanel.TabIndex = 11;
+            // 
             // THSourceRichTextBox
             // 
             this.THSourceRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1175,19 +1188,6 @@
             this.RTBInfoLengthLabel.Size = new System.Drawing.Size(41, 13);
             this.RTBInfoLengthLabel.TabIndex = 10;
             this.RTBInfoLengthLabel.Text = "length:";
-            // 
-            // BottomInfoTableLayoutPanel
-            // 
-            this.BottomInfoTableLayoutPanel.ColumnCount = 2;
-            this.BottomInfoTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.BottomInfoTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.BottomInfoTableLayoutPanel.Location = new System.Drawing.Point(-143, 96);
-            this.BottomInfoTableLayoutPanel.Name = "BottomInfoTableLayoutPanel";
-            this.BottomInfoTableLayoutPanel.RowCount = 1;
-            this.BottomInfoTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.BottomInfoTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.BottomInfoTableLayoutPanel.Size = new System.Drawing.Size(785, 13);
-            this.BottomInfoTableLayoutPanel.TabIndex = 11;
             // 
             // TargetTextBoxLinePositionLabel
             // 

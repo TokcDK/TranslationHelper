@@ -4,6 +4,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -343,33 +344,52 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        internal static Dictionary<string, string> DBDataSetToDBDictionary(this DataSet dBDataSet, bool DontAddEmptyTranslation = true)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dBDataSet"></param>
+        /// <param name="inputDB"></param>
+        /// <param name="DontAddEmptyTranslation"></param>
+        /// <param name="DontAddEqualTranslation"></param>
+        /// <returns></returns>
+        internal static Dictionary<string, string> DBDataSetToDBDictionary(this DataSet dBDataSet, Dictionary<string, string> inputDB = null, bool DontAddEmptyTranslation = true, bool DontAddEqualTranslation = false)
         {
-            Dictionary<string, string> db = new Dictionary<string, string>();
+            Dictionary<string, string> db;
+            if (inputDB == null)
+            {
+                db = new Dictionary<string, string>();
+            }
+            else
+            {
+                db = inputDB;
+            }
 
             int TablesCount = dBDataSet.Tables.Count;
 
             for (int t = 0; t < TablesCount; t++)
             {
-                int RowsCount = dBDataSet.Tables[t].Rows.Count;
-
-                for (int r = 0; r < RowsCount; r++)
+                try
                 {
-                    var row = dBDataSet.Tables[t].Rows[r];
-                    if (!db.ContainsKey(row[0] as string))
+                    var table = dBDataSet.Tables[t];
+
+                    int RowsCount = table.Rows.Count;
+
+                    for (int r = 0; r < RowsCount; r++)
                     {
-                        if (DontAddEmptyTranslation)
+                        var row = table.Rows[r];
+                        if (!db.ContainsKey(row["Original"] as string))
                         {
-                            if (row[1] != null && !string.IsNullOrEmpty(row[1] + string.Empty))
+                            if ((DontAddEmptyTranslation && row["Translation"] != null && !string.IsNullOrEmpty(row["Translation"] as string)) || (DontAddEqualTranslation && row["Translation"] as string == row["Original"] as string))
                             {
-                                db.Add(row[0] as string, row[1] + string.Empty);
+                                continue;
                             }
-                        }
-                        else
-                        {
-                            db.Add(row[0] as string, row[1] + string.Empty);
+
+                            db.Add(row["Original"] as string, row["Translation"] + string.Empty);
                         }
                     }
+                }
+                catch
+                {
                 }
             }
 
@@ -404,6 +424,76 @@ namespace TranslationHelper.Main.Functions
             }
 
             return db;
+        }
+
+        internal static void MergeAllDBtoOne(THDataWork thDataWork)
+        {
+            var tDir = Path.Combine(Application.StartupPath, "DB");
+            HashSet<string> paths = new HashSet<string>();
+            foreach (var DBfile in Directory.GetFiles(tDir))
+            {
+                var ext = Path.GetExtension(DBfile);
+                if (ext != ".xml" && ext != ".cmx" && ext != ".cmz")
+                {
+                    continue;
+                }
+
+                if (paths.Contains(DBfile))
+                {
+                    continue;
+                }
+
+                var newestDBFile = FindNewestFile(tDir, DBfile, paths);
+
+                thDataWork.Main.ProgressInfo(true, "loading " + Path.GetFileName(newestDBFile));
+
+                if (thDataWork.AllDBmerged == null)
+                {
+                    thDataWork.AllDBmerged = new Dictionary<string, string>();
+                }
+
+                try
+                {
+                    using (var DBDataSet = new DataSet())
+                    {
+                        FunctionsDBFile.ReadDBFile(DBDataSet, newestDBFile);
+                        DBDataSet.DBDataSetToDBDictionary(thDataWork.AllDBmerged, true, true);
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private static object GetBaseDBFileName(string DBfile)
+        {
+            string baseName = Path.GetFileNameWithoutExtension(DBfile);
+            if (Regex.IsMatch(baseName, @"^(.+)_[0-9]{4}\.[0-9]{2}\.[0-9]{2} [0-9]{2}-[0-9]{2}-[0-9]{2}$"))
+            {
+                baseName = Regex.Replace(baseName, @"^(.+)_[0-9]{4}\.[0-9]{2}\.[0-9]{2} [0-9]{2}-[0-9]{2}-[0-9]{2}$", "$1");
+            }
+            return baseName;
+        }
+
+        private static string FindNewestFile(string tDir, string DBfile, HashSet<string> paths = null)
+        {
+            var baseName = GetBaseDBFileName(DBfile);
+            string newestfile = DBfile;
+            foreach (var file in Directory.GetFiles(tDir, baseName + "*.*"))
+            {
+                if (paths != null && !paths.Contains(file))
+                {
+                    paths.Add(file);
+                }
+
+                if (file!= newestfile && new FileInfo(file).LastWriteTime > new FileInfo(newestfile).LastWriteTime)
+                {
+                    newestfile = file;
+                }
+            }
+
+            return newestfile;
         }
     }
 }

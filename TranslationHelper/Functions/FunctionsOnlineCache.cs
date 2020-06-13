@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
 //https://stackoverflow.com/questions/1799767/easy-way-to-convert-a-dictionarystring-string-to-xml-and-vice-versa
@@ -12,9 +13,20 @@ namespace TranslationHelper.Functions
     {
         internal Dictionary<string, string> cache = new Dictionary<string, string>();
 
+        private readonly THDataWork thDataWork;
+
+        public FunctionsOnlineCache(THDataWork thDataWork)
+        {
+            this.thDataWork = thDataWork;
+        }
+
         internal string GetValueFromCacheOrReturnEmpty(string keyValue)
         {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled && cache.Count > 0 && cache.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(cache[keyValue]))
+            if (Properties.Settings.Default.IsTranslationCacheEnabled && Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && thDataWork.AllDBmerged !=null && thDataWork.AllDBmerged.Count > 0 && thDataWork.AllDBmerged.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(thDataWork.AllDBmerged[keyValue]))
+            {
+                return thDataWork.AllDBmerged[keyValue];
+            }
+            else if (Properties.Settings.Default.IsTranslationCacheEnabled && cache!=null && cache.Count > 0 && cache.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(cache[keyValue]))
             {
                 return cache[keyValue];
             }

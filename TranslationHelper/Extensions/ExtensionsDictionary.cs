@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TranslationHelper.Extensions
 {
@@ -15,9 +11,9 @@ namespace TranslationHelper.Extensions
         /// <param name="Dict"></param>
         /// <param name="Key"></param>
         /// <param name="Value"></param>
-        internal static void AddTry<T>(this Dictionary<T,T> Dict, T Key, T Value)
+        internal static void AddTry<T>(this Dictionary<T, T> Dict, T Key, T Value)
         {
-            if (!Dict.ContainsKey(Key))
+            if (Key != null && !Dict.ContainsKey(Key) && (Value != null || (Value is string v && !string.IsNullOrEmpty(v))) && !Equals(Key, Value))
             {
                 Dict.Add(Key, Value);
             }

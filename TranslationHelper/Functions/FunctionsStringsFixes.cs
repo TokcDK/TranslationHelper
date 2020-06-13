@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
@@ -9,7 +10,7 @@ namespace TranslationHelper.Functions
 {
     static class FunctionsStringFixes
     {
-        internal static string ApplyHardFixes(string original, string translation)
+        internal static string ApplyHardFixes(string original, string translation, THDataWork thDataWork=null)
         {
             if (string.IsNullOrWhiteSpace(translation) || original == translation || string.IsNullOrWhiteSpace(original))
             {
@@ -72,6 +73,9 @@ namespace TranslationHelper.Functions
 
             //Lialua temp fix
             //translation = LuaLiaFix(original, translation);
+
+            //Project's specific fixes
+            translation = thDataWork.CurrentProject.HardcodedFixes(original, translation);
 
             return translation;
         }

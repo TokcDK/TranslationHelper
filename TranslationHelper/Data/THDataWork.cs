@@ -58,7 +58,14 @@ namespace TranslationHelper.Data
         //для целей удаления дубликатов записей, добавляемых в таблицу
         internal HashSet<string> hashes = new HashSet<string>();
 
-        //для целей записи, скидывание сюда данных таблицы
+        /// <summary>
+        /// для целей записи, скидывание сюда данных таблицы
+        /// </summary>
         internal Dictionary<string, string> TablesLinesDict = new Dictionary<string, string>();
+
+        /// <summary>
+        /// все баз данных в кучу здесь
+        /// </summary>
+        internal Dictionary<string, string> AllDBmerged;// = new Dictionary<string, string>();
     }
 }

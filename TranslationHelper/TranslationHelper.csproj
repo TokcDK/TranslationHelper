@@ -183,7 +183,7 @@
     <Compile Include="Projects\WolfRPG\WRPGOLDOpen.cs" />
     <Compile Include="OnlineTranslators\DeepL.cs" />
     <Compile Include="OnlineTranslators\TranslatorsBase.cs" />
-    <Compile Include="OnlineTranslators\Google.cs" />
+    <Compile Include="OnlineTranslators\GoogleAPIOLD.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
     <Compile Include="ExternalAdditions\SimpleJSON.cs" />
     <Compile Include="Forms\THMessage.cs">

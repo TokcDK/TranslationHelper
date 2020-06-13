@@ -15,12 +15,12 @@ namespace TranslationHelper.Functions
     class FunctionsOnlineTranslation
     {
         readonly THDataWork thDataWork;
-        readonly GoogleAPI Translator;
+        readonly GoogleAPIOLD Translator;
 
         public FunctionsOnlineTranslation(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
-            Translator = new GoogleAPI();
+            Translator = new GoogleAPIOLD();
         }
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace TranslationHelper.Functions
             if (Translation.Length == 0 || Original.Length == 0 || Extracted.Length == 0 || Equals(Original, Extracted))
             {
                 return Properties.Settings.Default.ApplyFixesOnTranslation ?
-                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork)) : Translation;
+                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork), thDataWork) : Translation;
             }
             //переделано через удаление и вставку строки, чтобы точно вставлялась нужная
             //строка в нужное место и с рассчетом на будущее, когда возможно строки будут выдираться из исходной
@@ -308,13 +308,13 @@ namespace TranslationHelper.Functions
                     .Remove(IndexOfTheString, Extracted.Length)
                     .Insert(IndexOfTheString,
                     Properties.Settings.Default.ApplyFixesOnTranslation ?
-                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork)) : Translation
+                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork), thDataWork) : Translation
                     );
             }
             else
             {
                 return Properties.Settings.Default.ApplyFixesOnTranslation ?
-                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork)) : Translation;
+                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork), thDataWork) : Translation;
             }
         }
 
@@ -346,7 +346,7 @@ namespace TranslationHelper.Functions
             Properties.Settings.Default.OnlineTranslationCacheUseCount++;
             if (thDataWork.OnlineTranslationCache == null)
             {
-                thDataWork.OnlineTranslationCache = new FunctionsOnlineCache();
+                thDataWork.OnlineTranslationCache = new FunctionsOnlineCache(thDataWork);
                 thDataWork.OnlineTranslationCache.ReadCache();
             }
         }
@@ -374,6 +374,12 @@ namespace TranslationHelper.Functions
         {
             try
             {
+                if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && Method == "a")
+                {
+                    thDataWork.Main.ProgressInfo(true, "Get all databases");
+                    FunctionsDBFile.MergeAllDBtoOne(thDataWork);
+                }
+
                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.translationInteruptToolStripMenuItem.Visible = true));
 
                 //using (DataSet THTranslationCache = new DataSet())
@@ -453,7 +459,7 @@ namespace TranslationHelper.Functions
                             //thDataWork.Main.ProgressInfo(true, T._("translating") + ": " + t + "/" + tcount + " (" + r + "/" + rcount + ")");
 
                             InputOriginalLine = Row[OrigColIndex] as string;
-                            if (string.IsNullOrWhiteSpace(InputOriginalLine) || InputOriginalLine.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
+                            if (string.IsNullOrWhiteSpace(InputOriginalLine) || InputOriginalLine.Length > maxchars || InputOriginalLine.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                             {
                                 continue;
                             }
@@ -1049,7 +1055,7 @@ namespace TranslationHelper.Functions
                     {
                         ResultValue.Append(
                             Properties.Settings.Default.ApplyFixesOnTranslation ?
-                                FunctionsStringFixes.ApplyHardFixes(TranslatedLines[TranslatedLinesIndex], InfoRow.GetCachedTranslation.THFixCells(thDataWork))
+                                FunctionsStringFixes.ApplyHardFixes(TranslatedLines[TranslatedLinesIndex], InfoRow.GetCachedTranslation.THFixCells(thDataWork), thDataWork)
                                 : InfoRow.GetCachedTranslation
                             );
                     }

@@ -485,7 +485,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         private bool WriteJson(string Jsonname, string sPath)
         {
-            if (FunctionsTable.IsTableRowsAllEmpty(thDataWork.THFilesElementsDataset.Tables[Jsonname]))
+            if (thDataWork.THFilesElementsDataset.Tables.Contains(Jsonname) && FunctionsTable.IsTableRowsAllEmpty(thDataWork.THFilesElementsDataset.Tables[Jsonname]))
             {
                 return false;
             }
@@ -762,6 +762,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
 
                 string tokenvalue = JsonToken + string.Empty;
+
                 if (tokenvalue.Length == 0 || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue))
                 {
                     return;

@@ -382,5 +382,17 @@ namespace TranslationHelper.Properties {
                 this["ApplyFixesOnTranslation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseAllDBFilesForOnlineTranslationForAll {
+            get {
+                return ((bool)(this["UseAllDBFilesForOnlineTranslationForAll"]));
+            }
+            set {
+                this["UseAllDBFilesForOnlineTranslationForAll"] = value;
+            }
+        }
     }
 }

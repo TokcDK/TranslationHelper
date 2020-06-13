@@ -2878,7 +2878,7 @@ namespace TranslationHelper
                             if (!string.IsNullOrWhiteSpace(row[0] + string.Empty))
                             {
                                 //Set result value
-                                string result = FunctionsStringFixes.ApplyHardFixes(row[0] as string, translation);
+                                string result = FunctionsStringFixes.ApplyHardFixes(row[0] as string, translation, thDataWork);
                                 if (!Equals(result, translation))
                                 {
                                     lock (row)
@@ -2904,6 +2904,12 @@ namespace TranslationHelper
             //}
 
             HardcodedFixesExecuting = false;
+
+            //clear translation cache
+            if (thDataWork.OnlineTranslationCache != null)
+            {
+                thDataWork.OnlineTranslationCache = null;
+            }
         }
 
         private void SelectedForceToolStripMenuItem_Click(object sender, EventArgs e)

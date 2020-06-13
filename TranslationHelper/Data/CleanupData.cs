@@ -54,6 +54,7 @@ namespace TranslationHelper.Data
                 thDataWork.THFilesElementsALLDataTable.Reset();
                 thDataWork.Main.THFileElementsDataGridView.Columns.Clear();
                 thDataWork.hashes.Clear();
+                thDataWork.AllDBmerged = null;
                 //THFileElementsDataGridView.Rows.Clear();
                 thDataWork.FilePath = string.Empty;
                 thDataWork.SPath = string.Empty;

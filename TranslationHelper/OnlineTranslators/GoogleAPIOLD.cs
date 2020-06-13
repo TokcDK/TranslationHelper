@@ -10,7 +10,7 @@ using TranslationHelper.Translators;
 
 namespace TranslationHelper
 {
-    class GoogleAPI : TranslatorsBase
+    class GoogleAPIOLD : TranslatorsBase
     {
         // Token: 0x06000EEC RID: 3820 RVA: 0x0006AD20 File Offset: 0x00068F20
         //public static string Translate2(string text, string fromCulture, string toCulture)

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Projects
 {
@@ -119,17 +121,70 @@ namespace TranslationHelper.Projects
 
         internal void FillTHFilesElementsDictionary()
         {
+            if (thDataWork.TablesLinesDict == null)
+            {
+                foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
+                {
+                    foreach (DataRow row in table.Rows)
+                    {
+                        string orig;
+                        if (!string.IsNullOrEmpty(orig = row[0] + string.Empty) && !thDataWork.THFilesElementsDictionary.ContainsKey(orig))
+                        {
+                            thDataWork.THFilesElementsDictionary.Add(orig, row[1] + string.Empty);
+                        }
+                    }
+                }
+            }
+        }
+
+        internal void FillTablesLinesDict()
+        {
+            bool notnull;
+            if ((notnull = thDataWork.TablesLinesDict != null) && thDataWork.TablesLinesDict.Count > 0)
+            {
+                return;
+            }
+            else if (!notnull)
+            {
+                thDataWork.TablesLinesDict = new Dictionary<string, string>();
+            }
+
             foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
             {
                 foreach (DataRow row in table.Rows)
                 {
                     string orig;
-                    if (!string.IsNullOrEmpty(orig = row[0] + string.Empty) && !thDataWork.THFilesElementsDictionary.ContainsKey(orig))
+                    string trans;
+                    if (!string.IsNullOrWhiteSpace(orig = row[0] + string.Empty) && !string.IsNullOrEmpty(trans = row[1] + string.Empty))
                     {
-                        thDataWork.THFilesElementsDictionary.Add(orig, row[1] + string.Empty);
+                        thDataWork.TablesLinesDict.AddTry(orig, trans);
+
+                        if (!trans.StartsWith(@"\n<>") && Regex.IsMatch(orig, @"\\n<.+>[\s\S]*$"))
+                        {
+                            orig = Regex.Replace(orig, @"\\n<(.+)>[\s\S]*$", "$1");
+                            trans = Regex.Replace(trans, @"\\n<(.+)>[\s\S]*$", "$1");
+                            if (orig != trans)
+                            {
+                                thDataWork.TablesLinesDict.AddTry(
+                                orig
+                                ,
+                                trans
+                                );
+                            }
+                        }
                     }
                 }
             }
         }
+
+        /// <summary>
+        /// Hardcoded fixes for cells for specific projects
+        /// </summary>
+        /// <returns></returns>
+        internal virtual string HardcodedFixes(string original, string translation)
+        {
+            return translation;
+        }
+
     }
 }

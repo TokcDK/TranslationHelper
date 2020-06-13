@@ -92,5 +92,8 @@
     <Setting Name="ApplyFixesOnTranslation" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="UseAllDBFilesForOnlineTranslationForAll" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
