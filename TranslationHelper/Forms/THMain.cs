@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -1248,15 +1249,23 @@ namespace TranslationHelper
                 {
                     LoadTranslationFromDB(lastautosavepath);
                 }
+                else
+                {
+                    var result = MessageBox.Show(T._("DB not found. Try to load from all exist?"), T._("DB not found"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result == DialogResult.Yes)
+                    {
+                        thDataWork.Main.LoadTranslationFromDB(lastautosavepath);
+                    }
+                }
 
                 IsOpeningInProcess = false;
             }
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy = false;
-        internal async void LoadTranslationFromDB(string sPath = "")
+        internal async void LoadTranslationFromDB(string sPath = "", bool UseAllDB=false)
         {
-            if (LoadTranslationToolStripMenuItem_ClickIsBusy)
+            if (LoadTranslationToolStripMenuItem_ClickIsBusy || (!UseAllDB && sPath.Length==0))
             {
                 return;
             }
@@ -1275,12 +1284,23 @@ namespace TranslationHelper
             //THFilesElementsDataset.Reset();
             //THFilesListBox.Items.Clear();
 
-            using (DataSet DBDataSet = new DataSet())
-            {
 
-                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath)).ConfigureAwait(true);
+            if (UseAllDB)
+            {
+                ProgressInfo(true, "Get all databases");
+                FunctionsDBFile.MergeAllDBtoOne(thDataWork);
+                new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(thDataWork.AllDBmerged);
             }
+            else
+            {
+                using (DataSet DBDataSet = new DataSet())
+                {
+
+                    //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                    await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath)).ConfigureAwait(true);
+                }
+            }
+
 
             THFileElementsDataGridView.Refresh();
             /*

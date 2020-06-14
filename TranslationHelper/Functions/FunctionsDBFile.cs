@@ -371,6 +371,10 @@ namespace TranslationHelper.Main.Functions
                 try
                 {
                     var table = dBDataSet.Tables[t];
+                    if (!table.Columns.Contains("Original") || !table.Columns.Contains("Translation"))
+                    {
+                        continue;
+                    }
 
                     int RowsCount = table.Rows.Count;
 
@@ -379,7 +383,7 @@ namespace TranslationHelper.Main.Functions
                         var row = table.Rows[r];
                         if (!db.ContainsKey(row["Original"] as string))
                         {
-                            if ((DontAddEmptyTranslation && row["Translation"] != null && !string.IsNullOrEmpty(row["Translation"] as string)) || (DontAddEqualTranslation && row["Translation"] as string == row["Original"] as string))
+                            if ((DontAddEmptyTranslation && (row["Translation"] == null || string.IsNullOrEmpty(row["Translation"] as string))) || (DontAddEqualTranslation && row["Translation"] as string == row["Original"] as string))
                             {
                                 continue;
                             }
@@ -430,10 +434,10 @@ namespace TranslationHelper.Main.Functions
         {
             var tDir = Path.Combine(Application.StartupPath, "DB");
             HashSet<string> paths = new HashSet<string>();
-            foreach (var DBfile in Directory.GetFiles(tDir))
+            foreach (var DBfile in Directory.GetFiles(tDir, "*", SearchOption.AllDirectories))
             {
                 var ext = Path.GetExtension(DBfile);
-                if (ext != ".xml" && ext != ".cmx" && ext != ".cmz")
+                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBfile.Contains("THTranslationCache") || DBfile.Contains("_autosave"))
                 {
                     continue;
                 }
@@ -480,14 +484,14 @@ namespace TranslationHelper.Main.Functions
         {
             var baseName = GetBaseDBFileName(DBfile);
             string newestfile = DBfile;
-            foreach (var file in Directory.GetFiles(tDir, baseName + "*.*"))
+            foreach (var file in Directory.GetFiles(tDir, baseName + "*.*", SearchOption.AllDirectories))
             {
                 if (paths != null && !paths.Contains(file))
                 {
                     paths.Add(file);
                 }
 
-                if (file!= newestfile && new FileInfo(file).LastWriteTime > new FileInfo(newestfile).LastWriteTime)
+                if (file != newestfile && new FileInfo(file).LastWriteTime > new FileInfo(newestfile).LastWriteTime)
                 {
                     newestfile = file;
                 }

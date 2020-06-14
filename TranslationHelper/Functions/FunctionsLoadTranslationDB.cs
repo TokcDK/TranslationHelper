@@ -399,7 +399,7 @@ namespace TranslationHelper.Functions
                 var result = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
                 {
-                    thDataWork.Main.LoadTranslationFromDB(lastautosavepath);
+                    thDataWork.Main.LoadTranslationFromDB(string.Empty, true);
                 }
             }
         }
