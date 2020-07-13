@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Extensions;
+using TranslationHelper.OnlineTranslators;
 
 namespace TranslationHelper.Translators
 {
@@ -213,9 +214,6 @@ namespace TranslationHelper.Translators
                 return _Languages;
             }
         }
-
-        //Browser UserAgent
-        protected const string BrowserUserAgent = "Opera/9.80 (J2ME/MIDP; Opera Mini/5.1.21214/28.2725; U; en) Presto/2.8.119 Version/11.10";
 
         protected static string GetTranslationHtmlElement(HtmlDocument htmlDocument)
         {

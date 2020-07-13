@@ -234,41 +234,6 @@ namespace TranslationHelper
             ////////////////////////////
         }
 
-        //readonly bool THdebug = true;
-        StringBuilder THsbLog;// = new StringBuilder();
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="TextToLog">TextToLog</param>
-        /// <param name="WriteNow">If True then text will be now writed to log else only added to be writed later<br/></param>
-        public void LogToFile(string TextToLog, bool WriteNow = true)
-        {
-            if (THsbLog == null)
-            {
-                THsbLog = new StringBuilder();
-            }
-            if (Properties.Settings.Default.THdebug)
-            {
-                if (WriteNow)
-                {
-                    if (THsbLog.Length == 0)
-                    {
-                        FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log"), DateTime.Now + " >>" + TextToLog + Environment.NewLine, Properties.Settings.Default.DebugMode);
-                    }
-                    else
-                    {
-                        FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log"), DateTime.Now + " >>" + THsbLog + Environment.NewLine + TextToLog + Environment.NewLine, Properties.Settings.Default.DebugMode);
-                        //File.Move(Application.StartupPath + "\\TranslationHelper.log", Application.StartupPath + "\\TranslationHelper" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") + ".log");
-                        THsbLog.Clear();
-                    }
-                }
-                else
-                {
-                    THsbLog.Append(DateTime.Now + " >>" + TextToLog + Environment.NewLine);
-                }
-            }
-        }
-
         internal bool IsOpeningInProcess = false;
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1254,7 +1219,7 @@ namespace TranslationHelper
                     var result = MessageBox.Show(T._("DB not found. Try to load from all exist?"), T._("DB not found"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result == DialogResult.Yes)
                     {
-                        thDataWork.Main.LoadTranslationFromDB(lastautosavepath);
+                        thDataWork.Main.LoadTranslationFromDB(lastautosavepath,true);
                     }
                 }
 
@@ -1329,6 +1294,12 @@ namespace TranslationHelper
             if (sPath.Length == 0)
             {
                 sPath = Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath");
+            }
+
+            if (!File.Exists(sPath))
+            {
+                ProgressInfo(false);
+                return;
             }
 
             ProgressInfo(true, T._("Reading DB File") + "...");
@@ -3110,6 +3081,90 @@ namespace TranslationHelper
                     }
                 }
             }
+        }
+
+        private void newTransTestsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var text = "消費税率変更についての商品価格の変更につきまして。";
+
+            MessageBox.Show(string.Format(
+                      HttpsServicePointRomanizeTemplateUrl,
+                      "auto",
+                      Tk(text),
+                      Uri.EscapeDataString(text)));
+        }
+
+        // TKK Approach stolen from Translation Aggregator r190, all credits to Sinflower
+        private long m = 427761;
+        private long s = 1179739010;
+        private int _translationsPerRequest = 10;
+        private int _translationCount = 0;
+        //private static readonly string HttpsServicePointTranslateTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl={1}&dt=t&dt=at&tk={2}&q={3}";
+        private static readonly string HttpsServicePointTranslateTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl={1}&dt=t&tk={2}&q={3}";
+        private static readonly string HttpsServicePointRomanizeTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl=en&dt=rm&tk={1}&q={2}";
+        private static readonly string HttpsTranslateUserSite = "https://translate.google.com";
+        private static readonly Random RandomNumbers = new Random();
+        private int _resetAfter = RandomNumbers.Next(75, 125);
+        private long Vi(long r, string o)
+        {
+            for (var t = 0; t < o.Length; t += 3)
+            {
+                long a = o[t + 2];
+                a = a >= 'a' ? a - 87 : a - '0';
+                a = '+' == o[t + 1] ? r >> (int)a : r << (int)a;
+                r = '+' == o[t] ? r + a & 4294967295 : r ^ a;
+            }
+
+            return r;
+        }
+
+        private string Tk(string r)
+        {
+            List<long> S = new List<long>();
+
+            for (var v = 0; v < r.Length; v++)
+            {
+                long A = r[v];
+                if (128 > A)
+                    S.Add(A);
+                else
+                {
+                    if (2048 > A)
+                        S.Add(A >> 6 | 192);
+                    else if (55296 == (64512 & A) && v + 1 < r.Length && 56320 == (64512 & r[v + 1]))
+                    {
+                        A = 65536 + ((1023 & A) << 10) + (1023 & r[++v]);
+                        S.Add(A >> 18 | 240);
+                        S.Add(A >> 12 & 63 | 128);
+                    }
+                    else
+                    {
+                        S.Add(A >> 12 | 224);
+                        S.Add(A >> 6 & 63 | 128);
+                    }
+
+                    S.Add(63 & A | 128);
+                }
+            }
+
+            const string F = "+-a^+6";
+            const string D = "+-3^+b+-f";
+            long p = m;
+
+            for (var b = 0; b < S.Count; b++)
+            {
+                p += S[b];
+                p = Vi(p, F);
+            }
+
+            p = Vi(p, D);
+            p ^= s;
+            if (0 > p)
+                p = (2147483647 & p) + 2147483648;
+
+            p %= (long)1e6;
+
+            return p.ToString(CultureInfo.InvariantCulture) + "." + (p ^ m).ToString(CultureInfo.InvariantCulture);
         }
 
         //Материалы

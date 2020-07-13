@@ -10,72 +10,79 @@ namespace TranslationHelper.Functions
 {
     static class FunctionsStringFixes
     {
-        internal static string ApplyHardFixes(string original, string translation, THDataWork thDataWork=null)
+        internal static string ApplyHardFixes(string original, string translation, THDataWork thDataWork = null)
         {
             if (string.IsNullOrWhiteSpace(translation) || original == translation || string.IsNullOrWhiteSpace(original))
             {
                 return translation;
             }
 
-            //Fix 1
-            /////////////////////////////////	
-            //"
-            //「……くっ……。
-            //　いったい何をしてるんだ。わたしは……。"
-            /////////////////////////////////	
-            //" 
-            //“…………….
-            //　What are you doing? I……."
-            /////////////////////////////////	
-            translation = FixENJPQuoteOnStringStart2ndLine(original, translation);
+            try
+            {
+                //Fix 1
+                /////////////////////////////////	
+                //"
+                //「……くっ……。
+                //　いったい何をしてるんだ。わたしは……。"
+                /////////////////////////////////	
+                //" 
+                //“…………….
+                //　What are you doing? I……."
+                /////////////////////////////////	
+                translation = FixENJPQuoteOnStringStart2ndLine(original, translation);
 
-            //fix
-            /* 「一攫千金を狙ってスロットに挑戦する？
-　\\C[16]１プレイ \\C[0]\\V[7] \\C[16]\\G\\C[0]よ。
+                //fix
+                /* 「一攫千金を狙ってスロットに挑戦する？
+    　\\C[16]１プレイ \\C[0]\\V[7] \\C[16]\\G\\C[0]よ。
 
-"Challenge the slots for a quick getaway?
-　\\C[16]1 play \\C[0]\\V[7]\\C[16]\\G\\C[0] */
-            translation = FixENJPQuoteOnStringStart1stLine(original, translation);
+    "Challenge the slots for a quick getaway?
+    　\\C[16]1 play \\C[0]\\V[7]\\C[16]\\G\\C[0] */
+                translation = FixENJPQuoteOnStringStart1stLine(original, translation);
 
-            /////////////////////////////////
-            //Fix 2 Quotation
-            translation = FixForRPGMAkerQuotationInSomeStrings(original, translation);
+                /////////////////////////////////
+                //Fix 2 Quotation
+                translation = FixForRPGMAkerQuotationInSomeStrings(original, translation);
 
-            /////////////////////////////////
-            /* 
-『先日、あなたが施した解呪の作用のようですね。
-　古代種が相手なら意思疎通が可能になったようです』
+                /////////////////////////////////
+                /* 
+    『先日、あなたが施した解呪の作用のようですね。
+    　古代種が相手なら意思疎通が可能になったようです』
 
-"It sounds like the curse you did the other day.
-　It seems that communication was possible if the ancient species was the opponent. '
+    "It sounds like the curse you did the other day.
+    　It seems that communication was possible if the ancient species was the opponent. '
 
 
-『不安ならあなたもあの子を見守って下さい。
-　私がいくら注意を払おうと、呪いの付与は稀に
-　私の意識を超えて発現する』
+    『不安ならあなたもあの子を見守って下さい。
+    　私がいくら注意を払おうと、呪いの付与は稀に
+    　私の意識を超えて発現する』
 
-"If you are uneasy, please watch over him.
-　No matter how much attention I pay, curse grants are rare
-　Expresses beyond my consciousness" 
- */
-            translation = FixForRPGMAkerQuotationInSomeStrings2(original, translation);
+    "If you are uneasy, please watch over him.
+    　No matter how much attention I pay, curse grants are rare
+    　Expresses beyond my consciousness" 
+     */
+                translation = FixForRPGMAkerQuotationInSomeStrings2(original, translation);
 
-            // fix
-            //orig = \\N[1]いったい何をしてるんだ
-            //trans = \\NBlablabla[1]blabla
-            translation = FixBrokenNameVar(translation);
+                // fix
+                //orig = \\N[1]いったい何をしてるんだ
+                //trans = \\NBlablabla[1]blabla
+                translation = FixBrokenNameVar(translation);
 
-            //\\N[3] in some strings was broken to \\3[3]
-            translation = FixBrokenNameVar2(original, translation);
+                //\\N[3] in some strings was broken to \\3[3]
+                translation = FixBrokenNameVar2(original, translation);
 
-            //Remove japanese katakana\hiragana\ch kana chars
-            translation = RemoveIeroglifs(translation);
+                //Remove japanese katakana\hiragana\ch kana chars
+                translation = RemoveIeroglifs(translation);
 
-            //Lialua temp fix
-            //translation = LuaLiaFix(original, translation);
+                //Lialua temp fix
+                //translation = LuaLiaFix(original, translation);
 
-            //Project's specific fixes
-            translation = thDataWork.CurrentProject.HardcodedFixes(original, translation);
+                //Project's specific fixes
+                translation = thDataWork.CurrentProject.HardcodedFixes(original, translation);
+            }
+            catch (Exception ex)
+            {
+                new Functions.FunctionsLogs().LogToFile(Environment.NewLine + "Hard fixes error:" + Environment.NewLine + ex + Environment.NewLine);
+            }
 
             return translation;
         }

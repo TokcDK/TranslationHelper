@@ -396,10 +396,18 @@ namespace TranslationHelper.Functions
             var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(thDataWork), FunctionsDBFile.GetDBFileName(thDataWork) + FunctionsDBFile.GetDBCompressionExt(thDataWork));
             if (File.Exists(lastautosavepath))
             {
-                var result = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (result == DialogResult.Yes)
+                var LoadFoundDBQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (LoadFoundDBQuestion == DialogResult.Yes)
                 {
-                    thDataWork.Main.LoadTranslationFromDB(string.Empty, true);
+                    thDataWork.Main.LoadTranslationFromDB(lastautosavepath);
+                }
+                else
+                {
+                    var LoadTranslationsFromAllDBQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (LoadTranslationsFromAllDBQuestion == DialogResult.Yes)
+                    {
+                        thDataWork.Main.LoadTranslationFromDB(string.Empty, true);
+                    }
                 }
             }
         }

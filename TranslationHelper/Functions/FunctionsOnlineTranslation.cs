@@ -921,6 +921,8 @@ namespace TranslationHelper.Functions
                     PreviousRowIndex = NewRowIndex;
                 }
             }
+
+
             //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
             thDataWork.OnlineTranslationCache.WriteCache();//промежуточная запись кеша
 
@@ -1019,72 +1021,91 @@ namespace TranslationHelper.Functions
 
         private void TranslateLinesAndSetTranslation(List<string> InputLines, List<InputLinesInfoData> InputLinesInfo)
         {
-            //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
-            //add table rows to string array
-            string[] OriginalLines = InputLines.ToArray();
-
-            //сброс кеша в GoogleAPI
-            Translator.ResetCache();
-
-            //send string array to translation for multiline
-            string[] TranslatedLines = Translator.Translate(OriginalLines);
-
-            //int infoCount = InputLinesInfo.Rows.Count;
-            //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
-
-            if (TranslatedLines != null && TranslatedLines.Length > 0 && InputLines.Count == TranslatedLines.Length)
+            int DebugInfoIndex = 0;
+            int DebugTranslatedLinesIndex = 0;
+            try
             {
-                StringBuilder ResultValue = new StringBuilder();
-                int TranslatedLinesIndex = 0;
-                InputLinesInfoData InfoRow = null;
-                for (int InfoIndex = 0; InfoIndex < InputLinesInfo.Count; InfoIndex++)
+                //https://www.codeproject.com/Questions/722877/DataTable-to-string-array
+                //add table rows to string array
+                string[] OriginalLines = InputLines.ToArray();
+
+                //сброс кеша в GoogleAPI
+                Translator.ResetCache();
+
+                //send string array to translation for multiline
+                string[] TranslatedLines = Translator.Translate(OriginalLines);
+
+                //int infoCount = InputLinesInfo.Rows.Count;
+                //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
+
+                if (TranslatedLines != null && TranslatedLines.Length > 0 && InputLines.Count == TranslatedLines.Length)
                 {
-                    InfoRow = InputLinesInfo[InfoIndex];
+                    StringBuilder ResultValue = new StringBuilder();
+                    int TranslatedLinesIndex = 0;
+                    InputLinesInfoData InfoRow = null;
+                    for (int InfoIndex = 0; InfoIndex < InputLinesInfo.Count; InfoIndex++)
+                    {
+                        DebugInfoIndex = InfoIndex;
+                        DebugTranslatedLinesIndex = TranslatedLinesIndex;
 
-                    string newLine;
-                    if (!InfoRow.GetIsLastLineInString)
-                    {
-                        newLine = Environment.NewLine;
-                    }
-                    else
-                    {
-                        newLine = string.Empty;
-                    }
+                        InfoRow = InputLinesInfo[InfoIndex];
 
-                    if (!string.IsNullOrEmpty(InfoRow.GetCachedTranslation))//перевод найден в кеше
-                    {
-                        ResultValue.Append(
-                            Properties.Settings.Default.ApplyFixesOnTranslation ?
-                                FunctionsStringFixes.ApplyHardFixes(TranslatedLines[TranslatedLinesIndex], InfoRow.GetCachedTranslation.THFixCells(thDataWork), thDataWork)
-                                : InfoRow.GetCachedTranslation
-                            );
-                    }
-                    else if (string.IsNullOrEmpty(InfoRow.GetOriginal))//пустая строка в оригинале
-                    {
-                    }
-                    else
-                    {
-                        if (InputLines[TranslatedLinesIndex] == InfoRow.GetOriginal)
+                        string newLine;
+                        if (!InfoRow.GetIsLastLineInString)
                         {
-                            ResultValue.Append(TranslatedLines[TranslatedLinesIndex]);
+                            newLine = Environment.NewLine;
                         }
                         else
                         {
-                            ResultValue.Append(
-                                PasteTranslationBackIfExtracted
-                            (
-                                TranslatedLines[TranslatedLinesIndex]
-                            ,
-                                InfoRow.GetOriginal
-                            ,
-                                InputLines[TranslatedLinesIndex]
-                            ));
+                            newLine = string.Empty;
                         }
-                        TranslatedLinesIndex++;
-                    }
-                    ResultValue.Append(newLine);
 
-                    if (newLine.Length == 0)
+                        if (!string.IsNullOrEmpty(InfoRow.GetCachedTranslation))//перевод найден в кеше
+                        {
+                            ResultValue.Append(
+                                Properties.Settings.Default.ApplyFixesOnTranslation ?
+                                    FunctionsStringFixes.ApplyHardFixes(TranslatedLines[TranslatedLinesIndex], InfoRow.GetCachedTranslation.THFixCells(thDataWork), thDataWork)
+                                    : InfoRow.GetCachedTranslation
+                                );
+                        }
+                        else if (string.IsNullOrEmpty(InfoRow.GetOriginal))//пустая строка в оригинале
+                        {
+                        }
+                        else
+                        {
+                            if (InputLines[TranslatedLinesIndex] == InfoRow.GetOriginal)
+                            {
+                                ResultValue.Append(TranslatedLines[TranslatedLinesIndex]);
+                            }
+                            else
+                            {
+                                ResultValue.Append(
+                                    PasteTranslationBackIfExtracted
+                                (
+                                    TranslatedLines[TranslatedLinesIndex]
+                                ,
+                                    InfoRow.GetOriginal
+                                ,
+                                    InputLines[TranslatedLinesIndex]
+                                ));
+                            }
+                            TranslatedLinesIndex++;
+                        }
+                        ResultValue.Append(newLine);
+
+                        if (newLine.Length == 0)
+                        {
+                            SetTranslationResultToCellIfEmpty(
+                                InfoRow.GetTableIndex
+                                ,
+                                InfoRow.GetRowIndex
+                                ,
+                                ResultValue
+                                );
+                            ResultValue.Clear();
+                        }
+                    }
+                    if (ResultValue.Length > 0 && InfoRow != null)
                     {
                         SetTranslationResultToCellIfEmpty(
                             InfoRow.GetTableIndex
@@ -1096,17 +1117,14 @@ namespace TranslationHelper.Functions
                         ResultValue.Clear();
                     }
                 }
-                if (ResultValue.Length > 0 && InfoRow != null)
-                {
-                    SetTranslationResultToCellIfEmpty(
-                        InfoRow.GetTableIndex
-                        ,
-                        InfoRow.GetRowIndex
-                        ,
-                        ResultValue
-                        );
-                    ResultValue.Clear();
-                }
+            }
+            catch (Exception ex)
+            {
+                new Functions.FunctionsLogs().LogToFile(
+                    Environment.NewLine + "TranslateLinesAndSetTranslation error:" + Environment.NewLine + ex
+                    + Environment.NewLine + "InfoIndex=" + DebugInfoIndex
+                    + Environment.NewLine + "TranslatedLinesIndex=" + DebugTranslatedLinesIndex
+                    + Environment.NewLine);
             }
         }
 

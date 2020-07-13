@@ -138,6 +138,7 @@
             this.TargetTextBoxLinePositionLabelData = new System.Windows.Forms.Label();
             this.TargetTextBoxColumnPositionLabel = new System.Windows.Forms.Label();
             this.TargetTextBoxColumnPositionLabelData = new System.Windows.Forms.Label();
+            this.newTransTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -350,7 +351,8 @@
             this.splitLinesWhichLongestOfLimitToolStripMenuItem,
             this.splitLinesWhichLongerOfLimitALLToolStripMenuItem,
             this.fixMessagesInTheTableToolStripMenuItem,
-            this.extraHardFixesToolStripMenuItem});
+            this.extraHardFixesToolStripMenuItem,
+            this.newTransTestsToolStripMenuItem});
             this.editToolStripMenuItem.Enabled = false;
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -1229,6 +1231,13 @@
             this.TargetTextBoxColumnPositionLabelData.TabIndex = 13;
             this.TargetTextBoxColumnPositionLabelData.Text = "0";
             // 
+            // newTransTestsToolStripMenuItem
+            // 
+            this.newTransTestsToolStripMenuItem.Name = "newTransTestsToolStripMenuItem";
+            this.newTransTestsToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.newTransTestsToolStripMenuItem.Text = "NewTransTests";
+            this.newTransTestsToolStripMenuItem.Click += new System.EventHandler(this.newTransTestsToolStripMenuItem_Click);
+            // 
             // THMain
             // 
             this.AccessibleDescription = "Program help with translation of some RPG games";
@@ -1387,6 +1396,7 @@
         internal System.Windows.Forms.Label TargetTextBoxLinePositionLabelData;
         internal System.Windows.Forms.Label TargetTextBoxColumnPositionLabel;
         internal System.Windows.Forms.Label TargetTextBoxColumnPositionLabelData;
+        private System.Windows.Forms.ToolStripMenuItem newTransTestsToolStripMenuItem;
     }
 }
 
