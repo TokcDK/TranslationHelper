@@ -129,7 +129,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="thDataWork"></param>
         /// <param name="cvalue"></param>
         /// <returns></returns>
-        public static string THFixCells(this string cvalue, THDataWork thDataWork) 
+        public static string THFixCells(this string cvalue, THDataWork thDataWork)
         {
             string rule;
             string result;
@@ -140,15 +140,15 @@ namespace TranslationHelper.Main.Functions
                 rule = PatternReplacementPair.Key;
                 result = PatternReplacementPair.Value;
 
-                //задать правило
-                var regexrule = new Regex(rule);
-
-                //найти совпадение с заданным правилом в выбранной ячейке
-                var mc = regexrule.Matches(cvalue);
-                //перебрать все айденные совпадения
-                foreach (Match m in mc)
+                try
                 {
-                    try//если будет корявый регекс и выдаст исключение
+                    //задать правило
+                    var regexrule = new Regex(rule);
+
+                    //найти совпадение с заданным правилом в выбранной ячейке
+                    var mc = regexrule.Matches(cvalue);
+                    //перебрать все айденные совпадения
+                    foreach (Match m in mc)
                     {
                         //LogToFile("match=" + m.ToString() + ", result=" + regexrule.Replace(m.Value.ToString(), result), true);
 
@@ -158,10 +158,12 @@ namespace TranslationHelper.Main.Functions
 
                         //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
                     }
-                    catch
-                    {
-                        MessageBox.Show(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
-                    }
+                }
+                catch (ArgumentException ex)
+                {
+                    var message = T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule + Environment.NewLine + "Error:" + Environment.NewLine + ex;
+                    new FunctionsLogs().LogToFile(message);
+                    MessageBox.Show(message);
                 }
             }
 

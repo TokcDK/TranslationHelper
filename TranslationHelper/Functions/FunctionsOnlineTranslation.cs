@@ -1062,11 +1062,18 @@ namespace TranslationHelper.Functions
 
                         if (!string.IsNullOrEmpty(InfoRow.GetCachedTranslation))//перевод найден в кеше
                         {
-                            ResultValue.Append(
+                            if (TranslatedLinesIndex < TranslatedLines.Length && InfoRow.GetOriginal != InfoRow.GetCachedTranslation && !InfoRow.GetCachedTranslation.HaveMostOfRomajiOtherChars())
+                            {
+                                ResultValue.Append(
                                 Properties.Settings.Default.ApplyFixesOnTranslation ?
                                     FunctionsStringFixes.ApplyHardFixes(TranslatedLines[TranslatedLinesIndex], InfoRow.GetCachedTranslation.THFixCells(thDataWork), thDataWork)
                                     : InfoRow.GetCachedTranslation
                                 );
+                            }
+                            else
+                            {
+                                ResultValue.Append(InfoRow.GetCachedTranslation);
+                            }
                         }
                         else if (string.IsNullOrEmpty(InfoRow.GetOriginal))//пустая строка в оригинале
                         {
