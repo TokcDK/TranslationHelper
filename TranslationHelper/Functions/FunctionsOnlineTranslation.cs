@@ -928,6 +928,7 @@ namespace TranslationHelper.Functions
 
             InputLines.Clear();
             InputLinesInfo.Clear();
+            Translator.OnTranslatorClosed();
         }
 
         private void TranslateLinesAndSetTranslationMulti(List<string> InputLines, List<InputLinesInfoDataMultiExtracted> InputLinesInfo)
@@ -1030,7 +1031,7 @@ namespace TranslationHelper.Functions
                 string[] OriginalLines = InputLines.ToArray();
 
                 //сброс кеша в GoogleAPI
-                Translator.ResetCache();
+                //Translator.ResetCache();
 
                 //send string array to translation for multiline
                 string[] TranslatedLines = Translator.Translate(OriginalLines);

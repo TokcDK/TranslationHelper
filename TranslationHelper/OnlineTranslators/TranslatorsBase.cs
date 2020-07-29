@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 using TranslationHelper.Extensions;
 using TranslationHelper.OnlineTranslators;
@@ -15,8 +16,21 @@ namespace TranslationHelper.Translators
         internal void ResetCache()
         {
             myCache.Clear();
+            if (webClient == null)
+            {
+                webClient = new WebClient();
+            }
+            webClient.UseDefaultCredentials = false;
         }
 
+        internal void OnTranslatorClosed()
+        {
+            webClient.Container.Dispose();
+            webClient.Dispose();
+            webClient = null;
+        }
+
+        protected WebClient webClient;
         public virtual string Translate(string OriginalText)
         {
             string ResultOfTranslation;

@@ -133,67 +133,74 @@ namespace TranslationHelper
 
                     string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
-                    using (WebClient webClient = new WebClient())
+                    if (webClient == null)
+                        webClient = new WebClient();
+
+                    //using (WebClient webClient = new WebClient())
+                    //{
+                    //}
+                    webClient.Encoding = Encoding.UTF8;
+                    webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
+                    try
                     {
-                        webClient.Encoding = Encoding.UTF8;
-                        webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
+                        //Материалы
+                        //http://www.cyberforum.ru/ado-net/thread903701.html
+                        //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
+                        //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
+
+                        //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
+
+                        string text = webClient.DownloadString(address);
+
+                        HtmlDocument htmlDocument = WBhtmlDocument();
+                        htmlDocument.Write(text);
                         try
                         {
-                            //Материалы
-                            //http://www.cyberforum.ru/ado-net/thread903701.html
-                            //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
-                            //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
+                            string text2 = GetTranslationHtmlElement(htmlDocument).FixFormat();
 
-                            //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
+                            myCache[OriginalText] = text2;
 
-                            string text = webClient.DownloadString(address);
+                            return text2;
 
-                            HtmlDocument htmlDocument = WBhtmlDocument();
-                            htmlDocument.Write(text);
-                            try
                             {
-                                string text2 = GetTranslationHtmlElement(htmlDocument).FixFormat();
-
-                                myCache[OriginalText] = text2;
-
-                                return text2;
-                                
-                                {
-                                    //foreach (object obj in htmlDocument.Body.Children)
-                                    //{
-                                    //    HtmlElement htmlElement = (HtmlElement)obj;
-                                    //    if (htmlElement.InnerText == null)
-                                    //    {
-                                    //    }
-                                    //    else
-                                    //    {
-                                    //        //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
-                                    //        if (htmlElement.InnerHtml.StartsWith("<"))
-                                    //        {
-                                    //        }
-                                    //        else
-                                    //        {
-                                    //            //string text2 = htmlElement.InnerText.Replace(" BBC ", "BBC").Replace(" BBC", "BBC").Replace("BBC ", "BBC").Replace("BBC", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                    //            //string text2 = htmlElement.InnerText.Replace(" DNTT ", "DNTT").Replace(" DNTT", "DNTT").Replace("DNTT ", "DNTT").Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                    //            string text2 = FixFormat(htmlElement.InnerText);
-                                    //            //string text2 = htmlElement.InnerText.Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                    //            myCache[OriginalText] = text2;
-                                    //            //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\ntext2:\r\n" + text2);
-                                    //            return text2;
-                                    //        }
-                                    //    }
-                                    //}
-                                }
-                            }
-                            finally
-                            {
+                                //foreach (object obj in htmlDocument.Body.Children)
+                                //{
+                                //    HtmlElement htmlElement = (HtmlElement)obj;
+                                //    if (htmlElement.InnerText == null)
+                                //    {
+                                //    }
+                                //    else
+                                //    {
+                                //        //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
+                                //        if (htmlElement.InnerHtml.StartsWith("<"))
+                                //        {
+                                //        }
+                                //        else
+                                //        {
+                                //            //string text2 = htmlElement.InnerText.Replace(" BBC ", "BBC").Replace(" BBC", "BBC").Replace("BBC ", "BBC").Replace("BBC", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                //            //string text2 = htmlElement.InnerText.Replace(" DNTT ", "DNTT").Replace(" DNTT", "DNTT").Replace("DNTT ", "DNTT").Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                //            string text2 = FixFormat(htmlElement.InnerText);
+                                //            //string text2 = htmlElement.InnerText.Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+                                //            myCache[OriginalText] = text2;
+                                //            //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\ntext2:\r\n" + text2);
+                                //            return text2;
+                                //        }
+                                //    }
+                                //}
                             }
                         }
-                        catch// (Exception)
+                        finally
                         {
-                            //Debog.Writeline(ex);
                         }
                     }
+                    catch// (Exception)
+                    {
+                        //Debog.Writeline(ex);
+                    }
+                    //finally
+                    //{
+                    //    webClient.Dispose();
+                    //}
                     ResultOfTranslation = string.Empty;
                 }
             }
@@ -247,85 +254,94 @@ namespace TranslationHelper
             }
             //FileWriter.WriteData("c:\\THLog.log", "\r\nstringBuilder.ToString():\r\n" + stringBuilder.ToString());
             string arg = HttpUtility.UrlEncode(stringBuilder.ToString(), Encoding.UTF8);
-            string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);            
-            using (WebClient webClient = new WebClient())
+            string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
+
+            if (webClient == null) 
             {
-                webClient.Encoding = Encoding.UTF8;
-                //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
-                webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Win7_Latest);
-                try
-                {
-                    //Материалы, что помогли
-                    //http://www.cyberforum.ru/ado-net/thread903701.html
-                    //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
-                    //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
-
-                    //скачать страницу
-                    string text = webClient.DownloadString(address);
-                    //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"TEXT:"+Environment.NewLine + text);
-
-                    HtmlDocument htmlDocument = WBhtmlDocument();
-                    htmlDocument.Write(text);
-
-                    {
-                        //string text2 = string.Empty;
-                        //try
-                        //{
-                        //    text2 = FixFormatMulti(GetTranslationHtmlElement(htmlDocument));
-                        //}
-                        //finally
-                        //{
-                        //}
-                    }
-
-                    string text2 = GetTranslationHtmlElement(htmlDocument).FixFormatMulti();
-
-                    {
-                        //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"text2:"+Environment.NewLine + text2);
-                        //if (text2.Length == 0)
-                        //{
-                        //    for (int j = 0; j < array.Count(); j++)
-                        //    {
-                        //        if (array[j] == null)
-                        //        {
-                        //            array[j] = string.Empty;
-                        //        }
-                        //    }
-                        //    return array;
-                        //}
-
-                        //array = NormalizeResponse(text2);
-                        //MatchCollection matchCollection = myReg.Matches(text2);
-                        ////FileWriter.WriteData("c:\\THLog.log", "\r\nmatchCollection cnt:" + matchCollection.Count+ ", array.Count()"+ array.Count());
-                        //int matchnum = 0;
-                        //for (int k = 0; k < array.Count(); k++)
-                        //{
-                        //    //FileWriter.WriteData("c:\\THLog.log", "\r\narray[k]=" + array[k]);
-                        //    if (array[k] == null)
-                        //    {
-                        //        if (matchCollection.Count == matchnum)
-                        //        {
-                        //            array[k] = string.Empty;
-                        //        }
-                        //        else
-                        //        {
-                        //            //FileWriter.WriteData("c:\\THLog.log", "\r\nSet matchCollection["+matchnum+"].Value" + matchCollection[matchnum].Value);
-                        //            array[k] = matchCollection[matchnum].Value.Replace("DNTT", Environment.NewLine);
-                        //            matchnum++;
-                        //        }
-                        //    }
-                        //}
-                    }
-
-                    return text2.Length == 0 ? RetWithNullToEmpty(array) : SplitTextToLinesAndRestoreSomeSpecsymbols(text2);
-                    //return array;
-                }
-                catch// (Exception ex)
-                {
-                    //FileWriter.WriteData("c:\\Exc.log", "\r\nError:" + ex);
-                    //Debog.Writeline(ex);
-                }
+                webClient = new WebClient();
             }
+            //using (WebClient webClient = new WebClient())
+            //{
+            //}
+            webClient.Encoding = Encoding.UTF8;
+            //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
+            webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Win7_Latest);
+            try
+            {
+                //Материалы, что помогли
+                //http://www.cyberforum.ru/ado-net/thread903701.html
+                //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
+                //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
+
+                //скачать страницу
+                string text = webClient.DownloadString(address);
+                //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"TEXT:"+Environment.NewLine + text);
+
+                HtmlDocument htmlDocument = WBhtmlDocument();
+                htmlDocument.Write(text);
+
+                {
+                    //string text2 = string.Empty;
+                    //try
+                    //{
+                    //    text2 = FixFormatMulti(GetTranslationHtmlElement(htmlDocument));
+                    //}
+                    //finally
+                    //{
+                    //}
+                }
+
+                string text2 = GetTranslationHtmlElement(htmlDocument).FixFormatMulti();
+
+                {
+                    //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"text2:"+Environment.NewLine + text2);
+                    //if (text2.Length == 0)
+                    //{
+                    //    for (int j = 0; j < array.Count(); j++)
+                    //    {
+                    //        if (array[j] == null)
+                    //        {
+                    //            array[j] = string.Empty;
+                    //        }
+                    //    }
+                    //    return array;
+                    //}
+
+                    //array = NormalizeResponse(text2);
+                    //MatchCollection matchCollection = myReg.Matches(text2);
+                    ////FileWriter.WriteData("c:\\THLog.log", "\r\nmatchCollection cnt:" + matchCollection.Count+ ", array.Count()"+ array.Count());
+                    //int matchnum = 0;
+                    //for (int k = 0; k < array.Count(); k++)
+                    //{
+                    //    //FileWriter.WriteData("c:\\THLog.log", "\r\narray[k]=" + array[k]);
+                    //    if (array[k] == null)
+                    //    {
+                    //        if (matchCollection.Count == matchnum)
+                    //        {
+                    //            array[k] = string.Empty;
+                    //        }
+                    //        else
+                    //        {
+                    //            //FileWriter.WriteData("c:\\THLog.log", "\r\nSet matchCollection["+matchnum+"].Value" + matchCollection[matchnum].Value);
+                    //            array[k] = matchCollection[matchnum].Value.Replace("DNTT", Environment.NewLine);
+                    //            matchnum++;
+                    //        }
+                    //    }
+                    //}
+                }
+
+                return text2.Length == 0 ? RetWithNullToEmpty(array) : SplitTextToLinesAndRestoreSomeSpecsymbols(text2);
+                //return array;
+            }
+            catch// (Exception ex)
+            {
+                //FileWriter.WriteData("c:\\Exc.log", "\r\nError:" + ex);
+                //Debog.Writeline(ex);
+            }
+            //finally
+            //{
+            //    webClient.Dispose();
+            //}
             return null;
         }
 
@@ -345,6 +361,58 @@ namespace TranslationHelper
             //      Uri.EscapeDataString(arg));
             //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, stringBuilder.ToString());
         }
+
+        private static string[] RetWithNullToEmpty(string[] array)
+        {
+            int arrayLength = array.Length;
+            for (int j = 0; j < arrayLength; j++)
+            {
+                if (array[j] == null)
+                {
+                    array[j] = string.Empty;
+                }
+            }
+            return array;
+        }
+
+        private static HtmlDocument WBhtmlDocument()
+        {
+            using (WebBrowser WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty })//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
+            {
+                return WB.Document.OpenNew(true);
+            }
+        }
+
+        private static string[] SplitTextToLinesAndRestoreSomeSpecsymbols(string text2)
+        {
+            // возвращение знака новой строки и разделение на подстроки в массив
+            string[] array = text2
+                         //.Replace("<br> ", "<br>").Replace("<br>", string.Empty)
+                         .Replace(" </br> ", "</br>")
+                         .Replace("DNTT", Environment.NewLine)
+                         .Split(splitter, StringSplitOptions.None);
+
+            //возвращение <br>, если такие были изначально
+            array = array.Select(x => x.Replace("NBRN", "</br>")).ToArray();
+
+            //take берет все элементы кроме последнего пустого элемента массива, чтобы в основном коде не уменьшать его счет на один;
+            return array.Take(array.Length - 1).ToArray();
+        }
+
+        private const string DNTT = "DNTT";
+        //private const string DNTT = "<code>0</code>";
+
+        //private const string SEPARATOR = "\r\n#DONOTTRANSLATE#\r\n";
+
+        //private static WebBrowser WB = new WebBrowser();
+
+        //private static readonly Regex myReg = new Regex("(?<=##\\d## ).*?(?=##\\d##)", RegexOptions.Compiled);
+        //заменено на <br>
+        //private static readonly Regex myReg = new Regex(@"(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\<\# \1 \#\# )|(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\#\#\#\# )", RegexOptions.Compiled);
+
+        //## 27 #># Same sex with this woman _ <# 27 ## 
+        //\#\# \d{1,3} \#\# ?(.*) ?\#\# \d{1,3} \#\# ?
+        private static readonly string[] splitter = new string[] { "</br>" };
 
         // TKK Approach stolen from Translation Aggregator r190, all credits to Sinflower
         private long m = 427761;
@@ -418,57 +486,5 @@ namespace TranslationHelper
 
             return p.ToString(CultureInfo.InvariantCulture) + "." + (p ^ m).ToString(CultureInfo.InvariantCulture);
         }
-
-        private static string[] RetWithNullToEmpty(string[] array)
-        {
-            int arrayLength = array.Length;
-            for (int j = 0; j < arrayLength; j++)
-            {
-                if (array[j] == null)
-                {
-                    array[j] = string.Empty;
-                }
-            }
-            return array;
-        }
-
-        private static HtmlDocument WBhtmlDocument()
-        {
-            using (WebBrowser WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty })//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
-            {
-                return WB.Document.OpenNew(true);
-            }
-        }
-
-        private static string[] SplitTextToLinesAndRestoreSomeSpecsymbols(string text2)
-        {
-            // возвращение знака новой строки и разделение на подстроки в массив
-            string[] array = text2
-                         //.Replace("<br> ", "<br>").Replace("<br>", string.Empty)
-                         .Replace(" </br> ", "</br>")
-                         .Replace("DNTT", Environment.NewLine)
-                         .Split(splitter, StringSplitOptions.None);
-
-            //возвращение <br>, если такие были изначально
-            array = array.Select(x => x.Replace("NBRN", "</br>")).ToArray();
-
-            //take берет все элементы кроме последнего пустого элемента массива, чтобы в основном коде не уменьшать его счет на один;
-            return array.Take(array.Length - 1).ToArray();
-        }
-
-        private const string DNTT = "DNTT";
-        //private const string DNTT = "<code>0</code>";
-
-        //private const string SEPARATOR = "\r\n#DONOTTRANSLATE#\r\n";
-
-        //private static WebBrowser WB = new WebBrowser();
-
-        //private static readonly Regex myReg = new Regex("(?<=##\\d## ).*?(?=##\\d##)", RegexOptions.Compiled);
-        //заменено на <br>
-        //private static readonly Regex myReg = new Regex(@"(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\<\# \1 \#\# )|(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\#\#\#\# )", RegexOptions.Compiled);
-
-        //## 27 #># Same sex with this woman _ <# 27 ## 
-        //\#\# \d{1,3} \#\# ?(.*) ?\#\# \d{1,3} \#\# ?
-        private static readonly string[] splitter = new string[] { "</br>" };
     }
 }
