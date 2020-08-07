@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.OnlineTranslators;
 
@@ -16,21 +16,27 @@ namespace TranslationHelper.Translators
 {
     abstract class TranslatorsBase : IDisposable
     {
+        protected THDataWork thDataWork;
+        protected TranslatorsBase(THDataWork thDataWork)
+        {
+            this.thDataWork = thDataWork;
+            if (webClient == null)
+            {
+                webClient = new WebClientEx(thDataWork.OnlineTranslatorCookies);
+                //webClient = new ScrapingBrowser
+            }
+            //webClient.UseDefaultCredentials = false;            
+        }
+
         /// <summary>
         /// resets translator's session translation cache
         /// </summary>
         internal void ResetCache()
         {
-            myCache.Clear();
-            if (webClient == null)
-            {
-                webClient = new WebClientEx(cookies);
-                //webClient = new ScrapingBrowser
-            }
-            //webClient.UseDefaultCredentials = false;
+            sessionCache.Clear();
         }
 
-        protected CookieContainer cookies = new CookieContainer();
+        //protected CookieContainer cookies = new CookieContainer();
 
         internal void OnTranslatorClosed()
         {
@@ -122,9 +128,10 @@ namespace TranslationHelper.Translators
 
         public abstract string[] Translate(string[] OriginalText, string LanguageFrom = "auto", string LanguageTo = "en");
 
-        internal static readonly Dictionary<string, string> myCache = new Dictionary<string, string>(1);
+        internal static readonly Dictionary<string, string> sessionCache = new Dictionary<string, string>(1);
 
         private static readonly List<string> _Languages = new List<string>();
+
         public static List<string> Languages
         {
             get

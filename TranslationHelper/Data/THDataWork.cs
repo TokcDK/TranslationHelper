@@ -21,41 +21,77 @@ namespace TranslationHelper.Data
             ProjectsList = ProjectBase.GetListOfProjects(this);
         }
 
+        /// <summary>
+        /// regex rules which appling to original to show what need to translate
+        /// </summary>
         internal Dictionary<string, string> TranslationRegexRules = new Dictionary<string, string>();
         internal Dictionary<string, string> TranslationRegexRulesGroup = new Dictionary<string, string>();
+
+        /// <summary>
+        /// translation cell fix regex rules. same as search and replace with regex using
+        /// </summary>
         internal Dictionary<string, string> CellFixesRegexRules = new Dictionary<string, string>();
 
-        //Link to main form
+        /// <summary>
+        /// reference to the main form
+        /// </summary>
         internal THMain Main;
 
-
-        //CurrentProject
+        /// <summary>
+        /// CurrentProject
+        /// </summary>
         internal ProjectBase CurrentProject;
-        //internal ProjectBase Project;
+
+        /// <summary>
+        /// internal ProjectBase Project
+        /// </summary>
         internal List<ProjectBase> ProjectsList;
 
-        //usually 'S'elected file 'Path' in file browse dialog
+        /// <summary>
+        /// usually 'S'elected file 'Path' in file browse dialog
+        /// </summary>
         internal string SPath { get; set; }
 
-        //Online Translation Cache
+        /// <summary>
+        /// Online Translation Cache
+        /// </summary>
         internal FunctionsOnlineCache OnlineTranslationCache;
 
         //current processing file for open/save
         internal string FilePath { get; set; }
 
+        /// <summary>
+        /// main work table data
+        /// </summary>
         internal DataSet THFilesElementsDataset { get; set; }
 
+        /// <summary>
+        /// main work table infos
+        /// </summary>
         internal DataSet THFilesElementsDatasetInfo { get; set; }
 
+        /// <summary>
+        /// main work table data for all (wip)
+        /// </summary>
         internal DataSet THFilesElementsALLDataTable { get; set; }
 
+        /// <summary>
+        /// main work table data dictionary
+        /// </summary>
         internal Dictionary<string, string> THFilesElementsDictionary { get; set; }
+        /// <summary>
+        /// main work table data dictionary infos
+        /// </summary>
         internal Dictionary<string, string> THFilesElementsDictionaryInfo { get; set; }
 
-        //target textbox control value
+        /// <summary>
+        /// target textbox control value
+        /// </summary>
         internal string TargetTextBoxPreValue;
 
-        //для целей удаления дубликатов записей, добавляемых в таблицу
+        /// <summary>
+        /// filtering records duplicates while adding to main work data table
+        /// </summary>
         internal HashSet<string> hashes = new HashSet<string>();
 
         /// <summary>
@@ -77,5 +113,10 @@ namespace TranslationHelper.Data
         /// true when settings is loading
         /// </summary>
         internal bool SettingsIsLoading=false;
+
+        /// <summary>
+        /// The program session online translation cookies
+        /// </summary>
+        internal System.Net.CookieContainer OnlineTranslatorCookies;
     }
 }

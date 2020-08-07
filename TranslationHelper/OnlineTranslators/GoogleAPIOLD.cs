@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 using TranslationHelper.OnlineTranslators;
 using TranslationHelper.Translators;
 
@@ -14,6 +15,10 @@ namespace TranslationHelper
 {
     class GoogleAPIOLD : TranslatorsBase
     {
+        public GoogleAPIOLD(THDataWork thDataWork) : base(thDataWork)
+        {
+        }
+
         // Token: 0x06000EEC RID: 3820 RVA: 0x0006AD20 File Offset: 0x00068F20
         //public static string Translate2(string text, string fromCulture, string toCulture)
         //{
@@ -104,9 +109,9 @@ namespace TranslationHelper
             }
             else
             {
-                if (myCache.ContainsKey(OriginalText))
+                if (sessionCache.ContainsKey(OriginalText))
                 {
-                    ResultOfTranslation = myCache[OriginalText];
+                    ResultOfTranslation = sessionCache[OriginalText];
                 }
                 else
                 {
@@ -134,14 +139,15 @@ namespace TranslationHelper
                     string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
                     if (webClient == null)
-                        webClient = new WebClientEx(cookies);
+                        webClient = new WebClientEx(thDataWork.OnlineTranslatorCookies);
                         //webClient = new ScrapySharp.Network.ScrapingBrowser();
 
                     //using (WebClient webClient = new WebClient())
                     //{
                     //}
                     webClient.Encoding = Encoding.UTF8;
-                    webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
+                    //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
+                    webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
                     //webClient.UserAgent = ScrapySharp.Network.FakeUserAgents.Chrome;
                     try
                     {
@@ -160,7 +166,7 @@ namespace TranslationHelper
                         {
                             string text2 = GetTranslationHtmlElement(htmlDocument).FixFormat();
 
-                            myCache[OriginalText] = text2;
+                            sessionCache[OriginalText] = text2;
 
                             return text2;
 
@@ -195,9 +201,9 @@ namespace TranslationHelper
                         {
                         }
                     }
-                    catch// (Exception)
+                    catch (Exception ex)
                     {
-                        //Debog.Writeline(ex);
+                        new Functions.FunctionsLogs().LogToFile("google translation error:"+Environment.NewLine+ex);
                     }
                     //finally
                     //{
@@ -229,9 +235,9 @@ namespace TranslationHelper
                     }
                     else
                     {
-                        if (myCache.ContainsKey(OriginalText[i]))
+                        if (sessionCache.ContainsKey(OriginalText[i]))
                         {
-                            array[i] = myCache[OriginalText[i]];
+                            array[i] = sessionCache[OriginalText[i]];
                         }
                         //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
                         //https://stackoverflow.com/questions/47709517/google-translate-api-how-to-add-newline-without-changing-the-phrase-meaning
@@ -260,7 +266,7 @@ namespace TranslationHelper
 
             if (webClient == null) 
             {
-                webClient = new WebClientEx(cookies);
+                webClient = new WebClientEx(thDataWork.OnlineTranslatorCookies);
                 //webClient = new ScrapySharp.Network.ScrapingBrowser();
             }
             //using (WebClient webClient = new WebClient())
@@ -337,10 +343,9 @@ namespace TranslationHelper
                 return text2.Length == 0 ? RetWithNullToEmpty(array) : SplitTextToLinesAndRestoreSomeSpecsymbols(text2);
                 //return array;
             }
-            catch// (Exception ex)
+            catch (Exception ex)
             {
-                //FileWriter.WriteData("c:\\Exc.log", "\r\nError:" + ex);
-                //Debog.Writeline(ex);
+                new Functions.FunctionsLogs().LogToFile("google array translation error:" + Environment.NewLine + ex);
             }
             //finally
             //{
@@ -435,6 +440,7 @@ namespace TranslationHelper
         private static readonly string HttpsTranslateUserSite = "https://translate.google.com";
         private static readonly Random RandomNumbers = new Random();
         private int _resetAfter = RandomNumbers.Next(75, 125);
+
         private long Vi(long r, string o)
         {
             for (var t = 0; t < o.Length; t += 3)
