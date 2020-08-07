@@ -83,6 +83,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Linq" />
     <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.InteropServices" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
     <Reference Include="System.Threading.Thread" />
@@ -102,6 +103,8 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="appSettings\Sections\Tools\SDBAutosaveTimeout.cs" />
+    <Compile Include="appSettings\Sections\Tools\SEnableAutosave.cs" />
     <Compile Include="appSettings\Sections\Tools\SWebTranslationLink.cs" />
     <Compile Include="appSettings\Sections\Optimizations\SDBCompressionExt.cs" />
     <Compile Include="appSettings\Sections\Tools\SEnableTranslationCache.cs" />

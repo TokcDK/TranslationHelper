@@ -25,6 +25,7 @@ namespace TranslationHelper.Translators
             if (webClient == null)
             {
                 webClient = new WebClientEx(cookies);
+                //webClient = new ScrapingBrowser
             }
             //webClient.UseDefaultCredentials = false;
         }
@@ -37,6 +38,7 @@ namespace TranslationHelper.Translators
             //webClient = null;
         }
 
+        //protected ScrapingBrowser webClient;
         protected WebClientEx webClient;
         protected WebBrowser WB;
         public virtual string Translate(string OriginalText)

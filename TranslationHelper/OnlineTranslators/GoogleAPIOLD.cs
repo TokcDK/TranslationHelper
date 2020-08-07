@@ -135,12 +135,14 @@ namespace TranslationHelper
 
                     if (webClient == null)
                         webClient = new WebClientEx(cookies);
+                        //webClient = new ScrapySharp.Network.ScrapingBrowser();
 
                     //using (WebClient webClient = new WebClient())
                     //{
                     //}
                     webClient.Encoding = Encoding.UTF8;
                     webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
+                    //webClient.UserAgent = ScrapySharp.Network.FakeUserAgents.Chrome;
                     try
                     {
                         //Материалы
@@ -150,7 +152,7 @@ namespace TranslationHelper
 
                         //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
 
-                        string text = webClient.DownloadString(address);
+                        string text = webClient.DownloadString(new Uri(address));
 
                         HtmlDocument htmlDocument = WBhtmlDocument();
                         htmlDocument.Write(text);
@@ -259,13 +261,15 @@ namespace TranslationHelper
             if (webClient == null) 
             {
                 webClient = new WebClientEx(cookies);
+                //webClient = new ScrapySharp.Network.ScrapingBrowser();
             }
             //using (WebClient webClient = new WebClient())
             //{
             //}
             webClient.Encoding = Encoding.UTF8;
             //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
-            webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Win7_Latest);
+            webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
+            //webClient.UserAgent= ScrapySharp.Network.FakeUserAgents.Chrome;
             try
             {
                 //Материалы, что помогли
@@ -274,7 +278,7 @@ namespace TranslationHelper
                 //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
 
                 //скачать страницу
-                string text = webClient.DownloadString(address);
+                string text = webClient.DownloadString(new Uri(address));
                 //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"TEXT:"+Environment.NewLine + text);
 
                 HtmlDocument htmlDocument = WBhtmlDocument();

@@ -1113,7 +1113,7 @@ namespace TranslationHelper
         bool AutosaveActivated = false;
         private void Autosave()
         {
-            if (AutosaveActivated || thDataWork.THFilesElementsDataset == null)
+            if (!Properties.Settings.Default.EnableDBAutosave || AutosaveActivated || thDataWork.THFilesElementsDataset == null)
             {
             }
             else
@@ -1184,7 +1184,7 @@ namespace TranslationHelper
                 }
 
                 int i = 0;
-                while (i < 60)
+                while (i < Properties.Settings.Default.DBAutoSaveTimeout && Properties.Settings.Default.EnableDBAutosave)
                 {
                     Thread.Sleep(1000);
                     if (Properties.Settings.Default.IsTranslationHelperWasClosed || this == null || IsDisposed || Data == null || Path.Length == 0)
@@ -1196,7 +1196,7 @@ namespace TranslationHelper
                 }
                 while (IsOpeningInProcess || SaveInAction)//не запускать автосохранение, пока утилита занята
                 {
-                    Thread.Sleep(10000);
+                    Thread.Sleep(Properties.Settings.Default.DBAutoSaveTimeout * 1000);
                 }
                 WriteDBFileLite(Data, Path);
             }

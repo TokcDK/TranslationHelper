@@ -333,5 +333,15 @@ namespace TranslationHelper
             }
             THConfigINI.SaveINI();
         }
+
+        private void SettingsAutosaveTimeoutValueTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as TextBox).Name);
+        }
+
+        private void SettingsAutosaveEnabledCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as CheckBox).Name);
+        }
     }
 }

@@ -49,6 +49,8 @@
             this.THOptionEnableTranslationCacheCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTranslationLinkTextBox = new System.Windows.Forms.TextBox();
+            this.SettingsAutosaveTimeoutValueTextBox = new System.Windows.Forms.TextBox();
+            this.SettingsAutosaveEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -124,11 +126,11 @@
             this.THOptionAutotranslationForSimularCheckBox.UseVisualStyleBackColor = true;
             this.THOptionAutotranslationForSimularCheckBox.CheckedChanged += new System.EventHandler(this.THOptionAutotranslationForIdenticalCheckBox_CheckedChanged);
             // 
-            // THOptionFullComprasionDBload
+            // THOptionFullComprasionDBloadCheckBox
             // 
             this.THOptionFullComprasionDBloadCheckBox.AutoSize = true;
             this.THOptionFullComprasionDBloadCheckBox.Location = new System.Drawing.Point(5, 26);
-            this.THOptionFullComprasionDBloadCheckBox.Name = "THOptionFullComprasionDBload";
+            this.THOptionFullComprasionDBloadCheckBox.Name = "THOptionFullComprasionDBloadCheckBox";
             this.THOptionFullComprasionDBloadCheckBox.Size = new System.Drawing.Size(290, 17);
             this.THOptionFullComprasionDBloadCheckBox.TabIndex = 0;
             this.THOptionFullComprasionDBloadCheckBox.Text = "Full recursive scan while translation DB loading (slower)";
@@ -263,6 +265,8 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.SettingsAutosaveTimeoutValueTextBox);
+            this.panel2.Controls.Add(this.SettingsAutosaveEnabledCheckBox);
             this.panel2.Controls.Add(this.THOptionEnableTranslationCacheCheckBox);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.THSettingsWebTranslationLinkTextBox);
@@ -305,6 +309,32 @@
             this.THSettingsWebTranslationLinkTextBox.Text = "https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}";
             this.THSettingsWebTranslationLinkTextBox.TextChanged += new System.EventHandler(this.THSettingsWebTranslationLinkTextBox_TextChanged);
             this.THSettingsWebTranslationLinkTextBox.Validated += new System.EventHandler(this.THSettingsWebTransLinkTextBox_Validated);
+            // 
+            // SettingsAutosaveTimeoutValueTextBox
+            // 
+            this.SettingsAutosaveTimeoutValueTextBox.Location = new System.Drawing.Point(172, 64);
+            this.SettingsAutosaveTimeoutValueTextBox.MaxLength = 3;
+            this.SettingsAutosaveTimeoutValueTextBox.Name = "SettingsAutosaveTimeoutValueTextBox";
+            this.SettingsAutosaveTimeoutValueTextBox.ShortcutsEnabled = false;
+            this.SettingsAutosaveTimeoutValueTextBox.Size = new System.Drawing.Size(33, 21);
+            this.SettingsAutosaveTimeoutValueTextBox.TabIndex = 14;
+            this.SettingsAutosaveTimeoutValueTextBox.Text = "300";
+            this.SettingsAutosaveTimeoutValueTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.SettingsAutosaveTimeoutValueTextBox.WordWrap = false;
+            this.SettingsAutosaveTimeoutValueTextBox.TextChanged += new System.EventHandler(this.SettingsAutosaveTimeoutValueTextBox_TextChanged);
+            // 
+            // SettingsAutosaveEnabledCheckBox
+            // 
+            this.SettingsAutosaveEnabledCheckBox.AutoSize = true;
+            this.SettingsAutosaveEnabledCheckBox.Checked = true;
+            this.SettingsAutosaveEnabledCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.SettingsAutosaveEnabledCheckBox.Location = new System.Drawing.Point(8, 66);
+            this.SettingsAutosaveEnabledCheckBox.Name = "SettingsAutosaveEnabledCheckBox";
+            this.SettingsAutosaveEnabledCheckBox.Size = new System.Drawing.Size(158, 17);
+            this.SettingsAutosaveEnabledCheckBox.TabIndex = 13;
+            this.SettingsAutosaveEnabledCheckBox.Text = "Enable autosave. Timeout -";
+            this.SettingsAutosaveEnabledCheckBox.UseVisualStyleBackColor = true;
+            this.SettingsAutosaveEnabledCheckBox.CheckedChanged += new System.EventHandler(this.SettingsAutosaveEnabledCheckBox_CheckedChanged);
             // 
             // THSettings
             // 
@@ -354,5 +384,7 @@
         internal System.Windows.Forms.CheckBox THOptionAutotranslationForSimularCheckBox;
         internal System.Windows.Forms.TextBox LineCharLimitTextBox;
         internal System.Windows.Forms.CheckBox THOptionDontLoadStringIfRomajiPercentCheckBox;
+        public System.Windows.Forms.TextBox SettingsAutosaveTimeoutValueTextBox;
+        internal System.Windows.Forms.CheckBox SettingsAutosaveEnabledCheckBox;
     }
 }

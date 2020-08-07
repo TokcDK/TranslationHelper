@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
@@ -199,7 +198,10 @@ namespace TranslationHelper.Main.Functions
                         var row = table.Rows[rindex];
                         var DSOrigCell = row[corigind] + string.Empty;
                         var DSTransCell = row[ctransind] + string.Empty;
-                        if (!string.IsNullOrWhiteSpace(DSTransCell) && DSTransCell != DSOrigCell)
+                        if (!string.IsNullOrWhiteSpace(DSTransCell)// not empty translation
+                            && DSTransCell != DSOrigCell//not equal to original
+                            && (variant != 1 || (variant == 1 && !DSTransCell.StartsWith("'s ")))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
+                            )
                         {
                             if (IsAnimations && variant == 1 && DSTransCell.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
                             {
