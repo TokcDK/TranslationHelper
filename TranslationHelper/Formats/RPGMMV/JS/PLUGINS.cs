@@ -11,6 +11,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
     {
         public PLUGINS(THDataWork thDataWork) : base(thDataWork)
         {
+            IsPluginsJS = true;
         }
 
         internal override bool Open()

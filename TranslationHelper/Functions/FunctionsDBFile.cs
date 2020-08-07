@@ -433,6 +433,7 @@ namespace TranslationHelper.Main.Functions
         internal static void MergeAllDBtoOne(THDataWork thDataWork)
         {
             var tDir = Path.Combine(Application.StartupPath, "DB");
+
             HashSet<string> paths = new HashSet<string>();
             foreach (var DBfile in Directory.GetFiles(tDir, "*", SearchOption.AllDirectories))
             {

@@ -1,15 +1,20 @@
 ﻿using AIHelper.Manage;
 using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.INISettings;
 
+
+//посмотреть также это: https://codereview.stackexchange.com/questions/84281/abstracted-interface-for-settings
+//посмотреть также это: https://overcoder.net/q/1042/%D0%BB%D1%83%D1%87%D1%88%D0%B0%D1%8F-%D0%BF%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%BA%D0%B0-%D1%81%D0%BE%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BA-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B2-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B8-windows-forms
+//посмотреть также это: https://upread.ru/art.php?id=356
 namespace TranslationHelper
 {
     public partial class THSettings : Form
     {
         //Defaults
-        internal INIFile THConfigINI = new INIFile("TranslationHelperConfig.ini");
+        internal INIFile THConfigINI = new INIFile(Application.ProductName + ".ini");
         readonly THDataWork thDataWork;
         internal THSettings(THDataWork thDataWork)
         {
@@ -21,12 +26,17 @@ namespace TranslationHelper
 
             SetUIStrings();
 
+            //var r = new AppSettings().AutotranslationForSimular;
+
+            //var s = SettingsList["AutotranslationForSimular"].
+
+            //GetSettings();
         }
 
         private void SetUIStrings()
         {
             //translation
-            THOptionFullComprasionDBload.Text = T._("Full recursive scan while translation DB loading (slower)");
+            THOptionFullComprasionDBloadCheckBox.Text = T._("Full recursive scan while translation DB loading (slower)");
             THOptionLineCharLimitLabel.Text = "- " + T._("char limit of line length (for line split functions)");
             this.THSettingsMainTabPage.Text = T._("General");
             //this.label3.Text = T._("Translation  Helper support:");
@@ -35,7 +45,7 @@ namespace TranslationHelper
             this.THOptionDBCompressionCheckBox.Text = T._("Compression for DB files:");
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Text = T._("Do not load string if it has more of next romaji percent - ");
             this.THSettingsToolsTabPage.Text = T._("Tools");
-            this.THOptionAutotranslationForIdenticalCheckBox.Text = T._("Autotranslation for simular");
+            this.THOptionAutotranslationForSimularCheckBox.Text = T._("Autotranslation for simular");
             this.THOptionEnableTranslationCacheCheckBox.Text = T._("Enable online translation cache.");
             //this.label4.Text = T._("Translation  Helper support:");
             this.label1.Text = T._("Web service link for manual translation (F12):");
@@ -62,7 +72,7 @@ namespace TranslationHelper
 
             //Settings
             //General
-            THToolTip.SetToolTip(THOptionFullComprasionDBload, T._("In time of DB loading will be checked all DB lines for each line of table for translation."));
+            THToolTip.SetToolTip(THOptionFullComprasionDBloadCheckBox, T._("In time of DB loading will be checked all DB lines for each line of table for translation."));
             //Optimization
             THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBox, T._("String will not be loaded for translation if this string contains romaji characters in text more of specified percent."));
 
@@ -70,9 +80,9 @@ namespace TranslationHelper
             //THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation, T._("Is true while online translating. Will be used both with other chars like .!/? and other same"));
             THToolTip.SetToolTip(THOptionDBCompressionCheckBox, T._("Format for DB files: standard not compressed xml and compressed xml for both other"));
             //Tools
-            THToolTip.SetToolTip(THOptionAutotranslationForIdenticalCheckBox, T._("Automatically will be translated all almost identical cells with same original."));
+            THToolTip.SetToolTip(THOptionAutotranslationForSimularCheckBox, T._("Automatically will be translated all almost identical cells with same original."));
             THToolTip.SetToolTip(THOptionEnableTranslationCacheCheckBox, T._("Will save online translation result in cache db to use it in next time for same values instead of attemp to connect to service."));
-            THToolTip.SetToolTip(THSettingsWebTransLinkTextBox, T._("Web site which wil be opened by pressing F12 key with added selected table cells values. Can be any here Google, Yandex, DeepL or other."));
+            THToolTip.SetToolTip(THSettingsWebTranslationLinkTextBox, T._("Web site which wil be opened by pressing F12 key with added selected table cells values. Can be any here Google, Yandex, DeepL or other."));
             //support links
             //THToolTip.SetToolTip(linkLabel1, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
             //THToolTip.SetToolTip(linkLabel2, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
@@ -82,118 +92,126 @@ namespace TranslationHelper
 
         public void GetSettings()
         {
-            try
+            if (thDataWork.SettingsIsLoading)
             {
-                //General
-                THOptionFullComprasionDBload.Checked = FullComprasionDBloadINI;
-                LineCharLimitTextBox.Text = LineCharLimitINI.ToString(CultureInfo.InvariantCulture);
-
-                //Optimizations
-                THOptionDontLoadStringIfRomajiPercentCheckBox.Checked = DontLoadStringIfRomajiPercentINI;
-                THOptionDontLoadStringIfRomajiPercentTextBox.Text = DontLoadStringIfRomajiPercentNumINI.ToString(CultureInfo.InvariantCulture);
-                THOptionDBCompressionCheckBox.Checked = DBCompressionINI;
-                THOptionDBCompressionComboBox.SelectedItem = DBCompressionTypeINI;
-
-                //Tools
-                THSettingsWebTransLinkTextBox.Text = WebTransLinkINI;
-                THOptionEnableTranslationCacheCheckBox.Checked = EnableTranslationCacheINI;
-                THOptionAutotranslationForIdenticalCheckBox.Checked = AutotranslationForIdenticalINI;
+                return;
             }
-            catch
+
+            thDataWork.SettingsIsLoading = true;
+
+            //try
+            //{
+            //General
+            //THOptionFullComprasionDBload.Checked = FullComprasionDBloadINI;
+            //LineCharLimitTextBox.Text = LineCharLimitINI.ToString(CultureInfo.InvariantCulture);
+
+            //Optimizations
+            //THOptionDontLoadStringIfRomajiPercentCheckBox.Checked = DontLoadStringIfRomajiPercentINI;
+            //DontLoadStringIfRomajiPercentNumberTextBox.Text = DontLoadStringIfRomajiPercentNumINI.ToString(CultureInfo.InvariantCulture);
+            //THOptionDBCompressionCheckBox.Checked = DBCompressionINI;
+            //THOptionDBCompressionExtComboBox.SelectedItem = DBCompressionTypeINI;
+
+            //Tools
+            //THSettingsWebTranslationLinkTextBox.Text = WebTransLinkINI;
+            //THOptionEnableTranslationCacheCheckBox.Checked = EnableTranslationCacheINI;
+            //THOptionAutotranslationForSimularCheckBox.Checked = AutotranslationForIdenticalINI;
+
+            SettingsList = SettingsBaseTools.GetSettingsList(thDataWork);
+
+            foreach (var setting in SettingsList.Keys)
             {
-
+                if (THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
+                {
+                    thDataWork.BufferValueString = THConfigINI.ReadINI(SettingsList[setting].Section, SettingsList[setting].Key);
+                }
+                else
+                {
+                    thDataWork.BufferValueString = SettingsList[setting].Default;
+                }
+                SettingsList[setting].Set(true);
             }
+            //}
+            //catch { }
+
+            thDataWork.SettingsIsLoading = false;
         }
 
-        public int DontLoadStringIfRomajiPercentNumINI
-        {
-            get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercent", "Optimizations")
-                    ? int.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent"), CultureInfo.GetCultureInfo("en-US"))
-                    : Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
-            set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent", value.ToString(CultureInfo.GetCultureInfo("en-US")));
-        }
+        //public int DontLoadStringIfRomajiPercentNumINI
+        //{
+        //    get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercent", "Optimizations")
+        //            ? int.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent"), CultureInfo.GetCultureInfo("en-US"))
+        //            : Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber;
+        //    set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent", value.ToString(CultureInfo.GetCultureInfo("en-US")));
+        //}
 
-        public bool DontLoadStringIfRomajiPercentINI
-        {
-            get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", "Optimizations")
-                    ? bool.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked"))
-                    : Properties.Settings.Default.DontLoadStringIfRomajiPercent;
-            set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
-        }
+        //public bool DontLoadStringIfRomajiPercentINI
+        //{
+        //    get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", "Optimizations")
+        //            ? bool.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked"))
+        //            : Properties.Settings.Default.DontLoadStringIfRomajiPercent;
+        //    set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
+        //}
 
-        public bool DBCompressionINI
-        {
-            get => THConfigINI.KeyExists("THOptionDBCompressionCheckBox.Checked", "Optimizations")
-                    ? bool.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"))
-                    : true;
-            set => THConfigINI.WriteINI("Optimizations", "THOptionDBCompressionCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
-        }
+        //public bool DBCompressionINI
+        //{
+        //    get => THConfigINI.KeyExists("THOptionDBCompressionCheckBox.Checked", "Optimizations")
+        //            ? bool.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"))
+        //            : true;
+        //    set => THConfigINI.WriteINI("Optimizations", "THOptionDBCompressionCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
+        //}
 
-        public string DBCompressionTypeINI
-        {
-            get => THConfigINI.KeyExists("THOptionDBCompression", "Optimizations")
-                    ? THConfigINI.ReadINI("Optimizations", "THOptionDBCompression")
-                    : "XML (none)";
-            set => THConfigINI.WriteINI("Optimizations", "THOptionDBCompression", value);
-        }
+        //public string DBCompressionTypeINI
+        //{
+        //    get => THConfigINI.KeyExists("THOptionDBCompression", "Optimizations")
+        //            ? THConfigINI.ReadINI("Optimizations", "THOptionDBCompression")
+        //            : "XML (none)";
+        //    set => THConfigINI.WriteINI("Optimizations", "THOptionDBCompression", value);
+        //}
 
-        public string WebTransLinkINI
-        {
-            get => THConfigINI.KeyExists("THOptionWebPageLinkForManualTranslation", "Tools")
-                    ? THConfigINI.ReadINI("Tools", "THOptionWebPageLinkForManualTranslation")
-                    : "https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}";
-            set => THConfigINI.WriteINI("Tools", "THOptionWebPageLinkForManualTranslation", value);
-        }
+        //public string WebTransLinkINI
+        //{
+        //    get => THConfigINI.KeyExists("THOptionWebPageLinkForManualTranslation", "Tools")
+        //            ? THConfigINI.ReadINI("Tools", "THOptionWebPageLinkForManualTranslation")
+        //            : "https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}";
+        //    set => THConfigINI.WriteINI("Tools", "THOptionWebPageLinkForManualTranslation", value);
+        //}
 
-        public bool EnableTranslationCacheINI
-        {
-            get => THConfigINI.KeyExists("THOptionEnableTranslationCacheCheckBox.Checked", "Tools")
-                    ? bool.Parse(THConfigINI.ReadINI("Tools", "THOptionEnableTranslationCacheCheckBox.Checked"))
-                    : true;
-            set => THConfigINI.WriteINI("Tools", "THOptionEnableTranslationCacheCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
-        }
+        //public bool EnableTranslationCacheINI
+        //{
+        //    get => THConfigINI.KeyExists("THOptionEnableTranslationCacheCheckBox.Checked", "Tools")
+        //            ? bool.Parse(THConfigINI.ReadINI("Tools", "THOptionEnableTranslationCacheCheckBox.Checked"))
+        //            : true;
+        //    set => THConfigINI.WriteINI("Tools", "THOptionEnableTranslationCacheCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
+        //}
 
-        public bool AutotranslationForIdenticalINI
-        {
-            get => THConfigINI.KeyExists("THOptionAutotranslationForIdenticalCheckBox.Checked", "Tools")
-                    ? bool.Parse(THConfigINI.ReadINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked"))
-                    : Properties.Settings.Default.AutotranslationForSimular;
-            set => THConfigINI.WriteINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
-        }
+        //public bool AutotranslationForIdenticalINI
+        //{
+        //    get => THConfigINI.KeyExists("THOptionAutotranslationForIdenticalCheckBox.Checked", "Tools")
+        //            ? bool.Parse(THConfigINI.ReadINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked"))
+        //            : Properties.Settings.Default.AutotranslationForSimular;
+        //    set => THConfigINI.WriteINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
+        //}
 
-        public bool FullComprasionDBloadINI
-        {
-            get => THConfigINI.KeyExists("THOptionFullComprasionDBload.Checked", "General")
-                    ? bool.Parse(THConfigINI.ReadINI("General", "THOptionFullComprasionDBload.Checked"))
-                    : true;
-            set => THConfigINI.WriteINI("General", "THOptionFullComprasionDBload.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
-        }
+        //public bool FullComprasionDBloadINI
+        //{
+        //    get => THConfigINI.KeyExists("THOptionFullComprasionDBload.Checked", "General")
+        //            ? bool.Parse(THConfigINI.ReadINI("General", "THOptionFullComprasionDBload.Checked"))
+        //            : true;
+        //    set => THConfigINI.WriteINI("General", "THOptionFullComprasionDBload.Checked", value.ToString(CultureInfo.GetCultureInfo("en-US")));
+        //}
 
-        public int LineCharLimitINI
-        {
-            get => THConfigINI.KeyExists("THOptionLineCharLimit", "General")
-                    ? int.Parse(THConfigINI.ReadINI("General", "THOptionLineCharLimit"), CultureInfo.GetCultureInfo("en-US"))
-                    : 60;
-            set => THConfigINI.WriteINI("General", "THOptionLineCharLimit", value.ToString(CultureInfo.GetCultureInfo("en-US")));
-        }
+        //public int LineCharLimitINI
+        //{
+        //    get => THConfigINI.KeyExists("THOptionLineCharLimit", "General")
+        //            ? int.Parse(THConfigINI.ReadINI("General", "THOptionLineCharLimit"), CultureInfo.GetCultureInfo("en-US"))
+        //            : 60;
+        //    set => THConfigINI.WriteINI("General", "THOptionLineCharLimit", value.ToString(CultureInfo.GetCultureInfo("en-US")));
+        //}
 
         private void THOptionDontLoadStringIfRomajiPercentTextBox_TextChanged(object sender, EventArgs e)
         {
-            ValidTHOptionDontLoadStringIfRomajiPercent();
-        }
-
-        private void ValidTHOptionDontLoadStringIfRomajiPercent()
-        {
-            if (System.Text.RegularExpressions.Regex.IsMatch(THOptionDontLoadStringIfRomajiPercentTextBox.Text, "^[0-9]{1,3}$") && int.Parse(THOptionDontLoadStringIfRomajiPercentTextBox.Text, CultureInfo.GetCultureInfo("en-US")) <= 100)
-            {
-                int newvalue = int.Parse(THOptionDontLoadStringIfRomajiPercentTextBox.Text, CultureInfo.GetCultureInfo("en-US"));
-                Properties.Settings.Default.DontLoadStringIfRomajiPercentNum = newvalue;
-                DontLoadStringIfRomajiPercentNumINI = newvalue;
-            }
-            else
-            {
-                THOptionDontLoadStringIfRomajiPercentTextBox.Text = "90";
-            }
+            SetValue((sender as TextBox).Name);
+            //ValidTHOptionDontLoadStringIfRomajiPercent();
         }
 
         private void THProgramSettingsForm_Load(object sender, EventArgs e)
@@ -203,25 +221,29 @@ namespace TranslationHelper
 
         private void THOptionDontLoadStringIfRomajiPercentCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            bool newvalue = THOptionDontLoadStringIfRomajiPercentCheckBox.Checked;
-            Properties.Settings.Default.DontLoadStringIfRomajiPercent = newvalue;
-            DontLoadStringIfRomajiPercentINI = newvalue;
+            SetValue((sender as CheckBox).Name);
+            //bool newvalue = THOptionDontLoadStringIfRomajiPercentCheckBox.Checked;
+            //Properties.Settings.Default.DontLoadStringIfRomajiPercent = newvalue;
+            //DontLoadStringIfRomajiPercentINI = newvalue;
         }
 
         private void THOptionDBCompressionComboBox_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            DBCompressionTypeINI = THOptionDBCompressionComboBox.SelectedItem.ToString();
+            SetValue((sender as ComboBox).Name);
+            //DBCompressionTypeINI = THOptionDBCompressionExtComboBox.SelectedItem.ToString();
         }
 
         private void THOptionDBCompressionCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            DBCompressionINI = THOptionDBCompressionCheckBox.Checked;
+            SetValue((sender as CheckBox).Name);
+            //DBCompressionINI = THOptionDBCompressionCheckBox.Checked;
         }
 
         private void THSettingsWebTransLinkTextBox_Validated(object sender, EventArgs e)
         {
-            Properties.Settings.Default.WebTranslationLink = THSettingsWebTransLinkTextBox.Text;
-            WebTransLinkINI = THSettingsWebTransLinkTextBox.Text;
+            SetValue((sender as TextBox).Name);
+            //Properties.Settings.Default.WebTranslationLink = THSettingsWebTranslationLinkTextBox.Text;
+            //WebTransLinkINI = THSettingsWebTranslationLinkTextBox.Text;
         }
 
         private void LinkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -233,16 +255,27 @@ namespace TranslationHelper
         {
         }
 
+        internal Dictionary<string, SettingsBase> SettingsList;
         private void THOptionAutotranslationForIdenticalCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.AutotranslationForSimular = THOptionAutotranslationForIdenticalCheckBox.Checked;
-            AutotranslationForIdenticalINI = THOptionAutotranslationForIdenticalCheckBox.Checked;
+            SetValue((sender as CheckBox).Name);
+            //Properties.Settings.Default.AutotranslationForSimular = THOptionAutotranslationForSimularCheckBox.Checked;
+            //AutotranslationForIdenticalINI = THOptionAutotranslationForSimularCheckBox.Checked;
+        }
+
+        private void SetValue(string ID)
+        {
+            if (SettingsList.ContainsKey(ID))
+            {
+                SettingsList[ID].Set();
+            }
         }
 
         private void THOptionEnableTranslationCacheCheckBox_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.IsTranslationCacheEnabled = THOptionEnableTranslationCacheCheckBox.Checked;
-            EnableTranslationCacheINI = THOptionEnableTranslationCacheCheckBox.Checked;
+            SetValue((sender as CheckBox).Name);
+            //Properties.Settings.Default.IsTranslationCacheEnabled = THOptionEnableTranslationCacheCheckBox.Checked;
+            //EnableTranslationCacheINI = THOptionEnableTranslationCacheCheckBox.Checked;
         }
 
         private void THSettings_FormClosed(object sender, FormClosedEventArgs e)
@@ -252,23 +285,53 @@ namespace TranslationHelper
 
         private void FullComparasionDBload_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.IsFullComprasionDBloadEnabled = THOptionFullComprasionDBload.Checked;
-            FullComprasionDBloadINI = THOptionFullComprasionDBload.Checked;
+            SetValue((sender as CheckBox).Name);
+            //Properties.Settings.Default.IsFullComprasionDBloadEnabled = THOptionFullComprasionDBload.Checked;
+            //FullComprasionDBloadINI = THOptionFullComprasionDBload.Checked;
         }
 
         private void LineCharLimitTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (System.Text.RegularExpressions.Regex.IsMatch(LineCharLimitTextBox.Text, "^[0-9]{1,4}$") && int.Parse(LineCharLimitTextBox.Text, CultureInfo.GetCultureInfo("en-US")) <= 9999)
-            {
-                int newvalue = int.Parse(LineCharLimitTextBox.Text, CultureInfo.GetCultureInfo("en-US"));
-                Properties.Settings.Default.THOptionLineCharLimit = newvalue;
-                LineCharLimitINI = newvalue;
-            }
-            else
-            {
-                LineCharLimitTextBox.Text = "60";
-            }
+            SetValue((sender as TextBox).Name);
+        }
 
+        private void THOptionDontLoadStringIfRomajiPercentForOpenCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as CheckBox).Name);
+        }
+
+        private void THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as CheckBox).Name);
+        }
+
+        private void THOptionEnableTranslationCacheCheckBox_CheckedChanged_1(object sender, EventArgs e)
+        {
+            SetValue((sender as CheckBox).Name);
+        }
+
+        private void THSettingsWebTranslationLinkTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as TextBox).Name);
+        }
+
+        private void THSettings_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettingsToINI();
+        }
+
+        private void SaveSettingsToINI()
+        {
+            foreach (var setting in SettingsList.Keys)
+            {
+                bool keyExists;
+                if (((keyExists = THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
+                    && THConfigINI.ReadINI(SettingsList[setting].Section, SettingsList[setting].Key) != SettingsList[setting].Get()) || !keyExists)
+                {
+                    THConfigINI.WriteINI(SettingsList[setting].Section, SettingsList[setting].Key, SettingsList[setting].Get(), false);
+                }
+            }
+            THConfigINI.SaveINI();
         }
     }
 }

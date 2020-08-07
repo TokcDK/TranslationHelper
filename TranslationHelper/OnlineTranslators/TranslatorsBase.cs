@@ -6,9 +6,15 @@ using System.Windows.Forms;
 using TranslationHelper.Extensions;
 using TranslationHelper.OnlineTranslators;
 
+
+//infos for read 
+//https://qna.habr.com/q/366420
+//https://stackoverflow.com/questions/16642196/get-html-code-from-website-in-c-sharp
+//https://www.c-sharpcorner.com/blogs/difference-between-syatemnetwebrequest-and-httpclient-and-webclient-in-c-sharp
+//https://html-agility-pack.net/knowledge-base/33679834/is-there-anyway-to-use--browsersession--to-download-files--csharp
 namespace TranslationHelper.Translators
 {
-    abstract class TranslatorsBase
+    abstract class TranslatorsBase : IDisposable
     {
         /// <summary>
         /// resets translator's session translation cache
@@ -18,19 +24,21 @@ namespace TranslationHelper.Translators
             myCache.Clear();
             if (webClient == null)
             {
-                webClient = new WebClient();
+                webClient = new WebClientEx(cookies);
             }
-            webClient.UseDefaultCredentials = false;
+            //webClient.UseDefaultCredentials = false;
         }
+
+        protected CookieContainer cookies = new CookieContainer();
 
         internal void OnTranslatorClosed()
         {
-            webClient.Container.Dispose();
-            webClient.Dispose();
-            webClient = null;
+            //webClient.Dispose();
+            //webClient = null;
         }
 
-        protected WebClient webClient;
+        protected WebClientEx webClient;
+        protected WebBrowser WB;
         public virtual string Translate(string OriginalText)
         {
             string ResultOfTranslation;
@@ -252,6 +260,22 @@ namespace TranslationHelper.Translators
                 }
             }
             return string.Empty;
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                webClient.Dispose();
+                webClient = null;
+            }
+            catch { }
+            try
+            {
+                WB.Dispose();
+                WB = null;
+            }
+            catch { }
         }
 
         //public static string ReturnTranslatedOrCache(DataSet cacheDS, string InputLine, TranslatorsBase Translator=null)

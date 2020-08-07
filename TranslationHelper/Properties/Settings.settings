@@ -5,7 +5,7 @@
     <Setting Name="DontLoadStringIfRomajiPercent" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="DontLoadStringIfRomajiPercentNum" Type="System.Int32" Scope="User">
+    <Setting Name="DontLoadStringIfRomajiPercentNumber" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">90</Value>
     </Setting>
     <Setting Name="AutotranslationForSimular" Type="System.Boolean" Scope="User">
@@ -93,6 +93,21 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="UseAllDBFilesForOnlineTranslationForAll" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DBCompression" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DontLoadStringIfRomajiPercentForOpen" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DontLoadStringIfRomajiPercentForTranslation" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DBCompressionExt" Type="System.String" Scope="User">
+      <Value Profile="(Default)">"XML (none)"</Value>
+    </Setting>
+    <Setting Name="EnableTranslationCache" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>

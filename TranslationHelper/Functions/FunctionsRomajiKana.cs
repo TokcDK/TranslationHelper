@@ -19,7 +19,7 @@ namespace TranslationHelper.Main.Functions
             {
                 if (Properties.Settings.Default.DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
                 {
-                    return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
+                    return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber;
                 }
             }
             catch

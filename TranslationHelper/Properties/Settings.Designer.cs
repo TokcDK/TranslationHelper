@@ -12,7 +12,7 @@ namespace TranslationHelper.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -38,12 +38,12 @@ namespace TranslationHelper.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("90")]
-        public int DontLoadStringIfRomajiPercentNum {
+        public int DontLoadStringIfRomajiPercentNumber {
             get {
-                return ((int)(this["DontLoadStringIfRomajiPercentNum"]));
+                return ((int)(this["DontLoadStringIfRomajiPercentNumber"]));
             }
             set {
-                this["DontLoadStringIfRomajiPercentNum"] = value;
+                this["DontLoadStringIfRomajiPercentNumber"] = value;
             }
         }
         
@@ -392,6 +392,66 @@ namespace TranslationHelper.Properties {
             }
             set {
                 this["UseAllDBFilesForOnlineTranslationForAll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DBCompression {
+            get {
+                return ((bool)(this["DBCompression"]));
+            }
+            set {
+                this["DBCompression"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DontLoadStringIfRomajiPercentForOpen {
+            get {
+                return ((bool)(this["DontLoadStringIfRomajiPercentForOpen"]));
+            }
+            set {
+                this["DontLoadStringIfRomajiPercentForOpen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DontLoadStringIfRomajiPercentForTranslation {
+            get {
+                return ((bool)(this["DontLoadStringIfRomajiPercentForTranslation"]));
+            }
+            set {
+                this["DontLoadStringIfRomajiPercentForTranslation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\"XML (none)\"")]
+        public string DBCompressionExt {
+            get {
+                return ((string)(this["DBCompressionExt"]));
+            }
+            set {
+                this["DBCompressionExt"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableTranslationCache {
+            get {
+                return ((bool)(this["EnableTranslationCache"]));
+            }
+            set {
+                this["EnableTranslationCache"] = value;
             }
         }
     }

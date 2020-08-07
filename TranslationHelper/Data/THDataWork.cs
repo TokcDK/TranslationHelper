@@ -67,5 +67,15 @@ namespace TranslationHelper.Data
         /// все баз данных в кучу здесь
         /// </summary>
         internal Dictionary<string, string> AllDBmerged;// = new Dictionary<string, string>();
+
+        /// <summary>
+        /// Buffer temp value. String type.
+        /// </summary>
+        internal string BufferValueString;
+
+        /// <summary>
+        /// true when settings is loading
+        /// </summary>
+        internal bool SettingsIsLoading=false;
     }
 }

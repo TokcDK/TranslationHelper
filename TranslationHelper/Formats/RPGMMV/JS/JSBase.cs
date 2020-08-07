@@ -38,9 +38,14 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         internal virtual string JSSubfolder => "plugins";
 
+        protected static bool IsPluginsJS = false;//for some specific to plugins.js operations
+
         protected static bool IsValidToken(JToken token)
         {
-            return token.Type == JTokenType.String && !string.IsNullOrWhiteSpace(token.ToString()) && !(Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && token.ToString().HaveMostOfRomajiOtherChars());
+            return token.Type == JTokenType.String
+                && (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//skip parameters, because ingame elements stop work after translation (forgot if choices is parameters alsp, need to check)
+                && !string.IsNullOrWhiteSpace(token.ToString()) 
+                && !(Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && token.ToString().HaveMostOfRomajiOtherChars());
         }
 
         protected bool PluginsJSnameFound = false;
@@ -65,7 +70,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 foreach (var property in obj.Properties())
                 {
-                    if (!PluginsJSnameFound && Jsonname == "plugins.js" && property.Name == "name")
+                    if (!PluginsJSnameFound && IsPluginsJS && property.Name == "name")
                     {
                         PluginsJSnameFound = true;
                         continue;

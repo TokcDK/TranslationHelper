@@ -27,7 +27,7 @@ namespace TranslationHelper
     public partial class THMain : Form
     {
         //string THLog;
-        //public IniFile THConfigINI = new IniFile("TranslationHelperConfig.ini");
+        //public IniFile THConfigINI = new IniFile(Application.ProductName+".ini");
         internal THSettings Settings;
         //public const string THStrDGTranslationColumnName = "Translation";
         //public const string THStrDGOriginalColumnName = "Original";
@@ -95,9 +95,9 @@ namespace TranslationHelper
 
             //THFileElementsDataGridView set doublebuffered to true
             SetDoublebuffered(true);
-            if (File.Exists(Path.Combine(Application.StartupPath, "TranslationHelper.log")))
+            if (File.Exists(Path.Combine(Application.StartupPath, Application.ProductName + ".log")))
             {
-                File.Delete(Path.Combine(Application.StartupPath, "TranslationHelper.log"));
+                File.Delete(Path.Combine(Application.StartupPath, Application.ProductName + ".log"));
             }
 
             //Test Проверка ключа Git для планируемой функции использования Git
@@ -114,17 +114,19 @@ namespace TranslationHelper
         private void SetSettings()
         {
             Settings = new THSettings(thDataWork);
-            Properties.Settings.Default.IsTranslationCacheEnabled = Settings.EnableTranslationCacheINI;
+            Settings.GetSettings();
+
+            ////Properties.Settings.Default.IsTranslationCacheEnabled = Settings.EnableTranslationCacheINI;
             //IsTranslationCacheEnabled = Properties.Settings.Default.IsTranslationCacheEnabled;
-            Properties.Settings.Default.WebTranslationLink = Settings.WebTransLinkINI;
+            ////Properties.Settings.Default.WebTranslationLink = Settings.WebTransLinkINI;
             //WebTranslationLink = Properties.Settings.Default.WebTranslationLink;
-            Properties.Settings.Default.DontLoadStringIfRomajiPercent = Settings.DontLoadStringIfRomajiPercentINI;
+            ////Properties.Settings.Default.DontLoadStringIfRomajiPercent = Settings.DontLoadStringIfRomajiPercentINI;
             //DontLoadStringIfRomajiPercent = Properties.Settings.Default.DontLoadStringIfRomajiPercent;
-            Properties.Settings.Default.DontLoadStringIfRomajiPercentNum = Settings.DontLoadStringIfRomajiPercentNumINI;
+            ////Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber = Settings.DontLoadStringIfRomajiPercentNumINI;
             //DontLoadStringIfRomajiPercentNum = Properties.Settings.Default.DontLoadStringIfRomajiPercentNum;
-            Properties.Settings.Default.AutotranslationForSimular = Settings.AutotranslationForIdenticalINI;
+            ////Properties.Settings.Default.AutotranslationForSimular = Settings.AutotranslationForIdenticalINI;
             //AutotranslationForSimular = Properties.Settings.Default.AutotranslationForSimular;
-            Properties.Settings.Default.IsFullComprasionDBloadEnabled = Settings.FullComprasionDBloadINI;
+            ////Properties.Settings.Default.IsFullComprasionDBloadEnabled = Settings.FullComprasionDBloadINI;
             //IsFullComprasionDBloadEnabled = Properties.Settings.Default.IsFullComprasionDBloadEnabled;
             //Settings.Dispose();
         }
@@ -766,7 +768,7 @@ namespace TranslationHelper
         internal bool FileDataWasChanged = false;
         private void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(thDataWork.TablesLinesDict!=null && thDataWork.TablesLinesDict.Count>0)
+            if (thDataWork.TablesLinesDict != null && thDataWork.TablesLinesDict.Count > 0)
             {
                 thDataWork.TablesLinesDict.Clear();
             }
@@ -997,23 +999,23 @@ namespace TranslationHelper
             }
         }
 
-        private THSettings THSettings;
+        //private THSettings THSettings;
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                if (THSettings == null || THSettings.IsDisposed)
+                if (Settings == null || Settings.IsDisposed)
                 {
-                    THSettings = new THSettings(thDataWork);
+                    Settings = new THSettings(thDataWork);
                 }
 
-                if (THSettings.Visible)
+                if (Settings.Visible)
                 {
-                    THSettings.Activate();
+                    Settings.Activate();
                 }
                 else
                 {
-                    THSettings.Show();
+                    Settings.Show();
                     //поместить на передний план
                     //THSettings.TopMost = true;
                     //THSettings.TopMost = false;
@@ -1219,7 +1221,7 @@ namespace TranslationHelper
                     var result = MessageBox.Show(T._("DB not found. Try to load from all exist?"), T._("DB not found"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result == DialogResult.Yes)
                     {
-                        thDataWork.Main.LoadTranslationFromDB(lastautosavepath,true);
+                        thDataWork.Main.LoadTranslationFromDB(lastautosavepath, true);
                     }
                 }
 
@@ -1228,9 +1230,9 @@ namespace TranslationHelper
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy = false;
-        internal async void LoadTranslationFromDB(string sPath = "", bool UseAllDB=false)
+        internal async void LoadTranslationFromDB(string sPath = "", bool UseAllDB = false)
         {
-            if (LoadTranslationToolStripMenuItem_ClickIsBusy || (!UseAllDB && sPath.Length==0))
+            if (LoadTranslationToolStripMenuItem_ClickIsBusy || (!UseAllDB && sPath.Length == 0))
             {
                 return;
             }
@@ -2241,7 +2243,7 @@ namespace TranslationHelper
                 {
                 }
 
-                if(BuckupCreated)
+                if (BuckupCreated)
                 {
                     thDataWork.CurrentProject.BuckupRestore();
                 }

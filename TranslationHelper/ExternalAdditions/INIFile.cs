@@ -12,7 +12,7 @@ namespace AIHelper.Manage
     {
         //Материал: https://habr.com/ru/post/271483/
 
-        private readonly string Path; //Имя файла.
+        private readonly string iniPath; //Имя ini файла.
         private readonly FileIniDataParser INIParser;
         private readonly IniData INIData;
         bool ActionWasExecuted = false;
@@ -31,15 +31,15 @@ namespace AIHelper.Manage
         // С помощью конструктора записываем путь до файла и его имя.
         public INIFile(string IniPath)
         {
-            Path = new FileInfo(IniPath).FullName;
+            iniPath = new FileInfo(IniPath).FullName;
             INIParser = new FileIniDataParser();
             //if (!File.Exists(Path))
             //{
             //    File.WriteAllText(Path, string.Empty);
             //}
-            if (File.Exists(Path))
+            if (File.Exists(iniPath))
             {
-                INIData = INIParser.ReadFile(Path);
+                INIData = INIParser.ReadFile(iniPath);
             }
             //else
             //{
@@ -123,6 +123,37 @@ namespace AIHelper.Manage
         }
 
         //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.
+        public Dictionary<string, string> ReadSectionKeyValuePairsToDictionary(string Section)
+        {
+            if (INIData == null)
+                return null;
+
+            if (string.IsNullOrEmpty(Section) || !INIData.Sections.ContainsSection(Section))
+            {
+                return null;
+            }
+            else
+            {
+                using (var sectionKeys = INIData[Section].GetEnumerator())
+                {
+                    var SearchQueries = new Dictionary<string, string>();
+
+                    for (int i = 0; i < INIData[Section].Count; i++)
+                    {
+                        sectionKeys.MoveNext();
+
+                        if (sectionKeys.Current.Value.Length > 0)
+                        {
+                            SearchQueries.Add(sectionKeys.Current.KeyName, sectionKeys.Current.Value);
+                        }
+                    }
+
+                    return SearchQueries;
+                }
+            }
+        }
+
+        //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.
         public void WriteArrayToSectionValues(string Section, string[] Values, bool CleanSectionBeforeWrite = true, bool DoSaveINI = true)
         {
             if (INIData == null || string.IsNullOrEmpty(Section) || Values == null || Values.Length == 0)
@@ -137,11 +168,7 @@ namespace AIHelper.Manage
             {
                 INIData[Section][i.ToString(CultureInfo.GetCultureInfo("en-US"))] = Values[i];
             }
-
-            if (DoSaveINI)
-            {
-                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
-            }
+            SaveINI(DoSaveINI, ActionWasExecuted);
         }
 
         //Записываем в ini-файл. Запись происходит в выбранную секцию в выбранный ключ.
@@ -166,11 +193,7 @@ namespace AIHelper.Manage
                 INIData[Section][Key] = Value;
                 ActionWasExecuted = true;
             }
-
-            if (DoSaveINI && ActionWasExecuted)
-            {
-                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
-            }
+            SaveINI(DoSaveINI, ActionWasExecuted);
             //if (!ManageStrings.IsStringAContainsStringB(Key, "\\"))
             //{
             //    var ini = ExIni.IniFile.FromFile(Path);
@@ -216,10 +239,7 @@ namespace AIHelper.Manage
                     ActionWasExecuted = true;
                 }
             }
-            if (DoSaveINI && ActionWasExecuted)
-            {
-                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
-            }
+            SaveINI(DoSaveINI, ActionWasExecuted);
             //var ini = ExIni.IniFile.FromFile(Path);
             //var section = ini.GetSection(Section);
             //if (section != null)
@@ -249,10 +269,8 @@ namespace AIHelper.Manage
                 INIData.Sections.RemoveSection(Section);
                 ActionWasExecuted = true;
             }
-            if (DoSaveINI && ActionWasExecuted)
-            {
-                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
-            }
+
+            SaveINI(DoSaveINI, ActionWasExecuted);
             //var ini = ExIni.IniFile.FromFile(Path);
             //if(Section!=null && ini.HasSection(Section))
             //{
@@ -260,6 +278,19 @@ namespace AIHelper.Manage
             //    ini.Save(Path);
             //}
             //WriteINI(Section, null, null);
+        }
+
+        internal void SaveINI(bool DoSaveINI=true, bool ActionWasExecuted=true)
+        {
+            if (DoSaveINI && ActionWasExecuted)
+            {
+                if (Path.GetFileName(iniPath) == "AutoTranslatorConfig.ini")
+                {
+                    INIData.Configuration.AssigmentSpacer = string.Empty;
+                }
+                //https://stackoverflow.com/questions/2502990/create-text-file-without-bom
+                INIParser.WriteFile(iniPath, INIData, new UTF8Encoding(false));
+            }
         }
 
         //Очистка выбранной секции
@@ -275,10 +306,7 @@ namespace AIHelper.Manage
                 INIData.Sections[Section].RemoveAllKeys();
                 ActionWasExecuted = true;
             }
-            if (DoSaveINI && ActionWasExecuted)
-            {
-                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
-            }
+            SaveINI(DoSaveINI, ActionWasExecuted);
             //var ini = ExIni.IniFile.FromFile(Path);
             //if(Section!=null && ini.HasSection(Section))
             //{
@@ -317,6 +345,26 @@ namespace AIHelper.Manage
             //}
             //MessageBox.Show("key length="+ ReadINI(Section, Key).Length);
             //return ReadINI(Section, Key).Length > 0;
+        }
+
+        //Проверяем, есть ли указанная секция или любые значения в ней
+        public bool SectionExistsAndNotEmpty(string Section = null)
+        {
+            if (INIData == null)
+                return false;
+
+            if (string.IsNullOrEmpty(Section))
+            {
+                return false;
+            }
+            else
+            {
+                if (!INIData.Sections.ContainsSection(Section))
+                {
+                    return false;
+                }
+                return INIData[Section].Count > 0;
+            }
         }
     }
 }

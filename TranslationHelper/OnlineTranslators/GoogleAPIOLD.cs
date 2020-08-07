@@ -134,7 +134,7 @@ namespace TranslationHelper
                     string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
                     if (webClient == null)
-                        webClient = new WebClient();
+                        webClient = new WebClientEx(cookies);
 
                     //using (WebClient webClient = new WebClient())
                     //{
@@ -258,7 +258,7 @@ namespace TranslationHelper
 
             if (webClient == null) 
             {
-                webClient = new WebClient();
+                webClient = new WebClientEx(cookies);
             }
             //using (WebClient webClient = new WebClient())
             //{
@@ -375,12 +375,18 @@ namespace TranslationHelper
             return array;
         }
 
-        private static HtmlDocument WBhtmlDocument()
+        private HtmlDocument WBhtmlDocument()
         {
-            using (WebBrowser WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty })//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
+            if(WB == null)
             {
-                return WB.Document.OpenNew(true);
+                WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty };
             }
+            return WB.Document.OpenNew(true);
+
+            //using (WebBrowser WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty })//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
+            //{
+            //    return WB.Document.OpenNew(true);
+            //}
         }
 
         private static string[] SplitTextToLinesAndRestoreSomeSpecsymbols(string text2)
