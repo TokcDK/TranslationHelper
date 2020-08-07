@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Text;
+using TranslationHelper.Data;
 using TranslationHelper.OnlineTranslators.XUA;
 using TranslationHelper.Translators;
 
@@ -41,7 +42,7 @@ namespace TranslationHelper.OnlineTranslators
         private int _translationCount = 0;
         private int _resetAfter = RandomNumbers.Next(75, 125);
 
-        public GoogleNew()
+        public GoogleNew(THDataWork thDataWork) : base(thDataWork)
         {
             Initialize();
         }

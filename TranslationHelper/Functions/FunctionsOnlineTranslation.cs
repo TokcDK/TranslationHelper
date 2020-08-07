@@ -12,7 +12,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions
 {
-    class FunctionsOnlineTranslation
+    class FunctionsOnlineTranslation : IDisposable
     {
         readonly THDataWork thDataWork;
         readonly GoogleAPIOLD Translator;
@@ -20,7 +20,7 @@ namespace TranslationHelper.Functions
         public FunctionsOnlineTranslation(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
-            Translator = new GoogleAPIOLD();
+            Translator = new GoogleAPIOLD(thDataWork);
         }
 
         /// <summary>
@@ -1165,6 +1165,11 @@ namespace TranslationHelper.Functions
                 }
                 ResultValue.Clear();
             }
+        }
+
+        public void Dispose()
+        {
+            Translator.Dispose();
         }
     }
 
