@@ -23,6 +23,11 @@ namespace TranslationHelper.Functions
             Translator = new GoogleAPIOLD(thDataWork);
         }
 
+        public void Dispose()
+        {
+            Translator.Dispose();
+        }
+
         /// <summary>
         /// Translate rows one by one with selected method
         /// </summary>
@@ -291,12 +296,13 @@ namespace TranslationHelper.Functions
             return ResultValue.ToString();
         }
 
-        private string PasteTranslationBackIfExtracted(string Translation, string Original, string Extracted)
+        internal static string PasteTranslationBackIfExtracted(string Translation, string Original, string Extracted)
         {
             if (Translation.Length == 0 || Original.Length == 0 || Extracted.Length == 0 || Equals(Original, Extracted))
             {
-                return Properties.Settings.Default.ApplyFixesOnTranslation ?
-                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork), thDataWork) : Translation;
+                return Translation;
+                //return Properties.Settings.Default.ApplyFixesOnTranslation ?
+                //    FunctionsStringFixes.ApplyHardFixes(Extracted, Translation.THFixCells(thDataWork), thDataWork) : Translation;
             }
             //переделано через удаление и вставку строки, чтобы точно вставлялась нужная
             //строка в нужное место и с рассчетом на будущее, когда возможно строки будут выдираться из исходной
@@ -307,14 +313,20 @@ namespace TranslationHelper.Functions
                 return Original
                     .Remove(IndexOfTheString, Extracted.Length)
                     .Insert(IndexOfTheString,
-                    Properties.Settings.Default.ApplyFixesOnTranslation ?
-                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork), thDataWork) : Translation
+                    Translation
                     );
+                //return Original
+                //    .Remove(IndexOfTheString, Extracted.Length)
+                //    .Insert(IndexOfTheString,
+                //    Properties.Settings.Default.ApplyFixesOnTranslation ?
+                //    FunctionsStringFixes.ApplyHardFixes(Extracted, Translation.THFixCells(thDataWork), thDataWork) : Translation
+                //    );
             }
             else
             {
-                return Properties.Settings.Default.ApplyFixesOnTranslation ?
-                    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork), thDataWork) : Translation;
+                return Translation;
+                //return Properties.Settings.Default.ApplyFixesOnTranslation ?
+                //    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(thDataWork), thDataWork) : Translation;
             }
         }
 
@@ -422,7 +434,7 @@ namespace TranslationHelper.Functions
                         {
                             if (Properties.Settings.Default.IsTranslationHelperWasClosed)
                             {
-                                Thread.CurrentThread.Abort();
+                                //Thread.CurrentThread.Abort();
                                 return;
                             }
                             else if (thDataWork.Main.InteruptTranslation)
@@ -430,7 +442,7 @@ namespace TranslationHelper.Functions
                                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.translationInteruptToolStripMenuItem.Visible = false));
                                 CacheUnloadWhenNeed(thDataWork);
                                 thDataWork.Main.ProgressInfo(false);
-                                Thread.CurrentThread.Abort();
+                                //Thread.CurrentThread.Abort();
                                 return;
                             }
 
@@ -459,13 +471,13 @@ namespace TranslationHelper.Functions
                             //thDataWork.Main.ProgressInfo(true, T._("translating") + ": " + t + "/" + tcount + " (" + r + "/" + rcount + ")");
 
                             InputOriginalLine = Row[OrigColIndex] as string;
-                            if (string.IsNullOrWhiteSpace(InputOriginalLine) || InputOriginalLine.Length > maxchars || InputOriginalLine.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
+                            if (string.IsNullOrWhiteSpace(InputOriginalLine)/* || InputOriginalLine.Length >= maxchars*/ || InputOriginalLine.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                             {
                                 continue;
                             }
 
                             bool TranslateIt = false;
-                            TranslateIt = (CurrentCharsCount + InputOriginalLine.Length) >= maxchars || (t == TableMaxIndex/*tcount*/ - 1 && r == RowsCountInTable/*rcount*/ - 1);
+                            TranslateIt = /*(CurrentCharsCount + InputOriginalLine.Length) >= maxchars ||*/ (t == TableMaxIndex/*tcount*/ - 1 && r == RowsCountInTable/*rcount*/ - 1);
 
                             var Cell = Row[OrigColIndex + 1];
                             if (Cell == null || string.IsNullOrEmpty(Cell as string))
@@ -481,7 +493,7 @@ namespace TranslationHelper.Functions
                                 }
                                 else
                                 {
-                                    CurrentCharsCount += InputOriginalLine.Length;
+                                    //CurrentCharsCount += InputOriginalLine.Length;
 
                                     string extractedvalue;
                                     string cache;
@@ -522,12 +534,18 @@ namespace TranslationHelper.Functions
                                                     }
                                                     else
                                                     {
-                                                        if (extractedvalue.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
+                                                        if (!string.IsNullOrEmpty(extractedvalue) && extractedvalue.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                                                         {
                                                             Translation = linevalue;//если извлеченное значение большинством ромаджи или прочее
                                                         }
                                                         else
                                                         {
+                                                            CurrentCharsCount += extractedvalue.Length;
+                                                            if (!TranslateIt)
+                                                            {
+                                                                TranslateIt = CurrentCharsCount >= maxchars;//считать в лимит по символам для отправки только те строки, что будут точно отправлены
+                                                            }
+
                                                             IsExtracted = extractedvalue.Length > 0 && extractedvalue != linevalue;
                                                             InputLines.Add(extractedvalue.Length == 0 ? linevalue : extractedvalue);
                                                         }
@@ -812,7 +830,7 @@ namespace TranslationHelper.Functions
         /// <param name="linevalue"></param>
         /// <param name="extractedvalue"></param>
         /// <returns></returns>
-        private bool IsExtractedOnlyOneAndNotEqualInput(string linevalue, string[] extractedvalue)
+        private static bool IsExtractedOnlyOneAndNotEqualInput(string linevalue, string[] extractedvalue)
         {
             if (extractedvalue != null && extractedvalue.Length == 3)
             {
@@ -871,7 +889,7 @@ namespace TranslationHelper.Functions
             InputLinesInfo.Clear();
         }
 
-        private string BuildExtractedToTranslated(List<string> getCachedTranslation)
+        private static string BuildExtractedToTranslated(List<string> getCachedTranslation)
         {
             var result = string.Empty;
             foreach (var str in getCachedTranslation)
@@ -1034,12 +1052,30 @@ namespace TranslationHelper.Functions
                 //Translator.ResetCache();
 
                 //send string array to translation for multiline
-                string[] TranslatedLines = Translator.Translate(OriginalLines);
+                string[] TranslatedLines = null;
+                try
+                {
+                    var OriginalLinesPreapplied = ApplyProjectPretranslationAction(OriginalLines);
+                    TranslatedLines = Translator.Translate(OriginalLinesPreapplied);
+                    if (TranslatedLines == null || TranslatedLines.Length == 0 || InputLines.Count != TranslatedLines.Length)
+                    {
+                        return;
+                    }
+                    TranslatedLines = ApplyProjectPosttranslationAction(OriginalLines, TranslatedLines);
+                }
+                catch (Exception ex)
+                {
+                    new FunctionsLogs().LogToFile("TranslateLinesAndSetTranslation. Error while translation:"
+                        + Environment.NewLine
+                        + ex
+                        + Environment.NewLine
+                        + "OriginalLines="
+                        + string.Join(Environment.NewLine + "</br>" + Environment.NewLine, OriginalLines));
+                }
 
                 //int infoCount = InputLinesInfo.Rows.Count;
                 //int TranslatedCount = TranslatedLines.Length-1; // -1 - отсекание последнего пустого элемента
 
-                if (TranslatedLines != null && TranslatedLines.Length > 0 && InputLines.Count == TranslatedLines.Length)
                 {
                     StringBuilder ResultValue = new StringBuilder();
                     int TranslatedLinesIndex = 0;
@@ -1136,6 +1172,43 @@ namespace TranslationHelper.Functions
             }
         }
 
+        private string[] ApplyProjectPretranslationAction(string[] originalLines)
+        {
+            if (thDataWork.CurrentProject.HideVARSMatchCollectionsList != null && thDataWork.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
+            {
+                thDataWork.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+            }
+
+            for (int i = 0; i < originalLines.Length; i++)
+            {
+                var s = thDataWork.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
+                if (!string.IsNullOrEmpty(s))
+                {
+                    originalLines[i] = s;
+                }
+            }
+            return originalLines;
+        }
+
+        private string[] ApplyProjectPosttranslationAction(string[] originalLines, string[] translatedLines)
+        {
+            for (int i = 0; i < translatedLines.Length; i++)
+            {
+                var s = thDataWork.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
+                if (!string.IsNullOrEmpty(s) && s != translatedLines[i])
+                {
+                    translatedLines[i] = s;
+                }
+            }
+
+            if(thDataWork.CurrentProject.HideVARSMatchCollectionsList!=null && thDataWork.CurrentProject.HideVARSMatchCollectionsList.Count>0)
+            {
+                thDataWork.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+            }
+
+            return translatedLines;
+        }
+
         private void SetTranslationResultToCellIfEmpty(int PreviousTableIndex, int PreviousRowIndex, StringBuilder ResultValue/*, DataSet THTranslationCache*/)
         {
             if (ResultValue.Length > 0 && PreviousTableIndex > -1 && PreviousRowIndex > -1)
@@ -1155,21 +1228,30 @@ namespace TranslationHelper.Functions
                 var TranslationCell = Row[1];
                 if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell as string))
                 {
-                    thDataWork.THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex][1] = s;
+                    try
+                    {
+                        //apply fixes for translation
+                        if (Properties.Settings.Default.ApplyFixesOnTranslation)
+                        {
+                            s = s.THFixCells(thDataWork);//cell fixes
+                            s = FunctionsStringFixes.ApplyHardFixes(Row[0] as string, s, thDataWork);//hardcoded fixes
+                        }
 
-                    //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
-                    FunctionsTable.AddToTranslationCacheIfValid(thDataWork, Cell as string, s);
+                        Row[1] = s;
 
-                    //закоментировано для повышения производительности
-                    //THAutoSetSameTranslationForSimular(PreviousTableIndex, PreviousRowIndex, 0);
+                        //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
+                        FunctionsTable.AddToTranslationCacheIfValid(thDataWork, Cell as string, s);
+
+                        //закоментировано для повышения производительности
+                        //THAutoSetSameTranslationForSimular(PreviousTableIndex, PreviousRowIndex, 0);
+                    }
+                    catch (ArgumentNullException ex)
+                    {
+                        new FunctionsLogs().LogToFile("Error occured:" + Environment.NewLine + ex);
+                    }
                 }
                 ResultValue.Clear();
             }
-        }
-
-        public void Dispose()
-        {
-            Translator.Dispose();
         }
     }
 

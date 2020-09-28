@@ -514,7 +514,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
             return new Uri(this.baseAddress, address.ToString() + query, query != null);
         }
 
-        private string DetermineMethod(Uri address, string method, bool is_upload)
+        private static string DetermineMethod(Uri address, string method, bool is_upload)
         {
             if (method != null)
             {
@@ -603,7 +603,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
                 request = this.SetupRequest(address);
                 WebResponse webResponse = this.GetWebResponse(request);
                 Stream responseStream = webResponse.GetResponseStream();
-                buffer = this.ReadAll(responseStream, (int)webResponse.ContentLength, userToken);
+                buffer = ReadAll(responseStream, (int)webResponse.ContentLength, userToken);
                 responseStream.Close();
                 webResponse.Close();
             }
@@ -824,7 +824,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
                 while (enumerator.MoveNext())
                 {
                     string current = (string)enumerator.Current;
-                    builder.AppendFormat("{0}={1}&", current, this.UrlEncode(this.queryString[current]));
+                    builder.AppendFormat("{0}={1}&", current, UrlEncode(this.queryString[current]));
                 }
             }
             finally
@@ -897,13 +897,13 @@ namespace TranslationHelper.OnlineTranslators.XUA
             }
             if (this.baseAddress == null)
             {
-                return new Uri(path + queryString, queryString != null);
+                return new Uri(path + queryString);
             }
             if (queryString == null)
             {
                 return new Uri(this.baseAddress, path);
             }
-            return new Uri(this.baseAddress, path + queryString, queryString != null);
+            return new Uri(baseAddress, path + queryString);
         }
 
         protected virtual void OnDownloadDataCompleted(XUnityDownloadDataCompletedEventArgs args)
@@ -1184,7 +1184,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
             }
         }
 
-        private byte[] ReadAll(Stream stream, int length, object userToken)
+        private static byte[] ReadAll(Stream stream, int length, object userToken)
         {
             MemoryStream stream2 = null;
             bool flag = length == -1;
@@ -1282,7 +1282,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
         private WebRequest SetupRequest(Uri uri, string method, bool is_upload)
         {
             WebRequest request = this.SetupRequest(uri);
-            request.Method = this.DetermineMethod(uri, method, is_upload);
+            request.Method = DetermineMethod(uri, method, is_upload);
             return request;
         }
 
@@ -1401,7 +1401,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
                 }
                 WebResponse webResponse = this.GetWebResponse(request);
                 Stream responseStream = webResponse.GetResponseStream();
-                buffer = this.ReadAll(responseStream, (int)webResponse.ContentLength, userToken);
+                buffer = ReadAll(responseStream, (int)webResponse.ContentLength, userToken);
             }
             catch (ThreadInterruptedException)
             {
@@ -1555,7 +1555,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
                 requestStream = null;
                 WebResponse webResponse = this.GetWebResponse(request);
                 Stream responseStream = webResponse.GetResponseStream();
-                buffer = this.ReadAll(responseStream, (int)webResponse.ContentLength, userToken);
+                buffer = ReadAll(responseStream, (int)webResponse.ContentLength, userToken);
             }
             catch (ThreadInterruptedException)
             {
@@ -1831,7 +1831,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
                 stream.Close();
                 WebResponse webResponse = this.GetWebResponse(request);
                 Stream responseStream = webResponse.GetResponseStream();
-                buffer3 = this.ReadAll(responseStream, (int)webResponse.ContentLength, userToken);
+                buffer3 = ReadAll(responseStream, (int)webResponse.ContentLength, userToken);
             }
             catch (ThreadInterruptedException)
             {
@@ -1841,7 +1841,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
             return buffer3;
         }
 
-        private string UrlEncode(string str)
+        private static string UrlEncode(string str)
         {
             StringBuilder builder = new StringBuilder();
             int length = str.Length;
@@ -1923,7 +1923,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
             }
         }
 
-        public RequestCachePolicy CachePolicy
+        public static RequestCachePolicy CachePolicy
         {
             get
             {
@@ -2023,7 +2023,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
             }
         }
 
-        public bool UseDefaultCredentials
+        public static bool UseDefaultCredentials
         {
             get
             {

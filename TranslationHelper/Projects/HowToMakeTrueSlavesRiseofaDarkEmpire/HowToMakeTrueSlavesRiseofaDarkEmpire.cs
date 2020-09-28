@@ -9,18 +9,23 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
         {
         }
 
-        internal override string ProjectTitle()
+        internal override string Name()
         {
             return "How To Make True Slaves -Rise of a Dark Empire-";
         }
 
-        internal override bool OpenDetect()
+        internal override bool Check()
         {
             return Path.GetExtension(thDataWork.SPath) == ".exe"
                 &&
                 Path.GetFileNameWithoutExtension(thDataWork.SPath) == "正しい性奴隷の使い方"
                 &&
                 Directory.Exists(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data", "Script"));
+        }
+
+        internal override string Filters()
+        {
+            return GameExeFilter;
         }
 
         internal override bool Open()

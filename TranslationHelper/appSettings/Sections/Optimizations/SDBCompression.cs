@@ -15,7 +15,7 @@ namespace TranslationHelper.INISettings
 
         object SObject { get => thDataWork.Main.Settings.THOptionDBCompressionCheckBox; }
 
-        bool SVar
+        static bool SVar
         {
             get => TranslationHelper.Properties.Settings.Default.DBCompression;
             set => TranslationHelper.Properties.Settings.Default.DBCompression = value;

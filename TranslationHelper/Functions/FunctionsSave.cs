@@ -20,7 +20,7 @@ namespace TranslationHelper.Functions
             this.thDataWork = thDataWork;
         }
 
-        internal async void PrepareToWrite()
+        internal async Task PrepareToWrite()
         {
             if (thDataWork.Main.SaveInAction /*|| !thDataWork.Main.FIleDataWasChanged*/)
             {
@@ -34,12 +34,13 @@ namespace TranslationHelper.Functions
 
             if (thDataWork.CurrentProject != null)
             {
-                thDataWork.CurrentProject.BuckupCreate();
+                thDataWork.CurrentProject.BakCreate();
+                thDataWork.SaveFileMode = true;
                 await Task.Run(() => thDataWork.CurrentProject.Save()).ConfigureAwait(true);
             }
             else
             {
-                if (RPGMFunctions.THSelectedSourceType == new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).ProjectTitle())
+                if (RPGMFunctions.THSelectedSourceType == new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).Name())
                 {
                     await Task.Run(() => new HowToMakeTrueSlavesRiseofaDarkEmpire(thDataWork).Save()).ConfigureAwait(true);
                 }

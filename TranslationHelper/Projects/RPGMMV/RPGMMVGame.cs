@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Functions;
-using TranslationHelper.Translators;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
@@ -18,7 +17,7 @@ namespace TranslationHelper.Projects.RPGMMV
             ListOfJS = JSBase.GetListOfJS(thDataWork);
         }
 
-        internal override bool OpenDetect()
+        internal override bool Check()
         {
             if (Path.GetExtension(thDataWork.SPath) == ".exe")
             {
@@ -31,12 +30,17 @@ namespace TranslationHelper.Projects.RPGMMV
             return false;
         }
 
-        internal override string ProjectTitle()
+        internal override string Filters()
+        {
+            return GameExeFilter;
+        }
+
+        internal override string Name()
         {
             return "RPG Maker MV";
         }
 
-        internal override string ProjecFolderName()
+        internal override string ProjectFolderName()
         {
             return "RPGMakerMV";
         }
@@ -46,6 +50,24 @@ namespace TranslationHelper.Projects.RPGMMV
         internal override bool Open()
         {
             return ParseProjectFiles();
+        }
+
+        internal override bool LineSplitProjectSpecificSkipForTable(DataTable table)
+        {
+            return table.TableName.ToUpperInvariant().EndsWith(".JS");
+        }
+
+        internal override bool LineSplitProjectSpecificSkipForLine(string o, string t, int tind = -1, int rind = -1)
+        {
+            if (tind != -1 && rind != -1)
+            {
+                string cell = thDataWork.THFilesElementsDatasetInfo.Tables[tind].Rows[rind][0] + string.Empty;
+                if (cell.Contains("Code=655") || cell.Contains("Code=355") /*|| thDataWork.THFilesElementsDataset.Tables[tind].TableName.ToUpperInvariant().EndsWith(".JS")*/)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         string ParseFileMessage;
@@ -58,13 +80,33 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             if (!Write)
             {
-                BuckupRestore();
+                BakRestore();
             }
 
             ParseFileMessage = Write ? T._("write file: ") : T._("opening file: ");
             bool IsAnyFileCompleted = false;
             try
             {
+                //gamefont.css to be possible to change font
+                thDataWork.Main.ProgressInfo(true, ParseFileMessage + "gamefont.css");
+                thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css");
+
+                try
+                {
+                    if (Write && new GAMEFONTCSS(thDataWork).Save())
+                    {
+                        IsAnyFileCompleted = true;
+                    }
+                    else if (new GAMEFONTCSS(thDataWork).Open())
+                    {
+                        IsAnyFileCompleted = true;
+                    }
+                }
+                catch
+                {
+                }
+
+
                 //Proceeed js-files
                 foreach (var JS in ListOfJS)
                 {
@@ -161,13 +203,23 @@ namespace TranslationHelper.Projects.RPGMMV
         //    return null;
         //}
 
-        internal override bool BuckupCreate()
+        internal override bool BakCreate()
         {
             RestoreFromBakIfNeedData();
             try
             {
+                File.Copy(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css")
+                    , Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css") + ".bak"
+                    );
+            }
+            catch
+            {
+
+            }
+            try
+            {
                 string dataPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data");
-                CopyFolder.Copy(dataPath, dataPath + "_bak");
+                dataPath.CopyAll(dataPath + "_bak");
             }
             catch
             {
@@ -191,7 +243,7 @@ namespace TranslationHelper.Projects.RPGMMV
             return true;
         }
 
-        internal override bool BuckupRestore()
+        internal override bool BakRestore()
         {
             RestoreFromBakIfNeedData();
             foreach (JSBase JS in ListOfJS)
@@ -219,6 +271,21 @@ namespace TranslationHelper.Projects.RPGMMV
                 {
                 }
             }
+
+            if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css.bak")))
+            {
+                try
+                {
+                    File.Delete(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css"));
+                    File.Move(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css.bak")
+                        , Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css")
+                        );
+                }
+                catch
+                {
+                }
+            }
+
         }
 
         internal static void RestoreFromBakIfNeedJS(JSBase JS)

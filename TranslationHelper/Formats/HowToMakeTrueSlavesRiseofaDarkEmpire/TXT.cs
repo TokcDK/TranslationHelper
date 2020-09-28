@@ -141,7 +141,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             return thDataWork.FilePath;
         }
 
-        private bool StartsWithOther(string line)
+        private static bool StartsWithOther(string line)
         {
             return line.StartsWith("//") || line.StartsWith("[") || line.StartsWith("}");
         }
@@ -362,32 +362,32 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
         }
 
-        private bool IsCommentary(string line)
+        private static bool IsCommentary(string line)
         {
             return string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("//");
         }
 
-        private bool IsMessage(string line)
+        private static bool IsMessage(string line)
         {
             return line.StartsWith("#MSG,") || line == "#MSG";
         }
 
-        private bool IsVoicedMessage(string line)
+        private static bool IsVoicedMessage(string line)
         {
             return line.StartsWith("#MSGVOICE,");
         }
 
-        private bool IsChoiceVariants(string line)
+        private static bool IsChoiceVariants(string line)
         {
             return line.StartsWith("#SELECT,");
         }
 
-        private string ChoiceTextExtractionRegex()
+        private static string ChoiceTextExtractionRegex()
         {
             return @"([^	]+)([	 ]+[0-9]{1,2}.*)";
         }
 
-        private string ApplyRequiredCharReplacements(string newLine)
+        private static string ApplyRequiredCharReplacements(string newLine)
         {
             return newLine
                 .Replace("　", "_").Replace(" ", "_")//whitespaces forbidden
@@ -397,7 +397,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 ;
         }
 
-        private string CheckFirstCharIsLatinAndTransform(string cleanedSubline)
+        private static string CheckFirstCharIsLatinAndTransform(string cleanedSubline)
         {
             if (string.IsNullOrEmpty(cleanedSubline))
             {
@@ -431,7 +431,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 ;
         }
 
-        private string PreReduceTranslation(string newLine)
+        private static string PreReduceTranslation(string newLine)
         {
             //newLine = WordsReplacement(newLine);
             return Regex.Replace(newLine, @"([a-zA-Z])\1{3,}", "$1-$1")
@@ -485,7 +485,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 ;
         }
 
-        private string PostTransFormLineCleaning(string s)
+        private static string PostTransFormLineCleaning(string s)
         {
             return s
                 .TrimStart()

@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.RPGMMV
         {
         }
 
-        internal override bool OpenDetect()
+        internal override bool Check()
         {
             if (Path.GetExtension(thDataWork.SPath).ToUpperInvariant() == ".JSON")
             {
@@ -25,12 +25,12 @@ namespace TranslationHelper.Projects.RPGMMV
             return false;
         }
 
-        internal override string ProjectTitle()
+        internal override string Name()
         {
             return "RPG Maker MV Json";
         }
 
-        internal override string ProjecFolderName()
+        internal override string ProjectFolderName()
         {
             return "RPGMakerMV";
         }
@@ -50,7 +50,7 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             if (!Write)
             {
-                BuckupRestore();
+                BakRestore();
             }
 
             ParseFileMessage = Write ? T._("write file: ") : T._("opening file: ");
@@ -99,12 +99,12 @@ namespace TranslationHelper.Projects.RPGMMV
             return ParseProjectFiles(true);
         }
 
-        internal override bool BuckupCreate()
+        internal override bool BakCreate()
         {
             return false;
         }
 
-        internal override bool BuckupRestore()
+        internal override bool BakRestore()
         {
             return false;
         }

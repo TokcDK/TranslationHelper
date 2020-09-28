@@ -10,11 +10,11 @@ namespace TranslationHelper.INISettings
 
         internal override string Key => "WebTranslationLink";
 
-        internal override string Default => "https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}";
+        internal override string Default => "https://translate.google.com/?ie=UTF-8&op=translate&sl={from}&tl={to}&text={text}";
 
         object SObject { get => thDataWork.Main.Settings.THSettingsWebTranslationLinkTextBox; }
 
-        string SVar
+        static string SVar
         {
             get => TranslationHelper.Properties.Settings.Default.WebTranslationLink;
             set => TranslationHelper.Properties.Settings.Default.WebTranslationLink = value;

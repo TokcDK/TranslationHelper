@@ -68,6 +68,11 @@ namespace TranslationHelper.Data
                 //thDataWork.THFilesElementsDatasetInfo.Dispose();
                 //thDataWork.THFilesElementsALLDataTable.Dispose();
 
+                //Hide some items 
+                thDataWork.Main.tlpTextLenPosInfo.Visible = false;
+                thDataWork.Main.TableCompleteInfoLabel.Visible = false;
+                thDataWork.Main.THWorkSpaceSplitContainer.Visible = false;
+
                 //Disable items
                 thDataWork.Main.saveToolStripMenuItem.Enabled = false;
                 thDataWork.Main.saveAsToolStripMenuItem.Enabled = false;

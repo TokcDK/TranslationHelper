@@ -276,11 +276,14 @@ namespace TranslationHelper.Extensions
             if (string.IsNullOrEmpty(inputString))
                 return true;
 
-            return FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(inputString)
-                || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(inputString, "other")
-                || (FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji") + FunctionsRomajiKana.GetLocaleLangCount(inputString, "other")) == inputString.Length
-                || FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji") == inputString.Length
-                || FunctionsRomajiKana.GetLocaleLangCount(inputString, "other") == inputString.Length;
+            int romajicnt;
+            int othercnt;
+            var inputStringLength = inputString.Length;
+            return FunctionsRomajiKana.LocalePercentIsNotValid(inputString)
+                || (FunctionsRomajiKana.LocalePercentIsNotValid(inputString, "other"))
+                || ((romajicnt = FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji")) + (othercnt=FunctionsRomajiKana.GetLocaleLangCount(inputString, "other"))) == inputStringLength
+                || romajicnt == inputStringLength
+                || othercnt == inputStringLength;
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -102,6 +103,11 @@ namespace TranslationHelper
 
         public override string Translate(string OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
+            if (ErrorsWebCntOverall > 5)
+            {
+                return null;
+            }
+
             string ResultOfTranslation;
             if (OriginalText.Length == 0)
             {
@@ -139,8 +145,8 @@ namespace TranslationHelper
                     string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
                     if (webClient == null)
-                        webClient = new WebClientEx(thDataWork.OnlineTranslatorCookies);
-                        //webClient = new ScrapySharp.Network.ScrapingBrowser();
+                        webClient = new WebClientEx(thDataWork.OnlineTranslatorCookies ?? new CookieContainer());
+                    //webClient = new ScrapySharp.Network.ScrapingBrowser();
 
                     //using (WebClient webClient = new WebClient())
                     //{
@@ -201,9 +207,14 @@ namespace TranslationHelper
                         {
                         }
                     }
+                    catch (WebException ex)
+                    {
+                        new Functions.FunctionsLogs().LogToFile("google translation web error:" + Environment.NewLine + ex);
+                        thDataWork.OnlineTranslatorCookies = null;
+                    }
                     catch (Exception ex)
                     {
-                        new Functions.FunctionsLogs().LogToFile("google translation error:"+Environment.NewLine+ex);
+                        new Functions.FunctionsLogs().LogToFile("google translation error:" + Environment.NewLine + ex);
                     }
                     //finally
                     //{
@@ -217,6 +228,13 @@ namespace TranslationHelper
 
         public override string[] Translate(string[] OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
+            if (ErrorsWebCntOverall > 9)
+            {
+                return null;
+            }
+
+            Thread.Sleep((int)(new Random().NextDouble() * 2000));
+
             int num = OriginalText.Length;
             string[] array = new string[num];
             StringBuilder stringBuilder = new StringBuilder();
@@ -264,9 +282,9 @@ namespace TranslationHelper
             string arg = HttpUtility.UrlEncode(stringBuilder.ToString(), Encoding.UTF8);
             string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
-            if (webClient == null) 
+            if (webClient == null)
             {
-                webClient = new WebClientEx(thDataWork.OnlineTranslatorCookies);
+                webClient = new WebClientEx(thDataWork.OnlineTranslatorCookies ?? new CookieContainer());
                 //webClient = new ScrapySharp.Network.ScrapingBrowser();
             }
             //using (WebClient webClient = new WebClient())
@@ -276,6 +294,7 @@ namespace TranslationHelper
             //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
             webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
             //webClient.UserAgent= ScrapySharp.Network.FakeUserAgents.Chrome;
+            Uri uri = new Uri(address);
             try
             {
                 //Материалы, что помогли
@@ -283,8 +302,43 @@ namespace TranslationHelper
                 //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
                 //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
 
+
                 //скачать страницу
-                string text = webClient.DownloadString(new Uri(address));
+                string text = string.Empty;
+
+                try
+                {
+                    text = webClient.DownloadString(uri);
+                }
+                catch (WebException)
+                {
+                    thDataWork.OnlineTranslatorCookies = null;
+                    thDataWork.OnlineTranslatorCookies = new CookieContainer();
+
+                    while (ErrorsWebCnt>0 && ErrorsWebCntOverall < 10)
+                    {
+                        Thread.Sleep(ErrorsWebCntOverall * 10000);
+
+                        try
+                        {
+                            //another try
+                            text = webClient.DownloadString(uri);
+                            ErrorsWebCntOverall = 0;
+                            ErrorsWebCnt = 0;
+                        }
+                        catch
+                        {
+                            ErrorsWebCntOverall++;
+                            if (ErrorsWebCntOverall > 9)
+                            {
+                                return null;
+                            }
+                        }
+                    }
+                }
+
+
+
                 //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"TEXT:"+Environment.NewLine + text);
 
                 HtmlDocument htmlDocument = WBhtmlDocument();
@@ -343,9 +397,15 @@ namespace TranslationHelper
                 return text2.Length == 0 ? RetWithNullToEmpty(array) : SplitTextToLinesAndRestoreSomeSpecsymbols(text2);
                 //return array;
             }
+            catch (WebException ex)
+            {
+                new Functions.FunctionsLogs().LogToFile("google array translation web error:" + Environment.NewLine + ex + Environment.NewLine + "uri=" + uri);
+                thDataWork.OnlineTranslatorCookies = null;
+                ErrorsWebCnt++;
+            }
             catch (Exception ex)
             {
-                new Functions.FunctionsLogs().LogToFile("google array translation error:" + Environment.NewLine + ex);
+                new Functions.FunctionsLogs().LogToFile("google array translation error:" + Environment.NewLine + ex + Environment.NewLine + "uri=" + uri);
             }
             //finally
             //{
@@ -356,12 +416,12 @@ namespace TranslationHelper
 
         private string GetUrlAddress(string LanguageFrom, string LanguageTo, string arg)
         {
-            return string.Format(CultureInfo.GetCultureInfo("en-US"), "https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&tk={3}&q={2}", LanguageFrom, LanguageTo, arg, Tk(arg));
-            
+            return string.Format(CultureInfo.InvariantCulture, "https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&tk={3}&q={2}", LanguageFrom, LanguageTo, arg, Tk(arg));
+
             //string address = string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, arg);
             //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, str);
-            //string address = string.Format(CultureInfo.GetCultureInfo("en-US"), "https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
-            //address = string.Format(CultureInfo.GetCultureInfo("en-US"), "https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&tk={3}&q={2}", LanguageFrom, LanguageTo, arg, Tk(arg));
+            //string address = string.Format(CultureInfo.InvariantCulture, "https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, arg);
+            //address = string.Format(CultureInfo.InvariantCulture, "https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&tk={3}&q={2}", LanguageFrom, LanguageTo, arg, Tk(arg));
 
             //address = string.Format(
             //      HttpsServicePointRomanizeTemplateUrl,
@@ -386,7 +446,7 @@ namespace TranslationHelper
 
         private HtmlDocument WBhtmlDocument()
         {
-            if(WB == null)
+            if (WB == null)
             {
                 WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty };
             }
@@ -441,7 +501,7 @@ namespace TranslationHelper
         private static readonly Random RandomNumbers = new Random();
         private int _resetAfter = RandomNumbers.Next(75, 125);
 
-        private long Vi(long r, string o)
+        private static long Vi(long r, string o)
         {
             for (var t = 0; t < o.Length; t += 3)
             {

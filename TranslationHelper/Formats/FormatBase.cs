@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
@@ -30,46 +32,251 @@ namespace TranslationHelper.Formats
 
         internal abstract bool Save();
 
-        protected bool ValidString(string inputString)
+        protected static bool IsValidString(string inputString)
         {
-            return !string.IsNullOrWhiteSpace(inputString) && !(Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && inputString.HaveMostOfRomajiOtherChars());
+            bool jp;
+            return !string.IsNullOrWhiteSpace(inputString)
+                && (
+                ((jp = Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp") && !inputString.HaveMostOfRomajiOtherChars())
+                || !jp
+                );
         }
 
-        protected HashSet<string> hashes;
-        protected void AddRowData(string RowData, string RowInfo, bool CheckAddHashes=false)
+        /// <summary>
+        /// Parse Data
+        /// </summary>
+        protected ParseFileData ParseData;
+        /// <summary>
+        /// Base Parse File function
+        /// </summary>
+        /// <param name="IsOpen"></param>
+        /// <returns></returns>
+        protected bool ParseFile()
         {
-            if (!string.IsNullOrEmpty(thDataWork.FilePath))
+            ParseFilePreOpen();
+
+            ParseFileOpen();
+
+            return ParseFilePostOpen();
+        }
+
+        protected virtual void ParseFileOpen()
+        {
+            using (ParseData.reader = new StreamReader(thDataWork.FilePath, FunctionsFileFolder.GetEncoding(thDataWork.FilePath)))
             {
-                AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes);
+                ParseFileLines();
             }
         }
-        protected void AddRowData(string tablename, string RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
+
+        protected virtual void ParseFilePreOpen()
         {
-            if (CheckInput && !ValidString(RowData))
+            ParseData = new ParseFileData(thDataWork);
+
+            if (thDataWork.OpenFileMode)
             {
-                return;
+                AddTables(ParseData.tablename);
             }
 
-            if(CheckAddHashes && hashes != null && hashes.Contains(RowData))
+            if (thDataWork.SaveFileMode)
             {
-                return;
+                SplitTableCellValuesAndTheirLinesToDictionary(ParseData.tablename, false, false);
             }
+        }
 
-            if (AddToDictionary)
+        protected virtual bool ParseFilePostOpen()
+        {
+            if (thDataWork.OpenFileMode)
             {
-                if (!thDataWork.THFilesElementsDictionary.ContainsKey(RowData))
-                {
-                    thDataWork.THFilesElementsDictionary.Add(RowData, string.Empty);
-                    thDataWork.THFilesElementsDictionaryInfo.Add(RowData, RowInfo);
-                }
+                return CheckTablesContent(ParseData.tablename);
             }
             else
             {
-                thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
-                thDataWork.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
-                if (CheckAddHashes && hashes != null)
+                return WriteFileData();
+            }
+        }
+
+        protected virtual void ParseFileLines()
+        {
+            while ((ParseData.line = ParseData.reader.ReadLine()) != null)
+            {
+                int parseLineResult;
+                if ((parseLineResult = ParseFileLine()) == -1)
                 {
-                    hashes.Add(RowData);
+                    break;
+                }
+                else if (parseLineResult == 0)
+                {
+                    continue;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Parse line virtual function
+        /// -1=stop parse cyrcle, 0-continue cyrcle, 1 - line not added, 2 - line added
+        /// </summary>
+        /// <returns></returns>
+        protected virtual int ParseFileLine()
+        {
+            return -1;
+        }
+
+        /// <summary>
+        /// extract text from line with regex pattern
+        /// </summary>
+        /// <param name="pattern">Key - Part of line for find in line, Value - regex pattern</param>
+        /// <returns></returns>
+        protected bool ParsePattern(string pattern)
+        {
+            return ParsePattern(new KeyValuePair<string, string>("", pattern), false);
+        }
+
+        /// <summary>
+        /// patterns for add
+        /// </summary>
+        protected virtual Dictionary<string, string> Patterns()
+        {
+            return new Dictionary<string, string>();
+        }
+
+        /// <summary>
+        /// parse patterns default
+        /// </summary>
+        /// <returns></returns>
+        protected bool ParsePatterns()
+        {
+            bool ret = false;
+            foreach (var pattern in Patterns())
+            {
+                if (ParsePattern(pattern))
+                {
+                    ret = true;
+                }
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// extract text from line with regex pattern
+        /// </summary>
+        /// <param name="pattern">Key - Part of line for find in line, Value - regex pattern</param>
+        /// <returns></returns>
+        protected bool ParsePattern(KeyValuePair<string, string> pattern, bool useInlineSearch = true)
+        {
+            if (((useInlineSearch && ParseData.line.IndexOf(pattern.Key) != -1) || !useInlineSearch) && Regex.IsMatch(ParseData.line, pattern.Value, RegexOptions.Compiled))
+            {
+                var mc = Regex.Matches(ParseData.line, pattern.Value, RegexOptions.Compiled);
+                if (mc.Count > 0)
+                {
+                    //if(ParseData.line== "rmenu \"セーブ\",save,\"ロード\",load,\"回想\",lookback,\"ウィンドウを消す\",windowerase,\"タイトルへ戻る\",reset ")
+                    //{
+
+                    //}
+
+                    if (thDataWork.OpenFileMode)
+                    {
+                        foreach (Match m in mc)
+                        {
+                            var str = PreAddString(m.Result("$1"));
+                            AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, true, true);
+                            if (!ParseData.Ret)
+                                ParseData.Ret = true;
+                        }
+                    }
+                    else
+                    {
+                        for (int m = mc.Count - 1; m >= 0; m--)
+                        {
+                            var str = PreAddString(mc[m].Result("$1"));
+                            if (IsValidString(str) && thDataWork.TablesLinesDict.ContainsKey(str))
+                            {
+                                ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(thDataWork.TablesLinesDict[str])));
+                                if (!ParseData.Ret)
+                                    ParseData.Ret = true;
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        protected virtual string PreAddString(string str)
+        {
+            return str;
+        }
+
+        /// <summary>
+        /// remove invalid symbols for the project or replace them to some valid
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        protected virtual string FixInvalidSymbols(string str)
+        {
+            return str;
+        }
+
+        protected virtual bool WriteFileData(string filePath = "")
+        {
+            try
+            {
+                if (ParseData.Ret && thDataWork.SaveFileMode && ParseData.ResultForWrite.Length > 0)
+                {
+                    File.WriteAllText(filePath.Length > 0 ? filePath : thDataWork.FilePath, ParseData.ResultForWrite.ToString(), FunctionsFileFolder.GetEncoding(thDataWork.FilePath));
+                    return true;
+                }
+            }
+            catch
+            {
+
+            }
+            return false;
+        }
+
+        protected class ParseFileData
+        {
+            /// <summary>
+            /// Project work data
+            /// </summary>
+            private readonly THDataWork thDataWork;
+            /// <summary>
+            /// tablename/filename
+            /// </summary>
+            internal string tablename;
+            /// <summary>
+            /// result of parsing
+            /// </summary>
+            internal bool Ret;
+            /// <summary>
+            /// line value
+            /// </summary>
+            internal string line;
+            string trimmed = string.Empty;
+            /// <summary>
+            /// trimmed line value
+            /// </summary>
+            internal string TrimmedLine { get => trimmed; set => trimmed = value.Trim(); }
+            /// <summary>
+            /// Usually here adding file's content for write
+            /// </summary>
+            internal StringBuilder ResultForWrite;
+            /// <summary>
+            /// Usually using to parse comment sections like /* commented text */
+            /// </summary>
+            internal bool IsComment;
+            /// <summary>
+            /// Streamreader of the processing file
+            /// </summary>
+            internal StreamReader reader;
+
+            public ParseFileData(THDataWork thDataWork)
+            {
+                this.thDataWork = thDataWork;
+                tablename = Path.GetFileName(thDataWork.FilePath);
+                if (thDataWork.SaveFileMode)
+                {
+                    ResultForWrite = new StringBuilder();
                 }
             }
         }
@@ -102,6 +309,55 @@ namespace TranslationHelper.Formats
                 thDataWork.THFilesElementsDatasetInfo.Tables.Add(tablename);
                 thDataWork.THFilesElementsDatasetInfo.Tables[tablename].Columns.Add("Info");
             }
+        }
+
+        protected HashSet<string> hashes;
+        protected bool AddRowData(string RowData, string RowInfo, bool CheckAddHashes = false)
+        {
+            return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes);
+        }
+        protected bool AddRowData(string[] RowData, string RowInfo, bool CheckAddHashes = false)
+        {
+            return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes, true, false);
+        }
+        protected bool AddRowData(string RowData, string RowInfo, bool CheckAddHashes, bool CheckInput)
+        {
+            return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput);
+        }
+        protected bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
+        {
+            return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckAddHashes, CheckInput, AddToDictionary);
+        }
+        protected bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
+        {
+            if (CheckInput && !IsValidString(RowData[0]))
+            {
+                return false;
+            }
+
+            if (CheckAddHashes && hashes != null && hashes.Contains(RowData[0]))
+            {
+                return false;
+            }
+
+            if (AddToDictionary)
+            {
+                if (!thDataWork.THFilesElementsDictionary.ContainsKey(RowData[0]))
+                {
+                    thDataWork.THFilesElementsDictionary.Add(RowData[0], RowData.Length == 2 ? RowData[1] : string.Empty);
+                    thDataWork.THFilesElementsDictionaryInfo.Add(RowData[0], RowInfo);
+                }
+            }
+            else
+            {
+                thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
+                thDataWork.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
+                if (CheckAddHashes && hashes != null)
+                {
+                    hashes.Add(RowData[0]);
+                }
+            }
+            return true;
         }
 
         protected bool CheckTablesContent(string tablename, bool IsDictionary = false)
@@ -158,6 +414,7 @@ namespace TranslationHelper.Formats
             }
         }
 
+        bool TablesLinesDictFilled;
         /// <summary>
         /// add all original\translation pairs of datatable rows in Dictionary<br/>
         /// also split multiline values and add all of their lines in Dictionary
@@ -178,7 +435,7 @@ namespace TranslationHelper.Formats
             }
             else
             {
-                if (TablesLinesDict != null && TablesLinesDict.Count > 0)
+                if (TablesLinesDictFilled /*|| TablesLinesDict != null && TablesLinesDict.Count > 0*/)
                 {
                     return;
                 }
@@ -296,6 +553,7 @@ namespace TranslationHelper.Formats
                     //}
                 }
             }
+            TablesLinesDictFilled = true;
         }
     }
 }

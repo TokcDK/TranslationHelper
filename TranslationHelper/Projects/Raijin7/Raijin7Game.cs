@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects
         {
         }
 
-        internal override bool OpenDetect()
+        internal override bool Check()
         {
             string dirPath = Path.GetDirectoryName(thDataWork.SPath);
             if (!string.IsNullOrEmpty(thDataWork.SPath) && Path.GetExtension(thDataWork.SPath) == ".exe" && Directory.Exists(Path.Combine(dirPath, "eve")) && Directory.Exists(Path.Combine(dirPath, "csv")))
@@ -23,7 +23,12 @@ namespace TranslationHelper.Projects
             return false;
         }
 
-        internal override string ProjectTitle()
+        internal override string Filters()
+        {
+            return GameExeFilter;
+        }
+
+        internal override string Name()
         {
             return "Raijin 7";
         }

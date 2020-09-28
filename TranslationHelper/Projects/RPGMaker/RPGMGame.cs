@@ -16,7 +16,7 @@ namespace TranslationHelper.Projects
         {
         }
 
-        internal override bool OpenDetect()
+        internal override bool Check()
         {
             if (Path.GetExtension(thDataWork.SPath) == ".exe")
             {
@@ -39,12 +39,17 @@ namespace TranslationHelper.Projects
             return false;
         }
 
-        internal override string ProjectTitle()
+        internal override string Filters()
+        {
+            return GameExeFilter;
+        }
+
+        internal override string Name()
         {
             return "RPG Maker Game";
         }
 
-        internal override string ProjecFolderName()
+        internal override string ProjectFolderName()
         {
             return "RPGMakerTransPatch";
         }

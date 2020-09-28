@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.3.3.0\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.3.3.0\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" />
+  <Import Project="..\packages\Microsoft.NetFramework.Analyzers.3.3.0\build\Microsoft.NetFramework.Analyzers.props" Condition="Exists('..\packages\Microsoft.NetFramework.Analyzers.3.3.0\build\Microsoft.NetFramework.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.NetCore.Analyzers.3.3.0\build\Microsoft.NetCore.Analyzers.props" Condition="Exists('..\packages\Microsoft.NetCore.Analyzers.3.3.0\build\Microsoft.NetCore.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeQuality.Analyzers.3.3.0\build\Microsoft.CodeQuality.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeQuality.Analyzers.3.3.0\build\Microsoft.CodeQuality.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.3.0\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.3.0\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" />
   <Import Project="..\packages\Microsoft.Net.Compilers.Toolset.3.7.0\build\Microsoft.Net.Compilers.Toolset.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.Toolset.3.7.0\build\Microsoft.Net.Compilers.Toolset.props')" />
-  <Import Project="..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.3.0.0\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.3.0.0\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" />
-  <Import Project="..\packages\Microsoft.NetFramework.Analyzers.3.0.0\build\Microsoft.NetFramework.Analyzers.props" Condition="Exists('..\packages\Microsoft.NetFramework.Analyzers.3.0.0\build\Microsoft.NetFramework.Analyzers.props')" />
-  <Import Project="..\packages\Microsoft.NetCore.Analyzers.3.0.0\build\Microsoft.NetCore.Analyzers.props" Condition="Exists('..\packages\Microsoft.NetCore.Analyzers.3.0.0\build\Microsoft.NetCore.Analyzers.props')" />
-  <Import Project="..\packages\Microsoft.CodeQuality.Analyzers.3.0.0\build\Microsoft.CodeQuality.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeQuality.Analyzers.3.0.0\build\Microsoft.CodeQuality.Analyzers.props')" />
-  <Import Project="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.0.0\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.0.0\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" />
   <Import Project="..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props" Condition="Exists('..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props')" />
   <Import Project="..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -67,6 +67,15 @@
     <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
       <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Dynamic, Version=1.2.3.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.2.3\lib\net45\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.2.3.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.2.3\lib\net45\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata, Version=1.2.3.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.2.3\lib\net45\Microsoft.Scripting.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -79,13 +88,22 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Soft160.Data.Cryptography">
+      <HintPath>K:\0 Repositories\FastCRC\src\bin\Release\net40\Soft160.Data.Cryptography.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Linq" />
     <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.InteropServices" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
+    <Reference Include="System.Text.Encoding.CodePages, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.4.7.1\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
     <Reference Include="System.Threading.Thread" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
@@ -98,6 +116,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Ude.NetStandard, Version=1.0.2.0, Culture=neutral, PublicKeyToken=103cb45fc06c90e4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ude.NetStandard.1.2.0\lib\net45\Ude.NetStandard.dll</HintPath>
+    </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
@@ -117,6 +138,7 @@
     <Compile Include="appSettings\Sections\General\SFullComprasionDBload.cs" />
     <Compile Include="Data\CleanupData.cs" />
     <Compile Include="Data\THDataWork.cs" />
+    <Compile Include="Data\THSettingsData.cs" />
     <Compile Include="Extensions\ExtensionsDictionary.cs" />
     <Compile Include="Extensions\ExtensionsFileFolder.cs" />
     <Compile Include="Extensions\ExtensionsString.cs" />
@@ -125,14 +147,23 @@
     <Compile Include="ExternalAdditions\CopyFolder.cs" />
     <Compile Include="ExternalAdditions\DataGridViewEx.cs" />
     <Compile Include="ExternalAdditions\GDI.cs" />
+    <Compile Include="ExternalAdditions\CSRegisterHotkey\HotKeyRegister.cs" />
+    <Compile Include="ExternalAdditions\CSRegisterHotkey\KeyModifiers.cs" />
     <Compile Include="ExternalAdditions\Md5ForFolder.cs" />
+    <Compile Include="ExternalAdditions\PythonInstance.cs" />
     <Compile Include="ExternalAdditions\ReplaceEx.cs" />
     <Compile Include="ExternalAdditions\T.cs" />
+    <Compile Include="Formats\EAGLS\SCPACK\SC_TXT.cs" />
+    <Compile Include="Formats\EAGLS\SCPACK\SCPACKBase.cs" />
     <Compile Include="Formats\FormatBase.cs" />
     <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\TXT.cs" />
+    <Compile Include="Formats\KiriKiri\Games\FGroup1\FGroup1Base.cs" />
+    <Compile Include="Formats\KiriKiri\Games\KS.cs" />
+    <Compile Include="Formats\KiriKiri\Games\FGroup1\RJ297684GoblinsCave\KS.cs" />
+    <Compile Include="Formats\KiriKiri\Games\FGroup2\FGroup2Base.cs" />
     <Compile Include="Formats\KiriKiri\Games\KiriKiriFormatBase.cs" />
-    <Compile Include="Formats\KiriKiri\Games\NLoveImGoingToGetRidOfItAndLive\KS.cs" />
-    <Compile Include="Formats\KiriKiri\Games\VirginLode2\KS.cs" />
+    <Compile Include="Formats\KiriKiri\Games\FGroup2\NLoveImGoingToGetRidOfItAndLive\KS.cs" />
+    <Compile Include="Formats\KiriKiri\Games\FGroup1\VirginLode2\KS.cs" />
     <Compile Include="Formats\KiriKiri\Overall\CSV.cs" />
     <Compile Include="Formats\KiriKiri\Old\CSVOld.cs" />
     <Compile Include="Formats\KiriKiri\Overall\SCRIPT.cs" />
@@ -140,10 +171,14 @@
     <Compile Include="Formats\KiriKiri\Overall\TSV.cs" />
     <Compile Include="Formats\KiriKiri\Old\TSVOld.cs" />
     <Compile Include="Formats\KiriKiri\Overall\XP3.cs" />
+    <Compile Include="Formats\KiriKiri\ParsePatterns\PatternsBase.cs" />
+    <Compile Include="Formats\NScriptGame\nscript.dat\NSCRIPT.cs" />
     <Compile Include="Formats\Raijin7\csv\CSV.cs" />
     <Compile Include="Formats\Raijin7\eve\TXT.cs" />
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
+    <Compile Include="Formats\RPGMMV\GAMEFONTCSS.cs" />
     <Compile Include="Formats\RPGMMV\JS\ConfigEx.cs" />
+    <Compile Include="Formats\RPGMMV\JS\pk_CommonMenuEvents.cs" />
     <Compile Include="Formats\RPGMMV\JS\GraphicalDesignMode.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\PLUGINS.cs" />
@@ -155,10 +190,34 @@
     <Compile Include="Formats\RPGMTransPatch\RPGMTransPatchBase.cs" />
     <Compile Include="Formats\RPGMTransPatch\TXTv3.cs" />
     <Compile Include="Formats\RPGMTransPatch\TXTv2.cs" />
+    <Compile Include="Formats\WolfRPG\WolfRPGBase.cs" />
+    <Compile Include="Formats\WolfRPG\WolfTrans\TXT.cs" />
     <Compile Include="Formats\zzzOtherFormat\OtherFormatBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\CompleteRomajiotherLines.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\FileElementsRowFunctionsBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\ENQuotesToJP.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\FixBrokenNameVar.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\FixBrokenNameVar2.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\FixForEndingQuoteInconsistence.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\FixForRPGMAkerQuotationInSomeStrings2.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\FixENJPQuoteOnStringStart1stLine.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\FixENJPQuoteOnStringStart2ndLine.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\FixForRPGMAkerQuotationInSomeStrings.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\HardFixesBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\AllHardFixes.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\ProjectSpecificFixes.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\Temp\HardFixesTempBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\RemoveIeroglifs.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\Temp\LuaLiaFix.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\SetOriginalToTranslation.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\SplitLongLines.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\StringCaseMorphBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\Tolower.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUPPER.cs" />
     <Compile Include="Functions\FunctionsLoadTranslationDB.cs" />
     <Compile Include="Functions\FunctionsLogs.cs" />
     <Compile Include="Functions\FunctionsMessage.cs" />
+    <Compile Include="Functions\FunctionsStringExtensions.cs" />
     <Compile Include="Functions\NativeMethods.cs" />
     <Compile Include="Functions\FunctionsOnlineTranslation.cs" />
     <Compile Include="Functions\FunctionsOpen.cs" />
@@ -172,6 +231,10 @@
     <Compile Include="appSettings\Sections\Tools\Tools.cs" />
     <Compile Include="appSettings\Sections\General\General.cs" />
     <Compile Include="appSettings\Sections\Optimizations\Optimizations.cs" />
+    <Compile Include="Functions\OnlineTranslation\TranslationBase.cs" />
+    <Compile Include="Functions\OnlineTranslation\TranslationBigBlock.cs" />
+    <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Old elements\DoubleBufferedListBox.cs" />
     <Compile Include="Functions\FunctionsAutoOperations.cs" />
     <Compile Include="Functions\FunctionsCopyPaste.cs" />
@@ -185,6 +248,10 @@
     <Compile Include="Functions\FunctionsThreading.cs" />
     <Compile Include="ExternalAdditions\NativeMethods.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
+    <Compile Include="OnlineTranslators\Data\DeepL.cs" />
+    <Compile Include="OnlineTranslators\Data\Google.cs" />
+    <Compile Include="OnlineTranslators\Data\TranslatorsDataBase.cs" />
+    <Compile Include="OnlineTranslators\Data\Yandex.cs" />
     <Compile Include="OnlineTranslators\GoogleTextractor.cs" />
     <Compile Include="OnlineTranslators\UserAgents.cs" />
     <Compile Include="OnlineTranslators\WebClientEx.cs">
@@ -214,13 +281,23 @@
     <Compile Include="OnlineTranslators\XUA\XUnityWebClient.cs" />
     <Compile Include="OnlineTranslators\XUA\XUnityWebRequest.cs" />
     <Compile Include="OnlineTranslators\XUA\XUnityWebResponse.cs" />
+    <Compile Include="Projects\EAGLS\EAGLSBase.cs" />
+    <Compile Include="Projects\EAGLS\SCPACKpak.cs" />
+    <Compile Include="Projects\EAGLS\EAGLSGame.cs" />
+    <Compile Include="Projects\EAGLS\sc_.cs" />
     <Compile Include="Projects\HowToMakeTrueSlavesRiseofaDarkEmpire\HowToMakeTrueSlavesRiseofaDarkEmpire.cs" />
+    <Compile Include="Projects\KiriKiri\Games\ZZZOtherKiriKiriGame.cs" />
+    <Compile Include="Projects\KiriKiri\Games\PGroup1\PGroup1Base.cs" />
+    <Compile Include="Projects\KiriKiri\Games\PGroup1\RJ297684GoblinsCave\RJ297684GoblinsCave.cs" />
+    <Compile Include="Projects\KiriKiri\Games\PGroup2\PGroup2Base.cs" />
     <Compile Include="Projects\KiriKiri\Games\KiriKiriGameBase.cs" />
-    <Compile Include="Projects\KiriKiri\Games\NLoveImGoingToGetRidOfItAndLive\NLoveImGoingToGetRidOfItAndLive.cs" />
-    <Compile Include="Projects\KiriKiri\Games\VirginLode2\VirginLode2.cs" />
+    <Compile Include="Projects\KiriKiri\Games\PGroup2\NLoveImGoingToGetRidOfItAndLive\NLoveImGoingToGetRidOfItAndLive.cs" />
+    <Compile Include="Projects\KiriKiri\Games\PGroup1\VirginLode2\VirginLode2.cs" />
     <Compile Include="Projects\KiriKiri\KiriKiriGame.cs" />
     <Compile Include="Projects\KiriKiri\KiriKiriOLD.cs" />
     <Compile Include="Projects\KiriKiri\TJSfile.cs" />
+    <Compile Include="Projects\NScript\NScriptBase.cs" />
+    <Compile Include="Projects\NScript\NScriptGame.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
     <Compile Include="Projects\Raijin7\Raijin7Game.cs" />
     <Compile Include="Projects\RJ263914\RJ263914OLD.cs" />
@@ -231,18 +308,14 @@
     <Compile Include="Projects\RPGMMV\RPGMMVOLD.cs" />
     <Compile Include="Projects\RPGMTrans\RPGMTransPatch.cs" />
     <Compile Include="Projects\RPGMTrans\RPGMTransOLD.cs" />
+    <Compile Include="Projects\WolfRPG\WolfRPGGame.cs" />
+    <Compile Include="Projects\WolfRPG\WolfRPGBase.cs" />
     <Compile Include="Projects\WolfRPG\WRPGOLDOpen.cs" />
     <Compile Include="OnlineTranslators\DeepL.cs" />
     <Compile Include="OnlineTranslators\TranslatorsBase.cs" />
     <Compile Include="OnlineTranslators\GoogleAPIOLD.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
     <Compile Include="ExternalAdditions\SimpleJSON.cs" />
-    <Compile Include="Forms\THMessage.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\THMessage.Designer.cs">
-      <DependentUpon>THMessage.cs</DependentUpon>
-    </Compile>
     <Compile Include="Old elements\RPGMakerMVjsonActors.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonCommonEvents.cs" />
     <Compile Include="ExternalAdditions\FileWriter.cs" />
@@ -250,49 +323,50 @@
     <Compile Include="Old elements\RPGMakerMVjson.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonSystem.cs" />
     <Compile Include="ExternalAdditions\THCreateSymlink.cs" />
-    <Compile Include="Forms\THSearch.cs">
+    <Compile Include="Forms\THfrmSearch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\THSearch.Designer.cs">
-      <DependentUpon>THSearch.cs</DependentUpon>
+    <Compile Include="Forms\THfrmSearch.Designer.cs">
+      <DependentUpon>THfrmSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\THSettings.cs">
+    <Compile Include="Forms\THfrmSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\THSettings.Designer.cs">
-      <DependentUpon>THSettings.cs</DependentUpon>
+    <Compile Include="Forms\THfrmSettings.Designer.cs">
+      <DependentUpon>THfrmSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\THAbout.cs">
+    <Compile Include="Forms\THfrmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\THAbout.Designer.cs">
-      <DependentUpon>THAbout.cs</DependentUpon>
+    <Compile Include="Forms\THfrmAbout.Designer.cs">
+      <DependentUpon>THfrmAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\THMain.cs">
+    <Compile Include="Forms\THfrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\THMain.Designer.cs">
-      <DependentUpon>THMain.cs</DependentUpon>
+    <Compile Include="Forms\THfrmMain.Designer.cs">
+      <DependentUpon>THfrmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Projects\zzzOtherProject\OtherProjectBase.cs" />
+    <Compile Include="Projects\ZZZREGEX\ZZZREGEX.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Old elements\THRPGMTransPatchFile.cs" />
     <Compile Include="Old elements\THLang.cs" />
-    <EmbeddedResource Include="Forms\THMessage.resx">
-      <DependentUpon>THMessage.cs</DependentUpon>
+    <Compile Include="scripter.cs" />
+    <Compile Include="SimpleHelpers\FileEncoding.cs" />
+    <Compile Include="tests\xorfornscript.cs" />
+    <EmbeddedResource Include="Forms\THfrmSearch.resx">
+      <DependentUpon>THfrmSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\THSearch.resx">
-      <DependentUpon>THSearch.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\THfrmSettings.resx">
+      <DependentUpon>THfrmSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\THSettings.resx">
-      <DependentUpon>THSettings.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\THfrmAbout.resx">
+      <DependentUpon>THfrmAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\THAbout.resx">
-      <DependentUpon>THAbout.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\THMain.resx">
-      <DependentUpon>THMain.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\THfrmMain.resx">
+      <DependentUpon>THfrmMain.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -338,15 +412,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.VersionCheckAnalyzer.resources.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.0.0\analyzers\dotnet\Microsoft.CodeAnalysis.VersionCheckAnalyzer.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.3.0.0\analyzers\dotnet\cs\Humanizer.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.3.0.0\analyzers\dotnet\cs\Microsoft.CodeQuality.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.3.0.0\analyzers\dotnet\cs\Microsoft.CodeQuality.CSharp.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.3.0.0\analyzers\dotnet\cs\Microsoft.NetCore.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.3.0.0\analyzers\dotnet\cs\Microsoft.NetCore.CSharp.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.3.0.0\analyzers\dotnet\cs\Microsoft.NetFramework.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.3.0.0\analyzers\dotnet\cs\Microsoft.NetFramework.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.3.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.VersionCheckAnalyzer.resources.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.3.0\analyzers\dotnet\Microsoft.CodeAnalysis.VersionCheckAnalyzer.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.3.3.0\analyzers\dotnet\cs\Humanizer.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.3.3.0\analyzers\dotnet\cs\Microsoft.CodeQuality.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.3.3.0\analyzers\dotnet\cs\Microsoft.CodeQuality.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.3.3.0\analyzers\dotnet\cs\Microsoft.NetCore.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.3.3.0\analyzers\dotnet\cs\Microsoft.NetCore.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.3.3.0\analyzers\dotnet\cs\Microsoft.NetFramework.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.3.3.0\analyzers\dotnet\cs\Microsoft.NetFramework.CSharp.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -355,17 +429,17 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.12.0\build\NUnit.props'))" />
     <Error Condition="!Exists('..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.0.0\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.0.0\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeQuality.Analyzers.3.0.0\build\Microsoft.CodeQuality.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeQuality.Analyzers.3.0.0\build\Microsoft.CodeQuality.Analyzers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.NetCore.Analyzers.3.0.0\build\Microsoft.NetCore.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetCore.Analyzers.3.0.0\build\Microsoft.NetCore.Analyzers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.NetFramework.Analyzers.3.0.0\build\Microsoft.NetFramework.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetFramework.Analyzers.3.0.0\build\Microsoft.NetFramework.Analyzers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.3.0.0\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.3.0.0\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props'))" />
-    <Error Condition="!Exists('..\packages\Fody.6.2.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.2.4\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.Toolset.3.7.0\build\Microsoft.Net.Compilers.Toolset.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.Toolset.3.7.0\build\Microsoft.Net.Compilers.Toolset.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.3.0\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.3.3.0\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeQuality.Analyzers.3.3.0\build\Microsoft.CodeQuality.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeQuality.Analyzers.3.3.0\build\Microsoft.CodeQuality.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NetCore.Analyzers.3.3.0\build\Microsoft.NetCore.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetCore.Analyzers.3.3.0\build\Microsoft.NetCore.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NetFramework.Analyzers.3.3.0\build\Microsoft.NetFramework.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetFramework.Analyzers.3.3.0\build\Microsoft.NetFramework.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.3.3.0\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.3.3.0\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.6.2.6\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.2.6\build\Fody.targets'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Fody.6.2.4\build\Fody.targets" Condition="Exists('..\packages\Fody.6.2.4\build\Fody.targets')" />
+  <Import Project="..\packages\Fody.6.2.6\build\Fody.targets" Condition="Exists('..\packages\Fody.6.2.6\build\Fody.targets')" />
 </Project>

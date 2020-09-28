@@ -305,7 +305,7 @@ namespace TranslationHelper.Projects.RJ263914
         }
 
 #pragma warning disable IDE0060 // Удалите неиспользуемый параметр
-        private void Open_mapBynaryFromDirFile(string filePath)
+        private static void Open_mapBynaryFromDirFile(string filePath)
 #pragma warning restore IDE0060 // Удалите неиспользуемый параметр
         {
             //var sss = "4079690290013B094922";

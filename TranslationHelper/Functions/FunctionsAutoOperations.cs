@@ -13,68 +13,16 @@ namespace TranslationHelper.Main.Functions
     {
         public static string THExtractTextForTranslation(THDataWork thDataWork, string input)
         {
-            string returnValue = input;
-
             foreach (var PatternReplacementPair in thDataWork.TranslationRegexRules)
             {
-                if (Regex.IsMatch(returnValue, PatternReplacementPair.Key))
+                if (Regex.IsMatch(input, PatternReplacementPair.Key))
                 {
-                    returnValue = Regex.Replace(returnValue, PatternReplacementPair.Key, PatternReplacementPair.Value);
+                    //new FunctionsLogs().LogToFile("applied translation rule: "+ PatternReplacementPair.Key);
+                    return Regex.Replace(input, PatternReplacementPair.Key, PatternReplacementPair.Value);
                 }
             }
 
-            //если файл с правилами существует
-            //if (File.Exists(Path.Combine(Application.StartupPath, "TranslationHelperTranslationRegexRules.txt")))
-            //{
-            //    //читать файл с правилами
-            //    using (StreamReader rules = new StreamReader(Path.Combine(Application.StartupPath, "TranslationHelperTranslationRegexRules.txt")))
-            //    {
-            //        //regex правило и результат из файла
-            //        string regexPattern = string.Empty;
-            //        string regexReplacement = string.Empty;
-            //        bool ReadRule = true;
-            //        while (!rules.EndOfStream)
-            //        {
-            //            try
-            //            {
-            //                //читать правило и результат
-            //                if (ReadRule)
-            //                {
-            //                    regexPattern = rules.ReadLine();
-            //                    if (string.IsNullOrWhiteSpace(regexPattern) || regexPattern.TrimStart().StartsWith(";"))//игнорировать комментарии
-            //                    {
-            //                        continue;
-            //                    }
-            //                    ReadRule = !ReadRule;
-            //                    continue;
-            //                }
-            //                else
-            //                {
-            //                    regexReplacement = rules.ReadLine();
-            //                    if (string.IsNullOrWhiteSpace(regexPattern) || regexReplacement.TrimStart().StartsWith(";") || !FunctionsString.IsStringAContainsStringB(regexReplacement, "$"))//игнорировать комментарии
-            //                    {
-            //                        continue;
-            //                    }
-            //                    ReadRule = !ReadRule;
-            //                }
-
-            //                //if (returnValue == input)
-            //                //{
-            //                //}
-            //                //else
-            //                //{
-            //                //    break;
-            //                //}
-            //            }
-            //            catch
-            //            {
-
-            //            }
-            //        }
-            //    }
-            //}
-
-            return returnValue;
+            return input;
         }
 
         /// <summary>
@@ -282,9 +230,12 @@ namespace TranslationHelper.Main.Functions
 
                             //LogToFile("6 THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
 
+                            //идея с извлечением строк как при переводе, только перед фиксом ячейки, чтобы обрабатывало только извлеченное
+                            //здесь функция извлечения
+                            //cvalue = ExtractLines(cvalue);
+
                             string rule;
                             string result;
-
                             foreach (var PatternReplacementPair in thDataWork.CellFixesRegexRules)
                             {
                                 //читать правило и результат
@@ -316,6 +267,10 @@ namespace TranslationHelper.Main.Functions
                                 }
                             }
 
+                            //идея с извлечением строк как при переводе, только перед фиксом ячейки, чтобы обрабатывало только извлеченное
+                            //здесь функция возвращения извлеченного
+                            //cvalue = RestoreExtracted(cvalue, row[cind - 1] as string);
+
                             if (!Equals(row[cind], cvalue))
                             {
                                 //thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
@@ -329,6 +284,17 @@ namespace TranslationHelper.Main.Functions
             catch
             {
             }
+        }
+
+        private static string RestoreExtracted(string cvalue, string v)
+        {
+            //FunctionsOnlineTranslation.PasteTranslationBackIfExtracted(cvalue, row[cind - 1] as string, cvalue);
+            throw new NotImplementedException();
+        }
+
+        private static string ExtractLines(string cvalue)
+        {
+            throw new NotImplementedException();
         }
 
         public static string GetStringSimularityRegexPattern()
@@ -348,7 +314,7 @@ namespace TranslationHelper.Main.Functions
             return regexPatternDigitsOrSymbolsInStartOfLine + "|" + regexPatternDigitsInAnyPlace + "|" + regexPatternDigitsOrSymbolsInEndOfLine;
         }
 
-        static bool THAutoSetSameTranslationForSimularIsBusy = false;
+        static bool THAutoSetSameTranslationForSimularIsBusy;
         static bool forcevalue;
         static int iTableIndex;
         static int iRowIndex;
@@ -395,9 +361,9 @@ namespace TranslationHelper.Main.Functions
 
                     //присвоить значения для обработки
                     TRC = THAutoSetSameTranslationForSimularData.ElementAt(0).Key;
-                    iTableIndex = int.Parse(TRC.Split('|')[0], CultureInfo.GetCultureInfo("en-US"));
-                    iRowIndex = int.Parse(TRC.Split('|')[1], CultureInfo.GetCultureInfo("en-US"));
-                    iColumnIndex = int.Parse(TRC.Split('|')[2], CultureInfo.GetCultureInfo("en-US"));
+                    iTableIndex = int.Parse(TRC.Split('|')[0], CultureInfo.InvariantCulture);
+                    iRowIndex = int.Parse(TRC.Split('|')[1], CultureInfo.InvariantCulture);
+                    iColumnIndex = int.Parse(TRC.Split('|')[2], CultureInfo.InvariantCulture);
                     forcevalue = THAutoSetSameTranslationForSimularData[TRC];
 
                     var InputTableRow = thDataWork.THFilesElementsDataset.Tables[iTableIndex].Rows[iRowIndex];

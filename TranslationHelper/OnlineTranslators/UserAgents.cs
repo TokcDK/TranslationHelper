@@ -20,7 +20,7 @@
         /// <summary>
         /// My With Iron.
         /// </summary>
-        public static readonly string Chrome_Iron_Win7 = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4250.0 Iron Safari/537.36";
+        public static readonly string Chrome_Iron_Win7 = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4300.0 Iron Safari/537.36";
 
         /// <summary>
         /// Latest Firefox Win10 user-agent as of 2020-01-04.

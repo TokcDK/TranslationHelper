@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -40,7 +39,7 @@ namespace TranslationHelper.Functions
                 using (OpenFileDialog THFOpen = new OpenFileDialog())
                 {
                     THFOpen.InitialDirectory = thDataWork.Main.Settings.THConfigINI.ReadINI("Paths", "LastPath");
-                    THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json;*.scn;*.ks|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt";
+                    THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json;*.scn;*.ks|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
 
                     if (THFOpen.ShowDialog() == DialogResult.OK)
                     {
@@ -53,7 +52,9 @@ namespace TranslationHelper.Functions
                     }
                 }
 
-                if (!string.IsNullOrEmpty(thDataWork.SPath))
+                if (string.IsNullOrEmpty(thDataWork.SPath))
+                    return;
+
                 {
                     //THActionProgressBar.Visible = true;
                     //thDataWork.Main.ProgressInfo(true, T._("opening.."));
@@ -91,6 +92,8 @@ namespace TranslationHelper.Functions
 
                     if (RPGMFunctions.THSelectedSourceType.Length == 0)
                     {
+                        thDataWork.Main.frmMainPanel.Visible = false;
+
                         /*THMsg*/
                         FunctionsSounds.OpenProjectFailed();
                         MessageBox.Show(T._("Problem with source opening. Try to report to devs about it."));
@@ -161,7 +164,7 @@ namespace TranslationHelper.Functions
 
             //для rpgmaker mv. если была папка data, которая в папке www
             string pFolderName = Path.GetFileName(tHSelectedGameDir);
-            if (string.Compare(pFolderName, "data", true, CultureInfo.GetCultureInfo("en-US")) == 0)
+            if (string.Compare(pFolderName, "data", true, CultureInfo.InvariantCulture) == 0)
             {
                 return Path.GetDirectoryName(Path.GetDirectoryName(tHSelectedGameDir));
             }
@@ -176,15 +179,19 @@ namespace TranslationHelper.Functions
             Properties.Settings.Default.THSelectedDir = dir.FullName;
             Properties.Settings.Default.THSelectedGameDir = dir.FullName;
 
+            thDataWork.Main.frmMainPanel.Invoke((Action)(()=>thDataWork.Main.frmMainPanel.Visible = true));
+
             //ShowProjectsList();
 
             //Try detect and open new type projects
             foreach (ProjectBase Project in thDataWork.ProjectsList)
             {
+                thDataWork.CurrentProject = Project;
                 if (TryDetectProject(Project))
                 {
                     return TryOpenProject();
                 }
+                thDataWork.CurrentProject = null;
             }
 
             //Old projects
@@ -209,20 +216,20 @@ namespace TranslationHelper.Functions
             {
                 return new KiriKiriOLD(thDataWork).KiriKiriScriptScenario();
             }
-            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".TJS") || sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".SCN"))
+            else if (sPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TJS") || sPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".SCN"))
             {
                 return new KiriKiriOLD(thDataWork).KiriKiriScenarioOpen(sPath);
             }
-            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".TXT"))
+            else if (sPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TXT"))
             {
                 return new WRPGOLDOpen(thDataWork).AnyTxt(sPath);
             }
-            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("\\RPGMKTRANSPATCH"))
+            else if (sPath.ToUpper(CultureInfo.InvariantCulture).Contains("\\RPGMKTRANSPATCH"))
             {
                 return new RPGMTransOLD(thDataWork).RPGMTransPatchPrepare(sPath);
                 //return "RPGMakerTransPatch";
             }
-            else if (sPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains(".JSON"))
+            else if (sPath.ToUpper(CultureInfo.InvariantCulture).Contains(".JSON"))
             {
                 if (new RPGMMVOLD(thDataWork).OpenRPGMakerMVjson(sPath))
                 {
@@ -240,7 +247,7 @@ namespace TranslationHelper.Functions
                 {
                     return new RJ263914OLD(thDataWork).ProceedRubyRPGGame(Path.GetDirectoryName(sPath));//RJ263914
                 }
-                else if ((FunctionsProcess.GetExeDescription(sPath) != null && FunctionsProcess.GetExeDescription(sPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")) && FunctionsFileFolder.IsInDirExistsAnyFile(dir, "*.xp3"))
+                else if ((FunctionsProcess.GetExeDescription(sPath) != null && FunctionsProcess.GetExeDescription(sPath).ToUpper(CultureInfo.InvariantCulture).Contains("KIRIKIRI")) && FunctionsFileFolder.IsInDirExistsAnyFile(dir, "*.xp3"))
                 {
                     if (new KiriKiriOLD(thDataWork).KiriKiriGame())
                     {
@@ -375,9 +382,10 @@ namespace TranslationHelper.Functions
         /// <returns></returns>
         private string TryOpenProject()
         {
+            thDataWork.CurrentProject.BakRestore();
             if (thDataWork.CurrentProject.Open())
             {
-                return thDataWork.CurrentProject.ProjectTitle();
+                return thDataWork.CurrentProject.Name();
             }
             return string.Empty;
         }
@@ -389,7 +397,7 @@ namespace TranslationHelper.Functions
         /// <returns></returns>
         private bool TryDetectProject(ProjectBase Project)
         {
-            if (Project.OpenDetect())
+            if (Project.Check())
             {
                 thDataWork.CurrentProject = Project;
                 return true;
@@ -399,6 +407,11 @@ namespace TranslationHelper.Functions
 
         internal void AfterOpenActions()
         {
+            if (!thDataWork.Main.THWorkSpaceSplitContainer.Visible)
+            {
+                thDataWork.Main.THWorkSpaceSplitContainer.Visible = true;
+            }
+
             if (thDataWork.Main.THFilesList.Items.Count == 0 && thDataWork.THFilesElementsDataset.Tables.Count > 0)
             {
                 //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application

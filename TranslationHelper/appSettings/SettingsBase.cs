@@ -73,9 +73,5 @@ namespace TranslationHelper.INISettings
         internal abstract string ID();
 
         //protected INIFile THConfigINI = new INIFile(Application.ProductName+".ini");
-        protected void WriteINIValue(INIFile THConfigINI)
-        {
-            THConfigINI.WriteINI(Section, Key, Get());
-        }
     }
 }

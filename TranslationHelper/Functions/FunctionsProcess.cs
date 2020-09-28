@@ -18,7 +18,14 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        public static bool RunProgram(string ProgramPath, string Arguments = "")
+        /// <summary>
+        /// same as RunProcess(). Run selected programm.
+        /// </summary>
+        /// <param name="ProgramPath"></param>
+        /// <param name="Arguments"></param>
+        /// <param name="WorkDir"></param>
+        /// <returns></returns>
+        public static bool RunProgram(string ProgramPath, string Arguments = "", string WorkDir = "")
         {
             //bool ret = false;
             //using (Process Program = new Process())
@@ -30,23 +37,32 @@ namespace TranslationHelper.Main.Functions
             //    Program.WaitForExit();
             //}
 
-            return RunProcess(ProgramPath, Arguments);
+            return RunProcess(ProgramPath, Arguments, WorkDir);
         }
 
-        public static bool RunProcess(string ProgramPath, string Arguments = "")
+        /// <summary>
+        /// Run selected programm
+        /// </summary>
+        /// <param name="ProgramPath"></param>
+        /// <param name="Arguments"></param>
+        /// <param name="WorkDir"></param>
+        /// <returns></returns>
+        public static bool RunProcess(string ProgramPath, string Arguments = "", string WorkDir = "")
         {
             bool ret = false;
             if (File.Exists(ProgramPath))
             {
                 using (Process Program = new Process())
                 {
+                    Program.StartInfo.ErrorDialog = true;
+                    Program.EnableRaisingEvents = true;
                     //MessageBox.Show("outdir=" + outdir);
                     Program.StartInfo.FileName = ProgramPath;
                     if (Arguments.Length > 0)
                     {
                         Program.StartInfo.Arguments = Arguments;
                     }
-                    Program.StartInfo.WorkingDirectory = Path.GetDirectoryName(ProgramPath);
+                    Program.StartInfo.WorkingDirectory = WorkDir.Length == 0 ? Path.GetDirectoryName(ProgramPath) : WorkDir;
 
                     //http://www.cyberforum.ru/windows-forms/thread31052.html
                     // свернуть

@@ -19,8 +19,6 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return ParseJSVarInJsonWrite("var rngd_recollection_mode_settings = {");
         }
 
-        StringBuilder TranslatedResult;
-
         internal override string JSName => "RecollectionMode.js";
     }
 }

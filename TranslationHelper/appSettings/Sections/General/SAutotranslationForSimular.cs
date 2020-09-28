@@ -15,7 +15,7 @@ namespace TranslationHelper.INISettings
 
         object SCheckBox { get => thDataWork.Main.Settings.THOptionAutotranslationForSimularCheckBox; }
 
-        bool SVar
+        static bool SVar
         {
             get => TranslationHelper.Properties.Settings.Default.AutotranslationForSimular;
             set => TranslationHelper.Properties.Settings.Default.AutotranslationForSimular = value;

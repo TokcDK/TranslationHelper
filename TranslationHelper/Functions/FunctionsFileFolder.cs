@@ -3,12 +3,14 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
+using TranslationHelper.SimpleHelpers;
 
 namespace TranslationHelper.Main.Functions
 {
-    internal class FunctionsFileFolder
+    internal static class FunctionsFileFolder
     {
         private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
@@ -77,9 +79,10 @@ namespace TranslationHelper.Main.Functions
                     NativeMethods.FindClose(findHandle);
                 }
             }
+            return true;
 
-            throw new Exception("Failed to get directory first file",
-                Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+            //throw new Exception("Failed to get directory first file",
+            //    Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
             //throw new DirectoryNotFoundException();
         }
 
@@ -157,6 +160,32 @@ namespace TranslationHelper.Main.Functions
             //}
             //MessageBox.Show("GetAnyFileWithTheNameExist Returns False! name=" + name);
             return false;
+        }
+
+        /// <summary>
+        /// Determines a text file's encoding
+        /// </summary>
+        /// <param name="filename">The text file to analyze.</param>
+        /// <returns>The detected encoding.</returns>
+        public static Encoding GetEncoding(string filename)
+        {
+            //https://github.com/khalidsalomao/SimpleHelpers.Net/blob/master/docs/fileencoding.md
+            var det = new FileEncoding();
+            using (var stream = new FileStream(filename, FileMode.Open))
+            {
+                if (stream.Length == 0)
+                {
+                    return Encoding.ASCII;
+                }
+                det.Detect(stream);
+            }
+            var encoding = det.Complete();
+            var hasbom = det.HasByteOrderMark;
+            if (encoding == Encoding.UTF8 && !hasbom)
+            {
+                return new UTF8Encoding(hasbom);//UTF8 no bom
+            }
+            return encoding;
         }
     }
 }

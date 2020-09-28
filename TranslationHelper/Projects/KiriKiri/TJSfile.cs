@@ -10,17 +10,17 @@ namespace TranslationHelper.Projects.KiriKiri
         {
         }
 
-        internal override bool OpenDetect()
+        internal override bool Check()
         {
-            return thDataWork.SPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".TJS");
+            return thDataWork.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TJS");
         }
 
-        internal override string ProjecFolderName()
+        internal override string ProjectFolderName()
         {
             return "KiriKiri";
         }
 
-        internal override string ProjectTitle()
+        internal override string Name()
         {
             return "KiriKiri tjs";
         }

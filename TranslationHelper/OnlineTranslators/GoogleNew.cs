@@ -35,11 +35,11 @@ namespace TranslationHelper.OnlineTranslators
         private static readonly string AcceptCharset = AcceptCharsets[RandomNumbers.Next(AcceptCharsets.Length)];
 
         private CookieContainer _cookieContainer;
-        private bool _hasSetup = false;
+        private bool _hasSetup;
         private long m = 427761;
         private long s = 1179739010;
         private int _translationsPerRequest = 10;
-        private int _translationCount = 0;
+        private int _translationCount;
         private int _resetAfter = RandomNumbers.Next(75, 125);
 
         public GoogleNew(THDataWork thDataWork) : base(thDataWork)
@@ -66,13 +66,13 @@ namespace TranslationHelper.OnlineTranslators
             InspectResponse(context.Response);
         }
 
-        public void OnExtractTranslation(IHttpTranslationExtractionContext context)
+        public static void OnExtractTranslation(IHttpTranslationExtractionContext context)
         {
             var isRomaji = true;// context.DestinationLanguage == "romaji";
             var dataIndex = isRomaji ? 3 : 0;
 
             var data = context.Response.Data;
-            var arr = JSON.Parse(data);
+            var arr = SJSON.Parse(data);
             var lineBuilder = new StringBuilder(data.Length);
 
             arr = arr.AsArray[0];
@@ -199,7 +199,7 @@ namespace TranslationHelper.OnlineTranslators
             throw new NotImplementedException();
         }
 
-        private void AddHeaders(XUnityWebRequest request, bool isTranslationRequest)
+        private static void AddHeaders(XUnityWebRequest request, bool isTranslationRequest)
         {
             request.Headers[HttpRequestHeader.UserAgent] = string.IsNullOrEmpty(AutoTranslatorSettings.UserAgent) ? UserAgents.Chrome_Win10_Latest : AutoTranslatorSettings.UserAgent;
             if (AcceptLanguage != null)
@@ -361,7 +361,7 @@ namespace TranslationHelper.OnlineTranslators
 
         // TKK Approach stolen from Translation Aggregator r190, all credits to Sinflower
 
-        private long Vi(long r, string o)
+        private static long Vi(long r, string o)
         {
             for (var t = 0; t < o.Length; t += 3)
             {

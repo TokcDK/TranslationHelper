@@ -14,7 +14,7 @@ namespace TranslationHelper.Projects
         {
         }
 
-        internal override bool OpenDetect()
+        internal override bool Check()
         {
             if (Path.GetFileName(thDataWork.SPath) == "RPGMKTRANSPATCH")
             {
@@ -24,12 +24,12 @@ namespace TranslationHelper.Projects
             return false;
         }
 
-        internal override string ProjectTitle()
+        internal override string Name()
         {
             return "RPG Maker Trans Patch";
         }
 
-        internal override string ProjecFolderName()
+        internal override string ProjectFolderName()
         {
             return "RPGMakerTransPatch";
         }

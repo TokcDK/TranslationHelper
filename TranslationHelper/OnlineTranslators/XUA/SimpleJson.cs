@@ -152,7 +152,7 @@ namespace SimpleJSON
 
         #region common interface
 
-        public static bool forceASCII = false; // Use Unicode by default
+        internal static bool forceASCII/* = false*/; // Use Unicode by default
 
         public abstract JSONNodeType Tag { get; }
 
@@ -243,8 +243,7 @@ namespace SimpleJSON
         {
             get
             {
-                double v = 0.0;
-                if (double.TryParse(Value, out v))
+                if (double.TryParse(Value, out double v))
                     return v;
                 return 0.0;
             }
@@ -270,8 +269,7 @@ namespace SimpleJSON
         {
             get
             {
-                bool v = false;
-                if (bool.TryParse(Value, out v))
+                if (bool.TryParse(Value, out bool v))
                     return v;
                 return !string.IsNullOrEmpty(Value);
             }
@@ -628,7 +626,7 @@ namespace SimpleJSON
     public partial class JSONArray : JSONNode
     {
         private List<JSONNode> m_List = new List<JSONNode>();
-        private bool inline = false;
+        private bool inline;
         public override bool Inline
         {
             get { return inline; }
@@ -734,7 +732,7 @@ namespace SimpleJSON
     {
         private Dictionary<string, JSONNode> m_Dict = new Dictionary<string, JSONNode>();
 
-        private bool inline = false;
+        private bool inline;
         public override bool Inline
         {
             get { return inline; }
@@ -1093,8 +1091,8 @@ namespace SimpleJSON
 
     internal partial class JSONLazyCreator : JSONNode
     {
-        private JSONNode m_Node = null;
-        private string m_Key = null;
+        private JSONNode m_Node;
+        private string m_Key;
         public override JSONNodeType Tag { get { return JSONNodeType.None; } }
         public override Enumerator GetEnumerator() { return new Enumerator(); }
 
@@ -1275,7 +1273,7 @@ namespace SimpleJSON
     }
     // End of JSONLazyCreator
 
-    public static class JSON
+    public static class SJSON
     {
         public static JSONNode Parse(string aJSON)
         {

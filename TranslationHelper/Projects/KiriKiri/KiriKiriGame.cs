@@ -14,24 +14,29 @@ namespace TranslationHelper.Projects.KiriKiri
         {
         }
 
-        internal override bool OpenDetect()
+        internal override bool Check()
         {
             return false;
             //Path.GetExtension(thDataWork.SPath) == ".exe"
             //    &&
             //    FunctionsProcess.GetExeDescription(thDataWork.SPath) != null
             //    &&
-            //    FunctionsProcess.GetExeDescription(thDataWork.SPath).ToUpper(CultureInfo.GetCultureInfo("en-US")).Contains("KIRIKIRI")
+            //    FunctionsProcess.GetExeDescription(thDataWork.SPath).ToUpper(CultureInfo.InvariantCulture).Contains("KIRIKIRI")
             //    &&
             //    FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(thDataWork.SPath), "*.xp3");
         }
 
-        internal override string ProjectTitle()
+        internal override string Filters()
+        {
+            return GameExeFilter;
+        }
+
+        internal override string Name()
         {
             return "KiriKiri Game";
         }
 
-        internal override string ProjecFolderName()
+        internal override string ProjectFolderName()
         {
             return "KiriKiri";
         }

@@ -57,7 +57,7 @@ namespace TranslationHelper.Functions
             int trowstartindex = 0;
 
             int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
-            string infomessage = T._("loading translation") + ":";
+            string infomessage = T._("Load") + " " + T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
@@ -138,12 +138,14 @@ namespace TranslationHelper.Functions
                     }
                 }
             }
+
+            thDataWork.Main.ProgressInfo(false);
         }
 
         private void CompareLiteIfIdentical(DataSet tHTempDS)
         {
             int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
-            string infomessage = T._("loading translation") + ":";
+            string infomessage = T._("Load")+" "+ T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
@@ -155,7 +157,7 @@ namespace TranslationHelper.Functions
                     thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
                 }
 
-                using (DataTable DT = thDataWork.THFilesElementsDataset.Tables[t])
+                using (var DT = thDataWork.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
                     if (FunctionsTable.IsTableRowsCompleted(DT))
@@ -183,6 +185,7 @@ namespace TranslationHelper.Functions
                     }
                 }
             }
+            thDataWork.Main.ProgressInfo(false);
         }
 
         internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db)
@@ -199,7 +202,7 @@ namespace TranslationHelper.Functions
 
             //int RecordsCounter = 1;
             int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
-            string infomessage = T._("loading translation") + ":";
+            string infomessage = T._("Load") + " " + T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
@@ -284,6 +287,7 @@ namespace TranslationHelper.Functions
             //timer.Stop();
             //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
             //MessageBox.Show(difference.ToString());
+            thDataWork.Main.ProgressInfo(false);
             System.Media.SystemSounds.Beep.Play();
         }
 
@@ -301,7 +305,7 @@ namespace TranslationHelper.Functions
 
             //int RecordsCounter = 1;
             int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
-            string infomessage = T._("loading translation") + ":";
+            string infomessage = T._("Load") + " " + T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
@@ -350,6 +354,7 @@ namespace TranslationHelper.Functions
             //timer.Stop();
             //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
             //MessageBox.Show(difference.ToString());
+            thDataWork.Main.ProgressInfo(false);
             System.Media.SystemSounds.Beep.Play();
         }
 
@@ -365,7 +370,7 @@ namespace TranslationHelper.Functions
             Dictionary<string, string> tableData = thDataWork.THFilesElementsDataset.GetTableRowsDataToDictionary();
 
             //проход по всем таблицам рабочего dataset
-            string infomessage = T._("loading translation") + ":";
+            string infomessage = T._("Load") + " " + T._("translation") + ":";
             //int tableDataKeysCount = tableData.Keys.Count;
             //int cur/* = 0*/;
             thDataWork.Main.ProgressInfo(true, infomessage);
@@ -376,7 +381,7 @@ namespace TranslationHelper.Functions
                 {
                     foreach (var TableRowPair in tableData[original].Split('|'))
                     {
-                        thDataWork.THFilesElementsDataset.Tables[int.Parse(TableRowPair.Split('!')[0], CultureInfo.GetCultureInfo("en-US"))].Rows[int.Parse(TableRowPair.Split('!')[1], CultureInfo.GetCultureInfo("en-US"))][1] = db[original];
+                        thDataWork.THFilesElementsDataset.Tables[int.Parse(TableRowPair.Split('!')[0], CultureInfo.InvariantCulture)].Rows[int.Parse(TableRowPair.Split('!')[1], CultureInfo.InvariantCulture)][1] = db[original];
                     }
                 }
                 //cur++;
@@ -388,6 +393,7 @@ namespace TranslationHelper.Functions
             //timer.Stop();
             //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
             //MessageBox.Show(difference.ToString());
+            thDataWork.Main.ProgressInfo(false);
             System.Media.SystemSounds.Beep.Play();
         }
 

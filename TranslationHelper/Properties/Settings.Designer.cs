@@ -12,7 +12,7 @@ namespace TranslationHelper.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -56,18 +56,6 @@ namespace TranslationHelper.Properties {
             }
             set {
                 this["AutotranslationForSimular"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool IsTranslationCacheEnabled {
-            get {
-                return ((bool)(this["IsTranslationCacheEnabled"]));
-            }
-            set {
-                this["IsTranslationCacheEnabled"] = value;
             }
         }
         
@@ -476,6 +464,42 @@ namespace TranslationHelper.Properties {
             }
             set {
                 this["EnableDBAutosave"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ApplicationStartupPath {
+            get {
+                return ((string)(this["ApplicationStartupPath"]));
+            }
+            set {
+                this["ApplicationStartupPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ApplicationProductName {
+            get {
+                return ((string)(this["ApplicationProductName"]));
+            }
+            set {
+                this["ApplicationProductName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\")]
+        public string NewLine {
+            get {
+                return ((string)(this["NewLine"]));
+            }
+            set {
+                this["NewLine"] = value;
             }
         }
     }

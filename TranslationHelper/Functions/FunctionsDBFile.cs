@@ -4,6 +4,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
@@ -15,9 +16,11 @@ namespace TranslationHelper.Main.Functions
 {
     static class FunctionsDBFile
     {
+        private const string baseNamePattern = @"^(.+)_[0-9]{2,4}\.[0-9]{2}\.[0-9]{2,4} [0-9]{2}-[0-9]{2}-[0-9]{2}$";
+
         public static void WriteTranslationCacheIfValid(DataSet THTranslationCache, string tHTranslationCachePath)
         {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THTranslationCache.Tables[0].Rows.Count > 0)
+            if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed && THTranslationCache.Tables[0].Rows.Count > 0)
             {
                 FunctionsDBFile.WriteDBFile(THTranslationCache, tHTranslationCachePath);
                 //THTranslationCache.Reset();
@@ -150,7 +153,7 @@ namespace TranslationHelper.Main.Functions
             string ret = string.Empty;
             if (thDataWork != null && thDataWork.CurrentProject != null)
             {
-                ret = thDataWork.CurrentProject.ProjecFolderName();
+                ret = thDataWork.CurrentProject.ProjectFolderName();
             }
             else if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
             {
@@ -195,7 +198,7 @@ namespace TranslationHelper.Main.Functions
             //{
 
             //}
-            return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.GetCultureInfo("en-US")) : string.Empty);
+            return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture) : string.Empty);
         }
 
         //public static void WriteDictToXMLDB(Dictionary<string, string> db, string xmlPath)
@@ -325,22 +328,33 @@ namespace TranslationHelper.Main.Functions
         {
             using (FileStream fs = new FileStream(xmlPath, FileMode.Create))
             {
-                Stream s;
-                string fileExtension = Path.GetExtension(xmlPath);
-                if (fileExtension == ".cmx")
+                Stream s = null;
+                try
                 {
-                    s = new GZipStream(fs, CompressionMode.Compress);
+                    string fileExtension = Path.GetExtension(xmlPath);
+                    if (fileExtension == ".cmx")
+                    {
+                        s = new GZipStream(fs, CompressionMode.Compress);
+                    }
+                    else if (fileExtension == ".cmz")
+                    {
+                        s = new DeflateStream(fs, CompressionMode.Compress);
+                    }
+                    else
+                    {
+                        s = fs;
+                    }
+                    el.Save(s);
+                    s.Close();
                 }
-                else if (fileExtension == ".cmz")
+                catch
                 {
-                    s = new DeflateStream(fs, CompressionMode.Compress);
+                    if (el != null && s != null)
+                    {
+                        el.Save(s);
+                        s.Close();
+                    }
                 }
-                else
-                {
-                    s = fs;
-                }
-                el.Save(s);
-                s.Close();
             }
         }
 
@@ -432,36 +446,22 @@ namespace TranslationHelper.Main.Functions
 
         internal static void MergeAllDBtoOne(THDataWork thDataWork)
         {
-            var tDir = Path.Combine(Application.StartupPath, "DB");
-
-            HashSet<string> paths = new HashSet<string>();
-            foreach (var DBfile in Directory.GetFiles(tDir, "*", SearchOption.AllDirectories))
+            if (thDataWork.AllDBmerged == null)
             {
-                var ext = Path.GetExtension(DBfile);
-                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBfile.Contains("THTranslationCache") || DBfile.Contains("_autosave"))
-                {
-                    continue;
-                }
+                thDataWork.AllDBmerged = new Dictionary<string, string>();
+            }
 
-                if (paths.Contains(DBfile))
-                {
-                    continue;
-                }
+            var newestFilesList = GetNewestFIlesList(THSettingsData.DBDirPath());
 
-                var newestDBFile = FindNewestFile(tDir, DBfile, paths);
-
-                thDataWork.Main.ProgressInfo(true, "loading " + Path.GetFileName(newestDBFile));
-
-                if (thDataWork.AllDBmerged == null)
-                {
-                    thDataWork.AllDBmerged = new Dictionary<string, string>();
-                }
-
+            foreach (var DBfile in newestFilesList)
+            {
                 try
                 {
                     using (var DBDataSet = new DataSet())
                     {
-                        FunctionsDBFile.ReadDBFile(DBDataSet, newestDBFile);
+                        thDataWork.Main.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(DBfile.Value.Name));
+
+                        ReadDBFile(DBDataSet, DBfile.Value.FullName);
                         DBDataSet.DBDataSetToDBDictionary(thDataWork.AllDBmerged, true, true);
                     }
                 }
@@ -471,12 +471,49 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        private static object GetBaseDBFileName(string DBfile)
+        private static List<KeyValuePair<string, FileInfo>> GetNewestFIlesList(string DBDir)
+        {
+            var info = new Dictionary<string, FileInfo>();
+            foreach (var DBFile in Directory.EnumerateFiles(DBDir, "*", SearchOption.AllDirectories))
+            {
+                var ext = Path.GetExtension(DBFile);
+                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBFile.Contains("THTranslationCache") || DBFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(DBFile))==THSettingsData.DBAutoSavesDirName())
+                {
+                    continue;
+                }
+
+                var baseName = GetBaseDBFileName(DBFile);
+
+                if (info.ContainsKey(baseName))
+                {
+                    var DBFInfo = new FileInfo(DBFile);
+                    if (DBFInfo.LastWriteTime > info[baseName].LastWriteTime)
+                    {
+                        info[baseName] = DBFInfo;
+                    }
+                }
+                else
+                {
+                    info.Add(baseName, new FileInfo(DBFile));
+                }
+            }
+
+            //sort form newest to oldest
+
+            var sortedList = info.ToList();
+
+            sortedList.Sort((pair1, pair2) => pair1.Value.LastWriteTime.CompareTo(pair2.Value.LastWriteTime));
+            sortedList.Reverse();
+
+            return sortedList;
+        }
+
+        private static string GetBaseDBFileName(string DBfile)
         {
             string baseName = Path.GetFileNameWithoutExtension(DBfile);
-            if (Regex.IsMatch(baseName, @"^(.+)_[0-9]{4}\.[0-9]{2}\.[0-9]{2} [0-9]{2}-[0-9]{2}-[0-9]{2}$"))
+            if (Regex.IsMatch(baseName, baseNamePattern))
             {
-                baseName = Regex.Replace(baseName, @"^(.+)_[0-9]{4}\.[0-9]{2}\.[0-9]{2} [0-9]{2}-[0-9]{2}-[0-9]{2}$", "$1");
+                baseName = Regex.Replace(baseName, baseNamePattern, "$1");
             }
             return baseName;
         }

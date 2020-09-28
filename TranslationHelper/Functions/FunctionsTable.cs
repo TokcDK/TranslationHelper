@@ -247,7 +247,7 @@ namespace TranslationHelper.Main.Functions
 
         public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/THDataWork thDataWork, string Original, string Translation)
         {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed)
+            if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed)
             {
                 if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || thDataWork.OnlineTranslationCache.cache.ContainsKey(Original) || string.IsNullOrWhiteSpace(Translation) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
                 {
@@ -262,7 +262,7 @@ namespace TranslationHelper.Main.Functions
 
         public static string TranslationCacheFind(DataSet DS, string Input)
         {
-            if (Properties.Settings.Default.IsTranslationCacheEnabled)
+            if (Properties.Settings.Default.EnableTranslationCache)
             {
                 if (!string.IsNullOrEmpty(Input) && DS != null)
                 {
@@ -530,7 +530,7 @@ namespace TranslationHelper.Main.Functions
             int DTRowsCount = DT.Rows.Count;
             for (int r = 0; r < DTRowsCount; r++)
             {
-                var cell = DT.Rows[r][column];
+                var cell = DT.Rows[r]?[column];
 
                 if (cell == null || string.IsNullOrEmpty(cell as string))
                 {

@@ -300,7 +300,7 @@ namespace TranslationHelper.Projects.RPGMMV
         private string cName = string.Empty;
         //private string cId = string.Empty;
         //private string OldcId = "none";
-        bool IsCommonEvents = false;
+        bool IsCommonEvents;
         private void ProceedJToken(JToken token, string Jsonname/*, string propertyname = ""*/)
         {
             if (token == null)
@@ -339,7 +339,7 @@ namespace TranslationHelper.Projects.RPGMMV
                         else
                         {
                             string mergedstring = textsb.ToString();
-                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(mergedstring))
+                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && FunctionsRomajiKana.LocalePercentIsNotValid(mergedstring))
                             {
                             }
                             else
@@ -357,7 +357,7 @@ namespace TranslationHelper.Projects.RPGMMV
                     }
                     //if (token.Type == JTokenType.String)
                     //{
-                    if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
+                    if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
                     {
                     }
                     else
@@ -428,7 +428,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
             }
         }
-        bool skipit = false;
+        bool skipit;
 
         internal bool WriteJson(string Jsonname, string sPath)
         {
@@ -481,7 +481,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         }
 
-        int startingrow = 0;//оптимизация. начальная строка, когда идет поиск по файлу, чтобы не искало каждый раз сначала при нахождении перевода будет переприсваиваться начальная строка на последнюю
+        int startingrow;//оптимизация. начальная строка, когда идет поиск по файлу, чтобы не искало каждый раз сначала при нахождении перевода будет переприсваиваться начальная строка на последнюю
         private void WProceedJToken(JToken token, string Jsonname/*, string propertyname = ""*/)
         {
             if (token == null)
@@ -498,7 +498,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 //LogToFile("JValue: " + propertyname + "=" + token.ToString());
                 string tokenvalue = token + string.Empty;
-                if (tokenvalue.Length == 0 || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue))
+                if (tokenvalue.Length == 0 || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue))
                 {
                 }
                 else

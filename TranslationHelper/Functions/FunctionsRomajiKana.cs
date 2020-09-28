@@ -13,13 +13,13 @@ namespace TranslationHelper.Main.Functions
         /// <param name="target"></param>
         /// <param name="langlocale"></param>
         /// <returns></returns>
-        public static bool SelectedLocalePercentFromStringIsNotValid(string target, string langlocale = "romaji")
+        public static bool LocalePercentIsNotValid(string target, string langlocale = "romaji", int Percent = -1)
         {
             try
             {
                 if (Properties.Settings.Default.DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
                 {
-                    return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber;
+                    return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > (Percent == -1 ? Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber : Percent);
                 }
             }
             catch
@@ -71,75 +71,59 @@ namespace TranslationHelper.Main.Functions
 
         //Detect languages
         //source: https://stackoverflow.com/questions/15805859/detect-japanese-character-input-and-romajis-ascii
-        public static IEnumerable<char> GetCharsInRange(string text, int min, int max)
+        public static IEnumerable<char> GetCharsInRange(string searchKeyword, int min, int max)
         {
             //Usage:
             //var romaji = GetCharsInRange(searchKeyword, 0x0020, 0x007E);
             //var hiragana = GetCharsInRange(searchKeyword, 0x3040, 0x309F);
             //var katakana = GetCharsInRange(searchKeyword, 0x30A0, 0x30FF);
             //var kanji = GetCharsInRange(searchKeyword, 0x4E00, 0x9FBF);
-            return text.Where(e => e >= min && e <= max);
+
+            return searchKeyword.Where(e => e >= min && e <= max);
         }
 
-        public static string THShowLangsOfString(string target, string langlocale)
+        public static string GetLangsOfString(string target, string langlocale)
         {
             string ret = string.Empty;
             if (langlocale == "all")
             {
-                var kanji = GetCharsInRange(target, 0x4E00, 0x9FBF);
-                var romaji = GetCharsInRange(target, 0x0020, 0x007E);
-                var hiragana = GetCharsInRange(target, 0x3040, 0x309F);
-                var katakana = GetCharsInRange(target, 0x30A0, 0x30FF);
-
-                ret += T._("contains: ") + Environment.NewLine;
-                if (romaji.Any())
+                ret += T._("contains") + ": " + Environment.NewLine;
+                foreach (var loc in new[] { "romaji", "kanji", "hiragana", "katakana", "other" })
                 {
-                    ret += ("       romaji:" + GetLocaleLangCount(target, "romaji") + Environment.NewLine);
-                }
-                if (kanji.Any())
-                {
-                    ret += ("       kanji:" + GetLocaleLangCount(target, "kanji") + Environment.NewLine);
-                }
-                if (hiragana.Any())
-                {
-                    ret += ("       hiragana:" + GetLocaleLangCount(target, "hiragana") + Environment.NewLine);
-                }
-                if (katakana.Any())
-                {
-                    ret += ("       katakana:" + GetLocaleLangCount(target, "katakana") + Environment.NewLine);
-                }
-                if (GetLocaleLangCount(target, "other") > 0)
-                {
-                    ret += ("       other:" + GetLocaleLangCount(target, "other") + Environment.NewLine);
+                    int loccnt;
+                    if ((loccnt = GetLocaleLangCount(target, loc)) > 0)
+                    {
+                        ret += "       " + loc + ":" + loccnt + Environment.NewLine;
+                    }
                 }
             }
             else if (string.Compare(langlocale, "romaji", true, CultureInfo.InvariantCulture) == 0) //asdf оптимизация, сравнение с игнором регистра: http://www.vcskicks.com/optimize_csharp_code.php
             {
-                return ("       romaji:" + GetLocaleLangCount(target, "romaji") + Environment.NewLine);
+                return "       romaji:" + GetLocaleLangCount(target, "romaji") + Environment.NewLine;
             }
             else if (string.Compare(langlocale, "kanji", true, CultureInfo.InvariantCulture) == 0)
             {
-                return ("       kanji:" + GetLocaleLangCount(target, "kanji") + Environment.NewLine);
+                return "       kanji:" + GetLocaleLangCount(target, "kanji") + Environment.NewLine;
             }
             else if (string.Compare(langlocale, "hiragana", true, CultureInfo.InvariantCulture) == 0)
             {
-                return ("       hiragana:" + GetLocaleLangCount(target, "hiragana") + Environment.NewLine);
+                return "       hiragana:" + GetLocaleLangCount(target, "hiragana") + Environment.NewLine;
             }
             else if (string.Compare(langlocale, "katakana", true, CultureInfo.InvariantCulture) == 0)
             {
-                return ("       katakana:" + GetLocaleLangCount(target, "katakana") + Environment.NewLine);
+                return "       katakana:" + GetLocaleLangCount(target, "katakana") + Environment.NewLine;
             }
             else if (string.Compare(langlocale, "other", true, CultureInfo.InvariantCulture) == 0)
             {
-                return ("       other:" + (GetLocaleLangCount(target, "other")) + Environment.NewLine);
+                return "       other:" + GetLocaleLangCount(target, "other") + Environment.NewLine;
             }
 
             return ret;
         }
 
-        public static int GetLocaleLangCount(string target, string langlocale)
+        public static int GetLocaleLangCount(string text, string langlocale= "romaji")
         {
-            if (string.IsNullOrEmpty(target))
+            if (string.IsNullOrEmpty(text))
             {
                 return 0;
             }
@@ -148,35 +132,35 @@ namespace TranslationHelper.Main.Functions
             //var hiragana = GetCharsInRange(THSourceTextBox.Text, 0x3040, 0x309F);
             //var katakana = GetCharsInRange(THSourceTextBox.Text, 0x30A0, 0x30FF);
 
-            int romaji = (GetCharsInRange(target, 0x0020, 0x007E)).Count();
-            int kanji = (GetCharsInRange(target, 0x4E00, 0x9FBF)).Count();
-            int hiragana = (GetCharsInRange(target, 0x3040, 0x309F)).Count();
-            int katakana = (GetCharsInRange(target, 0x30A0, 0x30FF)).Count();
+            int romaji = GetCharsInRange(text, 0x0020, 0x007E).Count();
+            int kanji = GetCharsInRange(text, 0x4E00, 0x9FBF).Count();
+            int hiragana = GetCharsInRange(text, 0x3040, 0x309F).Count();
+            int katakana = GetCharsInRange(text, 0x30A0, 0x30FF).Count();
 
-            int all = (romaji + kanji + hiragana + katakana);
+            int all = romaji + kanji + hiragana + katakana;
             if (string.Compare(langlocale, "all", true, CultureInfo.InvariantCulture) == 0)
             {
-                return all + (target.Length - all);
+                return all + (text.Length - all);
             }
             else if (string.Compare(langlocale, "romaji", true, CultureInfo.InvariantCulture) == 0)
             {
-                return (romaji);
+                return romaji;
             }
             else if (string.Compare(langlocale, "kanji", true, CultureInfo.InvariantCulture) == 0)
             {
-                return (kanji);
+                return kanji;
             }
             else if (string.Compare(langlocale, "hiragana", true, CultureInfo.InvariantCulture) == 0)
             {
-                return (hiragana);
+                return hiragana;
             }
             else if (string.Compare(langlocale, "katakana", true, CultureInfo.InvariantCulture) == 0)
             {
-                return (katakana);
+                return katakana;
             }
             else if (string.Compare(langlocale, "other", true, CultureInfo.InvariantCulture) == 0)
             {
-                return (target.Length - all);
+                return text.Length - all;
             }
 
             return all;

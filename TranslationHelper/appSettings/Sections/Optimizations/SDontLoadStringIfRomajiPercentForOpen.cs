@@ -15,7 +15,7 @@ namespace TranslationHelper.INISettings
 
         object SObject { get => thDataWork.Main.Settings.THOptionDontLoadStringIfRomajiPercentForOpenCheckBox; }
 
-        bool SVar
+        static bool SVar
         {
             get => TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentForOpen;
             set => TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentForOpen = value;

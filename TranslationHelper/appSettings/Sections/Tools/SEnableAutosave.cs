@@ -15,7 +15,7 @@ namespace TranslationHelper.INISettings
 
         object SObject { get => thDataWork.Main.Settings.SettingsAutosaveEnabledCheckBox; }
 
-        bool SVar
+        static bool SVar
         {
             get => TranslationHelper.Properties.Settings.Default.EnableDBAutosave;
             set => TranslationHelper.Properties.Settings.Default.EnableDBAutosave = value;

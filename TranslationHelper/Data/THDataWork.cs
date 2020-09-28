@@ -12,14 +12,23 @@ namespace TranslationHelper.Data
             THFilesElementsDataset = new DataSet();
             THFilesElementsDatasetInfo = new DataSet();
             THFilesElementsALLDataTable = new DataSet();
-            THFilesElementsDictionary = new Dictionary<string, string>();
-            THFilesElementsDictionaryInfo = new Dictionary<string, string>();
+            //THFilesElementsDictionary = new Dictionary<string, string>();
+            //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
 
             SPath = string.Empty;
             FilePath = string.Empty;
 
             ProjectsList = ProjectBase.GetListOfProjects(this);
         }
+
+        /// <summary>
+        /// true - when file open, false - when file writing
+        /// </summary>
+        internal bool OpenFileMode=true;
+        /// <summary>
+        /// true - when file write, false - when file open
+        /// </summary>
+        internal bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }
 
         /// <summary>
         /// regex rules which appling to original to show what need to translate
@@ -35,7 +44,7 @@ namespace TranslationHelper.Data
         /// <summary>
         /// reference to the main form
         /// </summary>
-        internal THMain Main;
+        internal THfrmMain Main;
 
         /// <summary>
         /// CurrentProject
@@ -76,7 +85,7 @@ namespace TranslationHelper.Data
         internal DataSet THFilesElementsALLDataTable { get; set; }
 
         /// <summary>
-        /// main work table data dictionary
+        /// main work table data dictionary.
         /// </summary>
         internal Dictionary<string, string> THFilesElementsDictionary { get; set; }
         /// <summary>
@@ -112,11 +121,14 @@ namespace TranslationHelper.Data
         /// <summary>
         /// true when settings is loading
         /// </summary>
-        internal bool SettingsIsLoading=false;
+        internal bool SettingsIsLoading;
 
         /// <summary>
         /// The program session online translation cookies
         /// </summary>
         internal System.Net.CookieContainer OnlineTranslatorCookies;
+
+        internal Dictionary<char, int> ENQuotesToJPLearnDataFoundPrev;
+        internal Dictionary<char, int> ENQuotesToJPLearnDataFoundNext;
     }
 }

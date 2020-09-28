@@ -16,7 +16,7 @@ namespace TranslationHelper.INISettings
 
         object SObject { get => thDataWork.Main.Settings.SettingsAutosaveTimeoutValueTextBox; }
 
-        int SVar
+        static int SVar
         {
             get => TranslationHelper.Properties.Settings.Default.DBAutoSaveTimeout;
             set => TranslationHelper.Properties.Settings.Default.DBAutoSaveTimeout = value;
@@ -37,9 +37,9 @@ namespace TranslationHelper.INISettings
 
         int CheckAndSetValue()
         {
-            if (System.Text.RegularExpressions.Regex.IsMatch((SObject as System.Windows.Forms.TextBox).Text, "^[0-9]{1,4}$") && int.Parse((SObject as System.Windows.Forms.TextBox).Text, CultureInfo.GetCultureInfo("en-US")) <= 9999)
+            if (System.Text.RegularExpressions.Regex.IsMatch((SObject as System.Windows.Forms.TextBox).Text, "^[0-9]{1,4}$") && int.Parse((SObject as System.Windows.Forms.TextBox).Text, CultureInfo.InvariantCulture) <= 9999)
             {
-                int newvalue = int.Parse((SObject as System.Windows.Forms.TextBox).Text, CultureInfo.GetCultureInfo("en-US"));
+                int newvalue = int.Parse((SObject as System.Windows.Forms.TextBox).Text, CultureInfo.InvariantCulture);
                 //Properties.Settings.Default.THOptionLineCharLimit = newvalue;
                 return newvalue;
             }

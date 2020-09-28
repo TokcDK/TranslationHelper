@@ -16,7 +16,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
       };
 
         //private static readonly string HttpsServicePointTranslateTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl={1}&dt=t&dt=at&tk={2}&q={3}";
-        private static readonly string HttpsServicePointTranslateTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl={1}&dt=t&tk={2}&q={3}";
+        private const string HttpsServicePointTranslateTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl={1}&dt=t&tk={2}&q={3}";
         private static readonly string HttpsServicePointRomanizeTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl=en&dt=rm&tk={1}&q={2}";
         private static readonly string HttpsTranslateUserSite = "https://translate.google.com";
         private static readonly Random RandomNumbers = new Random();
@@ -32,11 +32,11 @@ namespace TranslationHelper.OnlineTranslators.XUA
         private static readonly string AcceptCharset = AcceptCharsets[RandomNumbers.Next(AcceptCharsets.Length)];
 
         private CookieContainer _cookieContainer;
-        private bool _hasSetup = false;
+        private bool _hasSetup;
         private long m = 427761;
         private long s = 1179739010;
         private int _translationsPerRequest = 10;
-        private int _translationCount = 0;
+        private int _translationCount;
         private int _resetAfter = RandomNumbers.Next(75, 125);
 
         public GoogleTranslateEndpoint()
@@ -50,7 +50,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
 
         public override int MaxTranslationsPerRequest => _translationsPerRequest;
 
-        private string FixLanguage(string lang)
+        private static string FixLanguage(string lang)
         {
             switch (lang)
             {
@@ -139,7 +139,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
             var dataIndex = isRomaji ? 3 : 0;
 
             var data = context.Response.Data;
-            var arr = JSON.Parse(data);
+            var arr = SJSON.Parse(data);
             var lineBuilder = new StringBuilder(data.Length);
 
             arr = arr.AsArray[0];
@@ -205,7 +205,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
             return request;
         }
 
-        private void AddHeaders(XUnityWebRequest request, bool isTranslationRequest)
+        private static void AddHeaders(XUnityWebRequest request, bool isTranslationRequest)
         {
             request.Headers[HttpRequestHeader.UserAgent] = string.IsNullOrEmpty(AutoTranslatorSettings.UserAgent) ? UserAgents.Chrome_Win10_Latest : AutoTranslatorSettings.UserAgent;
             if (AcceptLanguage != null)
@@ -322,7 +322,7 @@ namespace TranslationHelper.OnlineTranslators.XUA
 
         // TKK Approach stolen from Translation Aggregator r190, all credits to Sinflower
 
-        private long Vi(long r, string o)
+        private static long Vi(long r, string o)
         {
             for (var t = 0; t < o.Length; t += 3)
             {

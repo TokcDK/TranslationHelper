@@ -240,7 +240,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
                         if (recordstarted)
                         {
-                            if (line.Length > 0 && !line.StartsWith("/") && !line.StartsWith("END") && !FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
+                            if (line.Length > 0 && !line.StartsWith("/") && !line.StartsWith("END") && !FunctionsRomajiKana.LocalePercentIsNotValid(line))
                             {
                                 if (cnt > 0)
                                 {
@@ -260,7 +260,7 @@ namespace TranslationHelper.Projects.WolfRPG
                         }
                         else
                         {
-                            if (line.Length > 0 && !line.StartsWith("/") && !line.StartsWith("END") && !FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
+                            if (line.Length > 0 && !line.StartsWith("/") && !line.StartsWith("END") && !FunctionsRomajiKana.LocalePercentIsNotValid(line))
                             {
                                 sb.Append(line);
                                 cnt++;
@@ -316,7 +316,7 @@ namespace TranslationHelper.Projects.WolfRPG
                             continue;
                         }
 
-                        if (line.Length == 0 || line.StartsWith("/") || line.StartsWith("END") || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(line))
+                        if (line.Length == 0 || line.StartsWith("/") || line.StartsWith("END") || FunctionsRomajiKana.LocalePercentIsNotValid(line))
                         {
                             sb.AppendLine(line);
                         }

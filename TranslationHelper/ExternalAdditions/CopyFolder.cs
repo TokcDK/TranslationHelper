@@ -1,46 +1,41 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace TranslationHelper
 {
     //https://code.4noobz.net/c-copy-a-folder-its-content-and-the-subfolders/
-    class CopyFolder
+    internal static class CopyFolder
     {
-        //static void Main(string[] args)
-        //{
-        //string sourceDirectory = @"C:\temp\source";
-        //string targetDirectory = @"C:\temp\destination";
-
-        //Copy(sourceDirectory, targetDirectory);
-
-        //Console.WriteLine("\r\nEnd of program");
-        //Console.ReadKey();
-        //}
-
-        public static void Copy(string sourceDirectory, string targetDirectory)
+        /// <summary>
+        /// Copy Directory with its all content
+        /// </summary>
+        /// <param name="sourceDirectory"></param>
+        /// <param name="targetDirectory"></param>
+        public static void CopyAll(this string sourceDirectory, string targetDirectory)
         {
-            var diSource = new DirectoryInfo(sourceDirectory);
-            var diTarget = new DirectoryInfo(targetDirectory);
-
-            CopyAll(diSource, diTarget);
+            new DirectoryInfo(sourceDirectory).CopyAll(new DirectoryInfo(targetDirectory));
         }
 
-        public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        /// <summary>
+        /// Copy Directory with its all content
+        /// </summary>
+        /// <param name="sourceDirectory"></param>
+        /// <param name="targetDirectory"></param>
+        private static void CopyAll(this DirectoryInfo sourceDirectory, DirectoryInfo targetDirectory)
         {
-            Directory.CreateDirectory(target.FullName);
+            Directory.CreateDirectory(targetDirectory.FullName);
 
             // Copy each file into the new directory.
-            foreach (FileInfo fi in source.GetFiles())
+            foreach (FileInfo fi in sourceDirectory.GetFiles())
             {
-                Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
-                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+                //Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
+                fi.CopyTo(Path.Combine(targetDirectory.FullName, fi.Name), true);
             }
 
             // Copy each subdirectory using recursion.
-            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+            foreach (DirectoryInfo diSourceSubDir in sourceDirectory.GetDirectories())
             {
                 DirectoryInfo nextTargetSubDir =
-                    target.CreateSubdirectory(diSourceSubDir.Name);
+                    targetDirectory.CreateSubdirectory(diSourceSubDir.Name);
                 CopyAll(diSourceSubDir, nextTargetSubDir);
             }
         }

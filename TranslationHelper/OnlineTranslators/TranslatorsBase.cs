@@ -14,14 +14,32 @@ using TranslationHelper.OnlineTranslators;
 //https://html-agility-pack.net/knowledge-base/33679834/is-there-anyway-to-use--browsersession--to-download-files--csharp
 namespace TranslationHelper.Translators
 {
+    internal static class TranslatorsTools
+    {
+        internal static string GetSourceLanguageID()
+        {
+            return Properties.Settings.Default.OnlineTranslationSourceLanguage.Split(' ')[1];
+        }
+        internal static string GetTargetLanguageID()
+        {
+            return Properties.Settings.Default.OnlineTranslationTargetLanguage.Split(' ')[1];
+        }
+    }
+
     abstract class TranslatorsBase : IDisposable
     {
+        internal int ErrorsWebCnt = 0;
+        internal int ErrorsWebCntOverall = 0;
         protected THDataWork thDataWork;
         protected TranslatorsBase(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
             if (webClient == null)
             {
+                if (thDataWork.OnlineTranslatorCookies == null)
+                {
+                    thDataWork.OnlineTranslatorCookies = new System.Net.CookieContainer();
+                }
                 webClient = new WebClientEx(thDataWork.OnlineTranslatorCookies);
                 //webClient = new ScrapingBrowser
             }

@@ -23,9 +23,9 @@ namespace TranslationHelper.Projects.KiriKiri
         internal bool OpenDetect()
         {
             return
-                thDataWork.SPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".KS")
+                thDataWork.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".KS")
                 ||
-                thDataWork.SPath.ToUpper(CultureInfo.GetCultureInfo("en-US")).EndsWith(".SCN")
+                thDataWork.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".SCN")
                 ;
         }
 

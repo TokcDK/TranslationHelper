@@ -212,7 +212,7 @@ namespace TranslationHelper.Formats.RPGMMV
         private string propertyName = string.Empty;
         //private string cId = string.Empty;
         //private string OldcId = "none";
-        bool IsWithMergedMessages = false;
+        bool IsWithMergedMessages;
         private void ParseJToken(JToken jsonToken, string JsonName/*, string propertyname = ""*/)
         {
             if (jsonToken == null)
@@ -247,7 +247,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     {
                         AddMergedMessage(jsonToken, JsonName);
                     }
-                    if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
+                    if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
                     {
                     }
                     else
@@ -343,7 +343,7 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             else
             {
-                if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(mergedstring))
+                if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && FunctionsRomajiKana.LocalePercentIsNotValid(mergedstring))
                 {
                 }
                 else
@@ -367,7 +367,7 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <param name="jsonToken"></param>
         /// <param name="previous">true means get previous jobject before this</param>
         /// <returns></returns>
-        private string GetCodeValueOfParent(JToken jsonToken, bool previous = false, bool IsValue = true)
+        private static string GetCodeValueOfParent(JToken jsonToken, bool previous = false, bool IsValue = true)
         {
             if (previous)
             {
@@ -444,7 +444,7 @@ namespace TranslationHelper.Formats.RPGMMV
         /// </summary>
         /// <param name="curcode"></param>
         /// <returns></returns>
-        private bool IsExcludedCode(string curcode)
+        private static bool IsExcludedCode(string curcode)
         {
             return curcode.Length == 3 && (curcode == "108" || curcode == "408"/* || curcode == "356"*/);
         }
@@ -454,7 +454,7 @@ namespace TranslationHelper.Formats.RPGMMV
         /// </summary>
         /// <param name="curcode"></param>
         /// <returns></returns>
-        private bool IsMessageCode(string curcode)
+        private static bool IsMessageCode(string curcode)
         {
             return (curcode == "401" || curcode == "405");
         }
@@ -476,7 +476,7 @@ namespace TranslationHelper.Formats.RPGMMV
             //TempListInfo.Add(Info);//много быстрее
         }
 
-        bool skipit = false;
+        bool skipit;
 
         internal override bool Save()
         {
@@ -551,7 +551,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         }
 
-        private bool IsContainsLinedMessages(string Jsonname)
+        private static bool IsContainsLinedMessages(string Jsonname)
         {
             return true;
             //return Jsonname == "CommonEvents";
@@ -563,13 +563,13 @@ namespace TranslationHelper.Formats.RPGMMV
         /// </summary>
         /// <param name="root"></param>
         /// <returns></returns>
-        private string CorrectJsonFormatToRPGMMV(JToken root)
+        private static string CorrectJsonFormatToRPGMMV(JToken root)
         {
             return root.ToString(Formatting.Indented);
             //return Regex.Replace(root.ToString(Formatting.None), @"^\[null,(.+)\]$", "[\r\nnull,\r\n$1\r\n]");//regex нужен только для Formatting.None
         }
 
-        int StartingRow = 0;//оптимизация. начальная строка, когда идет поиск по файлу, чтобы не искало каждый раз сначала при нахождении перевода будет переприсваиваться начальная строка на последнюю
+        int StartingRow;//оптимизация. начальная строка, когда идет поиск по файлу, чтобы не искало каждый раз сначала при нахождении перевода будет переприсваиваться начальная строка на последнюю
         private void ParseJTokenWrite(JToken JsonToken, string JsonName/*, string propertyname = ""*/)
         {
             if (JsonToken == null)
@@ -586,7 +586,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
 
                 string tokenvalue = JsonToken + string.Empty;
-                if (tokenvalue.Length == 0 || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue))
+                if (tokenvalue.Length == 0 || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue))
                 {
                     return;
                 }
@@ -763,7 +763,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 string tokenvalue = JsonToken + string.Empty;
 
-                if (tokenvalue.Length == 0 || FunctionsRomajiKana.SelectedLocalePercentFromStringIsNotValid(tokenvalue))
+                if (tokenvalue.Length == 0 || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue))
                 {
                     return;
                 }
@@ -913,7 +913,7 @@ namespace TranslationHelper.Formats.RPGMMV
             }
         }
 
-        private JObject GetNewJObject(JContainer thisCodeObject, string line)
+        private static JObject GetNewJObject(JContainer thisCodeObject, string line)
         {
             JObject ret = new JObject();
             foreach (var JsonProperty in (thisCodeObject as JObject).Properties())

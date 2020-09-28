@@ -58,6 +58,6 @@ namespace TranslationHelper.OnlineTranslators.XUA
         /// </summary>
         public override bool keepWaiting => !IsCompleted;
 
-        internal bool IsCompleted { get; private set; } = false;
+        internal bool IsCompleted { get; private set; }
     }
 }

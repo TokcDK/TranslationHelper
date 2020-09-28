@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
@@ -38,17 +39,17 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         internal virtual string JSSubfolder => "plugins";
 
-        protected static bool IsPluginsJS = false;//for some specific to plugins.js operations
+        protected static bool IsPluginsJS;//for some specific to plugins.js operations
 
         protected static bool IsValidToken(JToken token)
         {
             return token.Type == JTokenType.String
-                && (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//skip parameters, because ingame elements stop work after translation (forgot if choices is parameters alsp, need to check)
-                && !string.IsNullOrWhiteSpace(token.ToString()) 
+                //&& (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game
+                && !string.IsNullOrWhiteSpace(token.ToString())
                 && !(Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && token.ToString().HaveMostOfRomajiOtherChars());
         }
 
-        protected bool PluginsJSnameFound = false;
+        protected bool PluginsJSnameFound;
         protected void GetStringsFromJToken(JToken token, string Jsonname)
         {
             if (token == null)
@@ -61,7 +62,12 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 if (!IsValidToken(token))
                     return;
 
-                AddRowData(Jsonname, token.ToString(), token.Path, true);
+                AddRowData(Jsonname, token.ToString(),
+                    token.Path
+                    + ((IsPluginsJS && token.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase))
+                    ? Environment.NewLine + T._("Warning")+". "+T._("Parameter: translation of some parameters can break the game.")
+                    : string.Empty)
+                    , true);
                 //thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(token.ToString());
                 //thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(token.Path);
             }
@@ -201,7 +207,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                     {
                         if (line.TrimStart().StartsWith("};"))
                         {
-                            Svar.Append("}");
+                            Svar.Append('}');
 
                             try
                             {
@@ -355,6 +361,153 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 return false;
             }
             return true;
+        }
+
+        protected bool ParseJSSingleLinesWithRegex(string RegexPattern)
+        {
+            return ParseJSSingleLinesWithRegex(RegexPattern, false);
+        }
+
+        protected bool ParseJSSingleLinesWithRegex(string RegexPattern, bool Iswrite = false)
+        {
+            return ParseJSSingleLinesWithRegex(RegexPattern, "", true, "$1", "", Iswrite);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="RegexPattern"></param>
+        /// <param name="LinePartForSearch"></param>
+        /// <param name="LinePartForSearchContains">true=contains,false=startswith</param>
+        /// <param name="RegexPartOfPatternToSave"></param>
+        /// <param name="SInfo"></param>
+        /// <param name="Iswrite"></param>
+        /// <returns></returns>
+        protected bool ParseJSSingleLinesWithRegex(string RegexPattern, string LinePartForSearch = "", bool LinePartForSearchContains = true, string RegexPartOfPatternToSave = "$1", string SInfo = "", bool Iswrite = false)
+        {
+            if (thDataWork.FilePath.Length == 0 || !File.Exists(thDataWork.FilePath))
+            {
+                return false;
+            }
+
+            string line;
+
+            string tablename = Path.GetFileName(thDataWork.FilePath);
+
+            bool UseDict = false;
+            if (Iswrite)
+            {
+                SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
+                if (TablesLinesDict != null && TablesLinesDict.Count > 0)
+                {
+                    UseDict = true;
+                }
+            }
+            else
+            {
+                AddTables(tablename);
+            }
+
+            StringBuilder ResultForWrite = new StringBuilder();
+            int RowIndex = 0;
+            bool IsComment = false;
+            try
+            {
+                bool SearchText = LinePartForSearch.Length > 0;
+                using (StreamReader reader = new StreamReader(thDataWork.FilePath))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        line = reader.ReadLine();
+
+                        if (IsComment)
+                        {
+                            if (line.Contains("*/"))
+                            {
+                                IsComment = false;
+                            }
+                        }
+                        else
+                        {
+                            if (line.Contains("/*"))
+                            {
+                                IsComment = true;
+                            }
+
+                            if (!line.TrimStart().StartsWith("//")
+                                &&
+                                (
+                                (SearchText &&
+                                    (LinePartForSearchContains && line.Contains(LinePartForSearch))
+                                    ||
+                                    (!LinePartForSearchContains && line.StartsWith(LinePartForSearch))
+                                )
+                                || (!SearchText && Regex.IsMatch(line, RegexPattern))
+                                )
+                                )
+                            {
+                                string StringToAdd = Regex.Replace(line, RegexPattern, RegexPartOfPatternToSave);
+                                if (IsValidString(StringToAdd))
+                                {
+                                    if (Iswrite)
+                                    {
+                                        if (UseDict)
+                                        {
+                                            if (TablesLinesDict.ContainsKey(StringToAdd) && !string.IsNullOrEmpty(TablesLinesDict[StringToAdd]) && TablesLinesDict[StringToAdd] != StringToAdd)
+                                            {
+                                                line = line.Replace(StringToAdd, TablesLinesDict[StringToAdd]);
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            var row = thDataWork.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
+                                            if (row[0] as string == StringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
+                                            {
+                                                line = line.Replace(StringToAdd, row[1] as string);
+                                            }
+
+                                            RowIndex++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        AddRowData(tablename, StringToAdd, SInfo, true);
+                                        //thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
+                                        //thDataWork.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
+                                    }
+                                }
+                            }
+                        }
+
+                        if (Iswrite)
+                        {
+                            ResultForWrite.AppendLine(line);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            if (Iswrite)
+            {
+                try
+                {
+                    File.WriteAllText(thDataWork.FilePath, ResultForWrite.ToString());
+                }
+                catch
+                {
+                    return false;
+                }
+                return true;
+            }
+            else
+            {
+                return CheckTablesContent(tablename);
+            }
         }
     }
 }

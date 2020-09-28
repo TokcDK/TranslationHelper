@@ -1,7 +1,6 @@
 ﻿using IniParser;
 using IniParser.Model;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,7 +14,7 @@ namespace AIHelper.Manage
         private readonly string iniPath; //Имя ini файла.
         private readonly FileIniDataParser INIParser;
         private readonly IniData INIData;
-        bool ActionWasExecuted = false;
+        bool ActionWasExecuted;
 
         //[DllImport("kernel32", CharSet = CharSet.Unicode)] // Подключаем kernel32.dll и описываем его функцию WritePrivateProfilesString
         //static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
@@ -39,7 +38,7 @@ namespace AIHelper.Manage
             //}
             if (File.Exists(iniPath))
             {
-                INIData = INIParser.ReadFile(iniPath);
+                INIData = INIParser.ReadFile(iniPath, new UTF8Encoding(false));
             }
             //else
             //{
@@ -166,7 +165,8 @@ namespace AIHelper.Manage
 
             for (int i = 0; i < Values.Length; i++)
             {
-                INIData[Section][i.ToString(CultureInfo.GetCultureInfo("en-US"))] = Values[i];
+                var v = Values[i];
+                INIData[Section][i+""] = v;
             }
             SaveINI(DoSaveINI, ActionWasExecuted);
         }
@@ -181,17 +181,25 @@ namespace AIHelper.Manage
 
             if (string.IsNullOrEmpty(Section))
             {
-                INIData.Global[Key] = Value;
-                ActionWasExecuted = true;
+                if(INIData.Global[Key]!= Value)
+                {
+                    INIData.Global[Key] = Value;
+                    ActionWasExecuted = true;
+                }
             }
             else
             {
-                if (!INIData.Sections.ContainsSection(Section))
+                bool exists;
+                if ((exists = INIData.Sections.ContainsSection(Section)) && INIData[Section][Key] != Value)
                 {
-                    INIData.Sections.AddSection(Section);
+                    if (!exists)
+                    {
+                        INIData.Sections.AddSection(Section);
+                    }
+
+                    INIData[Section][Key] = Value;
+                    ActionWasExecuted = true;
                 }
-                INIData[Section][Key] = Value;
-                ActionWasExecuted = true;
             }
             SaveINI(DoSaveINI, ActionWasExecuted);
             //if (!ManageStrings.IsStringAContainsStringB(Key, "\\"))
