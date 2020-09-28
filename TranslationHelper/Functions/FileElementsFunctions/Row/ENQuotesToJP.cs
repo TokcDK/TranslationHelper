@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Windows;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -144,6 +145,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                 }
 
+        }
+        protected override void PostLearn()
+        {
+            MessageBox.Show(
+                (thDataWork.ENQuotesToJPLearnDataFoundPrev != null && thDataWork.ENQuotesToJPLearnDataFoundPrev.Keys.Count > 0 ? "Prev:\r\n" + string.Join("\r\n", thDataWork.ENQuotesToJPLearnDataFoundPrev) : "")
+                + "\r\n\r\n" +
+                (thDataWork.ENQuotesToJPLearnDataFoundNext != null && thDataWork.ENQuotesToJPLearnDataFoundNext.Keys.Count > 0 ? "Next:\r\n" + string.Join("\r\n", thDataWork.ENQuotesToJPLearnDataFoundNext) : "")
+                );
         }
     }
 }

@@ -50,6 +50,7 @@ namespace TranslationHelper
             this.THSearchFindWhatLabel.Text = T._("Find what:");
             this.label1.Text = T._("Replace with:");
             this.Text = T._("Find and Replace");
+            this.Text = T._("Find and Replace");
 
             if (SearchAlwaysOnTopCheckBox.Checked)
             {
@@ -952,20 +953,34 @@ namespace TranslationHelper
                         string value = row[searchcolumn] + string.Empty;
                         if (value.Length > 0)
                         {
-                            if (SearchModeRegexRadioButton.Checked)
+                            if (SearchInInfoCheckBox.Checked)
                             {
-                                if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
+                                if (SearchFormReplaceWithTextBox.Text == "=")
                                 {
-                                    StoreQueryAndReplacer = true;
-                                    row["Translation"] = Regex.Replace(GetFirstIfNotEmpty(row["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
+                                    row[THSettingsData.TranslationColumnName()] = row[THSettingsData.OriginalColumnName()];
+                                }
+                                else if (string.IsNullOrEmpty(SearchFormReplaceWithTextBox.Text))
+                                {
+                                    row[THSettingsData.TranslationColumnName()] = string.Empty;
                                 }
                             }
                             else
                             {
-                                if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
+                                if (SearchModeRegexRadioButton.Checked)
                                 {
-                                    StoreQueryAndReplacer = true;
-                                    row["Translation"] = ReplaceEx.Replace(GetFirstIfNotEmpty(row["Translation"] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                    if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
+                                    {
+                                        StoreQueryAndReplacer = true;
+                                        row[THSettingsData.TranslationColumnName()] = Regex.Replace(GetFirstIfNotEmpty(row[THSettingsData.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
+                                    }
+                                }
+                                else
+                                {
+                                    if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
+                                    {
+                                        StoreQueryAndReplacer = true;
+                                        row[THSettingsData.TranslationColumnName()] = ReplaceEx.Replace(GetFirstIfNotEmpty(row[THSettingsData.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                    }
                                 }
                             }
                         }
