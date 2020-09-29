@@ -2584,30 +2584,33 @@ namespace TranslationHelper
 
         private void FixMessagesInTheTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            for (int r = 0; r < thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows.Count; r++)
-            {
-                var row = thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r];
-                if (row[1] == null || string.IsNullOrWhiteSpace(row[1] as string))
-                {
-                }
-                else
-                {
-                    var s = row[0] as string;
-                    var s1 = row[1] as string;
-                    if (s.StartsWith("は") && !s1.StartsWith(" "))
-                    {
-#pragma warning disable CA1308 // Нормализуйте строки до прописных букв
-                        thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r][1] = " " + s1.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + s1.Substring(1);
-#pragma warning restore CA1308 // Нормализуйте строки до прописных букв
-                    }
-                    else if (s.StartsWith("の") && !s1.StartsWith("'s ") && !s1.StartsWith(" "))
-                    {
-#pragma warning disable CA1308 // Нормализуйте строки до прописных букв
-                        thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r][1] = "'s " + s1.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + s1.Substring(1);
-#pragma warning restore CA1308 // Нормализуйте строки до прописных букв
-                    }
-                }
-            }
+            new FixJPMessagesTranslation(thDataWork).Table();
+
+            //old
+//            for (int r = 0; r < thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows.Count; r++)
+//            {
+//                var row = thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r];
+//                if (row[1] == null || string.IsNullOrWhiteSpace(row[1] as string))
+//                {
+//                }
+//                else
+//                {
+//                    var CellOriginal = row[0] as string;
+//                    var CellTranslation = row[1] as string;
+//                    if (CellOriginal.StartsWith("は") && !CellTranslation.StartsWith(" "))
+//                    {
+//#pragma warning disable CA1308 // Нормализуйте строки до прописных букв
+//                        thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r][1] = " " + CellTranslation.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + CellTranslation.Substring(1);
+//#pragma warning restore CA1308 // Нормализуйте строки до прописных букв
+//                    }
+//                    else if (CellOriginal.StartsWith("の") && !CellTranslation.StartsWith("'s ") && !CellTranslation.StartsWith(" "))
+//                    {
+//#pragma warning disable CA1308 // Нормализуйте строки до прописных букв
+//                        thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Rows[r][1] = "'s " + CellTranslation.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + CellTranslation.Substring(1);
+//#pragma warning restore CA1308 // Нормализуйте строки до прописных букв
+//                    }
+//                }
+//            }
         }
 
         private void LowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)

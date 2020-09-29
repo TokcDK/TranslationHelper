@@ -73,7 +73,7 @@ namespace TranslationHelper.Functions
                 translation = FixBrokenNameVar2(original, translation);
 
                 //Remove japanese katakana\hiragana\ch kana chars
-                translation = RemoveIeroglifs(translation);
+                //translation = RemoveIeroglifs(translation);//sometimes translation contains part of text in japanese and it make it broken
 
                 //Lialua temp fix
                 //translation = LuaLiaFix(original, translation);

@@ -466,7 +466,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
             }
             catch (Exception ex)
             {
-                new Functions.FunctionsLogs().LogToFile(
+                new FunctionsLogs().LogToFile(
                     Environment.NewLine + "TranslateLinesAndSetTranslation error:" + Environment.NewLine + ex
                     + Environment.NewLine + "InfoIndex=" + DebugInfoIndex
                     + Environment.NewLine + "TranslatedLinesIndex=" + DebugTranslatedLinesIndex
