@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -12,13 +8,47 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     {
         public FixJPMessagesTranslation(THDataWork thDataWork) : base(thDataWork)
         {
+            if (sessionData == null)
+            {
+                sessionData = new Dictionary<string, string>
+                {
+                { "は倒れた！", " is down!" },
+                { "を倒した！", " was down!" },
+                { "は立ち上がった！", " gets up." },
+                { "は毒にかかった！", " is poisoned!" },
+                { "に毒をかけた！", " was poisoned!" },
+                { "の毒が消えた！", "s poison is gone!" },
+                { "は暗闇に閉ざされた！", " is in the dark!" },
+                { "を暗闇に閉ざした！", " sent to the dark!" },
+                { "の暗闇が消えた！", "s darkness is gone!" },
+                { "は沈黙した！", " is silenced!" },
+                { "を沈黙させた！", " was silenced!" },
+                { "の沈黙が解けた！", "s silence is gone!" },
+                { "は激昂した！", " is enraged!" },
+                { "を激昂させた！", " was enraged!" },
+                { "は我に返った！", "s rage is gone!" },
+                { "は混乱した！", " is confused!" },
+                { "を混乱させた！", " was confused!" },
+                { "は魅了された！", " is fascinated!" },
+                { "を魅了した！", " was fascinated!" },
+                { "は眠った！", " is sleeping!" },
+                { "を眠らせた！", " was put to sleep!" },
+                { "は眠っている。", " is sleeping." },
+                { "は目を覚ました！", " is awake!" }
+                };
+            }
         }
 
         protected override bool Apply()
         {
             var strOriginal = SelectedRow[ColumnIndexOriginal] as string;
             var strTranslation = SelectedRow[ColumnIndexTranslation] + string.Empty;
-            if (strOriginal.StartsWith("は") && !strTranslation.StartsWith(" "))
+
+            if (sessionData.ContainsKey(strOriginal))
+            {
+                SelectedRow[ColumnIndexTranslation] = sessionData[strOriginal];
+            }
+            else if ((strOriginal.StartsWith("は") || strOriginal.StartsWith("を")) && !strTranslation.StartsWith(" "))
             {
                 SelectedRow[ColumnIndexTranslation] = " " + strTranslation.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + strTranslation.Substring(1);
             }

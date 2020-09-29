@@ -1,5 +1,6 @@
 ﻿using CSRegisterHotkey;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -3022,6 +3024,40 @@ namespace TranslationHelper
         private void tableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FixJPMessagesTranslation(thDataWork).Table();
+        }
+
+        private void getAndSaveStaticToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //get static XUA translation
+            using (var wc = new WebClient())
+            {
+                try
+                {
+                    var dict = new Dictionary<string, string>();
+                    thDataWork.Main.ProgressInfo(true, T._("Loading") + ": " + T._("Static translations") + "-" + "XUA");
+                    System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//tls12 for github
+                    var xuaStatic = wc.DownloadString(new Uri("https://github.com/bbepis/XUnity.AutoTranslator/raw/master/src/XUnity.AutoTranslator.Plugin.Core/Translations/StaticTranslations.txt"));
+                    foreach (var line in xuaStatic.SplitToLines())
+                    {
+                        if (line.Length > 0 && line.Contains("="))
+                        {
+                            var data = line.Split('=');
+
+                            if (!dict.ContainsKey(data[0]))
+                            {
+                                dict.Add(data[0], data[1]);
+                            }
+                        }
+                    }
+
+                    FunctionsDBFile.WriteDictToXMLDB(dict, Path.Combine(THSettingsData.DBDirPath(), "XUA.cmx"));
+                }
+                catch
+                {
+
+                }
+            }
+            thDataWork.Main.ProgressInfo(false);
         }
 
         //Материалы

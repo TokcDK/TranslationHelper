@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows;
 using TranslationHelper.Data;
@@ -9,10 +10,31 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     internal abstract class FileElementsRowFunctionsBase
     {
+        /// <summary>
+        /// Main app data
+        /// </summary>
         protected THDataWork thDataWork;
+
+        /// <summary>
+        /// return value for Table/All functions. Depends on return of Apply
+        /// </summary>
         protected bool ret;
+
+        /// <summary>
+        /// true when function executed in another thread
+        /// </summary>
         protected bool threaded;
+
+        /// <summary>
+        /// link to FileElements datagridview
+        /// </summary>
         protected System.Windows.Forms.DataGridView DGV;
+
+        /// <summary>
+        /// an be used by some functions
+        /// </summary>
+        protected Dictionary<string, string> sessionData;
+
         protected FileElementsRowFunctionsBase(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;

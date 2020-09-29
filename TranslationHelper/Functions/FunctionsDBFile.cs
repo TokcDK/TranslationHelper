@@ -201,29 +201,29 @@ namespace TranslationHelper.Main.Functions
             return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture) : string.Empty);
         }
 
-        //public static void WriteDictToXMLDB(Dictionary<string, string> db, string xmlPath)
-        //{
-        //    XElement el = new XElement("TranslationCache",
-        //        db.Select(kv =>
-        //        new XElement("Value",
-        //            new XElement("Original", kv.Key),
-        //            new XElement("Translation", kv.Value)
-        //            )
-        //        ));
+        public static void WriteDictToXMLDB(Dictionary<string, string> db, string xmlPath)
+        {
+            XElement el = new XElement("TranslationCache",
+                db.Select(kv =>
+                new XElement("Value",
+                    new XElement("Original", kv.Key),
+                    new XElement("Translation", kv.Value)
+                    )
+                ));
 
-        //    //el = new XElement("TranslationCache");
-        //    //foreach (var kv in db)
-        //    //{
-        //    //    el.Add(new XElement("Value",
-        //    //        new XElement("Original", kv.Key),
-        //    //        new XElement("Translation", kv.Value)
-        //    //        ));
-        //    //}
+            //el = new XElement("TranslationCache");
+            //foreach (var kv in db)
+            //{
+            //    el.Add(new XElement("Value",
+            //        new XElement("Original", kv.Key),
+            //        new XElement("Translation", kv.Value)
+            //        ));
+            //}
 
-        //    //el.Save("cache.xml");
+            //el.Save("cache.xml");
 
-        //    WriteXElementToXMLFile(el, xmlPath);
-        //}
+            WriteXElementToXMLFile(el, xmlPath);
+        }
 
         internal static Dictionary<string, string> ReadXMLDBToDictionary(string xmlPath)
         {
@@ -477,7 +477,7 @@ namespace TranslationHelper.Main.Functions
             foreach (var DBFile in Directory.EnumerateFiles(DBDir, "*", SearchOption.AllDirectories))
             {
                 var ext = Path.GetExtension(DBFile);
-                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBFile.Contains("THTranslationCache") || DBFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(DBFile))==THSettingsData.DBAutoSavesDirName())
+                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBFile.Contains("THTranslationCache") || DBFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(DBFile)) == THSettingsData.DBAutoSavesDirName())
                 {
                     continue;
                 }
@@ -516,26 +516,6 @@ namespace TranslationHelper.Main.Functions
                 baseName = Regex.Replace(baseName, baseNamePattern, "$1");
             }
             return baseName;
-        }
-
-        private static string FindNewestFile(string tDir, string DBfile, HashSet<string> paths = null)
-        {
-            var baseName = GetBaseDBFileName(DBfile);
-            string newestfile = DBfile;
-            foreach (var file in Directory.GetFiles(tDir, baseName + "*.*", SearchOption.AllDirectories))
-            {
-                if (paths != null && !paths.Contains(file))
-                {
-                    paths.Add(file);
-                }
-
-                if (file != newestfile && new FileInfo(file).LastWriteTime > new FileInfo(newestfile).LastWriteTime)
-                {
-                    newestfile = file;
-                }
-            }
-
-            return newestfile;
         }
     }
 }
