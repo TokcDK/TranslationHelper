@@ -22,11 +22,11 @@ namespace TranslationHelper.Functions
 
         internal string GetValueFromCacheOrReturnEmpty(string keyValue)
         {
-            if (Properties.Settings.Default.EnableTranslationCache && Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && thDataWork.AllDBmerged !=null && thDataWork.AllDBmerged.Count > 0 && thDataWork.AllDBmerged.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(thDataWork.AllDBmerged[keyValue]))
+            if (Properties.Settings.Default.EnableTranslationCache && Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && thDataWork.AllDBmerged != null && thDataWork.AllDBmerged.Count > 0 && thDataWork.AllDBmerged.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(thDataWork.AllDBmerged[keyValue]))
             {
                 return thDataWork.AllDBmerged[keyValue];
             }
-            else if (Properties.Settings.Default.EnableTranslationCache && cache!=null && cache.Count > 0 && cache.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(cache[keyValue]))
+            else if (Properties.Settings.Default.EnableTranslationCache && cache != null && cache.Count > 0 && cache.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(cache[keyValue]))
             {
                 return cache[keyValue];
             }

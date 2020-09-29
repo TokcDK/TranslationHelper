@@ -10,7 +10,7 @@ namespace TranslationHelper.Functions
 {
     static class FunctionsStringFixes
     {
-        internal static string ApplyHardFixes(string original, string translation, THDataWork thDataWork = null, int tind=-1, int rind=-1)
+        internal static string ApplyHardFixes(string original, string translation, THDataWork thDataWork = null, int tind = -1, int rind = -1)
         {
             if (string.IsNullOrWhiteSpace(translation) || original == translation || string.IsNullOrWhiteSpace(original))
             {
@@ -91,9 +91,9 @@ namespace TranslationHelper.Functions
 
         private static string FixForEndingQuoteInconsistence(string original, string translation)
         {
-            if (translation[translation.Length - 1] == '"' && original[original.Length - 1] != '"') 
+            if (translation[translation.Length - 1] == '"' && original[original.Length - 1] != '"')
             {
-                return translation.Remove(translation.Length - 1,1)+ original[original.Length - 1];
+                return translation.Remove(translation.Length - 1, 1) + original[original.Length - 1];
             }
             return translation;
         }
@@ -188,7 +188,7 @@ namespace TranslationHelper.Functions
                         }
                         else
                         {
-                            translation = translationTrimEnd.Remove(translationTrimEnd.Length-1, 1) + quote[1] + translationOnlyWhatWasTrimmedOnEnd;
+                            translation = translationTrimEnd.Remove(translationTrimEnd.Length - 1, 1) + quote[1] + translationOnlyWhatWasTrimmedOnEnd;
                         }
                     }
 

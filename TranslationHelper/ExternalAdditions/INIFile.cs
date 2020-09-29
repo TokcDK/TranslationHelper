@@ -166,7 +166,7 @@ namespace AIHelper.Manage
             for (int i = 0; i < Values.Length; i++)
             {
                 var v = Values[i];
-                INIData[Section][i+""] = v;
+                INIData[Section][i + ""] = v;
             }
             SaveINI(DoSaveINI, ActionWasExecuted);
         }
@@ -181,7 +181,7 @@ namespace AIHelper.Manage
 
             if (string.IsNullOrEmpty(Section))
             {
-                if(INIData.Global[Key]!= Value)
+                if (INIData.Global[Key] != Value)
                 {
                     INIData.Global[Key] = Value;
                     ActionWasExecuted = true;
@@ -288,7 +288,7 @@ namespace AIHelper.Manage
             //WriteINI(Section, null, null);
         }
 
-        internal void SaveINI(bool DoSaveINI=true, bool ActionWasExecuted=true)
+        internal void SaveINI(bool DoSaveINI = true, bool ActionWasExecuted = true)
         {
             if (DoSaveINI && ActionWasExecuted)
             {

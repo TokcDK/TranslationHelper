@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TranslationHelper.tests
 {
@@ -19,7 +16,7 @@ namespace TranslationHelper.tests
         }
         internal static void EncryptXor()
         {
-            var filecontent = File.ReadAllText(dat + ".OpenSaveTest.txt",Encoding.GetEncoding(932));
+            var filecontent = File.ReadAllText(dat + ".OpenSaveTest.txt", Encoding.GetEncoding(932));
             File.Move(dat + ".OpenSaveTest.txt", dat + ".OpenSaveTestOLD.txt");
             //File.WriteAllText(dat + ".OpenSaveTest.txt", filecontent, System.Text.Encoding.GetEncoding(932));
             //var nscriptdat = System.Text.Encoding.GetEncoding(932).GetString(System.Text.Encoding.GetEncoding(932).GetBytes(filecontent/*.Replace(Environment.NewLine, "\n")*/).XorUnxor());

@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using TranslationHelper.Data;
-using TranslationHelper.Formats.EAGLS.SCPACK;
 
 namespace TranslationHelper.Projects.EAGLS
 {

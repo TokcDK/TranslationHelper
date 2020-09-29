@@ -41,7 +41,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     }
                 }
             }
-            if(thDataWork.SaveFileMode)
+            if (thDataWork.SaveFileMode)
             {
                 ParseData.ResultForWrite.AppendLine(ParseData.line);
             }

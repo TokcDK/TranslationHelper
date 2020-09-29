@@ -1201,7 +1201,7 @@ namespace TranslationHelper.Functions
                 }
             }
 
-            if(thDataWork.CurrentProject.HideVARSMatchCollectionsList!=null && thDataWork.CurrentProject.HideVARSMatchCollectionsList.Count>0)
+            if (thDataWork.CurrentProject.HideVARSMatchCollectionsList != null && thDataWork.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
             {
                 thDataWork.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
             }

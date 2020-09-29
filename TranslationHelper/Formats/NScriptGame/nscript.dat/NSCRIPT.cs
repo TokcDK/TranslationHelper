@@ -69,7 +69,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                             if (thDataWork.TablesLinesDict.ContainsKey(str) && !string.IsNullOrEmpty(thDataWork.TablesLinesDict[str]) && str != thDataWork.TablesLinesDict[str])
                             {
                                 int ind;
-                                array[i] = array[i].Remove(ind = array[i].IndexOf(str), str.Length).Insert(ind, FixInvalidSymbols('`' + thDataWork.TablesLinesDict[str]+ '`'));
+                                array[i] = array[i].Remove(ind = array[i].IndexOf(str), str.Length).Insert(ind, FixInvalidSymbols('`' + thDataWork.TablesLinesDict[str] + '`'));
                             }
                         }
                     }
@@ -122,7 +122,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         protected override string PreAddString(string str)
         {
-            return (str=str.TrimEnd()).EndsWith("\\") ? str.Remove(str.Length - 1, 1) : str;
+            return (str = str.TrimEnd()).EndsWith("\\") ? str.Remove(str.Length - 1, 1) : str;
         }
 
         protected override Dictionary<string, string> Patterns()

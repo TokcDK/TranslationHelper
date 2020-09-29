@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -105,12 +104,12 @@ namespace TranslationHelper.Projects
                 extractedpatchpath = outdirpatchPath;// Распаковывать в Work\ProjectDir\
             }
 
-            if(Directory.Exists(workdirPath + "_patch"))
+            if (Directory.Exists(workdirPath + "_patch"))
             {
                 Directory.Move(workdirPath + "_patch", outdirpatchPath);
             }
 
-            if(Directory.Exists(workdirPath + "_translated"))
+            if (Directory.Exists(workdirPath + "_translated"))
             {
                 Directory.Move(workdirPath + "_translated", Path.Combine(workdirPath, workdirName + "_translated"));
             }

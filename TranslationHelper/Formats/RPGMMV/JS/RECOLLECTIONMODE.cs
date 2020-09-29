@@ -1,5 +1,4 @@
-﻿using System.Text;
-using TranslationHelper.Data;
+﻿using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {

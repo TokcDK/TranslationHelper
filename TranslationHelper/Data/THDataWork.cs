@@ -24,7 +24,7 @@ namespace TranslationHelper.Data
         /// <summary>
         /// true - when file open, false - when file writing
         /// </summary>
-        internal bool OpenFileMode=true;
+        internal bool OpenFileMode = true;
         /// <summary>
         /// true - when file write, false - when file open
         /// </summary>

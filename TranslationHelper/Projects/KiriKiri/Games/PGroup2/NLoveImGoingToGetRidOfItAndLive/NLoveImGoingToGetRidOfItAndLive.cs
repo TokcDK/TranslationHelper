@@ -46,7 +46,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
             {
                 new Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(thDataWork)
             }
-            ) ;
+            );
         }
 
         private bool SaveFilesOld()

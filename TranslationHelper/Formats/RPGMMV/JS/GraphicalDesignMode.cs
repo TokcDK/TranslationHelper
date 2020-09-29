@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
@@ -140,7 +137,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             }
 
                         }
-                        else if(line.TrimStart().StartsWith("};"))
+                        else if (line.TrimStart().StartsWith("};"))
                         {
                             StartReadingSvar = false;
                         }
@@ -203,7 +200,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 var v = m.Value.Trim('\'');
                 if (TablesLinesDict.ContainsKey(v))
                 {
-                    line = line.Remove(i=line.IndexOf(v), v.Length).Insert(i, TablesLinesDict[v]);
+                    line = line.Remove(i = line.IndexOf(v), v.Length).Insert(i, TablesLinesDict[v]);
                 }
             }
         }

@@ -15,8 +15,8 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
         internal override bool Open()
         {
             return ExtractXP3Data()
-                && OpenFiles(new System.Collections.Generic.List<Formats.FormatBase> 
-                { 
+                && OpenFiles(new System.Collections.Generic.List<Formats.FormatBase>
+                {
                     new KS(thDataWork)
                 }
                 );

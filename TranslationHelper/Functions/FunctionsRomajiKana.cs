@@ -121,7 +121,7 @@ namespace TranslationHelper.Main.Functions
             return ret;
         }
 
-        public static int GetLocaleLangCount(string text, string langlocale= "romaji")
+        public static int GetLocaleLangCount(string text, string langlocale = "romaji")
         {
             if (string.IsNullOrEmpty(text))
             {

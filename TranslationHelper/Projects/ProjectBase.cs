@@ -229,9 +229,9 @@ namespace TranslationHelper.Projects
             }
 
             //restore broken vars
-            foreach(Match p in Regex.Matches(str, @"\{ ?VAR ?[0-9]{1,2} ?\}"))
+            foreach (Match p in Regex.Matches(str, @"\{ ?VAR ?[0-9]{1,2} ?\}"))
             {
-                str = str.Replace(p.Value, p.Value.Replace(" ",string.Empty));
+                str = str.Replace(p.Value, p.Value.Replace(" ", string.Empty));
             }
 
             int mi = 0;
@@ -455,7 +455,7 @@ namespace TranslationHelper.Projects
         protected static bool BuckupRestorePaths(string[] paths, bool bak = true)
         {
 
-            if (paths == null || paths.Length==0)
+            if (paths == null || paths.Length == 0)
             {
                 return false;
             }

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
@@ -530,7 +529,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
                 else
                 {
-                    if(!thDataWork.THFilesElementsDataset.Tables.Contains(Jsonname))
+                    if (!thDataWork.THFilesElementsDataset.Tables.Contains(Jsonname))
                     {
                         return false;
                     }

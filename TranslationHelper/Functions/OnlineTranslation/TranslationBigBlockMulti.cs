@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
@@ -22,7 +18,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
 
         internal void TranslateByBlock()
         {
-            foreach(DataTable table in thDataWork.THFilesElementsDataset.Tables)
+            foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
             {
                 foreach (DataRow row in table.Rows)
                 {

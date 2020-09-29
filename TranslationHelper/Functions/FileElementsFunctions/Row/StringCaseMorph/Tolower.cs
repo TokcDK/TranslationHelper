@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TranslationHelper.Data;
+﻿using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 {
@@ -24,7 +19,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             {
                 SelectedRow[ColumnIndexTranslation] = translation.ToLowerInvariant();
             }
-            catch 
+            catch
             {
                 return false;
             }

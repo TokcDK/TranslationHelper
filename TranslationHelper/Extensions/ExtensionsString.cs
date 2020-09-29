@@ -281,7 +281,7 @@ namespace TranslationHelper.Extensions
             var inputStringLength = inputString.Length;
             return FunctionsRomajiKana.LocalePercentIsNotValid(inputString)
                 || (FunctionsRomajiKana.LocalePercentIsNotValid(inputString, "other"))
-                || ((romajicnt = FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji")) + (othercnt=FunctionsRomajiKana.GetLocaleLangCount(inputString, "other"))) == inputStringLength
+                || ((romajicnt = FunctionsRomajiKana.GetLocaleLangCount(inputString, "romaji")) + (othercnt = FunctionsRomajiKana.GetLocaleLangCount(inputString, "other"))) == inputStringLength
                 || romajicnt == inputStringLength
                 || othercnt == inputStringLength;
         }

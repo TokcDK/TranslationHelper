@@ -30,12 +30,12 @@ namespace TranslationHelper.Projects.NScript
 
         private bool OpenSaveNScript()
         {
-            thDataWork.Main.ProgressInfo(true, (thDataWork.OpenFileMode? T._("Opening"): T._("Saving")) + ": nscript.dat");
+            thDataWork.Main.ProgressInfo(true, (thDataWork.OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
             thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedGameDir, "nscript.dat");
             bool ret;
             if (thDataWork.OpenFileMode)
             {
-                if (!File.Exists(thDataWork.FilePath+".orig"))//backup for manual restore
+                if (!File.Exists(thDataWork.FilePath + ".orig"))//backup for manual restore
                 {
                     File.Copy(thDataWork.FilePath, thDataWork.FilePath + ".orig");
                 }

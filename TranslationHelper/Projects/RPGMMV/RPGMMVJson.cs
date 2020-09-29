@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMMV;
-using TranslationHelper.Formats.RPGMMV.JS;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
@@ -16,7 +14,7 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             if (Path.GetExtension(thDataWork.SPath).ToUpperInvariant() == ".JSON")
             {
-                if (Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath))=="data")
+                if (Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath)) == "data")
                 {
                     return true;
                 }

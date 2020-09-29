@@ -315,7 +315,7 @@ namespace TranslationHelper
                     thDataWork.OnlineTranslatorCookies = null;
                     thDataWork.OnlineTranslatorCookies = new CookieContainer();
 
-                    while (ErrorsWebCnt>0 && ErrorsWebCntOverall < 10)
+                    while (ErrorsWebCnt > 0 && ErrorsWebCntOverall < 10)
                     {
                         Thread.Sleep(ErrorsWebCntOverall * 10000);
 

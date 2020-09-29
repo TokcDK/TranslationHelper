@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
@@ -21,7 +17,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                 new FixForEndingQuoteInconsistence(thDataWork),
                 new FixBrokenNameVar(thDataWork),
                 new FixBrokenNameVar2(thDataWork),
-                new RemoveIeroglifs(thDataWork)
+                //new RemoveIeroglifs(thDataWork)
                 //new LuaLiaFix(thDataWork),
             };
         }
@@ -35,7 +31,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             {
                 if (hardfix.Selected())
                 {
-                    ret= true;
+                    ret = true;
                 }
             }
 

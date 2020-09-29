@@ -1,5 +1,4 @@
-﻿using System.Text;
-using TranslationHelper.Data;
+﻿using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri.Games.FGroup1.RJ297684GoblinsCave
 {

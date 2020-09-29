@@ -65,7 +65,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 AddRowData(Jsonname, token.ToString(),
                     token.Path
                     + ((IsPluginsJS && token.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase))
-                    ? Environment.NewLine + T._("Warning")+". "+T._("Parameter: translation of some parameters can break the game.")
+                    ? Environment.NewLine + T._("Warning") + ". " + T._("Parameter: translation of some parameters can break the game.")
                     : string.Empty)
                     , true);
                 //thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(token.ToString());

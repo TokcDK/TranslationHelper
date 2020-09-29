@@ -11,7 +11,7 @@ using TranslationHelper.Translators;
 
 namespace TranslationHelper.OnlineTranslators
 {
-    class GoogleNew: TranslatorsBase
+    class GoogleNew : TranslatorsBase
     {
         private static readonly HashSet<string> SupportedLanguages = new HashSet<string>
         {

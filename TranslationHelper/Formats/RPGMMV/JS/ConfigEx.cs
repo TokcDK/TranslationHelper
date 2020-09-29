@@ -32,7 +32,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             bool UseDict = false;
             if (Iswrite)
             {
-                SplitTableCellValuesAndTheirLinesToDictionary(tablename, false,false);
+                SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
                 if (TablesLinesDict != null && TablesLinesDict.Count > 0)
                 {
                     UseDict = true;

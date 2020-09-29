@@ -35,7 +35,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var FrontQuote = string.Empty;
                 var BackQuote = string.Empty;
                 string originalValue;
-                if ((originalValue=SelectedRow[ColumnIndexOriginal] as string).Contains("「") || originalValue.Contains("」"))
+                if ((originalValue = SelectedRow[ColumnIndexOriginal] as string).Contains("「") || originalValue.Contains("」"))
                 {
                     FrontQuote = "「";
                     BackQuote = "」";
@@ -78,7 +78,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         {
                             found = true;
                         }
-                        else if ((nextchar = origTranslation[Ind + mc[i].Length]) == ' ' || nextchar == '”' || JPQuotes.Contains(nextchar) || (nextchar != '-' && origTranslation[Ind - 1]!=FrontQuote[0] && char.IsPunctuation(nextchar)) || char.IsWhiteSpace(nextchar) || char.IsControl(nextchar) || char.IsLetterOrDigit(origTranslation[Ind - 1]))
+                        else if ((nextchar = origTranslation[Ind + mc[i].Length]) == ' ' || nextchar == '”' || JPQuotes.Contains(nextchar) || (nextchar != '-' && origTranslation[Ind - 1] != FrontQuote[0] && char.IsPunctuation(nextchar)) || char.IsWhiteSpace(nextchar) || char.IsControl(nextchar) || char.IsLetterOrDigit(origTranslation[Ind - 1]))
                         {
                             RiseChar(nextchar, false);
                             found = true;

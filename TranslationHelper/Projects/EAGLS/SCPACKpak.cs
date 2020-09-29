@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.EAGLS
 {

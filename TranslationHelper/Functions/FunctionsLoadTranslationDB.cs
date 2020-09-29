@@ -145,7 +145,7 @@ namespace TranslationHelper.Functions
         private void CompareLiteIfIdentical(DataSet tHTempDS)
         {
             int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
-            string infomessage = T._("Load")+" "+ T._("translation") + ":";
+            string infomessage = T._("Load") + " " + T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {

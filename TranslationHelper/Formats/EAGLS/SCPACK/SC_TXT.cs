@@ -127,7 +127,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                                     var valtrimmed = val.Trim();
                                     if (TablesLinesDict.ContainsKey(valtrimmed))
                                     {
-                                        line = "#"+TablesLinesDict[valtrimmed].CleanForShiftJIS2004() + (last != -1 ? line.Substring(last) : string.Empty);
+                                        line = "#" + TablesLinesDict[valtrimmed].CleanForShiftJIS2004() + (last != -1 ? line.Substring(last) : string.Empty);
                                         if (!changed)
                                             changed = true;
                                     }

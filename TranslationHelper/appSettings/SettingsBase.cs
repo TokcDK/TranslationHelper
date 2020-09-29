@@ -1,5 +1,4 @@
-﻿using AIHelper.Manage;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TranslationHelper.Data;
 

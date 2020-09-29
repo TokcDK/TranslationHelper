@@ -179,7 +179,7 @@ namespace TranslationHelper.Functions
             Properties.Settings.Default.THSelectedDir = dir.FullName;
             Properties.Settings.Default.THSelectedGameDir = dir.FullName;
 
-            thDataWork.Main.frmMainPanel.Invoke((Action)(()=>thDataWork.Main.frmMainPanel.Visible = true));
+            thDataWork.Main.frmMainPanel.Invoke((Action)(() => thDataWork.Main.frmMainPanel.Visible = true));
 
             //ShowProjectsList();
 
