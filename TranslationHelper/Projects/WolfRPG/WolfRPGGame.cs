@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -65,14 +66,14 @@ namespace TranslationHelper.Projects.WolfRPG
             {
                 //Properties.Settings.Default.THSelectedGameDir
 
-                var OrigFolder = Path.Combine(THSettingsData.WorkDirPath()
+                var WorkFolder = Path.Combine(THSettingsData.WorkDirPath()
                     , thDataWork.CurrentProject.ProjectFolderName()
                     , Path.GetFileName(Properties.Settings.Default.THSelectedGameDir));
 
                 //string DirName = Path.GetFileName(Properties.Settings.Default.THSelectedGameDir);;
-                Properties.Settings.Default.THProjectWorkDir = OrigFolder;
+                Properties.Settings.Default.THProjectWorkDir = WorkFolder;
 
-                Directory.CreateDirectory(OrigFolder);
+                Directory.CreateDirectory(WorkFolder);
 
                 var progressMessageTitle = "Wolf archive" + " " + T._("Extraction") + ".";
 
@@ -95,8 +96,8 @@ namespace TranslationHelper.Projects.WolfRPG
                     return false;
                 }
 
-                var patchdir = Path.Combine(OrigFolder, "patch");
-                var translateddir = Path.Combine(OrigFolder, "translated");
+                var patchdir = Path.Combine(WorkFolder, "patch");
+                var translateddir = new DirectoryInfo(Path.Combine(WorkFolder, "translated"));
                 if (!Directory.Exists(patchdir) || !FunctionsFileFolder.IsInDirExistsAnyFile(patchdir, "*", true, true))
                 {
                     var ruby = THSettingsData.RubyPath();
@@ -104,15 +105,58 @@ namespace TranslationHelper.Projects.WolfRPG
                     var args = "\"" + wolftrans + "\""
                         + " \"" + Properties.Settings.Default.THSelectedGameDir + "\""
                         + " \"" + patchdir + "\""
-                        + " \"" + translateddir + "\"";
+                        + " \"" + translateddir.FullName + "\"";
 
                     //File.WriteAllText(Path.Combine(OrigFolder, "extract.cmd"), "\r\n" + ruby + " " + args);
 
                     thDataWork.Main.ProgressInfo(true, progressMessageTitle + T._("Create patch"));
-                    ret = FunctionsProcess.RunProcess(ruby, args);
+                    //ret = FunctionsProcess.RunProcess(ruby, args);
+
+                    using (Process RubyWolfTrans = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = ruby,
+                            Arguments = args,
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            //RedirectStandardError = true
+                        }
+                    })
+                    {
+                        try
+                        {
+                            BakRestore();//restore original files before patch creation
+                            ret = RubyWolfTrans.Start();
+                            RubyWolfTrans.WaitForExit();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(T._("Error occured while patch execution. Error " + ex));
+                            return false;
+                        }
+                        if (!ret)
+                        {
+                            MessageBox.Show(T._("Error occured while patch execution."));
+                            return false;
+                        }
+                        if (RubyWolfTrans.ExitCode > 0)
+                        {
+                            MessageBox.Show(T._("Patch creation finished unsuccesfully.")
+                                + "Exit code="
+                                + RubyWolfTrans.ExitCode
+                                + Environment.NewLine
+                                + T._("Work folder will be opened.")
+                                + Environment.NewLine
+                                + T._("Try to run Patch.cmd manually and check it for errors.")
+                                );
+                            Process.Start("explorer.exe", WorkFolder);
+                            return false;
+                        }
+                    }
                 }
 
-                if (!(ret = Directory.Exists(patchdir) && FunctionsFileFolder.IsInDirExistsAnyFile(patchdir, "*", true, true) && Directory.Exists(translateddir)))
+                if (!(ret = Directory.Exists(patchdir) && translateddir.HasAnyFiles()))
                 {
                     return false;
                 }
@@ -178,7 +222,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 var args = "-Ku \"" + wolftrans + "\""
                     + " \"" + Properties.Settings.Default.THSelectedGameDir + "\""
                     + " \"" + patchdir + "\""
-                    + " \"" + translateddir + "\""
+                    + " \"" + translateddir.FullName + "\""
                     //+ " > \"" + log + "\""
                     ;
 
@@ -314,7 +358,14 @@ namespace TranslationHelper.Projects.WolfRPG
         {
             //escape sequences check
             string t;
-            if ((t = row[1] + string.Empty).Length > 0 && System.Text.RegularExpressions.Regex.IsMatch(t, @"(?<!\\)\\[^sntr><#\\]"))
+            if((t = row[1] + string.Empty).Length == 0)
+            {
+            }
+            else if (Regex.IsMatch(t, @"(?<!\\)\\[^sntr><#\\]"))
+            {
+                return true;
+            }
+            else if (Regex.IsMatch(row[0] as string, @"\\\\r\[[^\,]+\,[^\]]+\]") && !Regex.IsMatch(t, @"\\\\r\[[^\,]+\,[^\]]+\]"))
             {
                 return true;
             }

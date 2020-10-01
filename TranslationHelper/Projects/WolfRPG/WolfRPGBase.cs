@@ -26,6 +26,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
             return RestoreVARS(t);
         }
+        //\\\\r\[[^\,]+\,[^\]]+\]
         internal override string HardcodedFixes(string original, string translation)
         {
             //fix escape sequences 
@@ -33,7 +34,7 @@ namespace TranslationHelper.Projects.WolfRPG
             {
                 var sequences = new char[] { 'S', 'N', 'T', 'R' };
                 var mc = Regex.Matches(translation, @"(?<!\\)\\[^sntr><#\\]");
-                for (int i = mc.Count - 1; i <= 0; i--)
+                for (int i = mc.Count - 1; i >= 0; i--)
                 {
                     foreach (var schar in sequences)
                     {

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using TranslationHelper.Data;
 
@@ -35,6 +36,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var FrontQuote = string.Empty;
                 var BackQuote = string.Empty;
                 string originalValue;
+                var IsNoQuotes = false;
                 if ((originalValue = SelectedRow[ColumnIndexOriginal] as string).Contains("「") || originalValue.Contains("」"))
                 {
                     FrontQuote = "「";
@@ -45,10 +47,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     FrontQuote = "『";
                     BackQuote = "』";
                 }
-                //else
-                //{
-                //    return false;
-                //}
+                else
+                {
+                    IsNoQuotes = true;
+                }
 
                 var mc = Regex.Matches(origTranslation, "(\"|('')|“|”)");
                 var maxInd = origTranslation.Length - 1;
@@ -68,6 +70,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 for (int i = mc.Count - 1; i >= 0; i--)
                 {
                     int Ind = mc[i].Index;
+
+                    if (IsNoQuotes)
+                    {
+                        result = result.Remove(Ind, mc[i].Value.Length).Insert(Ind, string.Empty);
+                        continue;
+                    }
+
                     char nextchar;
                     char prevchar;
                     bool found = false;
@@ -93,14 +102,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
                         if (Ind - 1 + mc[i].Length < maxInd)
                         {
-                            if (Ind == 0)
+                            try
                             {
-                                found = true;
+                                if (Ind == 0)
+                                {
+                                    found = true;
+                                }
+                                else if ((prevchar = origTranslation[Ind - 1]) == ' ' || prevchar == '“' || JPQuotes.Contains(prevchar) || char.IsPunctuation(prevchar) || char.IsWhiteSpace(prevchar) || char.IsControl(prevchar) || char.IsLetterOrDigit(origTranslation[Ind + mc[i].Length]))
+                                {
+                                    RiseChar(prevchar);
+                                    found = true;
+                                }
                             }
-                            else if ((prevchar = origTranslation[Ind - 1]) == ' ' || prevchar == '“' || JPQuotes.Contains(prevchar) || char.IsPunctuation(prevchar) || char.IsWhiteSpace(prevchar) || char.IsControl(prevchar) || char.IsLetterOrDigit(origTranslation[Ind + mc[i].Length]))
+                            catch
                             {
-                                RiseChar(prevchar);
-                                found = true;
+
                             }
                         }
                         if (found)

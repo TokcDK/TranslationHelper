@@ -243,7 +243,7 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        private static string StringToUpper(string inputString)
+        internal static string StringToUpper(string inputString)
         {
             if (char.IsLetter(inputString[0]))
             {
@@ -260,7 +260,13 @@ namespace TranslationHelper.Main.Functions
                     }
                     else
                     {
-                        inputString = inputString.Substring(0, c) + char.ToUpper(inputString[c], CultureInfo.InvariantCulture) + (c == DSTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
+                        if (c > 0 && ((@char == 's' && inputString[c - 1] == '\'') || inputString[c - 1] == '\\'))
+                        {
+                        }
+                        else
+                        {
+                            inputString = inputString.Substring(0, c) + char.ToUpper(inputString[c], CultureInfo.InvariantCulture) + (c == DSTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
+                        }
                         break;
                     }
                 }

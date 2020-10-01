@@ -17,16 +17,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 { "は立ち上がった！", " gets up." },
                 { "は毒にかかった！", " is poisoned!" },
                 { "に毒をかけた！", " was poisoned!" },
-                { "の毒が消えた！", "s poison is gone!" },
+                { "の毒が消えた！", "'s poison is gone!" },
                 { "は暗闇に閉ざされた！", " is in the dark!" },
                 { "を暗闇に閉ざした！", " sent to the dark!" },
-                { "の暗闇が消えた！", "s darkness is gone!" },
+                { "の暗闇が消えた！", "'s darkness is gone!" },
                 { "は沈黙した！", " is silenced!" },
                 { "を沈黙させた！", " was silenced!" },
-                { "の沈黙が解けた！", "s silence is gone!" },
+                { "の沈黙が解けた！", "'s silence is gone!" },
                 { "は激昂した！", " is enraged!" },
                 { "を激昂させた！", " was enraged!" },
-                { "は我に返った！", "s rage is gone!" },
+                { "は我に返った！", "'s rage is gone!" },
                 { "は混乱した！", " is confused!" },
                 { "を混乱させた！", " was confused!" },
                 { "は魅了された！", " is fascinated!" },
@@ -41,6 +41,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply()
         {
+            if(!THSettingsData.SourceLanguageIsJapanese())
+            {
+                return false;
+            }
+
             var strOriginal = SelectedRow[ColumnIndexOriginal] as string;
             var strTranslation = SelectedRow[ColumnIndexTranslation] + string.Empty;
 

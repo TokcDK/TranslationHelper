@@ -655,7 +655,7 @@ namespace TranslationHelper
         {
             try
             {
-                _ = Invoke(new MethodInvoker(delegate ()
+                _ = Invoke(new MethodInvoker(()=>
                 {
                     Thread.Sleep(200);
                     if (THTargetRichTextBox.Text.Length == 0)
@@ -669,7 +669,7 @@ namespace TranslationHelper
                             //https://www.c-sharpcorner.com/article/search-and-highlight-text-in-rich-textbox/
                             //распознает лучше, чем код ниже, но не выделяет слово TEST
                             bool MatchCase = THSearchMatchCaseCheckBox.Checked;
-                            MatchCollection mc = Regex.Matches(THTargetRichTextBox.Text, SearchFormFindWhatTextBox.Text, MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);
+                            MatchCollection mc = Regex.Matches(THTargetRichTextBox.Text, SearchFormFindWhatTextBox.Text, MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);                                                        
                             if (mc.Count > 0)
                             {
                                 string m = mc[0].Value;

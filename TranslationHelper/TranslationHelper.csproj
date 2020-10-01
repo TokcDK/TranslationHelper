@@ -214,7 +214,8 @@
     <Compile Include="Functions\FileElementsFunctions\Row\SplitLongLines.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\StringCaseMorphBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\Tolower.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUPPER.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUPPERAll.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUpper1st.cs" />
     <Compile Include="Functions\FunctionsLoadTranslationDB.cs" />
     <Compile Include="Functions\FunctionsLogs.cs" />
     <Compile Include="Functions\FunctionsMessage.cs" />

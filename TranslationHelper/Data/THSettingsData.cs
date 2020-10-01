@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using TranslationHelper.Properties;
 
 namespace TranslationHelper.Data
 {
@@ -6,7 +7,7 @@ namespace TranslationHelper.Data
     {
         internal static string ApplicationStartupPath()
         {
-            return Properties.Settings.Default.ApplicationStartupPath;
+            return Settings.Default.ApplicationStartupPath;
         }
 
         internal static string DBDirName()
@@ -72,6 +73,41 @@ namespace TranslationHelper.Data
         internal static string NScriptDirName()
         {
             return "nscript";
+        }
+
+        internal static bool SourceLanguageIsJapanese()
+        {
+            return Settings.Default.OnlineTranslationSourceLanguage.EndsWith("jp");
+        }
+
+        internal static string SourceLanguage()
+        {
+            return Settings.Default.OnlineTranslationSourceLanguage;
+        }
+
+        internal static string SourceLanguageName()
+        {
+            return SourceLanguage().Split(' ')[0];
+        }
+
+        internal static string SourceLanguageCode()
+        {
+            return SourceLanguage().Split(' ')[1];
+        }
+
+        internal static string TargetLanguage()
+        {
+            return Settings.Default.OnlineTranslationTargetLanguage;
+        }
+
+        internal static string TargetLanguageName()
+        {
+            return TargetLanguage().Split(' ')[0];
+        }
+
+        internal static string TargetLanguageCode()
+        {
+            return TargetLanguage().Split(' ')[1];
         }
 
         internal static string NScriptDirPath()
@@ -191,7 +227,7 @@ namespace TranslationHelper.Data
 
         internal static string THLogPath()
         {
-            return Path.Combine(ApplicationStartupPath(), Properties.Settings.Default.ApplicationProductName + ".log");
+            return Path.Combine(ApplicationStartupPath(), Settings.Default.ApplicationProductName + ".log");
         }
 
         internal static string CellFixesRegexRulesFileName()
