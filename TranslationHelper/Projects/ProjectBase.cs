@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats;
 
 namespace TranslationHelper.Projects
 {
@@ -40,6 +41,10 @@ namespace TranslationHelper.Projects
         internal virtual string Filters()
         {
             return string.Empty;
+        }
+
+        internal virtual void PreSaveDB()
+        {
         }
 
         /// <summary>
@@ -81,6 +86,27 @@ namespace TranslationHelper.Projects
         /// <param name="thData"></param>
         /// <returns></returns>
         internal abstract bool Open();
+
+        /// <summary>
+        /// open or save project files
+        /// </summary>
+        /// <returns></returns>
+        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, FormatBase format, string mask="*")
+        {
+            var ret = false;
+            foreach (var file in DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
+            {
+                thDataWork.FilePath = file.FullName;
+                thDataWork.Main.ProgressInfo(true, thDataWork.OpenFileMode ? T._("Opening") : T._("Saving") + " " + file.Name);
+                if (thDataWork.OpenFileMode ? format.Open() : format.Save())
+                {
+                    ret = true;
+                }
+            }
+
+            thDataWork.Main.ProgressInfo(false);
+            return ret;
+        }
 
         /// <summary>
         /// Save project files
@@ -450,8 +476,9 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// make buckup .bak copy of selected paths
         /// </summary>
-        /// <param name="dir"></param>
-        /// <returns></returns>
+        /// <param name="paths">file paths</param>
+        /// <param name="bak">true = backup, false = restore</param>
+        /// <returns>true if was processed atleast one file\dir</returns>
         protected static bool BuckupRestorePaths(string[] paths, bool bak = true)
         {
 
@@ -464,16 +491,17 @@ namespace TranslationHelper.Projects
 
             foreach (var path in paths)
             {
+                var target = path.EndsWith(".bak") ? path.Remove(path.Length - 4, 4) : path;
                 if (bak)
                 {
-                    if ((File.Exists(path) && BuckupFile(path)) || (Directory.Exists(path) && BuckupDir(path)))
+                    if ((File.Exists(target) && BuckupFile(target)) || (Directory.Exists(target) && BuckupDir(target)))
                     {
                         ret = true;
                     }
                 }
                 else
                 {
-                    if ((File.Exists(path + ".bak") && RestoreFile(path)) || (Directory.Exists(path + ".bak") && RestoreDir(path)))
+                    if ((File.Exists(target + ".bak") && RestoreFile(target)) || (Directory.Exists(target + ".bak") && RestoreDir(target)))
                     {
                         ret = true;
                     }

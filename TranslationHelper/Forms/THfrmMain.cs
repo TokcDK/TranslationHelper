@@ -976,6 +976,8 @@ namespace TranslationHelper
                     break;
             }
 
+            thDataWork.SaveFileMode = true;
+            await Task.Run(() => thDataWork.CurrentProject.PreSaveDB()).ConfigureAwait(true);
             await Task.Run(() => WriteDBFileLite(thDataWork.THFilesElementsDataset, lastautosavepath)).ConfigureAwait(true);
 
             FunctionsSounds.SaveDBComplete();

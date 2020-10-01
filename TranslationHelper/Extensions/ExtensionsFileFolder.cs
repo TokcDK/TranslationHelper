@@ -13,9 +13,9 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        internal static bool HasAnyFiles(this DirectoryInfo dir)
+        internal static bool HasAnyFiles(this DirectoryInfo dir, string mask="*")
         {
-            return dir.FullName.IsTheDirContainsFiles("*", true, true);
+            return dir.FullName.IsTheDirContainsFiles(mask, true, true);
         }
 
         /// <summary>

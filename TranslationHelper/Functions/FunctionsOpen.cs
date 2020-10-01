@@ -383,6 +383,7 @@ namespace TranslationHelper.Functions
         private string TryOpenProject()
         {
             thDataWork.CurrentProject.BakRestore();
+            thDataWork.OpenFileMode = true;
             if (thDataWork.CurrentProject.Open())
             {
                 return thDataWork.CurrentProject.Name();

@@ -33,29 +33,16 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override bool Open()
         {
-            return ExtractWolfFiles() && OpenSaveFiles();
+            return /*ExtractWolfFiles()*/ Patch() && OpenSaveFiles();
         }
 
-        private bool OpenSaveFiles(bool IsOpen = true)
+        private bool OpenSaveFiles()
         {
-            thDataWork.OpenFileMode = IsOpen;
-            var ret = false;
             var OrigFolder = Path.Combine(THSettingsData.WorkDirPath()
                 , thDataWork.CurrentProject.ProjectFolderName()
                 , Path.GetFileName(Properties.Settings.Default.THSelectedGameDir));
             var patchdir = Path.Combine(OrigFolder, "patch");
-            foreach (var txt in Directory.EnumerateFiles(patchdir, "*.txt", SearchOption.AllDirectories))
-            {
-                thDataWork.FilePath = txt;
-                thDataWork.Main.ProgressInfo(true, "Open" + " " + Path.GetFileName(txt));
-                if (IsOpen ? new Formats.WolfRPG.WolfTrans.TXT(thDataWork).Open() : new Formats.WolfRPG.WolfTrans.TXT(thDataWork).Save())
-                {
-                    ret = true;
-                }
-            }
-
-            thDataWork.Main.ProgressInfo(false);
-            return ret;
+            return OpenSaveFilesBase(new DirectoryInfo(patchdir), new Formats.WolfRPG.WolfTrans.TXT(thDataWork), "*.txt");
         }
 
         protected bool ExtractWolfFiles()
@@ -96,15 +83,15 @@ namespace TranslationHelper.Projects.WolfRPG
                     return false;
                 }
 
-                var patchdir = Path.Combine(WorkFolder, "patch");
+                var patchdir = new DirectoryInfo(Path.Combine(WorkFolder, "patch"));
                 var translateddir = new DirectoryInfo(Path.Combine(WorkFolder, "translated"));
-                if (!Directory.Exists(patchdir) || !FunctionsFileFolder.IsInDirExistsAnyFile(patchdir, "*", true, true))
+                if (!patchdir.Exists || !patchdir.HasAnyFiles("*.txt"))
                 {
                     var ruby = THSettingsData.RubyPath();
                     var wolftrans = THSettingsData.WolfTransPath();
                     var args = "\"" + wolftrans + "\""
                         + " \"" + Properties.Settings.Default.THSelectedGameDir + "\""
-                        + " \"" + patchdir + "\""
+                        + " \"" + patchdir.FullName + "\""
                         + " \"" + translateddir.FullName + "\"";
 
                     //File.WriteAllText(Path.Combine(OrigFolder, "extract.cmd"), "\r\n" + ruby + " " + args);
@@ -156,11 +143,8 @@ namespace TranslationHelper.Projects.WolfRPG
                     }
                 }
 
-                if (!(ret = Directory.Exists(patchdir) && translateddir.HasAnyFiles()))
-                {
-                    return false;
-                }
-
+                patchdir.Refresh();
+                ret = patchdir.Exists && patchdir.HasAnyFiles("*.txt");
             }
             catch
             {
@@ -170,12 +154,17 @@ namespace TranslationHelper.Projects.WolfRPG
             return ret;
         }
 
-        internal override bool Save()
+        internal override void PreSaveDB()
         {
-            return OpenSaveFiles(false) && WritePatch();
+            OpenSaveFiles();
         }
 
-        private bool WritePatch()
+        internal override bool Save()
+        {
+            return OpenSaveFiles() && Patch();
+        }
+
+        private bool Patch()
         {
             var ret = false;
 
@@ -187,103 +176,140 @@ namespace TranslationHelper.Projects.WolfRPG
 
                 Properties.Settings.Default.THProjectWorkDir = WorkFolder;
 
-                var progressMessageTitle = "Wolf archive" + " " + T._("Write patch") + ".";
+                var progressMessageTitle = "Wolf archive" + " " + (thDataWork.OpenFileMode ? T._("Create patch") : T._("Write patch")) + ".";
 
 
-                var patchdir = Path.Combine(WorkFolder, "patch");
+                var dataPath = Path.Combine(Properties.Settings.Default.THSelectedGameDir, "Data");
+
+                //decode wolf files
+                if (thDataWork.OpenFileMode)
+                {
+                    var dxadecodew = THSettingsData.DXADecodeWExePath();
+                    foreach (var wolfFile in Directory.EnumerateFiles(Properties.Settings.Default.THSelectedGameDir, "*.wolf", SearchOption.AllDirectories))
+                    {
+                        thDataWork.Main.ProgressInfo(true, progressMessageTitle + T._("Extract") + " " + Path.GetFileName(wolfFile));
+                        if (FunctionsProcess.RunProcess(dxadecodew, "\"" + wolfFile + "\""))
+                        {
+                            ret = true;
+                        }
+                        File.Move(wolfFile, wolfFile + ".bak");
+                    }
+                    if (!Directory.Exists(dataPath))
+                    {
+                        return false;
+                    }
+                }
+
+                var patchdir = new DirectoryInfo(Path.Combine(WorkFolder, "patch"));
                 var translateddir = new DirectoryInfo(Path.Combine(WorkFolder, "translated"));
 
-                if (translateddir.Exists)
+                //if (translateddir.Exists)
+                //{
+                //    try
+                //    {
+                //        translateddir.Attributes = FileAttributes.Normal;
+                //        translateddir.Delete(true);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        MessageBox.Show(
+                //            T._("Failed to clean old translated dir. Error " + ex)
+                //            + Environment.NewLine
+                //            + T._("Work folder will be opened.")
+                //            + Environment.NewLine
+                //            + T._("Try to delete 'translated' dir manually and try again.")
+                //            );
+                //        Process.Start("explorer.exe", WorkFolder);
+                //        return false;
+                //    }
+                //}
+
+                var needpatch = thDataWork.SaveFileMode || (thDataWork.OpenFileMode && (!patchdir.Exists || !patchdir.HasAnyFiles("*.txt")));
+
+                if (needpatch)
                 {
-                    try
+                    var ruby = THSettingsData.RubyPath();
+                    var wolftrans = THSettingsData.WolfTransPath();
+                    var log = Path.Combine(WorkFolder, "OutputLog.txt");
+                    //-Ku key for ruby to fix unicode errors
+                    var args = "-Ku \"" + wolftrans + "\""
+                        + " \"" + Properties.Settings.Default.THSelectedGameDir + "\""
+                        + " \"" + patchdir.FullName + "\""
+                        + " \"" + translateddir.FullName + "\""
+                        //+ " > \"" + log + "\""
+                        ;
+
+                    thDataWork.Main.ProgressInfo(true, progressMessageTitle);
+                    var patch = Path.Combine(WorkFolder, "Patch.cmd");
+                    File.WriteAllText(patch, "\r\n\"" + ruby + "\" " + args + "\r\npause");
+
+                    using (Process RubyWolfTrans = new Process
                     {
-                        translateddir.Attributes = FileAttributes.Normal;
-                        translateddir.Delete(true);
-                    }
-                    catch (Exception ex)
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = ruby,
+                            Arguments = args,
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            //RedirectStandardError = true
+                        }
+                    })
                     {
-                        MessageBox.Show(
-                            T._("Failed to clean old translated dir. Error " + ex)
-                            + Environment.NewLine
-                            + T._("Work folder will be opened.")
-                            + Environment.NewLine
-                            + T._("Try to delete 'translated' dir manually and try again.")
-                            );
-                        Process.Start("explorer.exe", WorkFolder);
-                        return false;
+                        try
+                        {
+                            BakRestore();//restore original files before patch creation
+                            ret = RubyWolfTrans.Start();
+                            RubyWolfTrans.WaitForExit();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(T._("Error occured while patch execution. Error " + ex));
+                            return false;
+                        }
+
+                        if (!ret || RubyWolfTrans.ExitCode > 0)
+                        {
+                            thDataWork.Main.ProgressInfo(true, progressMessageTitle + " " + T._("Somethig wrong") + ".. " + T._("Trying again"));
+                            //2nd try because was error sometime after 1st patch creation execution
+                            BakRestore();
+                            ret = RubyWolfTrans.Start();
+                            RubyWolfTrans.WaitForExit();
+                        }
+
+                        //error checks
+                        if (!ret)
+                        {
+                            MessageBox.Show(T._("Error occured while patch execution."));
+                            return false;
+                        }
+                        if (RubyWolfTrans.ExitCode > 0)
+                        {
+                            MessageBox.Show(T._("Patch creation finished unsuccesfully.")
+                                + "Exit code="
+                                + RubyWolfTrans.ExitCode
+                                + Environment.NewLine
+                                + T._("Work folder will be opened.")
+                                + Environment.NewLine
+                                + T._("Try to run Patch.cmd manually and check it for errors.")
+                                );
+                            Process.Start("explorer.exe", WorkFolder);
+                            return false;
+                        }
                     }
                 }
 
+                var checkdir = thDataWork.OpenFileMode ? translateddir : patchdir;
+                checkdir.Refresh();
+                ret = checkdir.Exists && checkdir.HasAnyFiles();
 
-                var ruby = THSettingsData.RubyPath();
-                var wolftrans = THSettingsData.WolfTransPath();
-                var log = Path.Combine(WorkFolder, "OutputLog.txt");
-                //-Ku key for ruby to fix unicode errors
-                var args = "-Ku \"" + wolftrans + "\""
-                    + " \"" + Properties.Settings.Default.THSelectedGameDir + "\""
-                    + " \"" + patchdir + "\""
-                    + " \"" + translateddir.FullName + "\""
-                    //+ " > \"" + log + "\""
-                    ;
-
-                thDataWork.Main.ProgressInfo(true, progressMessageTitle);
-                var patch = Path.Combine(WorkFolder, "Patch.cmd");
-                File.WriteAllText(patch, "\r\n\"" + ruby + "\" " + args + "\r\npause");
-
-                using (Process RubyWolfTrans = new Process
+                if (ret && thDataWork.SaveFileMode)
                 {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = ruby,
-                        Arguments = args,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                        //RedirectStandardError = true
-                    }
-                })
-                {
-                    try
-                    {
-                        BakRestore();//restore original files before patch creation
-                        ret = RubyWolfTrans.Start();
-                        RubyWolfTrans.WaitForExit();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(T._("Error occured while patch execution. Error " + ex));
-                        return false;
-                    }
-                    if (!ret)
-                    {
-                        MessageBox.Show(T._("Error occured while patch execution."));
-                        return false;
-                    }
-                    if (RubyWolfTrans.ExitCode > 0)
-                    {
-                        MessageBox.Show(T._("Patch creation finished unsuccesfully.")
-                            + "Exit code="
-                            + RubyWolfTrans.ExitCode
-                            + Environment.NewLine
-                            + T._("Work folder will be opened.")
-                            + Environment.NewLine
-                            + T._("Try to run Patch.cmd manually and check it for errors.")
-                            );
-                        Process.Start("explorer.exe", WorkFolder);
-                        return false;
-                    }
+                    thDataWork.Main.ProgressInfo(true, T._("Create buckup of original files"));
+                    BakCreate();
+
+                    thDataWork.Main.ProgressInfo(true, T._("Replace translated files"));
+                    ReplaceFilesWithTranslated();
                 }
-
-                if (!(ret = Directory.Exists(patchdir) && translateddir.HasAnyFiles()))
-                {
-                    return false;
-                }
-
-
-                thDataWork.Main.ProgressInfo(true, T._("Create buckup of original files"));
-                BakCreate();
-
-                thDataWork.Main.ProgressInfo(true, T._("Replace translated files"));
-                ReplaceFilesWithTranslated();
             }
             catch
             {
@@ -315,7 +341,7 @@ namespace TranslationHelper.Projects.WolfRPG
                                 File.Delete(targetFile);
                             }
                         }
-                        File.Move(file, targetFile);
+                        File.Copy(file, targetFile);
                     }
                     catch
                     {
@@ -327,38 +353,20 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override bool BakCreate()
         {
-            var translatedDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Properties.Settings.Default.THSelectedGameDir), "translated");
-            if (Directory.Exists(translatedDir))
-                return BuckupRestorePaths(Directory.GetFiles(translatedDir, "*.*", SearchOption.AllDirectories).Select(l => l.Replace(translatedDir, Properties.Settings.Default.THSelectedGameDir)).ToArray());
-            else
-                return false;
+            var translatedDir = new DirectoryInfo(Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Properties.Settings.Default.THSelectedGameDir), "translated"));
+            return translatedDir.Exists && BuckupRestorePaths(translatedDir.GetFiles("*.*", SearchOption.AllDirectories).Select(filePath => filePath.FullName.Replace(translatedDir.FullName, Properties.Settings.Default.THSelectedGameDir)).ToArray());
         }
 
         internal override bool BakRestore()
         {
-            var ret = false;
-            foreach (var file in Directory.EnumerateFiles(Path.GetDirectoryName(thDataWork.SPath), "*.bak", SearchOption.AllDirectories))
-            {
-                if (file.EndsWith(".wolf.bak"))
-                    continue;
-
-                string origfile;
-                if (File.Exists(origfile = file.Remove(file.Length - 4, 4)))
-                {
-                    if (BuckupFile(origfile))
-                    {
-                        ret = true;
-                    }
-                }
-            }
-
-            return ret;
+            return BuckupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(thDataWork.SPath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).ToArray(), false);
         }
+
         internal override bool CheckForRowIssue(System.Data.DataRow row)
         {
             //escape sequences check
             string t;
-            if((t = row[1] + string.Empty).Length == 0)
+            if ((t = row[1] + string.Empty).Length == 0)
             {
             }
             else if (Regex.IsMatch(t, @"(?<!\\)\\[^sntr><#\\]"))
