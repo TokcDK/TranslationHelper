@@ -363,21 +363,29 @@ namespace TranslationHelper.Projects.WolfRPG
         }
 
         internal override bool CheckForRowIssue(System.Data.DataRow row)
-        {
-            //escape sequences check
+        {            
+            string o;
             string t;
+            string p;
             if ((t = row[1] + string.Empty).Length == 0)
             {
             }
-            else if (Regex.IsMatch(t, @"(?<!\\)\\[^sntr><#\\]"))
+            else if (Regex.IsMatch(t, @"(?<!\\)\\[^sntr><#\\]"))//escape sequences check
             {
                 return true;
             }
-            else if (Regex.IsMatch(row[0] as string, @"\\\\r\[[^\,]+\,[^\]]+\]") && !Regex.IsMatch(t, @"\\\\r\[[^\,]+\,[^\]]+\]"))
+            else if (Regex.IsMatch(o = row[0] as string, p = @"\\\\r\[[^\,]+\,[^\]]+\]") && !Regex.IsMatch(t, p))
             {
                 return true;
             }
-
+            else if (Regex.IsMatch(o, p = @"^\\(nc?)\s*\<[^\>]+\>") && !Regex.IsMatch(t, p))
+            {
+                return true;
+            }
+            else if (Regex.IsMatch(o, p = @"^\\(nc?)\s*\[[^\]]+\]") && !Regex.IsMatch(t, p))
+            {
+                return true;
+            }
             return false;
         }
     }
