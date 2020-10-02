@@ -202,7 +202,7 @@ namespace TranslationHelper.Projects
                     case 2:
                         successCreated = new TXTv2(thDataWork, null).Open();
                         break;
-                    case 0:
+                    default:
                         return false;
                 }
             }
@@ -217,12 +217,7 @@ namespace TranslationHelper.Projects
 
         internal override bool Save()
         {
-            if (SaveRPGMTransPatchFiles())
-            {
-                return true;
-            }
-
-            return false;
+            return SaveRPGMTransPatchFiles();
         }
 
         public bool SaveRPGMTransPatchFiles()
