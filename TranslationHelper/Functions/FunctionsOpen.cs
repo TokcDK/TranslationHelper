@@ -53,7 +53,10 @@ namespace TranslationHelper.Functions
                 }
 
                 if (string.IsNullOrEmpty(thDataWork.SPath))
+                {
+                    thDataWork.Main.IsOpeningInProcess = false;
                     return;
+                }
 
                 {
                     //THActionProgressBar.Visible = true;

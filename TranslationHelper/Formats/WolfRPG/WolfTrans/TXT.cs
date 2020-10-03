@@ -1,4 +1,6 @@
-﻿using TranslationHelper.Data;
+﻿using System.IO;
+using TranslationHelper.Data;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 {
@@ -113,6 +115,23 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
         private bool IsNotBeginString()
         {
             return ParseData.line != "> BEGIN STRING";
+        }
+
+        protected override bool WriteFileData(string filePath = "")
+        {
+            try
+            {
+                if (ParseData.Ret && thDataWork.SaveFileMode && ParseData.ResultForWrite.Length > 0)
+                {
+                    File.WriteAllText(filePath.Length > 0 ? filePath : thDataWork.FilePath, ParseData.ResultForWrite.ToString().Replace(Properties.Settings.Default.NewLine, "\n"), FunctionsFileFolder.GetEncoding(thDataWork.FilePath));
+                    return true;
+                }
+            }
+            catch
+            {
+
+            }
+            return false;
         }
     }
 }
