@@ -450,7 +450,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
                                 //string value;
                                 if (IsTranslationValidFor(RowData[1]))
                                 {
-                                    RowData[1] = thDataWork.THFilesElementsDictionary[RowData[1]];
+                                    RowData[1] = thDataWork.TablesLinesDict[RowData[1]];
                                     line = string.Join("|", RowData);
                                 }
                                 //RowIndex++;
@@ -468,7 +468,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
 
                                 if (IsTranslationValidFor(RowData))
                                 {
-                                    line = line.Replace(RowData, thDataWork.THFilesElementsDictionary[RowData]);
+                                    line = line.Replace(RowData, thDataWork.TablesLinesDict[RowData]);
                                 }
                                 //RowIndex++;
                                 //AddRowData(tablename, RowData, "title name");
@@ -506,7 +506,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
         private bool IsTranslationValidFor(string DataString)
         {
             string value;
-            if (thDataWork.THFilesElementsDictionary.ContainsKey(DataString) && !string.IsNullOrEmpty(value = thDataWork.THFilesElementsDictionary[DataString]) && !Equals(DataString, value))
+            if (thDataWork.TablesLinesDict.ContainsKey(DataString) && !string.IsNullOrEmpty(value = thDataWork.TablesLinesDict[DataString]) && !Equals(DataString, value))
             {
                 return true;
             }
@@ -530,7 +530,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
 
                 if (IsTranslationValidFor(cleanedMessage))
                 {
-                    string[] TranslatedLines = (thDataWork.THFilesElementsDictionary[cleanedMessage]).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                    string[] TranslatedLines = (thDataWork.TablesLinesDict[cleanedMessage]).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
                     string[] OrigLines = MessageInfo.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
                     if (TranslatedLines.Length == OrigLines.Length)

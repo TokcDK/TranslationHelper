@@ -232,7 +232,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     }
                     else
                     {
-                        if (IsValidString(str) && thDataWork.THFilesElementsDictionary.ContainsKey(str))
+                        if (IsValidString(str) && thDataWork.TablesLinesDict.ContainsKey(str))
                         {
                             if (!ParseData.Ret)
                             {
@@ -243,7 +243,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                                 transApplied = true;
                             }
 
-                            str = FixInvalidSymbols(thDataWork.THFilesElementsDictionary[str]);//set translation and fixes
+                            str = FixInvalidSymbols(thDataWork.TablesLinesDict[str]);//set translation and fixes
 
                             str = RestoreVARS(str, mc);
 

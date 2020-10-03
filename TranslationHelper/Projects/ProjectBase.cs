@@ -326,9 +326,9 @@ namespace TranslationHelper.Projects
                     foreach (DataRow row in table.Rows)
                     {
                         string orig;
-                        if (!string.IsNullOrEmpty(orig = row[0] + string.Empty) && !thDataWork.THFilesElementsDictionary.ContainsKey(orig))
+                        if (!string.IsNullOrEmpty(orig = row[0] + string.Empty) && !thDataWork.TablesLinesDict.ContainsKey(orig))
                         {
-                            thDataWork.THFilesElementsDictionary.Add(orig, row[1] + string.Empty);
+                            thDataWork.TablesLinesDict.Add(orig, row[1] + string.Empty);
                         }
                     }
                 }

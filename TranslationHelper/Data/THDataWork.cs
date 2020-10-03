@@ -85,15 +85,6 @@ namespace TranslationHelper.Data
         internal DataSet THFilesElementsALLDataTable { get; set; }
 
         /// <summary>
-        /// main work table data dictionary.
-        /// </summary>
-        internal Dictionary<string, string> THFilesElementsDictionary { get; set; }
-        /// <summary>
-        /// main work table data dictionary infos
-        /// </summary>
-        internal Dictionary<string, string> THFilesElementsDictionaryInfo { get; set; }
-
-        /// <summary>
         /// target textbox control value
         /// </summary>
         internal string TargetTextBoxPreValue;

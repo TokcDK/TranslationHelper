@@ -130,12 +130,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
             masks = masks ?? new[] { "*.ks" };
 
-            thDataWork.CurrentProject.FillTHFilesElementsDictionary();
-
             //PatchDir
             Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchDirName));
 
-            thDataWork.CurrentProject.FillTHFilesElementsDictionary();
+            thDataWork.CurrentProject.FillTablesLinesDict();
 
             var tableslist = thDataWork.THFilesElementsDataset.Tables;
 
@@ -172,7 +170,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 }
             }
 
-            thDataWork.THFilesElementsDictionary.Clear();
+            thDataWork.TablesLinesDict.Clear();
 
             if (ret)
             {

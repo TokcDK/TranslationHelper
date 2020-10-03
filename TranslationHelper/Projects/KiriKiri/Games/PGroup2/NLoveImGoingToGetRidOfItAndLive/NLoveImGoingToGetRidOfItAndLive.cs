@@ -53,7 +53,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         {
             bool ret = false;
 
-            thDataWork.CurrentProject.FillTHFilesElementsDictionary();
+            thDataWork.CurrentProject.FillTablesLinesDict();
 
             //PatchDir
             //var PatchDir = Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "_patch"));
@@ -77,7 +77,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
                 {
                 }
             }
-            thDataWork.THFilesElementsDictionary.Clear();
+            thDataWork.TablesLinesDict.Clear();
 
             //PackTranslatedFilesInPatch();
 

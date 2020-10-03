@@ -342,11 +342,12 @@ namespace TranslationHelper.Formats
 
             if (AddToDictionary)
             {
-                if (!thDataWork.THFilesElementsDictionary.ContainsKey(RowData[0]))
-                {
-                    thDataWork.THFilesElementsDictionary.Add(RowData[0], RowData.Length == 2 ? RowData[1] : string.Empty);
-                    thDataWork.THFilesElementsDictionaryInfo.Add(RowData[0], RowInfo);
-                }
+                throw new NotImplementedException("Dictionary not implemented");
+                //if (!thDataWork.THFilesElementsDictionary.ContainsKey(RowData[0]))
+                //{
+                //    thDataWork.THFilesElementsDictionary.Add(RowData[0], RowData.Length == 2 ? RowData[1] : string.Empty);
+                //    thDataWork.THFilesElementsDictionaryInfo.Add(RowData[0], RowInfo);
+                //}
             }
             else
             {
@@ -362,9 +363,10 @@ namespace TranslationHelper.Formats
 
         protected bool CheckTablesContent(string tablename, bool IsDictionary = false)
         {
-            if (IsDictionary && thDataWork.THFilesElementsDictionary != null && thDataWork.THFilesElementsDictionary.Count > 0 && thDataWork.THFilesElementsDataset.Tables[tablename] != null && thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count == 0)
+            if (IsDictionary /*&& thDataWork.THFilesElementsDictionary != null && thDataWork.THFilesElementsDictionary.Count > 0 && thDataWork.THFilesElementsDataset.Tables[tablename] != null && thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count == 0*/)
             {
-                return thDataWork.THFilesElementsDataset.Tables[tablename].FillWithDictionary(thDataWork.THFilesElementsDictionary);
+                throw new NotImplementedException("Dictionary not implemented");
+                //return thDataWork.THFilesElementsDataset.Tables[tablename].FillWithDictionary(thDataWork.THFilesElementsDictionary);
             }
             else if (thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count > 0)
             {
