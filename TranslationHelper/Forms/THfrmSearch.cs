@@ -455,9 +455,9 @@ namespace TranslationHelper
                 {
                     for (int r = 0; r < thDataWork.THFilesElementsDataset.Tables[t].Rows.Count; r++)
                     {
-                        if (((thDataWork.THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty).Length > 0) || SearchFindLinesWithPossibleIssuesCheckBox.Checked)
+                        var Row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
+                        if ((!ckkbxDoNotTouchEqualOT.Checked || (ckkbxDoNotTouchEqualOT.Checked && Equals(Row[0], Row[1]))) && (((Row[searchcolumn] + string.Empty).Length > 0) || SearchFindLinesWithPossibleIssuesCheckBox.Checked))
                         {
-                            DataRow Row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
                             string SelectedCellValue = thDataWork.THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty;
 
                             if (info)

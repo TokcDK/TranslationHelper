@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Windows;
 using TranslationHelper.Data;
 
@@ -67,7 +66,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 };
 
                 var result = origTranslation;
-                for (int i = mc.Count - 1; i >= 0; i--)
+                var mcCount = mc.Count;
+                for (int i = mcCount - 1; i >= 0; i--)
                 {
                     int Ind = mc[i].Index;
 
@@ -83,11 +83,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     //if (ind > 0 && (ind - 1 + ind == maxInd || (nextchar = origTranslation[ind + mc[i].Length]) == ' ' || nextchar == '”' || JPQuotes.Contains(nextchar) || char.IsPunctuation(nextchar) || char.IsWhiteSpace(nextchar) || char.IsControl(nextchar)))
                     if (Ind > 0)
                     {
-                        if (Ind - 1 + Ind == maxInd)
+                        if (Ind - 1 + mc[i].Length == maxInd)
                         {
                             found = true;
                         }
-                        else if ((nextchar = origTranslation[Ind + mc[i].Length]) == ' ' || nextchar == '”' || JPQuotes.Contains(nextchar) || (nextchar != '-' && origTranslation[Ind - 1] != FrontQuote[0] && char.IsPunctuation(nextchar)) || char.IsWhiteSpace(nextchar) || char.IsControl(nextchar) || char.IsLetterOrDigit(origTranslation[Ind - 1]))
+                        else if ((nextchar = origTranslation[Ind + mc[i].Length]) == ' ' || nextchar == '”' || JPQuotes.Contains(nextchar) || (nextchar != '-' && origTranslation[Ind - 1] != FrontQuote[0] && char.IsPunctuation(nextchar)) || char.IsWhiteSpace(nextchar) || char.IsControl(nextchar) || (char.IsLetterOrDigit(origTranslation[Ind - 1]) && char.IsLetterOrDigit(nextchar) && i != 0))
                         {
                             RiseChar(nextchar, false);
                             found = true;

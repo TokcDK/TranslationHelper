@@ -2996,7 +2996,62 @@ namespace TranslationHelper
             new ENQuotesToJP(thDataWork).Table();
         }
 
+        Form overall;
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {            
+            //MessageBox.Show(string.Join("\r\n---------\r\n", dict));
+
+            //var b = File.ReadAllBytes(exePath);
+            //var bytes = Encoding.GetEncoding(932).GetBytes("　　極至王プラムちゃん");
+            //var pos = GetBytesPosition(b, bytes);
+
+            //var br = b.;
+
+            //CharFunctionTest();
+        }
+
+        /// <summary>
+        /// Byte search in byte array. One of methods from here: https://stackoverflow.com/a/41414219
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
+        internal static int GetBytesPosition(byte[] src, byte[] pattern)
+        {
+            int index = -1;
+
+            for (int i = 0; i < src.Length; i++)
+            {
+                if (src[i] != pattern[0])
+                {
+                    continue;
+                }
+                else
+                {
+                    bool isContinoue = true;
+                    for (int j = 1; j < pattern.Length; j++)
+                    {
+                        if (src[++i] != pattern[j])
+                        {
+                            isContinoue = true;
+                            break;
+                        }
+                        if (j == pattern.Length - 1)
+                        {
+                            isContinoue = false;
+                        }
+                    }
+                    if (!isContinoue)
+                    {
+                        index = i - (pattern.Length - 1);
+                        break;
+                    }
+                }
+            }
+            return index;
+        }
+
+        private void CharFunctionTest()
         {
             //foreach (var c in new char[] { '「', '>', '\0', '\n', '\\', '-', '>' })
             //{
@@ -3010,7 +3065,6 @@ namespace TranslationHelper
             //    var c8 = char.IsPunctuation(c);
             //    var c9 = char.IsSeparator(c);
             //}
-
         }
 
         private void HardFixesToolStripMenuItem_Click(object sender, EventArgs e)

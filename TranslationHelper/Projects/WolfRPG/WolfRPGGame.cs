@@ -224,6 +224,8 @@ namespace TranslationHelper.Projects.WolfRPG
                 //    }
                 //}
 
+                Directory.CreateDirectory(WorkFolder);
+
                 var needpatch = thDataWork.SaveFileMode || (thDataWork.OpenFileMode && (!patchdir.Exists || !patchdir.HasAnyFiles("*.txt")));
 
                 if (needpatch)

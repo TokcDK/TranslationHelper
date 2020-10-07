@@ -139,6 +139,7 @@
     <Compile Include="Data\CleanupData.cs" />
     <Compile Include="Data\THDataWork.cs" />
     <Compile Include="Data\THSettingsData.cs" />
+    <Compile Include="Extensions\ExtensionsBytes.cs" />
     <Compile Include="Extensions\ExtensionsDictionary.cs" />
     <Compile Include="Extensions\ExtensionsFileFolder.cs" />
     <Compile Include="Extensions\ExtensionsString.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Formats\EAGLS\SCPACK\SC_TXT.cs" />
     <Compile Include="Formats\EAGLS\SCPACK\SCPACKBase.cs" />
     <Compile Include="Formats\FormatBase.cs" />
+    <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\EXE.cs" />
     <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\TXT.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup1\FGroup1Base.cs" />
     <Compile Include="Formats\KiriKiri\Games\KS.cs" />

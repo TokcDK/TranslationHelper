@@ -43,36 +43,53 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
         /// IsOpen=true = Open, else Save
         /// </summary>
         /// <param name="IsOpen"></param>
-        private void OpenFilesSerial(bool IsOpen = true, string openPath = "")
+        private bool OpenFilesSerial(bool IsOpen = true, string openPath = "")
         {
-            if (openPath.Length == 0)
+            var ret = false;
+
+            thDataWork.Main.ProgressInfo(true, Path.GetFileName(thDataWork.SPath));
+            thDataWork.FilePath = thDataWork.SPath;
+            if (thDataWork.OpenFileMode ? new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE(thDataWork).Open() : new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE(thDataWork).Save())
             {
-                openPath = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data");
+                ret = true;
             }
 
-            var txtFormat = new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(thDataWork);
-            foreach (string txt in Directory.EnumerateFiles(openPath, "*.txt", SearchOption.AllDirectories))
-            {
-                thDataWork.FilePath = txt;
-                thDataWork.Main.ProgressInfo(true, Path.GetFileName(txt));
 
-                //if (File.Exists(txt + ".orig"))
-                //{
-                //    File.Delete(txt);
-                //    File.Move(txt + ".orig", txt);
-                //}
+            //if (openPath.Length == 0)
+            //{
+            //    openPath = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data");
+            //}
 
-                if (IsOpen)
-                {
-                    txtFormat.Open();
-                }
-                else
-                {
-                    txtFormat.Save();
-                }
-            }
+            //var txtFormat = new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(thDataWork);
+            //if (OpenSaveFilesBase(new DirectoryInfo(openPath), txtFormat, "*.txt"))
+            //{
+            //    ret = true;
+            //}
 
-            thDataWork.Main.ProgressInfo(false, string.Empty);
+
+            //foreach (string txt in Directory.EnumerateFiles(openPath, "*.txt", SearchOption.AllDirectories))
+            //{
+            //    thDataWork.FilePath = txt;
+            //    thDataWork.Main.ProgressInfo(true, Path.GetFileName(txt));
+
+            //    //if (File.Exists(txt + ".orig"))
+            //    //{
+            //    //    File.Delete(txt);
+            //    //    File.Move(txt + ".orig", txt);
+            //    //}
+
+            //    if (IsOpen)
+            //    {
+            //        txtFormat.Open();
+            //    }
+            //    else
+            //    {
+            //        txtFormat.Save();
+            //    }
+            //}
+
+            thDataWork.Main.ProgressInfo(false);
+            return ret;
         }
 
         internal override bool Save()

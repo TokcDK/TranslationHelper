@@ -69,6 +69,7 @@
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.ckkbxDoNotTouchEqualOT = new System.Windows.Forms.CheckBox();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.SearchResultsPanel.SuspendLayout();
@@ -207,16 +208,18 @@
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.ckkbxDoNotTouchEqualOT, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.THSearchMatchCaseCheckBox, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.SearchInInfoCheckBox, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.SearchFindLinesWithPossibleIssuesCheckBox, 0, 2);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(135, 73);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowCount = 4;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(283, 72);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(283, 102);
             this.tableLayoutPanel1.TabIndex = 27;
             // 
             // THSearchMatchCaseCheckBox
@@ -536,6 +539,16 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
             // 
+            // ckkbxDoNotTouchEqualOT
+            // 
+            this.ckkbxDoNotTouchEqualOT.AutoSize = true;
+            this.ckkbxDoNotTouchEqualOT.Location = new System.Drawing.Point(3, 72);
+            this.ckkbxDoNotTouchEqualOT.Name = "ckkbxDoNotTouchEqualOT";
+            this.ckkbxDoNotTouchEqualOT.Size = new System.Drawing.Size(182, 17);
+            this.ckkbxDoNotTouchEqualOT.TabIndex = 27;
+            this.ckkbxDoNotTouchEqualOT.Text = "Ignore Original=Translation lines";
+            this.ckkbxDoNotTouchEqualOT.UseVisualStyleBackColor = true;
+            // 
             // THfrmSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -621,5 +634,6 @@
         private System.Windows.Forms.Label ClearFindWhatTextBoxLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.CheckBox ckkbxDoNotTouchEqualOT;
     }
 }
