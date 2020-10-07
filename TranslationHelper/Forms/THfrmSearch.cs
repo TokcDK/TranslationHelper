@@ -456,120 +456,125 @@ namespace TranslationHelper
                     for (int r = 0; r < thDataWork.THFilesElementsDataset.Tables[t].Rows.Count; r++)
                     {
                         var Row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
-                        if ((!ckkbxDoNotTouchEqualOT.Checked || (ckkbxDoNotTouchEqualOT.Checked && !Equals(Row[0], Row[1]))) && (((Row[searchcolumn] + string.Empty).Length > 0) || SearchFindLinesWithPossibleIssuesCheckBox.Checked))
+
+                        //skip equal lines if need, skip empty search cells && not skip when row issue search
+                        if ((ckkbxDoNotTouchEqualOT.Checked && Equals(Row[0], Row[1])) || (!ckkbxDoNotTouchEqualOT.Checked && (Row[searchcolumn] + string.Empty).Length == 0 && !SearchFindLinesWithPossibleIssuesCheckBox.Checked))
                         {
-                            string SelectedCellValue = thDataWork.THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty;
+                            continue;
+                        }
 
-                            if (info)
+                        string SelectedCellValue = thDataWork.THFilesElementsDataset.Tables[t].Rows[r][searchcolumn] + string.Empty;
+
+                        if (info)//search in info box
+                        {
+                            if ((thDataWork.THFilesElementsDatasetInfo.Tables[t].Rows[r][0] + string.Empty).Contains(strQuery))
                             {
-                                if ((thDataWork.THFilesElementsDatasetInfo.Tables[t].Rows[r][0] + string.Empty).Contains(strQuery))
+                                if (!found)
                                 {
-                                    if (!found)
+                                    found = true;
+                                    oDsResultsCoordinates.Rows.Clear();
+                                    this.Height = 368;
+                                }
+                                DS.Tables[0].ImportRow(Row);
+                                oDsResultsCoordinates.Rows.Add(t, r);
+                            }
+
+                        }
+                        else if (SearchFindLinesWithPossibleIssuesCheckBox.Checked)//search rows with possible issues
+                        {
+                            if (IsTheRowHasPossibleIssues(Row))
+                            {
+                                if (!found)
+                                {
+                                    found = true;
+                                    oDsResultsCoordinates.Rows.Clear();
+                                    this.Height = 368;
+                                }
+                                DS.Tables[0].ImportRow(Row);
+                                oDsResultsCoordinates.Rows.Add(t, r);
+                            }
+                        }
+                        else
+                        {
+                            //regex search
+                            if (SearchModeRegexRadioButton.Checked)//regex
+                            {
+                                try
+                                {
+                                    if (THSearchMatchCaseCheckBox.Checked)
                                     {
-                                        found = true;
-                                        oDsResultsCoordinates.Rows.Clear();
-                                        this.Height = 368;
+                                        if (Regex.IsMatch(SelectedCellValue, strQuery))
+                                        {
+                                            if (!found)
+                                            {
+                                                found = true;
+                                                oDsResultsCoordinates.Rows.Clear();
+                                                this.Height = 368;
+                                            }
+                                            DS.Tables[0].ImportRow(Row);
+                                            oDsResultsCoordinates.Rows.Add(t, r);
+                                        }
                                     }
-                                    DS.Tables[0].ImportRow(Row);
-                                    oDsResultsCoordinates.Rows.Add(t, r);
+                                    else
+                                    {
+                                        if (Regex.IsMatch(SelectedCellValue, strQuery, RegexOptions.IgnoreCase))
+                                        {
+                                            if (!found)
+                                            {
+                                                found = true;
+                                                oDsResultsCoordinates.Rows.Clear();
+                                                this.Height = 368;
+                                            }
+                                            DS.Tables[0].ImportRow(Row);
+                                            oDsResultsCoordinates.Rows.Add(t, r);
+                                        }
+                                    }
+                                }
+                                catch
+                                {
+                                    return null;//при ошибках регекса выходить
+                                }
+                            }
+                            else//common text search
+                            {
+                                try
+                                {
+                                    if (THSearchMatchCaseCheckBox.Checked)
+                                    {
+                                        if (SelectedCellValue.Contains(strQuery))
+                                        {
+                                            if (!found)
+                                            {
+                                                found = true;
+                                                oDsResultsCoordinates.Rows.Clear();
+                                                this.Height = 368;
+                                            }
+                                            DS.Tables[0].ImportRow(Row);
+                                            oDsResultsCoordinates.Rows.Add(t, r);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (SelectedCellValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant()))
+                                        {
+                                            if (!found)
+                                            {
+                                                found = true;
+                                                oDsResultsCoordinates.Rows.Clear();
+                                                this.Height = 368;
+                                            }
+                                            DS.Tables[0].ImportRow(Row);
+                                            oDsResultsCoordinates.Rows.Add(t, r);
+                                        }
+                                    }
+                                }
+                                catch
+                                {
+
                                 }
 
                             }
-                            else if (SearchFindLinesWithPossibleIssuesCheckBox.Checked)
-                            {
-                                if (IsTheRowHasPossibleIssues(Row))
-                                {
-                                    if (!found)
-                                    {
-                                        found = true;
-                                        oDsResultsCoordinates.Rows.Clear();
-                                        this.Height = 368;
-                                    }
-                                    DS.Tables[0].ImportRow(Row);
-                                    oDsResultsCoordinates.Rows.Add(t, r);
-                                }
-                            }
-                            else
-                            {
-                                if (SearchModeRegexRadioButton.Checked)
-                                {
-                                    try
-                                    {
-                                        if (THSearchMatchCaseCheckBox.Checked)
-                                        {
-                                            if (Regex.IsMatch(SelectedCellValue, strQuery))
-                                            {
-                                                if (!found)
-                                                {
-                                                    found = true;
-                                                    oDsResultsCoordinates.Rows.Clear();
-                                                    this.Height = 368;
-                                                }
-                                                DS.Tables[0].ImportRow(Row);
-                                                oDsResultsCoordinates.Rows.Add(t, r);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (Regex.IsMatch(SelectedCellValue, strQuery, RegexOptions.IgnoreCase))
-                                            {
-                                                if (!found)
-                                                {
-                                                    found = true;
-                                                    oDsResultsCoordinates.Rows.Clear();
-                                                    this.Height = 368;
-                                                }
-                                                DS.Tables[0].ImportRow(Row);
-                                                oDsResultsCoordinates.Rows.Add(t, r);
-                                            }
-                                        }
-                                    }
-                                    catch
-                                    {
-                                        return null;//при ошибках регекса выходить
-                                    }
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        if (THSearchMatchCaseCheckBox.Checked)
-                                        {
-                                            if (SelectedCellValue.Contains(strQuery))
-                                            {
-                                                if (!found)
-                                                {
-                                                    found = true;
-                                                    oDsResultsCoordinates.Rows.Clear();
-                                                    this.Height = 368;
-                                                }
-                                                DS.Tables[0].ImportRow(Row);
-                                                oDsResultsCoordinates.Rows.Add(t, r);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (SelectedCellValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant()))
-                                            {
-                                                if (!found)
-                                                {
-                                                    found = true;
-                                                    oDsResultsCoordinates.Rows.Clear();
-                                                    this.Height = 368;
-                                                }
-                                                DS.Tables[0].ImportRow(Row);
-                                                oDsResultsCoordinates.Rows.Add(t, r);
-                                            }
-                                        }
-                                    }
-                                    catch
-                                    {
 
-                                    }
-
-                                }
-
-                            }
                         }
                     }
                 }
