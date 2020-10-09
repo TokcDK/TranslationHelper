@@ -60,14 +60,29 @@ namespace TranslationHelper.Formats
             return ParseFilePostOpen();
         }
 
+        /// <summary>
+        /// Open file actions
+        /// </summary>
         protected virtual void ParseFileOpen()
         {
-            using (ParseData.reader = new StreamReader(thDataWork.FilePath, FunctionsFileFolder.GetEncoding(thDataWork.FilePath)))
+            using (ParseData.reader = new StreamReader(thDataWork.FilePath, FunctionsFileFolder.GetEncoding(thDataWork.FilePath) ?? DefaultEncoding()))
             {
                 ParseFileLines();
             }
         }
 
+        /// <summary>
+        /// Default encoding for file streamreader
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Encoding DefaultEncoding()
+        {
+            return Encoding.UTF8;
+        }
+
+        /// <summary>
+        /// Pre open file actions
+        /// </summary>
         protected virtual void ParseFilePreOpen()
         {
             ParseData = new ParseFileData(thDataWork);
@@ -81,6 +96,15 @@ namespace TranslationHelper.Formats
             {
                 SplitTableCellValuesAndTheirLinesToDictionary(ParseData.tablename, false, false);
             }
+
+            ParseFilePreOpenExtra();
+        }
+
+        /// <summary>
+        /// Pre open file extra actions
+        /// </summary>
+        protected virtual void ParseFilePreOpenExtra()
+        {
         }
 
         protected virtual bool ParseFilePostOpen()
@@ -113,7 +137,7 @@ namespace TranslationHelper.Formats
 
         /// <summary>
         /// Parse line virtual function
-        /// -1=stop parse cyrcle, 0-continue cyrcle, 1 - line not added, 2 - line added
+        /// -1=stop parse cyrcle, 0-continue cyrcle, 1 - read to end of the cyrcle
         /// </summary>
         /// <returns></returns>
         protected virtual int ParseFileLine()

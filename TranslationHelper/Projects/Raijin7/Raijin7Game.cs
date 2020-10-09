@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.Raijin7;
@@ -10,17 +10,25 @@ namespace TranslationHelper.Projects
     {
         public Raijin7Game(THDataWork thDataWork) : base(thDataWork)
         {
+            HideVarsBase = new Dictionary<string, string>
+            {
+                {"all_pid", @"call_pid[0-9]{1,3}"},//call_pid1
+                {"callself_pid", @"callself_pid[0-9]{1,3}"},//callself_pid1
+                {"p_name", @"p_name[0-9]{1,3}"},//p_name1
+                {"p_name_pval", @"p_name_pval"},//p_name_pval
+                {"crp_name", @"crp_name[0-9]{1,3}"},//crp_name2
+                {"s_name_pva", @"s_name_pval"},//s_name_pval
+                {"buf_str", @"buf_str[0-9]{1,3}"}//buf_str1
+            };
         }
 
         internal override bool Check()
         {
             string dirPath = Path.GetDirectoryName(thDataWork.SPath);
-            if (!string.IsNullOrEmpty(thDataWork.SPath) && Path.GetExtension(thDataWork.SPath) == ".exe" && Directory.Exists(Path.Combine(dirPath, "eve")) && Directory.Exists(Path.Combine(dirPath, "csv")))
-            {
-                return true;
-            }
-
-            return false;
+            return Path.GetExtension(thDataWork.SPath) == ".exe"
+                && Directory.Exists(Path.Combine(dirPath, "eve"))
+                && Directory.Exists(Path.Combine(dirPath, "csv"))
+                ;
         }
 
         internal override string Filters()
@@ -35,34 +43,47 @@ namespace TranslationHelper.Projects
 
         internal override bool Open()
         {
-            string dirPath = Path.GetDirectoryName(thDataWork.SPath);
-
-            string targetDir = Path.Combine(dirPath, "eve");
-            if (Directory.Exists(targetDir))
-            {
-                foreach (var EventTxt in Directory.GetFiles(targetDir, "*.txt"))
-                {
-                    thDataWork.FilePath = EventTxt;
-                    new TXT(thDataWork).Open();
-                }
-            }
-
-            targetDir = Path.Combine(dirPath, "csv");
-            if (Directory.Exists(targetDir))
-            {
-                foreach (var csv in Directory.GetFiles(targetDir, "*.csv"))
-                {
-                    thDataWork.FilePath = csv;
-                    new CSV(thDataWork).Open();
-                }
-            }
-
-            return thDataWork.THFilesElementsDataset.Tables.Count > 0;
+            return OpenSave();
         }
 
         internal override bool Save()
         {
-            throw new NotImplementedException();
+            return OpenSave();
         }
+
+        bool OpenSave()
+        {
+            var dirPath = Path.GetDirectoryName(thDataWork.SPath);
+            var ret = false;
+
+            if (OpenSaveFilesBase(Path.Combine(dirPath, "eve"), new TXT(thDataWork), "*.txt"))
+                ret = true;
+            if (OpenSaveFilesBase(Path.Combine(dirPath, "csv"), new CSV(thDataWork), "*.csv"))
+                ret = true;
+
+            return ret;
+        }
+
+        internal override bool BakCreate()
+        {
+            return BuckupRestorePaths(new[] { 
+                Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "eve"),
+                Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "csv")
+            });
+        }
+
+        /// <summary>
+        /// Will restore made buckup of project translating original files<br/>if any code exit here and buckup exists<br/>else will return false
+        /// </summary>
+        /// <returns></returns>
+        internal override bool BakRestore()
+        {
+            return BuckupRestorePaths(new[] {
+                Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "eve"),
+                Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "csv")
+            }
+            ,false);
+        }
+
     }
 }

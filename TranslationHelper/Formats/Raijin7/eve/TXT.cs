@@ -1,11 +1,9 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.Raijin7.eve
 {
-    class TXT : FormatBase
+    class TXT : Rajiin7Base
     {
         public TXT(THDataWork thDataWork) : base(thDataWork)
         {
@@ -13,79 +11,101 @@ namespace TranslationHelper.Formats.Raijin7.eve
 
         internal override bool Open()
         {
-            if (thDataWork.FilePath.Length == 0)
+            return ParseFile();
+        }
+
+        string Value;
+        protected override int ParseFileLine()
+        {
+            ParseData.TrimmedLine = ParseData.line;
+
+            var ret = 1;
+
+            //commented or empty
+            if (string.IsNullOrWhiteSpace(ParseData.line) || ParseData.TrimmedLine.StartsWith("//"))
             {
-                return false;
+                ret = 0;
             }
-
-
-            string fileName = Path.GetFileNameWithoutExtension(thDataWork.FilePath);
-            AddTables(fileName);
-            using (StreamReader sr = new StreamReader(thDataWork.FilePath, Encoding.GetEncoding(932)))
+            else if (ParseData.TrimmedLine.StartsWith("set_run_msg")
+                || ParseData.TrimmedLine.StartsWith("zin_old_msg")
+                || ParseData.TrimmedLine.StartsWith("zin_reg_msg")
+                || ParseData.TrimmedLine.StartsWith("zin_reg_event")
+                || ParseData.TrimmedLine.StartsWith("zin_reg_qnar")
+                || ParseData.TrimmedLine.StartsWith("zin_reg_title")
+                || ParseData.TrimmedLine.StartsWith("zin_reg_nar")
+                )
             {
-                string line;
-                int lineNumber = 0;
-                string Value;
-                while (!sr.EndOfStream)
+                SetValue(1);
+            }
+            else if (ParseData.TrimmedLine.StartsWith("zin_reg_2sel")
+                || ParseData.TrimmedLine.StartsWith("zin_reg_3sel")
+                || ParseData.TrimmedLine.StartsWith("zin_regs_msg")
+                )
+            {
+                SetValue(1,2);
+            }
+            else if (ParseData.TrimmedLine.StartsWith("chg_pname"))
+            {
+                SetValue(2);
+            }
+            else if (ParseData.TrimmedLine.StartsWith("get_item"))
+            {
+                SetValue(3);
+            }
+            else if (ParseData.TrimmedLine.StartsWith("set_fort"))
+            {
+                SetValue(5);
+            }
+            else if (ParseData.tablename.StartsWith("sn"))
+            {
+                var Values = ParseData.line.Split(',');
+                var RestOfText = ParseData.reader.ReadToEnd();
+                if (thDataWork.OpenFileMode)
                 {
-                    line = sr.ReadLine();
-
-                    //commented or empty
-                    if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("//"))
-                    {
-                        continue;
-                    }
-
-                    if (line.TrimStart().StartsWith("set_run_msg")
-                        || line.TrimStart().StartsWith("zin_old_msg")
-                        || line.TrimStart().StartsWith("zin_reg_msg")
-                        || line.TrimStart().StartsWith("zin_reg_event")
-                        || line.TrimStart().StartsWith("zin_reg_qnar")
-                        || line.TrimStart().StartsWith("zin_reg_title")
-                        )
-                    {
-                        Value = line.Split(',')[1];
-                        if (Value.Length > 0)
-                        {
-                            thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Value);
-                        }
-                    }
-                    else if (line.TrimStart().StartsWith("get_item"))
-                    {
-                        Value = line.Split(',')[3];
-                        if (Value.Length > 0)
-                        {
-                            thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Value);
-                        }
-                    }
-                    else if (fileName.StartsWith("sn"))
-                    {
-                        if (lineNumber == 0)
-                        {
-                            Value = line.Split(',')[1];
-                            if (Value.Length > 0)
-                            {
-                                thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(Value);
-                            }
-                        }
-                        else
-                        {
-                            if (line.Length > 0)
-                            {
-                                thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Add(line);
-                            }
-                        }
-                    }
-                    lineNumber++;
+                    AddRowData(Values[1], "", true);
+                    AddRowData(RestOfText, "", true);
                 }
+                else
+                {
+                    if (IsValid(Values[1]))
+                    {
+                        ParseData.Ret = true;
+                        Values[1] = FixInvalidSymbols(thDataWork.TablesLinesDict[Values[1]]);
+                    }
+
+                    if (IsValid(RestOfText))
+                    {
+                        ParseData.Ret = true;
+                        RestOfText = FixInvalidSymbols(thDataWork.TablesLinesDict[RestOfText]);
+                    }
+
+                    ParseData.line = string.Join(",", Values) + Environment.NewLine + RestOfText;
+
+                }
+
+                ret = -1;
             }
 
-            return CheckTablesContent(fileName);
+            if (thDataWork.SaveFileMode)
+            {
+                ParseData.ResultForWrite.AppendLine(ParseData.line);
+            }
+
+            return ret;
+        }
+
+
+        protected override string FixInvalidSymbols(string str)
+        {
+            return str
+                .Replace(", ", "、")
+                .Replace(',', '、')
+                ;
         }
 
         internal override bool Save()
         {
-            throw new NotImplementedException();
+            return ParseFile();
         }
     }
 }

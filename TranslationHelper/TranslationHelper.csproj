@@ -177,6 +177,7 @@
     <Compile Include="Formats\NScriptGame\nscript.dat\NSCRIPT.cs" />
     <Compile Include="Formats\Raijin7\csv\CSV.cs" />
     <Compile Include="Formats\Raijin7\eve\TXT.cs" />
+    <Compile Include="Formats\Raijin7\Rajiin7Base.cs" />
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
     <Compile Include="Formats\RPGMMV\GAMEFONTCSS.cs" />
     <Compile Include="Formats\RPGMMV\JS\ConfigEx.cs" />

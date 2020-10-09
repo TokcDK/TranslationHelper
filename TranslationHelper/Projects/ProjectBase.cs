@@ -91,18 +91,28 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, FormatBase format, string mask="*")
+        protected bool OpenSaveFilesBase(string DirForSearch, FormatBase format, string mask = "*")
+        {
+            return OpenSaveFilesBase(new DirectoryInfo(DirForSearch), format, mask);
+        }
+
+        /// <summary>
+        /// open or save project files
+        /// </summary>
+        /// <returns></returns>
+        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, FormatBase format, string mask = "*")
         {
             var ret = false;
-            foreach (var file in DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
-            {
-                thDataWork.FilePath = file.FullName;
-                thDataWork.Main.ProgressInfo(true, thDataWork.OpenFileMode ? T._("Opening") : T._("Saving") + " " + file.Name);
-                if (thDataWork.OpenFileMode ? format.Open() : format.Save())
+            if (DirForSearch.Exists)
+                foreach (var file in DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
                 {
-                    ret = true;
+                    thDataWork.FilePath = file.FullName;
+                    thDataWork.Main.ProgressInfo(true, (thDataWork.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
+                    if (thDataWork.OpenFileMode ? format.Open() : format.Save())
+                    {
+                        ret = true;
+                    }
                 }
-            }
 
             thDataWork.Main.ProgressInfo(false);
             return ret;
@@ -418,12 +428,20 @@ namespace TranslationHelper.Projects
                     if (Directory.Exists(dir))
                     {
                         tmp = true;
+
+                        if (Directory.Exists(dir + ".tmp"))
+                        {
+                            new DirectoryInfo(dir + ".tmp").Attributes = FileAttributes.Normal;
+                            Directory.Delete(dir + ".tmp", true);
+                        }
+
                         Directory.Move(dir, dir + ".tmp");
                     }
                     Directory.Move(dir + ".bak", dir);
                     if (tmp && Directory.Exists(dir + ".tmp") && Directory.Exists(dir))
                     {
-                        Directory.Delete(dir + ".tmp");
+                        new DirectoryInfo(dir + ".tmp").Attributes = FileAttributes.Normal;
+                        Directory.Delete(dir + ".tmp", true);
                         return true;
                     }
                     else if (!tmp && Directory.Exists(dir))
@@ -453,11 +471,19 @@ namespace TranslationHelper.Projects
                     if (File.Exists(file))
                     {
                         tmp = true;
+
+                        if (File.Exists(file + ".tmp"))
+                        {
+                            new FileInfo(file + ".tmp").Attributes = FileAttributes.Normal;
+                            File.Delete(file + ".tmp");
+                        }
+
                         File.Move(file, file + ".tmp");
                     }
                     File.Move(file + ".bak", file);
                     if (tmp && File.Exists(file + ".tmp") && File.Exists(file))
                     {
+                        new FileInfo(file + ".tmp").Attributes = FileAttributes.Normal;
                         File.Delete(file + ".tmp");
                         return true;
                     }
