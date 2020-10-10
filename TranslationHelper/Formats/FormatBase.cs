@@ -23,14 +23,14 @@ namespace TranslationHelper.Formats
             hashes = thDataWork.hashes;
         }
 
-        internal virtual bool Detect()
+        internal virtual bool Check()
         {
             return false;
         }
 
-        internal abstract bool Open();
+        internal virtual bool Open() { return ParseStringFile(); }
 
-        internal abstract bool Save();
+        internal virtual bool Save() { return ParseStringFile(); }
 
         protected static bool IsValidString(string inputString)
         {
@@ -51,23 +51,23 @@ namespace TranslationHelper.Formats
         /// </summary>
         /// <param name="IsOpen"></param>
         /// <returns></returns>
-        protected bool ParseFile()
+        protected bool ParseStringFile()
         {
-            ParseFilePreOpen();
+            ParseStringFilePreOpen();
 
-            ParseFileOpen();
+            ParseStringFileOpen();
 
-            return ParseFilePostOpen();
+            return ParseStringFilePostOpen();
         }
 
         /// <summary>
         /// Open file actions
         /// </summary>
-        protected virtual void ParseFileOpen()
+        protected virtual void ParseStringFileOpen()
         {
             using (ParseData.reader = new StreamReader(thDataWork.FilePath, FunctionsFileFolder.GetEncoding(thDataWork.FilePath) ?? DefaultEncoding()))
             {
-                ParseFileLines();
+                ParseStringFileLines();
             }
         }
 
@@ -83,7 +83,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Pre open file actions
         /// </summary>
-        protected virtual void ParseFilePreOpen()
+        protected virtual void ParseStringFilePreOpen()
         {
             ParseData = new ParseFileData(thDataWork);
 
@@ -97,17 +97,17 @@ namespace TranslationHelper.Formats
                 SplitTableCellValuesAndTheirLinesToDictionary(ParseData.tablename, false, false);
             }
 
-            ParseFilePreOpenExtra();
+            ParseStringFilePreOpenExtra();
         }
 
         /// <summary>
         /// Pre open file extra actions
         /// </summary>
-        protected virtual void ParseFilePreOpenExtra()
+        protected virtual void ParseStringFilePreOpenExtra()
         {
         }
 
-        protected virtual bool ParseFilePostOpen()
+        protected virtual bool ParseStringFilePostOpen()
         {
             if (thDataWork.OpenFileMode)
             {
@@ -119,12 +119,12 @@ namespace TranslationHelper.Formats
             }
         }
 
-        protected virtual void ParseFileLines()
+        protected virtual void ParseStringFileLines()
         {
-            while ((ParseData.line = ParseData.reader.ReadLine()) != null)
+            while (ReadLine() != null)
             {
                 int parseLineResult;
-                if ((parseLineResult = ParseFileLine()) == -1)
+                if ((parseLineResult = ParseStringFileLine()) == -1)
                 {
                     break;
                 }
@@ -140,9 +140,18 @@ namespace TranslationHelper.Formats
         /// -1=stop parse cyrcle, 0-continue cyrcle, 1 - read to end of the cyrcle
         /// </summary>
         /// <returns></returns>
-        protected virtual int ParseFileLine()
+        protected virtual int ParseStringFileLine()
         {
             return -1;
+        }
+
+        /// <summary>
+        /// read line to ParseData.line from streamreader
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string ReadLine()
+        {
+            return ParseData.line = ParseData.reader.ReadLine();
         }
 
         /// <summary>

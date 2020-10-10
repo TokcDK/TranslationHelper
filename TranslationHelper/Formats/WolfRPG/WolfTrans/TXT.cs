@@ -12,17 +12,17 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 
         internal override bool Open()
         {
-            return ParseFile();
+            return ParseStringFile();
         }
 
         internal override bool Save()
         {
             thDataWork.SaveFileMode = true;
-            return ParseFile();
+            return ParseStringFile();
         }
 
         int lineNum;
-        protected override int ParseFileLine()
+        protected override int ParseStringFileLine()
         {
             lineNum++;
 

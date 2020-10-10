@@ -11,10 +11,10 @@ namespace TranslationHelper.Formats.RPGMMV
 
         internal override bool Open()
         {
-            return ParseFile();
+            return ParseStringFile();
         }
 
-        protected override int ParseFileLine()
+        protected override int ParseStringFileLine()
         {
             Match r;
             if ((r = Regex.Match(ParseData.line, @"src: url\(\""([^\""]+)\""\)")).Success)
@@ -52,7 +52,7 @@ namespace TranslationHelper.Formats.RPGMMV
         internal override bool Save()
         {
             thDataWork.SaveFileMode = true;
-            return ParseFile();
+            return ParseStringFile();
         }
 
     }

@@ -11,9 +11,9 @@ namespace TranslationHelper.Formats.Raijin7
 
         internal override bool Open()
         {
-            return ParseFile();
+            return ParseStringFile();
         }
-        protected override void ParseFilePreOpenExtra()
+        protected override void ParseStringFilePreOpenExtra()
         {
             lineNumber = 0;
             if (ParseData.tablename.StartsWith("fship")
@@ -36,7 +36,7 @@ namespace TranslationHelper.Formats.Raijin7
 
         int lineNumber;
         int variant;
-        protected override int ParseFileLine()
+        protected override int ParseStringFileLine()
         {
             ParseData.TrimmedLine = ParseData.line;
 
@@ -81,7 +81,7 @@ namespace TranslationHelper.Formats.Raijin7
 
         internal override bool Save()
         {
-            return ParseFile();
+            return ParseStringFile();
         }
     }
 }

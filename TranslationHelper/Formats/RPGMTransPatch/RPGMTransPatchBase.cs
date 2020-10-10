@@ -5,11 +5,11 @@ namespace TranslationHelper.Formats.RPGMTrans
 {
     abstract class RPGMTransPatchBase : FormatBase
     {
-        protected StringBuilder buffer;
+        //protected StringBuilder buffer;
 
-        public RPGMTransPatchBase(THDataWork thData, StringBuilder sBuffer) : base(thData)
+        public RPGMTransPatchBase(THDataWork thDataWork/*, StringBuilder sBuffer*/) : base(thDataWork)
         {
-            buffer = sBuffer;
+            //buffer = sBuffer;
         }
     }
 }

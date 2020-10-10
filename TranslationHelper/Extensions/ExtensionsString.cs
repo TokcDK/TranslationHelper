@@ -463,5 +463,25 @@ namespace TranslationHelper.Extensions
 
             return lineslist.ToArray();
         }
+
+        /// <summary>
+        /// return joined lines with newline symbol
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        internal static string Joined(this IEnumerable<string> value)
+        {
+            return string.Join(Environment.NewLine, value);
+        }
+
+        /// <summary>
+        /// return joined lines with newline symbol
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        internal static string Joined(this string[] value)
+        {
+            return string.Join(Environment.NewLine, value);
+        }
     }
 }

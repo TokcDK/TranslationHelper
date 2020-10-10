@@ -15,10 +15,10 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         internal override bool Open()
         {
-            return ParseFile();
+            return ParseStringFile();
         }
 
-        protected override void ParseFileOpen()
+        protected override void ParseStringFileOpen()
         {
             var nscripttxt = System.Text.Encoding.GetEncoding(932).GetString(File.ReadAllBytes(thDataWork.FilePath).XorUnxor());
 
@@ -28,7 +28,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             {
                 ParseData.line = line;
                 int parseLineResult;
-                if ((parseLineResult = ParseFileLine()) == -1)
+                if ((parseLineResult = ParseStringFileLine()) == -1)
                 {
                     break;
                 }
@@ -39,7 +39,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             }
         }
 
-        protected override int ParseFileLine()
+        protected override int ParseStringFileLine()
         {
             ParseData.TrimmedLine = ParseData.line;
 
@@ -163,7 +163,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         internal override bool Save()
         {
-            return ParseFile();
+            return ParseStringFile();
         }
 
         protected override bool WriteFileData(string filePath = "")

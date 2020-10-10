@@ -191,6 +191,7 @@
     <Compile Include="Formats\RPGMMV\RPGMMVBase.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransOther.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransPatchBase.cs" />
+    <Compile Include="Formats\RPGMTransPatch\TXT.cs" />
     <Compile Include="Formats\RPGMTransPatch\TXTv3.cs" />
     <Compile Include="Formats\RPGMTransPatch\TXTv2.cs" />
     <Compile Include="Formats\WolfRPG\WolfRPGBase.cs" />

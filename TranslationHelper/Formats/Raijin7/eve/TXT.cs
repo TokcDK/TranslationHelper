@@ -11,11 +11,11 @@ namespace TranslationHelper.Formats.Raijin7.eve
 
         internal override bool Open()
         {
-            return ParseFile();
+            return ParseStringFile();
         }
 
         string Value;
-        protected override int ParseFileLine()
+        protected override int ParseStringFileLine()
         {
             ParseData.TrimmedLine = ParseData.line;
 
@@ -105,7 +105,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
 
         internal override bool Save()
         {
-            return ParseFile();
+            return ParseStringFile();
         }
     }
 }

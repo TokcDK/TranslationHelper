@@ -24,7 +24,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 return false;
             }
 
-            ParseFilePreOpen();
+            ParseStringFilePreOpen();
 
             var startpos = 1720080;
             var endpos = 2689376;
