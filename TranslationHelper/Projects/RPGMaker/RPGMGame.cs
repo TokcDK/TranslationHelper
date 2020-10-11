@@ -201,6 +201,10 @@ namespace TranslationHelper.Projects
             return OpenSaveFilesBase(patchdir, new TXT(thDataWork), "*.txt");
             //return SaveRPGMTransPatchFilesOld();
         }
+        internal override void PreSaveDB()
+        {
+            OpenSaveFilesBase(patchdir, new TXT(thDataWork), "*.txt");
+        }
 
         //public bool SaveRPGMTransPatchFilesOld()
         //{

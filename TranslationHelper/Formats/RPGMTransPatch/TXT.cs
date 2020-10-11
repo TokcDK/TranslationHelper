@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
@@ -22,7 +23,7 @@ namespace TranslationHelper.Formats.RPGMTrans
         int patchversion;
         protected override int ParseStringFileLine()
         {
-            if (!verchecked)//определение версии
+            if (!verchecked)
             {
                 if (ParseData.line == "> RPGMAKER TRANS PATCH FILE VERSION 3.2")
                 {
@@ -34,18 +35,17 @@ namespace TranslationHelper.Formats.RPGMTrans
                 }
                 else
                 {
-                    return 1; //Not a patch file
+                    return -1; //Not a patch file, break parsing
                 }
 
                 verchecked = true;
-                return 1;
             }
 
             var ret = 1;
 
             if (patchversion == 3)
             {
-                //Код для версии патча 3
+                //patch version 3 code
                 if (ParseData.line.StartsWith("> BEGIN STRING"))
                 {
                     var originalLines = new List<string>();
@@ -70,11 +70,12 @@ namespace TranslationHelper.Formats.RPGMTrans
                     }
                     while (ReadLine() != "> END STRING");
 
-                    string original = originalLines.Joined();
-                    string translation = translatedLines.Joined();
+                    var original = originalLines.Joined();
+                    var translation = translatedLines.Joined();
+                    var context = contextlines.Joined();
                     if (thDataWork.OpenFileMode)
                     {
-                        AddRowData(new[] { original, translation }, contextlines.Joined(), true);
+                        AddRowData(new[] { original, translation }, context, true);
                     }
                     else
                     {
@@ -82,7 +83,25 @@ namespace TranslationHelper.Formats.RPGMTrans
                         if (IsValidString(original) && thDataWork.TablesLinesDict.ContainsKey(original) && translation != thDataWork.TablesLinesDict[original])
                         {
                             translated = true;
+                            ParseData.Ret = true;
                             translation = thDataWork.TablesLinesDict[original];
+                        }
+
+                        //remove or add untranslated tag when translation was changed
+                        if (translated)
+                        {
+                            context = context.Replace(" < UNTRANSLATED", string.Empty);
+                        }
+                        else if(!context.Contains(" < UNTRANSLATED"))
+                        {
+                            for (int i = 0; i < contextlines.Count; i++)
+                            {
+                                if(!contextlines[i].EndsWith(" < UNTRANSLATED"))
+                                {
+                                    contextlines[i] = contextlines[i] + " < UNTRANSLATED";
+                                }
+
+                            }
                         }
 
                         ParseData.line =
@@ -90,89 +109,106 @@ namespace TranslationHelper.Formats.RPGMTrans
                             + Environment.NewLine
                             + original
                             + Environment.NewLine
-                            + contextlines.Joined().Replace(translated ? " < UNTRANSLATED" : string.Empty, string.Empty)
+                            + context
                             + Environment.NewLine
                             + translation
-                            + "> END STRING";
+                            + Environment.NewLine
+                            + "> END STRING"
+                            ;
                     }
                 }
             }
-            else // v2
+            else //patch version 2 code
             {
-                if (!unused && Equals(ParseData.line, "# UNUSED TRANSLATABLES"))//означает, что перевод отсюда и далее не используется в игре и помечен RPGMakerTrans этой строкой
+                if (!unused && ParseData.line == "# UNUSED TRANSLATABLES")//означает, что перевод отсюда и далее не используется в игре и помечен RPGMakerTrans этой строкой
                 {
                     unused = true;
                 }
-
-                //Код для версии патча 2.0
-                if (ParseData.line.StartsWith("# CONTEXT"))
+                
+                if (ParseData.line.StartsWith("# TEXT STRING"))
                 {
-                    if (ParseData.line.Split(' ')[3] == "itemAttr/UsageMessage")
+                    var untranslated = false;
+                    while (!ReadLine().StartsWith("# CONTEXT"))
                     {
-                        return ret;
+                        if (ParseData.line.StartsWith("# UNTRANSLATED"))
+                        {
+                            untranslated = true;
+                        }
                     }
 
-                    var context = ParseData.line; //контекст
-
-                    ReadLine();
-
-                    var advice = "";
-                    //asdf advice Иногда advice отсутствует, например когда "# CONTEXT : Dialogue/SetHeroName" в патче VH
-                    if (ParseData.line.StartsWith("# ADVICE"))//совет обычно содержит инфу о макс длине строки
+                    if (ParseData.line.Split(' ')[3] != "itemAttr/UsageMessage")
                     {
-                        advice = ParseData.line;
-                        ReadLine();//читать след. строку, когда был совет
-                    }
+                        var context = ParseData.line; //контекст
 
-                    if (unused)
-                    {
-                        advice += Environment.NewLine + "UNUSED";//информа о начале блока неиспользуемых строк
-                    }
+                        ReadLine();
 
-                    var originalLines = new List<string>();
-                    do
-                    {
-                        originalLines.Add(ParseData.line);
-                    }
-                    while (!ReadLine().StartsWith("# TRANSLATION"));//read while translatin block will start
+                        var advice = "";
+                        //asdf advice Иногда advice отсутствует, например когда "# CONTEXT : Dialogue/SetHeroName" в патче VH
+                        if (ParseData.line.StartsWith("# ADVICE"))//совет обычно содержит инфу о макс длине строки
+                        {
+                            advice = ParseData.line;
+                            ReadLine();//читать след. строку, когда был совет
+                        }
 
-                    var translatedLines = new List<string>();
-                    do
-                    {
+                        if (unused)
+                        {
+                            advice += Environment.NewLine + "UNUSED";//информа о начале блока неиспользуемых строк
+                        }
 
-                    }
-                    while (!ReadLine().StartsWith("# END STRING"));
+                        var originalLines = new List<string>();
+                        do
+                        {
+                            originalLines.Add(ParseData.line);
+                        }
+                        while (!ReadLine().StartsWith("# TRANSLATION"));//read while translatin block will start
 
-                    string original = originalLines.Joined();
-                    string translation = translatedLines.Joined();
-                    if (thDataWork.OpenFileMode)
-                    {
-                        AddRowData(new[] { original, translation }, context + Environment.NewLine + advice, true);
+                        var translatedLines = new List<string>();
+                        do
+                        {
+
+                        }
+                        while (!ReadLine().StartsWith("# END STRING"));
+
+                        string original = originalLines.Joined();
+                        string translation = translatedLines.Joined();
+                        if (thDataWork.OpenFileMode)
+                        {
+                            AddRowData(new[] { original, translation }, context + Environment.NewLine + advice, true);
+                        }
+                        else
+                        {
+                            var translated = false;
+                            if (IsValidString(original) && thDataWork.TablesLinesDict.ContainsKey(original) && translation != thDataWork.TablesLinesDict[original])
+                            {
+                                translated = true;
+                                ParseData.Ret = true;
+                                translation = thDataWork.TablesLinesDict[original];
+                            }
+
+                            ParseData.line =
+                                "# TEXT STRING"
+                                + Environment.NewLine
+                                + (!translated ? "# UNTRANSLATED" + Environment.NewLine : string.Empty)
+                                + context
+                                + Environment.NewLine
+                                + advice
+                                + Environment.NewLine
+                                + original
+                                + Environment.NewLine
+                                + "# TRANSLATION"
+                                + Environment.NewLine
+                                + translation
+                                + Environment.NewLine
+                                + "# END STRING";
+                        }
                     }
                     else
                     {
-                        var translated = false;
-                        if (IsValidString(original) && thDataWork.TablesLinesDict.ContainsKey(original) && translation != thDataWork.TablesLinesDict[original])
-                        {
-                            translated = true;
-                            translation = thDataWork.TablesLinesDict[original];
-                        }
-
                         ParseData.line =
                             "# TEXT STRING"
                             + Environment.NewLine
-                            + (translated ? "# UNTRANSLATED" + Environment.NewLine : string.Empty)
-                            + context
-                            + Environment.NewLine
-                            + advice
-                            + Environment.NewLine
-                            + original
-                            + Environment.NewLine
-                            + "# TRANSLATION"
-                            + Environment.NewLine
-                            + translation
-                            + Environment.NewLine
-                            + "> END STRING";
+                            + (untranslated ? "# UNTRANSLATED" + Environment.NewLine : string.Empty)
+                            + ParseData.line;
                     }
                 }
             }

@@ -43,6 +43,9 @@ namespace TranslationHelper.Projects
             return string.Empty;
         }
 
+        /// <summary>
+        /// executed before DB will be saved
+        /// </summary>
         internal virtual void PreSaveDB()
         {
         }
