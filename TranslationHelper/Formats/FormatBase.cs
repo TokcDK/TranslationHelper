@@ -28,6 +28,15 @@ namespace TranslationHelper.Formats
             return false;
         }
 
+        /// <summary>
+        /// extension which can be parsed with the format, ".txt" or ".txt,.csv" for example
+        /// </summary>
+        /// <returns></returns>
+        internal virtual string Ext()
+        {
+            return "";
+        }
+
         internal virtual bool Open() { return ParseStringFile(); }
 
         internal virtual bool Save() { return ParseStringFile(); }

@@ -135,7 +135,7 @@ namespace TranslationHelper.Main.Functions
 
         internal static bool IsInDirExistsAnyFile(string FolderPath, string mask = "*", bool SearchFiles = true, bool Recursive = false)
         {
-            return FolderPath.IsTheDirContainsFiles(mask, SearchFiles, Recursive);
+            return FolderPath.ContainsFiles(mask, SearchFiles, Recursive);
         }
 
         internal static bool GetAnyFileWithTheNameExist(string[] array, string name)

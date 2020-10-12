@@ -11,6 +11,11 @@ namespace TranslationHelper.Formats.RPGMTrans
         {
         }
 
+        internal override string Ext()
+        {
+            return ".txt";
+        }
+
         protected override void ParseStringFilePreOpenExtra()
         {
             unused = false;
@@ -78,7 +83,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                     }
                     else
                     {
-                        var translated = false;
+                        var translated = original!= translation && !string.IsNullOrEmpty(translation);
                         if (IsValidString(original) && thDataWork.TablesLinesDict.ContainsKey(original) && translation != thDataWork.TablesLinesDict[original])
                         {
                             translated = true;

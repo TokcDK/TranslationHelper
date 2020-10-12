@@ -756,7 +756,7 @@ namespace TranslationHelper
                 thDataWork.TablesLinesDict.Clear();
             }
             await Task.Run(() => new FunctionsSave(thDataWork).PrepareToWrite()).ConfigureAwait(true);
-            Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
+            thDataWork.CurrentProject.AfterTranslationWriteActions();
         }
 
         public void ProgressInfo(bool status, string statustext = "")

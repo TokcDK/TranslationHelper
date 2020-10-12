@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Main.Functions;
@@ -10,8 +11,8 @@ namespace TranslationHelper.Formats.RPGMTrans
     {
         public static bool CreateRPGMakerTransPatch(string inputdir, string outdir)
         {
-            string rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rpgmakertrans", "rpgmt.exe");
             bool ret;
+            var rpgmakertranscli = THSettingsData.RPGMakerTransEXEPath();
             //string projectname = Path.GetFileName(outdir);
 
             //параметры
@@ -35,9 +36,9 @@ namespace TranslationHelper.Formats.RPGMTrans
             //        help = "Dump scripts to given directory")
             var workdirName = Path.GetFileNameWithoutExtension(outdir);
             outdir = Path.Combine(outdir, workdirName);//изменение на субпапку в рабочей папке проекта
-            var rpgmakertranscliargs = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
+            var args = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
 
-            FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+            FunctionsProcess.RunProgram(rpgmakertranscli, args);
             ret = GetIsRPGMakerTransPatchCreatedAndValid(outdir);
 
             if (!ret)
@@ -45,7 +46,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                 CleanInvalidRPGMakerTransPatchFolders(outdir);
 
                 //попытка с параметром -b - Use UTF-8 BOM in Patch files
-                FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
+                FunctionsProcess.RunProgram(rpgmakertranscli, args + " -b");
 
                 ret = GetIsRPGMakerTransPatchCreatedAndValid(outdir);
 
@@ -62,9 +63,9 @@ namespace TranslationHelper.Formats.RPGMTrans
                     }
 
                     rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rgssdecryptor", "RgssDecrypter.exe");
-                    rpgmakertranscliargs = "\"--output=" + tempDIr + "\" " + rgss;
+                    args = "\"--output=" + tempDIr + "\" " + rgss;
 
-                    FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+                    FunctionsProcess.RunProgram(rpgmakertranscli, args);
 
                     if (Directory.GetDirectories(tempDIr).Length > 0)
                     {
@@ -105,8 +106,8 @@ namespace TranslationHelper.Formats.RPGMTrans
                             File.Delete(rgss);
 
                             rpgmakertranscli = Path.Combine(Application.StartupPath, "Res", "rpgmakertrans", "rpgmt.exe");
-                            rpgmakertranscliargs = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
-                            FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs);
+                            args = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
+                            FunctionsProcess.RunProgram(rpgmakertranscli, args);
 
                             ret = GetIsRPGMakerTransPatchCreatedAndValid(outdir);
 
@@ -118,7 +119,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                                 CleanInvalidRPGMakerTransPatchFolders(outdir);
 
                                 //попытка с параметром -b - Use UTF-8 BOM in Patch files
-                                FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs + " -b");
+                                FunctionsProcess.RunProgram(rpgmakertranscli, args + " -b");
 
                                 ret = GetIsRPGMakerTransPatchCreatedAndValid(outdir);
 
@@ -172,8 +173,8 @@ namespace TranslationHelper.Formats.RPGMTrans
             return File.Exists(Path.Combine(outdir + "_patch", "RPGMKTRANSPATCH"))
                 && File.Exists(Path.Combine(outdir + "_translated", "rpgmktranslated"))
                 && (
-                (Directory.Exists(Path.Combine(outdir + "_patch", "patch")) && Path.Combine(outdir + "_patch", "patch").IsTheDirContainsFiles("*.txt"))
-                || (outdir + "_patch").IsTheDirContainsFiles("*.txt")
+                (Directory.Exists(Path.Combine(outdir + "_patch", "patch")) && Path.Combine(outdir + "_patch", "patch").ContainsFiles("*.txt"))
+                || (outdir + "_patch").ContainsFiles("*.txt")
                 );
         }
     }

@@ -3,11 +3,22 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Extensions
 {
     internal static class ExtensionsFileFolder
     {
+        /// <summary>
+        /// returns true if dir is empty
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
+        internal static bool IsEmpty(this DirectoryInfo dir)
+        {
+            return FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(dir.FullName);
+        }
+
         /// <summary>
         /// True if directory is exists and contains any files
         /// </summary>
@@ -15,7 +26,17 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool HasAnyFiles(this DirectoryInfo dir, string mask="*")
         {
-            return dir.FullName.IsTheDirContainsFiles(mask, true, true);
+            return dir.FullName.ContainsFiles(mask, true, true);
+        }
+
+        /// <summary>
+        /// True if directory is exists and contains any files
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
+        internal static bool HasAnyDirs(this DirectoryInfo dir, string mask="*")
+        {
+            return dir.FullName.ContainsFiles(mask, false, true);
         }
 
         /// <summary>
@@ -26,7 +47,7 @@ namespace TranslationHelper.Extensions
         /// <param name="SearchFiles"></param>
         /// <param name="Recursive"></param>
         /// <returns></returns>
-        internal static bool IsTheDirContainsFiles(this string FolderPath, string mask = "*", bool SearchFiles = true, bool Recursive = false)
+        internal static bool ContainsFiles(this string FolderPath, string mask = "*", bool SearchFiles = true, bool Recursive = false)
         {
             if (!Directory.Exists(FolderPath))
             {

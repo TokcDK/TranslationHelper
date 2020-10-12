@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using TranslationHelper.Properties;
 
 namespace TranslationHelper.Data
@@ -18,6 +19,26 @@ namespace TranslationHelper.Data
         internal static string DBDirPath()
         {
             return Path.Combine(ApplicationStartupPath(), DBDirName());
+        }
+
+        internal static string RPGMakerTransDirName()
+        {
+            return "rpgmakertrans";
+        }
+
+        internal static string RPGMakerTransDirPath()
+        {
+            return Path.Combine(ResDirPath(), RPGMakerTransDirName());
+        }
+
+        internal static string RPGMakerTransEXEName()
+        {
+            return "rpgmt.exe";
+        }
+
+        internal static string RPGMakerTransEXEPath()
+        {
+            return Path.Combine(RPGMakerTransDirPath(), RPGMakerTransEXEName());
         }
 
         internal static string ResDirName()
@@ -268,6 +289,26 @@ namespace TranslationHelper.Data
         internal static string DBAutoSavesDirName()
         {
             return "Auto";
+        }
+
+        internal static string RGSSDecrypterDirName()
+        {
+            return "rgssdecryptor";
+        }
+
+        internal static string RGSSDecrypterDirPath()
+        {
+            return Path.Combine(ResDirPath(), RGSSDecrypterDirName());
+        }
+
+        internal static string RGSSDecrypterEXEName()
+        {
+            return "RgssDecrypter.exe";
+        }
+
+        internal static string RGSSDecrypterEXEPath()
+        {
+            return Path.Combine(RGSSDecrypterDirPath(), RGSSDecrypterEXEName());
         }
     }
 }

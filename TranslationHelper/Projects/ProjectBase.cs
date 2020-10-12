@@ -105,6 +105,11 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, FormatBase format, string mask = "*")
         {
+            if (mask == "*")
+            {
+                mask += format.Ext();
+            }
+
             var ret = false;
             if (DirForSearch.Exists)
                 foreach (var file in DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
@@ -622,6 +627,14 @@ namespace TranslationHelper.Projects
         internal virtual bool CheckForRowIssue(DataRow row)
         {
             return false;
+        }
+
+        /// <summary>
+        /// here can be set actions to execute after write of translation
+        /// </summary>
+        internal virtual void AfterTranslationWriteActions()
+        {
+            System.Diagnostics.Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
         }
     }
 }
