@@ -38,6 +38,7 @@
             this.ConfirmReplaceAllCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchAlwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.ckkbxDoNotTouchEqualOT = new System.Windows.Forms.CheckBox();
             this.THSearchMatchCaseCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchInInfoCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchFindLinesWithPossibleIssuesCheckBox = new System.Windows.Forms.CheckBox();
@@ -69,7 +70,6 @@
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.ckkbxDoNotTouchEqualOT = new System.Windows.Forms.CheckBox();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.SearchResultsPanel.SuspendLayout();
@@ -221,6 +221,18 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(283, 102);
             this.tableLayoutPanel1.TabIndex = 27;
+            // 
+            // ckkbxDoNotTouchEqualOT
+            // 
+            this.ckkbxDoNotTouchEqualOT.AutoSize = true;
+            this.ckkbxDoNotTouchEqualOT.Checked = true;
+            this.ckkbxDoNotTouchEqualOT.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckkbxDoNotTouchEqualOT.Location = new System.Drawing.Point(3, 72);
+            this.ckkbxDoNotTouchEqualOT.Name = "ckkbxDoNotTouchEqualOT";
+            this.ckkbxDoNotTouchEqualOT.Size = new System.Drawing.Size(182, 17);
+            this.ckkbxDoNotTouchEqualOT.TabIndex = 27;
+            this.ckkbxDoNotTouchEqualOT.Text = "Ignore Original=Translation lines";
+            this.ckkbxDoNotTouchEqualOT.UseVisualStyleBackColor = true;
             // 
             // THSearchMatchCaseCheckBox
             // 
@@ -538,16 +550,6 @@
             this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
-            // 
-            // ckkbxDoNotTouchEqualOT
-            // 
-            this.ckkbxDoNotTouchEqualOT.AutoSize = true;
-            this.ckkbxDoNotTouchEqualOT.Location = new System.Drawing.Point(3, 72);
-            this.ckkbxDoNotTouchEqualOT.Name = "ckkbxDoNotTouchEqualOT";
-            this.ckkbxDoNotTouchEqualOT.Size = new System.Drawing.Size(182, 17);
-            this.ckkbxDoNotTouchEqualOT.TabIndex = 27;
-            this.ckkbxDoNotTouchEqualOT.Text = "Ignore Original=Translation lines";
-            this.ckkbxDoNotTouchEqualOT.UseVisualStyleBackColor = true;
             // 
             // THfrmSearch
             // 
