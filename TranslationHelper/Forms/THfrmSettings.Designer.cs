@@ -46,12 +46,13 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsToolsTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.SettingsAutosaveTimeoutValueTextBox = new System.Windows.Forms.TextBox();
+            this.SettingsAutosaveEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.THOptionEnableTranslationCacheCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTranslationLinkTextBox = new System.Windows.Forms.TextBox();
-            this.SettingsAutosaveTimeoutValueTextBox = new System.Windows.Forms.TextBox();
-            this.SettingsAutosaveEnabledCheckBox = new System.Windows.Forms.CheckBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cbxWebTranslatorsSelector = new System.Windows.Forms.ComboBox();
+            this.flpQuickTranslatorSelection = new System.Windows.Forms.FlowLayoutPanel();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -266,53 +267,19 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.flpQuickTranslatorSelection);
             this.panel2.Controls.Add(this.SettingsAutosaveTimeoutValueTextBox);
             this.panel2.Controls.Add(this.SettingsAutosaveEnabledCheckBox);
             this.panel2.Controls.Add(this.THOptionEnableTranslationCacheCheckBox);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.THSettingsWebTranslationLinkTextBox);
-            this.panel2.Controls.Add(this.comboBox1);
+            this.panel2.Controls.Add(this.cbxWebTranslatorsSelector);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Margin = new System.Windows.Forms.Padding(1);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(524, 379);
             this.panel2.TabIndex = 8;
-            // 
-            // THOptionEnableTranslationCacheCheckBox
-            // 
-            this.THOptionEnableTranslationCacheCheckBox.AutoSize = true;
-            this.THOptionEnableTranslationCacheCheckBox.Checked = true;
-            this.THOptionEnableTranslationCacheCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.THOptionEnableTranslationCacheCheckBox.Location = new System.Drawing.Point(8, 3);
-            this.THOptionEnableTranslationCacheCheckBox.Name = "THOptionEnableTranslationCacheCheckBox";
-            this.THOptionEnableTranslationCacheCheckBox.Size = new System.Drawing.Size(178, 17);
-            this.THOptionEnableTranslationCacheCheckBox.TabIndex = 12;
-            this.THOptionEnableTranslationCacheCheckBox.Text = "Enable online translation cache.";
-            this.THOptionEnableTranslationCacheCheckBox.UseVisualStyleBackColor = true;
-            this.THOptionEnableTranslationCacheCheckBox.CheckedChanged += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_CheckedChanged_1);
-            this.THOptionEnableTranslationCacheCheckBox.Click += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 23);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(225, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Web service link for manual translation (F12):";
-            // 
-            // THSettingsWebTranslationLinkTextBox
-            // 
-            this.THSettingsWebTranslationLinkTextBox.Location = new System.Drawing.Point(8, 39);
-            this.THSettingsWebTranslationLinkTextBox.Name = "THSettingsWebTranslationLinkTextBox";
-            this.THSettingsWebTranslationLinkTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.THSettingsWebTranslationLinkTextBox.Size = new System.Drawing.Size(491, 21);
-            this.THSettingsWebTranslationLinkTextBox.TabIndex = 7;
-            this.THSettingsWebTranslationLinkTextBox.Text = "https://translate.google.com/?ie=UTF-8&op=translate&sl={from}&tl={to}&text={text}" +
-    "";
-            this.THSettingsWebTranslationLinkTextBox.WordWrap = false;
-            this.THSettingsWebTranslationLinkTextBox.TextChanged += new System.EventHandler(this.THSettingsWebTranslationLinkTextBox_TextChanged);
-            this.THSettingsWebTranslationLinkTextBox.Validated += new System.EventHandler(this.THSettingsWebTransLinkTextBox_Validated);
             // 
             // SettingsAutosaveTimeoutValueTextBox
             // 
@@ -340,27 +307,74 @@
             this.SettingsAutosaveEnabledCheckBox.UseVisualStyleBackColor = true;
             this.SettingsAutosaveEnabledCheckBox.CheckedChanged += new System.EventHandler(this.SettingsAutosaveEnabledCheckBox_CheckedChanged);
             // 
-            // comboBox1
+            // THOptionEnableTranslationCacheCheckBox
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.THOptionEnableTranslationCacheCheckBox.AutoSize = true;
+            this.THOptionEnableTranslationCacheCheckBox.Checked = true;
+            this.THOptionEnableTranslationCacheCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionEnableTranslationCacheCheckBox.Location = new System.Drawing.Point(8, 3);
+            this.THOptionEnableTranslationCacheCheckBox.Name = "THOptionEnableTranslationCacheCheckBox";
+            this.THOptionEnableTranslationCacheCheckBox.Size = new System.Drawing.Size(178, 17);
+            this.THOptionEnableTranslationCacheCheckBox.TabIndex = 12;
+            this.THOptionEnableTranslationCacheCheckBox.Text = "Enable online translation cache.";
+            this.THOptionEnableTranslationCacheCheckBox.UseVisualStyleBackColor = true;
+            this.THOptionEnableTranslationCacheCheckBox.CheckedChanged += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_CheckedChanged_1);
+            this.THOptionEnableTranslationCacheCheckBox.Click += new System.EventHandler(this.THOptionEnableTranslationCacheCheckBox_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 23);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(225, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Web service link for manual translation (F12):";
+            // 
+            // THSettingsWebTranslationLinkTextBox
+            // 
+            this.THSettingsWebTranslationLinkTextBox.Location = new System.Drawing.Point(8, 39);
+            this.THSettingsWebTranslationLinkTextBox.Margin = new System.Windows.Forms.Padding(0);
+            this.THSettingsWebTranslationLinkTextBox.Name = "THSettingsWebTranslationLinkTextBox";
+            this.THSettingsWebTranslationLinkTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+            this.THSettingsWebTranslationLinkTextBox.Size = new System.Drawing.Size(491, 21);
+            this.THSettingsWebTranslationLinkTextBox.TabIndex = 7;
+            this.THSettingsWebTranslationLinkTextBox.Text = "https://translate.google.com/?ie=UTF-8&op=translate&sl={from}&tl={to}&text={text}" +
+    "";
+            this.THSettingsWebTranslationLinkTextBox.WordWrap = false;
+            this.THSettingsWebTranslationLinkTextBox.TextChanged += new System.EventHandler(this.THSettingsWebTranslationLinkTextBox_TextChanged);
+            this.THSettingsWebTranslationLinkTextBox.Validated += new System.EventHandler(this.THSettingsWebTransLinkTextBox_Validated);
+            // 
+            // cbxWebTranslatorsSelector
+            // 
+            this.cbxWebTranslatorsSelector.FormattingEnabled = true;
+            this.cbxWebTranslatorsSelector.Items.AddRange(new object[] {
             "https://translate.google.com/?ie=UTF-8&op=translate&sl={from}&tl={to}&text={text}" +
                 "",
             "https://www.deepl.com/ru/translator#{from}/{to}/{text}",
             "https://translate.yandex.com/?lang={from}-{to}&text={text}"});
-            this.comboBox1.Location = new System.Drawing.Point(8, 39);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(508, 21);
-            this.comboBox1.TabIndex = 15;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.cbxWebTranslatorsSelector.Location = new System.Drawing.Point(8, 39);
+            this.cbxWebTranslatorsSelector.Margin = new System.Windows.Forms.Padding(1);
+            this.cbxWebTranslatorsSelector.Name = "cbxWebTranslatorsSelector";
+            this.cbxWebTranslatorsSelector.Size = new System.Drawing.Size(508, 21);
+            this.cbxWebTranslatorsSelector.TabIndex = 15;
+            this.cbxWebTranslatorsSelector.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // THSettings
+            // flpQuickTranslatorSelection
+            // 
+            this.flpQuickTranslatorSelection.Location = new System.Drawing.Point(238, 23);
+            this.flpQuickTranslatorSelection.Margin = new System.Windows.Forms.Padding(0);
+            this.flpQuickTranslatorSelection.Name = "flpQuickTranslatorSelection";
+            this.flpQuickTranslatorSelection.Size = new System.Drawing.Size(278, 13);
+            this.flpQuickTranslatorSelection.TabIndex = 16;
+            // 
+            // THfrmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(532, 405);
             this.Controls.Add(this.THSettingsTabControl);
-            this.Name = "THSettings";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Name = "THfrmSettings";
             this.Text = "Settings";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.THSettings_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.THSettings_FormClosed);
@@ -394,7 +408,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label1;
-        public System.Windows.Forms.TextBox THSettingsWebTranslationLinkTextBox;
         public System.Windows.Forms.CheckBox THOptionEnableTranslationCacheCheckBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label THOptionLineCharLimitLabel;
@@ -404,6 +417,8 @@
         internal System.Windows.Forms.CheckBox THOptionDontLoadStringIfRomajiPercentCheckBox;
         public System.Windows.Forms.TextBox SettingsAutosaveTimeoutValueTextBox;
         internal System.Windows.Forms.CheckBox SettingsAutosaveEnabledCheckBox;
-        internal System.Windows.Forms.ComboBox comboBox1;
+        internal System.Windows.Forms.ComboBox cbxWebTranslatorsSelector;
+        internal System.Windows.Forms.FlowLayoutPanel flpQuickTranslatorSelection;
+        internal System.Windows.Forms.TextBox THSettingsWebTranslationLinkTextBox;
     }
 }

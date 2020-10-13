@@ -133,7 +133,55 @@ namespace TranslationHelper
             //}
             //catch { }
 
+            AddQuickWebTranslators();
+
             thDataWork.SettingsIsLoading = false;
+        }
+
+        private void AddQuickWebTranslators()
+        {
+            if(flpQuickTranslatorSelection.Controls.Count== cbxWebTranslatorsSelector.Items.Count)
+            {
+                return;
+            }
+
+            foreach(string line in cbxWebTranslatorsSelector.Items)
+            {
+                LinkLabel L = new LinkLabel
+                {
+                    Text = cleanline(line),
+                    Margin = new Padding(0),
+                    Padding = new Padding(0),
+                    AutoSize=true
+
+                };
+
+                L.LinkClicked += (s, e) =>
+                {
+                    THSettingsWebTranslationLinkTextBox.Text = line;
+                };
+
+                flpQuickTranslatorSelection.Controls.Add(L);
+            }
+        }
+        string cleanline(string line)
+        {
+            if (line.ToUpperInvariant().StartsWith("HTTPS://"))
+            {
+                line = line.Remove(0, 8);
+            }
+            else if (line.ToUpperInvariant().StartsWith("HTTP://"))
+            {
+                line = line.Remove(0, 7);
+            }
+
+            if (line.ToUpperInvariant().StartsWith("WWW."))
+                line = line.Remove(0, 4);
+
+            if (line.ToUpperInvariant().StartsWith("TRANSLATE."))
+                line = line.Remove(0, 10);
+
+            return line[0].ToString().ToUpperInvariant();
         }
 
         //public int DontLoadStringIfRomajiPercentNumINI
@@ -340,6 +388,11 @@ namespace TranslationHelper
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            THSettingsWebTranslationLinkTextBox.Text = (sender as ComboBox).SelectedItem.ToString();
+        }
+
+        private void llblQuickWebTranslatorSetGoogle_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             THSettingsWebTranslationLinkTextBox.Text = (sender as ComboBox).SelectedItem.ToString();
         }

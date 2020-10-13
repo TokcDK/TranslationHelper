@@ -124,18 +124,18 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="appSettings\Sections\Tools\SDBAutosaveTimeout.cs" />
-    <Compile Include="appSettings\Sections\Tools\SEnableAutosave.cs" />
-    <Compile Include="appSettings\Sections\Tools\SWebTranslationLink.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\SDBCompressionExt.cs" />
-    <Compile Include="appSettings\Sections\Tools\SEnableTranslationCache.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\SDontLoadStringIfRomajiPercentNumber.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\SDBCompression.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\SDontLoadStringIfRomajiPercentForOpen.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\SDontLoadStringIfRomajiPercentForTranslation.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\SDontLoadStringIfRomajiPercent.cs" />
-    <Compile Include="appSettings\Sections\General\SLineCharLimit.cs" />
-    <Compile Include="appSettings\Sections\General\SFullComprasionDBload.cs" />
+    <Compile Include="appSettings\Sections\Tools\CheckBox\SEnableTranslationCache.cs" />
+    <Compile Include="appSettings\Sections\Tools\TextBox\SDBAutosaveTimeout.cs" />
+    <Compile Include="appSettings\Sections\Tools\CheckBox\SEnableAutosave.cs" />
+    <Compile Include="appSettings\Sections\Tools\TextBox\SWebTranslationLink.cs" />
+    <Compile Include="appSettings\Sections\Optimizations\ComboBox\SDBCompressionExt.cs" />
+    <Compile Include="appSettings\Sections\Optimizations\TextBox\SDontLoadStringIfRomajiPercentNumber.cs" />
+    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDBCompression.cs" />
+    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadStringIfRomajiPercentForOpen.cs" />
+    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadStringIfRomajiPercentForTranslation.cs" />
+    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadStringIfRomajiPercent.cs" />
+    <Compile Include="appSettings\Sections\General\CheckBox\SLineCharLimit.cs" />
+    <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
     <Compile Include="Data\CleanupData.cs" />
     <Compile Include="Data\THDataWork.cs" />
     <Compile Include="Data\THSettingsData.cs" />
@@ -232,7 +232,7 @@
     <Compile Include="Functions\FunctionsSounds.cs" />
     <Compile Include="Functions\FunctionsStringsFixes.cs" />
     <Compile Include="appSettings\AppSettings.cs" />
-    <Compile Include="appSettings\Sections\General\SAutotranslationForSimular.cs" />
+    <Compile Include="appSettings\Sections\General\CheckBox\SAutotranslationForSimular.cs" />
     <Compile Include="appSettings\SettingsBase.cs" />
     <Compile Include="appSettings\Sections\Tools\Tools.cs" />
     <Compile Include="appSettings\Sections\General\General.cs" />
