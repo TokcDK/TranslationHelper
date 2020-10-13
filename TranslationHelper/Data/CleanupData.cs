@@ -82,6 +82,7 @@ namespace TranslationHelper.Data
                 thDataWork.Main.writeTranslationInGameToolStripMenuItem.Enabled = false;
                 thDataWork.Main.loadTranslationToolStripMenuItem.Enabled = false;
                 thDataWork.Main.loadTrasnlationAsToolStripMenuItem.Enabled = false;
+                thDataWork.Main.loadTrasnlationAsForcedToolStripMenuItem.Enabled = false;
                 thDataWork.Main.saveTranslationAsToolStripMenuItem.Enabled = false;
                 thDataWork.Main.savemenusNOTenabled = true;
                 thDataWork.Main.THSourceRichTextBox.Enabled = false;

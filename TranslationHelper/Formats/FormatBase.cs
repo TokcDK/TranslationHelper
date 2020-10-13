@@ -516,7 +516,7 @@ namespace TranslationHelper.Formats
                     }
 
                     //Сначала добавить полный вариант
-                    if (!TablesLinesDict.ContainsKey(Original) && Translation != Original)
+                    if (!TablesLinesDict.ContainsKey(Original) && ((!thDataWork.CurrentProject.TablesLinesDictAddEqual && Translation != Original) || thDataWork.CurrentProject.TablesLinesDictAddEqual))
                     {
                         TablesLinesDict.Add(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                         if (OriginalLinesCount == 1)

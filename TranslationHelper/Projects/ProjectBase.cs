@@ -139,7 +139,15 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual string NewlineSymbol => Environment.NewLine;
 
+        /// <summary>
+        /// test run menu. maybe it is obsolete and will be removed later
+        /// </summary>
         internal virtual bool IsTestRunEnabled => false;
+
+        /// <summary>
+        /// add equal lines to TablesLinesDict while save translation
+        /// </summary>
+        internal virtual bool TablesLinesDictAddEqual => false;
 
         /// <summary>
         /// Project specific line skip rules for line split function. When check line.

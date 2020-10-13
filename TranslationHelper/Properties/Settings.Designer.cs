@@ -227,6 +227,9 @@ namespace TranslationHelper.Properties {
             }
         }
         
+        /// <summary>
+        /// Newline symbol specified for opened project
+        /// </summary>
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]

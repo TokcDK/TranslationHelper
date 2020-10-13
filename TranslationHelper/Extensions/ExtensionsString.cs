@@ -10,7 +10,7 @@ namespace TranslationHelper.Extensions
 {
     internal static class ExtensionsString
     {
-        internal static string SplitMultiLineIfBeyondOfLimit(this string Line, int Limit)
+        internal static string SplitMultiLineIfBeyondOfLimit(this string Line, int Limit, int linesCountLimit = -1)
         {
             if (string.IsNullOrWhiteSpace(Line)/* || !Line.IsMultiline()*/)
             {
@@ -76,17 +76,15 @@ namespace TranslationHelper.Extensions
         internal static string GetSplittedLine(this string Line, int Limit, THDataWork thDataWork = null)
         {
             string Trigger/* = string.Empty*/;
-            string newLine = ((Trigger = Regex.Match(Line, @"(if|en)\([\s\S]+\)$").Value).Length > 0 ? Line.Replace(Trigger, string.Empty) : Line);
+            string newLine = (Trigger = Regex.Match(Line, @"(if|en)\([^\r\n]+\)$").Value).Length > 0 ? Line.Replace(Trigger, string.Empty) : Line;
+
+
 
             //попытка сделать удаление и возвращение на место спецсимволов
-            MatchCollection SpecSymbols = Regex.Matches(newLine, @"(\\\\[A-Za-z]\[[0-9]{1,3}\])|(\\[A-Za-z]\[[0-9]{1,3}\])|(" + Environment.NewLine + ")");
-            //var SpecSymbolsCount = SpecSymbols.Count;
-            //for (int i = SpecSymbols.Count - 1; i > -1; i--)
-            //{
-            //    newLine = newLine.Remove(SpecSymbols[i].Index, SpecSymbols[i].Value.Length);
-            //}
 
-            if (newLine.Length == 0 || newLine.Length + SpecSymbols.Count <= Limit)
+            //MatchCollection SpecSymbols = Regex.Matches(newLine, @"(\\\\[A-Za-z]\[[0-9]{1,3}\])|(\\[A-Za-z]\[[0-9]{1,3}\])");
+
+            if (newLine.Length == 0 /*|| newLine.Length + SpecSymbols.Count <= Limit*/)
             {
                 return Line;
             }
@@ -96,13 +94,13 @@ namespace TranslationHelper.Extensions
             //newLine = string.Join(Properties.Settings.Default.ProjectNewLineSymbol
             //    , SplitLineIfBeyondOfLimit(newLine, Limit)
             //    ) + Trigger;
-            return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
-                , newLine.SplitLineIfBeyondOfLimit(Limit)
-                ) + Trigger;
-            //var newLineBefore = newLine;
-            //newLine = string.Join(Properties.Settings.Default.ProjectNewLineSymbol
-            //    , newLine.Wrap(Limit)
+            //return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+            //    , newLine.SplitLineIfBeyondOfLimit(Limit)
             //    ) + Trigger;
+            //var newLineBefore = newLine;
+            return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+                , newLine.Wrap(Limit)
+                ) + Trigger;
 
             //MatchCollection newLineSymbols = Regex.Matches(newLine, Environment.NewLine);
             //var newLineSymbolsCount = newLineSymbols.Count;

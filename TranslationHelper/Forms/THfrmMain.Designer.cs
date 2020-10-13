@@ -161,6 +161,7 @@
             this.tlpFrmMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpWorkInfo = new System.Windows.Forms.TableLayoutPanel();
             this.tlpTextLenPosInfo = new System.Windows.Forms.TableLayoutPanel();
+            this.loadTrasnlationAsForcedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -219,6 +220,7 @@
             this.saveTranslationAsToolStripMenuItem,
             this.loadTranslationToolStripMenuItem,
             this.loadTrasnlationAsToolStripMenuItem,
+            this.loadTrasnlationAsForcedToolStripMenuItem,
             this.runTestGameToolStripMenuItem,
             this.testXorDecriptToolStripMenuItem,
             this.testXorEncriptToolStripMenuItem,
@@ -1521,6 +1523,14 @@
             this.tlpTextLenPosInfo.Size = new System.Drawing.Size(257, 20);
             this.tlpTextLenPosInfo.TabIndex = 8;
             // 
+            // loadTrasnlationAsForcedToolStripMenuItem
+            // 
+            this.loadTrasnlationAsForcedToolStripMenuItem.Enabled = false;
+            this.loadTrasnlationAsForcedToolStripMenuItem.Name = "loadTrasnlationAsForcedToolStripMenuItem";
+            this.loadTrasnlationAsForcedToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            this.loadTrasnlationAsForcedToolStripMenuItem.Text = "Load Translation as (forced)";
+            this.loadTrasnlationAsForcedToolStripMenuItem.Click += new System.EventHandler(this.loadTrasnlationAsForcedToolStripMenuItem_Click);
+            // 
             // THfrmMain
             // 
             this.AccessibleDescription = "Program help with translation of some RPG games";
@@ -1705,6 +1715,7 @@
         private System.Windows.Forms.ToolStripMenuItem fixMessagesForAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getAndSaveStaticToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem loadTrasnlationAsForcedToolStripMenuItem;
     }
 }
 

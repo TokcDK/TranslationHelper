@@ -188,7 +188,12 @@ namespace TranslationHelper.Functions
             thDataWork.Main.ProgressInfo(false);
         }
 
-        internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db)
+        /// <summary>
+        /// load translation from dictionary to dataset tables
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="forced"></param>
+        internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db, bool forced=false)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
@@ -219,7 +224,7 @@ namespace TranslationHelper.Functions
                 using (var Table = thDataWork.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
-                    if (FunctionsTable.IsTableRowsCompleted(Table))
+                    if (!forced && FunctionsTable.IsTableRowsCompleted(Table))
                         continue;
 
                     string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
@@ -232,7 +237,7 @@ namespace TranslationHelper.Functions
                         //thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
                         var Row = Table.Rows[r];
                         var CellTranslation = Row[otranscol];
-                        if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                        if (forced || CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
                         {
                             var origCellValue = Row[0] as string;
                             if (db.ContainsKey(origCellValue) && db[origCellValue].Length > 0)
@@ -405,7 +410,7 @@ namespace TranslationHelper.Functions
                 var LoadFoundDBQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (LoadFoundDBQuestion == DialogResult.Yes)
                 {
-                    thDataWork.Main.LoadTranslationFromDB(lastautosavepath);
+                    thDataWork.Main.LoadTranslationFromDB(lastautosavepath, false, true);
                 }
                 else
                 {

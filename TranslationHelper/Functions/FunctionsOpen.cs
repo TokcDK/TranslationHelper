@@ -198,7 +198,7 @@ namespace TranslationHelper.Functions
             }
 
             //Old projects
-            return TryDetectOpenOldProjects(sPath);
+            return ""; //TryDetectOpenOldProjects(sPath);
         }
 
         //private void ShowProjectsList()
@@ -459,6 +459,7 @@ namespace TranslationHelper.Functions
             thDataWork.Main.viewToolStripMenuItem.Enabled = true;
             thDataWork.Main.loadTranslationToolStripMenuItem.Enabled = true;
             thDataWork.Main.loadTrasnlationAsToolStripMenuItem.Enabled = true;
+            thDataWork.Main.loadTrasnlationAsForcedToolStripMenuItem.Enabled = true;
             thDataWork.Main.runTestGameToolStripMenuItem.Enabled = thDataWork.CurrentProject != null && thDataWork.CurrentProject.IsTestRunEnabled;
 
             if (thDataWork.Main.FVariant.Length == 0)

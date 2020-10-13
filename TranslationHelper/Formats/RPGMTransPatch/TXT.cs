@@ -83,29 +83,52 @@ namespace TranslationHelper.Formats.RPGMTrans
                     }
                     else
                     {
-                        var translated = original!= translation && !string.IsNullOrEmpty(translation);
-                        if (IsValidString(original) && thDataWork.TablesLinesDict.ContainsKey(original) && translation != thDataWork.TablesLinesDict[original])
+                        var otequal = original == translation;
+                        var translated = !otequal && !string.IsNullOrEmpty(translation);
+                        if (IsValidString(original))
                         {
-                            translated = true;
-                            ParseData.Ret = true;
-                            translation = thDataWork.TablesLinesDict[original];
+                            if (thDataWork.TablesLinesDict.ContainsKey(original))
+                            {
+                                if (translation != thDataWork.TablesLinesDict[original])
+                                {
+                                    if (thDataWork.TablesLinesDict[original] != original)
+                                    {
+                                        translated = true;
+                                        translation = thDataWork.TablesLinesDict[original];
+                                        ParseData.Ret = true;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if(otequal && !translated)
+                        {
+                            //clean translation when original was equal to translation
+                            translated = false;
+                            translation = string.Empty;
+                            ParseData.Ret = true; //need to write file to fix equal translation
                         }
 
                         //remove or add untranslated tag when translation was changed
                         if (translated)
                         {
-                            context = context.Replace(" < UNTRANSLATED", string.Empty);
+                            if(context.Contains(" < UNTRANSLATED"))
+                            {
+                                context = context.Replace(" < UNTRANSLATED", string.Empty);
+                                ParseData.Ret = true;
+                            }
                         }
-                        else if (!context.Contains(" < UNTRANSLATED"))
+                        else
                         {
                             for (int i = 0; i < contextlines.Count; i++)
                             {
                                 if (!contextlines[i].EndsWith(" < UNTRANSLATED"))
                                 {
                                     contextlines[i] = contextlines[i] + " < UNTRANSLATED";
+                                    ParseData.Ret = true;
                                 }
-
                             }
+                            context = contextlines.Joined();
                         }
 
                         ParseData.line =
@@ -182,11 +205,17 @@ namespace TranslationHelper.Formats.RPGMTrans
                         else
                         {
                             var translated = false;
-                            if (IsValidString(original) && thDataWork.TablesLinesDict.ContainsKey(original) && translation != thDataWork.TablesLinesDict[original])
+                            if (IsValidString(original))
                             {
-                                translated = true;
-                                ParseData.Ret = true;
-                                translation = thDataWork.TablesLinesDict[original];
+                                if (thDataWork.TablesLinesDict.ContainsKey(original))
+                                {
+                                    if(translation != thDataWork.TablesLinesDict[original])
+                                    {
+                                        translated = true;
+                                        ParseData.Ret = true;
+                                        translation = thDataWork.TablesLinesDict[original];
+                                    }
+                                }
                             }
 
                             ParseData.line =

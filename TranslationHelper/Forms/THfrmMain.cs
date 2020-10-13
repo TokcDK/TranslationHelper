@@ -193,6 +193,7 @@ namespace TranslationHelper
             this.saveTranslationAsToolStripMenuItem.Text = T._("Save Translation as");
             this.loadTranslationToolStripMenuItem.Text = T._("Load Translation");
             this.loadTrasnlationAsToolStripMenuItem.Text = T._("Load Translation as");
+            this.loadTrasnlationAsForcedToolStripMenuItem.Text = T._("Load Translation as") + "(" + T._("forced") + ")";
             this.runTestGameToolStripMenuItem.Text = T._("Test");
             //Menu Edit
             this.editToolStripMenuItem.Text = T._("Edit");
@@ -1078,7 +1079,12 @@ namespace TranslationHelper
             }
         }
 
-        private async void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadDB();
+        }
+
+        internal async void LoadDB(bool force=true)
         {
             if (IsOpeningInProcess)//Do nothing if user will try to use Open menu before previous will be finished
             {
@@ -1090,7 +1096,7 @@ namespace TranslationHelper
                 lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(thDataWork), FunctionsDBFile.GetDBFileName(thDataWork) + FunctionsDBFile.GetDBCompressionExt(thDataWork));
                 if (File.Exists(lastautosavepath))
                 {
-                    await Task.Run(() => LoadTranslationFromDB(lastautosavepath)).ConfigureAwait(true);
+                    await Task.Run(() => LoadTranslationFromDB(lastautosavepath, false, force)).ConfigureAwait(true);
                 }
                 else
                 {
@@ -1106,7 +1112,7 @@ namespace TranslationHelper
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy;
-        internal async void LoadTranslationFromDB(string sPath = "", bool UseAllDB = false)
+        internal async void LoadTranslationFromDB(string sPath = "", bool UseAllDB = false, bool forced = false)
         {
             if (LoadTranslationToolStripMenuItem_ClickIsBusy || (!UseAllDB && sPath.Length == 0))
             {
@@ -1140,7 +1146,7 @@ namespace TranslationHelper
                 {
 
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath)).ConfigureAwait(true);
+                    await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath, forced)).ConfigureAwait(true);
                 }
             }
 
@@ -1153,7 +1159,7 @@ namespace TranslationHelper
             THFilesList.Invoke((Action)(() => THFilesList.Refresh()));
         }
 
-        private void ReadDBAndLoadDBCompare(DataSet DBDataSet, string sPath)
+        private void ReadDBAndLoadDBCompare(DataSet DBDataSet, string sPath, bool forced = false)
         {
             if (sPath.Length == 0)
             {
@@ -1194,7 +1200,7 @@ namespace TranslationHelper
                 //чтение из xml в dataset может занимать по нескольку секунд для больших файлов
                 //основную часть времени отнимал вывод информации о файлах!!
                 //00.051
-                new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.DBDataSetToDBDictionary());
+                new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.DBDataSetToDBDictionary(), forced);
 
                 //многопоточный вариант предыдущего, но т.к. datatable is threadunsafe то возникают разные ошибки и повреждение внутреннего индекса таблицы, хоть это и быстрее, но после добавления lock разницы не видно
                 //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallel(DBDataSet.DBDataSetToDBDictionary());
@@ -1219,7 +1225,16 @@ namespace TranslationHelper
             ProgressInfo(false);
         }
 
-        private async void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadDBAs();
+        }
+
+        /// <summary>
+        /// Load translation from selected DB
+        /// </summary>
+        /// <param name="forced">means load with current lines override even if they are not empty</param>
+        private async void LoadDBAs(bool forced = false)
         {
             if (IsOpeningInProcess)//Do nothing if user will try to use Open menu before previous will be finished
             {
@@ -1243,7 +1258,7 @@ namespace TranslationHelper
                             //string spath = THFOpenBD.FileName;
                             //THFOpenBD.OpenFile().Close();
                             //MessageBox.Show(THFOpenBD.FileName);
-                            await Task.Run(() => LoadTranslationFromDB(THFOpenBD.FileName)).ConfigureAwait(true);
+                            await Task.Run(() => LoadTranslationFromDB(THFOpenBD.FileName, false, forced)).ConfigureAwait(true);
                         }
                     }
                 }
@@ -2509,6 +2524,7 @@ namespace TranslationHelper
         private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new SplitLongLines(thDataWork).Selected();
+            //new SplitLongLinesSpec(thDataWork).Selected();
             //SplitSelectedLines();
         }
 
@@ -2998,7 +3014,7 @@ namespace TranslationHelper
 
         Form overall;
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
-        {            
+        {
             //MessageBox.Show(string.Join("\r\n---------\r\n", dict));
 
             //var b = File.ReadAllBytes(exePath);
@@ -3114,6 +3130,11 @@ namespace TranslationHelper
                 }
             }
             thDataWork.Main.ProgressInfo(false);
+        }
+
+        private void loadTrasnlationAsForcedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadDBAs(true);
         }
 
         //Материалы

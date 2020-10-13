@@ -57,6 +57,8 @@ namespace TranslationHelper.Projects
             return "RPGMakerTrans";
         }
 
+        internal override bool TablesLinesDictAddEqual => true;
+
         string extractedpatchpath;
 
         internal override bool Open()
