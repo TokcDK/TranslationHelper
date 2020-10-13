@@ -112,7 +112,8 @@ namespace TranslationHelper.Formats.RPGMTrans
                         //remove or add untranslated tag when translation was changed
                         if (translated)
                         {
-                            if(context.Contains(" < UNTRANSLATED"))
+                            //remove UNTRANSLATED when string translated and context contains it
+                            if (context.Contains(" < UNTRANSLATED"))
                             {
                                 context = context.Replace(" < UNTRANSLATED", string.Empty);
                                 ParseData.Ret = true;
@@ -120,15 +121,21 @@ namespace TranslationHelper.Formats.RPGMTrans
                         }
                         else
                         {
+                            //write UNTRANSLATED tag when string is not translated and context have it not added
+                            var wrote = false;
                             for (int i = 0; i < contextlines.Count; i++)
                             {
                                 if (!contextlines[i].EndsWith(" < UNTRANSLATED"))
                                 {
                                     contextlines[i] = contextlines[i] + " < UNTRANSLATED";
-                                    ParseData.Ret = true;
+                                    wrote = true;
                                 }
                             }
-                            context = contextlines.Joined();
+                            if (wrote)
+                            {
+                                context = contextlines.Joined();
+                                ParseData.Ret = true;
+                            }
                         }
 
                         ParseData.line =
