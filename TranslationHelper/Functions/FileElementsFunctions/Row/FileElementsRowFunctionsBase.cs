@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
@@ -53,15 +54,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
             }
 
-            int THFileElementsDataGridViewSelectedCellsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
-            if (THFileElementsDataGridViewSelectedCellsCount > 0)
+
+            //var selectedDGVCellsCount = DGV.GetCellCount(DataGridViewElementStates.Selected);
+
+            int DGVRowsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
+            if (DGVRowsCount > 0)
             {
                 try
                 {
                     GetTableData();
 
-                    var SelectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
-                    for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
+                    var SelectedRowIndexses = new int[DGVRowsCount];
+                    for (int i = 0; i < DGVRowsCount; i++)
                     {
                         //координаты ячейки
                         SelectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, SelectedTableIndex, DGV.SelectedCells[i].RowIndex);

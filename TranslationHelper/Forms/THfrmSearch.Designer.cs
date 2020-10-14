@@ -70,6 +70,8 @@
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.SearchRangeSelectedRadioButton = new System.Windows.Forms.RadioButton();
+            this.SearchRangeVisibleRadioButton = new System.Windows.Forms.RadioButton();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.SearchResultsPanel.SuspendLayout();
@@ -302,7 +304,7 @@
             this.panel6.Controls.Add(this.panel1);
             this.panel6.Location = new System.Drawing.Point(3, 19);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(471, 61);
+            this.panel6.Size = new System.Drawing.Size(543, 61);
             this.panel6.TabIndex = 17;
             // 
             // panel2
@@ -350,12 +352,14 @@
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.SearchRangeVisibleRadioButton);
+            this.panel5.Controls.Add(this.SearchRangeSelectedRadioButton);
             this.panel5.Controls.Add(this.label5);
             this.panel5.Controls.Add(this.SearchRangeTableRadioButton);
             this.panel5.Controls.Add(this.SearchRangeAllRadioButton);
             this.panel5.Location = new System.Drawing.Point(376, 0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(81, 61);
+            this.panel5.Size = new System.Drawing.Size(149, 61);
             this.panel5.TabIndex = 15;
             // 
             // label5
@@ -375,7 +379,6 @@
             this.SearchRangeTableRadioButton.Name = "SearchRangeTableRadioButton";
             this.SearchRangeTableRadioButton.Size = new System.Drawing.Size(51, 17);
             this.SearchRangeTableRadioButton.TabIndex = 7;
-            this.SearchRangeTableRadioButton.TabStop = true;
             this.SearchRangeTableRadioButton.Text = "Table";
             this.SearchRangeTableRadioButton.UseVisualStyleBackColor = true;
             this.SearchRangeTableRadioButton.Click += new System.EventHandler(this.SearchRangeTableRadioButton_Click);
@@ -385,9 +388,9 @@
             this.SearchRangeAllRadioButton.AutoSize = true;
             this.SearchRangeAllRadioButton.Location = new System.Drawing.Point(3, 39);
             this.SearchRangeAllRadioButton.Name = "SearchRangeAllRadioButton";
-            this.SearchRangeAllRadioButton.Size = new System.Drawing.Size(74, 17);
+            this.SearchRangeAllRadioButton.Size = new System.Drawing.Size(36, 17);
             this.SearchRangeAllRadioButton.TabIndex = 8;
-            this.SearchRangeAllRadioButton.Text = "Anywhere";
+            this.SearchRangeAllRadioButton.Text = "All";
             this.SearchRangeAllRadioButton.UseVisualStyleBackColor = true;
             this.SearchRangeAllRadioButton.Click += new System.EventHandler(this.SearchRangeAllRadioButton_Click);
             // 
@@ -551,6 +554,28 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
             // 
+            // SearchRangeSelectedRadioButton
+            // 
+            this.SearchRangeSelectedRadioButton.AutoSize = true;
+            this.SearchRangeSelectedRadioButton.Location = new System.Drawing.Point(71, 16);
+            this.SearchRangeSelectedRadioButton.Name = "SearchRangeSelectedRadioButton";
+            this.SearchRangeSelectedRadioButton.Size = new System.Drawing.Size(66, 17);
+            this.SearchRangeSelectedRadioButton.TabIndex = 13;
+            this.SearchRangeSelectedRadioButton.Text = "Selected";
+            this.SearchRangeSelectedRadioButton.UseVisualStyleBackColor = true;
+            this.SearchRangeSelectedRadioButton.Click += new System.EventHandler(this.SearchRangeSelectedRadioButton_Click);
+            // 
+            // SearchRangeVisibleRadioButton
+            // 
+            this.SearchRangeVisibleRadioButton.AutoSize = true;
+            this.SearchRangeVisibleRadioButton.Location = new System.Drawing.Point(71, 38);
+            this.SearchRangeVisibleRadioButton.Name = "SearchRangeVisibleRadioButton";
+            this.SearchRangeVisibleRadioButton.Size = new System.Drawing.Size(54, 17);
+            this.SearchRangeVisibleRadioButton.TabIndex = 14;
+            this.SearchRangeVisibleRadioButton.Text = "Visible";
+            this.SearchRangeVisibleRadioButton.UseVisualStyleBackColor = true;
+            this.SearchRangeVisibleRadioButton.Click += new System.EventHandler(this.SearchRangeVisibleRadioButton_Click);
+            // 
             // THfrmSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -637,5 +662,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.CheckBox ckkbxDoNotTouchEqualOT;
+        private System.Windows.Forms.RadioButton SearchRangeSelectedRadioButton;
+        private System.Windows.Forms.RadioButton SearchRangeVisibleRadioButton;
     }
 }

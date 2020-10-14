@@ -453,6 +453,46 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
+        /// get Hashes of row indexes for selected/visible rows
+        /// </summary>
+        /// <param name="thDataWork"></param>
+        /// <param name="tableindex"></param>
+        /// <param name="IsVisible">set to true if need to search in visible rows</param>
+        /// <returns></returns>
+        internal static HashSet<int> GetDGVRowsIndexesHashesInDT(THDataWork thDataWork, int tableindex, bool IsVisible = false)
+        {
+            DataGridView DGV = null;
+            thDataWork.Main.Invoke((Action)(() => DGV = thDataWork.Main.THFileElementsDataGridView));
+
+            var selected = new HashSet<int>();
+            if (IsVisible)
+            {
+                foreach (DataGridViewRow row in DGV.Rows)
+                {
+                    if (!row.Visible)
+                    {
+                        continue;
+                    }
+
+                    selected.Add(GetDGVSelectedRowIndexInDatatable(thDataWork, tableindex, row.Index));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < DGV.SelectedCells.Count; i++)
+                {
+                    var rowindex = DGV.SelectedCells[i].RowIndex;
+                    if (!selected.Contains(rowindex))
+                    {
+                        selected.Add(GetDGVSelectedRowIndexInDatatable(thDataWork, tableindex, rowindex));
+                    }
+                }
+            }
+
+            return selected;
+        }
+
+        /// <summary>
         /// Returns Dataset with tables with only non empty rows
         /// </summary>
         /// <param name="DS"></param>

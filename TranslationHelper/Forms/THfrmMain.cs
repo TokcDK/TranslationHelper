@@ -1084,7 +1084,7 @@ namespace TranslationHelper
             LoadDB();
         }
 
-        internal async void LoadDB(bool force=true)
+        internal async void LoadDB(bool force = true)
         {
             if (IsOpeningInProcess)//Do nothing if user will try to use Open menu before previous will be finished
             {

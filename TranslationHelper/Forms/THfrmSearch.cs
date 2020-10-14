@@ -109,12 +109,16 @@ namespace TranslationHelper
 
         private void SearchRangeTableRadioButton_Click(object sender, EventArgs e)
         {
-            SearchRangeAllRadioButton.Checked = false;
+            SearchRangeSelectedRadioButton.Checked = false;
+            SearchRangeVisibleRadioButton.Checked = false;
             SearchRangeTableRadioButton.Checked = true;
+            SearchRangeAllRadioButton.Checked = false;
         }
 
         private void SearchRangeAllRadioButton_Click(object sender, EventArgs e)
         {
+            SearchRangeSelectedRadioButton.Checked = false;
+            SearchRangeVisibleRadioButton.Checked = false;
             SearchRangeTableRadioButton.Checked = false;
             SearchRangeAllRadioButton.Checked = true;
         }
@@ -449,12 +453,28 @@ namespace TranslationHelper
                 bool info = SearchInInfoCheckBox.Checked;
                 string strQuery = SearchFormFindWhatTextBox.Text;
                 bool found = false;
-                int DatatablesCount = SearchRangeTableRadioButton.Checked ? THFilesListBox.SelectedIndex + 1 : thDataWork.THFilesElementsDataset.Tables.Count;
-                int StartTableIndex = SearchRangeTableRadioButton.Checked ? THFilesListBox.SelectedIndex : 0;
+                var ForSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
+                int DatatablesCount = SearchRangeTableRadioButton.Checked || ForSelected ? THFilesListBox.SelectedIndex + 1 : thDataWork.THFilesElementsDataset.Tables.Count;
+                int StartTableIndex = SearchRangeTableRadioButton.Checked || ForSelected ? THFilesListBox.SelectedIndex : 0;
+
                 for (int t = StartTableIndex; t < DatatablesCount; t++)
                 {
-                    for (int r = 0; r < thDataWork.THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                    var table = thDataWork.THFilesElementsDataset.Tables[t];
+
+                    System.Collections.Generic.HashSet<int> selectedrowsHashes = null;
+                    if (ForSelected)
                     {
+                        selectedrowsHashes = FunctionsTable.GetDGVRowsIndexesHashesInDT(thDataWork, t, SearchRangeVisibleRadioButton.Checked);
+                    }
+
+                    var rowsCount = table.Rows.Count;
+                    for (int r = 0; r < rowsCount; r++)
+                    {
+                        if (ForSelected && !selectedrowsHashes.Contains(r))
+                        {
+                            continue;
+                        }
+
                         var Row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
 
                         //skip equal lines if need, skip empty search cells && not skip when row issue search
@@ -660,7 +680,7 @@ namespace TranslationHelper
         {
             try
             {
-                _ = Invoke(new MethodInvoker(()=>
+                _ = Invoke(new MethodInvoker(() =>
                 {
                     Thread.Sleep(200);
                     if (THTargetRichTextBox.Text.Length == 0)
@@ -674,7 +694,7 @@ namespace TranslationHelper
                             //https://www.c-sharpcorner.com/article/search-and-highlight-text-in-rich-textbox/
                             //распознает лучше, чем код ниже, но не выделяет слово TEST
                             bool MatchCase = THSearchMatchCaseCheckBox.Checked;
-                            MatchCollection mc = Regex.Matches(THTargetRichTextBox.Text, SearchFormFindWhatTextBox.Text, MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);                                                        
+                            MatchCollection mc = Regex.Matches(THTargetRichTextBox.Text, SearchFormFindWhatTextBox.Text, MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);
                             if (mc.Count > 0)
                             {
                                 string m = mc[0].Value;
@@ -1078,6 +1098,22 @@ namespace TranslationHelper
         private void SearchResultsDatagridview_CellClick_1(object sender, DataGridViewCellEventArgs e)
         {
             ShowSelectedCellInMainTable(sender, e);
+        }
+
+        private void SearchRangeSelectedRadioButton_Click(object sender, EventArgs e)
+        {
+            SearchRangeSelectedRadioButton.Checked = true;
+            SearchRangeVisibleRadioButton.Checked = false;
+            SearchRangeTableRadioButton.Checked = false;
+            SearchRangeAllRadioButton.Checked = false;
+        }
+
+        private void SearchRangeVisibleRadioButton_Click(object sender, EventArgs e)
+        {
+            SearchRangeSelectedRadioButton.Checked = false;
+            SearchRangeVisibleRadioButton.Checked = true;
+            SearchRangeTableRadioButton.Checked = false;
+            SearchRangeAllRadioButton.Checked = false;
         }
     }
 }
