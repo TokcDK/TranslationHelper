@@ -478,10 +478,22 @@ namespace TranslationHelper.Functions
                 ? thDataWork.CurrentProject.NewlineSymbol
                 : Environment.NewLine;
 
+            AfterOpenCleaning();
+
             Properties.Settings.Default.ProjectIsOpened = true;
             FunctionsSounds.OpenProjectComplete();
 
             FunctionsLoadTranslationDB.LoadTranslationIfNeed(thDataWork);
+        }
+
+        private void AfterOpenCleaning()
+        {
+            thDataWork.TablesLinesDict.Clear();
+            thDataWork.TranslationRegexRules.Clear();
+            thDataWork.TranslationRegexRulesGroup.Clear();
+            thDataWork.CellFixesRegexRules.Clear();
+            thDataWork.ENQuotesToJPLearnDataFoundNext.Clear();
+            thDataWork.ENQuotesToJPLearnDataFoundPrev.Clear();
         }
     }
 }
