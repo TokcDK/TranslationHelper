@@ -325,19 +325,28 @@ namespace TranslationHelper.Projects
 
         public static void CleanDirs(DirectoryInfo workdir)
         {
-            //чистка папок 
-            if (Directory.Exists(Path.Combine(workdir.FullName, workdir.Name + "_patch")))
+            try
             {
-                Directory.Delete(Path.Combine(workdir.FullName, workdir.Name + "_patch"), true);
-            }
-            if (Directory.Exists(Path.Combine(workdir.FullName, workdir.Name + "_translated")))
-            {
-                Directory.Delete(Path.Combine(workdir.FullName, workdir.Name + "_translated"), true);
-            }
+                workdir.Refresh();
 
-            if (workdir.IsEmpty())
+                //чистка папок 
+                if (Directory.Exists(Path.Combine(workdir.FullName, workdir.Name + "_patch")) && new DirectoryInfo(Path.Combine(workdir.FullName, workdir.Name + "_patch")).HasNoFiles("*.txt"))
+                {
+                    Directory.Delete(Path.Combine(workdir.FullName, workdir.Name + "_patch"), true);
+                }
+                if (!Directory.Exists(Path.Combine(workdir.FullName, workdir.Name + "_patch")) && Directory.Exists(Path.Combine(workdir.FullName, workdir.Name + "_translated")))
+                {
+                    Directory.Delete(Path.Combine(workdir.FullName, workdir.Name + "_translated"), true);
+                }
+
+                if (workdir.IsEmpty())
+                {
+                    workdir.Delete();
+                }
+            }
+            catch
             {
-                workdir.Delete();
+
             }
         }
 

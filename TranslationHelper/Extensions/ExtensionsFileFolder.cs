@@ -20,11 +20,22 @@ namespace TranslationHelper.Extensions
         }
 
         /// <summary>
+        /// True if directory is exists and contains No files
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns></returns>
+        internal static bool HasNoFiles(this DirectoryInfo dir, string mask = "*")
+        {
+            return !HasAnyFiles(dir, mask);
+        }
+
+
+        /// <summary>
         /// True if directory is exists and contains any files
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        internal static bool HasAnyFiles(this DirectoryInfo dir, string mask="*")
+        internal static bool HasAnyFiles(this DirectoryInfo dir, string mask = "*")
         {
             return dir.FullName.ContainsFiles(mask, true, true);
         }
@@ -34,7 +45,7 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        internal static bool HasAnyDirs(this DirectoryInfo dir, string mask="*")
+        internal static bool HasAnyDirs(this DirectoryInfo dir, string mask = "*")
         {
             return dir.FullName.ContainsFiles(mask, false, true);
         }
