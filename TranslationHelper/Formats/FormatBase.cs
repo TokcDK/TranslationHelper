@@ -210,11 +210,6 @@ namespace TranslationHelper.Formats
                 var mc = Regex.Matches(ParseData.line, pattern.Value, RegexOptions.Compiled);
                 if (mc.Count > 0)
                 {
-                    //if(ParseData.line== "rmenu \"セーブ\",save,\"ロード\",load,\"回想\",lookback,\"ウィンドウを消す\",windowerase,\"タイトルへ戻る\",reset ")
-                    //{
-
-                    //}
-
                     if (thDataWork.OpenFileMode)
                     {
                         foreach (Match m in mc)

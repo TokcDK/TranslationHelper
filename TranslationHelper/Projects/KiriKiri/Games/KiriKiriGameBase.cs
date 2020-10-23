@@ -68,10 +68,11 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 int i = 0;
                 foreach (var file in files)
                 {
-                    if (file.Name == "extra_daidokoro_1e.ks")
+                    if (file.Name == "map_status.ks")
                     {
 
                     }
+
                     thDataWork.FilePath = file.FullName;
                     thDataWork.Main.ProgressInfo(true, T._("open file: ") + file.Name);
                     try
@@ -153,10 +154,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 int i = 0;
                 foreach (var file in files)
                 {
-                    if (!tableslist.Contains(file.Name))
-                    {
-                        continue;
-                    }
+                    //if (!tableslist.Contains(file.Name))
+                    //{
+                    //    continue;
+                    //}
 
                     thDataWork.FilePath = file.FullName;
                     thDataWork.Main.ProgressInfo(true, T._("save file: ") + file.Name);

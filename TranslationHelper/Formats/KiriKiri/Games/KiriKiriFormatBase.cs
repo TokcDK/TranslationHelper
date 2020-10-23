@@ -202,6 +202,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         bool endsWithWait;
         private void CheckAndParseText()
         {
+            if (ParseData.TrimmedLine.Contains("tf.excite_toko_text='賢者の時'"))
+            {
+
+            }
+
             if (!ParsePatterns() &&
                 (endsWithWait = ParseData.TrimmedLine.EndsWith(waitSymbol))
                 || EndsWithValidSymbol()
@@ -297,7 +302,20 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 }
             }
 
-            return str;
+            if (Regex.IsMatch(str, @"\[[a-z]{1,10}\]"))
+            {
+                return Regex.Replace(str
+                    //.Replace("[phr]", "")
+                    //.Replace("[hr]", "")
+                    //.Replace("[lr]", "")
+                    //.Replace("[r]", "")
+                    //.Replace("[p]", "")
+                    , @"\[[a-z]{1,10}\]", "");
+            }
+            else
+            {
+                return str;
+            }
         }
 
         /// <summary>
@@ -336,16 +354,16 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 .Replace(@"\""", "{Q}")//preremove quotes of variables
                 .Replace("\"", "`")//replace other quotes
                 .Replace("{Q}", @"\""")//return quotes of variables
-                //.Replace("0", "０")
-                //.Replace("1", "１")
-                //.Replace("2", "２")
-                //.Replace("3", "３")
-                //.Replace("4", "４")
-                //.Replace("5", "５")
-                //.Replace("6", "６")
-                //.Replace("7", "７")
-                //.Replace("8", "８")
-                //.Replace("9", "９")
+                                       //.Replace("0", "０")
+                                       //.Replace("1", "１")
+                                       //.Replace("2", "２")
+                                       //.Replace("3", "３")
+                                       //.Replace("4", "４")
+                                       //.Replace("5", "５")
+                                       //.Replace("6", "６")
+                                       //.Replace("7", "７")
+                                       //.Replace("8", "８")
+                                       //.Replace("9", "９")
                 );
         }
 
