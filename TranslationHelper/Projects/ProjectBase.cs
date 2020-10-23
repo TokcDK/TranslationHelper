@@ -216,9 +216,11 @@ namespace TranslationHelper.Projects
         /// list of found matches collections
         /// </summary>
         internal List<MatchCollection> HideVARSMatchCollectionsList;
-        internal string HideVARSBase(string str, Dictionary<string, string> HideVARSPatterns)
+        internal string HideVARSBase(string str, Dictionary<string, string> HideVARSPatterns = null)
         {
-            if (HideVARSPatterns == null)
+            HideVARSPatterns = HideVARSPatterns ?? thDataWork.CurrentProject.HideVarsBase;
+
+            if (HideVARSPatterns == null || HideVARSPatterns.Count == 0)
             {
                 return str;
             }
@@ -275,7 +277,7 @@ namespace TranslationHelper.Projects
             }
 
             //restore broken vars
-            str = Regex.Replace(str, @"\{ ?VAR ?([0-9]{3}) ?\}","{VAR$1}");
+            str = Regex.Replace(str, @"\{ ?VAR ?([0-9]{3}) ?\}", "{VAR$1}");
 
             int mi = 0;
             foreach (Match m in HideVARSMatchCollectionsList[mcArrNum])

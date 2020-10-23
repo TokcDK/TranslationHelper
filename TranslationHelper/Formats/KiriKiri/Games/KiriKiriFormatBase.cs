@@ -202,11 +202,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         bool endsWithWait;
         private void CheckAndParseText()
         {
-            if(ParseData.TrimmedLine.Contains("残り　[emb exp=\"f.seieki_rei\"]／10　回[r]"))
-            {
-
-            }
-
             if (!ParsePatterns() &&
                 (endsWithWait = ParseData.TrimmedLine.EndsWith(waitSymbol))
                 || EndsWithValidSymbol()
@@ -228,13 +223,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
                     str = CheckAndRemoveRubyText(str);
 
-                    //hide vars here need to reduce romaji count and prevent string not to be added
-                    str = thDataWork.CurrentProject.HideVARSBase(str, thDataWork.CurrentProject.HideVarsBase);
+                    //clean string from vars for checking
+                    var CleanedStr = CleanVars(str);
 
-                    if (IsValidString(str))
+                    if (IsValidString(CleanedStr))
                     {
-                        str = thDataWork.CurrentProject.RestoreVARS(str);
-
                         if (thDataWork.OpenFileMode)
                         {
                             AddRowData(str, string.Empty, true, false);
@@ -270,6 +263,42 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 }
             }
         }
+        internal string CleanVars(string str)
+        {
+            var keyfound = false;
+            foreach (var key in thDataWork.CurrentProject.HideVarsBase.Keys)
+            {
+                if (str.Contains(key))
+                {
+                    keyfound = true;
+                    break;
+                }
+            }
+            if (!keyfound)
+            {
+                return str;
+            }
+
+            var mc = Regex.Matches(str, "(" + string.Join(")|(", thDataWork.CurrentProject.HideVarsBase.Values) + ")");
+            if (mc.Count == 0)
+            {
+                return str;
+            }
+
+            for (int m = mc.Count - 1; m >= 0; m--)
+            {
+                try
+                {
+                    str = str.Remove(mc[m].Index, mc[m].Value.Length);
+                }
+                catch (System.ArgumentOutOfRangeException)
+                {
+
+                }
+            }
+
+            return str;
+        }
 
         /// <summary>
         /// remove invalid for kirikiri symbols or replace them to some valid
@@ -278,7 +307,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         /// <returns></returns>
         protected override string FixInvalidSymbols(string str)
         {
-            return str
+            return thDataWork.CurrentProject.RestoreVARS(
+                thDataWork.CurrentProject.HideVARSBase(str)
                 .Replace("[r]", "{R}")
                 .Replace("[p]", "{P}")
                 .Replace("[lr]", "{LR}")
@@ -306,17 +336,17 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 .Replace(@"\""", "{Q}")//preremove quotes of variables
                 .Replace("\"", "`")//replace other quotes
                 .Replace("{Q}", @"\""")//return quotes of variables
-                .Replace("0", "０")
-                .Replace("1", "１")
-                .Replace("2", "２")
-                .Replace("3", "３")
-                .Replace("4", "４")
-                .Replace("5", "５")
-                .Replace("6", "６")
-                .Replace("7", "７")
-                .Replace("8", "８")
-                .Replace("9", "９")
-                ;
+                //.Replace("0", "０")
+                //.Replace("1", "１")
+                //.Replace("2", "２")
+                //.Replace("3", "３")
+                //.Replace("4", "４")
+                //.Replace("5", "５")
+                //.Replace("6", "６")
+                //.Replace("7", "７")
+                //.Replace("8", "８")
+                //.Replace("9", "９")
+                );
         }
 
         private bool EndsWithValidSymbol()
