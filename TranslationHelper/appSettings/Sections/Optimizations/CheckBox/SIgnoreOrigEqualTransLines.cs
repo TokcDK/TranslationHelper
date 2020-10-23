@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.INISettings
 {
-    class IgnoreOrigEqualTransLines : Optimizations
+    class SIgnoreOrigEqualTransLines : Optimizations
     {
-        public IgnoreOrigEqualTransLines(THDataWork thDataWork) : base(thDataWork)
+        public SIgnoreOrigEqualTransLines(THDataWork thDataWork) : base(thDataWork)
         {
         }
 

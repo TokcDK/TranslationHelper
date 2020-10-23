@@ -682,6 +682,8 @@ namespace TranslationHelper
 
             LoadSearchQueriesReplacers();
 
+            //set default values for search settings
+            chkbxDoNotTouchEqualOT.Checked = TranslationHelper.Properties.Settings.Default.IgnoreOrigEqualTransLines;
         }
 
         private void SelectTextinTextBox(string input)
