@@ -227,9 +227,6 @@ namespace TranslationHelper.Properties {
             }
         }
         
-        /// <summary>
-        /// Newline symbol specified for opened project
-        /// </summary>
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -496,13 +493,25 @@ namespace TranslationHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\r\\n")]
         public string NewLine {
             get {
                 return ((string)(this["NewLine"]));
             }
             set {
                 this["NewLine"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IgnoreOrigEqualTransLines {
+            get {
+                return ((bool)(this["IgnoreOrigEqualTransLines"]));
+            }
+            set {
+                this["IgnoreOrigEqualTransLines"] = value;
             }
         }
     }

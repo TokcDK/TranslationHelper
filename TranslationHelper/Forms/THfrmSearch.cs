@@ -479,7 +479,7 @@ namespace TranslationHelper
                         var Row = thDataWork.THFilesElementsDataset.Tables[t].Rows[r];
 
                         //skip equal lines if need, skip empty search cells && not skip when row issue search
-                        if ((ckkbxDoNotTouchEqualOT.Checked && Equals(Row[0], Row[1])) || (!ckkbxDoNotTouchEqualOT.Checked && (Row[searchcolumn] + string.Empty).Length == 0 && !SearchFindLinesWithPossibleIssuesCheckBox.Checked))
+                        if ((chkbxDoNotTouchEqualOT.Checked && Equals(Row[0], Row[1])) || (!chkbxDoNotTouchEqualOT.Checked && (Row[searchcolumn] + string.Empty).Length == 0 && !SearchFindLinesWithPossibleIssuesCheckBox.Checked))
                         {
                             continue;
                         }

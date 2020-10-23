@@ -124,6 +124,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="appSettings\Sections\Optimizations\CheckBox\IgnoreOrigEqualTransLines.cs" />
     <Compile Include="appSettings\Sections\Tools\CheckBox\SEnableTranslationCache.cs" />
     <Compile Include="appSettings\Sections\Tools\TextBox\SDBAutosaveTimeout.cs" />
     <Compile Include="appSettings\Sections\Tools\CheckBox\SEnableAutosave.cs" />

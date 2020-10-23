@@ -396,5 +396,10 @@ namespace TranslationHelper
         {
             THSettingsWebTranslationLinkTextBox.Text = (sender as ComboBox).SelectedItem.ToString();
         }
+
+        private void THOptionIgnoreOrigEqualTransLinesCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as CheckBox).Name);
+        }
     }
 }

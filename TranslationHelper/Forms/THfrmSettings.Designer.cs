@@ -46,13 +46,14 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsToolsTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.flpQuickTranslatorSelection = new System.Windows.Forms.FlowLayoutPanel();
             this.SettingsAutosaveTimeoutValueTextBox = new System.Windows.Forms.TextBox();
             this.SettingsAutosaveEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.THOptionEnableTranslationCacheCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTranslationLinkTextBox = new System.Windows.Forms.TextBox();
             this.cbxWebTranslatorsSelector = new System.Windows.Forms.ComboBox();
-            this.flpQuickTranslatorSelection = new System.Windows.Forms.FlowLayoutPanel();
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -152,6 +153,7 @@
             // 
             // THProgramSettingsReadOptionsPanel
             // 
+            this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionIgnoreOrigEqualTransLinesCheckBox);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.label5);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDontLoadStringIfRomajiPercentForOpenCheckBox);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox);
@@ -281,6 +283,14 @@
             this.panel2.Size = new System.Drawing.Size(524, 379);
             this.panel2.TabIndex = 8;
             // 
+            // flpQuickTranslatorSelection
+            // 
+            this.flpQuickTranslatorSelection.Location = new System.Drawing.Point(238, 23);
+            this.flpQuickTranslatorSelection.Margin = new System.Windows.Forms.Padding(0);
+            this.flpQuickTranslatorSelection.Name = "flpQuickTranslatorSelection";
+            this.flpQuickTranslatorSelection.Size = new System.Drawing.Size(278, 13);
+            this.flpQuickTranslatorSelection.TabIndex = 16;
+            // 
             // SettingsAutosaveTimeoutValueTextBox
             // 
             this.SettingsAutosaveTimeoutValueTextBox.Location = new System.Drawing.Point(172, 64);
@@ -359,13 +369,18 @@
             this.cbxWebTranslatorsSelector.TabIndex = 15;
             this.cbxWebTranslatorsSelector.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // flpQuickTranslatorSelection
+            // THOptionIgnoreOrigEqualTransLinesCheckBox
             // 
-            this.flpQuickTranslatorSelection.Location = new System.Drawing.Point(238, 23);
-            this.flpQuickTranslatorSelection.Margin = new System.Windows.Forms.Padding(0);
-            this.flpQuickTranslatorSelection.Name = "flpQuickTranslatorSelection";
-            this.flpQuickTranslatorSelection.Size = new System.Drawing.Size(278, 13);
-            this.flpQuickTranslatorSelection.TabIndex = 16;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.AutoSize = true;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Checked = true;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Location = new System.Drawing.Point(3, 62);
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Name = "THOptionIgnoreOrigEqualTransLinesCheckBox";
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Size = new System.Drawing.Size(182, 17);
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.TabIndex = 9;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Text = "Ignore Original=Translation lines";
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.UseVisualStyleBackColor = true;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.CheckedChanged += new System.EventHandler(this.THOptionIgnoreOrigEqualTransLinesCheckBox_CheckedChanged);
             // 
             // THfrmSettings
             // 
@@ -420,5 +435,6 @@
         internal System.Windows.Forms.ComboBox cbxWebTranslatorsSelector;
         internal System.Windows.Forms.FlowLayoutPanel flpQuickTranslatorSelection;
         internal System.Windows.Forms.TextBox THSettingsWebTranslationLinkTextBox;
+        public System.Windows.Forms.CheckBox THOptionIgnoreOrigEqualTransLinesCheckBox;
     }
 }

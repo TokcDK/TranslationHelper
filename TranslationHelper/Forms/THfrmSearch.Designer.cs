@@ -38,7 +38,7 @@
             this.ConfirmReplaceAllCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchAlwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.ckkbxDoNotTouchEqualOT = new System.Windows.Forms.CheckBox();
+            this.chkbxDoNotTouchEqualOT = new System.Windows.Forms.CheckBox();
             this.THSearchMatchCaseCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchInInfoCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchFindLinesWithPossibleIssuesCheckBox = new System.Windows.Forms.CheckBox();
@@ -210,7 +210,7 @@
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.ckkbxDoNotTouchEqualOT, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.chkbxDoNotTouchEqualOT, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.THSearchMatchCaseCheckBox, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.SearchInInfoCheckBox, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.SearchFindLinesWithPossibleIssuesCheckBox, 0, 2);
@@ -226,15 +226,15 @@
             // 
             // ckkbxDoNotTouchEqualOT
             // 
-            this.ckkbxDoNotTouchEqualOT.AutoSize = true;
-            this.ckkbxDoNotTouchEqualOT.Checked = true;
-            this.ckkbxDoNotTouchEqualOT.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckkbxDoNotTouchEqualOT.Location = new System.Drawing.Point(3, 72);
-            this.ckkbxDoNotTouchEqualOT.Name = "ckkbxDoNotTouchEqualOT";
-            this.ckkbxDoNotTouchEqualOT.Size = new System.Drawing.Size(182, 17);
-            this.ckkbxDoNotTouchEqualOT.TabIndex = 27;
-            this.ckkbxDoNotTouchEqualOT.Text = "Ignore Original=Translation lines";
-            this.ckkbxDoNotTouchEqualOT.UseVisualStyleBackColor = true;
+            this.chkbxDoNotTouchEqualOT.AutoSize = true;
+            this.chkbxDoNotTouchEqualOT.Checked = true;
+            this.chkbxDoNotTouchEqualOT.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkbxDoNotTouchEqualOT.Location = new System.Drawing.Point(3, 72);
+            this.chkbxDoNotTouchEqualOT.Name = "ckkbxDoNotTouchEqualOT";
+            this.chkbxDoNotTouchEqualOT.Size = new System.Drawing.Size(182, 17);
+            this.chkbxDoNotTouchEqualOT.TabIndex = 27;
+            this.chkbxDoNotTouchEqualOT.Text = "Ignore Original=Translation lines";
+            this.chkbxDoNotTouchEqualOT.UseVisualStyleBackColor = true;
             // 
             // THSearchMatchCaseCheckBox
             // 
@@ -661,7 +661,7 @@
         private System.Windows.Forms.Label ClearFindWhatTextBoxLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.CheckBox ckkbxDoNotTouchEqualOT;
+        private System.Windows.Forms.CheckBox chkbxDoNotTouchEqualOT;
         private System.Windows.Forms.RadioButton SearchRangeSelectedRadioButton;
         private System.Windows.Forms.RadioButton SearchRangeVisibleRadioButton;
     }
