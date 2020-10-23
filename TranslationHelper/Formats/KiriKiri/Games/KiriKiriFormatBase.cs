@@ -11,6 +11,10 @@ namespace TranslationHelper.Formats.KiriKiri.Games
     {
         protected KiriKiriFormatBase(THDataWork thDataWork) : base(thDataWork)
         {
+            thDataWork.CurrentProject.HideVarsBase = new Dictionary<string, string>() 
+            {
+                {"[emb exp=\"", VARRegexPattern} 
+            };
         }
 
         protected Encoding encoding = Encoding.Unicode;
@@ -224,11 +228,16 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
                     str = CheckAndRemoveRubyText(str);
 
-                    str = HideVARS(str, out MatchCollection mc);
+                    str = thDataWork.CurrentProject.HideVARSBase(str, thDataWork.CurrentProject.HideVarsBase); //HideVARS(str, out MatchCollection mc);
 
                     if (thDataWork.OpenFileMode)
                     {
-                        AddRowData(str, string.Empty, true, true);
+                        if(IsValidString(str))
+                        {
+                            str = thDataWork.CurrentProject.RestoreVARS(str);
+                            //str = RestoreVARS(str, mc);
+                            AddRowData(str, string.Empty, true, false);
+                        }
                     }
                     else
                     {
@@ -245,11 +254,14 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
                             str = FixInvalidSymbols(thDataWork.TablesLinesDict[str]);//set translation and fixes
 
-                            str = RestoreVARS(str, mc);
+                            str = thDataWork.CurrentProject.RestoreVARS(str);
+                            //str = RestoreVARS(str, mc);
 
                             strarr[i] = str;
                         }
                     }
+
+                    thDataWork.CurrentProject.HideVARSMatchCollectionsList?.Clear();//clear list of matches for hidevarbase
                 }
                 if (thDataWork.SaveFileMode && transApplied && ParseData.Ret)
                 {

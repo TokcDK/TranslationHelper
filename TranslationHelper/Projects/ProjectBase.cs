@@ -211,22 +211,22 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// list of variables for hide
         /// </summary>
-        protected Dictionary<string, string> HideVarsBase;
+        internal Dictionary<string, string> HideVarsBase;
         /// <summary>
         /// list of found matches collections
         /// </summary>
         internal List<MatchCollection> HideVARSMatchCollectionsList;
-        protected string HideVARSBase(string str, Dictionary<string, string> HideVARSPatterns)
+        internal string HideVARSBase(string str, Dictionary<string, string> HideVARSPatterns)
         {
             if (HideVARSPatterns == null)
             {
-                return string.Empty;
+                return str;
             }
 
             var keyfound = false;
             foreach (var key in HideVARSPatterns.Keys)
             {
-                if (!str.Contains(key))
+                if (str.Contains(key))
                 {
                     keyfound = true;
                     break;
@@ -234,19 +234,13 @@ namespace TranslationHelper.Projects
             }
             if (!keyfound)
             {
-                return string.Empty;
+                return str;
             }
 
-            List<string> Patterns = new List<string>();
-            foreach (var pattern in HideVARSPatterns.Values)
-            {
-                Patterns.Add("(" + pattern + ")");
-            }
-
-            var mc = Regex.Matches(str, string.Join("|", Patterns));
+            var mc = Regex.Matches(str, "(" + string.Join(")|(", HideVARSPatterns.Values) + ")");
             if (mc.Count == 0)
             {
-                return string.Empty;
+                return str;
             }
 
             if (HideVARSMatchCollectionsList == null)//init list
@@ -261,7 +255,7 @@ namespace TranslationHelper.Projects
             {
                 try
                 {
-                    str = str.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, "{VAR" + m + "}");
+                    str = str.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, "{VAR" + m.ToString("000") + "}");
                 }
                 catch (System.ArgumentOutOfRangeException)
                 {
@@ -273,23 +267,20 @@ namespace TranslationHelper.Projects
         }
 
         int mcArrNum;
-        protected string RestoreVARS(string str)
+        internal string RestoreVARS(string str)
         {
             if (HideVARSMatchCollectionsList == null || HideVARSMatchCollectionsList.Count == 0 || !str.Contains("VAR") || HideVARSMatchCollectionsList[mcArrNum].Count == 0)
             {
-                return string.Empty;
+                return str;
             }
 
             //restore broken vars
-            foreach (Match p in Regex.Matches(str, @"\{ ?VAR ?[0-9]{1,2} ?\}"))
-            {
-                str = str.Replace(p.Value, p.Value.Replace(" ", string.Empty));
-            }
+            str = Regex.Replace(str, @"\{ ?VAR ?([0-9]{3}) ?\}","{VAR$1}");
 
             int mi = 0;
             foreach (Match m in HideVARSMatchCollectionsList[mcArrNum])
             {
-                str = str.Replace("{VAR" + mi + "}", m.Value);
+                str = str.Replace("{VAR" + mi.ToString("000") + "}", m.Value);
                 mi++;
             }
             mcArrNum++;
