@@ -16,6 +16,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
     {
         protected KiriKiriGameBase(THDataWork thDataWork) : base(thDataWork)
         {
+            HideVarsBase = new Dictionary<string, string>()
+            {
+                {"[emb exp=\"", @"\[emb exp\=\""[^\""]+\""\]"}
+            };
         }
 
         protected bool CheckKiriKiriBase()

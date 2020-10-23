@@ -11,10 +11,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games
     {
         protected KiriKiriFormatBase(THDataWork thDataWork) : base(thDataWork)
         {
-            thDataWork.CurrentProject.HideVarsBase = new Dictionary<string, string>() 
-            {
-                {"[emb exp=\"", VARRegexPattern} 
-            };
         }
 
         protected Encoding encoding = Encoding.Unicode;
@@ -56,7 +52,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         protected const string waitSymbol = "[待]";
         protected const string newlineSymbol = "[落]";
-        protected const string VARRegexPattern = @"\[emb exp\=\""[^\""]+\""\]";
         protected override Dictionary<string, string> Patterns()
         {
             return new Dictionary<string, string>()
@@ -228,40 +223,41 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
                     str = CheckAndRemoveRubyText(str);
 
-                    str = thDataWork.CurrentProject.HideVARSBase(str, thDataWork.CurrentProject.HideVarsBase); //HideVARS(str, out MatchCollection mc);
+                    //hide vars here need to reduce romaji count and prevent string not to be added
+                    str = thDataWork.CurrentProject.HideVARSBase(str, thDataWork.CurrentProject.HideVarsBase);
 
-                    if (thDataWork.OpenFileMode)
+                    if (IsValidString(str))
                     {
-                        if(IsValidString(str))
+                        if (thDataWork.OpenFileMode)
                         {
                             str = thDataWork.CurrentProject.RestoreVARS(str);
-                            //str = RestoreVARS(str, mc);
                             AddRowData(str, string.Empty, true, false);
+                        }
+                        else
+                        {
+                            if (thDataWork.TablesLinesDict.ContainsKey(str))
+                            {
+                                if (!ParseData.Ret)
+                                {
+                                    ParseData.Ret = true;
+                                }
+                                if (!transApplied)
+                                {
+                                    transApplied = true;
+                                }
+
+                                str = FixInvalidSymbols(thDataWork.TablesLinesDict[str]);//set translation and fixes
+
+                                str = thDataWork.CurrentProject.RestoreVARS(str);
+
+                                strarr[i] = str;
+                            }
                         }
                     }
                     else
                     {
-                        if (IsValidString(str) && thDataWork.TablesLinesDict.ContainsKey(str))
-                        {
-                            if (!ParseData.Ret)
-                            {
-                                ParseData.Ret = true;
-                            }
-                            if (!transApplied)
-                            {
-                                transApplied = true;
-                            }
-
-                            str = FixInvalidSymbols(thDataWork.TablesLinesDict[str]);//set translation and fixes
-
-                            str = thDataWork.CurrentProject.RestoreVARS(str);
-                            //str = RestoreVARS(str, mc);
-
-                            strarr[i] = str;
-                        }
+                        thDataWork.CurrentProject.HideVARSMatchCollectionsList?.Clear();//clear list of matches for hidevarbase
                     }
-
-                    thDataWork.CurrentProject.HideVARSMatchCollectionsList?.Clear();//clear list of matches for hidevarbase
                 }
                 if (thDataWork.SaveFileMode && transApplied && ParseData.Ret)
                 {
@@ -269,62 +265,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     ParseData.line = s + (endsWithWait && !s.EndsWith(waitSymbol) ? waitSymbol : string.Empty);
                 }
             }
-        }
-
-        /// <summary>
-        /// restore hidden variables {VAR#} to [emb exp="varvalue"]
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        private static string RestoreVARS(string str, MatchCollection mc)
-        {
-            if (mc != null && str.Contains("{VAR"))
-            {
-                //[emb exp ="mp.storage"]
-                //var mc = Regex.Matches(str, VARRegexPattern);
-                if (mc.Count > 0)
-                {
-                    int mi = 0;
-                    foreach (Match m in mc)//return vars
-                    {
-                        str = str.Replace("{VAR" + mi + "}", m.Value);
-                        mi++;
-                    }
-                }
-            }
-            return str;
-        }
-
-        /// <summary>
-        /// hide variables [emb exp="varvalue"] in {VAR#}
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        private static string HideVARS(string str, out MatchCollection mc)
-        {
-            if (str.Contains("[emb exp=\""))
-            {
-                //[emb exp ="mp.storage"]
-                mc = Regex.Matches(str, VARRegexPattern);
-                //int VARnum = mc.Count;
-                for (int m = mc.Count - 1; m >= 0; m--)
-                {
-                    try
-                    {
-                        str = str.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, "{VAR" + m + "}");
-                    }
-                    catch (System.ArgumentOutOfRangeException)
-                    {
-
-                    }
-                }
-            }
-            else
-            {
-                mc = null;
-            }
-
-            return str;
         }
 
         /// <summary>
