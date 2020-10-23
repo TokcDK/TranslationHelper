@@ -202,6 +202,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         bool endsWithWait;
         private void CheckAndParseText()
         {
+            if(ParseData.TrimmedLine.Contains("残り　[emb exp=\"f.seieki_rei\"]／10　回[r]"))
+            {
+
+            }
+
             if (!ParsePatterns() &&
                 (endsWithWait = ParseData.TrimmedLine.EndsWith(waitSymbol))
                 || EndsWithValidSymbol()
@@ -228,9 +233,10 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
                     if (IsValidString(str))
                     {
+                        str = thDataWork.CurrentProject.RestoreVARS(str);
+
                         if (thDataWork.OpenFileMode)
                         {
-                            str = thDataWork.CurrentProject.RestoreVARS(str);
                             AddRowData(str, string.Empty, true, false);
                         }
                         else
@@ -247,8 +253,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                                 }
 
                                 str = FixInvalidSymbols(thDataWork.TablesLinesDict[str]);//set translation and fixes
-
-                                str = thDataWork.CurrentProject.RestoreVARS(str);
 
                                 strarr[i] = str;
                             }
