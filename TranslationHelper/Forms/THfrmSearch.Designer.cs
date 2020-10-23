@@ -32,7 +32,7 @@
             this.THSearch1st = new System.Windows.Forms.TabPage();
             this.SearchResultsPanel = new System.Windows.Forms.Panel();
             this.SearchResultsDatagridview = new System.Windows.Forms.DataGridView();
-            this.lblError = new System.Windows.Forms.Label();
+            this.lblSearchMsg = new System.Windows.Forms.Label();
             this.THSearchPanel = new System.Windows.Forms.Panel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.ConfirmReplaceAllCheckBox = new System.Windows.Forms.CheckBox();
@@ -101,7 +101,7 @@
             // THSearch1st
             // 
             this.THSearch1st.Controls.Add(this.SearchResultsPanel);
-            this.THSearch1st.Controls.Add(this.lblError);
+            this.THSearch1st.Controls.Add(this.lblSearchMsg);
             this.THSearch1st.Controls.Add(this.THSearchPanel);
             this.THSearch1st.Location = new System.Drawing.Point(4, 22);
             this.THSearch1st.Name = "THSearch1st";
@@ -142,13 +142,13 @@
             // 
             // lblError
             // 
-            this.lblError.AutoSize = true;
-            this.lblError.Location = new System.Drawing.Point(6, 294);
-            this.lblError.Name = "lblError";
-            this.lblError.Size = new System.Drawing.Size(25, 13);
-            this.lblError.TabIndex = 18;
-            this.lblError.Text = "info";
-            this.lblError.Visible = false;
+            this.lblSearchMsg.AutoSize = true;
+            this.lblSearchMsg.Location = new System.Drawing.Point(6, 294);
+            this.lblSearchMsg.Name = "lblError";
+            this.lblSearchMsg.Size = new System.Drawing.Size(25, 13);
+            this.lblSearchMsg.TabIndex = 18;
+            this.lblSearchMsg.Text = "info";
+            this.lblSearchMsg.Visible = false;
             // 
             // THSearchPanel
             // 
@@ -645,7 +645,7 @@
         private System.Windows.Forms.RadioButton SearchRangeTableRadioButton;
         private System.Windows.Forms.RadioButton SearchRangeAllRadioButton;
         private System.Windows.Forms.Panel panel6;
-        private System.Windows.Forms.Label lblError;
+        private System.Windows.Forms.Label lblSearchMsg;
         private System.Windows.Forms.Button FindAllButton;
         private System.Windows.Forms.CheckBox THSearchMatchCaseCheckBox;
         private System.Windows.Forms.GroupBox SearchModeGroupBox;

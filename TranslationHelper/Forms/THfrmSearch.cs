@@ -170,7 +170,7 @@ namespace TranslationHelper
                 else
                 {
                     startrowsearchindex = 0;
-                    lblError.Visible = false;
+                    lblSearchMsg.Visible = false;
                     oDsResults = thDataWork.THFilesElementsDataset.Clone();
 
                     DataTable drFoundRowsTable = SearchNew(oDsResults);
@@ -213,8 +213,8 @@ namespace TranslationHelper
                         else
                         {
                             //PopulateGrid(null);
-                            lblError.Visible = true;
-                            lblError.Text = "Nothing Found.";
+                            lblSearchMsg.Visible = true;
+                            lblSearchMsg.Text = "Nothing Found.";
                             this.Height = 368;
                         }
                     }
@@ -410,7 +410,7 @@ namespace TranslationHelper
         {
             if (thDataWork.THFilesElementsDataset != null && (SearchFindLinesWithPossibleIssuesCheckBox.Checked || SearchFormFindWhatTextBox.Text.Length > 0))
             {
-                lblError.Visible = false;
+                lblSearchMsg.Visible = false;
                 oDsResults = thDataWork.THFilesElementsDataset.Clone();
                 //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
                 DataTable drFoundRowsTable = SearchNew(oDsResults);
@@ -424,8 +424,8 @@ namespace TranslationHelper
                         oDsResults.AcceptChanges();
                         PopulateGrid(oDsResults);
 
-                        lblError.Visible = true;
-                        lblError.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
+                        lblSearchMsg.Visible = true;
+                        lblSearchMsg.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
                         this.Height = 589;
 
 
@@ -433,8 +433,8 @@ namespace TranslationHelper
                     else
                     {
                         //PopulateGrid(null);
-                        lblError.Visible = true;
-                        lblError.Text = T._("Nothing Found");
+                        lblSearchMsg.Visible = true;
+                        lblSearchMsg.Text = T._("Nothing Found");
                         SearchResultsDatagridview.DataSource = null;
                         SearchResultsDatagridview.Refresh();
                         this.Height = 368;
@@ -447,6 +447,7 @@ namespace TranslationHelper
 
         private DataTable SearchNew(DataSet DS)
         {
+            lblSearchMsg.Visible = false;
             if (thDataWork.THFilesElementsDataset.Tables.Count > 0)
             {
                 string searchcolumn = GetSearchColumn();
@@ -550,9 +551,16 @@ namespace TranslationHelper
                                         }
                                     }
                                 }
+                                catch (ArgumentException ex)
+                                {
+                                    //при ошибках регекса выходить
+                                    lblSearchMsg.Visible = true;
+                                    lblSearchMsg.Text = T._("Invalid regex") + ">" + ex.Message;
+                                    return null;
+                                }
                                 catch
                                 {
-                                    return null;//при ошибках регекса выходить
+                                    return null;
                                 }
                             }
                             else//common text search
@@ -877,7 +885,7 @@ namespace TranslationHelper
                 else
                 {
                     startrowsearchindex = 0;
-                    lblError.Visible = false;
+                    lblSearchMsg.Visible = false;
                     oDsResults = thDataWork.THFilesElementsDataset.Clone();
 
                     DataTable drFoundRowsTable = SearchNew(oDsResults);
@@ -920,8 +928,8 @@ namespace TranslationHelper
                         else
                         {
                             //PopulateGrid(null);
-                            lblError.Visible = true;
-                            lblError.Text = T._("Nothing Found.");
+                            lblSearchMsg.Visible = true;
+                            lblSearchMsg.Text = T._("Nothing Found.");
                             this.Height = 368;
                         }
                     }
@@ -948,7 +956,7 @@ namespace TranslationHelper
             }
 
 
-            lblError.Visible = false;
+            lblSearchMsg.Visible = false;
             oDsResults = thDataWork.THFilesElementsDataset.Clone();
             DataTable drFoundRowsTable = SearchNew(oDsResults);
 
@@ -964,8 +972,8 @@ namespace TranslationHelper
                     oDsResults.AcceptChanges();
                     PopulateGrid(oDsResults);
 
-                    lblError.Visible = true;
-                    lblError.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
+                    lblSearchMsg.Visible = true;
+                    lblSearchMsg.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
                     this.Height = 589;
 
                     string searchcolumn = GetSearchColumn();
@@ -1019,8 +1027,8 @@ namespace TranslationHelper
                 else
                 {
                     //PopulateGrid(null);
-                    lblError.Visible = true;
-                    lblError.Text = T._("Nothing Found");
+                    lblSearchMsg.Visible = true;
+                    lblSearchMsg.Text = T._("Nothing Found");
                     this.Height = 368;
                 }
             }
