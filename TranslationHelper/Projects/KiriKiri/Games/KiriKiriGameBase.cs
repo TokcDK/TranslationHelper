@@ -324,7 +324,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 else if (arc_conv && !File.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileName(THSettingsData.ArcConvExePath()))))
                 {
                     File.Copy(THSettingsData.ArcConvExePath(), Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileName(THSettingsData.ArcConvExePath())));
-                    File.Copy(Path.Combine(THSettingsData.ArcConvDirPath(), Path.GetFileName(THSettingsData.ArcConvExePath()) + ".dat"), Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileNameWithoutExtension(THSettingsData.ArcConvExePath()) + ".dat"));
+                    File.Copy(Path.Combine(THSettingsData.ArcConvDirPath(), Path.GetFileNameWithoutExtension(THSettingsData.ArcConvExePath()) + ".dat"), Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileNameWithoutExtension(THSettingsData.ArcConvExePath()) + ".dat"));
                 }
 
                 var targetPatchPath = Path.Combine(Properties.Settings.Default.THSelectedGameDir, PatchName + ".xp3");
@@ -559,7 +559,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return false;
         }
 
-        protected static string[] GetXP3Files()
+        protected string[] GetXP3Files()
         {
             List<string> dataFiles = new List<string>();
             if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "data.xp3")))
@@ -586,23 +586,22 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                     if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name)))
                     {
-                        if (File.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name)))
+                        if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name + ".translation")))
                         {
-                            File.Delete(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name));
                             File.Delete(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name));
-                            if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name + ".translation")))
-                            {
-                                File.Delete(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name + ".translation"));
-                            }
                             if (Directory.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name.Replace(".xp3", string.Empty))))
                             {
                                 Directory.Delete(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name.Replace(".xp3", string.Empty)));
                             }
-                        }
-                        else if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name + ".translation")))
-                        {
-                            File.Delete(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name + ".translation"));
-                            File.Delete(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name));
+                            if (thDataWork.OpenFileMode)
+                            {
+                                return dataFiles.ToArray();
+                            }
+                            else
+                            {
+                                File.Delete(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name + ".translation"));
+                                File.Delete(Path.Combine(Properties.Settings.Default.THSelectedGameDir, name));
+                            }
                         }
                         else
                         {
