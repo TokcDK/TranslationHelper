@@ -324,7 +324,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 else if (arc_conv && !File.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileName(THSettingsData.ArcConvExePath()))))
                 {
                     File.Copy(THSettingsData.ArcConvExePath(), Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileName(THSettingsData.ArcConvExePath())));
-                    File.Copy(Path.Combine(THSettingsData.ArcConvDirPath(), Path.GetFileName(THSettingsData.ArcConvExePath()) + ".dat"), Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileName(THSettingsData.ArcConvExePath()) + ".dat"));
+                    File.Copy(Path.Combine(THSettingsData.ArcConvDirPath(), Path.GetFileName(THSettingsData.ArcConvExePath()) + ".dat"), Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileNameWithoutExtension(THSettingsData.ArcConvExePath()) + ".dat"));
                 }
 
                 var targetPatchPath = Path.Combine(Properties.Settings.Default.THSelectedGameDir, PatchName + ".xp3");
@@ -386,10 +386,11 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                     ;
                 File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "MakePatch.cmd"), cmdContent);
 
-                Task.Run(() => FunctionsProcess.RunProcess(arc_conv ? THSettingsData.ArcConvExePath() : LE, args, Properties.Settings.Default.THProjectWorkDir)).ConfigureAwait(true);
+                FunctionsProcess.RunProcess(arc_conv ? THSettingsData.ArcConvExePath() : LE, args, Properties.Settings.Default.THProjectWorkDir);
+
                 if (!File.Exists(patch))
                 {
-                    Task.Delay(2000);
+                    Thread.Sleep(2000);
                 }
                 if (!File.Exists(patch))
                 {
