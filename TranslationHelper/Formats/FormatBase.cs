@@ -132,14 +132,9 @@ namespace TranslationHelper.Formats
         {
             while (ReadLine() != null)
             {
-                int parseLineResult;
-                if ((parseLineResult = ParseStringFileLine()) == -1)
+                if (ParseStringFileLine() == -1)
                 {
                     break;
-                }
-                else if (parseLineResult == 0)
-                {
-                    continue;
                 }
             }
         }
@@ -260,7 +255,7 @@ namespace TranslationHelper.Formats
             {
                 if (ParseData.Ret && thDataWork.SaveFileMode && ParseData.ResultForWrite.Length > 0)
                 {
-                    File.WriteAllText(filePath.Length > 0 ? filePath : thDataWork.FilePath, ParseData.ResultForWrite.ToString(), FunctionsFileFolder.GetEncoding(thDataWork.FilePath));
+                    File.WriteAllText(filePath.Length > 0 ? filePath : GetFilePath(), ParseData.ResultForWrite.ToString(), FunctionsFileFolder.GetEncoding(thDataWork.FilePath));
                     return true;
                 }
             }
@@ -269,6 +264,15 @@ namespace TranslationHelper.Formats
 
             }
             return false;
+        }
+
+        /// <summary>
+        /// file destination for write
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string GetFilePath()
+        {
+            return thDataWork.FilePath;
         }
 
         protected class ParseFileData

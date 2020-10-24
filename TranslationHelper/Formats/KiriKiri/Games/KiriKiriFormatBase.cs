@@ -42,12 +42,12 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         internal override bool Open()
         {
-            return OpenSaveKS();
+            return ParseStringFile();
         }
 
         internal override bool Save()
         {
-            return OpenSaveKS(false);
+            return ParseStringFile();
         }
 
         protected const string waitSymbol = "[待]";
@@ -112,10 +112,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 {
                     AddTables(ParseData.tablename);
                 }
-                else
-                {
-
-                }
 
                 //using (var reader = new StreamReader(thDataWork.FilePath, true /*FileEncoding()*/))
                 using (var reader = new StreamReader(thDataWork.FilePath, FileEncoding()))
@@ -125,7 +121,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     {
                         if (!IsEmptyOrComment())
                         {
-                            CheckAndParseText();
+                            //CheckAndParseText();
                         }
 
                         SaveModeAddLine();
@@ -191,22 +187,25 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             {
                 ParseData.IsComment = false;
             }
-            if (ParseData.IsComment)
-            {
-                return false;
-            }
 
-            return (ParseData.TrimmedLine = ParseData.line).Length == 0 || (ParseData.TrimmedLine.Length > 0 && ParseData.TrimmedLine[0] == ';') || ParseData.TrimmedLine.StartsWith("//");
+            return ParseData.IsComment || (ParseData.TrimmedLine = ParseData.line).Length == 0 || (ParseData.TrimmedLine.Length > 0 && ParseData.TrimmedLine[0] == ';') || ParseData.TrimmedLine.StartsWith("//");
+        }
+
+        protected override void ParseStringFilePreOpenExtra()
+        {
+            ParseData.IsComment = false;
         }
 
         bool endsWithWait;
-        private void CheckAndParseText()
+        protected override int ParseStringFileLine()
         {
-            if (!ParsePatterns() &&
-                (endsWithWait = ParseData.TrimmedLine.EndsWith(waitSymbol))
-                || EndsWithValidSymbol()
-                )
+            var ret = 0;
+
+            if (!IsEmptyOrComment() && !ParsePatterns() && 
+                ((endsWithWait = ParseData.TrimmedLine.EndsWith(waitSymbol)) || EndsWithValidSymbol())
+               )
             {
+
                 bool transApplied = false;
                 var strarr = ParseData.line.Split(new[] { newlineSymbol }, System.StringSplitOptions.None);
                 var strarrLength = strarr.Length;
@@ -262,7 +261,17 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     ParseData.line = s + (endsWithWait && !s.EndsWith(waitSymbol) ? waitSymbol : string.Empty);
                 }
             }
+
+            SaveModeAddLine();
+
+            return ret;
         }
+        protected override string GetFilePath()
+        {
+            //write translated files to patch dir
+            return Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchDirName, Path.GetFileName(thDataWork.FilePath));
+        }
+
         internal string CleanVars(string str)
         {
             var keyfound = false;
