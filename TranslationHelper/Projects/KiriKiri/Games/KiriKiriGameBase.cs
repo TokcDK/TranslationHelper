@@ -74,16 +74,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
             masks = masks ?? new[] { "*.ks" };
 
-            int i = 0;
-            foreach (var mask in masks)
+            if (OpenSaveFilesBase(dir, format, masks, true))
             {
-                if (mask.Length == 0)
-                    continue;
-
-                if (OpenSaveFilesBase(dir, format[i], mask, true))
-                {
-                    ret = true;
-                }
+                ret = true;
             }
 
             thDataWork.TablesLinesDict.Clear();

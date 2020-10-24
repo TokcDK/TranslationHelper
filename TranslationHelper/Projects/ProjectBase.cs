@@ -100,6 +100,33 @@ namespace TranslationHelper.Projects
         }
 
         /// <summary>
+        /// open save project files for several file formats/masks
+        /// </summary>
+        /// <param name="DirForSearch"></param>
+        /// <param name="format"></param>
+        /// <param name="masks"></param>
+        /// <param name="Newest"></param>
+        /// <returns></returns>
+        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, List<FormatBase> format, string[] masks = null, bool Newest = false)
+        {
+            if(masks==null || format==null || format.Count!= masks.Length)
+            {
+                return false;
+            }
+
+            var ret = false;
+            for (int i = 0; i < masks.Length; i++)
+            {
+                if (OpenSaveFilesBase(DirForSearch, format[i], masks[i], Newest))
+                {
+                    ret = true;
+                }
+            }
+
+            return ret;
+        }
+
+        /// <summary>
         /// open or save project files
         /// </summary>
         /// <returns></returns>
