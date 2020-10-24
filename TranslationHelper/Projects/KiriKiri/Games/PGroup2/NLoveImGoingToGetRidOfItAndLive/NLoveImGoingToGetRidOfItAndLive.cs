@@ -1,5 +1,4 @@
-﻿using System.IO;
-using TranslationHelper.Data;
+﻿using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Projects.KiriKiri.Games.PGroup2;
 
@@ -10,6 +9,11 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         public NLoveImGoingToGetRidOfItAndLive(THDataWork thDataWork) : base(thDataWork)
         {
             exeCRC = "a83b58570eee4fabfd0e91f3fc67beab";
+        }
+
+        internal override string Name()
+        {
+            return "Nラブ ―ネ取りネ取られ生きるのさ―";
         }
 
         internal override bool Check()
@@ -24,66 +28,46 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
             return false;
         }
 
-        internal override bool Open()
+        protected override Formats.FormatBase Format()
         {
-            return ExtractXP3Data()
-                && OpenFiles(new System.Collections.Generic.List<Formats.FormatBase>
-                {
-                    new Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(thDataWork)
-                }
-                );
+            return new TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(thDataWork);
         }
 
-        internal override string Name()
-        {
-            return "Nラブ ―ネ取りネ取られ生きるのさ―";
-        }
+        //private bool SaveFilesOld()
+        //{
+        //    bool ret = false;
 
-        internal override bool Save()
-        {
-            //SaveFilesOld();
-            return SaveFiles(new System.Collections.Generic.List<Formats.FormatBase>
-            {
-                new Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(thDataWork)
-            }
-            );
-        }
+        //    thDataWork.CurrentProject.FillTablesLinesDict();
 
-        private bool SaveFilesOld()
-        {
-            bool ret = false;
+        //    //PatchDir
+        //    //var PatchDir = Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "_patch"));
 
-            thDataWork.CurrentProject.FillTablesLinesDict();
+        //    foreach (var file in Directory.EnumerateFileSystemEntries(Properties.Settings.Default.THProjectWorkDir, "*.ks", SearchOption.AllDirectories))
+        //    {
+        //        if (!thDataWork.THFilesElementsDataset.Tables.Contains(Path.GetFileName(file)))
+        //        {
+        //            continue;
+        //        }
+        //        thDataWork.FilePath = file;
+        //        thDataWork.Main.ProgressInfo(true, T._("opening file: ") + Path.GetFileName(file));
+        //        try
+        //        {
+        //            if (new Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(thDataWork).Save())
+        //            {
+        //                ret = true;
+        //            }
+        //        }
+        //        catch
+        //        {
+        //        }
+        //    }
+        //    thDataWork.TablesLinesDict.Clear();
 
-            //PatchDir
-            //var PatchDir = Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "_patch"));
+        //    //PackTranslatedFilesInPatch();
 
-            foreach (var file in Directory.EnumerateFileSystemEntries(Properties.Settings.Default.THProjectWorkDir, "*.ks", SearchOption.AllDirectories))
-            {
-                if (!thDataWork.THFilesElementsDataset.Tables.Contains(Path.GetFileName(file)))
-                {
-                    continue;
-                }
-                thDataWork.FilePath = file;
-                thDataWork.Main.ProgressInfo(true, T._("opening file: ") + Path.GetFileName(file));
-                try
-                {
-                    if (new Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(thDataWork).Save())
-                    {
-                        ret = true;
-                    }
-                }
-                catch
-                {
-                }
-            }
-            thDataWork.TablesLinesDict.Clear();
+        //    thDataWork.Main.ProgressInfo(false);
 
-            //PackTranslatedFilesInPatch();
-
-            thDataWork.Main.ProgressInfo(false);
-
-            return ret;
-        }
+        //    return ret;
+        //}
     }
 }

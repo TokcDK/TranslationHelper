@@ -112,7 +112,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 {
                     AddTables(ParseData.tablename);
                 }
-                if (Path.GetFileName(thDataWork.FilePath) == "klayers.ks")
+                else
                 {
 
                 }
@@ -202,11 +202,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         bool endsWithWait;
         private void CheckAndParseText()
         {
-            if (ParseData.TrimmedLine.Contains("tf.excite_toko_text='賢者の時'"))
-            {
-
-            }
-
             if (!ParsePatterns() &&
                 (endsWithWait = ParseData.TrimmedLine.EndsWith(waitSymbol))
                 || EndsWithValidSymbol()

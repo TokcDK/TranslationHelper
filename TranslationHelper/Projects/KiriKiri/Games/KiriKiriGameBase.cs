@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -48,136 +47,48 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         /// <param name="format">must be one as minimum and set for each mask</param>
         /// <param name="masks">{ "*.ks" } by default</param>
         /// <returns>true if atleast one file was open</returns>
-        protected bool OpenFiles(List<FormatBase> format, string[] masks = null)
+        protected bool OpenSaveFiles(List<FormatBase> format, string[] masks = null)
         {
             var ret = false;
+
+            if (thDataWork.OpenFileMode)
+            {
+                ret = ExtractXP3Data();
+
+                if (!ret)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                //PatchDir
+                Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchDirName));
+
+                thDataWork.CurrentProject.FillTablesLinesDict();
+            }
+
             var dir = new DirectoryInfo(GetXP3OrigDirPath());
             if (!dir.Exists)
                 return false;
 
             masks = masks ?? new[] { "*.ks" };
 
+            int i = 0;
             foreach (var mask in masks)
             {
                 if (mask.Length == 0)
                     continue;
 
-                thDataWork.Main.ProgressInfo(true, T._("get list of files") + " (" + mask + ")");
-                var files = GetNewestFilesList(dir, mask);
-
-                int i = 0;
-                foreach (var file in files)
+                if (OpenSaveFilesBase(dir, format[i], mask, true))
                 {
-                    if (file.Name == "map_status.ks")
-                    {
-
-                    }
-
-                    thDataWork.FilePath = file.FullName;
-                    thDataWork.Main.ProgressInfo(true, T._("open file: ") + file.Name);
-                    try
-                    {
-                        if (format[i].Open())
-                        {
-                            ret = true;
-                        }
-                    }
-                    catch
-                    {
-                        thDataWork.Main.ProgressInfo(true, T._("failed to open file file: ") + file.Name);
-                    }
-                }
-            }
-
-            thDataWork.Main.ProgressInfo(false);
-            return ret;
-        }
-
-        protected static List<FileInfo> GetNewestFilesList(DirectoryInfo dir, string mask = "*.*")
-        {
-            var newestfiles = new Dictionary<string, FileInfo>();
-
-            foreach (var file in dir.EnumerateFiles(mask, SearchOption.AllDirectories))
-            {
-                var name = file.Name;
-                bool contains = newestfiles.ContainsKey(name);
-                if (contains)
-                {
-                    if (file.LastWriteTime <= newestfiles[name].LastWriteTime)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        newestfiles[name] = file;
-                    }
-                }
-                else
-                {
-                    newestfiles.Add(name, file);
-                }
-            }
-
-            return newestfiles.Values.ToList();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="format">must be one as minimum and set for each mask</param>
-        /// <param name="masks">{ "*.ks" } by default</param>
-        /// <returns>true if atleast one file was saved</returns>
-        protected bool SaveFiles(List<FormatBase> format, string[] masks = null)
-        {
-            var dir = new DirectoryInfo(GetXP3OrigDirPath());
-            if (!dir.Exists)
-                return false;
-
-            masks = masks ?? new[] { "*.ks" };
-
-            //PatchDir
-            Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchDirName));
-
-            thDataWork.CurrentProject.FillTablesLinesDict();
-
-            var tableslist = thDataWork.THFilesElementsDataset.Tables;
-
-            bool ret = false;
-            foreach (var mask in masks)
-            {
-                if (mask.Length == 0)
-                    continue;
-
-                thDataWork.Main.ProgressInfo(true, T._("get list of files") + " (" + mask + ")");
-                var files = GetNewestFilesList(dir, mask);
-
-                int i = 0;
-                foreach (var file in files)
-                {
-                    //if (!tableslist.Contains(file.Name))
-                    //{
-                    //    continue;
-                    //}
-
-                    thDataWork.FilePath = file.FullName;
-                    thDataWork.Main.ProgressInfo(true, T._("save file: ") + file.Name);
-                    try
-                    {
-                        if (format[i].Save())
-                        {
-                            ret = true;
-                        }
-                    }
-                    catch
-                    {
-                        thDataWork.Main.ProgressInfo(true, T._("failed to save file file: ") + file.Name);
-                    }
+                    ret = true;
                 }
             }
 
             thDataWork.TablesLinesDict.Clear();
 
-            if (ret)
+            if (ret && thDataWork.SaveFileMode)
             {
                 thDataWork.Main.ProgressInfo(true, T._("create and copy patch to the game folder"));
                 ret = PackTranslatedFilesInPatch();
@@ -192,6 +103,29 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         internal override string ProjectFolderName()
         {
             return "KiriKiri";
+        }
+
+        protected virtual Formats.FormatBase Format()
+        {
+            return new Formats.KiriKiri.Games.KS(thDataWork);
+        }
+
+        internal override bool Open()
+        {
+            return OpenSaveFiles(new List<FormatBase>
+                {
+                    Format()
+                }
+                );
+        }
+
+        internal override bool Save()
+        {
+            return OpenSaveFiles(new List<FormatBase>
+            {
+                Format()
+            }
+            );
         }
 
         protected string KiriKiriWorkOrigFolder;

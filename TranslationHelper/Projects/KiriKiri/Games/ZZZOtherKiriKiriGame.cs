@@ -19,23 +19,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return Path.GetFileName(Properties.Settings.Default.THProjectWorkDir) + "(" + thDataWork.SPath + ")";
         }
 
-        internal override bool Open()
+        protected override Formats.FormatBase Format()
         {
-            return ExtractXP3Data()
-                && OpenFiles(new System.Collections.Generic.List<Formats.FormatBase>
-                {
-                    new Formats.KiriKiri.Games.KS(thDataWork)
-                }
-                );
-        }
-
-        internal override bool Save()
-        {
-            return SaveFiles(new System.Collections.Generic.List<Formats.FormatBase>
-            {
-                new Formats.KiriKiri.Games.KS(thDataWork)
-            }
-            );
+            return new Formats.KiriKiri.Games.KS(thDataWork);
         }
     }
 }

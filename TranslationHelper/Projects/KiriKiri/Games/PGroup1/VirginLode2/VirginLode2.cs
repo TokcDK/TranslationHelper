@@ -1,7 +1,5 @@
-﻿using System;
-using TranslationHelper.Data;
+﻿using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2;
 
 namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
 {
@@ -12,14 +10,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
             exeCRC = "dacf4898da60741356cc5c254774e5cb";
         }
 
-        internal override bool Open()
+        internal override string Name()
         {
-            return ExtractXP3Data()
-                && OpenFiles(new System.Collections.Generic.List<Formats.FormatBase>
-                {
-                    new KS(thDataWork)
-                }
-                );
+            return "Virgin Lode 2";
         }
 
         internal override bool Check()
@@ -34,14 +27,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
             return false;
         }
 
-        internal override string Name()
+        protected override Formats.FormatBase Format()
         {
-            return "Virgin Lode 2";
-        }
-
-        internal override bool Save()
-        {
-            throw new NotImplementedException();
+            return new TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2.KS(thDataWork);
         }
     }
 }

@@ -103,7 +103,7 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, FormatBase format, string mask = "*")
+        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, FormatBase format, string mask = "*", bool Newest = false)
         {
             if (mask == "*")
             {
@@ -112,7 +112,8 @@ namespace TranslationHelper.Projects
 
             var ret = false;
             if (DirForSearch.Exists)
-                foreach (var file in DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
+            {
+                foreach (var file in Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
                 {
                     thDataWork.FilePath = file.FullName;
                     thDataWork.Main.ProgressInfo(true, (thDataWork.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
@@ -121,9 +122,37 @@ namespace TranslationHelper.Projects
                         ret = true;
                     }
                 }
+            }
 
             thDataWork.Main.ProgressInfo(false);
             return ret;
+        }
+        protected static List<FileInfo> GetNewestFilesList(DirectoryInfo dir, string mask = "*.*")
+        {
+            var newestfiles = new Dictionary<string, FileInfo>();
+
+            foreach (var file in dir.EnumerateFiles(mask, SearchOption.AllDirectories))
+            {
+                var name = file.Name;
+                bool contains = newestfiles.ContainsKey(name);
+                if (contains)
+                {
+                    if (file.LastWriteTime <= newestfiles[name].LastWriteTime)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        newestfiles[name] = file;
+                    }
+                }
+                else
+                {
+                    newestfiles.Add(name, file);
+                }
+            }
+
+            return newestfiles.Values.ToList();
         }
 
         /// <summary>
