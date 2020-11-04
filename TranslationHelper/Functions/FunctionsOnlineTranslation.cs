@@ -569,7 +569,7 @@ namespace TranslationHelper.Functions
                     }
 
                     //перевести, если после прохода по всем таблицам добавленные строки так и не были переведены
-                    if (InputLines.Count > 0)
+                    if (InputLines.Count > 0 || InputLinesInfo.Count > 0)
                     {
                         TranslateItNow(InputLines, InputLinesInfo);
                     }
@@ -902,43 +902,43 @@ namespace TranslationHelper.Functions
 
         private void TranslateItNow(List<string> InputLines, List<InputLinesInfoData> InputLinesInfo)
         {
-            if (InputLines.Count > 0)
+            if (InputLines.Count > 0 || InputLinesInfo.Count > 0)
             {
                 TranslateLinesAndSetTranslation(InputLines, InputLinesInfo/*, THTranslationCache*/);
             }
-            else if (InputLinesInfo.Count > 0)
-            {
-                int PreviousTableIndex = -1;
-                int PreviousRowIndex = -1;
-                int NewTableIndex;
-                int NewRowIndex;
-                int rowscount = InputLinesInfo.Count;
-                StringBuilder ResultValue = new StringBuilder(rowscount);
-                for (int i = 0; i < rowscount; i++)
-                {
-                    var rowInfo = InputLinesInfo[i];
-                    NewTableIndex = rowInfo.GetTableIndex;
-                    NewRowIndex = rowInfo.GetRowIndex;
-                    if (string.IsNullOrEmpty(rowInfo.GetOriginal))
-                    {
-                        ResultValue.Append(Environment.NewLine);
-                    }
-                    else if (!string.IsNullOrEmpty(rowInfo.GetCachedTranslation))
-                    {
-                        ResultValue.Append(rowInfo.GetCachedTranslation);
-                    }
-                    if (NewRowIndex == PreviousRowIndex && i < rowscount - 1)
-                    {
-                        ResultValue.Append(Environment.NewLine);
-                    }
-                    else
-                    {
-                        SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue/*, THTranslationCache*/);
-                    }
-                    PreviousTableIndex = NewTableIndex;
-                    PreviousRowIndex = NewRowIndex;
-                }
-            }
+            //else if (InputLinesInfo.Count > 0)
+            //{
+            //    int PreviousTableIndex = -1;
+            //    int PreviousRowIndex = -1;
+            //    int NewTableIndex;
+            //    int NewRowIndex;
+            //    int rowscount = InputLinesInfo.Count;
+            //    StringBuilder ResultValue = new StringBuilder(rowscount);
+            //    for (int i = 0; i < rowscount; i++)
+            //    {
+            //        var rowInfo = InputLinesInfo[i];
+            //        NewTableIndex = rowInfo.GetTableIndex;
+            //        NewRowIndex = rowInfo.GetRowIndex;
+            //        if (string.IsNullOrEmpty(rowInfo.GetOriginal))
+            //        {
+            //            ResultValue.Append(Environment.NewLine);
+            //        }
+            //        else if (!string.IsNullOrEmpty(rowInfo.GetCachedTranslation))
+            //        {
+            //            ResultValue.Append(rowInfo.GetCachedTranslation);
+            //        }
+            //        if (NewRowIndex == PreviousRowIndex && i < rowscount - 1)
+            //        {
+            //            ResultValue.Append(Environment.NewLine);
+            //        }
+            //        else
+            //        {
+            //            SetTranslationResultToCellIfEmpty(PreviousTableIndex, PreviousRowIndex, ResultValue/*, THTranslationCache*/);
+            //        }
+            //        PreviousTableIndex = NewTableIndex;
+            //        PreviousRowIndex = NewRowIndex;
+            //    }
+            //}
 
 
             //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
@@ -1052,25 +1052,30 @@ namespace TranslationHelper.Functions
                 //Translator.ResetCache();
 
                 //send string array to translation for multiline
-                string[] TranslatedLines = null;
-                try
+                string[] TranslatedLines = new string[1];
+                TranslatedLines[0] = "";
+
+                if (InputLines.Count > 0)
                 {
-                    var OriginalLinesPreapplied = ApplyProjectPretranslationAction(OriginalLines);
-                    TranslatedLines = Translator.Translate(OriginalLinesPreapplied);
-                    if (TranslatedLines == null || TranslatedLines.Length == 0 || InputLines.Count != TranslatedLines.Length)
+                    try
                     {
-                        return;
+                        var OriginalLinesPreapplied = ApplyProjectPretranslationAction(OriginalLines);
+                        TranslatedLines = Translator.Translate(OriginalLinesPreapplied);
+                        if (TranslatedLines == null || (TranslatedLines.Length == 0 && InputLinesInfo.Count == 0) || InputLines.Count != TranslatedLines.Length)
+                        {
+                            return;
+                        }
+                        TranslatedLines = ApplyProjectPosttranslationAction(OriginalLines, TranslatedLines);
                     }
-                    TranslatedLines = ApplyProjectPosttranslationAction(OriginalLines, TranslatedLines);
-                }
-                catch (Exception ex)
-                {
-                    new FunctionsLogs().LogToFile("TranslateLinesAndSetTranslation. Error while translation:"
-                        + Environment.NewLine
-                        + ex
-                        + Environment.NewLine
-                        + "OriginalLines="
-                        + string.Join(Environment.NewLine + "</br>" + Environment.NewLine, OriginalLines));
+                    catch (Exception ex)
+                    {
+                        new FunctionsLogs().LogToFile("TranslateLinesAndSetTranslation. Error while translation:"
+                            + Environment.NewLine
+                            + ex
+                            + Environment.NewLine
+                            + "OriginalLines="
+                            + string.Join(Environment.NewLine + "</br>" + Environment.NewLine, OriginalLines));
+                    }
                 }
 
                 //int infoCount = InputLinesInfo.Rows.Count;

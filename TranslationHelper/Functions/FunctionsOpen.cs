@@ -489,9 +489,6 @@ namespace TranslationHelper.Functions
         private void AfterOpenCleaning()
         {
             thDataWork.TablesLinesDict?.Clear();
-            thDataWork.TranslationRegexRules?.Clear();
-            thDataWork.TranslationRegexRulesGroup?.Clear();
-            thDataWork.CellFixesRegexRules?.Clear();
             thDataWork.ENQuotesToJPLearnDataFoundNext?.Clear();
             thDataWork.ENQuotesToJPLearnDataFoundPrev?.Clear();
         }
