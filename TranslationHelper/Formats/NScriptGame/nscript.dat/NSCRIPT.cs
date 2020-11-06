@@ -158,7 +158,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         private bool IsComment()
         {
-            return ParseData.TrimmedLine.TrimStart().StartsWith(";");
+            return ParseData.line.TrimStart().StartsWith(";");
         }
 
         internal override bool Save()

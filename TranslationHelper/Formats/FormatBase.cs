@@ -155,7 +155,10 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual string ReadLine()
         {
-            return ParseData.line = ParseData.reader.ReadLine();
+            ParseData.line = ParseData.reader.ReadLine();
+            ParseData.TrimmedLine = ParseData.line;
+
+            return ParseData.line;
         }
 
         /// <summary>
@@ -297,7 +300,7 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// trimmed line value
             /// </summary>
-            internal string TrimmedLine { get => trimmed; set => trimmed = value.Trim(); }
+            internal string TrimmedLine { get => trimmed; set => trimmed = value!=null ? value.Trim():""; }
             /// <summary>
             /// Usually here adding file's content for write
             /// </summary>
