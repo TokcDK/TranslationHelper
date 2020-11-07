@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using TranslationHelper.Data;
 
@@ -35,6 +36,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             {
                 byte currentbyte;
                 var zerobytes = new List<byte>();
+                var ffbytes = new List<byte>();
                 var candidate = new List<byte>();
                 var readstring = true;
                 var translatedbytes = new List<byte>();
@@ -55,6 +57,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 //var first = br.ReadBytes(Encoding.GetEncoding(932).GetBytes("　　極至王プラムちゃん").Length);
                 //var str = Encoding.GetEncoding(932).GetString(first);
 
+                //var s = Encoding.GetEncoding(932).GetBytes("");
+
                 while (br.BaseStream.Position < endpos)
                 {
                     currentbyte = br.ReadByte();
@@ -73,13 +77,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     }
                     else
                     {
-                        if (currentbyte != 0)
+                        if (currentbyte != 0 && currentbyte != 0xFF)
                         {
                             var str = Encoding.GetEncoding(932).GetString(candidate.ToArray());
                             var maxbytes = candidate.Count + zerobytes.Count;
-                            var info = "Zero bytes length after" + " (" + zerobytes.Count + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
+                            var info = "Orig bytes length("+ Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + zerobytes.Count + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
+                            var IsAdded = false;
                             //addrow here if valid
-                            if (maxbytes > 4)
+                            if (maxbytes > 20)//skip all candidates spam
                             {
                                 if(thDataWork.OpenFileMode)
                                 {
@@ -87,11 +92,25 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 }
                                 else
                                 {
-                                    if (IsValidString(str))
+                                    if (IsValidString(str) && TablesLinesDict.ContainsKey(str))
                                     {
-
+                                        str = TablesLinesDict[str];
+                                        IsAdded = true;
                                     }
                                 }
+                            }
+
+                            if (thDataWork.SaveFileMode && IsAdded)
+                            {
+                                foreach (var b in zerobytes)
+                                    translatedbytes.Add(b);
+
+                                foreach (var b in ffbytes)
+                                    translatedbytes.Add(b);
+
+                                byte[] bs = Encoding.GetEncoding(932).GetBytes(str);
+                                foreach (var b in bs)
+                                    translatedbytes.Add(b);
                             }
 
                             //clear lists
@@ -104,7 +123,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         }
                         else
                         {
-                            zerobytes.Add(currentbyte);
+                            if(currentbyte == 0)
+                            {
+                                zerobytes.Add(currentbyte);
+                            }
+                            else if (currentbyte == 0xff)
+                            {
+                                ffbytes.Add(currentbyte);
+                            }
                         }
                     }
                 }

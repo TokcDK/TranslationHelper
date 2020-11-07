@@ -402,7 +402,7 @@ namespace TranslationHelper.Functions
             System.Media.SystemSounds.Beep.Play();
         }
 
-        internal static void LoadTranslationIfNeed(THDataWork thDataWork)
+        internal async static void LoadTranslationIfNeed(THDataWork thDataWork)
         {
             var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(thDataWork), FunctionsDBFile.GetDBFileName(thDataWork) + FunctionsDBFile.GetDBCompressionExt(thDataWork));
             if (File.Exists(lastautosavepath))
@@ -410,14 +410,14 @@ namespace TranslationHelper.Functions
                 var LoadFoundDBQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (LoadFoundDBQuestion == DialogResult.Yes)
                 {
-                    thDataWork.Main.LoadTranslationFromDB(lastautosavepath, false, true);
+                    await Task.Run(()=>thDataWork.Main.LoadTranslationFromDB(lastautosavepath, false, true)).ConfigureAwait(false);
                 }
                 else
                 {
                     var LoadTranslationsFromAllDBQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (LoadTranslationsFromAllDBQuestion == DialogResult.Yes)
                     {
-                        thDataWork.Main.LoadTranslationFromDB(string.Empty, true);
+                        await Task.Run(() => thDataWork.Main.LoadTranslationFromDB(string.Empty, true)).ConfigureAwait(false);
                     }
                 }
             }

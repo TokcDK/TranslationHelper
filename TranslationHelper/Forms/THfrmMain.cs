@@ -671,10 +671,13 @@ namespace TranslationHelper
                         //THInfoTextBox.Text += furigana.Expression + "\r\n";
                         //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
                         //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
+
                         if (thDataWork.THFilesElementsDatasetInfo != null && thDataWork.THFilesElementsDatasetInfo.Tables.Count > tableIndex && thDataWork.THFilesElementsDatasetInfo.Tables[tableIndex].Rows.Count > rowIndex)
                         {
                             THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + thDataWork.THFilesElementsDatasetInfo.Tables[tableIndex].Rows[rowIndex][0];
                         }
+
+                        THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(SelectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(SelectedCellValue);
 
                         if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
                         {
