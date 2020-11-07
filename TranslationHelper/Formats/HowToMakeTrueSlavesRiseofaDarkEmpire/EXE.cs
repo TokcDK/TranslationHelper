@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using TranslationHelper.Data;
 
@@ -27,10 +26,13 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             ParseStringFilePreOpen();
 
-            var startpos = 1720080;
-            var endpos = 2689376;
-            var l1 = 256;
-            var l2 = 1280;
+            long startpos = 1720080;
+            long endpos = 2689376;
+
+            List<byte> translatedbytes=null;//new file content
+            if (thDataWork.SaveFileMode)
+                translatedbytes = new List<byte>();//init only for translation
+
             using (FileStream fs = new FileStream(thDataWork.SPath, FileMode.Open, FileAccess.Read))
             using (BinaryReader br = new BinaryReader(fs, Encoding.GetEncoding(932)))
             {
@@ -39,7 +41,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 var ffbytes = new List<byte>();
                 var candidate = new List<byte>();
                 var readstring = true;
-                var translatedbytes = new List<byte>();
+                var BaseStreamLength = br.BaseStream.Length;
+                var ffbytesForSave = new List<byte>();
 
                 if (thDataWork.OpenFileMode)
                 {
@@ -47,10 +50,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 }
                 else
                 {
-                    var startbytes = br.ReadBytes(startpos);
-                    foreach (var b in startbytes)
+                    //add bytes before start position
+                    while (br.BaseStream.Position < startpos)
                     {
-                        translatedbytes.Add(b);
+                        translatedbytes.Add(br.ReadByte());
                     }
                 }
 
@@ -58,7 +61,6 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 //var str = Encoding.GetEncoding(932).GetString(first);
 
                 //var s = Encoding.GetEncoding(932).GetBytes("");
-
                 while (br.BaseStream.Position < endpos)
                 {
                     currentbyte = br.ReadByte();
@@ -81,12 +83,12 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         {
                             var str = Encoding.GetEncoding(932).GetString(candidate.ToArray());
                             var maxbytes = candidate.Count + zerobytes.Count;
-                            var info = "Orig bytes length("+ Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + zerobytes.Count + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
-                            var IsAdded = false;
+                            var info = "Orig bytes length(" + Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + zerobytes.Count + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
+
                             //addrow here if valid
                             if (maxbytes > 20)//skip all candidates spam
                             {
-                                if(thDataWork.OpenFileMode)
+                                if (thDataWork.OpenFileMode)
                                 {
                                     AddRowData(str, info, true, true);
                                 }
@@ -95,53 +97,83 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     if (IsValidString(str) && TablesLinesDict.ContainsKey(str))
                                     {
                                         str = TablesLinesDict[str];
-                                        IsAdded = true;
                                     }
                                 }
                             }
 
-                            if (thDataWork.SaveFileMode && IsAdded)
+                            if (thDataWork.SaveFileMode)
                             {
-                                foreach (var b in zerobytes)
+                                foreach (var b in ffbytesForSave)// add pre FF bytes if exist
                                     translatedbytes.Add(b);
 
-                                foreach (var b in ffbytes)
+                                var strBytes = Encoding.GetEncoding(932).GetBytes(str);
+                                foreach (var b in strBytes)//add main string bytes
                                     translatedbytes.Add(b);
 
-                                byte[] bs = Encoding.GetEncoding(932).GetBytes(str);
-                                foreach (var b in bs)
-                                    translatedbytes.Add(b);
+                                var newmax = maxbytes - strBytes.Length;//calculate new zero count for rest memory bytes size
+                                for (int b = 0; b < newmax; b++)//add zero bytes
+                                    translatedbytes.Add(0xff);
                             }
 
                             //clear lists
                             candidate.Clear();
                             zerobytes.Clear();
+                            if (thDataWork.SaveFileMode)
+                            {
+                                if (ffbytes.Count > 0)
+                                {
+                                    ffbytesForSave = ffbytes;//set presnexttring FF for write with next string
+                                    ffbytes.Clear();
+                                }
+                                else
+                                {
+                                    ffbytesForSave.Clear();
+                                }
+                            }
 
                             //start to add new
                             candidate.Add(currentbyte);
                             readstring = true;
                         }
-                        else
+                        else //we count here rest of zero bytes and pre FF bytes
                         {
-                            if(currentbyte == 0)
+                            if (currentbyte == 0)
                             {
                                 zerobytes.Add(currentbyte);
                             }
-                            else if (currentbyte == 0xff)
+                            else if (thDataWork.SaveFileMode && currentbyte == 0xff) // only need for save mode
                             {
-                                ffbytes.Add(currentbyte);
+                                ffbytes.Add(currentbyte);//save FF bytes for next string to write
                             }
                         }
                     }
                 }
+
+                if (thDataWork.SaveFileMode)
+                {
+                    //add rest bytes of the stream
+                    while (BaseStreamLength > br.BaseStream.Position)
+                    {
+                        translatedbytes.Add(br.ReadByte());
+                    }
+                }
             }
 
-            return CheckTablesContent(ParseData.tablename);
+            if (thDataWork.OpenFileMode)
+            {
+                return CheckTablesContent(ParseData.tablename);
+            }
+            else
+            {
+                File.WriteAllBytes(thDataWork.FilePath, translatedbytes.ToArray());
+
+                return true;
+            }
         }
 
         internal override bool Save()
         {
-            throw new NotImplementedException();
+            return OpenSaveEXE();
         }
     }
 }
