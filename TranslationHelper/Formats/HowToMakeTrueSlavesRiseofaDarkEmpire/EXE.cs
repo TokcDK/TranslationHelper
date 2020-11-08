@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using TranslationHelper.Data;
@@ -27,11 +26,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             ParseStringFilePreOpen();
 
             long startpos = 1720080;
-            long endpos = 2689376;
+            long endpos = 6803572;
 
-            List<byte> translatedbytes=null;//new file content
+            List<byte> translatedbytes = null;//new file content
+            var translatedbytesControlPosition = 0;
             if (thDataWork.SaveFileMode)
+            {
                 translatedbytes = new List<byte>();//init only for translation
+            }
 
             using (FileStream fs = new FileStream(thDataWork.SPath, FileMode.Open, FileAccess.Read))
             using (BinaryReader br = new BinaryReader(fs, Encoding.GetEncoding(932)))
@@ -54,14 +56,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     while (br.BaseStream.Position < startpos)
                     {
                         translatedbytes.Add(br.ReadByte());
+                        translatedbytesControlPosition++;
                     }
                 }
 
-                //var first = br.ReadBytes(Encoding.GetEncoding(932).GetBytes("　　極至王プラムちゃん").Length);
-                //var str = Encoding.GetEncoding(932).GetString(first);
-
-                //var s = Encoding.GetEncoding(932).GetBytes("");
-                while (br.BaseStream.Position < endpos)
+                while (br.BaseStream.Position <= endpos)
                 {
                     currentbyte = br.ReadByte();
 
@@ -103,16 +102,40 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
                             if (thDataWork.SaveFileMode)
                             {
-                                foreach (var b in ffbytesForSave)// add pre FF bytes if exist
-                                    translatedbytes.Add(b);
+                                var pos = br.BaseStream.Position - 1; //-1 because 1st byte of next string already read in currentbyte
 
-                                var strBytes = Encoding.GetEncoding(932).GetBytes(str);
-                                foreach (var b in strBytes)//add main string bytes
-                                    translatedbytes.Add(b);
+                                if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
+                                {
+                                    foreach (var b in ffbytesForSave)// add pre FF bytes if exist
+                                    {
+                                        translatedbytes.Add(b);
+                                        translatedbytesControlPosition++;
+                                        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
 
-                                var newmax = maxbytes - strBytes.Length;//calculate new zero count for rest memory bytes size
-                                for (int b = 0; b < newmax; b++)//add zero bytes
-                                    translatedbytes.Add(0xff);
+                                if (translatedbytesControlPosition < pos - 1)
+                                {
+                                    var strBytes = Encoding.GetEncoding(932).GetBytes(str);
+                                    foreach (var b in strBytes)//add main string bytes
+                                    {
+                                        translatedbytes.Add(b);
+                                        translatedbytesControlPosition++;
+                                        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                while (translatedbytesControlPosition < pos)//add new zero bytes count after string, add only before stream position
+                                {
+                                    translatedbytes.Add(0);
+                                    translatedbytesControlPosition++;
+                                }
                             }
 
                             //clear lists
@@ -122,13 +145,26 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             {
                                 if (ffbytes.Count > 0)
                                 {
-                                    ffbytesForSave = ffbytes;//set presnexttring FF for write with next string
-                                    ffbytes.Clear();
+                                    ffbytesForSave = ffbytes;//set prenextstring FF for write with next string
                                 }
                                 else
                                 {
                                     ffbytesForSave.Clear();
                                 }
+                                ffbytes.Clear();
+                            }
+
+                            if (br.BaseStream.Position >= endpos)
+                            {
+
+                                if (thDataWork.SaveFileMode)
+                                {
+                                    //add currentbyte to translation because it was already read but cyrcle will over
+                                    translatedbytes.Add(currentbyte); 
+                                    translatedbytesControlPosition++;
+                                }
+
+                                break;
                             }
 
                             //start to add new
@@ -155,6 +191,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     while (BaseStreamLength > br.BaseStream.Position)
                     {
                         translatedbytes.Add(br.ReadByte());
+                        translatedbytesControlPosition++;
                     }
                 }
             }

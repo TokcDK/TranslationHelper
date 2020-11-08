@@ -580,8 +580,18 @@ namespace TranslationHelper.Projects
 
             var ret = false;
 
-            foreach (var path in paths)
+            foreach (var subpath in paths)
             {
+                string path;
+                if (subpath.StartsWith(@".\") || subpath.StartsWith(@"..\"))
+                {
+                    path = Path.GetFullPath(Path.Combine(Properties.Settings.Default.THSelectedDir, subpath));
+                }
+                else
+                {
+                    path = subpath;
+                }
+
                 var target = path.EndsWith(".bak") ? path.Remove(path.Length - 4, 4) : path;
                 if (bak)
                 {

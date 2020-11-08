@@ -55,38 +55,32 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
 
 
-            //if (openPath.Length == 0)
-            //{
-            //    openPath = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data");
-            //}
+            if (openPath.Length == 0)
+            {
+                openPath = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data");
+            }
 
-            //var txtFormat = new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(thDataWork);
-            //if (OpenSaveFilesBase(new DirectoryInfo(openPath), txtFormat, "*.txt"))
-            //{
-            //    ret = true;
-            //}
+            var txtFormat = new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(thDataWork);
+            if (OpenSaveFilesBase(new DirectoryInfo(openPath), txtFormat, "*.txt"))
+            {
+                ret = true;
+            }
 
 
-            //foreach (string txt in Directory.EnumerateFiles(openPath, "*.txt", SearchOption.AllDirectories))
-            //{
-            //    thDataWork.FilePath = txt;
-            //    thDataWork.Main.ProgressInfo(true, Path.GetFileName(txt));
+            foreach (string txt in Directory.EnumerateFiles(openPath, "*.txt", SearchOption.AllDirectories))
+            {
+                thDataWork.FilePath = txt;
+                thDataWork.Main.ProgressInfo(true, Path.GetFileName(txt));
 
-            //    //if (File.Exists(txt + ".orig"))
-            //    //{
-            //    //    File.Delete(txt);
-            //    //    File.Move(txt + ".orig", txt);
-            //    //}
-
-            //    if (IsOpen)
-            //    {
-            //        txtFormat.Open();
-            //    }
-            //    else
-            //    {
-            //        txtFormat.Save();
-            //    }
-            //}
+                if (IsOpen)
+                {
+                    txtFormat.Open();
+                }
+                else
+                {
+                    txtFormat.Save();
+                }
+            }
 
             thDataWork.Main.ProgressInfo(false);
             return ret;
@@ -101,6 +95,23 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
         {
             OpenFilesSerial(false);
             return true;
+        }
+
+        readonly string[] BackupPaths = new string[3]
+        {
+            @".\data\Script",
+            @".\data\AdditionalScript",
+            @".\正しい性奴隷の使い方.exe"
+        };
+
+        internal override bool BakCreate()
+        {
+            return BuckupRestorePaths(BackupPaths);
+        }
+
+        internal override bool BakRestore()
+        {
+            return BuckupRestorePaths(BackupPaths, false);
         }
     }
 }
