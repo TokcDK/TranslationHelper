@@ -99,7 +99,7 @@ namespace TranslationHelper.Functions
 
                         /*THMsg*/
                         FunctionsSounds.OpenProjectFailed();
-                        MessageBox.Show(T._("Problem with source opening. Try to report to devs about it."));
+                        MessageBox.Show(T._("Failed to open project"));
                     }
                     else
                     {
