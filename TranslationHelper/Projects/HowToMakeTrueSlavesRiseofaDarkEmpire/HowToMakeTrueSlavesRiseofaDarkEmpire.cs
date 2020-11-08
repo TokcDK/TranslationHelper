@@ -11,7 +11,12 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         internal override string Name()
         {
-            return "How To Make True Slaves -Rise of a Dark Empire-";
+            return "How to make true slaves -Rise of a Dark Empire-";
+        }
+
+        internal override string GetProjectDBFileName()
+        {
+            return Name();
         }
 
         internal override bool Check()
