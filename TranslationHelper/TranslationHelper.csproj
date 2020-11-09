@@ -218,6 +218,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\Temp\HardFixesTempBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\RemoveIeroglifs.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\Temp\LuaLiaFix.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SetOriginalToTranslation.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SplitLongLinesSpec.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SplitLongLines.cs" />
