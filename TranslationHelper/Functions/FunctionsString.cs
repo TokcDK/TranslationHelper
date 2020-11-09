@@ -2,8 +2,9 @@
 using System.Globalization;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Main.Functions;
 
-namespace TranslationHelper.Main.Functions
+namespace TranslationHelper.Functions
 {
     /// <summary>
     /// Functions for work with strings
@@ -141,7 +142,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="variant"></param>
         internal static void StringCaseMorph(THDataWork thDataWork, int TableIndex, int variant, bool All = false)
         {
-            if (thDataWork.THFilesElementsDataset == null || variant > 2 || (!All && (TableIndex == -1 || thDataWork.Main.THFileElementsDataGridView == null)))
+            if (thDataWork.THFilesElementsDataset == null || variant > 2 || !All && (TableIndex == -1 || thDataWork.Main.THFileElementsDataGridView == null))
             {
                 return;
             }
@@ -200,7 +201,7 @@ namespace TranslationHelper.Main.Functions
                         var DSTransCell = row[ctransind] + string.Empty;
                         if (!string.IsNullOrWhiteSpace(DSTransCell)// not empty translation
                             && DSTransCell != DSOrigCell//not equal to original
-                            && (variant != 1 || (variant == 1 && !DSTransCell.StartsWith("'s ")))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
+                            && (variant != 1 || variant == 1 && !DSTransCell.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
                             )
                         {
                             if (IsAnimations && variant == 1 && DSTransCell.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
@@ -260,7 +261,7 @@ namespace TranslationHelper.Main.Functions
                     }
                     else
                     {
-                        if (c > 0 && ((@char == 's' && inputString[c - 1] == '\'') || inputString[c - 1] == '\\'))
+                        if (c > 0 && (@char == 's' && inputString[c - 1] == '\'' || inputString[c - 1] == '\\'))
                         {
                         }
                         else

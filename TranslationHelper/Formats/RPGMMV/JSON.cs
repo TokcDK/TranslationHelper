@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.RPGMMV

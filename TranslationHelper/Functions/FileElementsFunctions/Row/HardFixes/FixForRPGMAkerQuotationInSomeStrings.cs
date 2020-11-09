@@ -1,5 +1,4 @@
 ﻿using TranslationHelper.Data;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {

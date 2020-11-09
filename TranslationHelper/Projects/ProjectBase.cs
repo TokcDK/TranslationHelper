@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
+using TranslationHelper.Functions;
 
 namespace TranslationHelper.Projects
 {
@@ -109,7 +110,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, List<FormatBase> format, string[] masks = null, bool Newest = false)
         {
-            if(masks==null || format==null || format.Count!= masks.Length)
+            if (masks == null || format == null || format.Count != masks.Length)
             {
                 return false;
             }
@@ -130,18 +131,23 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, FormatBase format, string mask = "*", bool Newest = false)
+        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, FormatBase format, string mask = "*", bool Newest = false, string[] exclusions = null)
         {
             if (mask == "*")
             {
                 mask += format.Ext();
             }
 
+            exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
+
             var ret = false;
             if (DirForSearch.Exists)
             {
                 foreach (var file in Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
                 {
+                    if (exclusions != null && file.FullName.IsStringAContainsAnyFromArray(exclusions))//skip exclusions
+                        continue;
+
                     thDataWork.FilePath = file.FullName;
                     thDataWork.Main.ProgressInfo(true, (thDataWork.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
                     if (thDataWork.OpenFileMode ? format.Open() : format.Save())

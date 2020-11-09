@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats
@@ -256,7 +257,7 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                if (ParseData.Ret && thDataWork.SaveFileMode && ParseData.ResultForWrite.Length > 0)
+                if (ParseData.Ret && thDataWork.SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(thDataWork.FilePath))
                 {
                     File.WriteAllText(filePath.Length > 0 ? filePath : GetFilePath(), ParseData.ResultForWrite.ToString(), FunctionsFileFolder.GetEncoding(thDataWork.FilePath));
                     return true;

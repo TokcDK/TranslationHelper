@@ -71,21 +71,21 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
                 ret = true;
             }
 
+            //old
+            //foreach (string txt in Directory.EnumerateFiles(openPath, "*.txt", SearchOption.AllDirectories))
+            //{
+            //    thDataWork.FilePath = txt;
+            //    thDataWork.Main.ProgressInfo(true, Path.GetFileName(txt));
 
-            foreach (string txt in Directory.EnumerateFiles(openPath, "*.txt", SearchOption.AllDirectories))
-            {
-                thDataWork.FilePath = txt;
-                thDataWork.Main.ProgressInfo(true, Path.GetFileName(txt));
-
-                if (IsOpen)
-                {
-                    txtFormat.Open();
-                }
-                else
-                {
-                    txtFormat.Save();
-                }
-            }
+            //    if (IsOpen)
+            //    {
+            //        txtFormat.Open();
+            //    }
+            //    else
+            //    {
+            //        txtFormat.Save();
+            //    }
+            //}
 
             thDataWork.Main.ProgressInfo(false);
             return ret;

@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
@@ -17,6 +18,231 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         }
 
         internal override bool Open()
+        {
+            return ParseStringFile();
+        }
+        protected override Encoding DefaultEncoding()
+        {
+            return Encoding.GetEncoding(932);
+        }
+
+        bool readmode;
+        readonly StringBuilder sb = new StringBuilder();
+        private string LastMSGType;
+
+        protected override int ParseStringFileLine()
+        {
+            if (readmode)
+            {
+                bool startswithsharp = ParseData.line.StartsWith("#");
+                bool startswithOther = StartsWithOther(ParseData.line);
+                if (startswithsharp || startswithOther /*string.IsNullOrEmpty(line)*/)
+                {
+                    var str = sb.ToString().TrimEnd();
+                    if (thDataWork.OpenFileMode)
+                    {
+                        AddRowData(str, string.Empty, true);
+                    }
+                    else
+                    {
+                        var extraEmptyLinesForWrite = sb.ToString().Replace(str, string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
+
+                        if (IsValidString(str) && TablesLinesDict.ContainsKey(str))
+                        {
+
+                            //split lines
+                            var newLine = TablesLinesDict[str].SplitMultiLineIfBeyondOfLimit(60);//37 if transform all en chars to jp variants
+
+                            MakeRequiredEdits(ref newLine);
+
+                            ParseData.ResultForWrite.AppendLine(newLine + extraEmptyLinesForWrite);
+
+                            if (str != newLine)
+                            {
+                                ParseData.Ret = true;
+                            }
+                        }
+                        else
+                        {
+                            ParseData.ResultForWrite.AppendLine(sb.ToString() + Environment.NewLine);
+                        }
+                    }
+
+                    readmode = false;
+                    sb.Clear();
+
+                    if (startswithsharp)
+                    {
+                        if (IsMessage(ParseData.line))
+                        {
+                            ParseMessage();
+                            return 0;
+                        }
+                        else if (IsVoicedMessage(ParseData.line))
+                        {
+                            ParseVoicedMessage();
+                            return 0;
+                        }
+                        else if (IsChoiceVariants(ParseData.line))
+                        {
+                            ParseChoices();
+                            return 0;
+                        }
+                    }
+                }
+                else
+                {
+                    if (sb.Length > 0)
+                    {
+                        sb.Append(Environment.NewLine);
+                    }
+                    sb.Append(ParseData.line);
+                }
+
+                if (thDataWork.SaveFileMode && (startswithsharp || startswithOther))
+                {
+                    ParseData.ResultForWrite.AppendLine(ParseData.line);
+                }
+
+                return 0;
+            }
+            else
+            {
+                if (IsCommentary(ParseData.line))//commented or empty
+                {
+                    if (thDataWork.SaveFileMode)
+                        ParseData.ResultForWrite.AppendLine(ParseData.line);
+                    return 0;
+                }
+                else if (IsMessage(ParseData.line))
+                {
+                    ParseMessage();
+                    return 0;
+                }
+                else if (IsVoicedMessage(ParseData.line))
+                {
+                    ParseVoicedMessage();
+                    return 0;
+                }
+                else if (IsChoiceVariants(ParseData.line))
+                {
+                    ParseChoices();
+                    return 0;
+                }
+            }
+
+            if (thDataWork.SaveFileMode)
+                ParseData.ResultForWrite.AppendLine(ParseData.line);
+
+            return 0;
+        }
+
+        private void ParseMessage()
+        {
+            LastMSGType = ParseData.line;
+            if (thDataWork.SaveFileMode)
+                ParseData.ResultForWrite.AppendLine(ParseData.line);
+            readmode = true;
+        }
+
+        private void ParseVoicedMessage()
+        {
+            LastMSGType = ParseData.line;
+            if (thDataWork.SaveFileMode)
+            {
+                ParseData.ResultForWrite.AppendLine(ParseData.line);//add mark
+                ParseData.ResultForWrite.AppendLine(ParseData.line = ParseData.reader.ReadLine());//add voice file name line
+            }
+            else
+            {
+                ParseData.line = ParseData.reader.ReadLine();//read next line with voice name, nex readline will skip it
+            }
+            readmode = true;
+        }
+
+        private void ParseChoices()
+        {
+            if (thDataWork.SaveFileMode)
+            {
+                ParseData.ResultForWrite.AppendLine(ParseData.line);
+            }
+
+            //get choices count
+            int selectioncnt = int.Parse(ParseData.line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+            //add all choices
+            for (int i = 0; i < selectioncnt; i++)
+            {
+                var str = ParseData.reader.ReadLine();
+                var extracted = Regex.Replace(str, ChoiceTextExtractionRegex(), "$1");
+                if (thDataWork.OpenFileMode)
+                {
+                    AddRowData(extracted, "Choice variant " + i, true);
+                }
+                else
+                {
+                    if (IsValidString(extracted) && TablesLinesDict.ContainsKey(extracted))
+                    {
+                        str = str.Replace(extracted, TablesLinesDict[extracted]);
+                        ParseData.Ret = true;
+                    }
+                    ParseData.ResultForWrite.AppendLine(str);
+                }
+            }
+        }
+
+        /// <summary>
+        /// required edits to prevent ingame script errors
+        /// </summary>
+        /// <param name="newLine"></param>
+        private void MakeRequiredEdits(ref string newLine)
+        {
+            newLine = PreReduceTranslation(newLine);
+            newLine = ApplyRequiredCharReplacements(newLine);
+            newLine = SplitMessageLinesToBlocksBy4lines(newLine);
+        }
+
+        /// <summary>
+        /// splits message by blocks by 4 lines
+        /// </summary>
+        /// <param name="newLine"></param>
+        /// <returns></returns>
+        private string SplitMessageLinesToBlocksBy4lines(string newLine)
+        {
+            int newLinesCount = newLine.GetLinesCount();
+            int linesCount = 0;
+            int linesCountMax = 5;
+            string retLine = string.Empty;
+
+            //blocks #MSGVOICE after 1st must be changed to no voice #MSG to not repeat speech for each block
+            LastMSGType = LastMSGType.Replace("#MSGVOICE,", "#MSG,");
+
+            foreach (var subline in newLine.SplitToLines())
+            {
+                string cleanedSubline = PostTransFormLineCleaning(subline);
+                cleanedSubline = ENJPCharsReplacementFirstLetter(cleanedSubline);
+                //cleanedSubline = CheckFirstCharIsLatinAndTransform(cleanedSubline);
+                linesCount++;
+                if (linesCount == linesCountMax)
+                {
+                    linesCountMax += 4;
+                    retLine += /*(startsWithJPQuote1 ? "」" : (startsWithJPQuote2? "』" : string.Empty))
+                                                + */Environment.NewLine
+                        + Environment.NewLine
+                        + LastMSGType
+                        + Environment.NewLine
+                        /*+ (startsWithJPQuote1 ? "「" : (startsWithJPQuote2 ? "『" : string.Empty))*/;
+                }
+                else if (linesCount > 1 && linesCount <= newLinesCount)
+                {
+                    retLine += Environment.NewLine;
+                }
+                retLine += cleanedSubline;
+            };
+
+            return retLine;
+        }
+
+        bool openTxt()
         {
             if (thDataWork.FilePath.Length == 0)
             {
@@ -147,6 +373,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         }
 
         internal override bool Save()
+        {
+            return ParseStringFile();
+        }
+
+        private bool WriteTxt()
         {
             if (thDataWork.FilePath.Length == 0)
             {
@@ -387,6 +618,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             return @"([^	]+)([	 ]+[0-9]{1,2}.*)";
         }
 
+        /// <summary>
+        /// prevents script parse errors in game
+        /// </summary>
+        /// <param name="newLine"></param>
+        /// <returns></returns>
         private static string ApplyRequiredCharReplacements(string newLine)
         {
             return newLine

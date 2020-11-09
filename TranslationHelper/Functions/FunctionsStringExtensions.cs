@@ -19,5 +19,18 @@
                 .Replace("...", "……")
                 ;
         }
+
+        internal static bool IsStringAContainsAnyFromArray(this string strA, string[] array)
+        {
+            foreach (var str in array)
+            {
+                if (FunctionsString.IsStringAContainsStringB(strA, str))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
