@@ -24,7 +24,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        Dictionary<int[], Dictionary<string, string>> buffer;
+        Dictionary<int[], string[]> buffer;
 
         int Size { get; set; }
         static int MaxSize { get => 1000; }
@@ -38,7 +38,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (buffer == null)
             {
-                buffer = new Dictionary<int[], Dictionary<string, string>>();
+                buffer = new Dictionary<int[], string[]>();
             }
             if (Translator == null)
             {
@@ -50,18 +50,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (SelectedRow[1] == null || (SelectedRow[1] as string).Length == 0)
             {
-                int lineNum = 0;
-                foreach (var line in (SelectedRow[0] as string).SplitToLines())
+                var original = SelectedRow[0] as string;
+                var lineNum = 0;
+                foreach (var line in original.SplitToLines())
                 {
-                    var lineCoordinates = new int[2] { SelectedTableIndex, SelectedRowIndex };
+                    var lineCoordinates = new int[3] { SelectedTableIndex, SelectedRowIndex, lineNum };
 
                     //add lineCoordinates and row data
                     if (!buffer.ContainsKey(lineCoordinates))
-                        buffer.Add(lineCoordinates, new Dictionary<string, string>());
+                        buffer.Add(lineCoordinates, new string[2]);
 
-                    buffer[lineCoordinates].Add(line,null);
-
-
+                    buffer[lineCoordinates][0]=line;
 
                     Size += line.Length;
 
@@ -102,6 +101,25 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     + "OriginalLines="
                     + string.Join(Environment.NewLine + "</br>" + Environment.NewLine, originals));
             }
+
+            SetTranslations(translated);
+        }
+
+        private void SetTranslations(string[] translated)
+        {
+            int lineNum = 0;
+            foreach (var line in buffer)
+            {
+                var row = thDataWork.THFilesElementsDataset.Tables[line.Key[0]].Rows[line.Key[0]];
+                var rowLineNum = 0;
+                var LinesCount = (row[0] as string).GetLinesCount();
+                var Translation = "";
+                foreach (var subline in (row[0] as string).SplitToLines())
+                {
+                    rowLineNum++;
+                }
+                lineNum++;
+            }
         }
 
         private string[] GetOriginals()
@@ -109,6 +127,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             List<string> orig = new List<string>();
             foreach (var line in buffer)
             {
+                if (line.Value[1] == null)
+                {
+                    orig.Add(line.Value[0]);
+                }
             }
 
             return orig.ToArray();
