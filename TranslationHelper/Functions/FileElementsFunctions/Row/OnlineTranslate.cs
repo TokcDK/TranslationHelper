@@ -96,19 +96,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 var values = MultyExtract(line, lineCoordinates, lineNum);
 
-                //foreach (var val in values)
-                //{
-                //    buffer[lineCoordinates][lineNum].Add(val, null);
-                //}
-
-                buffer[lineCoordinates][lineNum].Add(line, null);
-                Size += line.Length;
-
-                if (IsMax())
+                foreach (var val in values)
                 {
-                    TranslateAddedStrings();
-                    Size = 0;
-                    buffer.Clear();
+                    //here check if only symbols or only romajii
+
+                    buffer[lineCoordinates][lineNum].Add(val, null);
+
+                    Size += val.Length;
+
+                    if (IsMax())
+                    {
+                        TranslateAddedStrings();
+                        Size = 0;
+                        buffer.Clear();
+                    }
                 }
 
                 lineNum++;
@@ -133,14 +134,25 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
 
                 int lastGroupInd = 0;
+                bool skippedgroup0 = false;
                 foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
                 {
+                    if (!skippedgroup0)
+                    {
+                        skippedgroup0 = true;
+                        continue;
+                    }
+
                     if (g.Index < lastGroupInd)
                     {
                         continue;
                     }
 
-                    bufferExtracted[lineCoordinates][lineNum].Add(g.Value, PatternReplacementPair.Value);
+                    if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(PatternReplacementPair.Key))
+                    {
+                        bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
+                    }
+
                     l.Add(g.Value);
                     lastGroupInd = g.Index + g.Length;
                 }
@@ -168,14 +180,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             var originals = GetOriginals();
 
-            string[] translated = TranslateOriginals(originals);
+            var translated = TranslateOriginals(originals);
 
-            SetTranslationsToBuffer(originals, translated);
+            if (translated != null && translated.Length > 0)
+            {
+                SetTranslationsToBuffer(originals, translated);
 
-            SetTranslationsToRows();
+                SetBufferToRows();
+            }
         }
 
-        private void SetTranslationsToRows()
+        private void SetBufferToRows()
         {
             var Coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
             foreach (var coordinate in Coordinates)//get all coordinate keys
@@ -193,29 +208,44 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     var newValue = new List<string>();
                     var lineNum = 0;
-                    foreach (var line in (Row[0] + "").SplitToLines())
+                    var rowValue = ((Row[1] != null && !Equals(Row[1], Row[0])) ? Row[1] : Row[0]) + "";
+                    foreach (var line in rowValue.SplitToLines())
                     {
                         if (!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0)
                         {
-                            continue;
+                            newValue.Add(line);
                         }
-
-                        if (coordinate.Value[lineNum].Count > 1)
+                        else if (coordinate.Value[lineNum].Count > 1
+                            && bufferExtracted != null
+                            && bufferExtracted.Count > 0
+                            && bufferExtracted.ContainsKey(coordinate.Key)
+                            && bufferExtracted[coordinate.Key].ContainsKey(lineNum))
                         {
-                            if (bufferExtracted != null && bufferExtracted.Count > 0 && bufferExtracted.ContainsKey(coordinate.Key) && bufferExtracted[coordinate.Key].ContainsKey(lineNum))
+                            var extractionkeyvalue = bufferExtracted[coordinate.Key][lineNum].GetEnumerator().Current;
+                            var pattern = extractionkeyvalue.Key;
+                            var replacement = extractionkeyvalue.Value;
+                            //var regex = new Regex(pattern);
+                            //var match = regex.Match(line);
+                            //var replace = regex.Replace(line, replacement);
+
+                            //var replacementmatches = Regex.Matches(replacement, @"\$[1,9]");
+
+                            int num = 1;
+                            foreach (var k in buffer[coordinate.Key][lineNum])
                             {
+                                replacement = replacement.Replace("$"+ num, k.Value);
                             }
+
+                            newValue.Add(replacement);
+
+                        }
+                        else if (coordinate.Value[lineNum].ContainsKey(line))
+                        {
+                            newValue.Add(coordinate.Value[lineNum][line]);
                         }
                         else
                         {
-                            if (coordinate.Value[lineNum].ContainsKey(line))
-                            {
-                                newValue.Add(coordinate.Value[lineNum][line]);
-                            }
-                            else
-                            {
-                                newValue.Add(line);
-                            }
+                            newValue.Add(line);
                         }
 
                         lineNum++;
@@ -276,7 +306,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var liTexts = new Dictionary<string, string>(linenumber.Value);
                     foreach (var linetext in liTexts) // get all sublines
                     {
-                        if (linetext.Value == null)
+                        if (linetext.Value == null && translations.ContainsKey(linetext.Key))
                         {
                             buffer[coordinate.Key][linenumber.Key][linetext.Key] = translations[linetext.Key];
                         }

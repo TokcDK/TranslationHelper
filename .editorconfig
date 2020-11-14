@@ -5,3 +5,6 @@ dotnet_analyzer_diagnostic.category-Globalization.severity = none
 
 # IDE0040: Add accessibility modifiers
 dotnet_style_require_accessibility_modifiers = for_non_interface_members:none
+
+# CA1812: SAutotranslationForSimular is an internal class that is apparently never instantiated. If so, remove the code from the assembly. If this class is intended to contain only static members, make it static (Shared in Visual Basic).
+dotnet_diagnostic.CA1812.severity = none
