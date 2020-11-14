@@ -81,9 +81,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 catch
                 {
                 }
+
+                ActionsPostRowsApply();
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// apply the actions after all rows for selected,table or all was applied
+        /// </summary>
+        protected virtual void ActionsPostRowsApply()
+        {
         }
 
         private void GetTableData()
@@ -129,6 +138,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (IsTable)
                 {
                     PostLearn();
+
+                    ActionsPostRowsApply();
                 }
             }
 
@@ -163,6 +174,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             PostLearn();
+
+            ActionsPostRowsApply();
 
             return ret;
         }

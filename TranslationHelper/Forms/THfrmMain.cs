@@ -1311,6 +1311,10 @@ namespace TranslationHelper
         internal bool IsTranslating;
         private void OnlineTranslateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            new OnlineTranslate(thDataWork).Selected();
+
+            return;
+
             if (THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount() > 0)
             {
                 IsTranslating = true;

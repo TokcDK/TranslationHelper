@@ -266,26 +266,33 @@ namespace TranslationHelper.Translators
 
         protected static string GetTranslationHtmlElement(HtmlDocument htmlDocument)
         {
-            //FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlDocument.Body.Children:\r\n" + htmlDocument.Body.Children);
-            foreach (object obj in htmlDocument.Body.Children)
+            foreach (HtmlElement htmlElement in htmlDocument.GetElementsByTagName("div"))
             {
-                HtmlElement htmlElement = (HtmlElement)obj;
-                if (htmlElement.InnerText == null)
+                if (htmlElement.GetAttribute("className") == "result-container")
                 {
-                }
-                else
-                {
-                    //FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
-                    if (htmlElement.InnerHtml.StartsWith("<"))
-                    {
-                    }
-                    else
-                    {
-                        //text2 = htmlElement.InnerText.Replace(DNTT, "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                        return htmlElement.InnerText;
-                    }
+                    return htmlElement.InnerText;
                 }
             }
+
+            ////FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlDocument.Body.Children:\r\n" + htmlDocument.Body.Children);
+            //foreach (HtmlElement htmlElement in htmlDocument.Body.Children)
+            //{
+            //    if (htmlElement.InnerText == null)
+            //    {
+            //    }
+            //    else
+            //    {
+            //        //FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
+            //        if (htmlElement.InnerHtml.StartsWith("<"))
+            //        {
+            //        }
+            //        else
+            //        {
+            //            //text2 = htmlElement.InnerText.Replace(DNTT, "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
+            //            return htmlElement.InnerText;
+            //        }
+            //    }
+            //}
             return string.Empty;
         }
 

@@ -228,16 +228,16 @@ namespace TranslationHelper
 
         public override string[] Translate(string[] OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
-            if (ErrorsWebCntOverall > 9)
+            if (ErrorsWebCntOverall > 9 || OriginalText == null)
             {
                 return null;
             }
 
             Thread.Sleep((int)(new Random().NextDouble() * 2000));
 
-            int num = OriginalText.Length;
-            string[] array = new string[num];
-            StringBuilder stringBuilder = new StringBuilder();
+            var num = OriginalText.Length;
+            var array = new string[num];
+            var stringBuilder = new StringBuilder();
             for (int i = 0; i < num; i++)
             {
                 if (OriginalText[i].Length == 0)
@@ -246,21 +246,14 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    bool flag2 = false;// TradPonctuation.isAllPonctuation(OriginalText[i]);
-                    if (flag2)
+                    if (sessionCache.ContainsKey(OriginalText[i]))
                     {
-                        array[i] = OriginalText[i];
+                        array[i] = sessionCache[OriginalText[i]];
                     }
-                    else
+                    //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
+                    //https://stackoverflow.com/questions/47709517/google-translate-api-how-to-add-newline-without-changing-the-phrase-meaning
+                    _ = stringBuilder.Append(string.Concat(new string[]
                     {
-                        if (sessionCache.ContainsKey(OriginalText[i]))
-                        {
-                            array[i] = sessionCache[OriginalText[i]];
-                        }
-                        //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
-                        //https://stackoverflow.com/questions/47709517/google-translate-api-how-to-add-newline-without-changing-the-phrase-meaning
-                        _ = stringBuilder.Append(string.Concat(new string[]
-                        {
                                 //"##",
                                 //Conversions.ToString(i),
                                 //"#># ",
@@ -274,13 +267,12 @@ namespace TranslationHelper
                                 //<br> заменил на </br>, последний также воспринимается как новая строка, влияя на перевод и не клонировался в середину там, где была проблема с <br> <== upd: <br> Гугл один раз раздвоил, сунув копию в середину, из-за чего была ошибка при раборе строк перевода <== <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
                                 "</br>",
                                 Environment.NewLine
-                        }));
-                    }
+                    }));
                 }
             }
             //FileWriter.WriteData("c:\\THLog.log", "\r\nstringBuilder.ToString():\r\n" + stringBuilder.ToString());
-            string arg = HttpUtility.UrlEncode(stringBuilder.ToString(), Encoding.UTF8);
-            string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
+            var arg = HttpUtility.UrlEncode(stringBuilder.ToString(), Encoding.UTF8);
+            var address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
             if (webClient == null)
             {
@@ -294,7 +286,7 @@ namespace TranslationHelper
             //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
             webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
             //webClient.UserAgent= ScrapySharp.Network.FakeUserAgents.Chrome;
-            Uri uri = new Uri(address);
+            var uri = new Uri(address);
             try
             {
                 //Материалы, что помогли
@@ -304,7 +296,7 @@ namespace TranslationHelper
 
 
                 //скачать страницу
-                string text = string.Empty;
+                var text = string.Empty;
 
                 try
                 {
@@ -341,7 +333,7 @@ namespace TranslationHelper
 
                 //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"TEXT:"+Environment.NewLine + text);
 
-                HtmlDocument htmlDocument = WBhtmlDocument();
+                var htmlDocument = WBhtmlDocument();
                 htmlDocument.Write(text);
 
                 {
@@ -355,7 +347,7 @@ namespace TranslationHelper
                     //}
                 }
 
-                string text2 = GetTranslationHtmlElement(htmlDocument).FixFormatMulti();
+                var text2 = GetTranslationHtmlElement(htmlDocument).FixFormatMulti();
 
                 {
                     //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"text2:"+Environment.NewLine + text2);
