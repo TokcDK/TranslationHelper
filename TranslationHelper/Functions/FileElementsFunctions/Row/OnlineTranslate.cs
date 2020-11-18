@@ -78,6 +78,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 if (!IsValidForTranslation(line))
                 {
+                    lineNum++;
                     continue;
                 }
 
@@ -98,15 +99,32 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 foreach (var val in values)
                 {
-                    //here check if only symbols or only romajii
+                    //if (!IsValidForTranslation(val))
+                    //{
+                    //    continue;
+                    //}
 
-                    buffer[lineCoordinates][lineNum].Add(val, null);
-
-                    Size += val.Length;
+                    try
+                    {
+                        if (!buffer[lineCoordinates][lineNum].ContainsKey(val))
+                        {
+                            buffer[lineCoordinates][lineNum].Add(val, null);
+                            Size += val.Length;
+                        }
+                    }
+                    catch
+                    {
+                    }
 
                     if (IsMax())
                     {
-                        TranslateAddedStrings();
+                        try
+                        {
+                            TranslateAddedStrings();
+                        }
+                        catch
+                        {
+                        }
                         Size = 0;
                         buffer.Clear();
                     }
@@ -130,31 +148,39 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 if (!Regex.IsMatch(line, PatternReplacementPair.Key))
                 {
-                    return new string[1] { line };
+                    continue;
                 }
 
-                int lastGroupInd = 0;
-                bool skippedgroup0 = false;
+                //int lastGroupInd = 0;
+                //bool skippedgroup0 = false;
+                //var groupInd = 0;
                 foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
                 {
-                    if (!skippedgroup0)
-                    {
-                        skippedgroup0 = true;
-                        continue;
-                    }
+                    //if (!skippedgroup0)
+                    //{
+                    //    skippedgroup0 = true;
+                    //    continue;
+                    //}
 
-                    if (g.Index < lastGroupInd)
-                    {
-                        continue;
-                    }
+                    //if (g.Index < lastGroupInd)
+                    //{
+                    //    continue;
+                    //}
 
-                    if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(PatternReplacementPair.Key))
+                    //var gname=g.Name;
+
+                    if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(PatternReplacementPair.Key))//add pattern-replacement data
                     {
                         bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
                     }
 
-                    l.Add(g.Value);
-                    lastGroupInd = g.Index + g.Length;
+                    bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);
+
+                    if (IsValidForTranslation(g.Value) && PatternReplacementPair.Value.Contains("$" + g.Name))
+                        l.Add(g.Value);
+
+                    //groupInd++;
+                    //lastGroupInd = g.Index + g.Length;
                 }
 
                 break;
@@ -172,7 +198,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         private static bool IsValidForTranslation(string line)
         {
-            return !string.IsNullOrWhiteSpace(line);
+            return !string.IsNullOrWhiteSpace(line) && !line.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther();
         }
 
         readonly GoogleAPIOLD Translator;
@@ -199,44 +225,26 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var Row = thDataWork.THFilesElementsDataset.Tables[int.Parse(TR[0])].Rows[int.Parse(TR[1])];
                 var linenumMax = (Row[0] + "").GetLinesCount();
 
-                if (coordinate.Value.Count != linenumMax)
-                {
-                    continue;
-                }
-
                 try
                 {
                     var newValue = new List<string>();
                     var lineNum = 0;
-                    var rowValue = ((Row[1] != null && !Equals(Row[1], Row[0])) ? Row[1] : Row[0]) + "";
+                    var rowValue = ((Row[1] != null && !string.IsNullOrEmpty(Row[1] as string) && !Equals(Row[1], Row[0])) ? Row[1] : Row[0]) + "";
                     foreach (var line in rowValue.SplitToLines())
                     {
                         if (!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0)
                         {
                             newValue.Add(line);
                         }
-                        else if (coordinate.Value[lineNum].Count > 1
+                        else if (coordinate.Value[lineNum].Count > 0
                             && bufferExtracted != null
                             && bufferExtracted.Count > 0
                             && bufferExtracted.ContainsKey(coordinate.Key)
-                            && bufferExtracted[coordinate.Key].ContainsKey(lineNum))
+                            && bufferExtracted[coordinate.Key].ContainsKey(lineNum)
+                            && bufferExtracted[coordinate.Key][lineNum].Count>0
+                            )
                         {
-                            var extractionkeyvalue = bufferExtracted[coordinate.Key][lineNum].GetEnumerator().Current;
-                            var pattern = extractionkeyvalue.Key;
-                            var replacement = extractionkeyvalue.Value;
-                            //var regex = new Regex(pattern);
-                            //var match = regex.Match(line);
-                            //var replace = regex.Replace(line, replacement);
-
-                            //var replacementmatches = Regex.Matches(replacement, @"\$[1,9]");
-
-                            int num = 1;
-                            foreach (var k in buffer[coordinate.Key][lineNum])
-                            {
-                                replacement = replacement.Replace("$"+ num, k.Value);
-                            }
-
-                            newValue.Add(replacement);
+                            newValue.Add(GetMergedValue(coordinate.Key, lineNum));
 
                         }
                         else if (coordinate.Value[lineNum].ContainsKey(line))
@@ -252,11 +260,55 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
 
                     Row[1] = string.Join(Environment.NewLine, newValue);
-                    buffer.Remove(coordinate.Key);
                 }
                 catch
                 {
                 }
+            }
+        }
+
+        private string GetMergedValue(string coordinates, int lineNum)
+        {
+            using (var enumer = bufferExtracted[coordinates][lineNum].GetEnumerator())
+            {
+                enumer.MoveNext();
+                var extractionkeyvalue = enumer.Current;
+                //var pattern = extractionkeyvalue.Key;
+                var replacement = extractionkeyvalue.Value;
+                //var regex = new Regex(pattern);
+                //var match = regex.Match(line);
+                //var replace = regex.Replace(line, replacement);
+
+                //var replacementmatches = Regex.Matches(replacement, @"\$[1,9]");
+
+                KeyValuePair<string, string> substitution;
+                while (enumer.MoveNext())
+                {
+                    substitution = enumer.Current;
+
+                    if(replacement.Contains(substitution.Key))
+                    {
+                        string val = substitution.Value;
+                        if (buffer[coordinates][lineNum].ContainsKey(substitution.Value))
+                            val = buffer[coordinates][lineNum][substitution.Value];
+
+                        replacement = replacement.Replace(substitution.Key, val);
+                    }
+                }
+
+                //int num = 0;
+                //foreach (var k in buffer[coordinates][lineNum])
+                //{
+                //    while (bufferExtracted[coordinates][lineNum]["$" + num] != k.Key)
+                //    {
+                //        num++;
+                //    }
+
+                //    replacement = replacement.Replace("$" + num, k.Value ?? k.Key);
+                //    num++;
+                //}
+
+                return replacement;
             }
         }
 
@@ -324,7 +376,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     foreach (var linetext in linenumber.Value) // get all sublines
                     {
-                        if (!orig.Contains(linetext.Key) && linetext.Value == null)
+                        if (!orig.Contains(linetext.Key) && linetext.Value == null && IsValidForTranslation(linetext.Key))
                         {
                             orig.Add(linetext.Key);
                         }
