@@ -67,7 +67,7 @@ namespace TranslationHelper.Functions
         /// init cache when it was not init
         /// </summary>
         /// <param name="thDataWork"></param>
-        internal void Init(THDataWork thDataWork)
+        internal static void Init(THDataWork thDataWork)
         {
             //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
             //    return;
@@ -84,7 +84,7 @@ namespace TranslationHelper.Functions
         /// unload cache when need
         /// </summary>
         /// <param name="thDataWork"></param>
-        internal void Unload(THDataWork thDataWork)
+        internal static void Unload(THDataWork thDataWork)
         {
             Properties.Settings.Default.OnlineTranslationCacheUseCount--;
             if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)

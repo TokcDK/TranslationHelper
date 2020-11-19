@@ -1349,65 +1349,69 @@ namespace TranslationHelper
 
         private void OnlineTranslateTableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            IsTranslating = true;
+            new OnlineTranslate(thDataWork).Table();
 
-            try
-            {
-                if (THFilesList.SelectedItem == null)
-                {
-                    IsTranslating = false;
-                    return;
-                }
-                //координаты стартовой строк, колонки оригинала и номера таблицы
-                int cind = thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Original"].Ordinal;//-поле untrans
-                int tableindex = THFilesList.SelectedIndex;
-                int[] selindexes = new int[1];
+            //IsTranslating = true;
 
-                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslate(cind, tableindex, selindexes, "t")));
-                Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "t")));
-                //
-                //..и фикс ошибки:
-                //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
-                //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
-                trans.SetApartmentState(ApartmentState.STA);
-                //но при выборе только одной строчки почему-то кидает исключение
-                trans.Start();
-            }
-            catch
-            {
-                IsTranslating = false;
-            }
+            //try
+            //{
+            //    if (THFilesList.SelectedItem == null)
+            //    {
+            //        IsTranslating = false;
+            //        return;
+            //    }
+            //    //координаты стартовой строк, колонки оригинала и номера таблицы
+            //    int cind = thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Original"].Ordinal;//-поле untrans
+            //    int tableindex = THFilesList.SelectedIndex;
+            //    int[] selindexes = new int[1];
+
+            //    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslate(cind, tableindex, selindexes, "t")));
+            //    Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "t")));
+            //    //
+            //    //..и фикс ошибки:
+            //    //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
+            //    //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
+            //    trans.SetApartmentState(ApartmentState.STA);
+            //    //но при выборе только одной строчки почему-то кидает исключение
+            //    trans.Start();
+            //}
+            //catch
+            //{
+            //    IsTranslating = false;
+            //}
         }
 
         private void OnlineTranslateAllToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            IsTranslating = true;
+            new OnlineTranslate(thDataWork).All();
 
-            try
-            {
-                //координаты стартовой строк, колонки оригинала и номера таблицы
-                int cind = thDataWork.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;//-поле untrans
-                int tableindex = 0;
-                int[] selindexes = new int[1];
+            //IsTranslating = true;
 
-                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
-                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
-                Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "a")));
-                //
-                //..и фикс ошибки:
-                //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
-                //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
-                trans.SetApartmentState(ApartmentState.STA);
-                //но при выборе только одной строчки почему-то кидает исключение
-                trans.Start();
-            }
-            catch
-            {
-                //IsTranslating = false;
-            }
-            IsTranslating = false;
+            //try
+            //{
+            //    //координаты стартовой строк, колонки оригинала и номера таблицы
+            //    int cind = thDataWork.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;//-поле untrans
+            //    int tableindex = 0;
+            //    int[] selindexes = new int[1];
+
+            //    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
+            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
+            //    Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "a")));
+            //    //
+            //    //..и фикс ошибки:
+            //    //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
+            //    //https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
+            //    trans.SetApartmentState(ApartmentState.STA);
+            //    //но при выборе только одной строчки почему-то кидает исключение
+            //    trans.Start();
+            //}
+            //catch
+            //{
+            //    //IsTranslating = false;
+            //}
+            //IsTranslating = false;
         }
 
         private void OpenInWebToolStripMenuItem_Click(object sender, EventArgs e)

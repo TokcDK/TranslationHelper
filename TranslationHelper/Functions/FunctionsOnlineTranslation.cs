@@ -47,7 +47,7 @@ namespace TranslationHelper.Functions
                 using (DataSet THTranslationCache = new DataSet())
                 {
                     //FunctionsTable.TranslationCacheInit(THTranslationCache);
-                    thDataWork.OnlineTranslationCache.Init(thDataWork);
+                    FunctionsOnlineCache.Init(thDataWork);
 
                     //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
                     int TableMaxIndex;
@@ -86,7 +86,7 @@ namespace TranslationHelper.Functions
                         {
                             if (Properties.Settings.Default.IsTranslationHelperWasClosed)
                             {
-                                thDataWork.OnlineTranslationCache.Unload(thDataWork);
+                                FunctionsOnlineCache.Unload(thDataWork);
                                 Thread.CurrentThread.Abort();
                                 return;
                             }
@@ -230,7 +230,7 @@ namespace TranslationHelper.Functions
                 //LogToFile("Error: "+ex,true);
             }
             thDataWork.Main.IsTranslating = false;
-            thDataWork.OnlineTranslationCache.Unload(thDataWork);
+            FunctionsOnlineCache.Unload(thDataWork);
             thDataWork.Main.ProgressInfo(false);
         }
 
@@ -373,7 +373,7 @@ namespace TranslationHelper.Functions
                 {
                     //Init translation cache
                     //FunctionsTable.TranslationCacheInit(THTranslationCache);
-                    thDataWork.OnlineTranslationCache.Init(thDataWork);
+                    FunctionsOnlineCache.Init(thDataWork);
 
                     int maxchars = 1000; //большие значения ломаю ответ сервера, например отсутствует или ломается разделитель при значении 1000, потом надо будет подстроить идеальный максимум
                     int CurrentCharsCount = 0;
@@ -415,7 +415,7 @@ namespace TranslationHelper.Functions
                             else if (thDataWork.Main.InteruptTranslation)
                             {
                                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.translationInteruptToolStripMenuItem.Visible = false));
-                                thDataWork.OnlineTranslationCache.Unload(thDataWork);
+                                FunctionsOnlineCache.Unload(thDataWork);
                                 thDataWork.Main.ProgressInfo(false);
                                 //Thread.CurrentThread.Abort();
                                 return;
@@ -558,7 +558,7 @@ namespace TranslationHelper.Functions
                 MessageBox.Show(ex.ToString());
             }
 
-            thDataWork.OnlineTranslationCache.Unload(thDataWork);
+            FunctionsOnlineCache.Unload(thDataWork);
 
             thDataWork.Main.ProgressInfo(false);
         }
@@ -582,7 +582,7 @@ namespace TranslationHelper.Functions
                 {
                     //Init translation cache
                     //FunctionsTable.TranslationCacheInit(THTranslationCache);
-                    thDataWork.OnlineTranslationCache.Init(thDataWork);
+                    FunctionsOnlineCache.Init(thDataWork);
 
                     int maxchars = 1000; //большие значения ломаю ответ сервера, например отсутствует или ломается разделитель при значении 1000, потом надо будет подстроить идеальный максимум
                     int CurrentCharsCount = 0;
@@ -624,7 +624,7 @@ namespace TranslationHelper.Functions
                             else if (thDataWork.Main.InteruptTranslation)
                             {
                                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.translationInteruptToolStripMenuItem.Visible = false));
-                                thDataWork.OnlineTranslationCache.Unload(thDataWork);
+                                FunctionsOnlineCache.Unload(thDataWork);
                                 thDataWork.Main.ProgressInfo(false);
                                 Thread.CurrentThread.Abort();
                                 return;
@@ -794,7 +794,7 @@ namespace TranslationHelper.Functions
                 MessageBox.Show(ex.ToString());
             }
 
-            thDataWork.OnlineTranslationCache.Unload(thDataWork);
+            FunctionsOnlineCache.Unload(thDataWork);
 
             thDataWork.Main.ProgressInfo(false);
         }

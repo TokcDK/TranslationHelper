@@ -14,14 +14,14 @@ namespace TranslationHelper
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 #pragma warning disable CA2000 // Ликвидировать объекты перед потерей области
-            try
-            {
+            //try
+            //{
                 Application.Run(new THfrmMain());
-            }
-            catch (Exception ex)
-            {
-                new Functions.FunctionsLogs().LogToFile(Environment.NewLine + "Main appplication error occured. Error text:" + Environment.NewLine + ex + Environment.NewLine);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    new Functions.FunctionsLogs().LogToFile(Environment.NewLine + "Main appplication error occured. Error text:" + Environment.NewLine + ex + Environment.NewLine);
+            //}
 #pragma warning restore CA2000 // Ликвидировать объекты перед потерей области
         }
     }

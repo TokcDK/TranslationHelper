@@ -139,6 +139,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     IsTable = true;
                     PreLearn();
+
+                    ActionsPreRowsApply();
                 }
 
 
@@ -186,6 +188,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         internal bool All()
         {
             IsAll = true;
+
+            ActionsPreRowsApply();
+
             PreLearn();
 
             foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -51,9 +53,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 Translator = new GoogleAPIOLD(thDataWork);
             }
         }
+
+        bool AllDBLoaded4All;
         protected override void ActionsPreRowsApply()
         {
-            thDataWork.OnlineTranslationCache.Init(thDataWork);
+            FunctionsOnlineCache.Init(thDataWork);
+
+            if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && IsAll && !AllDBLoaded4All)
+            {
+                thDataWork.Main.ProgressInfo(true, "Get all DB");
+                //await Task.Run(() => FunctionsDBFile.MergeAllDBtoOne(thDataWork)).ConfigureAwait(true);
+                Task t = new Task(() => FunctionsDBFile.MergeAllDBtoOne(thDataWork));
+                t.ConfigureAwait(true);
+                t.Start();
+                t.Wait();
+                //FunctionsDBFile.MergeAllDBtoOne(thDataWork);
+                AllDBLoaded4All = true;
+            }
         }
         protected override void ActionsPostRowsApply()
         {
@@ -61,13 +77,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             Size = 0;
             buffer.Clear();
             thDataWork.OnlineTranslationCache.Write();
-            thDataWork.OnlineTranslationCache.Unload(thDataWork);
+            FunctionsOnlineCache.Unload(thDataWork);
         }
-
         protected override bool Apply()
         {
             if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0)
             {
+                thDataWork.Main.ProgressInfo(true, "Translate"+" "+SelectedTable.TableName+"/"+SelectedRowIndex);
                 SetRowLinesToBuffer();
 
                 return true;
@@ -163,6 +179,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 //init data
                 bufferExtracted.Add(lineCoordinates, new Dictionary<int, Dictionary<string, string>>());//add coordinates
+            }
+            if (!bufferExtracted[lineCoordinates].ContainsKey(lineNum))
+            {
+                //init data
                 bufferExtracted[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
             }
 
@@ -192,15 +212,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     //var gname=g.Name;
 
-                    if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(PatternReplacementPair.Key))//add pattern-replacement data
+                    try
                     {
-                        bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
+
+                        if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(PatternReplacementPair.Key))//add pattern-replacement data
+                        {
+                            bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
+                        }
+
+                        bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);
+
+                        if (IsValidForTranslation(g.Value) && PatternReplacementPair.Value.Contains("$" + g.Name))
+                            l.Add(g.Value);
                     }
+                    catch
+                    {
 
-                    bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);
-
-                    if (IsValidForTranslation(g.Value) && PatternReplacementPair.Value.Contains("$" + g.Name))
-                        l.Add(g.Value);
+                    }
 
                     //groupInd++;
                     //lastGroupInd = g.Index + g.Length;
@@ -267,7 +295,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             && bufferExtracted[coordinate.Key][lineNum].Count > 0
                             )
                         {
-                            newValue.Add(GetMergedValue(coordinate.Key, lineNum));
+                            newValue.Add(GetMergedValue(coordinate.Key, lineNum, line));
 
                         }
                         else if (coordinate.Value[lineNum].ContainsKey(line))
@@ -290,7 +318,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        private string GetMergedValue(string coordinates, int lineNum)
+        private string GetMergedValue(string coordinates, int lineNum, string line)
         {
             using (var enumer = bufferExtracted[coordinates][lineNum].GetEnumerator())
             {
@@ -303,6 +331,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 //var replace = regex.Replace(line, replacement);
 
                 //var replacementmatches = Regex.Matches(replacement, @"\$[1,9]");
+
+                if (Regex.IsMatch(replacement.Trim(), @"^\$[1-9]$"))
+                {
+                    var bufenum = buffer[coordinates][lineNum].GetEnumerator();
+                    bufenum.MoveNext();
+
+                    int IndexOfTheString = line.IndexOf(bufenum.Current.Key);
+                    if (IndexOfTheString > -1)
+                    {
+                        return line
+                            .Remove(IndexOfTheString, bufenum.Current.Key.Length)
+                            .Insert(IndexOfTheString,
+                            bufenum.Current.Value
+                            );
+                    }
+                }
 
                 KeyValuePair<string, string> substitution;
                 while (enumer.MoveNext())
@@ -318,18 +362,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         replacement = replacement.Replace(substitution.Key, val);
                     }
                 }
-
-                //int num = 0;
-                //foreach (var k in buffer[coordinates][lineNum])
-                //{
-                //    while (bufferExtracted[coordinates][lineNum]["$" + num] != k.Key)
-                //    {
-                //        num++;
-                //    }
-
-                //    replacement = replacement.Replace("$" + num, k.Value ?? k.Key);
-                //    num++;
-                //}
 
                 return replacement;
             }
