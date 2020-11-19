@@ -219,7 +219,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
                     }
 
                     //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
-                    thDataWork.OnlineTranslationCache.WriteCache();
+                    thDataWork.OnlineTranslationCache.Write();
                 }
             }
             catch (Exception ex)
@@ -241,7 +241,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
             if (thDataWork.OnlineTranslationCache == null)
             {
                 thDataWork.OnlineTranslationCache = new FunctionsOnlineCache(thDataWork);
-                thDataWork.OnlineTranslationCache.ReadCache();
+                thDataWork.OnlineTranslationCache.Read();
             }
         }
 
@@ -333,7 +333,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
 
 
             //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
-            thDataWork.OnlineTranslationCache.WriteCache();//промежуточная запись кеша
+            thDataWork.OnlineTranslationCache.Write();//промежуточная запись кеша
 
             InputLines.Clear();
             InputLinesInfo.Clear();

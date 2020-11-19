@@ -47,7 +47,7 @@ namespace TranslationHelper.Functions
                 using (DataSet THTranslationCache = new DataSet())
                 {
                     //FunctionsTable.TranslationCacheInit(THTranslationCache);
-                    CacheInitWhenNeed(thDataWork);
+                    thDataWork.OnlineTranslationCache.Init(thDataWork);
 
                     //количество таблиц, строк и индекс троки для использования в переборе строк и таблиц
                     int TableMaxIndex;
@@ -86,7 +86,7 @@ namespace TranslationHelper.Functions
                         {
                             if (Properties.Settings.Default.IsTranslationHelperWasClosed)
                             {
-                                CacheUnloadWhenNeed(thDataWork);
+                                thDataWork.OnlineTranslationCache.Unload(thDataWork);
                                 Thread.CurrentThread.Abort();
                                 return;
                             }
@@ -222,7 +222,7 @@ namespace TranslationHelper.Functions
                         }
                     }
                     //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
-                    thDataWork.OnlineTranslationCache.WriteCache();
+                    thDataWork.OnlineTranslationCache.Write();
                 }
             }
             catch (System.ArgumentNullException)
@@ -230,7 +230,7 @@ namespace TranslationHelper.Functions
                 //LogToFile("Error: "+ex,true);
             }
             thDataWork.Main.IsTranslating = false;
-            CacheUnloadWhenNeed(thDataWork);
+            thDataWork.OnlineTranslationCache.Unload(thDataWork);
             thDataWork.Main.ProgressInfo(false);
         }
 
@@ -350,31 +350,6 @@ namespace TranslationHelper.Functions
             }
         }
 
-        private static void CacheInitWhenNeed(THDataWork thDataWork)
-        {
-            //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
-            //    return;
-
-            Properties.Settings.Default.OnlineTranslationCacheUseCount++;
-            if (thDataWork.OnlineTranslationCache == null)
-            {
-                thDataWork.OnlineTranslationCache = new FunctionsOnlineCache(thDataWork);
-                thDataWork.OnlineTranslationCache.ReadCache();
-            }
-        }
-
-        private static void CacheUnloadWhenNeed(THDataWork thDataWork)
-        {
-            Properties.Settings.Default.OnlineTranslationCacheUseCount--;
-            if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)
-            {
-                if (thDataWork.OnlineTranslationCache != null)
-                {
-                    thDataWork.OnlineTranslationCache = null;
-                }
-            }
-        }
-
         /// <summary>
         /// Translate rows by big blocks with selected method
         /// </summary>
@@ -398,7 +373,7 @@ namespace TranslationHelper.Functions
                 {
                     //Init translation cache
                     //FunctionsTable.TranslationCacheInit(THTranslationCache);
-                    CacheInitWhenNeed(thDataWork);
+                    thDataWork.OnlineTranslationCache.Init(thDataWork);
 
                     int maxchars = 1000; //большие значения ломаю ответ сервера, например отсутствует или ломается разделитель при значении 1000, потом надо будет подстроить идеальный максимум
                     int CurrentCharsCount = 0;
@@ -440,7 +415,7 @@ namespace TranslationHelper.Functions
                             else if (thDataWork.Main.InteruptTranslation)
                             {
                                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.translationInteruptToolStripMenuItem.Visible = false));
-                                CacheUnloadWhenNeed(thDataWork);
+                                thDataWork.OnlineTranslationCache.Unload(thDataWork);
                                 thDataWork.Main.ProgressInfo(false);
                                 //Thread.CurrentThread.Abort();
                                 return;
@@ -575,7 +550,7 @@ namespace TranslationHelper.Functions
                     }
 
                     //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
-                    thDataWork.OnlineTranslationCache.WriteCache();
+                    thDataWork.OnlineTranslationCache.Write();
                 }
             }
             catch (Exception ex)
@@ -583,7 +558,7 @@ namespace TranslationHelper.Functions
                 MessageBox.Show(ex.ToString());
             }
 
-            CacheUnloadWhenNeed(thDataWork);
+            thDataWork.OnlineTranslationCache.Unload(thDataWork);
 
             thDataWork.Main.ProgressInfo(false);
         }
@@ -607,7 +582,7 @@ namespace TranslationHelper.Functions
                 {
                     //Init translation cache
                     //FunctionsTable.TranslationCacheInit(THTranslationCache);
-                    CacheInitWhenNeed(thDataWork);
+                    thDataWork.OnlineTranslationCache.Init(thDataWork);
 
                     int maxchars = 1000; //большие значения ломаю ответ сервера, например отсутствует или ломается разделитель при значении 1000, потом надо будет подстроить идеальный максимум
                     int CurrentCharsCount = 0;
@@ -649,7 +624,7 @@ namespace TranslationHelper.Functions
                             else if (thDataWork.Main.InteruptTranslation)
                             {
                                 thDataWork.Main.Invoke((Action)(() => thDataWork.Main.translationInteruptToolStripMenuItem.Visible = false));
-                                CacheUnloadWhenNeed(thDataWork);
+                                thDataWork.OnlineTranslationCache.Unload(thDataWork);
                                 thDataWork.Main.ProgressInfo(false);
                                 Thread.CurrentThread.Abort();
                                 return;
@@ -811,7 +786,7 @@ namespace TranslationHelper.Functions
                     }
 
                     //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
-                    thDataWork.OnlineTranslationCache.WriteCache();
+                    thDataWork.OnlineTranslationCache.Write();
                 }
             }
             catch (Exception ex)
@@ -819,7 +794,7 @@ namespace TranslationHelper.Functions
                 MessageBox.Show(ex.ToString());
             }
 
-            CacheUnloadWhenNeed(thDataWork);
+            thDataWork.OnlineTranslationCache.Unload(thDataWork);
 
             thDataWork.Main.ProgressInfo(false);
         }
@@ -883,7 +858,7 @@ namespace TranslationHelper.Functions
                 }
             }
             //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
-            thDataWork.OnlineTranslationCache.WriteCache();//промежуточная запись кеша
+            thDataWork.OnlineTranslationCache.Write();//промежуточная запись кеша
 
             InputLines.Clear();
             InputLinesInfo.Clear();
@@ -942,7 +917,7 @@ namespace TranslationHelper.Functions
 
 
             //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
-            thDataWork.OnlineTranslationCache.WriteCache();//промежуточная запись кеша
+            thDataWork.OnlineTranslationCache.Write();//промежуточная запись кеша
 
             InputLines.Clear();
             InputLinesInfo.Clear();

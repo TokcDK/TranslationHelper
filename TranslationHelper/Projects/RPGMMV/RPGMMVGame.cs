@@ -319,7 +319,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 if (thDataWork.OnlineTranslationCache == null)
                 {
                     thDataWork.OnlineTranslationCache = new FunctionsOnlineCache(thDataWork);
-                    thDataWork.OnlineTranslationCache.ReadCache();
+                    thDataWork.OnlineTranslationCache.Read();
                 }
 
                 FillTablesLinesDict();

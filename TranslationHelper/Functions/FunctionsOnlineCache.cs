@@ -36,12 +36,19 @@ namespace TranslationHelper.Functions
             }
         }
 
-        public void WriteCache()
+        bool cacheisbusy;
+        public void Write()
         {
             if (cache == null || cache.Count < 1)
             {
                 return;
             }
+
+            if (cacheisbusy)
+            {
+                return;
+            }
+            cacheisbusy = true;
 
             XElement el = new XElement("TranslationCache",
                 cache.Select(KeyValue =>
@@ -52,9 +59,44 @@ namespace TranslationHelper.Functions
                 ));
             //el.Save("cache.xml");
             FunctionsDBFile.WriteXElementToXMLFile(el, Properties.Settings.Default.THTranslationCachePath);
+
+            cacheisbusy = false;
         }
 
-        public void ReadCache()
+        /// <summary>
+        /// init cache when it was not init
+        /// </summary>
+        /// <param name="thDataWork"></param>
+        internal void Init(THDataWork thDataWork)
+        {
+            //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
+            //    return;
+
+            Properties.Settings.Default.OnlineTranslationCacheUseCount++;
+            if (thDataWork.OnlineTranslationCache == null)
+            {
+                thDataWork.OnlineTranslationCache = new FunctionsOnlineCache(thDataWork);
+                thDataWork.OnlineTranslationCache.Read();
+            }
+        }
+
+        /// <summary>
+        /// unload cache when need
+        /// </summary>
+        /// <param name="thDataWork"></param>
+        internal void Unload(THDataWork thDataWork)
+        {
+            Properties.Settings.Default.OnlineTranslationCacheUseCount--;
+            if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)
+            {
+                if (thDataWork.OnlineTranslationCache != null)
+                {
+                    thDataWork.OnlineTranslationCache = null;
+                }
+            }
+        }
+
+        public void Read()
         {
             string xml = FunctionsDBFile.ReadXMLToString(Properties.Settings.Default.THTranslationCachePath);
             if (xml.Length == 0)

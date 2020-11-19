@@ -51,11 +51,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 Translator = new GoogleAPIOLD(thDataWork);
             }
         }
+        protected override void ActionsPreRowsApply()
+        {
+            thDataWork.OnlineTranslationCache.Init(thDataWork);
+        }
         protected override void ActionsPostRowsApply()
         {
             TranslateAddedStrings();
             Size = 0;
             buffer.Clear();
+            thDataWork.OnlineTranslationCache.Write();
+            thDataWork.OnlineTranslationCache.Unload(thDataWork);
         }
 
         protected override bool Apply()
@@ -95,6 +101,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     buffer[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
                 }
 
+                //check line value in cache
+                var linecache = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
+                if (!string.IsNullOrEmpty(linecache))
+                {
+                    buffer[lineCoordinates][lineNum].Add(line, linecache);
+                    continue;
+                }
+
                 var values = MultyExtract(line, lineCoordinates, lineNum);
 
                 foreach (var val in values)
@@ -108,26 +122,35 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
                         if (!buffer[lineCoordinates][lineNum].ContainsKey(val))
                         {
-                            buffer[lineCoordinates][lineNum].Add(val, null);
-                            Size += val.Length;
+                            var valcache = thDataWork.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val);
+
+                            if (!string.IsNullOrEmpty(valcache))
+                            {
+                                buffer[lineCoordinates][lineNum].Add(val, valcache);
+                            }
+                            else
+                            {
+                                buffer[lineCoordinates][lineNum].Add(val, null);
+                                Size += val.Length;
+                            }
                         }
                     }
                     catch
                     {
                     }
+                }
 
-                    if (IsMax())
+                if (IsMax())
+                {
+                    try
                     {
-                        try
-                        {
-                            TranslateAddedStrings();
-                        }
-                        catch
-                        {
-                        }
-                        Size = 0;
-                        buffer.Clear();
+                        TranslateAddedStrings();
                     }
+                    catch
+                    {
+                    }
+                    Size = 0;
+                    buffer.Clear();
                 }
 
                 lineNum++;
@@ -223,7 +246,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 var TR = coordinate.Key.Split(',');
                 var Row = thDataWork.THFilesElementsDataset.Tables[int.Parse(TR[0])].Rows[int.Parse(TR[1])];
-                var linenumMax = (Row[0] + "").GetLinesCount();
+                //var linenumMax = (Row[0] + "").GetLinesCount();
 
                 try
                 {
@@ -241,7 +264,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             && bufferExtracted.Count > 0
                             && bufferExtracted.ContainsKey(coordinate.Key)
                             && bufferExtracted[coordinate.Key].ContainsKey(lineNum)
-                            && bufferExtracted[coordinate.Key][lineNum].Count>0
+                            && bufferExtracted[coordinate.Key][lineNum].Count > 0
                             )
                         {
                             newValue.Add(GetMergedValue(coordinate.Key, lineNum));
@@ -286,7 +309,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     substitution = enumer.Current;
 
-                    if(replacement.Contains(substitution.Key))
+                    if (replacement.Contains(substitution.Key))
                     {
                         string val = substitution.Value;
                         if (buffer[coordinates][lineNum].ContainsKey(substitution.Value))

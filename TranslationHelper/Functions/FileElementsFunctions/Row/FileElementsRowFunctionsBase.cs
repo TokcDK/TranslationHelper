@@ -60,6 +60,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             int DGVRowsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
             if (DGVRowsCount > 0)
             {
+                if (!IsAll && !IsTable)
+                {
+                    ActionsPreRowsApply();
+                }
+
                 try
                 {
                     GetTableData();
@@ -82,10 +87,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                 }
 
-                ActionsPostRowsApply();
+                if(!IsAll && !IsTable)
+                {
+                    ActionsPostRowsApply();
+                }
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// apply the actions before all rows for selected,table or all was applied
+        /// </summary>
+        protected virtual void ActionsPreRowsApply()
+        {
         }
 
         /// <summary>
@@ -160,7 +175,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected int SelectedTableIndex = -1;
         protected DataRow SelectedRow;
         protected int SelectedRowIndex;
+        /// <summary>
+        /// true when processed all tables
+        /// </summary>
         protected bool IsAll;
+        /// <summary>
+        /// true when processed one table
+        /// </summary>
         protected bool IsTable;
         internal bool All()
         {
