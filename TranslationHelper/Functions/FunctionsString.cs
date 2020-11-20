@@ -85,14 +85,21 @@ namespace TranslationHelper.Functions
                 int partsLength = parts.Length;
                 for (int i = 0; i < partsLength; i++)
                 {
-                    if (i == partsLength - 1)
+                    try
                     {
-                        parts[i] = str.Substring(ind, strLength - ind);
+                        if (i == partsLength - 1)
+                        {
+                            parts[i] = str.Substring(ind, strLength - ind);
+                        }
+                        else
+                        {
+                            parts[i] = str.Substring(ind, substrLength);//here is can be exception when ind parameter is out of range
+                            ind += substrLength;
+                        }
                     }
-                    else
+                    catch
                     {
-                        parts[i] = str.Substring(ind, substrLength);
-                        ind += substrLength;
+                        return null;
                     }
                 }
             }

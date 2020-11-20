@@ -20,6 +20,10 @@ namespace TranslationHelper.Main.Functions
         {
             //int[] selindexes = new int[thDataWork.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
 
+            var tableIndex = 0;
+            thDataWork.Main.Invoke((Action)(()=>tableIndex=thDataWork.Main.THFilesList.SelectedIndex));
+
+
             int[] selindexes = GetRowIndexesOfSelectedDGVCells(thDataWork.Main.THFileElementsDataGridView.SelectedCells);
             var selindexesLength = selindexes.Length;
             for (int i = 0; i < selindexesLength; i++)
@@ -33,7 +37,7 @@ namespace TranslationHelper.Main.Functions
                 //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                 //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                 //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                selindexes[i] = GetDGVSelectedRowIndexInDatatable(thDataWork, thDataWork.Main.THFilesList.SelectedIndex, selindexes[i]);
+                selindexes[i] = GetDGVSelectedRowIndexInDatatable(thDataWork, tableIndex, selindexes[i]);
 
                 //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
             }

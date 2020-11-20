@@ -133,7 +133,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
             }
 
-            File.WriteAllText(thDataWork.FilePath, TranslatedResult.ToString());
+            File.WriteAllText(thDataWork.FilePath, TranslatedResult.ToString().Replace("\r\n","\n")/*js using only \n*/);
             return true;
         }
 
