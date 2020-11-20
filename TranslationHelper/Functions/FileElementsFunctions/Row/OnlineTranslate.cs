@@ -81,6 +81,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
         protected override bool Apply()
         {
+            while(IsAll && !AllDBLoaded4All)//wait of all db load
+            {
+                Task.Delay(1000);
+            }
+
             if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0)
             {
                 thDataWork.Main.ProgressInfo(true, "Translate"+" "+SelectedTable.TableName+"/"+SelectedRowIndex);
