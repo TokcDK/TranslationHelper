@@ -40,6 +40,43 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             this.thDataWork = thDataWork;
             threaded = thDataWork.Main.InvokeRequired;
         }
+
+        /// <summary>
+        /// proceed 1 or more of selected rows
+        /// </summary>
+        /// <returns></returns>
+        internal bool Selected(DataRow row)
+        {
+            if (!IsAll && !IsTable)
+            {
+                ActionsPreRowsApply();
+            }
+
+            try
+            {
+                GetTableData();
+
+                SelectedRow = row;
+                SelectedTableIndex = 0;
+                SelectedRowIndex = 0;
+                ApplyConditions();
+            }
+            catch
+            {
+            }
+
+            if (!IsAll && !IsTable)
+            {
+                ActionsPostRowsApply();
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// proceed 1 or more of selected rows
+        /// </summary>
+        /// <returns></returns>
         internal bool Selected()
         {
             if (DGV == null)
@@ -124,11 +161,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 SelectedTable = thDataWork.THFilesElementsDataset.Tables[SelectedTableIndex];
             }
             ColumnIndexOriginal = SelectedTable.Columns[THSettingsData.OriginalColumnName()].Ordinal;// Колонка Original
-            ColumnIndexTranslation = SelectedTable.Columns[THSettingsData.TranslationColumnName()].Ordinal;// Колонка Original
+            ColumnIndexTranslation = SelectedTable.Columns[THSettingsData.TranslationColumnName()].Ordinal;// Колонка Translation
         }
 
+        /// <summary>
+        /// true when processed one table
+        /// </summary>
+        protected bool IsTable;
         protected int ColumnIndexOriginal;
         protected int ColumnIndexTranslation = 1;
+        /// <summary>
+        /// proceed selected table
+        /// </summary>
+        /// <returns></returns>
         internal bool Table()
         {
             GetTableData();
@@ -182,9 +227,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         protected bool IsAll;
         /// <summary>
-        /// true when processed one table
+        /// Proceed all tables
         /// </summary>
-        protected bool IsTable;
+        /// <returns></returns>
         internal bool All()
         {
             IsAll = true;
