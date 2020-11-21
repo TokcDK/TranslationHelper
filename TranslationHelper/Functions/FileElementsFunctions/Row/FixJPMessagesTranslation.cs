@@ -49,6 +49,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var strOriginal = SelectedRow[ColumnIndexOriginal] as string;
             var strTranslation = SelectedRow[ColumnIndexTranslation] + string.Empty;
 
+            if (string.IsNullOrWhiteSpace(strTranslation))
+            {
+                return false;
+            }
+
             if (sessionData.ContainsKey(strOriginal))
             {
                 SelectedRow[ColumnIndexTranslation] = sessionData[strOriginal];
