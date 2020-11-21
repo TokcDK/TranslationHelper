@@ -17,6 +17,28 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 thDataWork.ENQuotesToJPLearnDataFoundNext = new System.Collections.Generic.Dictionary<char, int>();
             }
         }
+
+        protected override void ActionsPreRowsApply()
+        {
+            PreLearn();
+        }
+        protected override void ActionsPostRowsApply()
+        {
+            PostLearn();
+        }
+
+        static void PreLearn()
+        {
+        }
+        protected void PostLearn()
+        {
+            MessageBox.Show(
+                (thDataWork.ENQuotesToJPLearnDataFoundPrev != null && thDataWork.ENQuotesToJPLearnDataFoundPrev.Keys.Count > 0 ? "Prev:\r\n" + string.Join("\r\n", thDataWork.ENQuotesToJPLearnDataFoundPrev) : "")
+                + "\r\n\r\n" +
+                (thDataWork.ENQuotesToJPLearnDataFoundNext != null && thDataWork.ENQuotesToJPLearnDataFoundNext.Keys.Count > 0 ? "Next:\r\n" + string.Join("\r\n", thDataWork.ENQuotesToJPLearnDataFoundNext) : "")
+                );
+        }
+
         protected override bool Apply()
         {
             try
@@ -161,14 +183,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                 }
 
-        }
-        protected override void PostLearn()
-        {
-            MessageBox.Show(
-                (thDataWork.ENQuotesToJPLearnDataFoundPrev != null && thDataWork.ENQuotesToJPLearnDataFoundPrev.Keys.Count > 0 ? "Prev:\r\n" + string.Join("\r\n", thDataWork.ENQuotesToJPLearnDataFoundPrev) : "")
-                + "\r\n\r\n" +
-                (thDataWork.ENQuotesToJPLearnDataFoundNext != null && thDataWork.ENQuotesToJPLearnDataFoundNext.Keys.Count > 0 ? "Next:\r\n" + string.Join("\r\n", thDataWork.ENQuotesToJPLearnDataFoundNext) : "")
-                );
         }
     }
 }

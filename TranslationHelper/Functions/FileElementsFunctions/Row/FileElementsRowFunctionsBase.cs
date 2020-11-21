@@ -184,7 +184,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (!IsAll)
                 {
                     IsTable = true;
-                    PreLearn();
 
                     ActionsPreRowsApply();
                 }
@@ -200,8 +199,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 if (IsTable)
                 {
-                    PostLearn();
-
                     ActionsPostRowsApply();
                 }
             }
@@ -237,26 +234,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             ActionsPreRowsApply();
 
-            PreLearn();
-
             foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
             {
                 SelectedTable = table;
                 Table();
             }
 
-            PostLearn();
-
             ActionsPostRowsApply();
 
             return ret;
-        }
-
-        protected virtual void PreLearn()
-        {
-        }
-        protected virtual void PostLearn()
-        {
         }
 
         protected virtual void ApplyConditions()
