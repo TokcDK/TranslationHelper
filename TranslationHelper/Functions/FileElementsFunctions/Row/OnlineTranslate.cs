@@ -73,7 +73,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
         protected override void ActionsPostRowsApply()
         {
-            TranslateAddedStrings();
+            TranslateStrings();
             Size = 0;
             buffer.Clear();
             thDataWork.OnlineTranslationCache.Write();
@@ -133,7 +133,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     continue;
                 }
 
-                var values = MultyExtract(line, lineCoordinates, lineNum);
+                var values = ExtractMulty(line, lineCoordinates, lineNum);
 
                 foreach (var val in values)
                 {
@@ -163,7 +163,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     try
                     {
-                        TranslateAddedStrings();
+                        TranslateStrings();
                     }
                     catch
                     {
@@ -176,7 +176,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        private string[] MultyExtract(string line, string lineCoordinates, int lineNum)
+        /// <summary>
+        /// extract captured groups from string
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="lineCoordinates"></param>
+        /// <param name="lineNum"></param>
+        /// <returns></returns>
+        private string[] ExtractMulty(string line, string lineCoordinates, int lineNum)
         {
             if (!bufferExtracted.ContainsKey(lineCoordinates))
             {
@@ -231,19 +238,27 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        private static bool IsValidForTranslation(string line)
+        /// <summary>
+        /// true if input string is valid
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        private static bool IsValidForTranslation(string inputString)
         {
-            return !string.IsNullOrWhiteSpace(line) && !line.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther();
+            return !string.IsNullOrWhiteSpace(inputString) && !inputString.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther();
         }
 
         readonly GoogleAPIOLD Translator;
-        private void TranslateAddedStrings()
+        /// <summary>
+        /// get originals and translate them
+        /// </summary>
+        private void TranslateStrings()
         {
             var originals = GetOriginals();
 
             var translated = TranslateOriginals(originals);
 
-            if (translated != null && translated.Length > 0)
+            if (translated != null && translated.Length > 0)//go next only if was correct translated
             {
                 SetTranslationsToBuffer(originals, translated);
 
@@ -251,6 +266,146 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
+        /// <summary>
+        /// get valid unique originals from buffer
+        /// </summary>
+        /// <returns></returns>
+        private string[] GetOriginals()
+        {
+            var orig = new List<string>();
+            foreach (var coordinate in buffer)//get all coordinate keys
+            {
+                foreach (var linenumber in coordinate.Value) // get all sublines
+                {
+                    foreach (var linetext in linenumber.Value) // get all sublines
+                    {
+                        if (!orig.Contains(linetext.Key) && linetext.Value == null && IsValidForTranslation(linetext.Key))
+                        {
+                            orig.Add(linetext.Key);
+                        }
+                    }
+                }
+            }
+
+            return orig.ToArray();
+        }
+
+        /// <summary>
+        /// apply project specific pre actions like hide variables to original lines before they will be translated
+        /// </summary>
+        /// <param name="originalLines"></param>
+        /// <returns></returns>
+        private string[] ApplyProjectPretranslationAction(string[] originalLines)
+        {
+            if (thDataWork.CurrentProject.HideVARSMatchCollectionsList != null && thDataWork.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
+            {
+                thDataWork.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+            }
+
+            for (int i = 0; i < originalLines.Length; i++)
+            {
+                var s = thDataWork.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
+                if (!string.IsNullOrEmpty(s))
+                {
+                    originalLines[i] = s;
+                }
+            }
+            return originalLines;
+        }
+
+        /// <summary>
+        /// apply project specific post actions like unhide variables to original lines after they was translated
+        /// </summary>
+        /// <param name="originalLines"></param>
+        /// <param name="translatedLines"></param>
+        /// <returns></returns>
+        private string[] ApplyProjectPosttranslationAction(string[] originalLines, string[] translatedLines)
+        {
+            for (int i = 0; i < translatedLines.Length; i++)
+            {
+                var s = thDataWork.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
+                if (!string.IsNullOrEmpty(s) && s != translatedLines[i])
+                {
+                    translatedLines[i] = s;
+                }
+            }
+
+            if (thDataWork.CurrentProject.HideVARSMatchCollectionsList != null && thDataWork.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
+            {
+                thDataWork.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+            }
+
+            return translatedLines;
+        }
+
+        /// <summary>
+        /// translate originals in selected translator
+        /// </summary>
+        /// <param name="originals"></param>
+        /// <returns></returns>
+        private string[] TranslateOriginals(string[] originals)
+        {
+            string[] translated = null;
+            try
+            {
+                var OriginalLinesPreapplied = ApplyProjectPretranslationAction(originals);
+                if (OriginalLinesPreapplied.Length > 0)
+                {
+                    translated = Translator.Translate(OriginalLinesPreapplied);
+                    if (translated == null || originals.Length != translated.Length)
+                    {
+                        return new string[1] { "" };
+                    }
+                    translated = ApplyProjectPosttranslationAction(originals, translated);
+                }
+            }
+            catch (Exception ex)
+            {
+                new FunctionsLogs().LogToFile("Error while translation:"
+                    + Environment.NewLine
+                    + ex
+                    + Environment.NewLine
+                    + "OriginalLines="
+                    + string.Join(Environment.NewLine + "</br>" + Environment.NewLine, originals));
+            }
+
+            return translated;
+        }
+
+        /// <summary>
+        /// set translations to buffer data
+        /// </summary>
+        /// <param name="originals"></param>
+        /// <param name="translated"></param>
+        private void SetTranslationsToBuffer(string[] originals, string[] translated)
+        {
+            var translations = new Dictionary<string, string>();
+            for (int i = 0; i < originals.Length; i++)
+            {
+                translations.Add(originals[i], translated[i]);
+            }
+
+            var Coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
+            foreach (var coordinate in Coordinates)//get all coordinate keys
+            {
+                var lineNumbers = new Dictionary<int, Dictionary<string, string>>(coordinate.Value);
+                foreach (var linenumber in lineNumbers) // get all sublines
+                {
+                    var liTexts = new Dictionary<string, string>(linenumber.Value);
+                    foreach (var linetext in liTexts) // get all sublines
+                    {
+                        if (linetext.Value == null && translations.ContainsKey(linetext.Key))
+                        {
+                            buffer[coordinate.Key][linenumber.Key][linetext.Key] = translations[linetext.Key];
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// set buffer content to rows by coordinates
+        /// </summary>
         private void SetBufferToRows()
         {
             var Coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
@@ -302,6 +457,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
+        /// <summary>
+        /// merge extracted strings to result merged translation
+        /// </summary>
+        /// <param name="coordinates"></param>
+        /// <param name="lineNum"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         private string GetMergedValue(string coordinates, int lineNum, string line)
         {
             using (var enumer = bufferExtracted[coordinates][lineNum].GetEnumerator())
@@ -349,118 +511,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 return replacement;
             }
-        }
-
-        private string[] TranslateOriginals(string[] originals)
-        {
-            string[] translated = null;
-            try
-            {
-                var OriginalLinesPreapplied = ApplyProjectPretranslationAction(originals);
-                if (OriginalLinesPreapplied.Length > 0)
-                {
-                    translated = Translator.Translate(OriginalLinesPreapplied);
-                    if (translated == null || originals.Length != translated.Length)
-                    {
-                        return new string[1] { "" };
-                    }
-                    translated = ApplyProjectPosttranslationAction(originals, translated);
-                }
-            }
-            catch (Exception ex)
-            {
-                new FunctionsLogs().LogToFile("Error while translation:"
-                    + Environment.NewLine
-                    + ex
-                    + Environment.NewLine
-                    + "OriginalLines="
-                    + string.Join(Environment.NewLine + "</br>" + Environment.NewLine, originals));
-            }
-
-            return translated;
-        }
-
-        private void SetTranslationsToBuffer(string[] originals, string[] translated)
-        {
-            var translations = new Dictionary<string, string>();
-            for (int i = 0; i < originals.Length; i++)
-            {
-                translations.Add(originals[i], translated[i]);
-            }
-
-            var Coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
-            foreach (var coordinate in Coordinates)//get all coordinate keys
-            {
-                var lineNumbers = new Dictionary<int, Dictionary<string, string>>(coordinate.Value);
-                foreach (var linenumber in lineNumbers) // get all sublines
-                {
-                    var liTexts = new Dictionary<string, string>(linenumber.Value);
-                    foreach (var linetext in liTexts) // get all sublines
-                    {
-                        if (linetext.Value == null && translations.ContainsKey(linetext.Key))
-                        {
-                            buffer[coordinate.Key][linenumber.Key][linetext.Key] = translations[linetext.Key];
-                        }
-                    }
-                }
-            }
-        }
-
-        private string[] GetOriginals()
-        {
-            var orig = new List<string>();
-            foreach (var coordinate in buffer)//get all coordinate keys
-            {
-                foreach (var linenumber in coordinate.Value) // get all sublines
-                {
-                    foreach (var linetext in linenumber.Value) // get all sublines
-                    {
-                        if (!orig.Contains(linetext.Key) && linetext.Value == null && IsValidForTranslation(linetext.Key))
-                        {
-                            orig.Add(linetext.Key);
-                        }
-                    }
-                }
-            }
-
-            return orig.ToArray();
-        }
-
-        private string[] ApplyProjectPretranslationAction(string[] originalLines)
-        {
-            if (thDataWork.CurrentProject.HideVARSMatchCollectionsList != null && thDataWork.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
-            {
-                thDataWork.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
-            }
-
-            for (int i = 0; i < originalLines.Length; i++)
-            {
-                var s = thDataWork.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
-                if (!string.IsNullOrEmpty(s))
-                {
-                    originalLines[i] = s;
-                }
-            }
-            return originalLines;
-        }
-
-        private string[] ApplyProjectPosttranslationAction(string[] originalLines, string[] translatedLines)
-        {
-            for (int i = 0; i < translatedLines.Length; i++)
-            {
-                var s = thDataWork.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
-                if (!string.IsNullOrEmpty(s) && s != translatedLines[i])
-                {
-                    translatedLines[i] = s;
-                }
-            }
-
-            if (thDataWork.CurrentProject.HideVARSMatchCollectionsList != null && thDataWork.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
-            {
-                thDataWork.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
-            }
-
-            return translatedLines;
         }
     }
 }
