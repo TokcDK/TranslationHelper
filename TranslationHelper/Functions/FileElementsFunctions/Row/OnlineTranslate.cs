@@ -68,6 +68,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 t.ConfigureAwait(true);
                 t.Start();
                 t.Wait();
+
+                while (IsAll && !AllDBLoaded4All)//wait of all db load
+                {
+                    Task.Delay(1000);
+                }
                 //FunctionsDBFile.MergeAllDBtoOne(thDataWork);
                 AllDBLoaded4All = true;
             }
@@ -82,19 +87,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
         protected override bool Apply()
         {
-            while(IsAll && !AllDBLoaded4All)//wait of all db load
-            {
-                Task.Delay(1000);
-            }
-
             if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0)
             {
-                thDataWork.Main.ProgressInfo(true, "Translate"+" "+SelectedTable.TableName+"/"+SelectedRowIndex);
-                
+                thDataWork.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
+
                 SetRowLinesToBuffer();
 
                 thDataWork.Main.ProgressInfo(false);
-                
+
                 return true;
             }
 
@@ -215,7 +215,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
                         }
 
-                        bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);
+                        if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey("$" + g.Name))
+                            bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);
 
                         if (IsValidForTranslation(g.Value) && PatternReplacementPair.Value.Contains("$" + g.Name))
                             l.Add(g.Value);
@@ -380,6 +381,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <param name="translated"></param>
         private void SetTranslationsToBuffer(string[] originals, string[] translated)
         {
+            if (originals.Length != translated.Length)
+                return;
+
             var translations = new Dictionary<string, string>();
             for (int i = 0; i < originals.Length; i++)
             {
@@ -413,7 +417,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             foreach (var coordinate in Coordinates)//get all coordinate keys
             {
                 var TR = coordinate.Key.Split(',');
-                var Row = thDataWork.THFilesElementsDataset.Tables[int.Parse(TR[0])].Rows[int.Parse(TR[1])];
+                var tindex = int.Parse(TR[0]);
+                var rindex = int.Parse(TR[1]);
+                var Row = thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex];
                 //var linenumMax = (Row[0] + "").GetLinesCount();
 
                 try

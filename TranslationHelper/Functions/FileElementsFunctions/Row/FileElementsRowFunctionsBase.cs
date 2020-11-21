@@ -197,7 +197,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     ApplyConditions();
                 }
 
-                if (IsTable)
+                if (!IsAll && IsTable)
                 {
                     ActionsPostRowsApply();
                 }
@@ -234,10 +234,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             ActionsPreRowsApply();
 
+            int ind = 0;
             foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
             {
                 SelectedTable = table;
-                Table();
+                SelectedTableIndex = ind;
+                try
+                {
+                    Table();
+                }
+                catch
+                {
+                }
+                ind++;
             }
 
             ActionsPostRowsApply();
@@ -249,9 +258,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (!Properties.Settings.Default.IgnoreOrigEqualTransLines || (Properties.Settings.Default.IgnoreOrigEqualTransLines && !Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation])))//apply only if translation not equal original
             {
-                if (Apply())
+                try
                 {
-                    ret = true;
+                    if (Apply())
+                    {
+                        ret = true;
+                    }
+                }
+                catch
+                {
                 }
             }
         }
