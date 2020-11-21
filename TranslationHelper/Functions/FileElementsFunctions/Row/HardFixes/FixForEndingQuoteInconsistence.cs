@@ -12,7 +12,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         {
             var translation = SelectedRow[ColumnIndexTranslation] + "";
             var original = SelectedRow[ColumnIndexOriginal] as string;
-            if (translation[translation.Length - 1] == '"' && original[original.Length - 1] != '"')
+            if (translation.Length > 1 && translation[translation.Length - 1] == '"' && original.Length > 0 && original[original.Length - 1] != '"')
             {
                 SelectedRow[ColumnIndexTranslation] = translation.Remove(translation.Length - 1, 1) + original[original.Length - 1];
                 return true;

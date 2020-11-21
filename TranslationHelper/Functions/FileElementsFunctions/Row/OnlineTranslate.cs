@@ -451,7 +451,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
 
                     Row[1] = string.Join(Environment.NewLine, newValue);
+
+                    //apply fixes for cell
                     new AllHardFixes(thDataWork).Selected(Row);
+                    new FixCells(thDataWork).Selected(Row);
                 }
                 catch
                 {
