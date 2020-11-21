@@ -1561,9 +1561,11 @@ namespace TranslationHelper
             return ret;
         }
 
-        private void CellFixesSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void CellFixesSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FixSelectedCells();
+            await Task.Run(() => new FixCells(thDataWork).Selected()).ConfigureAwait(false);
+
+            //FixSelectedCells();
         }
 
         private void FixSelectedCells(bool force = false)
@@ -1588,9 +1590,11 @@ namespace TranslationHelper
             //}
         }
 
-        private void CellFixesTableToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void CellFixesTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CellFixes(2);
+            await Task.Run(() => new FixCells(thDataWork).Table()).ConfigureAwait(false);
+
+            //CellFixes(2);
 
             ////эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
             ////на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
@@ -1606,9 +1610,11 @@ namespace TranslationHelper
             ////THFixCells("t");
         }
 
-        private void CellFixesAllToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void CellFixesAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CellFixes(3);
+            await Task.Run(() => new FixCells(thDataWork).All()).ConfigureAwait(false);
+
+            //CellFixes(3);
 
             ////эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
             ////на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться

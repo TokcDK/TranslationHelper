@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -450,6 +451,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
 
                     Row[1] = string.Join(Environment.NewLine, newValue);
+                    new AllHardFixes(thDataWork).Selected(Row);
                 }
                 catch
                 {

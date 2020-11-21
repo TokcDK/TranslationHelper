@@ -204,6 +204,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\CompleteRomajiotherLines.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FileElementsRowFunctionsBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ENQuotesToJP.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\FixCells.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FixJPMessagesTranslation.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\FixBrokenNameVar.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\FixBrokenNameVar2.cs" />

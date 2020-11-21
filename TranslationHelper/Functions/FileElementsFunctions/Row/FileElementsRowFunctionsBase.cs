@@ -42,7 +42,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         /// <summary>
-        /// proceed 1 or more of selected rows
+        /// proceed 1 selected row
         /// </summary>
         /// <returns></returns>
         internal bool Selected(DataRow row)
