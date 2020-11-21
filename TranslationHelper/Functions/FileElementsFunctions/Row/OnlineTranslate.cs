@@ -89,8 +89,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0)
             {
                 thDataWork.Main.ProgressInfo(true, "Translate"+" "+SelectedTable.TableName+"/"+SelectedRowIndex);
+                
                 SetRowLinesToBuffer();
 
+                thDataWork.Main.ProgressInfo(false);
+                
                 return true;
             }
 
