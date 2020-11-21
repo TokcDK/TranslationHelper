@@ -54,11 +54,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             try
             {
-                GetTableData();
-
                 SelectedRow = row;
                 SelectedTableIndex = 0;
                 SelectedRowIndex = 0;
+
+                GetTableData();
+
                 ApplyConditions();
             }
             catch

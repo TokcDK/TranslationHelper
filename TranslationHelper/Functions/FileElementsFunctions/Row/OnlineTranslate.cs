@@ -134,11 +134,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 foreach (var val in values)
                 {
-                    //if (!IsValidForTranslation(val))
-                    //{
-                    //    continue;
-                    //}
-
                     try
                     {
                         if (!buffer[lineCoordinates][lineNum].ContainsKey(val))
@@ -199,24 +194,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     continue;
                 }
 
-                //int lastGroupInd = 0;
-                //bool skippedgroup0 = false;
-                //var groupInd = 0;
                 foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
                 {
-                    //if (!skippedgroup0)
-                    //{
-                    //    skippedgroup0 = true;
-                    //    continue;
-                    //}
-
-                    //if (g.Index < lastGroupInd)
-                    //{
-                    //    continue;
-                    //}
-
-                    //var gname=g.Name;
-
                     try
                     {
 
@@ -234,9 +213,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
 
                     }
-
-                    //groupInd++;
-                    //lastGroupInd = g.Index + g.Length;
                 }
 
                 break;
