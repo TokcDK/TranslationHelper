@@ -247,7 +247,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected virtual void ApplyConditions()
         {
-            if (!Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation]))//apply only if translation not equal original
+            if (!Properties.Settings.Default.IgnoreOrigEqualTransLines || (Properties.Settings.Default.IgnoreOrigEqualTransLines && !Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation])))//apply only if translation not equal original
             {
                 if (Apply())
                 {
