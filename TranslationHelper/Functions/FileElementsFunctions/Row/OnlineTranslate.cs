@@ -164,6 +164,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                     Size = 0;
                     buffer.Clear();
+
+                    //write cache periodically
+                    thDataWork.OnlineTranslationCache.Write();
                 }
 
                 lineNum++;
