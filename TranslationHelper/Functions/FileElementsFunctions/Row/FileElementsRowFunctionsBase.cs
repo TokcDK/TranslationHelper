@@ -234,11 +234,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             ActionsPreRowsApply();
 
-            int ind = 0;
+            int tindex = 0;
             foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
             {
                 SelectedTable = table;
-                SelectedTableIndex = ind;
+                SelectedTableIndex = tindex;
                 try
                 {
                     Table();
@@ -246,7 +246,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 catch
                 {
                 }
-                ind++;
+                tindex++;
             }
 
             ActionsPostRowsApply();

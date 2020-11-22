@@ -63,17 +63,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && IsAll && !AllDBLoaded4All)
             {
                 thDataWork.Main.ProgressInfo(true, "Get all DB");
-                //await Task.Run(() => FunctionsDBFile.MergeAllDBtoOne(thDataWork)).ConfigureAwait(true);
-                Task t = new Task(() => FunctionsDBFile.MergeAllDBtoOne(thDataWork));
-                t.ConfigureAwait(true);
-                t.Start();
-                t.Wait();
-
-                while (IsAll && !AllDBLoaded4All)//wait of all db load
-                {
-                    Task.Delay(1000);
-                }
-                //FunctionsDBFile.MergeAllDBtoOne(thDataWork);
+                var mergingAllDB = new Task(() => FunctionsDBFile.MergeAllDBtoOne(thDataWork));
+                mergingAllDB.ConfigureAwait(true);
+                mergingAllDB.Start();
+                mergingAllDB.Wait();
                 AllDBLoaded4All = true;
             }
         }
