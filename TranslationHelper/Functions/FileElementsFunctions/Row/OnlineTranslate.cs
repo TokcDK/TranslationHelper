@@ -381,6 +381,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             for (int i = 0; i < originals.Length; i++)
             {
                 translations.Add(originals[i], translated[i]);
+
+                FunctionsOnlineCache.AddToTranslationCacheIfValid(thDataWork, originals[i], translated[i]);
             }
 
             var Coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);

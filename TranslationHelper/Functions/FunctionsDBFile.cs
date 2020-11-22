@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -324,9 +325,13 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
+        private static readonly ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
+
         internal static void WriteXElementToXMLFile(XElement el, string xmlPath)
         {
-            using (FileStream fs = new FileStream(xmlPath, FileMode.Create))
+            locker.EnterWriteLock();
+
+            using (var fs = new FileStream(xmlPath, FileMode.Create))
             {
                 Stream s = null;
                 try
@@ -356,6 +361,8 @@ namespace TranslationHelper.Main.Functions
                     }
                 }
             }
+
+            locker.ExitWriteLock();
         }
 
         /// <summary>

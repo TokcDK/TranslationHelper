@@ -125,6 +125,21 @@ namespace TranslationHelper.Functions
             }
         }
 
+        public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/THDataWork thDataWork, string Original, string Translation)
+        {
+            if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed)
+            {
+                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || thDataWork.OnlineTranslationCache.cache.ContainsKey(Original) || string.IsNullOrWhiteSpace(Translation) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
+                {
+                }
+                else
+                {
+                    //THTranslationCache.Tables[0].Rows.Add(Original, Translation);
+                    thDataWork.OnlineTranslationCache.cache.Add(Original, Translation);
+                }
+            }
+        }
+
         //private static string ReadXMLToString()
         //{
         //    using (FileStream fs = new FileStream(Properties.Settings.Default.THTranslationCachePath, FileMode.Open))
