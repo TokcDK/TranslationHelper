@@ -62,14 +62,21 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 if (!IsValidToken(token))
                     return;
 
-                AddRowData(Jsonname, token.ToString(),
-                    token.Path
-                    + ((IsPluginsJS && token.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase))
-                    ? Environment.NewLine + T._("Warning") + ". " + T._("Parameter: translation of some parameters can break the game.")
-                    : string.Empty)
-                    , true);
-                //thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(token.ToString());
-                //thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(token.Path);
+                if((token+"").StartsWith("{") && (token + "").EndsWith("}"))
+                {
+                    var t = token.ToString();
+                    var root = JToken.Parse(t);
+                    GetStringsFromJToken(root, Jsonname);
+                }
+                else
+                {
+                    AddRowData(Jsonname, token.ToString(),
+                        token.Path
+                        + ((IsPluginsJS && token.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase))
+                        ? Environment.NewLine + T._("Warning") + ". " + T._("Parameter: translation of some parameters can break the game.")
+                        : string.Empty)
+                        , true);
+                }
             }
             else if (token is JObject obj)
             {
@@ -154,12 +161,24 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 if (!IsValidToken(token))
                     return;
 
-                string TokenValue = token.ToString();
-                if (TablesLinesDict.ContainsKey(TokenValue)
-                    && !string.IsNullOrEmpty(TablesLinesDict[TokenValue])
-                    && TablesLinesDict[TokenValue] != TokenValue)
+                string TokenValue;
+                if ((token + "").StartsWith("{") && (token + "").EndsWith("}"))
                 {
-                    (token as JValue).Value = TablesLinesDict[TokenValue];
+                    var root = JToken.Parse(token.ToString());
+                    WriteStringsToJTokenWithPreSplitlines(root, Jsonname);
+                    var jv = root.ToString(Formatting.None);
+                    (token as JValue).Value = jv;
+                }
+                else
+                {
+                    TokenValue = token.ToString();
+
+                    if (TablesLinesDict.ContainsKey(TokenValue)
+                        && !string.IsNullOrEmpty(TablesLinesDict[TokenValue])
+                        && TablesLinesDict[TokenValue] != TokenValue)
+                    {
+                        (token as JValue).Value = TablesLinesDict[TokenValue];
+                    }
                 }
             }
             else if (token is JObject obj)
