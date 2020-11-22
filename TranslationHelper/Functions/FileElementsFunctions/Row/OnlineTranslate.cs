@@ -124,6 +124,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (!string.IsNullOrEmpty(linecache))
                 {
                     buffer[lineCoordinates][lineNum].Add(line, linecache);
+                    lineNum++;
                     continue;
                 }
 
@@ -422,7 +423,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var rowValue = ((Row[1] != null && !string.IsNullOrEmpty(Row[1] as string) && !Equals(Row[1], Row[0])) ? Row[1] : Row[0]) + "";
                     foreach (var line in rowValue.SplitToLines())
                     {
-                        if (!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0)
+                        if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0))
                         {
                             newValue.Add(line);
                         }
