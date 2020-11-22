@@ -505,7 +505,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
                         Row[1] = s;
 
                         //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
-                        FunctionsTable.AddToTranslationCacheIfValid(thDataWork, Cell as string, s);
+                        FunctionsOnlineCache.AddToTranslationCacheIfValid(thDataWork, Cell as string, s);
 
                         //закоментировано для повышения производительности
                         //THAutoSetSameTranslationForSimular(PreviousTableIndex, PreviousRowIndex, 0);
