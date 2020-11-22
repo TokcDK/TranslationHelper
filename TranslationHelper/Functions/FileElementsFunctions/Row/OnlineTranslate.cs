@@ -253,12 +253,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             var translated = TranslateOriginals(originals);
 
-            if (translated != null && translated.Length > 0)//go next only if was correct translated
-            {
-                SetTranslationsToBuffer(originals, translated);
+            SetTranslationsToBuffer(originals, translated);
 
-                SetBufferToRows();
-            }
+            SetBufferToRows();
         }
 
         /// <summary>
@@ -374,16 +371,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <param name="translated"></param>
         private void SetTranslationsToBuffer(string[] originals, string[] translated)
         {
-            if (originals.Length != translated.Length)
-                return;
-
             var translations = new Dictionary<string, string>();
-            for (int i = 0; i < originals.Length; i++)
-            {
-                translations.Add(originals[i], translated[i]);
+            if (originals != null && translated != null && originals.Length > 0 && originals.Length == translated.Length)
+                for (int i = 0; i < originals.Length; i++)
+                {
+                    translations.Add(originals[i], translated[i]);
 
-                FunctionsOnlineCache.AddToTranslationCacheIfValid(thDataWork, originals[i], translated[i]);
-            }
+                    FunctionsOnlineCache.AddToTranslationCacheIfValid(thDataWork, originals[i], translated[i]);
+                }
 
             var Coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
             foreach (var coordinate in Coordinates)//get all coordinate keys
