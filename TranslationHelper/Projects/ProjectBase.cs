@@ -398,6 +398,16 @@ namespace TranslationHelper.Projects
                     select SubClass).ToList();
         }
 
+        /// <summary>
+        /// cleaning string before check to make checking more correct and check with no specsymbols
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        internal virtual string CleanStringForCheck(string str)
+        {
+            return str;
+        }
+
         internal void FillTHFilesElementsDictionary()
         {
             if (thDataWork.TablesLinesDict == null || thDataWork.TablesLinesDict.Count == 0)

@@ -247,19 +247,17 @@ namespace TranslationHelper.Formats.RPGMMV
                     {
                         AddMergedMessage(jsonToken, JsonName);
                     }
-                    if (tokenvalue.Length == 0/* || GetAlreadyAddedInTable(Jsonname, tokenvalue)*/ || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue) /* очень медленная функция, лучше выполнить в фоне, вручную, после открытия || GetAnyFileWithTheNameExist(tokenvalue)*/)
-                    {
-                    }
-                    else
+
+                    if (IsValidString(tokenvalue))
                     {
                         string c;
-                        AddData(JsonName, tokenvalue, "JsonPath: "
+                        AddRowData(JsonName, tokenvalue, "JsonPath: "
                             + Environment.NewLine
                             + jsonToken.Path
                             + (!string.IsNullOrWhiteSpace(c = GetCodeValueOfParent(jsonToken)) ? Environment.NewLine + "Code=" + c :
                             IsWithMergedMessages && !string.IsNullOrWhiteSpace(curcode) ? Environment.NewLine + "Code=" + curcode : string.Empty)
                             + (c.Length > 0 && (c == "402" || c == "102") ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
-                            );
+                            , true, false);
                     }
                 }
             }

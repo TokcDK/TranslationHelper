@@ -344,6 +344,18 @@ namespace TranslationHelper.Projects.RPGMMV
 
             return translation;
         }
+        internal override string CleanStringForCheck(string str)
+        {
+            if (Regex.IsMatch(str, @"<Mini Label: ([^>]+)>"))
+            {
+                //<Mini Label: \\c[10]バット Lv\\v[981]>
+                str = Regex.Match(str, @"<Mini Label: ([^>]+)>").Result("$1");
+            }
+
+            str = Regex.Replace(str, @"\\C\[[0-9]{1,3}\]", "");
+
+            return str;
+        }
 
     }
 }

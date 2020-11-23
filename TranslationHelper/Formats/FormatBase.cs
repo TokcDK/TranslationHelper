@@ -375,7 +375,7 @@ namespace TranslationHelper.Formats
         }
         protected bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
         {
-            if (CheckInput && !IsValidString(RowData[0]))
+            if (CheckInput && !IsValidString(thDataWork.CurrentProject.CleanStringForCheck(RowData[0])))
             {
                 return false;
             }
