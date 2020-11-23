@@ -444,7 +444,7 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <returns></returns>
         private static bool IsExcludedCode(string curcode)
         {
-            return curcode.Length == 3 && (curcode == "108" || curcode == "408"/* || curcode == "356"*/);
+            return false /*curcode.Length == 3 && (curcode == "108" || curcode == "408" || curcode == "356")*/;
         }
 
         /// <summary>

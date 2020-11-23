@@ -42,8 +42,11 @@ namespace TranslationHelper.Formats
 
         internal virtual bool Save() { return ParseStringFile(); }
 
-        protected static bool IsValidString(string inputString)
+        protected bool IsValidString(string inputString)
         {
+            //preclean string
+            inputString = thDataWork.CurrentProject.CleanStringForCheck(inputString);
+
             bool jp;
             return !string.IsNullOrWhiteSpace(inputString)
                 && (
@@ -301,7 +304,7 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// trimmed line value
             /// </summary>
-            internal string TrimmedLine { get => trimmed; set => trimmed = value!=null ? value.Trim():""; }
+            internal string TrimmedLine { get => trimmed; set => trimmed = value != null ? value.Trim() : ""; }
             /// <summary>
             /// Usually here adding file's content for write
             /// </summary>
@@ -375,7 +378,7 @@ namespace TranslationHelper.Formats
         }
         protected bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
         {
-            if (CheckInput && !IsValidString(thDataWork.CurrentProject.CleanStringForCheck(RowData[0])))
+            if (CheckInput && !IsValidString(RowData[0]))
             {
                 return false;
             }
