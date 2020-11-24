@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
             if(!IsEmptyOrComment())
             {
-                var mc = Regex.Matches(ParseData.line, @"\""([^\""\r\n]+)\""");
+                var mc = Regex.Matches(ParseData.line, @"[\""']([^\""'\r\n]+)[\""']");
 
                 for (int m= mc.Count-1; m>=0; m--)
                 {

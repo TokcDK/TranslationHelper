@@ -182,6 +182,7 @@
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
     <Compile Include="Formats\RPGMMV\GAMEFONTCSS.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\JSQuotedStringsBase.cs" />
+    <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\SupponShopStock.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\NupuRnd.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\NupuSaveLoad.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\NupuCommonEv.cs" />
