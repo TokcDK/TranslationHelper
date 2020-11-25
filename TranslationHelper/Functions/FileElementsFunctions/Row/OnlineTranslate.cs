@@ -298,15 +298,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 thDataWork.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
             }
 
-            for (int i = 0; i < originalLines.Length; i++)
+            var neworiginalLines = new string[originalLines.Length];
+            Array.Copy(originalLines, neworiginalLines, originalLines.Length);
+            for (int i = 0; i < neworiginalLines.Length; i++)
             {
                 var s = thDataWork.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
                 if (!string.IsNullOrEmpty(s))
                 {
-                    originalLines[i] = s;
+                    neworiginalLines[i] = s;
                 }
             }
-            return originalLines;
+            return neworiginalLines;
         }
 
         /// <summary>
