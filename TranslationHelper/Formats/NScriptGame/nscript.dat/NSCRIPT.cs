@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 {
@@ -22,7 +23,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
         {
             var nscripttxt = System.Text.Encoding.GetEncoding(932).GetString(File.ReadAllBytes(thDataWork.FilePath).XorUnxor());
 
-            //File.WriteAllText(thDataWork.FilePath + ".OpenTest.txt", nscripttxt, System.Text.Encoding.GetEncoding(932));
+            File.WriteAllText(thDataWork.FilePath + ".OpenTest.txt", nscripttxt, System.Text.Encoding.GetEncoding(932));
 
             foreach (var line in nscripttxt.SplitToLines())
             {
@@ -174,10 +175,17 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                 {
                     var Enc = System.Text.Encoding.GetEncoding(932);
                     var nscripttxtTranslated = ParseData.ResultForWrite.ToString();
-                    File.WriteAllText(filePath.Length > 0 ? filePath : thDataWork.FilePath + ".SaveTest.txt", nscripttxtTranslated, Enc);
+                    if (filePath.Length == 0)
+                    {
+                        filePath = thDataWork.FilePath;
+                    }
+                    File.WriteAllText(filePath + ".SaveTest.txt", nscripttxtTranslated, Enc);
                     var nscriptdatTranslated = Enc.GetBytes(nscripttxtTranslated).XorUnxor();
-                    File.WriteAllBytes(filePath.Length > 0 ? filePath : thDataWork.FilePath, nscriptdatTranslated);
-
+                    var nscriptdatTranslatedFile = new FileInfo(filePath)
+                    {
+                        Attributes = FileAttributes.Normal
+                    };
+                    File.WriteAllBytes(nscriptdatTranslatedFile.FullName, nscriptdatTranslated);
 
                     //ONSCRIPTER
                     {
