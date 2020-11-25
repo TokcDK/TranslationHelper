@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
         {
             var nscripttxt = System.Text.Encoding.GetEncoding(932).GetString(File.ReadAllBytes(thDataWork.FilePath).XorUnxor());
 
-            File.WriteAllText(thDataWork.FilePath + ".OpenTest.txt", nscripttxt, System.Text.Encoding.GetEncoding(932));
+            //File.WriteAllText(thDataWork.FilePath + ".OpenTest.txt", nscripttxt, System.Text.Encoding.GetEncoding(932));
 
             foreach (var line in nscripttxt.SplitToLines())
             {
