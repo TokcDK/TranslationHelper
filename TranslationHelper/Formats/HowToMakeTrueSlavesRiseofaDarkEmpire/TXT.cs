@@ -45,7 +45,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     }
                     else
                     {
-                        var extraEmptyLinesForWrite = sb.ToString().Replace(str, string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
+                        var extraEmptyLinesForWrite = (str.Length > 0 ? sb.ToString().Replace(str, string.Empty) : sb.ToString());//только пустота на конце, пустоту надо записать в новый файл для корректности
 
                         if (IsValidString(str) && TablesLinesDict.ContainsKey(str))
                         {
