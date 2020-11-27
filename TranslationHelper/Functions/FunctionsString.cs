@@ -63,6 +63,9 @@ namespace TranslationHelper.Functions
             if (str == null || chunkSize < 1)
                 return null;
 
+            if (str.Length < chunkSize)//when length < of required chunkSize size
+                return new string[1] { str };
+
             string[] parts = new string[chunkSize];
             parts[0] = string.Empty;
             if (chunkSize == 1)

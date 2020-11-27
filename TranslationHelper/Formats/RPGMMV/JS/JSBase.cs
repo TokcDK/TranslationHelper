@@ -62,7 +62,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 if (!IsValidToken(token))
                     return;
 
-                if((token+"").StartsWith("{") && (token + "").EndsWith("}"))
+                var TokenValue = token + "";
+
+                if ((TokenValue.StartsWith("{") && TokenValue.EndsWith("}")) || (TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")))
                 {
                     var t = token.ToString();
                     var root = JToken.Parse(t);
@@ -70,7 +72,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
                 else
                 {
-                    AddRowData(Jsonname, token.ToString(),
+                    AddRowData(Jsonname, TokenValue,
                         token.Path
                         + ((IsPluginsJS && token.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase))
                         ? Environment.NewLine + T._("Warning") + ". " + T._("Parameter: translation of some parameters can break the game.")
@@ -161,8 +163,8 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 if (!IsValidToken(token))
                     return;
 
-                string TokenValue;
-                if ((token + "").StartsWith("{") && (token + "").EndsWith("}"))
+                string TokenValue = token.ToString();
+                if ((TokenValue.StartsWith("{") && TokenValue.EndsWith("}"))|| (TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")))
                 {
                     var root = JToken.Parse(token.ToString());
                     WriteStringsToJTokenWithPreSplitlines(root, Jsonname);
@@ -171,8 +173,6 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
                 else
                 {
-                    TokenValue = token.ToString();
-
                     if (TablesLinesDict.ContainsKey(TokenValue)
                         && !string.IsNullOrEmpty(TablesLinesDict[TokenValue])
                         && TablesLinesDict[TokenValue] != TokenValue)
