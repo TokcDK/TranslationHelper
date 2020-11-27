@@ -518,6 +518,11 @@ namespace TranslationHelper.Formats
                     bool LinesCountisEqual = OriginalLinesCount == TranslationLinesCount;
                     if (!LinesCountisEqual && MakeLinesCountEqual)
                     {
+                        if(OriginalLinesCount> Translation.Length)
+                        {
+                            continue;//skip lines where translation is incosistent to original
+                        }
+
                         Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
                     }
 
