@@ -27,9 +27,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         protected override bool Apply()
         {
             var ret = false;
+
             foreach (var hardfix in HardFixesList)
             {
-                if (hardfix.Selected())
+                if (SelectedRow != null ? hardfix.Selected(SelectedRow) : hardfix.Selected())
                 {
                     ret = true;
                 }
