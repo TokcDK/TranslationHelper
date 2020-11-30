@@ -83,15 +83,18 @@ namespace TranslationHelper.Formats.RPGMTrans
                     }
                     else
                     {
-                        var otequal = original == translation;
-                        var translated = !otequal && !string.IsNullOrEmpty(translation);
+                        var OTEqual = original == translation;
+                        var HasOriginal = thDataWork.TablesLinesDict.ContainsKey(original);
+                        var newTransNotEqualOld = HasOriginal && thDataWork.TablesLinesDict[original] != translation;
+                        var translated =  (!OTEqual && !string.IsNullOrEmpty(translation)) || (OTEqual && HasOriginal && newTransNotEqualOld);
                         if (IsValidString(original))
                         {
-                            if (thDataWork.TablesLinesDict.ContainsKey(original))
+                            if (HasOriginal)
                             {
-                                if (translation != thDataWork.TablesLinesDict[original])
+                                if (newTransNotEqualOld)
                                 {
-                                    if (thDataWork.TablesLinesDict[original] != original)
+                                    var newTransEqualOrig = thDataWork.TablesLinesDict[original] != original;
+                                    if (!newTransEqualOrig || (newTransEqualOrig && newTransNotEqualOld))
                                     {
                                         translated = true;
                                         translation = thDataWork.TablesLinesDict[original];
@@ -100,8 +103,8 @@ namespace TranslationHelper.Formats.RPGMTrans
                                 }
                             }
                         }
-                        
-                        if(otequal && !translated)
+
+                        if (OTEqual && !translated)
                         {
                             //clean translation when original was equal to translation
                             translated = false;
@@ -216,7 +219,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                             {
                                 if (thDataWork.TablesLinesDict.ContainsKey(original))
                                 {
-                                    if(translation != thDataWork.TablesLinesDict[original])
+                                    if (translation != thDataWork.TablesLinesDict[original])
                                     {
                                         translated = true;
                                         ParseData.Ret = true;
