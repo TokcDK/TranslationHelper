@@ -244,7 +244,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private static bool IsValidForTranslation(string inputString)
         {
-            return !string.IsNullOrWhiteSpace(inputString) && !inputString.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther();
+            return !string.IsNullOrWhiteSpace(inputString) && !inputString.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther() && inputString.HasLetters();
         }
 
         readonly GoogleAPIOLD Translator;

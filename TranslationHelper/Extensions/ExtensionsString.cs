@@ -481,5 +481,26 @@ namespace TranslationHelper.Extensions
         {
             return string.Join(Environment.NewLine, value);
         }
+
+        /// <summary>
+        /// true when string contains atleast one letter
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        internal static bool HasLetters(this string s)
+        {
+            if (string.IsNullOrWhiteSpace(s))
+                return false;
+
+            foreach(var c in s)
+            {
+                if (char.IsLetter(c))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
