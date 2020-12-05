@@ -3097,6 +3097,21 @@ namespace TranslationHelper
 
         private void CharFunctionTest()
         {
+            if (THFileElementsDataGridView.SelectedCells.Count == 1 && (THFileElementsDataGridView.SelectedCells[0].Value + string.Empty).Length > 0)
+            {
+                HashSet<char> chars = new HashSet<char>();
+                foreach (var c in (THFileElementsDataGridView.SelectedCells[0].Value + string.Empty))
+                {
+                    if (chars.Contains(c))
+                        continue;
+
+                    MessageBox.Show("'" + c + "' category is " + Char.GetUnicodeCategory(c));
+
+                    chars.Add(c);
+                }
+            }
+
+
             //foreach (var c in new char[] { '「', '>', '\0', '\n', '\\', '-', '>' })
             //{
             //    var c1 = char.IsSymbol(c);
@@ -3163,6 +3178,11 @@ namespace TranslationHelper
         private void loadTrasnlationAsForcedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadDBAs(true);
+        }
+
+        private void CharFunctionTest(object sender, EventArgs e)
+        {
+            CharFunctionTest();
         }
 
         //Материалы

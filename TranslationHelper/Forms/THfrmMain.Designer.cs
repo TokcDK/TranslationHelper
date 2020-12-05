@@ -162,6 +162,7 @@
             this.tlpFrmMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpWorkInfo = new System.Windows.Forms.TableLayoutPanel();
             this.tlpTextLenPosInfo = new System.Windows.Forms.TableLayoutPanel();
+            this.showCharCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -444,7 +445,7 @@
             this.selectedToolStripMenuItem1.Enabled = false;
             this.selectedToolStripMenuItem1.Name = "selectedToolStripMenuItem1";
             this.selectedToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
-            this.selectedToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.selectedToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
             this.selectedToolStripMenuItem1.Text = "Selected";
             this.selectedToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateSelectedToolStripMenuItem_Click);
             // 
@@ -452,21 +453,21 @@
             // 
             this.tableToolStripMenuItem1.Enabled = false;
             this.tableToolStripMenuItem1.Name = "tableToolStripMenuItem1";
-            this.tableToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.tableToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
             this.tableToolStripMenuItem1.Text = "Table";
             this.tableToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateTableToolStripMenuItem1_Click);
             // 
             // allToolStripMenuItem1
             // 
             this.allToolStripMenuItem1.Name = "allToolStripMenuItem1";
-            this.allToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.allToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
             this.allToolStripMenuItem1.Text = "All";
             this.allToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateAllToolStripMenuItem1_Click);
             // 
             // translationInteruptToolStripMenuItem
             // 
             this.translationInteruptToolStripMenuItem.Name = "translationInteruptToolStripMenuItem";
-            this.translationInteruptToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.translationInteruptToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.translationInteruptToolStripMenuItem.Text = "Interupt";
             this.translationInteruptToolStripMenuItem.Visible = false;
             this.translationInteruptToolStripMenuItem.Click += new System.EventHandler(this.InteruptToolStripMenuItem_Click);
@@ -485,21 +486,21 @@
             // addSelectedToolStripMenuItem
             // 
             this.addSelectedToolStripMenuItem.Name = "addSelectedToolStripMenuItem";
-            this.addSelectedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addSelectedToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.addSelectedToolStripMenuItem.Text = "Add current project";
             // 
             // commitChangesToolStripMenuItem
             // 
             this.commitChangesToolStripMenuItem.Enabled = false;
             this.commitChangesToolStripMenuItem.Name = "commitChangesToolStripMenuItem";
-            this.commitChangesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.commitChangesToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.commitChangesToolStripMenuItem.Text = "Commit changes";
             // 
             // revertToPreviousToolStripMenuItem
             // 
             this.revertToPreviousToolStripMenuItem.Enabled = false;
             this.revertToPreviousToolStripMenuItem.Name = "revertToPreviousToolStripMenuItem";
-            this.revertToPreviousToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.revertToPreviousToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.revertToPreviousToolStripMenuItem.Text = "Revert to previous";
             // 
             // fixCellSpecialSymbolsToolStripMenuItem
@@ -1034,9 +1035,10 @@
             this.lowercaseToolStripMenuItem,
             this.splitLinesWhichLongerOfLimitToolStripMenuItem,
             this.smiEnQuotesToJp,
-            this.hardFixesToolStripMenuItem});
+            this.hardFixesToolStripMenuItem,
+            this.showCharCategoryToolStripMenuItem});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(216, 356);
+            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(216, 400);
             // 
             // OpenInWebContextToolStripMenuItem
             // 
@@ -1529,6 +1531,13 @@
             this.tlpTextLenPosInfo.Size = new System.Drawing.Size(257, 20);
             this.tlpTextLenPosInfo.TabIndex = 8;
             // 
+            // showCharCategoryToolStripMenuItem
+            // 
+            this.showCharCategoryToolStripMenuItem.Name = "showCharCategoryToolStripMenuItem";
+            this.showCharCategoryToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.showCharCategoryToolStripMenuItem.Text = "ShowCharCategory";
+            this.showCharCategoryToolStripMenuItem.Click += new System.EventHandler(this.CharFunctionTest);
+            // 
             // THfrmMain
             // 
             this.AccessibleDescription = "Program help with translation of some RPG games";
@@ -1714,6 +1723,7 @@
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getAndSaveStaticToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem loadTrasnlationAsForcedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showCharCategoryToolStripMenuItem;
     }
 }
 
