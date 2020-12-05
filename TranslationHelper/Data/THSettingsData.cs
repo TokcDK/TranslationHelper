@@ -310,5 +310,25 @@ namespace TranslationHelper.Data
         {
             return Path.Combine(RGSSDecrypterDirPath(), RGSSDecrypterEXEName());
         }
+
+        internal static string AliceToolsDirName()
+        {
+            return "alice-tools";
+        }
+
+        internal static string AliceToolsDirPath()
+        {
+            return Path.Combine(ResDirPath(), AliceToolsDirName());
+        }
+
+        internal static string AliceToolsExeName()
+        {
+            return "alice.exe";
+        }
+
+        internal static string AliceToolsExePath()
+        {
+            return Path.Combine(AliceToolsDirPath(), AliceToolsExeName());
+        }
     }
 }
