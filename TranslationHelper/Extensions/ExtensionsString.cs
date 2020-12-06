@@ -502,5 +502,36 @@ namespace TranslationHelper.Extensions
 
             return false;
         }
+
+        /// <summary>
+        /// true if input string is valid
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal static bool IsValidForTranslation(this string inputString)
+        {
+            return !string.IsNullOrWhiteSpace(inputString) && !inputString.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther() && inputString.HasLetters();
+        }
+
+        /// <summary>
+        /// will trim all except lettern or digits
+        /// </summary>
+        /// <param name="keyValue"></param>
+        /// <returns></returns>
+        internal static string TrimAllExceptLettersOrDigits(this string keyValue)
+        {
+            var trimit = new List<char>();
+            var unique = new HashSet<char>();
+            foreach (var c in keyValue)
+            {
+                if (!char.IsLetterOrDigit(c) && !unique.Contains(c))
+                {
+                    trimit.Add(c);
+                    unique.Add(c);
+                }
+            }
+
+            return keyValue.Trim(trimit.ToArray());
+        }
     }
 }

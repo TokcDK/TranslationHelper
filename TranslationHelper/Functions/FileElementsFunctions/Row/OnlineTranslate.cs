@@ -80,7 +80,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
         protected override bool Apply()
         {
-            if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0)
+            if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine())
             {
                 thDataWork.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
 
@@ -100,7 +100,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var lineNum = 0;
             foreach (var line in original.SplitToLines())
             {
-                if (!IsValidForTranslation(line))
+                if (!line.IsValidForTranslation())
                 {
                     lineNum++;
                     continue;
@@ -173,7 +173,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 lineNum++;
             }
 
-            if (buffer.Count >= 1000)
+            if (buffer.Count >= 300)
             {
                 try
                 {
@@ -231,7 +231,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey("$" + g.Name))
                             bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);
 
-                        if (IsValidForTranslation(g.Value) && PatternReplacementPair.Value.Contains("$" + g.Name))
+                        if (g.Value.IsValidForTranslation() && PatternReplacementPair.Value.Contains("$" + g.Name))
                             l.Add(g.Value);
                     }
                     catch
@@ -251,16 +251,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 return new string[1] { line };
             }
-        }
-
-        /// <summary>
-        /// true if input string is valid
-        /// </summary>
-        /// <param name="inputString"></param>
-        /// <returns></returns>
-        private static bool IsValidForTranslation(string inputString)
-        {
-            return !string.IsNullOrWhiteSpace(inputString) && !inputString.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther() && inputString.HasLetters();
         }
 
         readonly GoogleAPIOLD Translator;
@@ -291,7 +281,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     foreach (var linetext in linenumber.Value) // get all sublines
                     {
-                        if (!orig.Contains(linetext.Key) && linetext.Value == null && IsValidForTranslation(linetext.Key))
+                        if (!orig.Contains(linetext.Key) && linetext.Value == null && linetext.Key.IsValidForTranslation())
                         {
                             orig.Add(linetext.Key);
                         }
@@ -434,11 +424,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var Row = thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex];
                 //var linenumMax = (Row[0] + "").GetLinesCount();
 
+                var tequalso = Equals(Row[1], Row[0]);
+                if (Properties.Settings.Default.IgnoreOrigEqualTransLines && tequalso)//skip equal
+                {
+                    continue;
+                }
+
+                var tnotemptyandnotequalso = (Row[1] != null && !string.IsNullOrEmpty(Row[1] as string) && !tequalso);
+                if (tnotemptyandnotequalso && !Row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))
+                {
+                    continue;
+                }
+
                 try
                 {
                     var newValue = new List<string>();
                     var lineNum = 0;
-                    var rowValue = ((Row[1] != null && !string.IsNullOrEmpty(Row[1] as string) && !Equals(Row[1], Row[0])) ? Row[1] : Row[0]) + "";
+                    var rowValue = (tnotemptyandnotequalso ? Row[1] : Row[0]) + "";
                     foreach (var line in rowValue.SplitToLines())
                     {
                         if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0))

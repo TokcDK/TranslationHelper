@@ -141,6 +141,7 @@
     <Compile Include="Data\THDataWork.cs" />
     <Compile Include="Data\THSettingsData.cs" />
     <Compile Include="Extensions\ExtensionsBytes.cs" />
+    <Compile Include="Extensions\ExtensionsDataRow.cs" />
     <Compile Include="Extensions\ExtensionsDictionary.cs" />
     <Compile Include="Extensions\ExtensionsFileFolder.cs" />
     <Compile Include="Extensions\ExtensionsString.cs" />

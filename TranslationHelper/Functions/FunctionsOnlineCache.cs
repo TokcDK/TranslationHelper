@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
 //https://stackoverflow.com/questions/1799767/easy-way-to-convert-a-dictionarystring-string-to-xml-and-vice-versa
@@ -22,16 +23,50 @@ namespace TranslationHelper.Functions
 
         internal string GetValueFromCacheOrReturnEmpty(string keyValue)
         {
-            if (Properties.Settings.Default.EnableTranslationCache && Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && thDataWork.AllDBmerged != null && thDataWork.AllDBmerged.Count > 0 && thDataWork.AllDBmerged.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(thDataWork.AllDBmerged[keyValue]))
+            if (!Properties.Settings.Default.EnableTranslationCache)
+                return string.Empty;
+
+            if (Properties.Settings.Default.EnableTranslationCache 
+                && Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll 
+                && thDataWork.AllDBmerged != null 
+                && thDataWork.AllDBmerged.Count > 0 
+                && thDataWork.AllDBmerged.ContainsKey(keyValue) 
+                && !string.IsNullOrWhiteSpace(thDataWork.AllDBmerged[keyValue]))
             {
                 return thDataWork.AllDBmerged[keyValue];
             }
-            else if (Properties.Settings.Default.EnableTranslationCache && cache != null && cache.Count > 0 && cache.ContainsKey(keyValue) && !string.IsNullOrWhiteSpace(cache[keyValue]))
+            else if (Properties.Settings.Default.EnableTranslationCache 
+                && cache != null 
+                && cache.Count > 0 
+                && cache.ContainsKey(keyValue) 
+                && !string.IsNullOrWhiteSpace(cache[keyValue]))
             {
                 return cache[keyValue];
             }
             else
             {
+                var trimmed = keyValue.TrimAllExceptLettersOrDigits();
+                if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll
+                   && trimmed.Length > 0
+                   && thDataWork.AllDBmerged != null
+                   && thDataWork.AllDBmerged.Count > 0
+                   && thDataWork.AllDBmerged.ContainsKey(trimmed)
+                   && !string.IsNullOrWhiteSpace(thDataWork.AllDBmerged[trimmed]))
+                {
+                    var ind = keyValue.IndexOf(trimmed);
+                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, thDataWork.AllDBmerged[trimmed]);
+                }
+                else if (
+                    trimmed.Length > 0
+                    && cache != null
+                    && cache.Count > 0
+                    && cache.ContainsKey(trimmed)
+                    && !string.IsNullOrWhiteSpace(cache[trimmed]))
+                {
+                    var ind = keyValue.IndexOf(trimmed);
+                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, cache[trimmed]);
+                }
+
                 return string.Empty;
             }
         }
