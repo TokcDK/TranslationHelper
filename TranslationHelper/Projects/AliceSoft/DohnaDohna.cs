@@ -51,7 +51,7 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override bool Save()
         {
-            throw new NotImplementedException();
+            return OpenSaveFilesBase(Properties.Settings.Default.THProjectWorkDir, new AINTXT(thDataWork), "*.ain.txt") && PackUnpack();
         }
     }
 }

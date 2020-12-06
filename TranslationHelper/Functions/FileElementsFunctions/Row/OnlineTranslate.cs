@@ -172,6 +172,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 lineNum++;
             }
+
+            if (buffer.Count >= 1000)
+            {
+                try
+                {
+                    TranslateStrings();
+                }
+                catch
+                {
+                }
+                Size = 0;
+                buffer.Clear();
+
+                //write cache periodically
+                thDataWork.OnlineTranslationCache.Write();
+            }
         }
 
         /// <summary>
