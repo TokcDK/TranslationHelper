@@ -301,7 +301,7 @@
     <Compile Include="OnlineTranslators\XUA\XUnityWebRequest.cs" />
     <Compile Include="OnlineTranslators\XUA\XUnityWebResponse.cs" />
     <Compile Include="Projects\AliceSoft\AliceSoftBase.cs" />
-    <Compile Include="Projects\AliceSoft\DohnaDohna.cs" />
+    <Compile Include="Projects\AliceSoft\AliceSoftGame.cs" />
     <Compile Include="Projects\EAGLS\EAGLSBase.cs" />
     <Compile Include="Projects\EAGLS\SCPACKpak.cs" />
     <Compile Include="Projects\EAGLS\EAGLSGame.cs" />
