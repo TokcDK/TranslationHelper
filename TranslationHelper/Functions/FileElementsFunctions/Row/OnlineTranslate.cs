@@ -105,7 +105,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var lineNum = 0;
             foreach (var line in original.SplitToLines())
             {
-                if (!line.IsValidForTranslation())
+                if (!line.IsValidForTranslation() || line.IsSoundsText())
                 {
                     lineNum++;
                     continue;
@@ -146,6 +146,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             if (!string.IsNullOrEmpty(valcache))
                             {
                                 buffer[lineCoordinates][lineNum].Add(val, valcache);
+                            }
+                            else if(val.IsSoundsText())
+                            {
+                                buffer[lineCoordinates][lineNum].Add(val, val);
                             }
                             else
                             {
@@ -448,7 +452,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var rowValue = (tnotemptyandnotequalso ? Row[1] : Row[0]) + "";
                     foreach (var line in rowValue.SplitToLines())
                     {
-                        if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0))
+                        if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0) || line.IsSoundsText())
                         {
                             newValue.Add(line);
                         }
