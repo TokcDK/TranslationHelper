@@ -2463,7 +2463,8 @@ namespace TranslationHelper
 
         private void CompleteRomajiotherLinesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new CompleteRomajiotherLines(thDataWork).All();
+            Task.Run(() => new CompleteRomajiotherLines(thDataWork).All());
+            Task.Run(() => new SetOrigToTransIfSoundsText(thDataWork).All());
 
             //int THFilesElementsDatasetTablesCount = thDataWork.THFilesElementsDataset.Tables.Count;
             //for (int t = 0; t < THFilesElementsDatasetTablesCount; t++)

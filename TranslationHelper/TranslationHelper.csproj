@@ -228,6 +228,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\LoadRowDataToCustomDB.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SetOriginalToTranslation.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\ShowIfSounds.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SplitLongLinesSpec.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SplitLongLines.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\StringCaseMorphBase.cs" />

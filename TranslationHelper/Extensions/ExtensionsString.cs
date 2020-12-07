@@ -492,7 +492,7 @@ namespace TranslationHelper.Extensions
             if (string.IsNullOrWhiteSpace(s))
                 return false;
 
-            foreach(var c in s)
+            foreach (var c in s)
             {
                 if (char.IsLetter(c))
                 {
@@ -532,6 +532,13 @@ namespace TranslationHelper.Extensions
             }
 
             return keyValue.Trim(trimit.ToArray());
+        }
+
+        internal static bool IsSoundsText(this string str)
+        {
+            var regexed = Regex.Replace(str, THSettingsData.SoundsTextRegexPattern(), "");
+            var trimmed = regexed.TrimAllExceptLettersOrDigits();
+            return trimmed.Length == 0;
         }
     }
 }
