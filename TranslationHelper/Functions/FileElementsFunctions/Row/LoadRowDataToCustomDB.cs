@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -54,6 +54,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var orig = SelectedRow[0] + "";
             var trans = SelectedRow[1] + "";
 
+            //add orig or replace exist
             if (dict.ContainsKey(orig))
             {
                 dict[orig] = trans;
@@ -62,6 +63,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 dict.Add(orig, trans);
             }
+
+            var trimmedorig = orig.TrimAllExceptLettersOrDigits();
+
+            //when trimmed not equal orig add also trimmed
+            if (trimmedorig != orig)
+                if (dict.ContainsKey(trimmedorig))
+                {
+                    dict[trimmedorig] = trans.TrimAllExceptLettersOrDigits();
+                }
+                else
+                {
+                    dict.Add(trimmedorig, trans.TrimAllExceptLettersOrDigits());
+                }
 
             return true;
         }
