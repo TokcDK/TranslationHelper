@@ -366,14 +366,14 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// 
+        /// Set strng,string dataset to dictionary
         /// </summary>
         /// <param name="dBDataSet"></param>
         /// <param name="inputDB"></param>
         /// <param name="DontAddEmptyTranslation"></param>
         /// <param name="DontAddEqualTranslation"></param>
         /// <returns></returns>
-        internal static Dictionary<string, string> DBDataSetToDBDictionary(this DataSet dBDataSet, Dictionary<string, string> inputDB = null, bool DontAddEmptyTranslation = true, bool DontAddEqualTranslation = false)
+        internal static Dictionary<string, string> ToDictionary(this DataSet dBDataSet, Dictionary<string, string> inputDB = null, bool DontAddEmptyTranslation = true, bool DontAddEqualTranslation = false)
         {
             Dictionary<string, string> db;
             if (inputDB == null)
@@ -419,6 +419,28 @@ namespace TranslationHelper.Main.Functions
             }
 
             return db;
+        }
+
+        /// <summary>
+        /// set dictionary string,string to dataset
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <returns></returns>
+        internal static DataSet ToDataSet(this Dictionary<string, string> dict)
+        {
+            using(var DS = new DataSet())
+            {
+                DS.Tables.Add("DB");
+                DS.Tables["DB"].Columns.Add("Original");
+                DS.Tables["DB"].Columns.Add("Translation");
+
+                foreach (var pair in dict)
+                {
+                    DS.Tables["DB"].Rows.Add(pair.Key, pair.Value);
+                }
+
+                return DS;
+            }
         }
 
         internal static Dictionary<string, string> GetTableRowsDataToDictionary(this DataSet dBDataSet)
@@ -469,7 +491,7 @@ namespace TranslationHelper.Main.Functions
                         thDataWork.Main.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(DBfile.Value.Name));
 
                         ReadDBFile(DBDataSet, DBfile.Value.FullName);
-                        DBDataSet.DBDataSetToDBDictionary(thDataWork.AllDBmerged, true, true);
+                        DBDataSet.ToDictionary(thDataWork.AllDBmerged, true, true);
                     }
                 }
                 catch

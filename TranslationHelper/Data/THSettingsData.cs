@@ -330,5 +330,15 @@ namespace TranslationHelper.Data
         {
             return Path.Combine(AliceToolsDirPath(), AliceToolsExeName());
         }
+
+        internal static string CustomDBName()
+        {
+            return "Custom.cmx";
+        }
+
+        internal static string CustomDBPath()
+        {
+            return Path.Combine(DBDirPath(), CustomDBName());
+        }
     }
 }

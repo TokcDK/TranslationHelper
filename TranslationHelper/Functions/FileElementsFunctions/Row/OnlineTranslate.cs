@@ -63,11 +63,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && IsAll && !AllDBLoaded4All)
             {
                 thDataWork.Main.ProgressInfo(true, "Get all DB");
+
                 var mergingAllDB = new Task(() => FunctionsDBFile.MergeAllDBtoOne(thDataWork));
                 mergingAllDB.ConfigureAwait(true);
                 mergingAllDB.Start();
                 mergingAllDB.Wait();
                 AllDBLoaded4All = true;
+
+                thDataWork.Main.ProgressInfo(false);
             }
         }
         protected override void ActionsPostRowsApply()
@@ -77,6 +80,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             buffer.Clear();
             thDataWork.OnlineTranslationCache.Write();
             FunctionsOnlineCache.Unload(thDataWork);
+
+            thDataWork.Main.ProgressInfo(false);
         }
         protected override bool Apply()
         {
