@@ -114,7 +114,7 @@ namespace TranslationHelper.Projects.EAGLS
         protected string WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
         internal override bool BakCreate()
         {
-            return BuckupFile(SCPACKpak) && BuckupFile(SCPACKidx) && BuckupDir(WorkTXTDir);
+            return BackupFile(SCPACKpak) && BackupFile(SCPACKidx) && BackupDir(WorkTXTDir);
         }
 
         internal override bool BakRestore()

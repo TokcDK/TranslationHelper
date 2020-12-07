@@ -33,24 +33,49 @@ namespace TranslationHelper.Projects.AliceSoft
 
         private bool PackUnpack()
         {
-            var alice = THSettingsData.AliceToolsExePath();
-
-            Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), Name());
+            if(thDataWork.OpenFileMode)
+            {
+                Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), Name());
+            }
 
             foreach (var ain in Directory.GetFiles(Path.GetDirectoryName(thDataWork.SPath), "*.ain"))
             {
-                Directory.CreateDirectory(Properties.Settings.Default.THProjectWorkDir);
+                var targetaintxtpath = Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileName(ain) + ".txt");
 
-                var args = "  ain dump -t -o \"" + Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileName(ain) + ".txt") + "\" \"" + ain + "\"";
+                if (thDataWork.OpenFileMode)
+                {
+                    Directory.CreateDirectory(Properties.Settings.Default.THProjectWorkDir);
 
-                FunctionsProcess.RunProcess(alice, args);
+                    var args = "ain dump -t -o \"" + targetaintxtpath + "\" \"" + ain + "\"";
+
+                    FunctionsProcess.RunProcess(THSettingsData.AliceToolsExePath(), args);
+                }
+                else
+                {
+                    if (File.Exists(targetaintxtpath))
+                    {
+                        var args = "ain edit -t \""+targetaintxtpath+"\" -o \"" + Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileName(ain)) + "\" \"" + ain + "\"";
+
+                        FunctionsProcess.RunProcess(THSettingsData.AliceToolsExePath(), args);
+                    }
+                }
             }
 
-            return new DirectoryInfo(Properties.Settings.Default.THProjectWorkDir).HasAnyFiles("*.txt");
+            if(thDataWork.OpenFileMode)
+            {
+                return new DirectoryInfo(Properties.Settings.Default.THProjectWorkDir).HasAnyFiles("*.txt");
+            }
+            else
+            {
+                return new DirectoryInfo(Properties.Settings.Default.THProjectWorkDir).HasAnyFiles("*.ain");
+            }
         }
 
         internal override bool Save()
         {
+            thDataWork.OpenFileMode = true;
+            PackUnpack();//restore original txt before each writing because it will be writed with translated strings while 1st write and will be need to restore it
+            thDataWork.SaveFileMode = true;
             return OpenSaveFilesBase(Properties.Settings.Default.THProjectWorkDir, new AINTXT(thDataWork), "*.ain.txt") && PackUnpack();
         }
     }

@@ -356,12 +356,12 @@ namespace TranslationHelper.Projects.WolfRPG
         internal override bool BakCreate()
         {
             var translatedDir = new DirectoryInfo(Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Properties.Settings.Default.THSelectedGameDir), "translated"));
-            return translatedDir.Exists && BuckupRestorePaths(translatedDir.GetFiles("*.*", SearchOption.AllDirectories).Select(filePath => filePath.FullName.Replace(translatedDir.FullName, Properties.Settings.Default.THSelectedGameDir)).ToArray());
+            return translatedDir.Exists && BackupRestorePaths(translatedDir.GetFiles("*.*", SearchOption.AllDirectories).Select(filePath => filePath.FullName.Replace(translatedDir.FullName, Properties.Settings.Default.THSelectedGameDir)).ToArray());
         }
 
         internal override bool BakRestore()
         {
-            return BuckupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(thDataWork.SPath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).ToArray(), false);
+            return BackupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(thDataWork.SPath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).ToArray(), false);
         }
 
         internal override bool CheckForRowIssue(System.Data.DataRow row)

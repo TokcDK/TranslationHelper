@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,16 @@ namespace TranslationHelper.Projects.AliceSoft
         internal override string ProjectFolderName()
         {
             return "AliceSoft";
+        }
+
+        internal override bool BakCreate()
+        {
+            return BackupRestorePaths(Directory.GetFiles(Properties.Settings.Default.THSelectedGameDir, "*.ain"));
+        }
+
+        internal override bool BakRestore()
+        {
+            return BackupRestorePaths(Directory.GetFiles(Properties.Settings.Default.THSelectedGameDir, "*.ain"));
         }
     }
 }

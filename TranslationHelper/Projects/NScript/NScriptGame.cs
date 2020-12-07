@@ -132,7 +132,7 @@ namespace TranslationHelper.Projects.NScript
 
         internal override bool BakCreate()
         {
-            return BuckupFile(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "nscript.dat"));
+            return BackupFile(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "nscript.dat"));
         }
 
         internal override bool BakRestore()

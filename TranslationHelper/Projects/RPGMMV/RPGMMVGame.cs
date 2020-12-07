@@ -106,10 +106,12 @@ namespace TranslationHelper.Projects.RPGMMV
                 {
                 }
 
-
+                var HardcodedJS = new HashSet<string>();
                 //Proceeed js-files
                 foreach (var JS in ListOfJS)
                 {
+                    HardcodedJS.Add(JS.JSName);//add js to exclude from parsing of other js
+
                     thDataWork.Main.ProgressInfo(true, ParseFileMessage + JS.JSName);
                     thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
 
@@ -133,6 +135,36 @@ namespace TranslationHelper.Projects.RPGMMV
                     {
                     }
                 }
+
+
+                //Proceeed other js-files with quotes search
+                foreach (var JS in Directory.EnumerateFiles(Path.Combine(Properties.Settings.Default.THSelectedGameDir,"www","js","plugins")))
+                {
+                    thDataWork.Main.ProgressInfo(true, ParseFileMessage + Path.GetFileName(JS));
+                    thDataWork.FilePath = JS;
+
+                    if (!File.Exists(thDataWork.FilePath))
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        if (Write && new TEMPLATE(thDataWork).Save())
+                        {
+                            IsAnyFileCompleted = true;
+                        }
+                        else if (new TEMPLATE(thDataWork).Open())
+                        {
+                            IsAnyFileCompleted = true;
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+
+
 
                 //Proceed json-files
                 var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
@@ -203,44 +235,59 @@ namespace TranslationHelper.Projects.RPGMMV
         //    return null;
         //}
 
+        /// <summary>
+        /// data, font and js folders
+        /// </summary>
+        readonly string[] BakPaths = new string[]
+        {
+                @".\www\data",
+                @".\www\fonts",
+                @".\www\js"
+        };
+
         internal override bool BakCreate()
         {
-            RestoreFromBakIfNeedData();
-            try
-            {
-                File.Copy(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css")
-                    , Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css") + ".bak"
-                    );
-            }
-            catch
-            {
+            BakRestore();
 
-            }
-            try
-            {
-                string dataPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data");
-                dataPath.CopyAll(dataPath + "_bak");
-            }
-            catch
-            {
-            }
-            foreach (JSBase JS in ListOfJS)
-            {
-                try
-                {
-                    string jsPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
+            return BackupRestorePaths(BakPaths);
 
-                    RestoreFromBakIfNeedJS(JS);
-                    if (File.Exists(jsPath))
-                    {
-                        File.Copy(jsPath, jsPath + ".bak");
-                    }
-                }
-                catch
-                {
-                }
-            }
-            return true;
+            //old
+            //RestoreFromBakIfNeedData();
+            //try
+            //{
+            //    File.Copy(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css")
+            //        , Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css") + ".bak"
+            //        );
+            //}
+            //catch
+            //{
+
+            //}
+            //try
+            //{
+            //    string dataPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data");
+            //    dataPath.CopyAll(dataPath + "_bak");
+            //}
+            //catch
+            //{
+            //}
+            //foreach (JSBase JS in ListOfJS)
+            //{
+            //    try
+            //    {
+            //        string jsPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
+
+            //        RestoreFromBakIfNeedJS(JS);
+            //        if (File.Exists(jsPath))
+            //        {
+            //            File.Copy(jsPath, jsPath + ".bak");
+            //        }
+            //    }
+            //    catch
+            //    {
+            //    }
+            //}
+            //return true;
         }
 
         internal override bool BakRestore()
@@ -250,9 +297,13 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 RestoreFromBakIfNeedJS(JS);
             }
-            return true;
+
+            return BackupRestorePaths(BakPaths, false);
         }
 
+        /// <summary>
+        /// old variant of restore still here because beck compatibility
+        /// </summary>
         internal static void RestoreFromBakIfNeedData()
         {
             var dataPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data");
@@ -288,6 +339,10 @@ namespace TranslationHelper.Projects.RPGMMV
 
         }
 
+        /// <summary>
+        /// old variant of restore still here because beck compatibility
+        /// </summary>
+        /// <param name="JS"></param>
         internal static void RestoreFromBakIfNeedJS(JSBase JS)
         {
             string jsPath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);

@@ -111,12 +111,12 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         internal override bool BakCreate()
         {
-            return BuckupRestorePaths(BackupPaths);
+            return BackupRestorePaths(BackupPaths);
         }
 
         internal override bool BakRestore()
         {
-            return BuckupRestorePaths(BackupPaths, false);
+            return BackupRestorePaths(BackupPaths, false);
         }
     }
 }

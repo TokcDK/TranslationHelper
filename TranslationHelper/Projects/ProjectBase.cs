@@ -586,9 +586,8 @@ namespace TranslationHelper.Projects
         /// <param name="paths">file paths</param>
         /// <param name="bak">true = backup, false = restore</param>
         /// <returns>true if was processed atleast one file\dir</returns>
-        protected static bool BuckupRestorePaths(string[] paths, bool bak = true)
+        protected static bool BackupRestorePaths(string[] paths, bool bak = true)
         {
-
             if (paths == null || paths.Length == 0)
             {
                 return false;
@@ -611,7 +610,7 @@ namespace TranslationHelper.Projects
                 var target = path.EndsWith(".bak") ? path.Remove(path.Length - 4, 4) : path;
                 if (bak)
                 {
-                    if ((File.Exists(target) && BuckupFile(target)) || (Directory.Exists(target) && BuckupDir(target)))
+                    if ((File.Exists(target) && BackupFile(target)) || (Directory.Exists(target) && BackupDir(target)))
                     {
                         ret = true;
                     }
@@ -632,7 +631,7 @@ namespace TranslationHelper.Projects
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        protected static bool BuckupDir(string dir)
+        protected static bool BackupDir(string dir)
         {
             try
             {
@@ -660,12 +659,12 @@ namespace TranslationHelper.Projects
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        protected static bool BuckupFile(string[] filePaths)
+        protected static bool BackupFile(string[] filePaths)
         {
             var ret = false;
             foreach (var file in filePaths)
             {
-                if (BuckupFile(file))
+                if (BackupFile(file))
                 {
                     ret = true;
                 }
@@ -678,7 +677,7 @@ namespace TranslationHelper.Projects
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        protected static bool BuckupFile(string file)
+        protected static bool BackupFile(string file)
         {
             try
             {

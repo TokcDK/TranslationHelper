@@ -66,7 +66,7 @@ namespace TranslationHelper.Projects
 
         internal override bool BakCreate()
         {
-            return BuckupRestorePaths(new[] { 
+            return BackupRestorePaths(new[] { 
                 Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "eve"),
                 Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "csv")
             });
@@ -78,7 +78,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal override bool BakRestore()
         {
-            return BuckupRestorePaths(new[] {
+            return BackupRestorePaths(new[] {
                 Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "eve"),
                 Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "csv")
             }
