@@ -151,6 +151,8 @@ namespace TranslationHelper.Main.Functions
 
         public static int GetLocaleLangCount(string text, string langlocale = "romaji")
         {
+            //NOTICE: "\n" will calculate all romaji and \ will be romaji
+
             if (string.IsNullOrEmpty(text))
             {
                 return 0;
@@ -165,16 +167,10 @@ namespace TranslationHelper.Main.Functions
             int hiragana = GetCharsInRange(text, 0x3040, 0x309F).Count();
             int katakana = GetCharsInRange(text, 0x30A0, 0x30FF).Count();
 
-            int all = romaji + kanji + hiragana + katakana;
+            int allrkhk = romaji + kanji + hiragana + katakana;
             if (string.Compare(langlocale, "all", true, CultureInfo.InvariantCulture) == 0)
             {
-                //check for be sure
-                if ((all + (text.Length - all)) != text.Length)
-                {
-
-                }
-
-                return all + (text.Length - all);
+                return allrkhk + (text.Length - allrkhk);
             }
             else if (string.Compare(langlocale, "romaji", true, CultureInfo.InvariantCulture) == 0)
             {
@@ -194,10 +190,10 @@ namespace TranslationHelper.Main.Functions
             }
             else if (string.Compare(langlocale, "other", true, CultureInfo.InvariantCulture) == 0)
             {
-                return text.Length - all;
+                return text.Length - allrkhk;
             }
 
-            return all;
+            return allrkhk;
         }
     }
 }
