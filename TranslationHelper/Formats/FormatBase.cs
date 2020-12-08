@@ -47,12 +47,7 @@ namespace TranslationHelper.Formats
             //preclean string
             inputString = thDataWork.CurrentProject.CleanStringForCheck(inputString);
 
-            bool jp;
-            return !string.IsNullOrWhiteSpace(inputString)
-                && (
-                ((jp = Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp") && !inputString.HaveMostOfRomajiOtherChars())
-                || !jp
-                );
+            return !string.IsNullOrWhiteSpace(inputString) && !inputString.ForJPLangHaveMostOfRomajiOtherChars();
         }
 
         /// <summary>

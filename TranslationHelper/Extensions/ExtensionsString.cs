@@ -264,6 +264,16 @@ namespace TranslationHelper.Extensions
         }
 
         /// <summary>
+        /// true when language is japanese and most od symbols are romaji or other
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal static bool ForJPLangHaveMostOfRomajiOtherChars(this string inputString)
+        {
+            return Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && inputString.HaveMostOfRomajiOtherChars();
+        }
+
+        /// <summary>
         /// True if procent of Romaji or Other characters in input string is lesser of set value in Settings
         /// when string mostly contains japanese chars
         /// </summary>
