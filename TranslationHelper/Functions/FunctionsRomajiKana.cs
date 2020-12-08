@@ -157,10 +157,6 @@ namespace TranslationHelper.Main.Functions
             {
                 return 0;
             }
-            //var romaji = GetCharsInRange(THSourceTextBox.Text, 0x0020, 0x007E);
-            //var kanji = GetCharsInRange(THSourceTextBox.Text, 0x4E00, 0x9FBF);
-            //var hiragana = GetCharsInRange(THSourceTextBox.Text, 0x3040, 0x309F);
-            //var katakana = GetCharsInRange(THSourceTextBox.Text, 0x30A0, 0x30FF);
 
             int romaji = GetCharsInRange(text, 0x0020, 0x007E).Count();
             int kanji = GetCharsInRange(text, 0x4E00, 0x9FBF).Count();
