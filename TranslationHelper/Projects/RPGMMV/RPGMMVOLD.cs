@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
@@ -340,7 +341,7 @@ namespace TranslationHelper.Projects.RPGMMV
                         else
                         {
                             string mergedstring = textsb.ToString();
-                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && FunctionsRomajiKana.LocalePercentIsNotValid(mergedstring))
+                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ mergedstring.ForJPLangHaveMostOfRomajiOtherChars())
                             {
                             }
                             else

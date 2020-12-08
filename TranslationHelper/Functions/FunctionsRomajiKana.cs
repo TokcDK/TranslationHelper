@@ -13,13 +13,41 @@ namespace TranslationHelper.Main.Functions
         /// <param name="target"></param>
         /// <param name="langlocale"></param>
         /// <returns></returns>
-        public static bool LocalePercentIsNotValid(string target, string langlocale = "romaji", int Percent = -1)
+        public static bool LocalePercentIsNotValid(string target, string langlocale = "romaji", bool load = true, int Percent = -1)
         {
             try
             {
-                if (Properties.Settings.Default.DontLoadStringIfRomajiPercent && !string.IsNullOrEmpty(target))
+                if (!string.IsNullOrEmpty(target))
                 {
-                    return ((GetLocaleLangCount(target, langlocale) * 100) / GetLocaleLangCount(target, "all")) > (Percent == -1 ? Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber : Percent);
+                    if (Percent < 0)
+                    {
+                        Percent = Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber;
+                    }
+
+                    if (Percent >= 100 || Percent < 0)
+                    {
+                        return false;
+                    }
+
+                    if (langlocale == "romaji")
+                    {
+                        if (load && !Properties.Settings.Default.DontLoadStringIfRomajiPercent)
+                        {
+                            return false;
+                        }
+
+                        return (GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all")) > Percent;
+                    }
+                    else if (langlocale == "other")
+                    {
+                        return (GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all")) > Percent;
+                    }
+                    else
+                    {
+                        Percent = 100 - Percent;//recalculate value for correct comprasion
+
+                        return (GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all")) < Percent;
+                    }
                 }
             }
             catch
@@ -140,6 +168,12 @@ namespace TranslationHelper.Main.Functions
             int all = romaji + kanji + hiragana + katakana;
             if (string.Compare(langlocale, "all", true, CultureInfo.InvariantCulture) == 0)
             {
+                //check for be sure
+                if ((all + (text.Length - all)) != text.Length)
+                {
+
+                }
+
                 return all + (text.Length - all);
             }
             else if (string.Compare(langlocale, "romaji", true, CultureInfo.InvariantCulture) == 0)

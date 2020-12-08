@@ -341,7 +341,7 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             else
             {
-                if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && FunctionsRomajiKana.LocalePercentIsNotValid(mergedstring))
+                if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ mergedstring.ForJPLangHaveMostOfRomajiOtherChars())
                 {
                 }
                 else
