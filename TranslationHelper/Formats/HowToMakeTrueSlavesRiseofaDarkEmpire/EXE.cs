@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 {
@@ -81,12 +82,19 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         if (currentbyte != 0 && currentbyte != 0xFF)
                         {
                             var str = Encoding.GetEncoding(932).GetString(candidate.ToArray());
+                            var oldstr = "";
                             var maxbytes = candidate.Count + zerobytes.Count;
                             var info = "Orig bytes length(" + Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + zerobytes.Count + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
 
                             //addrow here if valid
                             if (maxbytes > 20)//skip all candidates spam
                             {
+                                if (maxbytes > 256 && maxbytes < 300)
+                                {
+                                    oldstr = str;//remember old string
+                                    str = GetCorrectString(str);
+                                }
+
                                 if (thDataWork.OpenFileMode)
                                 {
                                     AddRowData(str, info, true, true);
@@ -104,6 +112,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             {
                                 var pos = br.BaseStream.Position - 1; //-1 because 1st byte of next string already read in currentbyte
 
+                                //calculate other bytes if oldstr is longer of str
+                                int otherbytescount = 0;
+                                if (str.Length < oldstr.Length)
+                                {
+                                    var strBytes = Encoding.GetEncoding(932).GetBytes(str);
+                                    otherbytescount = candidate.Count - strBytes.Length;
+                                }
+
                                 if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
                                 {
                                     foreach (var b in ffbytesForSave)// add pre FF bytes if exist
@@ -114,6 +130,25 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                         {
                                             break;
                                         }
+                                    }
+                                }
+
+                                //add other skipped bytes if they exist
+                                if (otherbytescount > 0)
+                                {
+                                    foreach(var b in candidate)
+                                    {
+                                        translatedbytes.Add(b);
+                                        translatedbytesControlPosition++;
+                                        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                                        {
+                                            break;
+                                        }
+
+                                        otherbytescount--;
+
+                                        if (otherbytescount == 0)
+                                            break;
                                     }
                                 }
 
@@ -160,7 +195,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 if (thDataWork.SaveFileMode)
                                 {
                                     //add currentbyte to translation because it was already read but cyrcle will over
-                                    translatedbytes.Add(currentbyte); 
+                                    translatedbytes.Add(currentbyte);
                                     translatedbytesControlPosition++;
                                 }
 
@@ -206,6 +241,30 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
                 return true;
             }
+        }
+
+        /// <summary>
+        /// remove all non kanji/katakana/hiragana symbold and also remove '・' because it can be on start of string but it is not part of string
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private static string GetCorrectString(string str)
+        {
+            int ind = -1;
+            foreach (var c in str)
+            {
+                ind++;
+                if (c != '・' && c.ToString().IsJPChar())
+                {
+                    return str.Substring(ind);
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            return str;
         }
 
         internal override bool Save()

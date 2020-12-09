@@ -295,6 +295,30 @@ namespace TranslationHelper.Extensions
         }
 
         /// <summary>
+        /// true if input char is symbol of Kanji/Hiragana/Katakana. Input only one char as string
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        internal static bool IsJPChar(this string s)
+        {
+            if (
+                FunctionsRomajiKana.GetCharsInRange(s, 0x4E00, 0x9FBF).Any()//kanji
+                || FunctionsRomajiKana.GetCharsInRange(s, 0x3040, 0x309F).Any()//hiragana
+                || FunctionsRomajiKana.GetCharsInRange(s, 0x30A0, 0x30FF).Any()//katakana
+                || s== "『"
+                || s== "「"
+                || s== "」"
+                || s== "』"
+                || s== "　"
+                )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// True if language is Japanese and procent of Romaji or Other characters in input string is lesser of set value in Settings
         /// </summary>
         /// <param name="inputString"></param>
