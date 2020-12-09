@@ -84,7 +84,6 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             var str = Encoding.GetEncoding(932).GetString(candidate.ToArray());
                             var oldstr = "";
                             var maxbytes = candidate.Count + zerobytes.Count;
-                            var info = "Orig bytes length(" + Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + zerobytes.Count + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
 
                             //addrow here if valid
                             if (maxbytes > 20)//skip all candidates spam
@@ -93,10 +92,19 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 {
                                     oldstr = str;//remember old string
                                     str = GetCorrectString(str);
+
+                                    //recalculate maxbytes
+                                    if (str.Length < oldstr.Length)
+                                    {
+                                        var strBytes = Encoding.GetEncoding(932).GetBytes(str);
+                                        var other = candidate.Count - strBytes.Length;
+                                        maxbytes -= other;
+                                    }
                                 }
 
                                 if (thDataWork.OpenFileMode)
                                 {
+                                    var info = "Orig bytes length(" + Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + zerobytes.Count + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
                                     AddRowData(str, info, true, true);
                                 }
                                 else
