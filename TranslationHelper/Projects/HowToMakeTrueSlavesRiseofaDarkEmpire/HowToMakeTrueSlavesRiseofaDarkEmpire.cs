@@ -48,7 +48,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
         /// IsOpen=true = Open, else Save
         /// </summary>
         /// <param name="IsOpen"></param>
-        private bool OpenFilesSerial(bool IsOpen = true, string openPath = "")
+        private bool OpenFilesSerial()
         {
             var ret = false;
 
@@ -60,15 +60,15 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
 
 
-            if (openPath.Length == 0)
-            {
-                openPath = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data");
-            }
+            var openPath = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data");
 
-            var txtFormat = new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(thDataWork);
-            if (OpenSaveFilesBase(new DirectoryInfo(openPath), txtFormat, "*.txt"))
+            if (!Directory.Exists(openPath + ".skip") && !File.Exists(openPath + ".skip"))
             {
-                ret = true;
+                var txtFormat = new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(thDataWork);
+                if (OpenSaveFilesBase(new DirectoryInfo(openPath), txtFormat, "*.txt"))
+                {
+                    ret = true;
+                }
             }
 
             //old
@@ -98,7 +98,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         private bool SaveFiles()
         {
-            OpenFilesSerial(false);
+            OpenFilesSerial();
             return true;
         }
 
