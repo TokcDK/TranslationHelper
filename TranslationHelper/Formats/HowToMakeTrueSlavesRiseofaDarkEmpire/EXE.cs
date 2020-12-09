@@ -92,7 +92,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 {
                                     oldstr = str;//remember old string
                                     str = GetCorrectString(str);
+                                }
 
+                                if (thDataWork.OpenFileMode)
+                                {
                                     //recalculate maxbytes
                                     if (str.Length < oldstr.Length)
                                     {
@@ -100,10 +103,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                         var other = candidate.Count - strBytes.Length;
                                         maxbytes -= other;
                                     }
-                                }
 
-                                if (thDataWork.OpenFileMode)
-                                {
                                     var info = "Orig bytes length(" + Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + zerobytes.Count + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
                                     AddRowData(str, info, true, true);
                                 }
