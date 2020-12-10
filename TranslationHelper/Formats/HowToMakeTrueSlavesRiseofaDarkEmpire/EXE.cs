@@ -29,23 +29,28 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             long startpos = 1720080;
             long endpos = 6803572;
 
-            List<byte> translatedbytes = null;//new file content
+            List<byte> NewEXEBytesForWrite = null;//new file content
             var translatedbytesControlPosition = 0;
             if (thDataWork.SaveFileMode)
             {
-                translatedbytes = new List<byte>();//init only for translation
+                NewEXEBytesForWrite = new List<byte>();//init only for translation
             }
 
-            using (FileStream fs = new FileStream(thDataWork.SPath, FileMode.Open, FileAccess.Read))
-            using (BinaryReader br = new BinaryReader(fs, Encoding.GetEncoding(932)))
+            var filetranslated = false;
+
+            using (var fs = new FileStream(thDataWork.SPath, FileMode.Open, FileAccess.Read))
+            using (var br = new BinaryReader(fs, Encoding.GetEncoding(932)))
             {
                 byte currentbyte;
-                var zerobytes = new List<byte>();
-                var ffbytes = new List<byte>();
+                var zeroffbytesAfter = new List<byte>();
+                var ffbytesBefore = new List<byte>();
+                var ffbytesAfter = new List<byte>();
+                //var ffbytesAfterMode = false; ;
                 var candidate = new List<byte>();
                 var readstring = true;
                 var BaseStreamLength = br.BaseStream.Length;
-                var ffbytesForSave = new List<byte>();
+                var ffbytesBeforeForSave = new List<byte>();
+                var strtranslated = false;
 
                 if (thDataWork.OpenFileMode)
                 {
@@ -56,7 +61,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     //add bytes before start position
                     while (br.BaseStream.Position < startpos)
                     {
-                        translatedbytes.Add(br.ReadByte());
+                        NewEXEBytesForWrite.Add(br.ReadByte());
                         translatedbytesControlPosition++;
                     }
                 }
@@ -67,11 +72,18 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
                     if (readstring)
                     {
-                        if (currentbyte == 0) //string end and need to count zero bytes after this
+                        if (currentbyte == 0 || currentbyte == 0xFF) //string end and need to count zero bytes after this
                         {
                             readstring = false;
-                            zerobytes.Add(currentbyte);
+                            //ffbytesAfterMode = false;
+                            zeroffbytesAfter.Add(currentbyte);
                         }
+                        //else if (currentbyte == 0xFF)
+                        //{
+                        //    readstring = false;
+                        //    ffbytesAfterMode = true;
+                        //    ffbytesAfter.Add(currentbyte);
+                        //}
                         else
                         {
                             candidate.Add(currentbyte);
@@ -79,76 +91,93 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     }
                     else
                     {
-                        if (currentbyte != 0 && currentbyte != 0xFF)
+                        if (currentbyte == 0 || currentbyte == 0xff) //we count here rest of zero ff bytes
+                        {
+                            if (currentbyte == 0 || currentbyte == 0xff)
+                            {
+                                //ffbytesAfterMode = false;
+                                zeroffbytesAfter.Add(currentbyte);
+                            }
+                            //else if (ffbytesAfterMode && currentbyte == 0xff) // in ffbytesAfterMode add ff bytes after string for write
+                            //{
+                            //    ffbytesAfter.Add(currentbyte);
+                            //}
+                            //else if (thDataWork.SaveFileMode && currentbyte == 0xff) // only need for save mode
+                            //{
+                            //    ffbytesBefore.Add(currentbyte);//save FF bytes for next string to write
+                            //}
+                        }
+                        else//parse string
                         {
                             var str = Encoding.GetEncoding(932).GetString(candidate.ToArray());
                             var oldstr = "";
-                            var maxbytes = candidate.Count + zerobytes.Count;
+                            var maxbytes = candidate.Count/* + ffbytesAfter.Count*/ + zeroffbytesAfter.Count;
+                            var strhaveotherbytes = false;
+                            int otherbytescount = 0;
 
-                            //addrow here if valid
+                            //>>check if string is valid and add row or check for translation if found
                             if (maxbytes > 20)//skip all candidates spam
                             {
                                 if (maxbytes > 256 && maxbytes < 300)
                                 {
                                     oldstr = str;//remember old string
                                     str = GetCorrectString(str);
+                                    strhaveotherbytes = str.Length < oldstr.Length;
+                                    if (strhaveotherbytes)//calculate other bytes
+                                    {
+                                        otherbytescount = candidate.Count - Encoding.GetEncoding(932).GetBytes(str).Length;
+                                    }
                                 }
 
                                 if (thDataWork.OpenFileMode)
                                 {
                                     //recalculate maxbytes
-                                    if (str.Length < oldstr.Length)
+                                    if (strhaveotherbytes)
                                     {
-                                        var strBytes = Encoding.GetEncoding(932).GetBytes(str);
-                                        var other = candidate.Count - strBytes.Length;
-                                        maxbytes -= other;
+                                        maxbytes -= otherbytescount;//exclude other from string area
                                     }
 
-                                    var info = "Orig bytes length(" + Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + zerobytes.Count + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
+                                    var info = "Orig bytes length(" + Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + (/*ffbytesAfter.Count + */zeroffbytesAfter.Count) + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
                                     AddRowData(str, info, true, true);
                                 }
-                                else
+                                else//save mode
                                 {
                                     if (IsValidString(str) && TablesLinesDict.ContainsKey(str))
                                     {
                                         str = TablesLinesDict[str];
+                                        strtranslated = true;
+                                        filetranslated = true;
                                     }
                                 }
                             }
+                            //<<--check string
 
-                            if (thDataWork.SaveFileMode)
+                            //write all bytes-->>
+                            if (thDataWork.SaveFileMode && strtranslated)
                             {
-                                var pos = br.BaseStream.Position - 1; //-1 because 1st byte of next string already read in currentbyte
+                                var lastwritepos = br.BaseStream.Position - 1; //-1 because 1st byte of next string already read in currentbyte
 
-                                //calculate other bytes if oldstr is longer of str
-                                int otherbytescount = 0;
-                                if (str.Length < oldstr.Length)
-                                {
-                                    var strBytes = Encoding.GetEncoding(932).GetBytes(str);
-                                    otherbytescount = candidate.Count - strBytes.Length;
-                                }
-
-                                if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
-                                {
-                                    foreach (var b in ffbytesForSave)// add pre FF bytes if exist
-                                    {
-                                        translatedbytes.Add(b);
-                                        translatedbytesControlPosition++;
-                                        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
-                                        {
-                                            break;
-                                        }
-                                    }
-                                }
+                                //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
+                                //{
+                                //    foreach (var _ in ffbytesBeforeForSave)// add pre FF bytes if exist
+                                //    {
+                                //        NewEXEBytesForWrite.Add(0xff);
+                                //        translatedbytesControlPosition++;
+                                //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                                //        {
+                                //            break;
+                                //        }
+                                //    }
+                                //}
 
                                 //add other skipped bytes if they exist
-                                if (otherbytescount > 0)
+                                if (strhaveotherbytes)
                                 {
-                                    foreach(var b in candidate)
+                                    foreach (var b in candidate)
                                     {
-                                        translatedbytes.Add(b);
+                                        NewEXEBytesForWrite.Add(b);
                                         translatedbytesControlPosition++;
-                                        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                                        if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
                                         {
                                             break;
                                         }
@@ -160,70 +189,125 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     }
                                 }
 
-                                if (translatedbytesControlPosition < pos - 1)
+                                //add translation bytes
+                                var translatonControlPos = (lastwritepos)/* - ffbytesAfter.Count*/;//recalculate end position for translation depend on ffbytes after count
+                                if (translatedbytesControlPosition < translatonControlPos)
                                 {
                                     var strBytes = Encoding.GetEncoding(932).GetBytes(str);
                                     foreach (var b in strBytes)//add main string bytes
                                     {
-                                        translatedbytes.Add(b);
+                                        NewEXEBytesForWrite.Add(b);
                                         translatedbytesControlPosition++;
-                                        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                                        if (translatedbytesControlPosition == translatonControlPos)//remove all bytes which over of maxbytes limit
                                         {
                                             break;
                                         }
                                     }
                                 }
 
-                                while (translatedbytesControlPosition < pos)//add new zero bytes count after string, add only before stream position
+                                //FF bytes after translation
+                                //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
+                                //{
+                                //    foreach (var _ in ffbytesAfter)// add pre FF bytes if exist
+                                //    {
+                                //        NewEXEBytesForWrite.Add(0xff);
+                                //        translatedbytesControlPosition++;
+                                //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                                //        {
+                                //            break;
+                                //        }
+                                //    }
+                                //}
+
+                                //while (translatedbytesControlPosition < pos)//add new zero bytes count after string, add only before stream position
+                                //{
+                                //    NewEXEBytesForWrite.Add(0);
+                                //    translatedbytesControlPosition++;
+                                //}
+
+                                //add saved ff and zero bytes
+                                if (translatedbytesControlPosition < lastwritepos)
                                 {
-                                    translatedbytes.Add(0);
+                                    foreach (var b in zeroffbytesAfter)// add zero and FF bytes after
+                                    {
+                                        NewEXEBytesForWrite.Add(b);
+                                        translatedbytesControlPosition++;
+                                        if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                //if lastwritepos still not reached then write last byte of zeroffbytesAfter while lastwritepos will be reached 
+                                if (translatedbytesControlPosition < lastwritepos)
+                                {
+                                    var lastbyte = zeroffbytesAfter[zeroffbytesAfter.Count-1];
+
+                                    while(translatedbytesControlPosition < lastwritepos)
+                                    {
+                                        NewEXEBytesForWrite.Add(lastbyte);
+                                        translatedbytesControlPosition++;
+                                    }
+                                }
+                            }
+                            else if (thDataWork.SaveFileMode)
+                            {
+                                foreach (var b in candidate)//add main string bytes form candidate itself
+                                {
+                                    NewEXEBytesForWrite.Add(b);
+                                    translatedbytesControlPosition++;
+                                }
+                                foreach (var b in zeroffbytesAfter)// add zero FF bytes
+                                {
+                                    NewEXEBytesForWrite.Add(b);
                                     translatedbytesControlPosition++;
                                 }
                             }
+                            //<<--write bytes
 
-                            //clear lists
+                            //reset-->>
                             candidate.Clear();
-                            zerobytes.Clear();
-                            if (thDataWork.SaveFileMode)
-                            {
-                                if (ffbytes.Count > 0)
-                                {
-                                    ffbytesForSave = ffbytes;//set prenextstring FF for write with next string
-                                }
-                                else
-                                {
-                                    ffbytesForSave.Clear();
-                                }
-                                ffbytes.Clear();
-                            }
+                            zeroffbytesAfter.Clear();
+                            strtranslated = false;
+                            //ffbytesAfter.Clear();
+                            //ffbytesAfterMode = false;
+                            //if (thDataWork.SaveFileMode)
+                            //{
+                            //    if (ffbytesBefore.Count > 0)
+                            //    {
+                            //        ffbytesBeforeForSave = ffbytesBefore;//set prenextstring FF for write with next string
+                            //    }
+                            //    else
+                            //    {
+                            //        ffbytesBeforeForSave.Clear();
+                            //    }
+                            //    ffbytesBefore.Clear();
+                            //}
+                            //<<--reset
 
+                            //check if end position reached
                             if (br.BaseStream.Position >= endpos)
                             {
 
                                 if (thDataWork.SaveFileMode)
                                 {
                                     //add currentbyte to translation because it was already read but cyrcle will over
-                                    translatedbytes.Add(currentbyte);
+                                    NewEXEBytesForWrite.Add(currentbyte);
                                     translatedbytesControlPosition++;
                                 }
 
                                 break;
                             }
 
-                            //start to add new
+                            if (translatedbytesControlPosition != br.BaseStream.Position)
+                            {
+
+                            }
+
+                            //start to add new string byte for which was already read and it is not 0x00 and not 0xFF
                             candidate.Add(currentbyte);
                             readstring = true;
-                        }
-                        else //we count here rest of zero bytes and pre FF bytes
-                        {
-                            if (currentbyte == 0)
-                            {
-                                zerobytes.Add(currentbyte);
-                            }
-                            else if (thDataWork.SaveFileMode && currentbyte == 0xff) // only need for save mode
-                            {
-                                ffbytes.Add(currentbyte);//save FF bytes for next string to write
-                            }
                         }
                     }
                 }
@@ -233,7 +317,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     //add rest bytes of the stream
                     while (BaseStreamLength > br.BaseStream.Position)
                     {
-                        translatedbytes.Add(br.ReadByte());
+                        NewEXEBytesForWrite.Add(br.ReadByte());
                         translatedbytesControlPosition++;
                     }
                 }
@@ -245,7 +329,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
             else
             {
-                File.WriteAllBytes(thDataWork.FilePath, translatedbytes.ToArray());
+                if (filetranslated)
+                {
+                    File.WriteAllBytes(thDataWork.FilePath, NewEXEBytesForWrite.ToArray());
+                }
 
                 return true;
             }
