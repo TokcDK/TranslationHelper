@@ -10,7 +10,7 @@ namespace TranslationHelper.Formats.AliceSoft
         }
 
         string lastgroupname = "";
-        string ainstringpattern = @"^;?[sm]\[[0-9]{1,10}\] \= \""(.+)\""$";
+        readonly string ainstringpattern = @"^;?[sm]\[[0-9]{1,10}\] \= \""(.+)\""$";
         protected override int ParseStringFileLine()
         {
             var m = Regex.Match(ParseData.line, ainstringpattern);

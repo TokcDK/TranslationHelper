@@ -3041,7 +3041,7 @@ namespace TranslationHelper
             new ENQuotesToJP(thDataWork).Table();
         }
 
-        Form overall;
+        //Form overall;
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //MessageBox.Show(string.Join("\r\n---------\r\n", dict));

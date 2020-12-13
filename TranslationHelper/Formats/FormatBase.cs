@@ -282,7 +282,7 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// Project work data
             /// </summary>
-            private readonly THDataWork thDataWork;
+            protected readonly THDataWork thDataWork;
             /// <summary>
             /// tablename/filename
             /// </summary>

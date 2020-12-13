@@ -164,7 +164,8 @@ namespace TranslationHelper
                 flpQuickTranslatorSelection.Controls.Add(L);
             }
         }
-        string cleanline(string line)
+
+        static string cleanline(string line)
         {
             if (line.ToUpperInvariant().StartsWith("HTTPS://"))
             {

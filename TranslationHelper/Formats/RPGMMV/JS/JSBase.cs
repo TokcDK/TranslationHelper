@@ -305,7 +305,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                     {
                         if (line.TrimStart().StartsWith("};"))
                         {
-                            Svar.Append("}");
+                            Svar.Append('}');
 
                             JToken root = JToken.Parse(Svar.ToString());
                             try

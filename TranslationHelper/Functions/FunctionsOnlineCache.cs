@@ -137,7 +137,7 @@ namespace TranslationHelper.Functions
             if (xml.Length == 0)
                 return;
 
-            XElement rootElement = null;
+            XElement rootElement;// = null;
             try
             {
                 rootElement = XElement.Parse(xml);
