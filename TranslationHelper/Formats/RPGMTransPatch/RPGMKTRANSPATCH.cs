@@ -17,12 +17,12 @@ namespace TranslationHelper.Formats.RPGMTransPatch
         {
         }
 
-        internal virtual bool Open() 
+        internal override bool Open() 
         {
             return new TranslationHelper.Formats.RPGMTrans.TXT(thDataWork).Open(); 
         }
 
-        internal virtual bool Save() 
+        internal override bool Save() 
         {
             return WritePatchV3();
         }
