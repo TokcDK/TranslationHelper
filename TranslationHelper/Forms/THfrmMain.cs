@@ -1309,7 +1309,7 @@ namespace TranslationHelper
         }
 
         internal bool IsTranslating;
-        private async void OnlineTranslateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OnlineTranslateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate(thDataWork).Selected()));
             //
@@ -1354,7 +1354,7 @@ namespace TranslationHelper
 
         }
 
-        private async void OnlineTranslateTableToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void OnlineTranslateTableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate(thDataWork).Table()));
             //
@@ -1396,7 +1396,7 @@ namespace TranslationHelper
             //}
         }
 
-        private async void OnlineTranslateAllToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void OnlineTranslateAllToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate(thDataWork).All()));
             //
