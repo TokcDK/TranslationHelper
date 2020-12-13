@@ -1322,35 +1322,35 @@ namespace TranslationHelper
 
             return;
 
-            if (THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount() > 0)
-            {
-                IsTranslating = true;
+            //if (THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount() > 0)
+            //{
+            //    IsTranslating = true;
 
-                //координаты стартовой строк, колонки оригинала и номера таблицы
-                int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
-                int tableindex = THFilesList.SelectedIndex;
-                int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable(thDataWork);
+            //    //координаты стартовой строк, колонки оригинала и номера таблицы
+            //    int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
+            //    int tableindex = THFilesList.SelectedIndex;
+            //    int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable(thDataWork);
 
-                ///*THMsg*/MessageBox.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
+            //    ///*THMsg*/MessageBox.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
 
-                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                //почемуто так не переводит, переводчик кидает ошибку при заппуске в другом потоке
-                //await Task.Run(() => OnlineTranslateSelected(cind, tableindex, selindexes));  
+            //    //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+            //    //почемуто так не переводит, переводчик кидает ошибку при заппуске в другом потоке
+            //    //await Task.Run(() => OnlineTranslateSelected(cind, tableindex, selindexes));  
 
-                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslate(cind, tableindex, selindexes, "s")));
-                //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "s")));
-                ////
-                ////..и фикс ошибки:
-                ////System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
-                ////https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
-                //trans.SetApartmentState(ApartmentState.STA);
-                ////но при выборе только одной строчки почему-то кидает исключение
-                //trans.Start();
+            //    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslate(cind, tableindex, selindexes, "s")));
+            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(thDataWork).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "s")));
+            //    ////
+            //    ////..и фикс ошибки:
+            //    ////System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
+            //    ////https://ru.stackoverflow.com/questions/412073/c-webbrowser-threadstateexception-%D0%9E%D0%B4%D0%BD%D0%BE%D0%BF%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80
+            //    //trans.SetApartmentState(ApartmentState.STA);
+            //    ////но при выборе только одной строчки почему-то кидает исключение
+            //    //trans.Start();
 
-                //OnlineTranslateSelected(cind, tableindex, selindexes);
-                //ProgressInfo(false);
-            }
+            //    //OnlineTranslateSelected(cind, tableindex, selindexes);
+            //    //ProgressInfo(false);
+            //}
 
         }
 
