@@ -58,6 +58,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
            {
             { "*", //*prologue1|プロローグ
                 @"^\*[^\|]+\|(.+)$" },
+            { "tf.gameText[", //	tf.gameText[608] = "トータルスコア : %d point";
+                @"\s*tf\.gameText\[[ 0-9]{1,5}\] \= \""([^\""]+)\""\;\s*(\/\/.+)?" },
             { "drawText", //.drawText(730, 314, "出入口", 0xFFFFFF) , .drawText(15, 14, "お名前（任意）", clBtnText)
                 @"\.drawText\([^,]+, [^,]+, \""([^\""]+)\""[^,]*, [^\)]+\)" },
             { "caption", //caption = "text"
