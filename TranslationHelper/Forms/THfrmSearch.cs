@@ -619,6 +619,12 @@ namespace TranslationHelper
                 return false;
             }
 
+            //translation contains non romaji symbols
+            if (Regex.IsMatch(row[1] + "", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*"))
+            {
+                return true;
+            }
+
             //------------------------------
             //если длина любой из строк длиннее лимита
             //if ((FunctionsString.GetLongestLineLength(rowTranslation) > Properties.Settings.Default.THOptionLineCharLimit))
