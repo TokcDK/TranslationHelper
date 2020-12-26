@@ -40,6 +40,7 @@ namespace TranslationHelper.Formats.Liar_soft
                 else if(thDataWork.TablesLinesDict.ContainsKey(str))
                 {
                     str = thDataWork.TablesLinesDict[str];
+                    ParseData.Ret = true;
                 }
             }
 
