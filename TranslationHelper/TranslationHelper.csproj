@@ -84,6 +84,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RaiLTools">
+      <HintPath>K:\0 Repositories\000localization\RaiLTools\RailTools\bin\Release\RaiLTools.dll</HintPath>
+    </Reference>
     <Reference Include="Soft160.Data.Cryptography">
       <HintPath>K:\0 Repositories\FastCRC\src\bin\Release\net40\Soft160.Data.Cryptography.dll</HintPath>
     </Reference>
@@ -174,6 +177,7 @@
     <Compile Include="Formats\KiriKiri\Old\TSVOld.cs" />
     <Compile Include="Formats\KiriKiri\Overall\XP3.cs" />
     <Compile Include="Formats\KiriKiri\ParsePatterns\PatternsBase.cs" />
+    <Compile Include="Formats\Liar-soft\GSCTXT.cs" />
     <Compile Include="Formats\NScriptGame\nscript.dat\NSCRIPT.cs" />
     <Compile Include="Formats\Raijin7\csv\CSV.cs" />
     <Compile Include="Formats\Raijin7\eve\TXT.cs" />
@@ -315,6 +319,7 @@
     <Compile Include="Projects\KiriKiri\KiriKiriGame.cs" />
     <Compile Include="Projects\KiriKiri\KiriKiriOLD.cs" />
     <Compile Include="Projects\KiriKiri\TJSfile.cs" />
+    <Compile Include="Projects\Liar-soft\LiarSoftGames.cs" />
     <Compile Include="Projects\NScript\NScriptBase.cs" />
     <Compile Include="Projects\NScript\NScriptGame.cs" />
     <Compile Include="Projects\ProjectBase.cs" />

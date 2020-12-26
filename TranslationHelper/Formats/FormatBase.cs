@@ -89,6 +89,14 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
+        /// table name
+        /// </summary>
+        protected virtual string TableName()
+        {
+            return ParseData.tablename;
+        }
+
+        /// <summary>
         /// Pre open file actions
         /// </summary>
         protected virtual void ParseStringFilePreOpen()
@@ -97,12 +105,12 @@ namespace TranslationHelper.Formats
 
             if (thDataWork.OpenFileMode)
             {
-                AddTables(ParseData.tablename);
+                AddTables(TableName());
             }
 
             if (thDataWork.SaveFileMode)
             {
-                SplitTableCellValuesAndTheirLinesToDictionary(ParseData.tablename, false, false);
+                SplitTableCellValuesAndTheirLinesToDictionary(TableName(), false, false);
             }
 
             ParseStringFilePreOpenExtra();
