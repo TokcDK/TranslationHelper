@@ -15,6 +15,10 @@ namespace TranslationHelper.Formats.Liar_soft
         {
             if (!ParseData.line.StartsWith("#"))
             {
+                if (thDataWork.SaveFileMode)
+                {
+                    ParseData.ResultForWrite.AppendLine(ParseData.line);
+                }
                 return 0;
             }
 
@@ -42,6 +46,7 @@ namespace TranslationHelper.Formats.Liar_soft
             if (thDataWork.SaveFileMode)
             {
                 ParseData.ResultForWrite.AppendLine("#"+str);
+                ParseData.ResultForWrite.AppendLine(">");
             }
 
             return 0;
