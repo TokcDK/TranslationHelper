@@ -20,9 +20,9 @@ namespace TranslationHelper.Projects.Liar_soft
         {
             return "Liar-Soft";
         }
-        internal virtual string ProjectFolderName()
+        internal override string ProjectFolderName()
         {
-            return Name();
+            return "Liar-Soft";
         }
 
         internal override bool Open()
