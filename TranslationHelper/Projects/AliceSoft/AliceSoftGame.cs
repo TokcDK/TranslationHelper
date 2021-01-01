@@ -76,6 +76,12 @@ namespace TranslationHelper.Projects.AliceSoft
 
                         var args = "ain edit -t \""+targetworkaintxtpath+"\" -o \"" + outain + "\" \"" + targetworkainpath + "\"";
 
+                        File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir,"write.bat"),
+                            " \"" + THSettingsData.AliceToolsExePath()+"\" "+ args
+                            + "\r\npause"
+                            
+                            );
+
                         FunctionsProcess.RunProcess(THSettingsData.AliceToolsExePath(), args);
 
                         if (File.Exists(ain + ".bak") && File.Exists(outain))

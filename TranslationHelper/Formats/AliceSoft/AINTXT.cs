@@ -32,7 +32,7 @@ namespace TranslationHelper.Formats.AliceSoft
                             var ind = ParseData.line.IndexOf(str);
                             int lngth = str.Length;
                             str = thDataWork.TablesLinesDict[str];
-                            str = str.Replace("\"", "'")/*fix syntax errors */.Replace("\u200B", "")/*fix invalid bytes sequence*/;
+                            str = FixInvalidSymbols(str);
                             ParseData.line = ParseData.line.Remove(ind, lngth).Insert(ind, str);
 
                             if (ParseData.line.StartsWith(";"))
@@ -56,5 +56,14 @@ namespace TranslationHelper.Formats.AliceSoft
 
             return 0;
         }
-    }
+
+        protected override string FixInvalidSymbols(string str)
+        {
+            return str
+                .Replace("\"", "'")/*fix syntax errors */
+                .Replace("\u200B", "")/*fix invalid bytes sequence*/
+                .Replace("é", "e")/*sometime google put it in translation*/
+                .Replace(@"』\", "』");
+        }
+    }    
 }
