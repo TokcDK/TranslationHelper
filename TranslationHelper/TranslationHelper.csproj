@@ -123,6 +123,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadDuplicates.cs" />
     <Compile Include="appSettings\Sections\Optimizations\CheckBox\SIgnoreOrigEqualTransLines.cs" />
     <Compile Include="appSettings\Sections\Tools\CheckBox\SEnableTranslationCache.cs" />
     <Compile Include="appSettings\Sections\Tools\TextBox\SDBAutosaveTimeout.cs" />

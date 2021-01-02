@@ -37,6 +37,7 @@
             this.THOptionFullComprasionDBloadCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsOptimizationsTabPage = new System.Windows.Forms.TabPage();
             this.THProgramSettingsReadOptionsPanel = new System.Windows.Forms.Panel();
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.THOptionDontLoadStringIfRomajiPercentForOpenCheckBox = new System.Windows.Forms.CheckBox();
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox = new System.Windows.Forms.CheckBox();
@@ -53,7 +54,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTranslationLinkTextBox = new System.Windows.Forms.TextBox();
             this.cbxWebTranslatorsSelector = new System.Windows.Forms.ComboBox();
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox = new System.Windows.Forms.CheckBox();
+            this.THOptionDontLoadDuplicates = new System.Windows.Forms.CheckBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -153,6 +154,7 @@
             // 
             // THProgramSettingsReadOptionsPanel
             // 
+            this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDontLoadDuplicates);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionIgnoreOrigEqualTransLinesCheckBox);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.label5);
             this.THProgramSettingsReadOptionsPanel.Controls.Add(this.THOptionDontLoadStringIfRomajiPercentForOpenCheckBox);
@@ -166,6 +168,19 @@
             this.THProgramSettingsReadOptionsPanel.Name = "THProgramSettingsReadOptionsPanel";
             this.THProgramSettingsReadOptionsPanel.Size = new System.Drawing.Size(518, 373);
             this.THProgramSettingsReadOptionsPanel.TabIndex = 1;
+            // 
+            // THOptionIgnoreOrigEqualTransLinesCheckBox
+            // 
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.AutoSize = true;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Checked = true;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Location = new System.Drawing.Point(3, 62);
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Name = "THOptionIgnoreOrigEqualTransLinesCheckBox";
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Size = new System.Drawing.Size(182, 17);
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.TabIndex = 9;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Text = "Ignore Original=Translation lines";
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.UseVisualStyleBackColor = true;
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.CheckedChanged += new System.EventHandler(this.THOptionIgnoreOrigEqualTransLinesCheckBox_CheckedChanged);
             // 
             // label5
             // 
@@ -369,18 +384,17 @@
             this.cbxWebTranslatorsSelector.TabIndex = 15;
             this.cbxWebTranslatorsSelector.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // THOptionIgnoreOrigEqualTransLinesCheckBox
+            // THOptionDontLoadDuplicates
             // 
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.AutoSize = true;
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Checked = true;
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Location = new System.Drawing.Point(3, 62);
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Name = "THOptionIgnoreOrigEqualTransLinesCheckBox";
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Size = new System.Drawing.Size(182, 17);
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.TabIndex = 9;
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Text = "Ignore Original=Translation lines";
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.UseVisualStyleBackColor = true;
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.CheckedChanged += new System.EventHandler(this.THOptionIgnoreOrigEqualTransLinesCheckBox_CheckedChanged);
+            this.THOptionDontLoadDuplicates.AutoSize = true;
+            this.THOptionDontLoadDuplicates.Checked = true;
+            this.THOptionDontLoadDuplicates.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionDontLoadDuplicates.Location = new System.Drawing.Point(3, 85);
+            this.THOptionDontLoadDuplicates.Name = "THOptionDontLoadDuplicates";
+            this.THOptionDontLoadDuplicates.Size = new System.Drawing.Size(123, 17);
+            this.THOptionDontLoadDuplicates.TabIndex = 10;
+            this.THOptionDontLoadDuplicates.Text = "Dont load duplicates";
+            this.THOptionDontLoadDuplicates.UseVisualStyleBackColor = true;
             // 
             // THfrmSettings
             // 
@@ -436,5 +450,6 @@
         internal System.Windows.Forms.FlowLayoutPanel flpQuickTranslatorSelection;
         internal System.Windows.Forms.TextBox THSettingsWebTranslationLinkTextBox;
         public System.Windows.Forms.CheckBox THOptionIgnoreOrigEqualTransLinesCheckBox;
+        internal System.Windows.Forms.CheckBox THOptionDontLoadDuplicates;
     }
 }
