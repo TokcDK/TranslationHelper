@@ -12,6 +12,7 @@ namespace TranslationHelper.Data
             THFilesElementsDataset = new DataSet();
             THFilesElementsDatasetInfo = new DataSet();
             THFilesElementsALLDataTable = new DataSet();
+            OriginalsTableRowCoordinats = new Dictionary<string, Dictionary<string, List<int>>>();
             //THFilesElementsDictionary = new Dictionary<string, string>();
             //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
 
@@ -87,7 +88,7 @@ namespace TranslationHelper.Data
         /// <summary>
         /// main table/row index coordinats data for same translation for identical and for write functions
         /// </summary>
-        internal Dictionary<string, Dictionary<int, int[]>> OriginalsTableRowCoordinats { get; set; }
+        internal Dictionary<string, Dictionary<string, List<int>>> OriginalsTableRowCoordinats { get; set; }
 
         /// <summary>
         /// target textbox control value

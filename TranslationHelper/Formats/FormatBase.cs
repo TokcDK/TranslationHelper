@@ -386,7 +386,7 @@ namespace TranslationHelper.Formats
                 return false;
             }
 
-            if (CheckAddHashes && hashes != null && hashes.Contains(RowData[0]))
+            if (Properties.Settings.Default.DontLoadDuplicates && CheckAddHashes && hashes != null && hashes.Contains(RowData[0]))
             {
                 return false;
             }
@@ -404,9 +404,32 @@ namespace TranslationHelper.Formats
             {
                 thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
                 thDataWork.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
-                if (CheckAddHashes && hashes != null)
+
+                if (Properties.Settings.Default.DontLoadDuplicates && CheckAddHashes && hashes != null)
                 {
                     hashes.Add(RowData[0]);
+                }
+                else if(!Properties.Settings.Default.DontLoadDuplicates)
+                {
+                    //add coordinates
+                    if (!thDataWork.OriginalsTableRowCoordinats.ContainsKey(RowData[0]))
+                    {
+                        thDataWork.OriginalsTableRowCoordinats.Add(RowData[0], new Dictionary<string, List<int>>());
+                        thDataWork.OriginalsTableRowCoordinats[RowData[0]].Add(tablename, new List<int>());
+                        thDataWork.OriginalsTableRowCoordinats[RowData[0]][tablename].Add(thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count);
+                    }
+                    else
+                    {
+                        if (!thDataWork.OriginalsTableRowCoordinats[RowData[0]].ContainsKey(tablename))
+                        {
+                            thDataWork.OriginalsTableRowCoordinats[RowData[0]].Add(tablename, new List<int>());
+                            thDataWork.OriginalsTableRowCoordinats[RowData[0]][tablename].Add(thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count);
+                        }
+                        else
+                        {
+                            thDataWork.OriginalsTableRowCoordinats[RowData[0]][tablename].Add(thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count);
+                        }
+                    }                    
                 }
             }
             return true;

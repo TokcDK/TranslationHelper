@@ -402,5 +402,10 @@ namespace TranslationHelper
         {
             SetValue((sender as CheckBox).Name);
         }
+
+        private void THOptionDontLoadDuplicates_CheckedChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as CheckBox).Name);
+        }
     }
 }

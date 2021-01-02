@@ -395,6 +395,7 @@
             this.THOptionDontLoadDuplicates.TabIndex = 10;
             this.THOptionDontLoadDuplicates.Text = "Dont load duplicates";
             this.THOptionDontLoadDuplicates.UseVisualStyleBackColor = true;
+            this.THOptionDontLoadDuplicates.CheckedChanged += new System.EventHandler(this.THOptionDontLoadDuplicates_CheckedChanged);
             // 
             // THfrmSettings
             // 
