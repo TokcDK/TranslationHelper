@@ -33,5 +33,7 @@ namespace TranslationHelper.Projects.AliceSoft
         {
             return BackupRestorePaths(Directory.GetFiles(Properties.Settings.Default.THSelectedGameDir, "*.ain"));
         }
+
+        internal override string NewlineSymbol => "\\n";
     }
 }

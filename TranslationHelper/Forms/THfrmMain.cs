@@ -2553,81 +2553,19 @@ namespace TranslationHelper
         private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new SplitLongLines(thDataWork).Selected();
-            //new SplitLongLinesSpec(thDataWork).Selected();
-            //SplitSelectedLines();
         }
 
-        //private void SplitSelectedLines()
-        //{
-        //    int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
-        //    if (THFileElementsDataGridViewSelectedCellsCount > 0)
-        //    {
-        //        try
-        //        {
-        //            int tableIndex = THFilesList.SelectedIndex;
-        //            int cind = thDataWork.THFilesElementsDataset.Tables[tableIndex].Columns["Original"].Ordinal;// Колонка Original
-        //            int cindTrans = thDataWork.THFilesElementsDataset.Tables[tableIndex].Columns["Translation"].Ordinal;// Колонка Original
-        //            int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
-        //            for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
-        //            {
-        //                //координаты ячейки
-        //                selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+        private void SplitLinesWhichLongerOfLimitTableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new SplitLongLines(thDataWork).Table();
 
-        //            }
-        //            foreach (var rind in selectedRowIndexses)
-        //            {
-        //                var row = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows[rind];
-        //                string origCellValue = row[cind] as string;
-        //                string transCellValue = row[cindTrans] + string.Empty;
-        //                if (!string.IsNullOrWhiteSpace(transCellValue)
-        //                    && transCellValue != origCellValue
-        //                    && FunctionsString.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit
-        //                    /*&& !FunctionsString.IsStringContainsSpecialSymbols(transCellValue)*/
-        //                    && !thDataWork.CurrentProject.LineSplitProjectSpecificSkip(origCellValue, transCellValue, tableIndex, rind))
-        //                {
-        //                    row[1] = transCellValue.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit);
-        //                    //row[1] = transCellValue.Wrap(Properties.Settings.Default.THOptionLineCharLimit);
-        //                }
-
-        //            }
-        //        }
-        //        catch
-        //        {
-        //        }
-        //    }
-        //}
+            FunctionsSounds.GlobalFunctionFinishedWork();
+        }
 
         private void SplitLinesWhichLongerOfLimitALLToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new SplitLongLines(thDataWork).All();
-            //int TablesCount = thDataWork.THFilesElementsDataset.Tables.Count;
-            //for (int t = 0; t < TablesCount; t++)
-            //{
-            //    var Table = thDataWork.THFilesElementsDataset.Tables[t];
-            //    if (Table.TableName.ToUpperInvariant() == "PLUGINS.JS")
-            //    {
-            //        continue;
-            //    }
 
-            //    int TableRowsCount = Table.Rows.Count;
-            //    for (int r = 0; r < TableRowsCount; r++)
-            //    {
-            //        var Row = Table.Rows[r];
-            //        string CellValue;
-            //        if (Row[1] != null
-            //            && !string.IsNullOrEmpty(CellValue = Row[1] as string)
-            //            && !Equals(Row[1], Row[0])
-            //            && FunctionsString.GetLongestLineLength(CellValue) > Properties.Settings.Default.THOptionLineCharLimit
-            //            /* || FunctionsString.IsStringContainsSpecialSymbols(CellValue)*/
-            //            && !thDataWork.CurrentProject.LineSplitProjectSpecificSkip(Row[0] as string, CellValue, t, r))
-            //        {
-            //            Row[1] = CellValue.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit);
-            //        }
-            //        else
-            //        {
-            //        }
-            //    }
-            //}
             FunctionsSounds.GlobalFunctionFinishedWork();
         }
 
