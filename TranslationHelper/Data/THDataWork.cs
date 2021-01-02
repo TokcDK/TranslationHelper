@@ -85,6 +85,11 @@ namespace TranslationHelper.Data
         internal DataSet THFilesElementsALLDataTable { get; set; }
 
         /// <summary>
+        /// main table/row index coordinats data for same translation for identical and for write functions
+        /// </summary>
+        internal Dictionary<string, Dictionary<int, int[]>> OriginalsTableRowCoordinats { get; set; }
+
+        /// <summary>
         /// target textbox control value
         /// </summary>
         internal string TargetTextBoxPreValue;
