@@ -16,23 +16,22 @@ namespace TranslationHelper.Formats.AliceSoft
             var m = Regex.Match(ParseData.line, ainstringpattern);
             if (m.Success)
             {
-                var str = m.Result("$1");
+                var orig = m.Result("$1");
 
-                if (IsValidString(str))
+                if (IsValidString(orig))
                 {
                     if (thDataWork.OpenFileMode)
                     {
-                        AddRowData(str, T._("Last group") + ": " + lastgroupname, true, false);
+                        AddRowData(orig, T._("Last group") + ": " + lastgroupname, true, false);
                     }
                     else
                     {
-                        if (CheckAndSetTranslation(ref str))
+                        string trans = orig;
+                        if (CheckAndSetTranslation(ref trans))
                         {
                             //set translation and replace in orig line
-                            var ind = ParseData.line.IndexOf(str);
-                            int lngth = str.Length;
-                            str = FixInvalidSymbols(str);
-                            ParseData.line = ParseData.line.Remove(ind, lngth).Insert(ind, str);
+                            var ind = ParseData.line.IndexOf(orig);
+                            ParseData.line = ParseData.line.Remove(ind, orig.Length).Insert(ind, FixInvalidSymbols(trans));
 
                             if (ParseData.line.StartsWith(";"))
                             {
