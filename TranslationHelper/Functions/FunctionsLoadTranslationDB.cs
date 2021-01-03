@@ -470,37 +470,43 @@ namespace TranslationHelper.Functions
                                 {
                                     var RowIndexWithShift = r + RowIndexShift;
                                     var dbt = dbo[Table.TableName];
-                                    if (dbt.ContainsKey(RowIndexWithShift) /*&& !string.IsNullOrEmpty(db[origCellValue][Table.TableName][RowIndexWithShift])*/)
+                                    if (dbt.ContainsKey(r) /*&& !string.IsNullOrEmpty(db[origCellValue][Table.TableName][RowIndexWithShift])*/)
                                     {
                                         Row[otranscol] = dbt[RowIndexWithShift];
                                         found = true;
                                     }
                                     else
                                     {
-                                        for (int s = 0; s < rcount; s++)
-                                        {
-                                            var sshift = RowIndexShift + s;
+                                        //for (int s = 0; s < rcount; s++)
+                                        //{
+                                        //    var sshift = RowIndexShift + s;
 
-                                            if (sshift >= rcount)
-                                            {
-                                                break;
-                                            }
+                                        //    if (sshift >= rcount)
+                                        //    {
+                                        //        break;
+                                        //    }
 
-                                            if (dbt.ContainsKey(RowIndexShift))
-                                            {
-                                                RowIndexShift = sshift;
-                                                Row[otranscol] = dbt[sshift];
-                                                found = true;
-                                            }
-                                        }
-                                        if (!found)
+                                        //    if (dbt.ContainsKey(RowIndexShift))
+                                        //    {
+                                        //        RowIndexShift = sshift;
+                                        //        Row[otranscol] = dbt[sshift];
+                                        //        found = true;
+                                        //    }
+                                        //}
+                                        //if (!found)
+                                        //{
+                                        //    foreach (var tr in dbt.Values)
+                                        //    {
+                                        //        Row[otranscol] = tr;
+                                        //        found = true;
+                                        //        break;
+                                        //    }
+                                        //}
+                                        foreach (var tr in dbt.Values)
                                         {
-                                            foreach (var tr in dbt.Values)
-                                            {
-                                                Row[otranscol] = tr;
-                                                found = true;
-                                                break;
-                                            }
+                                            Row[otranscol] = tr;
+                                            found = true;
+                                            break;
                                         }
                                     }
                                 }

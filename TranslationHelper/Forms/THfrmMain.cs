@@ -1204,7 +1204,14 @@ namespace TranslationHelper
                 //основную часть времени отнимал вывод информации о файлах!!
                 //00.051
                 //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.ToDictionary(), forced);
-                new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary(), forced);
+                if(Properties.Settings.Default.DontLoadDuplicates)
+                {
+                    new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary(), forced);
+                }
+                else
+                {
+                    new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary2(), forced);
+                }
 
                 //многопоточный вариант предыдущего, но т.к. datatable is threadunsafe то возникают разные ошибки и повреждение внутреннего индекса таблицы, хоть это и быстрее, но после добавления lock разницы не видно
                 //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallel(DBDataSet.DBDataSetToDBDictionary());
