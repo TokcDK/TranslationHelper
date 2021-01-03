@@ -437,6 +437,11 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
+        /// row index indicator for save purposes
+        /// </summary>
+        protected int SaveRowIndex = 0;
+
+        /// <summary>
         /// check if translation is exists and set str return true if found
         /// </summary>
         /// <param name="str"></param>
