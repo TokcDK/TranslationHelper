@@ -1203,7 +1203,8 @@ namespace TranslationHelper
                 //чтение из xml в dataset может занимать по нескольку секунд для больших файлов
                 //основную часть времени отнимал вывод информации о файлах!!
                 //00.051
-                new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.ToDictionary(), forced);
+                //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.ToDictionary(), forced);
+                new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary(), forced);
 
                 //многопоточный вариант предыдущего, но т.к. datatable is threadunsafe то возникают разные ошибки и повреждение внутреннего индекса таблицы, хоть это и быстрее, но после добавления lock разницы не видно
                 //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallel(DBDataSet.DBDataSetToDBDictionary());
