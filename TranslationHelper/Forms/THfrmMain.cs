@@ -1141,7 +1141,7 @@ namespace TranslationHelper
             {
                 ProgressInfo(true, "Get all databases");
                 FunctionsDBFile.MergeAllDBtoOne(thDataWork);
-                new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(thDataWork.AllDBmerged);
+                new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallellTables(thDataWork.AllDBmerged);
             }
             else
             {
