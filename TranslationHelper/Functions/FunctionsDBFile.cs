@@ -422,6 +422,66 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
+        /// Set -string,string- dataset to dictionary of coordinates
+        /// </summary>
+        /// <param name="dBDataSet"></param>
+        /// <param name="inputDB"></param>
+        /// <param name="DontAddEmptyTranslation"></param>
+        /// <param name="DontAddEqualTranslation"></param>
+        /// <returns></returns>
+        internal static Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> ToDictionary2(this DataSet dBDataSet, Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> inputDB = null)
+        {
+            Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> db;
+            if (inputDB == null)
+            {
+                db = new Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>>();
+            }
+            else
+            {
+                db = inputDB;
+            }
+
+            int TablesCount = dBDataSet.Tables.Count;
+
+            for (int t = 0; t < TablesCount; t++)
+            {
+                try
+                {
+                    var table = dBDataSet.Tables[t];
+                    if (!table.Columns.Contains("Original") || !table.Columns.Contains("Translation"))
+                    {
+                        continue;
+                    }
+
+                    int RowsCount = table.Rows.Count;
+
+                    for (int r = 0; r < RowsCount; r++)
+                    {
+                        var row = table.Rows[r];
+                        var O = row["Original"] as string;
+
+                        if (!db.ContainsKey(O))
+                        {
+                            db.Add(O, new Dictionary<string, Dictionary<int, string>>());
+                        }
+
+                        if (db[O].Values.Count==0 || !db[O].ContainsKey(table.TableName))
+                        {
+                            db[O].Add(table.TableName, new Dictionary<int, string>());
+                        }
+
+                        db[O][table.TableName].Add(r, row["Translation"] + string.Empty);
+                    }
+                }
+                catch
+                {
+                }
+            }
+
+            return db;
+        }
+
+        /// <summary>
         /// set dictionary string,string to dataset
         /// </summary>
         /// <param name="dict"></param>

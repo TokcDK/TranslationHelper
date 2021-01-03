@@ -297,7 +297,7 @@ namespace TranslationHelper.Functions
         }
 
         /// <summary>
-        /// load translation from dictionary to dataset tables
+        /// load translation from dictionary to dataset tables (Parallell tables variant)
         /// </summary>
         /// <param name="db"></param>
         /// <param name="forced"></param>
@@ -406,7 +406,179 @@ namespace TranslationHelper.Functions
             System.Media.SystemSounds.Beep.Play();
         }
 
-        internal void THLoadDBCompareFromDictionaryParallel(Dictionary<string, string> db)
+        /// <summary>
+        /// load translation from dictionary to dataset tables (Parallell tables variant)
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="forced"></param>
+        internal void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> db, bool forced = false)
+        {
+            //Stopwatch timer = new Stopwatch();
+            //timer.Start();
+
+            //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
+            int otranscol = thDataWork.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+            if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
+            {
+                return;
+            }
+
+            //int RecordsCounter = 1;
+            int tcount = thDataWork.THFilesElementsDataset.Tables.Count;
+            string infomessage = T._("Load") + " " + T._("translation") + ":";
+            //проход по всем таблицам рабочего dataset
+
+            Parallel.For(0, tcount, t =>
+            //for (int t = 0; t < tcount; t++)
+            {
+                //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
+                bool b = false;
+                thDataWork.Main.Invoke((Action)(() => b = thDataWork.Main.THFileElementsDataGridView.DataSource != null && thDataWork.Main.THFilesList.SelectedIndex == t));
+                if (b)
+                {
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                    thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                }
+
+                using (var Table = thDataWork.THFilesElementsDataset.Tables[t])
+                {
+                    var RowIndexShift = 0;
+
+                    //skip table if there is no untranslated lines
+                    if (!forced && FunctionsTable.IsTableRowsCompleted(Table))
+                        return;
+
+                    string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
+                    thDataWork.Main.ProgressInfo(true, tableprogressinfo);
+
+                    int rcount = Table.Rows.Count;
+                    //проход по всем строкам таблицы рабочего dataset
+                    for (int r = 0; r < rcount; r++)
+                    {
+                        //thDataWork.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+                        var Row = Table.Rows[r];
+                        var CellTranslation = Row[otranscol];
+                        if (forced || CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                        {
+                            var origCellValue = Row[0] as string;
+                            var found = false;
+                            if (db.ContainsKey(origCellValue))
+                            {
+                                var dbo = db[origCellValue];
+                                if (dbo.ContainsKey(Table.TableName))
+                                {
+                                    var RowIndexWithShift = r + RowIndexShift;
+                                    var dbt = dbo[Table.TableName];
+                                    if (dbt.ContainsKey(RowIndexWithShift) /*&& !string.IsNullOrEmpty(db[origCellValue][Table.TableName][RowIndexWithShift])*/)
+                                    {
+                                        Row[otranscol] = dbt[RowIndexWithShift];
+                                        found = true;
+                                    }
+                                    else
+                                    {
+                                        for (int s = 0; s < rcount; s++)
+                                        {
+                                            var sshift = RowIndexShift + s;
+
+                                            if (sshift >= rcount)
+                                            {
+                                                break;
+                                            }
+
+                                            if (dbt.ContainsKey(RowIndexShift))
+                                            {
+                                                RowIndexShift = sshift;
+                                                Row[otranscol] = dbt[sshift];
+                                                found = true;
+                                            }
+                                        }
+                                        if (!found)
+                                        {
+                                            foreach (var tr in dbt.Values)
+                                            {
+                                                Row[otranscol] = tr;
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    foreach(var tn in db[origCellValue].Values)
+                                    {
+                                        foreach (var tr in tn.Values)
+                                        {
+                                            Row[otranscol] = tr;
+                                            found = true;
+                                            break;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!found && Properties.Settings.Default.DBTryToCheckLinesOfEachMultilineValue)
+                            {
+                                if (origCellValue.IsMultiline())
+                                {
+                                    bool IsAllLinesTranslated = true;
+                                    List<string> mergedlines = new List<string>();
+                                    foreach (var line in origCellValue.SplitToLines())
+                                    {
+                                        if (line.HaveMostOfRomajiOtherChars())
+                                        {
+                                            mergedlines.Add(line);
+                                        }
+                                        else if (db.ContainsKey(line) /*&& db[line].Length > 0*/)
+                                        {
+                                            foreach (var tn in db[line].Values)
+                                            {
+                                                foreach (var tr in tn.Values)
+                                                {
+                                                    mergedlines.Add(tr);
+                                                    break;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            IsAllLinesTranslated = false;
+                                        }
+                                    }
+                                    if (IsAllLinesTranslated && mergedlines.Count > 0)
+                                    {
+                                        Row[otranscol] = string.Join(Environment.NewLine, mergedlines);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (b)
+                {
+                    thDataWork.Main.Invoke((Action)(() => b = thDataWork.Main.THFileElementsDataGridView.DataSource == null && thDataWork.Main.THFilesList.SelectedIndex == -1));
+                    if (b)
+                    {
+                        thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[t]));
+                        thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
+                        thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                    }
+                }
+            });
+
+            //0.051
+            //timer.Stop();
+            //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
+            //MessageBox.Show(difference.ToString());
+            thDataWork.Main.ProgressInfo(false);
+            System.Media.SystemSounds.Beep.Play();
+        }
+
+        internal void THLoadDBCompareFromDictionaryParallelRows(Dictionary<string, string> db)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
