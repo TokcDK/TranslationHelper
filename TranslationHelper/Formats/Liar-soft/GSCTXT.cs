@@ -37,9 +37,8 @@ namespace TranslationHelper.Formats.Liar_soft
                 {
                     AddRowData(str, "", true, false);
                 }
-                else if(thDataWork.TablesLinesDict.ContainsKey(str))
+                else if(CheckAndSetTranslation(ref str))
                 {
-                    str = thDataWork.TablesLinesDict[str];
                     ParseData.Ret = true;
                 }
             }

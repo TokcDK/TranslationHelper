@@ -84,8 +84,9 @@ namespace TranslationHelper.Formats.RPGMTrans
                     else
                     {
                         var OTEqual = original == translation;
-                        var HasOriginal = thDataWork.TablesLinesDict.ContainsKey(original);
-                        var newTransNotEqualOld = HasOriginal && thDataWork.TablesLinesDict[original] != translation;
+                        var trans = original;
+                        var HasOriginal = CheckAndSetTranslation(ref trans);
+                        var newTransNotEqualOld = HasOriginal && trans != translation;
                         var translated =  (!OTEqual && !string.IsNullOrEmpty(translation)) || (OTEqual && HasOriginal && newTransNotEqualOld);
                         if (IsValidString(original))
                         {
@@ -93,11 +94,11 @@ namespace TranslationHelper.Formats.RPGMTrans
                             {
                                 if (newTransNotEqualOld)
                                 {
-                                    var newTransEqualOrig = thDataWork.TablesLinesDict[original] != original;
+                                    var newTransEqualOrig = trans != original;
                                     if (!newTransEqualOrig || (newTransEqualOrig && newTransNotEqualOld))
                                     {
                                         translated = true;
-                                        translation = thDataWork.TablesLinesDict[original];
+                                        translation = trans;
                                         ParseData.Ret = true;
                                     }
                                 }
@@ -217,13 +218,14 @@ namespace TranslationHelper.Formats.RPGMTrans
                             var translated = false;
                             if (IsValidString(original))
                             {
-                                if (thDataWork.TablesLinesDict.ContainsKey(original))
+                                var trans = original;
+                                if (CheckAndSetTranslation(ref trans))
                                 {
-                                    if (translation != thDataWork.TablesLinesDict[original])
+                                    if (translation != trans)
                                     {
                                         translated = true;
                                         ParseData.Ret = true;
-                                        translation = thDataWork.TablesLinesDict[original];
+                                        translation = trans;
                                     }
                                 }
                             }

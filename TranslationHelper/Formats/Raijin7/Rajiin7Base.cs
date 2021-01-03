@@ -15,9 +15,10 @@ namespace TranslationHelper.Formats.Raijin7
             return Encoding.GetEncoding(932);
         }
 
-        protected bool IsValid(string v)
+        protected bool IsValid(string v, ref string trans)
         {
-            return IsValidString(v) && thDataWork.TablesLinesDict.ContainsKey(v) && v != thDataWork.TablesLinesDict[v];
+            trans = v;
+            return IsValidString(v) && CheckAndSetTranslation(ref trans) && v != trans;
         }
 
         protected void SetValue(params int[] nums)
@@ -28,13 +29,14 @@ namespace TranslationHelper.Formats.Raijin7
             var numbers = nums[0] < 999 ? nums : Enumerable.Range(0, Values.Length);
             foreach (var num in numbers)
             {
+                var trans="";
                 if (thDataWork.OpenFileMode)
                 {
                     AddRowData(Values[num], "", true);
                 }
-                else if (IsValid(Values[num]))
+                else if (IsValid(Values[num], ref trans))
                 {
-                    Values[num] = FixInvalidSymbols(thDataWork.TablesLinesDict[Values[num]]);
+                    Values[num] = FixInvalidSymbols(trans);
                     set = true;
                     ParseData.Ret = true;
                 }

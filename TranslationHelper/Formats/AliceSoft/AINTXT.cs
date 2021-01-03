@@ -26,12 +26,11 @@ namespace TranslationHelper.Formats.AliceSoft
                     }
                     else
                     {
-                        if (thDataWork.TablesLinesDict.ContainsKey(str))
+                        if (CheckAndSetTranslation(ref str))
                         {
                             //set translation and replace in orig line
                             var ind = ParseData.line.IndexOf(str);
                             int lngth = str.Length;
-                            str = thDataWork.TablesLinesDict[str];
                             str = FixInvalidSymbols(str);
                             ParseData.line = ParseData.line.Remove(ind, lngth).Insert(ind, str);
 

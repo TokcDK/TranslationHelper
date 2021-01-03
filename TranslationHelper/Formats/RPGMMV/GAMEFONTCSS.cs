@@ -27,14 +27,15 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
                 else
                 {
-                    string str;
-                    if (thDataWork.TablesLinesDict.ContainsKey(str = r.Result("$1")))
+                    string str = r.Result("$1");
+                    var trans = str;
+                    if (CheckAndSetTranslation(ref trans))
                     {
                         int i;
                         ParseData.line = ParseData.line
                             .Remove(r.Index, r.Value.Length)
                             .Insert(r.Index,
-                            r.Value.Remove(i = r.Value.IndexOf(str), str.Length).Insert(i, thDataWork.TablesLinesDict[str])
+                            r.Value.Remove(i = r.Value.IndexOf(str), str.Length).Insert(i, trans)
                             );
                         //ParseData.ResultForWrite.AppendLine(str);
                         ParseData.Ret = true;

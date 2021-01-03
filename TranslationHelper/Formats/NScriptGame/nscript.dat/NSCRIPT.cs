@@ -67,10 +67,11 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                         }
                         else
                         {
-                            if (thDataWork.TablesLinesDict.ContainsKey(str) && !string.IsNullOrEmpty(thDataWork.TablesLinesDict[str]) && str != thDataWork.TablesLinesDict[str])
+                            var trans=str;
+                            if (CheckAndSetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && str != trans)
                             {
                                 int ind;
-                                array[i] = array[i].Remove(ind = array[i].IndexOf(str), str.Length).Insert(ind, FixInvalidSymbols('`' + thDataWork.TablesLinesDict[str] + '`'));
+                                array[i] = array[i].Remove(ind = array[i].IndexOf(str), str.Length).Insert(ind, FixInvalidSymbols('`' + trans + '`'));
                             }
                         }
                     }

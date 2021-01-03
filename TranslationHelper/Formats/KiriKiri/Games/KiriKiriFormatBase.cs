@@ -235,7 +235,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                         }
                         else
                         {
-                            if (thDataWork.TablesLinesDict.ContainsKey(str))
+                            if (CheckAndSetTranslation(ref str))
                             {
                                 if (!ParseData.Ret)
                                 {
@@ -246,7 +246,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                                     transApplied = true;
                                 }
 
-                                str = FixInvalidSymbols(thDataWork.TablesLinesDict[str]);//set translation and fixes
+                                str = FixInvalidSymbols(str);//set fixes
 
                                 strarr[i] = str;
                             }

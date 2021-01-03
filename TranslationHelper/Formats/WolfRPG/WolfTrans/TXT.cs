@@ -95,12 +95,13 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
             }
             else
             {
-                var translated = thDataWork.SaveFileMode && thDataWork.TablesLinesDict.ContainsKey(original) && !string.IsNullOrEmpty(thDataWork.TablesLinesDict[original]) && (original != thDataWork.TablesLinesDict[original] || thDataWork.TablesLinesDict[original] != translation);
+                var trans = original;
+                var translated = thDataWork.SaveFileMode && CheckAndSetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && (original != trans || trans != translation);
                 ParseData.ResultForWrite.AppendLine(translated ? context.Replace(" < UNTRANSLATED", string.Empty) : context);
                 if (translated && IsValidString(original))
                 {
                     ParseData.Ret = true;
-                    ParseData.ResultForWrite.AppendLine(thDataWork.TablesLinesDict[original]);
+                    ParseData.ResultForWrite.AppendLine(trans);
                 }
                 else
                 {

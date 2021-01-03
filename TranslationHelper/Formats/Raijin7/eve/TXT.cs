@@ -67,13 +67,14 @@ namespace TranslationHelper.Formats.Raijin7.eve
                 }
                 else
                 {
-                    if (IsValid(Values[1]))
+                    var trans = "";
+                    if (IsValid(Values[1], ref trans))
                     {
                         ParseData.Ret = true;
                         Values[1] = FixInvalidSymbols(thDataWork.TablesLinesDict[Values[1]]);
                     }
 
-                    if (IsValid(RestOfText))
+                    if (IsValid(RestOfText, ref trans))
                     {
                         ParseData.Ret = true;
                         RestOfText = FixInvalidSymbols(thDataWork.TablesLinesDict[RestOfText]);

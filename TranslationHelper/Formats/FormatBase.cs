@@ -230,9 +230,10 @@ namespace TranslationHelper.Formats
                         for (int m = mc.Count - 1; m >= 0; m--)
                         {
                             var str = PreAddString(mc[m].Result("$1"));
-                            if (IsValidString(str) && thDataWork.TablesLinesDict.ContainsKey(str))
+                            var trans= str;
+                            if (IsValidString(str) && CheckAndSetTranslation(ref trans))
                             {
-                                ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(thDataWork.TablesLinesDict[str])));
+                                ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
                                 if (!ParseData.Ret)
                                     ParseData.Ret = true;
                             }
@@ -433,6 +434,22 @@ namespace TranslationHelper.Formats
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// check if translation is exists and set str return true if found
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        internal bool CheckAndSetTranslation(ref string str)
+        {
+            if (thDataWork.TablesLinesDict.ContainsKey(str))
+            {
+                str = thDataWork.TablesLinesDict[str];
+                return true;
+            }
+
+            return false;
         }
 
         protected bool CheckTablesContent(string tablename, bool IsDictionary = false)
