@@ -230,7 +230,7 @@ namespace TranslationHelper.Formats
                         for (int m = mc.Count - 1; m >= 0; m--)
                         {
                             var str = PreAddString(mc[m].Result("$1"));
-                            var trans= str;
+                            var trans = str;
                             if (IsValidString(str) && CheckAndSetTranslation(ref trans))
                             {
                                 ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
@@ -410,7 +410,7 @@ namespace TranslationHelper.Formats
                 {
                     hashes.Add(RowData[0]);
                 }
-                else if(!Properties.Settings.Default.DontLoadDuplicates)
+                else if (!Properties.Settings.Default.DontLoadDuplicates)
                 {
                     //add coordinates
                     if (!thDataWork.OriginalsTableRowCoordinats.ContainsKey(RowData[0]))
@@ -430,7 +430,7 @@ namespace TranslationHelper.Formats
                         {
                             thDataWork.OriginalsTableRowCoordinats[RowData[0]][tablename].Add(thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count);
                         }
-                    }                    
+                    }
                 }
             }
             return true;
@@ -448,10 +448,50 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool CheckAndSetTranslation(ref string str)
         {
-            if (thDataWork.TablesLinesDict.ContainsKey(str))
+            if (Properties.Settings.Default.DontLoadDuplicates)
             {
-                str = thDataWork.TablesLinesDict[str];
-                return true;
+                if (thDataWork.TablesLinesDict.ContainsKey(str))
+                {
+                    str = thDataWork.TablesLinesDict[str];
+                    return true;
+                }
+            }
+            else
+            {
+                if (thDataWork.OriginalsTableRowCoordinats.ContainsKey(str))
+                {
+                    var tname = Path.GetFileName(thDataWork.FilePath);
+                    if (thDataWork.OriginalsTableRowCoordinats[str].ContainsKey(tname))
+                    {
+                        if (thDataWork.OriginalsTableRowCoordinats[str][tname].Contains(SaveRowIndex))
+                        {
+                            str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
+                            SaveRowIndex++;
+                            return true;
+                        }
+                        else
+                        {
+                            foreach (var rind in thDataWork.OriginalsTableRowCoordinats[str][tname])
+                            {
+                                str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                                SaveRowIndex++;
+                                return true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach(var tn in thDataWork.OriginalsTableRowCoordinats[str].Values)
+                        {
+                            foreach (var rind in tn)
+                            {
+                                str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1]+"";
+                                SaveRowIndex++;
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
 
             return false;
