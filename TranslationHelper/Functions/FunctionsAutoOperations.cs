@@ -366,7 +366,8 @@ namespace TranslationHelper.Main.Functions
                     iColumnIndex = int.Parse(TRC.Split('|')[2], CultureInfo.InvariantCulture);
                     forcevalue = THAutoSetSameTranslationForSimularData[TRC];
 
-                    var InputTableRow = thDataWork.THFilesElementsDataset.Tables[iTableIndex].Rows[iRowIndex];
+                    var InputTable = thDataWork.THFilesElementsDataset.Tables[iTableIndex];
+                    var InputTableRow = InputTable.Rows[iRowIndex];
                     var InputTableOriginalCell = InputTableRow[iColumnIndex];
                     int TranslationColumnIndex = iColumnIndex + 1;
                     var InputTableTranslationCell = InputTableRow[TranslationColumnIndex];
@@ -387,6 +388,27 @@ namespace TranslationHelper.Main.Functions
                         if (string.IsNullOrWhiteSpace(InputTransCellValue) || InputTransCellValue == Environment.NewLine)
                             return;
 
+                        //set same value for duplicates
+                        if (!Properties.Settings.Default.DontLoadDuplicates && thDataWork.OriginalsTableRowCoordinats!=null && thDataWork.OriginalsTableRowCoordinats[InputOrigCellValue].Values.Count > 1)
+                        {
+                            var TableName = InputTable.TableName;
+                            foreach (var t in thDataWork.OriginalsTableRowCoordinats[InputOrigCellValue])
+                            {
+                                var table = thDataWork.THFilesElementsDataset.Tables[t.Key];
+                                foreach (var rind in t.Value)
+                                {
+                                    var row = table.Rows[rind];
+
+                                    //skip if same table\row as input or row translation is not empty
+                                    if ((t.Key == TableName && rind == iRowIndex) || (row[1] + "").Length > 0)
+                                    {
+                                        continue;
+                                    }
+
+                                    row[1] = InputTransCellValue;
+                                }
+                            }
+                        }
 
                         //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменяется, т.к. 万 [man] переводится как 10000.
                         if (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && Regex.Matches(InputTransCellValue, @"\d+").Count != Regex.Matches(InputOrigCellValue, @"\d+").Count)

@@ -448,50 +448,46 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool CheckAndSetTranslation(ref string str)
         {
-            if (Properties.Settings.Default.DontLoadDuplicates)
+            if (!Properties.Settings.Default.DontLoadDuplicates 
+                && thDataWork.OriginalsTableRowCoordinats != null 
+                && thDataWork.OriginalsTableRowCoordinats.ContainsKey(str))
             {
-                if (thDataWork.TablesLinesDict.ContainsKey(str))
+                var tname = Path.GetFileName(thDataWork.FilePath);
+                if (thDataWork.OriginalsTableRowCoordinats[str].ContainsKey(tname))
                 {
-                    str = thDataWork.TablesLinesDict[str];
-                    return true;
-                }
-            }
-            else
-            {
-                if (thDataWork.OriginalsTableRowCoordinats.ContainsKey(str))
-                {
-                    var tname = Path.GetFileName(thDataWork.FilePath);
-                    if (thDataWork.OriginalsTableRowCoordinats[str].ContainsKey(tname))
+                    if (thDataWork.OriginalsTableRowCoordinats[str][tname].Contains(SaveRowIndex))
                     {
-                        if (thDataWork.OriginalsTableRowCoordinats[str][tname].Contains(SaveRowIndex))
-                        {
-                            str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
-                            SaveRowIndex++;
-                            return true;
-                        }
-                        else
-                        {
-                            foreach (var rind in thDataWork.OriginalsTableRowCoordinats[str][tname])
-                            {
-                                str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
-                                SaveRowIndex++;
-                                return true;
-                            }
-                        }
+                        str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
+                        SaveRowIndex++;
+                        return true;
                     }
                     else
                     {
-                        foreach(var tn in thDataWork.OriginalsTableRowCoordinats[str].Values)
+                        foreach (var rind in thDataWork.OriginalsTableRowCoordinats[str][tname])
                         {
-                            foreach (var rind in tn)
-                            {
-                                str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1]+"";
-                                SaveRowIndex++;
-                                return true;
-                            }
+                            str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                            SaveRowIndex++;
+                            return true;
                         }
                     }
                 }
+                else
+                {
+                    foreach (var tn in thDataWork.OriginalsTableRowCoordinats[str].Values)
+                    {
+                        foreach (var rind in tn)
+                        {
+                            str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                            SaveRowIndex++;
+                            return true;
+                        }
+                    }
+                }
+            }
+            else if (thDataWork.TablesLinesDict.ContainsKey(str))
+            {
+                str = thDataWork.TablesLinesDict[str];
+                return true;
             }
 
             return false;
