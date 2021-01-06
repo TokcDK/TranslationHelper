@@ -101,7 +101,13 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             { "[nowait]",
                 @"\[nowait\]([^(\[endnowait\])]+)\[endnowait\]" },
             { "link storage=",
-                @"\[link storage\=\""[^\""]+\"" target\=""\*[^\""]+\"" clickse\=\""[^\""]+\"" clicksebuf\=[0-9]{1,5}\]([^\[]+)\[endlink\]" }
+                @"\[link storage\=\""[^\""]+\"" target\=""\*[^\""]+\"" clickse\=\""[^\""]+\"" clicksebuf\=[0-9]{1,5}\]([^\[]+)\[endlink\]" },
+            { "[選択肢 emb=\"",
+                @"\[選択肢 emb\=\""[^\""]+\""" },
+            { "「",
+                @"^「.+」$" },
+            { "",
+                @"^.+\[SYSTEM_MENU_ON\]$" }
            };
         }
         protected bool OpenSaveKS(bool OpenKS = true)
