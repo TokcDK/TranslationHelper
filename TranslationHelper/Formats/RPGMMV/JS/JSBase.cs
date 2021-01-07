@@ -65,9 +65,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 if ((TokenValue.StartsWith("{") && TokenValue.EndsWith("}")) || (TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")))
                 {
                     //parse subtoken
-                    var t = token.ToString();
-                    var root = JToken.Parse(t);
-                    GetStringsFromJToken(root, Jsonname);
+                    GetStringsFromJToken(JToken.Parse(TokenValue), Jsonname);
                 }
                 else
                 {
@@ -167,10 +165,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 if ((TokenValue.StartsWith("{") && TokenValue.EndsWith("}")) || (TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")))
                 {
                     //parse subtoken
-                    var root = JToken.Parse(token.ToString());
+                    var root = JToken.Parse(TokenValue);
                     WriteStringsToJTokenWithPreSplitlines(root, Jsonname);
-                    var jv = root.ToString(Formatting.None);
-                    (token as JValue).Value = jv;
+                    (token as JValue).Value = root.ToString(Formatting.None);
                 }
                 else
                 {
