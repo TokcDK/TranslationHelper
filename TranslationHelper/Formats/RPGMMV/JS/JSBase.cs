@@ -57,21 +57,23 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 return;
             }
 
+
             if (token is JValue)
             {
-                if (!IsValidToken(token))
-                    return;
-
                 var TokenValue = token + "";
 
                 if ((TokenValue.StartsWith("{") && TokenValue.EndsWith("}")) || (TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")))
                 {
+                    //parse subtoken
                     var t = token.ToString();
                     var root = JToken.Parse(t);
                     GetStringsFromJToken(root, Jsonname);
                 }
                 else
                 {
+                    if (!IsValidToken(token))
+                        return;
+
                     AddRowData(Jsonname, TokenValue,
                         token.Path
                         + ((IsPluginsJS && token.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase))
@@ -160,12 +162,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
             if (token is JValue)
             {
-                if (!IsValidToken(token))
-                    return;
+                var TokenValue = token + "";
 
-                string TokenValue = token.ToString();
-                if ((TokenValue.StartsWith("{") && TokenValue.EndsWith("}"))|| (TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")))
+                if ((TokenValue.StartsWith("{") && TokenValue.EndsWith("}")) || (TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")))
                 {
+                    //parse subtoken
                     var root = JToken.Parse(token.ToString());
                     WriteStringsToJTokenWithPreSplitlines(root, Jsonname);
                     var jv = root.ToString(Formatting.None);
@@ -173,6 +174,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
                 else
                 {
+                    if (!IsValidToken(token))
+                        return;
+
                     if (TablesLinesDict.ContainsKey(TokenValue)
                         && !string.IsNullOrEmpty(TablesLinesDict[TokenValue])
                         && TablesLinesDict[TokenValue] != TokenValue)
