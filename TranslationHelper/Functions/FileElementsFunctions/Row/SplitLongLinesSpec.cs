@@ -7,7 +7,7 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class SplitLongLinesSpec : FileElementsRowFunctionsBase
+    class SplitLongLinesSpec : RowBase
     {
         public SplitLongLinesSpec(THDataWork thDataWork) : base(thDataWork)
         {

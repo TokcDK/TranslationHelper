@@ -3,7 +3,7 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class CompleteRomajiotherLines : FileElementsRowFunctionsBase
+    class CompleteRomajiotherLines : RowBase
     {
         public CompleteRomajiotherLines(THDataWork thDataWork) : base(thDataWork)
         {

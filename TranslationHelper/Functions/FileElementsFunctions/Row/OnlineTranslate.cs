@@ -9,7 +9,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class OnlineTranslate : FileElementsRowFunctionsBase
+    class OnlineTranslate : RowBase
     {
         /// <summary>
         /// buffer for lines

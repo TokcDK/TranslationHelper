@@ -4,7 +4,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class FixJPMessagesTranslation : FileElementsRowFunctionsBase
+    class FixJPMessagesTranslation : RowBase
     {
         public FixJPMessagesTranslation(THDataWork thDataWork) : base(thDataWork)
         {

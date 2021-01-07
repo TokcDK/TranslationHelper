@@ -2,7 +2,7 @@
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
-    abstract class HardFixesBase : FileElementsRowFunctionsBase
+    abstract class HardFixesBase : RowBase
     {
         protected HardFixesBase(THDataWork thDataWork) : base(thDataWork)
         {

@@ -8,7 +8,7 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class SetOrigToTransIfSoundsText : FileElementsRowFunctionsBase
+    class SetOrigToTransIfSoundsText : RowBase
     {
         public SetOrigToTransIfSoundsText(THDataWork thDataWork) : base(thDataWork)
         {

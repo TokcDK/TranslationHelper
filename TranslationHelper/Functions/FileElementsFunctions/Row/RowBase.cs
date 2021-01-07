@@ -8,7 +8,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    internal abstract class FileElementsRowFunctionsBase
+    internal abstract class RowBase
     {
         /// <summary>
         /// Main app data
@@ -35,7 +35,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         protected Dictionary<string, string> sessionData;
 
-        protected FileElementsRowFunctionsBase(THDataWork thDataWork)
+        protected RowBase(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
             threaded = thDataWork.Main.InvokeRequired;
@@ -256,7 +256,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected virtual void ApplyConditions()
         {
-            if (Properties.Settings.Default.IgnoreOrigEqualTransLines && Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation]))//apply only if translation not equal original
+            if (!IsValidRow())
             {
                 return;
             }
@@ -271,6 +271,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             catch
             {
             }
+        }
+
+        /// <summary>
+        /// check if row is valid for parse
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool IsValidRow()
+        {
+            if (Properties.Settings.Default.IgnoreOrigEqualTransLines && Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation]))//apply only if translation not equal original
+                return false;
+
+            return true;
         }
 
         protected abstract bool Apply();

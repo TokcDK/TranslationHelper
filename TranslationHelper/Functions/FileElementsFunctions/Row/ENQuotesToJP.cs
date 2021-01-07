@@ -4,7 +4,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class ENQuotesToJP : FileElementsRowFunctionsBase
+    class ENQuotesToJP : RowBase
     {
         public ENQuotesToJP(THDataWork thDataWork) : base(thDataWork)
         {

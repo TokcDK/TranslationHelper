@@ -5,7 +5,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class FixCells : FileElementsRowFunctionsBase
+    class FixCells : RowBase
     {
         public FixCells(THDataWork thDataWork) : base(thDataWork)
         {

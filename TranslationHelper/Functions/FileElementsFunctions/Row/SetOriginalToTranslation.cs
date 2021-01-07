@@ -2,7 +2,7 @@
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class SetOriginalToTranslation : FileElementsRowFunctionsBase
+    class SetOriginalToTranslation : RowBase
     {
         public SetOriginalToTranslation(THDataWork thDataWork) : base(thDataWork)
         {

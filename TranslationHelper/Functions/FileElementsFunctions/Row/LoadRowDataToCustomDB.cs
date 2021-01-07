@@ -7,7 +7,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class LoadRowDataToCustomDB : FileElementsRowFunctionsBase
+    class LoadRowDataToCustomDB : RowBase
     {
         public LoadRowDataToCustomDB(THDataWork thDataWork) : base(thDataWork)
         {
