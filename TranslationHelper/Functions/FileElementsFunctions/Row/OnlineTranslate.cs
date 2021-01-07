@@ -58,22 +58,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override bool IsValidRow()
         {
             bool b;
-            return (b=base.IsValidRow()) || (!b && AnyLineValidForTranslation());
+            return (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0 || (b = base.IsValidRow()) || (!b && SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine()));
+            
+            //return (b = base.IsValidRow()) || (!b && AnyLineValidForTranslation());
         }
 
-        private bool AnyLineValidForTranslation()
-        {
-            var t = SelectedRow[1] + "";
-            foreach (var line in t.SplitToLines())
-            {
-                if (line.IsValidForTranslation())
-                {
-                    return true;
-                }
-            }
+        //private bool AnyLineValidForTranslation()
+        //{
+        //    var t = SelectedRow[1] + "";
+        //    foreach (var line in t.SplitToLines())
+        //    {
+        //        if (line.IsValidForTranslation())
+        //        {
+        //            return true;
+        //        }
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         bool AllDBLoaded4All;
         protected override void ActionsPreRowsApply()
@@ -105,7 +107,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
         protected override bool Apply()
         {
-            if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine())
+            //if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine())
+            try
             {
                 thDataWork.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
 
@@ -114,6 +117,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 thDataWork.Main.ProgressInfo(false);
 
                 return true;
+            }
+            catch
+            {
             }
 
             return false;
@@ -167,7 +173,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             {
                                 buffer[lineCoordinates][lineNum].Add(val, valcache);
                             }
-                            else if(val.IsSoundsText())
+                            else if (val.IsSoundsText())
                             {
                                 buffer[lineCoordinates][lineNum].Add(val, val);
                             }
@@ -202,7 +208,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 lineNum++;
             }
 
-            if (buffer.Count >= 300)
+            if (buffer.Count >= 300 || (!IsAll && !IsTable))
             {
                 try
                 {

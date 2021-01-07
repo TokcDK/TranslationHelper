@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Linq;
 
 namespace TranslationHelper.Extensions
 {
@@ -9,18 +10,19 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="selectedRow"></param>
         /// <returns></returns>
-        internal static bool HasAnyTranslationLineValidAndEqualSameOrigLine(this DataRow selectedRow, bool checklinescount=true)
+        internal static bool HasAnyTranslationLineValidAndEqualSameOrigLine(this DataRow selectedRow, bool checklinescount = true)
         {
-            if (checklinescount && (selectedRow[1] + "").GetLinesCount() != (selectedRow[0] + "").GetLinesCount())
+            string o = (selectedRow[0] + "");
+            string t = (selectedRow[1] + "");
+            if (o == t || !o.IsMultiline() || (checklinescount && o.GetLinesCount() != t.GetLinesCount()))
                 return false;
 
-            foreach (var oline in (selectedRow[0] + "").SplitToLines())
+            var olines = o.SplitToLines().ToArray();
+            var tlines = t.SplitToLines().ToArray();
+            for (int i = 0; i < olines.Length; i++)
             {
-                foreach (var tline in (selectedRow[1] + "").SplitToLines())
-                {
-                    if (oline.IsValidForTranslation() && oline == tline)
-                        return true;
-                }
+                if (i < tlines.Length && olines[i] == tlines[i] && olines[i].IsValidForTranslation())
+                    return true;
             }
 
             return false;
