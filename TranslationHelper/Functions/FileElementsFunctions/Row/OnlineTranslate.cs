@@ -55,6 +55,26 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
+        protected override bool IsValidRow()
+        {
+            bool b;
+            return (b=base.IsValidRow()) || (!b && AnyLineValidForTranslation());
+        }
+
+        private bool AnyLineValidForTranslation()
+        {
+            var t = SelectedRow[1] + "";
+            foreach (var line in t.SplitToLines())
+            {
+                if (line.IsValidForTranslation())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         bool AllDBLoaded4All;
         protected override void ActionsPreRowsApply()
         {
@@ -105,7 +125,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var lineNum = 0;
             foreach (var line in original.SplitToLines())
             {
-                if (!line.IsValidForTranslation() || line.IsSoundsText())
+                if (!line.IsValidForTranslation())
                 {
                     lineNum++;
                     continue;
