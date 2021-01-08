@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
@@ -652,8 +653,12 @@ namespace TranslationHelper
 
             foreach (DataRow ActorsLine in Actors.Rows)
             {
-                string original = ActorsLine[0] as string;
-                string translation = ActorsLine[1] + string.Empty;
+                var original = ActorsLine[0] as string;
+                if (original.IsMultiline() || original.Length > 255)//skip multiline and long rows
+                {
+                    continue;
+                }
+                var translation = ActorsLine[1] + string.Empty;
 
                 //если оригинал содержит оригинал(Анна) из Actors, а перевод не содержит определение(Anna) из Actors
                 if (translation.Length > 0 && (original.Length < 80 && (row[0] as string).Contains(original) && !rowTranslation.Contains(translation)))
@@ -662,6 +667,12 @@ namespace TranslationHelper
                 }
             }
             //--------------------------------
+
+            //check if multiline and one of line equal to original and valide for translation
+            if (row.HasAnyTranslationLineValidAndEqualSameOrigLine())
+            {
+                return true;
+            }
 
             return false;
         }
