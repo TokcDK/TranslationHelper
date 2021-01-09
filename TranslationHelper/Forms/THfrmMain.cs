@@ -3137,6 +3137,20 @@ namespace TranslationHelper
             Task.Run(() => new LoadRowDataToCustomDB(thDataWork).Selected()).ConfigureAwait(false);
         }
 
+        private void copyNameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(THFilesList!=null && THFilesList.Items.Count>0 && THFilesList.SelectedIndex != -1)
+            {
+                var names = new List<string>();
+                foreach(var item in THFilesList.SelectedItems)
+                {
+                    names.Add(item.ToString());
+                }
+
+                Clipboard.SetText(string.Join(Environment.NewLine, names));
+            }
+        }
+
         //Материалы
         //по оптимизации кода
         //https://cc.davelozinski.com/c-sharp/fastest-way-to-compare-strings
