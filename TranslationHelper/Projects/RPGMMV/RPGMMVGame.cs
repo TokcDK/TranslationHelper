@@ -138,8 +138,23 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 var Exclusions = new HashSet<string>
                 {
-                    "ConditionallyCore.js"//translation of text in quotes will make skills not executable
+                    "ConditionallyCore"//translation of text in quotes will make skills not executable
                 };
+
+                //add exclusions from text file located in "gamedir\www\js\skipjs.txt" if exists
+                if(File.Exists(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", "skipjs.txt")))
+                {
+                    var skipjs = File.ReadAllLines(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", "skipjs.txt"));
+                    foreach(var line in skipjs)
+                    {
+                        if(line.Length==0 || Exclusions.Contains(line))
+                        {
+                            continue;
+                        }
+                        Exclusions.Add(line);
+                    }
+
+                }
 
                 //Proceeed other js-files with quotes search
                 foreach (var JS in Directory.EnumerateFiles(Path.Combine(Properties.Settings.Default.THSelectedGameDir,"www","js","plugins")))
