@@ -138,7 +138,34 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 var Exclusions = new HashSet<string>
                 {
-                    "ConditionallyCore"//translation of text in quotes will make skills not executable
+                    "ConditionallyCore.js",//translation of text in quotes will make skills not executable
+                    //---
+                    "AnimationExtend.js",
+                    "CounterExtend.js",
+                    "BattleOptions.js",
+                    "CustomizeCritical.js",
+                    "DestinationWindow.js",
+                    "DirectivityShake.js",
+                    "DWindow.js",
+                    "FilterController.js",
+                    "HalfMove.js",
+                    "MessageWindowHidden.js",
+                    "MovieManager.js",
+                    "MoviePicture.js",
+                    "MPP_ActiveTimeBattle_OP1.js",
+                    "MPP_ActiveTimeBattle_OP1.js",
+                    "MPP_ActiveTimeBattle_OP3.js",
+                    "MPP_ChoiceEX.js",
+                    "PictureAnimation.js",
+                    "PictureCallCommon.js",
+                    "RetryBattle.js",
+                    "SubstituteExtend.js",
+                    "TemplateEvent.js",
+                    "TkoolMV_PluginCommandBook.js",
+                    "TriggerOnEquipAndState.js",
+                    "VanguardAndRearguard.js",
+                    "DTextPicture.js"
+                    //----//
                 };
 
                 //add exclusions from text file located in "gamedir\www\js\skipjs.txt" if exists
