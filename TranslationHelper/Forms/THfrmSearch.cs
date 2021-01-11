@@ -615,15 +615,18 @@ namespace TranslationHelper
         private bool IsTheRowHasPossibleIssues(DataRow row)
         {
             var rowTranslation = (row[1] + string.Empty);
-            if (rowTranslation.Length == 0 || Equals(row[0], row[1]))
+            if (rowTranslation.Length == 0 || (Properties.Settings.Default.IgnoreOrigEqualTransLines && Equals(row[0], row[1])))
             {
                 return false;
             }
 
-            //translation contains non romaji symbols
-            if (Regex.IsMatch(row[1] + "", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*"))
+            if (Properties.Settings.Default.SearchRowIssueOptionsCheckNonRomaji)
             {
-                return true;
+                //translation contains non romaji symbols
+                if (Regex.IsMatch(row[1] + "", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*"))
+                {
+                    return true;
+                }
             }
 
             //------------------------------
@@ -634,44 +637,54 @@ namespace TranslationHelper
             //}
 
             //------------------------------
-            //project specific checks
-            if (thDataWork.CurrentProject.CheckForRowIssue(row))
-            {
-                return true;
-            }
 
-            //------------------------------
-            //Проверка актеров
-            if (Actors == null)
+            if (Properties.Settings.Default.SearchRowIssueOptionsCheckProjectSpecific)
             {
-                GetActorsTable();
-            }
-            if (Actors == null || Actors.Rows.Count == 0)
-            {
-                return false;
-            }
-
-            foreach (DataRow ActorsLine in Actors.Rows)
-            {
-                var original = ActorsLine[0] as string;
-                if (original.IsMultiline() || original.Length > 255)//skip multiline and long rows
-                {
-                    continue;
-                }
-                var translation = ActorsLine[1] + string.Empty;
-
-                //если оригинал содержит оригинал(Анна) из Actors, а перевод не содержит определение(Anna) из Actors
-                if (translation.Length > 0 && (original.Length < 80 && (row[0] as string).Contains(original) && !rowTranslation.Contains(translation)))
+                //project specific checks
+                if (thDataWork.CurrentProject.CheckForRowIssue(row))
                 {
                     return true;
                 }
             }
-            //--------------------------------
 
-            //check if multiline and one of line equal to original and valide for translation
-            if (row.HasAnyTranslationLineValidAndEqualSameOrigLine())
+            if (Properties.Settings.Default.SearchRowIssueOptionsCheckActors)
             {
-                return true;
+                //------------------------------
+                //Проверка актеров
+                if (Actors == null)
+                {
+                    GetActorsTable();
+                }
+                if (Actors == null || Actors.Rows.Count == 0)
+                {
+                    return false;
+                }
+
+                foreach (DataRow ActorsLine in Actors.Rows)
+                {
+                    var original = ActorsLine[0] as string;
+                    if (original.IsMultiline() || original.Length > 255)//skip multiline and long rows
+                    {
+                        continue;
+                    }
+                    var translation = ActorsLine[1] + string.Empty;
+
+                    //если оригинал содержит оригинал(Анна) из Actors, а перевод не содержит определение(Anna) из Actors
+                    if (translation.Length > 0 && (original.Length < 80 && (row[0] as string).Contains(original) && !rowTranslation.Contains(translation)))
+                    {
+                        return true;
+                    }
+                }
+                //--------------------------------
+            }
+
+            if (Properties.Settings.Default.SearchRowIssueOptionsCheckAnyLineTranslatable)
+            {
+                //check if multiline and one of line equal to original and valide for translation
+                if (row.HasAnyTranslationLineValidAndEqualSameOrigLine())
+                {
+                    return true;
+                }
             }
 
             return false;

@@ -125,6 +125,10 @@
   <ItemGroup>
     <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadDuplicates.cs" />
     <Compile Include="appSettings\Sections\Optimizations\CheckBox\SIgnoreOrigEqualTransLines.cs" />
+    <Compile Include="appSettings\Sections\Tools\CheckBox\SSearchRowIssueOptionsCheckProjectSpecific.cs" />
+    <Compile Include="appSettings\Sections\Tools\CheckBox\SSearchRowIssueOptionsCheckAnyLineTranslatable.cs" />
+    <Compile Include="appSettings\Sections\Tools\CheckBox\SSearchRowIssueOptionsCheckActors.cs" />
+    <Compile Include="appSettings\Sections\Tools\CheckBox\SSearchRowIssueOptionsCheckNonRomaji.cs" />
     <Compile Include="appSettings\Sections\Tools\CheckBox\SEnableTranslationCache.cs" />
     <Compile Include="appSettings\Sections\Tools\TextBox\SDBAutosaveTimeout.cs" />
     <Compile Include="appSettings\Sections\Tools\CheckBox\SEnableAutosave.cs" />

@@ -526,5 +526,53 @@ namespace TranslationHelper.Properties {
                 this["DontLoadDuplicates"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SearchRowIssueOptionsCheckNonRomaji {
+            get {
+                return ((bool)(this["SearchRowIssueOptionsCheckNonRomaji"]));
+            }
+            set {
+                this["SearchRowIssueOptionsCheckNonRomaji"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SearchRowIssueOptionsCheckActors {
+            get {
+                return ((bool)(this["SearchRowIssueOptionsCheckActors"]));
+            }
+            set {
+                this["SearchRowIssueOptionsCheckActors"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SearchRowIssueOptionsCheckAnyLineTranslatable {
+            get {
+                return ((bool)(this["SearchRowIssueOptionsCheckAnyLineTranslatable"]));
+            }
+            set {
+                this["SearchRowIssueOptionsCheckAnyLineTranslatable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SearchRowIssueOptionsCheckProjectSpecific {
+            get {
+                return ((bool)(this["SearchRowIssueOptionsCheckProjectSpecific"]));
+            }
+            set {
+                this["SearchRowIssueOptionsCheckProjectSpecific"] = value;
+            }
+        }
     }
 }

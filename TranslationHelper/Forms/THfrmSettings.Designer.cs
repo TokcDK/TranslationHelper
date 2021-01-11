@@ -37,6 +37,7 @@
             this.THOptionFullComprasionDBloadCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsOptimizationsTabPage = new System.Windows.Forms.TabPage();
             this.THProgramSettingsReadOptionsPanel = new System.Windows.Forms.Panel();
+            this.THOptionDontLoadDuplicates = new System.Windows.Forms.CheckBox();
             this.THOptionIgnoreOrigEqualTransLinesCheckBox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.THOptionDontLoadStringIfRomajiPercentForOpenCheckBox = new System.Windows.Forms.CheckBox();
@@ -54,7 +55,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTranslationLinkTextBox = new System.Windows.Forms.TextBox();
             this.cbxWebTranslatorsSelector = new System.Windows.Forms.ComboBox();
-            this.THOptionDontLoadDuplicates = new System.Windows.Forms.CheckBox();
+            this.SearchRowIssueOptionsLabel = new System.Windows.Forms.Label();
+            this.cbSearchRowIssueOptionsCheckActors = new System.Windows.Forms.CheckBox();
+            this.cbSearchRowIssueOptionsCheckNonRomaji = new System.Windows.Forms.CheckBox();
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable = new System.Windows.Forms.CheckBox();
+            this.cbSearchRowIssueOptionsCheckProjectSpecific = new System.Windows.Forms.CheckBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -168,6 +173,19 @@
             this.THProgramSettingsReadOptionsPanel.Name = "THProgramSettingsReadOptionsPanel";
             this.THProgramSettingsReadOptionsPanel.Size = new System.Drawing.Size(518, 373);
             this.THProgramSettingsReadOptionsPanel.TabIndex = 1;
+            // 
+            // THOptionDontLoadDuplicates
+            // 
+            this.THOptionDontLoadDuplicates.AutoSize = true;
+            this.THOptionDontLoadDuplicates.Checked = true;
+            this.THOptionDontLoadDuplicates.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.THOptionDontLoadDuplicates.Location = new System.Drawing.Point(3, 85);
+            this.THOptionDontLoadDuplicates.Name = "THOptionDontLoadDuplicates";
+            this.THOptionDontLoadDuplicates.Size = new System.Drawing.Size(123, 17);
+            this.THOptionDontLoadDuplicates.TabIndex = 10;
+            this.THOptionDontLoadDuplicates.Text = "Dont load duplicates";
+            this.THOptionDontLoadDuplicates.UseVisualStyleBackColor = true;
+            this.THOptionDontLoadDuplicates.CheckedChanged += new System.EventHandler(this.THOptionDontLoadDuplicates_CheckedChanged);
             // 
             // THOptionIgnoreOrigEqualTransLinesCheckBox
             // 
@@ -284,6 +302,11 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.cbSearchRowIssueOptionsCheckProjectSpecific);
+            this.panel2.Controls.Add(this.cbSearchRowIssueOptionsCheckAnyLineTranslatable);
+            this.panel2.Controls.Add(this.cbSearchRowIssueOptionsCheckNonRomaji);
+            this.panel2.Controls.Add(this.cbSearchRowIssueOptionsCheckActors);
+            this.panel2.Controls.Add(this.SearchRowIssueOptionsLabel);
             this.panel2.Controls.Add(this.flpQuickTranslatorSelection);
             this.panel2.Controls.Add(this.SettingsAutosaveTimeoutValueTextBox);
             this.panel2.Controls.Add(this.SettingsAutosaveEnabledCheckBox);
@@ -384,18 +407,66 @@
             this.cbxWebTranslatorsSelector.TabIndex = 15;
             this.cbxWebTranslatorsSelector.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // THOptionDontLoadDuplicates
+            // SearchRowIssueOptionsLabel
             // 
-            this.THOptionDontLoadDuplicates.AutoSize = true;
-            this.THOptionDontLoadDuplicates.Checked = true;
-            this.THOptionDontLoadDuplicates.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.THOptionDontLoadDuplicates.Location = new System.Drawing.Point(3, 85);
-            this.THOptionDontLoadDuplicates.Name = "THOptionDontLoadDuplicates";
-            this.THOptionDontLoadDuplicates.Size = new System.Drawing.Size(123, 17);
-            this.THOptionDontLoadDuplicates.TabIndex = 10;
-            this.THOptionDontLoadDuplicates.Text = "Dont load duplicates";
-            this.THOptionDontLoadDuplicates.UseVisualStyleBackColor = true;
-            this.THOptionDontLoadDuplicates.CheckedChanged += new System.EventHandler(this.THOptionDontLoadDuplicates_CheckedChanged);
+            this.SearchRowIssueOptionsLabel.AutoSize = true;
+            this.SearchRowIssueOptionsLabel.Location = new System.Drawing.Point(8, 97);
+            this.SearchRowIssueOptionsLabel.Name = "SearchRowIssueOptionsLabel";
+            this.SearchRowIssueOptionsLabel.Size = new System.Drawing.Size(154, 13);
+            this.SearchRowIssueOptionsLabel.TabIndex = 17;
+            this.SearchRowIssueOptionsLabel.Text = "Search Row issue find options:";
+            // 
+            // cbSearchRowIssueOptionsCheckActors
+            // 
+            this.cbSearchRowIssueOptionsCheckActors.AutoSize = true;
+            this.cbSearchRowIssueOptionsCheckActors.Checked = true;
+            this.cbSearchRowIssueOptionsCheckActors.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSearchRowIssueOptionsCheckActors.Location = new System.Drawing.Point(28, 136);
+            this.cbSearchRowIssueOptionsCheckActors.Name = "cbSearchRowIssueOptionsCheckActors";
+            this.cbSearchRowIssueOptionsCheckActors.Size = new System.Drawing.Size(118, 17);
+            this.cbSearchRowIssueOptionsCheckActors.TabIndex = 18;
+            this.cbSearchRowIssueOptionsCheckActors.Text = "Check Actor names";
+            this.cbSearchRowIssueOptionsCheckActors.UseVisualStyleBackColor = true;
+            this.cbSearchRowIssueOptionsCheckActors.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckActors_CheckedChanged);
+            // 
+            // cbSearchRowIssueOptionsCheckNonRomaji
+            // 
+            this.cbSearchRowIssueOptionsCheckNonRomaji.AutoSize = true;
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Checked = true;
+            this.cbSearchRowIssueOptionsCheckNonRomaji.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Location = new System.Drawing.Point(28, 113);
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Name = "cbSearchRowIssueOptionsCheckNonRomaji";
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Size = new System.Drawing.Size(134, 17);
+            this.cbSearchRowIssueOptionsCheckNonRomaji.TabIndex = 19;
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Text = "Check non romaji exist";
+            this.cbSearchRowIssueOptionsCheckNonRomaji.UseVisualStyleBackColor = true;
+            this.cbSearchRowIssueOptionsCheckNonRomaji.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckNonRomaji_CheckedChanged);
+            // 
+            // cbSearchRowIssueOptionsCheckAnyLineTranslatable
+            // 
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.AutoSize = true;
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Checked = true;
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Location = new System.Drawing.Point(28, 159);
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Name = "cbSearchRowIssueOptionsCheckAnyLineTranslatable";
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Size = new System.Drawing.Size(191, 17);
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.TabIndex = 20;
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Text = "Check if any line can be translated";
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.UseVisualStyleBackColor = true;
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckAnyLineTranslatable_CheckedChanged);
+            // 
+            // cbSearchRowIssueOptionsCheckProjectSpecific
+            // 
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.AutoSize = true;
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Checked = true;
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Location = new System.Drawing.Point(28, 182);
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Name = "cbSearchRowIssueOptionsCheckProjectSpecific";
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Size = new System.Drawing.Size(162, 17);
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.TabIndex = 21;
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Text = "Check project specific issues";
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.UseVisualStyleBackColor = true;
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckProjectSpecific_CheckedChanged);
             // 
             // THfrmSettings
             // 
@@ -452,5 +523,10 @@
         internal System.Windows.Forms.TextBox THSettingsWebTranslationLinkTextBox;
         public System.Windows.Forms.CheckBox THOptionIgnoreOrigEqualTransLinesCheckBox;
         internal System.Windows.Forms.CheckBox THOptionDontLoadDuplicates;
+        internal System.Windows.Forms.CheckBox cbSearchRowIssueOptionsCheckNonRomaji;
+        internal System.Windows.Forms.CheckBox cbSearchRowIssueOptionsCheckActors;
+        private System.Windows.Forms.Label SearchRowIssueOptionsLabel;
+        internal System.Windows.Forms.CheckBox cbSearchRowIssueOptionsCheckAnyLineTranslatable;
+        internal System.Windows.Forms.CheckBox cbSearchRowIssueOptionsCheckProjectSpecific;
     }
 }

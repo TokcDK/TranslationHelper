@@ -407,5 +407,25 @@ namespace TranslationHelper
         {
             SetValue((sender as CheckBox).Name);
         }
+
+        private void cbSearchRowIssueOptionsCheckNonRomaji_CheckedChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as CheckBox).Name);
+        }
+
+        private void cbSearchRowIssueOptionsCheckActors_CheckedChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as CheckBox).Name);
+        }
+
+        private void cbSearchRowIssueOptionsCheckAnyLineTranslatable_CheckedChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as CheckBox).Name);
+        }
+
+        private void cbSearchRowIssueOptionsCheckProjectSpecific_CheckedChanged(object sender, EventArgs e)
+        {
+            SetValue((sender as CheckBox).Name);
+        }
     }
 }
