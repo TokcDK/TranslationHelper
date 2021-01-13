@@ -345,7 +345,18 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 }
                 if (thDataWork.SaveFileMode && transApplied && ParseData.Ret)
                 {
+                    //character name correction
                     var s = string.Join(newlineSymbol, strarr);
+                    var onamematch = Regex.Match(ParseData.line, @"^【([^】]+)】.+$");
+                    if (onamematch.Success)
+                    {
+                        var tnamematch = Regex.Match(s, @"^-([^-]+)-(.+)$");
+                        if (tnamematch.Success)
+                        {
+                            s = "【" + tnamematch.Result("$1") + "】" + tnamematch.Result("$2");
+                        }
+                    }
+
                     ParseData.line = s + (endsWithWait && !s.EndsWith(waitSymbol) ? waitSymbol : string.Empty);
                 }
             }
