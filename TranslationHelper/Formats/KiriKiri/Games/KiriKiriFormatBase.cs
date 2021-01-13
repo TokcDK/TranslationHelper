@@ -94,6 +94,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 @"drawMessage\('fore', '[^']*', '([^']+)', '[^']*'\)" },
             { "drawMessage('",
                 @"drawMessage\('fore', '[^']*', '[^']*', '([^']+)'\)" },
+            { ".drawText",
+                @"\.drawText\([^,]+, [^,]+, '([^']+)'" },
             { "emb exp=\"",
                 @"\[emb exp\=\""'([^']+)'" },
             { "eval exp=\"",
@@ -104,7 +106,13 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             { "link ",
                 @"\[link [^\]]+\]([^\[]+)\[endlink\]" },
             { "[選択肢 emb=\"",
-                @"\[選択肢 emb\=\""([^\""]+)\""" }
+                @"\[選択肢 emb\=\""([^\""]+)\""" },
+            { "'=>'",
+                @"'[^']+'\=\>'([^']+)'" },
+            { "\"",
+                @"\""[^\""']+\""" },
+            { "'",
+                @"'[^']+'" }
            };
         }
         protected bool OpenSaveKS(bool OpenKS = true)
@@ -372,6 +380,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         /// <returns></returns>
         private bool ContainsCharsWhenTagsRemoved()
         {
+            if (IsScript)
+            {
+                return false;
+            }
+
             var cleaned = ParseData.line;
             var mcstart = Regex.Matches(cleaned, @"(?<!\[)\[\s*\w+");
             if (mcstart.Count == 0)
@@ -400,6 +413,10 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         }
 
         bool IsScript = false;
+        /// <summary>
+        /// script area check
+        /// </summary>
+        /// <returns></returns>
         private bool IsScriptBegin()
         {
             if (IsScript)
@@ -409,14 +426,16 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     IsScript = false;
                 }
 
-                return true;
+                //return true;
+                return false;//must be true but then will be skipped some strings
             }
             else
             {
                 if (ParseData.line.Contains("iscript"))
                 {
                     IsScript = true;
-                    return true;
+                    //return true;
+                    return false;//must be true but then will be skipped some strings
                 }
             }
             return false;
@@ -424,6 +443,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         private bool ContainsNoSpecSymbols()
         {
+            if (IsScript)
+            {
+                return false;
+            }
+
             return !(ParseData.line.Contains("[") || ParseData.line.Contains("]") || ParseData.line.Contains("@") || ParseData.line.Contains("*"));
         }
 
