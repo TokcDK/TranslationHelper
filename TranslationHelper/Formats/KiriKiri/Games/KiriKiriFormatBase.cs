@@ -100,14 +100,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 @"\[eval exp\=\""[^\=]+\='([^']+)'[^\""]*\""" },
             { "[nowait]",
                 @"\[nowait\]([^(\[endnowait\])]+)\[endnowait\]" },
-            { "link storage=",
-                @"\[link storage\=\""[^\""]+\"" target\=""\*[^\""]+\"" clickse\=\""[^\""]+\"" clicksebuf\=[0-9]{1,5}\]([^\[]+)\[endlink\]" },
+            //[link target=*run]テスト実行[endlink] / [link target=*cancel]タイトルに戻る[endlink][r]
+            { "link ",
+                @"\[link [^\]]+\]([^\[]+)\[endlink\]" },
             { "[選択肢 emb=\"",
-                @"\[選択肢 emb\=\""[^\""]+\""" },
-            { "「",
-                @"^「.+」$" },
-            { "",
-                @"^.+\[SYSTEM_MENU_ON\]$" }
+                @"\[選択肢 emb\=\""([^\""]+)\""" }
            };
         }
         protected bool OpenSaveKS(bool OpenKS = true)
@@ -204,13 +201,96 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             ParseData.IsComment = false;
         }
 
+        bool isscript = false;
+        protected int ParseStringFileLineNew()
+        {
+            if (isscript)
+            {
+                //skip script content and..
+                if (ParseData.TrimmedLine.EndsWith("@endscript"))//check for end of script
+                {
+                    isscript = false;//end of script
+                }
+            }
+            else if (ParseData.TrimmedLine.StartsWith(";"))
+            {
+                //comment
+            }
+            else if (ParseData.TrimmedLine.StartsWith("*"))
+            {
+                //label
+            }
+            else if (ParseData.TrimmedLine.StartsWith("@iscript"))
+            {
+                //@iscript
+                //@endscript
+                isscript = true;//start to skip the script content
+            }
+            else //parse tags
+            {
+                //tag patterns
+                //starts:(?<!\[)\[\s*\w+
+                //ends:\]
+                //starts:\t*@\s*\w+
+                //ends:(?<!\\)\n
+                ////tag attributes
+                ////match:(\w+)(\s*=\s*(&?%?(".*?"|\'.*?\'|[^\\s\]=]+)))?
+                ////
+
+
+                //name pattern
+                //starts: '^\t*【'
+                //ends: '】'
+
+                //1. search tag start
+                //2. search tag end
+                //3. parse tag attributes in the tag
+                var tagstartcollection = Regex.Matches(ParseData.line, @"(?<!\[)\[\s*\w+");
+                if (tagstartcollection.Count > 0)
+                {
+                    var tagendcollection = Regex.Matches(ParseData.line, @"\]");
+
+                    var endind = 0;
+                    foreach (Match tagstart in tagstartcollection)
+                    {
+                        var start = tagstart.Index + tagstart.Length;
+                        var searchstring = ParseData.line.Substring(start, tagendcollection[endind].Index - start);
+
+                        var attribs = Regex.Matches(searchstring, @"(\w+)(\s*=\s*(&?%?("".*? ""|\'.*?\'|[^\\s\]=]+)))?");
+
+                        foreach (Match attrib in attribs)
+                        {
+
+                        }
+                    }
+                }
+                else
+                {
+                    tagstartcollection = Regex.Matches(ParseData.line, @"\t*@\s*\w+");
+                    if (tagstartcollection.Count > 0)
+                    {
+                        var searchstring = ParseData.line.Substring(tagstartcollection[0].Index + tagstartcollection[0].Length);
+
+                        var attribs = Regex.Matches(searchstring, @"(\w+)(\s*=\s*(&?%?("".*? ""|\'.*?\'|[^\\s\]=]+)))?");
+
+                        foreach (Match attrib in attribs)
+                        {
+
+                        }
+                    }
+                }
+            }
+
+            return 0;
+        }
+
         bool endsWithWait;
         protected override int ParseStringFileLine()
         {
             var ret = 0;
 
-            if (!IsEmptyOrComment() && !ParsePatterns() && 
-                ((endsWithWait = ParseData.TrimmedLine.EndsWith(waitSymbol)) || EndsWithValidSymbol())
+            if (!IsScriptBegin() && !IsEmptyOrComment() && !ParsePatterns() &&
+                ((endsWithWait = ParseData.TrimmedLine.EndsWith(waitSymbol)) || EndsWithValidSymbol() || ContainsNoSpecSymbols() || ContainsCharsWhenTagsRemoved())
                )
             {
 
@@ -274,6 +354,68 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
             return ret;
         }
+
+        /// <summary>
+        /// true when after all tags was removed and still will be text
+        /// </summary>
+        /// <returns></returns>
+        private bool ContainsCharsWhenTagsRemoved()
+        {
+            var cleaned = ParseData.line;
+            var mcstart = Regex.Matches(cleaned, @"(?<!\[)\[\s*\w+");
+            if (mcstart.Count == 0)
+            {
+                return false;
+            }
+            for (int i = mcstart.Count - 1; i >= 0; i--)
+            {
+                //remove tag content line [lhr] or [eval name = "sss"]
+                var start = mcstart[i].Index;
+                var endind = cleaned.IndexOfAny(new char[] { ']' }, start);
+                if (endind == -1)
+                {
+                    continue;
+                }
+                var length = endind + 1 - start;
+                cleaned = cleaned.Remove(start, length);
+            }
+
+            if (cleaned.Length > 0 && IsValidString(cleaned))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        bool IsScript = false;
+        private bool IsScriptBegin()
+        {
+            if (IsScript)
+            {
+                if (ParseData.line.Contains("endscript"))
+                {
+                    IsScript = false;
+                }
+
+                return true;
+            }
+            else
+            {
+                if (ParseData.line.Contains("iscript"))
+                {
+                    IsScript = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool ContainsNoSpecSymbols()
+        {
+            return !(ParseData.line.Contains("[") || ParseData.line.Contains("]") || ParseData.line.Contains("@") || ParseData.line.Contains("*"));
+        }
+
         protected override string GetFilePath()
         {
             //write translated files to patch dir
@@ -393,7 +535,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 "[phr][resetfont]",
                 "[lr][resetfont]",
                 "[r][resetfont]",
-                "[p][resetfont]"
+                "[p][resetfont]",
+                "[SYSTEM_MENU_ON]"
             })
             {
                 if (ParseData.TrimmedLine.Length > s.Length && ParseData.TrimmedLine.EndsWith(s) && (ParseData.TrimmedLine.IndexOf("//") == -1 || ParseData.TrimmedLine.IndexOf("//") > ParseData.TrimmedLine.IndexOf(s)) && !ContainsNoPatterns(ParseData.TrimmedLine))
