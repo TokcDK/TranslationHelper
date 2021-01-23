@@ -8,7 +8,7 @@ namespace TranslationHelper.INISettings
         {
         }
 
-        internal override string Key => "SearchRowIssueOptionsCheckNonRomaji";
+        internal override string Key => "SearchRowIssueOptionsCheckActors";
 
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => true;
