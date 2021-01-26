@@ -105,6 +105,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             //[link target=*run]テスト実行[endlink] / [link target=*cancel]タイトルに戻る[endlink][r]
             { "link ",
                 @"\[link [^\]]+\]([^\[]+)\[endlink\]" },
+            { "[C_SELECT ",
+                @"\[C_SELECT [^\]]+\]([^\[]+)\[endlink\]" },
             { "[選択肢 emb=\"",
                 @"\[選択肢 emb\=\""([^\""]+)\""" },
             { "'=>'",
@@ -524,6 +526,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 .Replace("[）]", "{BR02}")
                 .Replace("[「]", "{BR11}")
                 .Replace("[」]", "{BR12}")
+                .Replace("[SYSTEM_MENU_ON]", "{SYSTEM_MENU_ON}")
                 .Replace('[', '-')
                 .Replace(']', '-')
                 .Replace('(', '（')
@@ -540,6 +543,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 .Replace("{BR02}", "[）]")
                 .Replace("{BR11}", "[「]")
                 .Replace("{BR12}", "[」]")
+                .Replace("{SYSTEM_MENU_ON}", "[SYSTEM_MENU_ON]")
                 .Replace(@"\""", "{Q}")//preremove quotes of variables
                 .Replace("\"", "`")//replace other quotes
                 .Replace("{Q}", @"\""")//return quotes of variables
