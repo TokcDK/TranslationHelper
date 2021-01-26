@@ -80,6 +80,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 @"\[eval exp\=\""useSkillEffect\('([^']+)'" },
             { "\"name\"=>\"",
                 @"\""name\""\=>\""([^\""]+)\""" },
+            { "name",
+                @"\[[A-Za-z_]+ name \= \""([^\""\]]+)\""\]" },
             { "\"explanation\"=>\"",
                 @"\""explanation\""\=>\""([^\""]+)\""" },
             { "text = \"",
