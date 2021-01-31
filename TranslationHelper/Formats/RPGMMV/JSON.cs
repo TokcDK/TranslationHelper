@@ -85,9 +85,10 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 //treeView1.ExpandAll();
             }
-            catch
+            catch (Exception ex)
             {
                 success = false;
+                new FunctionsLogs().LogToFile("Error occured while json parse: \r\n"+ex);
                 //LogToFile(string.Empty, true);
             }
             finally

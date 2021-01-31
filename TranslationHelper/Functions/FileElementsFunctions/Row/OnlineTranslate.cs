@@ -105,8 +105,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             thDataWork.Main.ProgressInfo(false);
         }
+
+        int SelectedRowsCountRest = -999;
         protected override bool Apply()
         {
+            if (SelectedRowsCountRest == -999)
+            {
+                SelectedRowsCountRest = SelectedRowsCount;
+            }
+
             //if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine())
             try
             {
@@ -116,12 +123,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 thDataWork.Main.ProgressInfo(false);
 
+                SelectedRowsCountRest--;
                 return true;
             }
             catch
             {
             }
 
+            SelectedRowsCountRest--;
             return false;
         }
 
@@ -208,7 +217,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 lineNum++;
             }
 
-            if (buffer.Count >= 300 || (!IsAll && !IsTable))
+            if (buffer.Count >= 300 || SelectedRowsCountRest==1)
             {
                 try
                 {

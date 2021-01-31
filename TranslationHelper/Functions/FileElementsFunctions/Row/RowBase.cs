@@ -57,6 +57,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 SelectedRow = row;
                 SelectedTableIndex = 0;
                 SelectedRowIndex = 0;
+                SelectedRowsCount = 1;
 
                 GetTableData();
 
@@ -74,6 +75,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return ret;
         }
 
+        /// <summary>
+        /// selected rows count
+        /// </summary>
+        protected int SelectedRowsCount = 0;
         /// <summary>
         /// proceed 1 or more of selected rows
         /// </summary>
@@ -95,8 +100,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             //var selectedDGVCellsCount = DGV.GetCellCount(DataGridViewElementStates.Selected);
 
-            int DGVRowsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
-            if (DGVRowsCount > 0)
+            SelectedRowsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
+            if (SelectedRowsCount > 0)
             {
                 if (!IsAll && !IsTable)
                 {
@@ -107,8 +112,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     GetTableData();
 
-                    var SelectedRowIndexses = new int[DGVRowsCount];
-                    for (int i = 0; i < DGVRowsCount; i++)
+                    var SelectedRowIndexses = new int[SelectedRowsCount];
+                    for (int i = 0; i < SelectedRowsCount; i++)
                     {
                         //координаты ячейки
                         SelectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, SelectedTableIndex, DGV.SelectedCells[i].RowIndex);
