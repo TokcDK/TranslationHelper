@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
@@ -130,7 +129,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                 }
 
-                if(!IsAll && !IsTable)
+                if (!IsAll && !IsTable)
                 {
                     ActionsPostRowsApply();
                 }
@@ -199,6 +198,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     SelectedRow = SelectedTable.Rows[i];
                     SelectedRowIndex = i;
+                    if (IsTable || (IsAll && SelectedTableIndex == tablescount - 1))//set rows count to selectedrowscount for last table
+                    {
+                        SelectedRowsCount = RowsCount;
+                    }
                     ApplyConditions();
                 }
 
@@ -225,6 +228,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected int SelectedTableIndex = -1;
         protected DataRow SelectedRow;
         protected int SelectedRowIndex;
+        protected int tablescount = 0;
         /// <summary>
         /// true when processed all tables
         /// </summary>
@@ -240,7 +244,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             ActionsPreRowsApply();
 
             int tindex = 0;
-            foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
+            var tables = thDataWork.THFilesElementsDataset.Tables;
+            tablescount = tables.Count;
+            foreach (DataTable table in tables)
             {
                 SelectedTable = table;
                 SelectedTableIndex = tindex;
