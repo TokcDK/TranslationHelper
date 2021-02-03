@@ -1204,7 +1204,7 @@ namespace TranslationHelper
                 //основную часть времени отнимал вывод информации о файлах!!
                 //00.051
                 //new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionary(DBDataSet.ToDictionary(), forced);
-                if(Properties.Settings.Default.DontLoadDuplicates)
+                if (Properties.Settings.Default.DontLoadDuplicates)
                 {
                     new FunctionsLoadTranslationDB(thDataWork).THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary(), forced);
                 }
@@ -3139,16 +3139,21 @@ namespace TranslationHelper
 
         private void copyNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(THFilesList!=null && THFilesList.Items.Count>0 && THFilesList.SelectedIndex != -1)
+            if (THFilesList != null && THFilesList.Items.Count > 0 && THFilesList.SelectedIndex != -1)
             {
                 var names = new List<string>();
-                foreach(var item in THFilesList.SelectedItems)
+                foreach (var item in THFilesList.SelectedItems)
                 {
                     names.Add(item.ToString());
                 }
 
                 Clipboard.SetText(string.Join(Environment.NewLine, names));
             }
+        }
+
+        private void makeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Task.Run(() => new MakeTranslatedCopyIfFileWithTheNameExists(thDataWork).All());
         }
 
         //Материалы

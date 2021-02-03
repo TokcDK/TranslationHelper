@@ -211,6 +211,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
             }
 
+            if (!IsAll)
+            {
+                CompleteSound();
+            }
+
             return ret;
         }
 
@@ -262,7 +267,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             ActionsPostRowsApply();
 
+            CompleteSound();
+
             return ret;
+        }
+
+        protected virtual void CompleteSound()
+        {
+            System.Media.SystemSounds.Asterisk.Play();
         }
 
         protected virtual void ApplyConditions()

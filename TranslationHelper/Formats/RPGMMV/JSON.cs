@@ -24,7 +24,6 @@ namespace TranslationHelper.Formats.RPGMMV
 
         private bool ReadJson(string Jsonname, string sPath)
         {
-            bool success = true;
             //LogToFile("Jsonname = " + Jsonname);
             try
             {
@@ -87,7 +86,6 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             catch (Exception ex)
             {
-                success = false;
                 new FunctionsLogs().LogToFile("Error occured while json parse: \r\n"+ex);
                 //LogToFile(string.Empty, true);
             }
@@ -102,14 +100,7 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             //LogToFile(string.Empty, true);
 
-            if (success && CheckTablesContent(Jsonname))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return CheckTablesContent(Jsonname);
         }
 
         //bool MessageParsing = false;
