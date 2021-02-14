@@ -361,6 +361,13 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override bool BakRestore()
         {
+            foreach(var bak in Directory.EnumerateFiles(Path.GetDirectoryName(thDataWork.SPath), "*.wolf.bak", SearchOption.AllDirectories))
+            {
+                if (!Directory.Exists(Path.GetFileNameWithoutExtension(bak)))
+                {
+                    Directory.Move(bak, Path.GetFileNameWithoutExtension(bak));
+                }
+            }
             return BackupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(thDataWork.SPath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).ToArray(), false);
         }
 
