@@ -2905,15 +2905,7 @@ namespace TranslationHelper
 
         private void OpenProjectsDirToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string folder;
-            if (Directory.Exists(folder = Properties.Settings.Default.THProjectWorkDir))
-            {
-            }
-            else
-            {
-                folder = Properties.Settings.Default.THSelectedDir;
-            }
-            Process.Start("explorer.exe", folder);
+           FunctionsProcess.OpenProjectsDir();
         }
 
         private void openTranslationRulesFileToolStripMenuItem_Click(object sender, EventArgs e)

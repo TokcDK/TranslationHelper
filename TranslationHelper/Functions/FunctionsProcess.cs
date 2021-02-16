@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace TranslationHelper.Main.Functions
@@ -91,6 +92,22 @@ namespace TranslationHelper.Main.Functions
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// open project's dir
+        /// </summary>
+        internal static void OpenProjectsDir()
+        {
+            string folder;
+            if (Directory.Exists(folder = Properties.Settings.Default.THProjectWorkDir))
+            {
+            }
+            else
+            {
+                folder = Properties.Settings.Default.THSelectedDir;
+            }
+            Process.Start("explorer.exe", folder);
         }
     }
 }

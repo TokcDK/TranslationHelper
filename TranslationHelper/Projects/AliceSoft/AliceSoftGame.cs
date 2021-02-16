@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.AliceSoft;
@@ -33,7 +34,7 @@ namespace TranslationHelper.Projects.AliceSoft
 
         private bool PackUnpack()
         {
-            if(thDataWork.OpenFileMode)
+            if (thDataWork.OpenFileMode)
             {
                 Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath)));
             }
@@ -49,7 +50,7 @@ namespace TranslationHelper.Projects.AliceSoft
                 first = true;
 
                 var targetworkainpath = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "orig.ain");
-                var targetworkaintxtpath = targetworkainpath + ".txt";                
+                var targetworkaintxtpath = targetworkainpath + ".txt";
 
                 if (thDataWork.OpenFileMode)
                 {
@@ -74,18 +75,24 @@ namespace TranslationHelper.Projects.AliceSoft
                     {
                         var outain = targetworkainpath + ".out";
 
-                        var args = "ain edit -t \""+targetworkaintxtpath+"\" -o \"" + outain + "\" \"" + targetworkainpath + "\"";
+                        var args = "ain edit -t \"" + targetworkaintxtpath + "\" -o \"" + outain + "\" \"" + targetworkainpath + "\"";
 
-                        File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir,"write.bat"),
-                            " \"" + THSettingsData.AliceToolsExePath()+"\" "+ args
+                        File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "write.bat"),
+                            " \"" + THSettingsData.AliceToolsExePath() + "\" " + args
                             + "\r\npause"
-                            
+
                             );
 
                         FunctionsProcess.RunProcess(THSettingsData.AliceToolsExePath(), args);
 
-                        if (File.Exists(ain + ".bak") && File.Exists(outain))
+                        if (File.Exists(outain))
                         {
+                            //make buckup
+                            if (!File.Exists(ain + ".bak"))
+                            {
+                                File.Copy(ain, ain + ".bak");
+                            }
+
                             //remove file
                             var ainfinfo = new FileInfo(ain)
                             {
@@ -96,6 +103,15 @@ namespace TranslationHelper.Projects.AliceSoft
                             //copy new
                             File.Move(outain, ain);
                             ret = true;
+                        }
+                        else
+                        {
+                            MessageBox.Show(
+                                T._("Out ain file creation was failed")
+                                + Environment.NewLine
+                                + T._("Try to run 'write.bat' manually and check console for errors")
+                                );
+                            FunctionsProcess.OpenProjectsDir();
                         }
                     }
                 }
