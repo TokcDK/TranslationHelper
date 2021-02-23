@@ -363,9 +363,10 @@ namespace TranslationHelper.Projects.WolfRPG
         {
             foreach(var bak in Directory.EnumerateFiles(Path.GetDirectoryName(thDataWork.SPath), "*.wolf.bak", SearchOption.AllDirectories))
             {
-                if (!Directory.Exists(Path.GetFileNameWithoutExtension(bak)))
+                var ExtractedDirPath = bak.Remove(bak.Length - 9, 9);
+                if (!Directory.Exists(ExtractedDirPath))
                 {
-                    Directory.Move(bak, Path.GetFileNameWithoutExtension(bak));
+                    Directory.Move(bak, bak.Remove(bak.Length-4,4));
                 }
             }
             return BackupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(thDataWork.SPath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).ToArray(), false);
