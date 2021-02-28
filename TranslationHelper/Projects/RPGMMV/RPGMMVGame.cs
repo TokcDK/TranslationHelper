@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMMV;
@@ -137,7 +139,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 }
 
                 //hardcoded exclusions
-                var Exclusions = new HashSet<string>
+                var SkipJSList = new HashSet<string>
                 {
                     "ConditionallyCore.js",//translation of text in quotes will make skills not executable
                     //---
@@ -145,28 +147,12 @@ namespace TranslationHelper.Projects.RPGMMV
                 };
 
                 //add exclusions from skipjs file
-                foreach (var skipjsfile in THSettingsData.RPGMakerMVSkipjsRulesFilesList())
-                {
-                    if (File.Exists(skipjsfile))
-                    {
-                        var skipjs = File.ReadAllLines(skipjsfile);
-                        foreach (var line in skipjs)
-                        {
-                            var jsfile = line.Trim();
-                            if (jsfile.Length == 0 || jsfile[0]==';' || Exclusions.Contains(jsfile))
-                            {
-                                continue;
-                            }
-                            Exclusions.Add(jsfile);
-                        }
-
-                    }
-                }
+                SetSkipJSLists(SkipJSList);
 
                 //Proceeed other js-files with quotes search
                 foreach (var JS in Directory.EnumerateFiles(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", "plugins"), "*.js"))
                 {
-                    if (HardcodedJS.Contains(Path.GetFileName(JS)) || Exclusions.Contains(Path.GetFileName(JS)))
+                    if (HardcodedJS.Contains(Path.GetFileName(JS)) || SkipJSList.Contains(Path.GetFileName(JS)))
                         continue;
 
                     thDataWork.Main.ProgressInfo(true, ParseFileMessage + Path.GetFileName(JS));
@@ -217,6 +203,32 @@ namespace TranslationHelper.Projects.RPGMMV
 
             thDataWork.Main.ProgressInfo(false);
             return IsAnyFileCompleted; ;
+        }
+
+        private void SetSkipJSLists(HashSet<string> SkipJSList)
+        {
+            foreach (var skipjsfilePath in THSettingsData.RPGMakerMVSkipjsRulesFilesList())
+            {
+                SetSkipJSList(SkipJSList, skipjsfilePath);
+            }
+        }
+
+        private void SetSkipJSList(HashSet<string> SkipJSList, string skipjsfilePath)
+        {
+            if (File.Exists(skipjsfilePath))
+            {
+                var skipjs = File.ReadAllLines(skipjsfilePath);
+                foreach (var line in skipjs)
+                {
+                    var jsfile = line.Trim();
+                    if (jsfile.Length == 0 || jsfile[0] == ';' || SkipJSList.Contains(jsfile))
+                    {
+                        continue;
+                    }
+                    SkipJSList.Add(jsfile);
+                }
+
+            }
         }
 
         private bool ParseRPGMakerMVjson(string FilePath, bool Write = false)
@@ -441,6 +453,55 @@ namespace TranslationHelper.Projects.RPGMMV
             return str;
         }
 
+        internal override void CreateMenus()
+        {
+            var category = new System.Windows.Forms.ToolStripMenuItem
+            {
+                Text = T._("Project")
+            };
+            var SkipJSMenu = new System.Windows.Forms.ToolStripMenuItem
+            {
+                Text = T._("[RPG Maker MV]Skip JS")
+            };
+            category.DropDownItems.Add(SkipJSMenu);
+            SkipJSMenu.Click += RPGMMVGameSkipJSMenu_Click;
+
+            thDataWork.Main.Invoke((Action)(() => thDataWork.Main.CMSFilesList.Items.Add(category)));
+        }
+
+        private void RPGMMVGameSkipJSMenu_Click(object sender, System.EventArgs e)
+        {
+            //read and check the name
+            var name = thDataWork.Main.GetFilesListSelectedName();
+            if (string.IsNullOrWhiteSpace(name) || !name.ToUpperInvariant().EndsWith(".JS"))
+            {
+                return;
+            }
+
+            //read only js names
+            var SkipJSList = new HashSet<string>();
+            SetSkipJSList(SkipJSList, THSettingsData.RPGMakerMVSkipjsRulesFilePath());
+
+            //read all list
+            List<string> SkipJSOveralList;
+            if (SkipJSList.Count==0 || !File.Exists(THSettingsData.RPGMakerMVSkipjsRulesFilePath()))
+            {
+                SkipJSOveralList = new List<string>();
+            }
+            else
+            {
+                SkipJSOveralList = File.ReadAllLines(THSettingsData.RPGMakerMVSkipjsRulesFilePath()).ToList();
+            }
+
+            //check if name already exists in list
+            if (!SkipJSList.Contains(name))
+            {
+                SkipJSOveralList.Add(name);
+            }
+
+            //write list
+            File.WriteAllLines(THSettingsData.RPGMakerMVSkipjsRulesFilePath(), SkipJSOveralList);
+        }
     }
 }
 

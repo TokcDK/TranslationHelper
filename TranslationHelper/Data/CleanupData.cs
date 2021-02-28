@@ -124,6 +124,17 @@ namespace TranslationHelper.Data
                 thDataWork.Main.TargetTextBoxLinePositionLabelData.Text = string.Empty;
                 thDataWork.Main.TargetTextBoxColumnPositionLabelData.Text = string.Empty;
 
+                //remove project category
+                var CategoryName = T._("Project");
+                foreach(var menu in thDataWork.Main.CMSFilesList.Items)
+                {
+                    if(menu is System.Windows.Forms.ToolStripMenuItem t && t.Text== CategoryName)
+                    {
+                        thDataWork.Main.CMSFilesList.Items.Remove(t);
+                        break;
+                    }
+                }
+
                 //reset vars
 
                 //memory cleaning thing.

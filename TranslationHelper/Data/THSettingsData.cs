@@ -94,7 +94,7 @@ namespace TranslationHelper.Data
         /// <returns></returns>
         internal static string RulesDirPath()
         {
-            return Path.Combine(ApplicationStartupPath(), RulesDirName());
+            return Path.Combine(ResDirPath(), RulesDirName());
         }
 
         internal static string RPGMakerMVSkipjsRulesFileName()

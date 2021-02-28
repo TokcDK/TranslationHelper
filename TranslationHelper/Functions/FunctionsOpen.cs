@@ -389,6 +389,8 @@ namespace TranslationHelper.Functions
             thDataWork.OpenFileMode = true;
             if (thDataWork.CurrentProject.Open())
             {
+                thDataWork.CurrentProject.CreateMenus();//createmenus
+
                 return thDataWork.CurrentProject.Name();
             }
             return string.Empty;

@@ -718,5 +718,13 @@ namespace TranslationHelper.Projects
         {
             System.Diagnostics.Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
         }
+
+        /// <summary>
+        /// create project menus
+        /// </summary>
+        internal virtual void CreateMenus()
+        {
+
+        }
     }
 }

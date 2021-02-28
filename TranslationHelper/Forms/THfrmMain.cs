@@ -3131,6 +3131,15 @@ namespace TranslationHelper
 
         private void copyNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Clipboard.SetText(GetFilesListSelectedName());
+        }
+
+        /// <summary>
+        /// Get name from selected item in file list listbox
+        /// </summary>
+        /// <returns></returns>
+        internal string GetFilesListSelectedName()
+        {
             if (THFilesList != null && THFilesList.Items.Count > 0 && THFilesList.SelectedIndex != -1)
             {
                 var names = new List<string>();
@@ -3138,9 +3147,10 @@ namespace TranslationHelper
                 {
                     names.Add(item.ToString());
                 }
-
-                Clipboard.SetText(string.Join(Environment.NewLine, names));
+                return string.Join(Environment.NewLine, names);
             }
+
+            return "";
         }
 
         private void makeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
