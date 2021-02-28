@@ -164,7 +164,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 }
 
                 //Proceeed other js-files with quotes search
-                foreach (var JS in Directory.EnumerateFiles(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", "plugins")))
+                foreach (var JS in Directory.EnumerateFiles(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", "plugins"), "*.js"))
                 {
                     if (HardcodedJS.Contains(Path.GetFileName(JS)) || Exclusions.Contains(Path.GetFileName(JS)))
                         continue;
