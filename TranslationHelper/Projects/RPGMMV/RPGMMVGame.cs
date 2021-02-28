@@ -136,55 +136,35 @@ namespace TranslationHelper.Projects.RPGMMV
                     }
                 }
 
+                //hardcoded exclusions
                 var Exclusions = new HashSet<string>
                 {
                     "ConditionallyCore.js",//translation of text in quotes will make skills not executable
                     //---
-                    "AnimationExtend.js",
-                    "CounterExtend.js",
-                    "BattleOptions.js",
-                    "CustomizeCritical.js",
-                    "DestinationWindow.js",
-                    "DirectivityShake.js",
-                    "DWindow.js",
-                    "FilterController.js",
-                    "HalfMove.js",
-                    "MessageWindowHidden.js",
-                    "MovieManager.js",
-                    "MoviePicture.js",
-                    "MPP_ActiveTimeBattle_OP1.js",
-                    "MPP_ActiveTimeBattle_OP1.js",
-                    "MPP_ActiveTimeBattle_OP3.js",
-                    "MPP_ChoiceEX.js",
-                    "PictureAnimation.js",
-                    "PictureCallCommon.js",
-                    "RetryBattle.js",
-                    "SubstituteExtend.js",
-                    "TemplateEvent.js",
-                    "TkoolMV_PluginCommandBook.js",
-                    "TriggerOnEquipAndState.js",
-                    "VanguardAndRearguard.js",
-                    "DTextPicture.js"
                     //----//
                 };
 
-                //add exclusions from text file located in "gamedir\www\js\skipjs.txt" if exists
-                if(File.Exists(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", "skipjs.txt")))
+                //add exclusions from skipjs file
+                foreach (var skipjsfile in THSettingsData.RPGMakerMVSkipjsRulesFilesList())
                 {
-                    var skipjs = File.ReadAllLines(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", "skipjs.txt"));
-                    foreach(var line in skipjs)
+                    if (File.Exists(skipjsfile))
                     {
-                        if(line.Length==0 || Exclusions.Contains(line))
+                        var skipjs = File.ReadAllLines(skipjsfile);
+                        foreach (var line in skipjs)
                         {
-                            continue;
+                            var jsfile = line.Trim();
+                            if (jsfile.Length == 0 || jsfile[0]==';' || Exclusions.Contains(jsfile))
+                            {
+                                continue;
+                            }
+                            Exclusions.Add(jsfile);
                         }
-                        Exclusions.Add(line);
-                    }
 
+                    }
                 }
 
                 //Proceeed other js-files with quotes search
-                foreach (var JS in Directory.EnumerateFiles(Path.Combine(Properties.Settings.Default.THSelectedGameDir,"www","js","plugins")))
+                foreach (var JS in Directory.EnumerateFiles(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", "plugins")))
                 {
                     if (HardcodedJS.Contains(Path.GetFileName(JS)) || Exclusions.Contains(Path.GetFileName(JS)))
                         continue;

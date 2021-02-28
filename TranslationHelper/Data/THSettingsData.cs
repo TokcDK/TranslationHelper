@@ -46,14 +46,22 @@ namespace TranslationHelper.Data
             return "Res";
         }
 
+        /// <summary>
+        /// Res dir path
+        /// </summary>
+        /// <returns></returns>
         internal static string ResDirPath()
         {
             return Path.Combine(ApplicationStartupPath(), ResDirName());
         }
 
+        /// <summary>
+        /// Res dir path
+        /// </summary>
+        /// <returns></returns>
         internal static string ResDirPath2()
         {
-            return @".\" + ResDirName();
+            return Path.GetFullPath(@".\" + ResDirName());
         }
 
         internal static string WorkDirName()
@@ -61,6 +69,10 @@ namespace TranslationHelper.Data
             return "Work";
         }
 
+        /// <summary>
+        /// path to Work dir where project files placed
+        /// </summary>
+        /// <returns></returns>
         internal static string WorkDirPath()
         {
             return Path.Combine(ApplicationStartupPath(), WorkDirName());
@@ -69,6 +81,61 @@ namespace TranslationHelper.Data
         internal static string WorkDirPath2()
         {
             return @".\" + WorkDirName();
+        }
+
+        internal static string RulesDirName()
+        {
+            return "rules";
+        }
+
+        /// <summary>
+        /// rules dir path where is placed some rules files
+        /// </summary>
+        /// <returns></returns>
+        internal static string RulesDirPath()
+        {
+            return Path.Combine(ApplicationStartupPath(), RulesDirName());
+        }
+
+        internal static string RPGMakerMVSkipjsRulesFileName()
+        {
+            return "rpgmvskipjs.txt";
+        }
+
+        /// <summary>
+        /// path to general skipjs file list which will be skipped while rpg maker js opening
+        /// </summary>
+        /// <returns></returns>
+        internal static string RPGMakerMVSkipjsRulesFilePath()
+        {
+            return Path.Combine(THSettingsData.RulesDirPath(), RPGMakerMVSkipjsRulesFileName());
+        }
+
+        internal static string RPGMakerMVProjectSkipjsRulesFileName()
+        {
+            return "skipjs.txt";
+        }
+
+        /// <summary>
+        /// path to project specific skipjs file list which will be skipped while rpg maker js opening
+        /// </summary>
+        /// <returns></returns>
+        internal static string RPGMakerMVProjectSkipjsRulesFilePath()
+        {
+            return Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", RPGMakerMVProjectSkipjsRulesFileName());
+        }
+
+        /// <summary>
+        /// list of skijs rules file paths
+        /// </summary>
+        /// <returns></returns>
+        internal static string[] RPGMakerMVSkipjsRulesFilesList()
+        {
+            return new[]
+                {
+                    THSettingsData.RPGMakerMVSkipjsRulesFilePath(),//overall file
+                    THSettingsData.RPGMakerMVProjectSkipjsRulesFilePath()//game specific file
+                };
         }
 
         internal static string ArcConvDirName()
