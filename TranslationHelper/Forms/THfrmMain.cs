@@ -14,7 +14,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -1456,27 +1455,31 @@ namespace TranslationHelper
                 //координаты стартовой строк, колонки оригинала и номера таблицы
                 int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
                 int tableindex = THFilesList.SelectedIndex;
-                StringBuilder value = new StringBuilder();
-                int[] selindexes = new int[dgvSelectedRowsCount];
+                var value = new List<string>();
+                var selindexes = new int[dgvSelectedRowsCount];
+
                 for (int i = 0; i < dgvSelectedRowsCount; i++)
                 {
                     selindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, tableindex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
                 }
+
                 Array.Sort(selindexes);
+
                 for (int i = 0; i < dgvSelectedRowsCount; i++)
                 {
                     //MessageBox.Show(THFilesElementsDataset.Tables[tableindex].Rows[THFileElementsDataGridView.SelectedCells[i].RowIndex][cind].ToString());
                     //MessageBox.Show(THFileElementsDataGridView.CurrentCell.Value.ToString());
-                    value.Append(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind] + string.Empty);
-                    if (i + 1 < dgvSelectedRowsCount)
-                    {
-                        value.Append(Environment.NewLine);
-                    }
+                    value.Add(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind] + string.Empty);
                 }
-                //MessageBox.Show(value.ToString());
+
+                var text = string.Join("\r\n", value);
+
                 //string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\string.Empty));
-                string result = string.Format(CultureInfo.InvariantCulture, Properties.Settings.Default.WebTranslationLink.Replace("{from}", "{0}").Replace("{to}", "{1}").Replace("{text}", "{2}"), TranslatorsTools.GetSourceLanguageID(), TranslatorsTools.GetTargetLanguageID(), HttpUtility.UrlEncode(value + string.Empty, Encoding.UTF8));
-                //MessageBox.Show(result);
+                //string result = string.Format(CultureInfo.InvariantCulture, Properties.Settings.Default.WebTranslationLink.Replace("{from}", "{0}").Replace("{to}", "{1}").Replace("{text}", "{2}"), TranslatorsTools.GetSourceLanguageID(), TranslatorsTools.GetTargetLanguageID(), HttpUtility.UrlEncode(value + string.Empty, Encoding.UTF8));
+                //string result = string.Format(CultureInfo.InvariantCulture, Properties.Settings.Default.WebTranslationLink.Replace("{from}", "{0}").Replace("{to}", "{1}").Replace("{text}", "{2}"), TranslatorsTools.GetSourceLanguageID(), TranslatorsTools.GetTargetLanguageID(), Uri.EscapeUriString(value + string.Empty));
+
+                var result = string.Format(CultureInfo.InvariantCulture, Properties.Settings.Default.WebTranslationLink.Replace("{from}", "{0}").Replace("{to}", "{1}").Replace("{text}", "{2}"), TranslatorsTools.GetSourceLanguageID(), TranslatorsTools.GetTargetLanguageID(), text.Replace("\r\n", "%0A")/*replace newline*/);
+
                 Process.Start(result);
             }
             catch
@@ -2905,7 +2908,7 @@ namespace TranslationHelper
 
         private void OpenProjectsDirToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           FunctionsProcess.OpenProjectsDir();
+            FunctionsProcess.OpenProjectsDir();
         }
 
         private void openTranslationRulesFileToolStripMenuItem_Click(object sender, EventArgs e)
