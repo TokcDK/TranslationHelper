@@ -70,7 +70,7 @@ namespace TranslationHelper.Translators
             string ResultOfTranslation;
             try
             {
-                string languageFrom = "jp";
+                string languageFrom = "ja";
                 string languageTo = "en";
                 if (Properties.Settings.Default.OnlineTranslationSourceLanguage.Length > 0)
                 {
@@ -108,7 +108,7 @@ namespace TranslationHelper.Translators
             string[] Result;
             try
             {
-                string languageFrom = "jp";
+                string languageFrom = "ja";
                 string languageTo = "en";
                 if (Properties.Settings.Default.OnlineTranslationSourceLanguage.Length > 0)
                 {
@@ -125,7 +125,7 @@ namespace TranslationHelper.Translators
                     }).Last();
                 }
 
-                //if (languageFrom == "jp" && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(OriginalText))
+                //if (languageFrom == "ja" && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(OriginalText))
                 //{
                 //    return OriginalText;
                 //}

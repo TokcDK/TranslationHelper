@@ -85,7 +85,7 @@ namespace TranslationHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Japanese jp")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Japanese ja")]
         public string OnlineTranslationSourceLanguage {
             get {
                 return ((string)(this["OnlineTranslationSourceLanguage"]));

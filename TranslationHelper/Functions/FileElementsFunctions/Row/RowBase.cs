@@ -118,6 +118,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         SelectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, SelectedTableIndex, DGV.SelectedCells[i].RowIndex);
 
                     }
+
+                    if (!IsAll && !IsTable)
+                    {
+                        Array.Sort(SelectedRowIndexses);//sort indexes
+                    }
+
                     foreach (int RowIndex in SelectedRowIndexses)
                     {
                         SelectedRow = SelectedTable.Rows[RowIndex];
@@ -277,8 +283,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             System.Media.SystemSounds.Asterisk.Play();
         }
 
+        /// <summary>
+        /// count of rest rows
+        /// </summary>
+        protected int SelectedRowsCountRest;
+        bool SetRestRows=true;//
+
         protected virtual void ApplyConditions()
         {
+            if (SetRestRows)//set rest of rows with bool just because bool is faster
+            {
+                SetRestRows = false;
+                SelectedRowsCountRest = SelectedRowsCount;
+            }
+
+            SelectedRowsCountRest--;//reduce rest of rows by 1
+
             if (!IsValidRow())
             {
                 return;

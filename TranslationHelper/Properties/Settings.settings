@@ -18,7 +18,7 @@
       <Value Profile="(Default)">https://translate.google.com/?ie=UTF-8&amp;op=translate&amp;sl=auto&amp;tl=en&amp;text={text}</Value>
     </Setting>
     <Setting Name="OnlineTranslationSourceLanguage" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Japanese jp</Value>
+      <Value Profile="(Default)">Japanese ja</Value>
     </Setting>
     <Setting Name="OnlineTranslationTargetLanguage" Type="System.String" Scope="User">
       <Value Profile="(Default)">English en</Value>

@@ -1444,47 +1444,7 @@ namespace TranslationHelper
 
         private void OpenInWebToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                int dgvSelectedRowsCount = THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
-                if (dgvSelectedRowsCount == 0)
-                {
-                    return;
-                }
-
-                //координаты стартовой строк, колонки оригинала и номера таблицы
-                int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
-                int tableindex = THFilesList.SelectedIndex;
-                var value = new List<string>();
-                var selindexes = new int[dgvSelectedRowsCount];
-
-                for (int i = 0; i < dgvSelectedRowsCount; i++)
-                {
-                    selindexes[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, tableindex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
-                }
-
-                Array.Sort(selindexes);
-
-                for (int i = 0; i < dgvSelectedRowsCount; i++)
-                {
-                    //MessageBox.Show(THFilesElementsDataset.Tables[tableindex].Rows[THFileElementsDataGridView.SelectedCells[i].RowIndex][cind].ToString());
-                    //MessageBox.Show(THFileElementsDataGridView.CurrentCell.Value.ToString());
-                    value.Add(thDataWork.THFilesElementsDataset.Tables[tableindex].Rows[selindexes[i]][cind] + string.Empty);
-                }
-
-                var text = string.Join("\r\n", value);
-
-                //string result = Settings.THSettingsWebTransLinkTextBox.Text.Replace("{languagefrom}", "auto").Replace("{languageto}", "en").Replace("{text}", value.ToString().Replace("\r\n", "%0A").Replace("\"", "\\\string.Empty));
-                //string result = string.Format(CultureInfo.InvariantCulture, Properties.Settings.Default.WebTranslationLink.Replace("{from}", "{0}").Replace("{to}", "{1}").Replace("{text}", "{2}"), TranslatorsTools.GetSourceLanguageID(), TranslatorsTools.GetTargetLanguageID(), HttpUtility.UrlEncode(value + string.Empty, Encoding.UTF8));
-                //string result = string.Format(CultureInfo.InvariantCulture, Properties.Settings.Default.WebTranslationLink.Replace("{from}", "{0}").Replace("{to}", "{1}").Replace("{text}", "{2}"), TranslatorsTools.GetSourceLanguageID(), TranslatorsTools.GetTargetLanguageID(), Uri.EscapeUriString(value + string.Empty));
-
-                var result = string.Format(CultureInfo.InvariantCulture, Properties.Settings.Default.WebTranslationLink.Replace("{from}", "{0}").Replace("{to}", "{1}").Replace("{text}", "{2}"), TranslatorsTools.GetSourceLanguageID(), TranslatorsTools.GetTargetLanguageID(), text.Replace("\r\n", "%0A")/*replace newline*/);
-
-                Process.Start(result);
-            }
-            catch
-            {
-            }
+            new OpenInWeb(thDataWork).Selected()
         }
 
         private void THTargetTextBox_Leave(object sender, EventArgs e)

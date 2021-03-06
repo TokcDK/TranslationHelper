@@ -214,6 +214,7 @@
     <Compile Include="Formats\zzzOtherFormat\OtherFormatBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\CompleteRomajiotherLines.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\MakeTranslatedCopyIfFileWithTheNameExists.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OpenInWeb.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\RowBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ENQuotesToJP.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FixCells.cs" />

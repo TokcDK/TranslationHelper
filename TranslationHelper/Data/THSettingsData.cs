@@ -165,7 +165,7 @@ namespace TranslationHelper.Data
 
         internal static bool SourceLanguageIsJapanese()
         {
-            return Settings.Default.OnlineTranslationSourceLanguage.EndsWith("jp");
+            return Settings.Default.OnlineTranslationSourceLanguage.EndsWith("ja");
         }
 
         internal static string SourceLanguage()

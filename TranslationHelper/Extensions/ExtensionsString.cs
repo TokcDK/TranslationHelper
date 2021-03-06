@@ -270,7 +270,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool ForJPLangHaveMostOfRomajiOtherChars(this string inputString)
         {
-            return Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && inputString.HaveMostOfRomajiOtherChars();
+            return THSettingsData.SourceLanguageIsJapanese() && inputString.HaveMostOfRomajiOtherChars();
         }
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther(this string inputString)
         {
-            return Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese jp" && inputString.HaveMostOfRomajiOtherChars();
+            return THSettingsData.SourceLanguageIsJapanese() && inputString.HaveMostOfRomajiOtherChars();
         }
 
         /// <summary>

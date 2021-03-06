@@ -2408,7 +2408,7 @@
 //                input[i] = inputtextarrayData.Rows[i][0] + string.Empty;
 //            }
 
-//            string[] translationarray = GoogleAPI.TranslateMultiple(input, "jp", "en");
+//            string[] translationarray = GoogleAPI.TranslateMultiple(input, "ja", "en");
 
 //            if (translationarray.Length > 0)
 //            {
