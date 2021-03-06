@@ -1444,7 +1444,7 @@ namespace TranslationHelper
 
         private void OpenInWebToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new OpenInWeb(thDataWork).Selected()
+            new OpenInWeb(thDataWork).Selected();
         }
 
         private void THTargetTextBox_Leave(object sender, EventArgs e)
