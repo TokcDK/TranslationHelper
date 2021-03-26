@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -44,10 +43,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="format">must be one as minimum and set for each mask</param>
+        /// <param name="formats">must be one as minimum and set for each mask</param>
         /// <param name="masks">{ "*.ks" } by default</param>
         /// <returns>true if atleast one file was open</returns>
-        protected bool OpenSaveFiles(List<FormatBase> format, string[] masks = null)
+        protected bool OpenSaveFiles(List<FormatBase> formats = null, string[] masks = null)
         {
             var ret = false;
 
@@ -72,9 +71,11 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             if (!dir.Exists)
                 return false;
 
-            masks = masks ?? new[] { "*.ks" };
+            masks = masks ?? Mask();
 
-            if (OpenSaveFilesBase(dir, format, masks, true))
+            formats = formats ?? Format();
+
+            if (OpenSaveFilesBase(dir, formats, masks, true))
             {
                 ret = true;
             }
@@ -98,27 +99,27 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return "KiriKiri";
         }
 
-        protected virtual Formats.FormatBase Format()
+        protected virtual List<FormatBase> Format()
         {
-            return new Formats.KiriKiri.Games.KS(thDataWork);
+            return new List<FormatBase>
+                {
+                   new  Formats.KiriKiri.Games.KS(thDataWork)
+                };
+        }
+
+        protected virtual string[] Mask()
+        {
+            return new[] { "*.ks" };
         }
 
         internal override bool Open()
         {
-            return OpenSaveFiles(new List<FormatBase>
-                {
-                    Format()
-                }
-                );
+            return OpenSaveFiles();
         }
 
         internal override bool Save()
         {
-            return OpenSaveFiles(new List<FormatBase>
-            {
-                Format()
-            }
-            );
+            return OpenSaveFiles();
         }
 
         protected string KiriKiriWorkOrigFolder;

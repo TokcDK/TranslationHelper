@@ -1,4 +1,5 @@
-﻿using TranslationHelper.Data;
+﻿using System.Collections.Generic;
+using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Projects.KiriKiri.Games.PGroup2;
 
@@ -28,9 +29,14 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
             return false;
         }
 
-        protected override Formats.FormatBase Format()
+        protected override List<Formats.FormatBase> Format()
         {
-            return new TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(thDataWork);
+            return new List<Formats.FormatBase> { new TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(thDataWork) };
+        }
+
+        protected override string[] Mask()
+        {
+            return new[] { "*.ks" };
         }
 
         //private bool SaveFilesOld()

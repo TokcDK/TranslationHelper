@@ -1,5 +1,7 @@
-﻿using TranslationHelper.Data;
+﻿using System.Collections.Generic;
+using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats;
 
 namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
 {
@@ -20,9 +22,14 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
             return CheckKiriKiriBase() && exeCRC.Length > 0 && thDataWork.SPath.GetCrc32() == exeCRC;
         }
 
-        protected override Formats.FormatBase Format()
+        protected override List<FormatBase> Format()
         {
-            return new Formats.KiriKiri.Games.FGroup1.RJ297684GoblinsCave.KS(thDataWork);
+            return new List<FormatBase>() { new Formats.KiriKiri.Games.FGroup1.RJ297684GoblinsCave.KS(thDataWork) };
+        }
+
+        protected override string[] Mask()
+        {
+            return new[] { "*.ks" };
         }
     }
 }

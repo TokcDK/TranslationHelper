@@ -364,22 +364,64 @@ namespace TranslationHelper.Formats
         }
 
         protected HashSet<string> hashes;
+        /// <summary>
+        /// Add string to table with options
+        /// </summary>
+        /// <param name="RowData">original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
+        /// <returns></returns>
         protected bool AddRowData(string RowData, string RowInfo, bool CheckAddHashes = false)
         {
             return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes);
         }
+        /// <summary>
+        /// Add string to table with options
+        /// </summary>
+        /// <param name="RowData">original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
+        /// <returns></returns>
         protected bool AddRowData(string[] RowData, string RowInfo, bool CheckAddHashes = false)
         {
             return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes, true, false);
         }
+        /// <summary>
+        /// Add string to table with options
+        /// </summary>
+        /// <param name="RowData">original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
+        /// <param name="CheckInput">cheack original string if valid</param>
+        /// <returns></returns>
         protected bool AddRowData(string RowData, string RowInfo, bool CheckAddHashes, bool CheckInput)
         {
             return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput);
         }
+        /// <summary>
+        /// Add string to table with options
+        /// </summary>
+        /// <param name="tablename">file/table name</param>
+        /// <param name="RowData">original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
+        /// <param name="CheckInput">cheack original string if valid</param>
+        /// <param name="AddToDictionary"></param>
+        /// <returns></returns>
         protected bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
         {
             return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckAddHashes, CheckInput, AddToDictionary);
         }
+        /// <summary>
+        /// Add string to table with options
+        /// </summary>
+        /// <param name="tablename">file/table name</param>
+        /// <param name="RowData">original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
+        /// <param name="CheckInput">cheack original string if valid</param>
+        /// <param name="AddToDictionary"></param>
+        /// <returns></returns>
         protected bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
         {
             if (CheckInput && !IsValidString(RowData[0]))

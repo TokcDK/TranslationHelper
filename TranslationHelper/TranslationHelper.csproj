@@ -167,6 +167,7 @@
     <Compile Include="Formats\FormatBase.cs" />
     <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\EXE.cs" />
     <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\TXT.cs" />
+    <Compile Include="Formats\KiriKiri\Games\CSV\CSVBase.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup1\FGroup1Base.cs" />
     <Compile Include="Formats\KiriKiri\Games\KS.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup1\RJ297684GoblinsCave\KS.cs" />
@@ -174,6 +175,12 @@
     <Compile Include="Formats\KiriKiri\Games\KiriKiriFormatBase.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup2\NLoveImGoingToGetRidOfItAndLive\KS.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup1\VirginLode2\KS.cs" />
+    <Compile Include="Formats\KiriKiri\Games\KSSyntax\Attribute.cs" />
+    <Compile Include="Formats\KiriKiri\Games\KSSyntax\Comment.cs" />
+    <Compile Include="Formats\KiriKiri\Games\KSSyntax\KSSyntaxBase.cs" />
+    <Compile Include="Formats\KiriKiri\Games\KSSyntax\Label.cs" />
+    <Compile Include="Formats\KiriKiri\Games\KSSyntax\Script.cs" />
+    <Compile Include="Formats\KiriKiri\Games\KSSyntax\TAG.cs" />
     <Compile Include="Formats\KiriKiri\Overall\CSV.cs" />
     <Compile Include="Formats\KiriKiri\Old\CSVOld.cs" />
     <Compile Include="Formats\KiriKiri\Overall\SCRIPT.cs" />

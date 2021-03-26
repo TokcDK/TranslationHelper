@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Projects.KiriKiri.Games
@@ -19,9 +20,18 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return Path.GetFileName(Properties.Settings.Default.THProjectWorkDir) + "(" + thDataWork.SPath + ")";
         }
 
-        protected override Formats.FormatBase Format()
+        protected override List<Formats.FormatBase> Format()
         {
-            return new Formats.KiriKiri.Games.KS(thDataWork);
+            return new List<Formats.FormatBase>
+            {
+                new Formats.KiriKiri.Games.KS(thDataWork),
+                new Formats.KiriKiri.Games.CSV.CSVBase(thDataWork)
+            };
+        }
+
+        protected override string[] Mask()
+        {
+            return new[] { "*.ks", "*.csv" };
         }
     }
 }

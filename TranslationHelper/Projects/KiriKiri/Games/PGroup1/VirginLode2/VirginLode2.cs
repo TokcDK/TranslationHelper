@@ -1,4 +1,5 @@
-﻿using TranslationHelper.Data;
+﻿using System.Collections.Generic;
+using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
@@ -27,9 +28,14 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
             return false;
         }
 
-        protected override Formats.FormatBase Format()
+        protected override List<Formats.FormatBase> Format()
         {
-            return new TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2.KS(thDataWork);
+            return new List<Formats.FormatBase> { new TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2.KS(thDataWork) };
+        }
+
+        protected override string[] Mask()
+        {
+            return new[] { "*.ks" };
         }
     }
 }
