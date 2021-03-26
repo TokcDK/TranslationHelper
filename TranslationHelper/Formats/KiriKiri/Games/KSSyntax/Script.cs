@@ -8,8 +8,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
         {
         }
 
-        internal override string StartsWith => @"\@iscript";
+        internal override string StartsWith => @"(?<!\[)\[iscript\]|^\t*@iscript";
 
-        internal override string EndsWith => @"\@endscript";
+        internal override string EndsWith => @"\[endscript\]|^\t*@endscript";
     }
 }
