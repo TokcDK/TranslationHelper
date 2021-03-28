@@ -44,11 +44,21 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                                 }
                                 else
                                 {
-
+                                    if (thDataWork.TablesLinesDict.ContainsKey(value))
+                                    {
+                                        ParseData.line = ParseData.line
+                                            .Remove(mc[i].Index, mc[i].Length)
+                                            .Insert(mc[i].Index, thDataWork.TablesLinesDict[value]);
+                                    }
                                 }
                             }
                         }
                     }
+                }
+
+                if (thDataWork.SaveFileMode)
+                {
+                    ParseData.ResultForWrite.AppendLine(ParseData.line);
                 }
             }
 
