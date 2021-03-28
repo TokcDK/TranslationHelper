@@ -183,6 +183,7 @@
     <Compile Include="Formats\KiriKiri\Games\KSSyntax\Script.cs" />
     <Compile Include="Formats\KiriKiri\Games\KSSyntax\TAG1.cs" />
     <Compile Include="Formats\KiriKiri\Games\KSSyntax\TAG.cs" />
+    <Compile Include="Formats\KiriKiri\Games\TJS.cs" />
     <Compile Include="Formats\KiriKiri\Overall\CSV.cs" />
     <Compile Include="Formats\KiriKiri\Old\CSVOld.cs" />
     <Compile Include="Formats\KiriKiri\Overall\SCRIPT.cs" />

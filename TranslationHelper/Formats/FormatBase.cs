@@ -371,7 +371,7 @@ namespace TranslationHelper.Formats
         /// <param name="RowInfo">info about the string</param>
         /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <returns></returns>
-        protected bool AddRowData(string RowData, string RowInfo, bool CheckAddHashes = false)
+        protected bool AddRowData(string RowData, string RowInfo = "", bool CheckAddHashes = false)
         {
             return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes);
         }
@@ -490,8 +490,8 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool CheckAndSetTranslation(ref string str)
         {
-            if (!Properties.Settings.Default.DontLoadDuplicates 
-                && thDataWork.OriginalsTableRowCoordinats != null 
+            if (!Properties.Settings.Default.DontLoadDuplicates
+                && thDataWork.OriginalsTableRowCoordinats != null
                 && thDataWork.OriginalsTableRowCoordinats.ContainsKey(str))
             {
                 var tname = Path.GetFileName(thDataWork.FilePath);
