@@ -726,5 +726,13 @@ namespace TranslationHelper.Projects
         {
 
         }
+
+        /// <summary>
+        /// project specific string file's line modification
+        /// </summary>
+        /// <param name="line"></param>
+        internal virtual void ReadLineMod(ref string line)
+        {
+        }
     }
 }

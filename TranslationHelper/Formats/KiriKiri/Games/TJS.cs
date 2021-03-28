@@ -10,6 +10,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         {
         }
 
+        protected override void ReadLineMod()
+        {
+            thDataWork.CurrentProject.ReadLineMod(ref ParseData.line);
+        }
+
         protected override int ParseStringFileLine()
         {
             if (ParseData.IsComment)

@@ -123,6 +123,10 @@ namespace TranslationHelper.Formats
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected virtual bool ParseStringFilePostOpen()
         {
             if (thDataWork.OpenFileMode)
@@ -135,6 +139,9 @@ namespace TranslationHelper.Formats
             }
         }
 
+        /// <summary>
+        /// opening string file and parse lines
+        /// </summary>
         protected virtual void ParseStringFileLines()
         {
             while (ReadLine() != null)
@@ -147,7 +154,7 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// Parse line virtual function
+        /// Parse line of string file
         /// -1=stop parse cyrcle, 0-continue cyrcle, 1 - read to end of the cyrcle
         /// </summary>
         /// <returns></returns>
@@ -163,9 +170,18 @@ namespace TranslationHelper.Formats
         protected virtual string ReadLine()
         {
             ParseData.line = ParseData.reader.ReadLine();
+            ReadLineMod();
             ParseData.TrimmedLine = ParseData.line;
 
             return ParseData.line;
+        }
+
+        /// <summary>
+        /// modification of read ParseData.line
+        /// </summary>
+        /// <returns></returns>
+        protected virtual void ReadLineMod()
+        {
         }
 
         /// <summary>
