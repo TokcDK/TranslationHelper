@@ -279,6 +279,7 @@ namespace TranslationHelper.Formats
 
         /// <summary>
         /// file destination for write
+        /// usually it is same path as open but some time it can be other dir
         /// </summary>
         /// <returns></returns>
         protected virtual string GetFilePath()

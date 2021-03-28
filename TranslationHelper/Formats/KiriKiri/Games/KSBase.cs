@@ -1,53 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri.Games
 {
-    abstract class KiriKiriFormatBase : FormatBase
+    abstract class KSBase : KiriKiriBase
     {
-        protected KiriKiriFormatBase(THDataWork thDataWork) : base(thDataWork)
+        protected KSBase(THDataWork thDataWork) : base(thDataWork)
         {
-        }
-
-        protected Encoding encoding = Encoding.Unicode;
-        /// <summary>
-        /// encoding for read write file
-        /// </summary>
-        /// <returns></returns>
-        internal virtual Encoding FileEncoding()
-        {
-            //using (var fs = new FileStream(thDataWork.FilePath, FileMode.Open, FileAccess.Read))
-            //    return FunctionsFileFolder.GetEncoding(fs);
-            return FunctionsFileFolder.GetEncoding(thDataWork.FilePath);
-            //return FunctionsFileFolder.GetEncoding(thDataWork.FilePath);
-            //if (Enc == null && !string.IsNullOrEmpty(thDataWork.FilePath))
-            //{
-            //    Enc = FunctionsFileFolder.GetEncoding(thDataWork.FilePath);
-            //}
-            //else
-            //{
-            //    Enc = Encoding.Unicode;
-            //    //new UTF8Encoding(false) //UTF8 with no BOM
-            //}
-            //return Encoding.Unicode;
-            //return Enc;
-            //return new UTF8Encoding(false);
-        }
-
-        protected const string PatchDirName = "_patch";
-
-        internal override bool Open()
-        {
-            return ParseStringFile();
-        }
-
-        internal override bool Save()
-        {
-            return ParseStringFile();
         }
 
         protected const string waitSymbol = "[待]";
@@ -119,72 +79,72 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 @"'[^']+'" }
            };
         }
-        protected bool OpenSaveKS(bool OpenKS = true)
-        {
-            InitData(OpenKS);
+        //protected bool OpenSaveKS(bool OpenKS = true)
+        //{
+        //    InitData(OpenKS);
 
-            try
-            {
-                if (thDataWork.OpenFileMode)
-                {
-                    AddTables(ParseData.tablename);
-                }
+        //    try
+        //    {
+        //        if (thDataWork.OpenFileMode)
+        //        {
+        //            AddTables(ParseData.tablename);
+        //        }
 
-                //using (var reader = new StreamReader(thDataWork.FilePath, true /*FileEncoding()*/))
-                using (var reader = new StreamReader(thDataWork.FilePath, FileEncoding()))
-                {
-                    encoding = reader.CurrentEncoding;
-                    while ((ParseData.line = reader.ReadLine()) != null)
-                    {
-                        if (!IsEmptyOrComment())
-                        {
-                            //CheckAndParseText();
-                        }
+        //        //using (var reader = new StreamReader(thDataWork.FilePath, true /*FileEncoding()*/))
+        //        using (var reader = new StreamReader(thDataWork.FilePath, FileEncoding()))
+        //        {
+        //            encoding = reader.CurrentEncoding;
+        //            while ((ParseData.line = reader.ReadLine()) != null)
+        //            {
+        //                if (!IsEmptyOrComment())
+        //                {
+        //                    //CheckAndParseText();
+        //                }
 
-                        SaveModeAddLine();
-                    }
-                }
+        //                SaveModeAddLine();
+        //            }
+        //        }
 
-                FinalTableCheckORWriteFile();
-            }
-            catch
-            {
+        //        FinalTableCheckORWriteFile();
+        //    }
+        //    catch
+        //    {
 
-            }
+        //    }
 
-            return ParseData.Ret;
-        }
+        //    return ParseData.Ret;
+        //}
 
-        private void InitData(bool OpenKS)
-        {
-            thDataWork.OpenFileMode = OpenKS;
-            ParseData = new ParseFileData(thDataWork)
-            {
-                IsComment = false,
-            };
-        }
+        //private void InitData(bool OpenKS)
+        //{
+        //    thDataWork.OpenFileMode = OpenKS;
+        //    ParseData = new ParseFileData(thDataWork)
+        //    {
+        //        IsComment = false,
+        //    };
+        //}
 
-        private void FinalTableCheckORWriteFile()
-        {
-            if (thDataWork.OpenFileMode)
-            {
-                ParseData.Ret = CheckTablesContent(ParseData.tablename);
-            }
-            else
-            {
-                try
-                {
-                    if (ParseData.Ret)
-                    {
-                        File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchDirName, ParseData.tablename), ParseData.ResultForWrite.ToString(), encoding /*FileEncoding()*/);
-                    }
-                }
-                catch
-                {
-                    ParseData.Ret = false;
-                }
-            }
-        }
+        //private void FinalTableCheckORWriteFile()
+        //{
+        //    if (thDataWork.OpenFileMode)
+        //    {
+        //        ParseData.Ret = CheckTablesContent(ParseData.tablename);
+        //    }
+        //    else
+        //    {
+        //        try
+        //        {
+        //            if (ParseData.Ret)
+        //            {
+        //                File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchDirName, ParseData.tablename), ParseData.ResultForWrite.ToString(), encoding /*FileEncoding()*/);
+        //            }
+        //        }
+        //        catch
+        //        {
+        //            ParseData.Ret = false;
+        //        }
+        //    }
+        //}
 
         private void SaveModeAddLine()
         {
@@ -206,11 +166,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             }
 
             return ParseData.IsComment || (ParseData.TrimmedLine = ParseData.line).Length == 0 || (ParseData.TrimmedLine.Length > 0 && ParseData.TrimmedLine[0] == ';') || ParseData.TrimmedLine.StartsWith("//");
-        }
-
-        protected override void ParseStringFilePreOpenExtra()
-        {
-            ParseData.IsComment = false;
         }
 
         bool isscript = false;
@@ -453,12 +408,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             }
 
             return !(ParseData.line.Contains("[") || ParseData.line.Contains("]") || ParseData.line.Contains("@") || ParseData.line.Contains("*"));
-        }
-
-        protected override string GetFilePath()
-        {
-            //write translated files to patch dir
-            return Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchDirName, Path.GetFileName(thDataWork.FilePath));
         }
 
         internal string CleanVars(string str)

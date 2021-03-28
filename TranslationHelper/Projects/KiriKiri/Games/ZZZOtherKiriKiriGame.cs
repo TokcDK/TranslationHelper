@@ -25,7 +25,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return new List<Formats.FormatBase>
             {
                 new Formats.KiriKiri.Games.KS(thDataWork),
-                new Formats.KiriKiri.Games.CSV.CSVBase(thDataWork)
+                new Formats.KiriKiri.Games.CSV.CSV(thDataWork)
             };
         }
 

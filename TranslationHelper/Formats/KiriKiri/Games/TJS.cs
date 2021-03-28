@@ -1,36 +1,36 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri.Games
 {
-    class TJS : KiriKiriFormatBase
+    class TJS : KiriKiriBase
     {
         public TJS(THDataWork thDataWork) : base(thDataWork)
         {
         }
 
-        bool IsComment = false;
         protected override int ParseStringFileLine()
         {
-            if (IsComment)
+            if (ParseData.IsComment)
             {
                 if (ParseData.TrimmedLine.EndsWith("*/")) //comment section end
                 {
-                    IsComment = false;
+                    ParseData.IsComment = false;
                 }
             }
             else
             {
                 if (ParseData.TrimmedLine.StartsWith("/*")) //comment section start
                 {
-                    IsComment = true;
+                    ParseData.IsComment = true;
                 }
                 else if (ParseData.TrimmedLine.StartsWith("//")) //comment
                 {
                 }
                 else
                 {
-                    var mc = Regex.Matches(ParseData.line,@"\""([^\""]+)\""");
+                    var mc = Regex.Matches(ParseData.line, @"\""([^\""\\]+(?:\\.[^\""\\]*)*)\""");//get all between '"' include '\"' link: https://stackoverflow.com/questions/2148587/finding-quoted-strings-with-escaped-quotes-in-c-sharp-using-a-regular-expression
                     if (mc.Count > 0)
                     {
                         for (int i = mc.Count - 1; i >= 0; i--)
@@ -40,7 +40,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                             {
                                 if (thDataWork.OpenFileMode)
                                 {
-                                    AddRowData(value);
+                                    AddRowData(value, ParseData.line, true, false);
                                 }
                                 else
                                 {
@@ -53,6 +53,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             }
 
             return 0;
+        }
+
+        protected override Encoding DefaultEncoding()
+        {
+            return Encoding.Unicode;
         }
     }
 }

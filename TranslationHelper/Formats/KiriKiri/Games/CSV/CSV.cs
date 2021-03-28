@@ -1,11 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri.Games.CSV
 {
-    class CSVBase : FormatBase
+    class CSV : KiriKiriBase
     {
-        public CSVBase(THDataWork thDataWork) : base(thDataWork)
+        public CSV(THDataWork thDataWork) : base(thDataWork)
         {
         }
 
@@ -72,6 +73,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
             }
 
             return 0;
+        }
+
+        protected override Encoding DefaultEncoding()
+        {
+            return Encoding.Unicode;
         }
     }
 }
