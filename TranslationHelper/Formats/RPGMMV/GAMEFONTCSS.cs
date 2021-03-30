@@ -16,32 +16,50 @@ namespace TranslationHelper.Formats.RPGMMV
 
         protected override int ParseStringFileLine()
         {
-            Match r;
-            if ((r = Regex.Match(ParseData.line, @"src: url\(\""([^\""]+)\""\)")).Success)
+            if (ParseData.IsComment)
             {
-                if (thDataWork.OpenFileMode)
+                if (ParseData.TrimmedLine.EndsWith("*/")) //comment section end
                 {
-                    ParseData.Ret = AddRowData(r.Result("$1"), T._("GameFont.\r\nFont must be installed in system or file placed in folder %GAME%\\www\\fonts\\ \r\n Change font to smaller is more preferable than line split function"), true, false);
-
-                    return -1;
+                    ParseData.IsComment = false;
                 }
-                else
+            }
+            else
+            {
+                Match r;
+                if (ParseData.TrimmedLine.StartsWith("/*")) //comment section start
                 {
-                    string str = r.Result("$1");
-                    var trans = str;
-                    if (CheckAndSetTranslation(ref trans))
+                    ParseData.IsComment = true;
+                }
+                else if (ParseData.TrimmedLine.StartsWith("//")) //comment
+                {
+                }
+                else if ((r = Regex.Match(ParseData.line, @"src: url\(\""([^\""]+)\""\)")).Success)
+                {
+                    if (thDataWork.OpenFileMode)
                     {
-                        int i;
-                        ParseData.line = ParseData.line
-                            .Remove(r.Index, r.Value.Length)
-                            .Insert(r.Index,
-                            r.Value.Remove(i = r.Value.IndexOf(str), str.Length).Insert(i, trans)
-                            );
-                        //ParseData.ResultForWrite.AppendLine(str);
-                        ParseData.Ret = true;
+                        ParseData.Ret = AddRowData(r.Result("$1"), T._("GameFont.\r\nFont must be installed in system or file placed in folder %GAME%\\www\\fonts\\ \r\n Change font to smaller is more preferable than line split function"), true, false);
+
+                        return -1;
+                    }
+                    else
+                    {
+                        string str = r.Result("$1");
+                        var trans = str;
+                        if (CheckAndSetTranslation(ref trans))
+                        {
+                            int i;
+                            ParseData.line = ParseData.line
+                                .Remove(r.Index, r.Value.Length)
+                                .Insert(r.Index,
+                                r.Value.Remove(i = r.Value.IndexOf(str), str.Length).Insert(i, trans)
+                                );
+                            //ParseData.ResultForWrite.AppendLine(str);
+                            ParseData.Ret = true;
+                        }
                     }
                 }
             }
+
             if (thDataWork.SaveFileMode)
             {
                 ParseData.ResultForWrite.AppendLine(ParseData.line);
