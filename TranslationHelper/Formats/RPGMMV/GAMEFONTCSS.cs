@@ -28,7 +28,10 @@ namespace TranslationHelper.Formats.RPGMMV
                 Match r;
                 if (ParseData.TrimmedLine.StartsWith("/*")) //comment section start
                 {
-                    ParseData.IsComment = true;
+                    if (!ParseData.TrimmedLine.EndsWith("*/"))
+                    {
+                        ParseData.IsComment = true;
+                    }
                 }
                 else if (ParseData.TrimmedLine.StartsWith("//")) //comment
                 {
