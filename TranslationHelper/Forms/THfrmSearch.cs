@@ -833,7 +833,7 @@ namespace TranslationHelper
             rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString(), CultureInfo.InvariantCulture);
             FunctionsTable.ShowSelectedRow(thDataWork, tableindex, searchcolumn, rowindex);
 
-            if (THFileElementsDataGridView.DataSource != null)
+            if (THFileElementsDataGridView.DataSource != null && THFileElementsDataGridView != null && THFileElementsDataGridView.CurrentCell != null)
             {
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(THFileElementsDataGridView.CurrentCell.Value.ToString())));

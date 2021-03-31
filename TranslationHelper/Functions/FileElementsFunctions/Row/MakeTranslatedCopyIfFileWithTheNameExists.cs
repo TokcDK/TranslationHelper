@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TranslationHelper.Data;
@@ -37,27 +38,35 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply()
         {
-            string name;
             string trans;
-            if (SelectedRow[1] != null
-                && !string.IsNullOrWhiteSpace(trans = SelectedRow[1] + "")
-                && !trans.IsMultiline() //ignore multiline
-                && !trans.Intersect(Path.GetInvalidFileNameChars()).Any() //is valid for file/folder name
-                && GameFilesList != null
-                && GameFilesList.ContainsKey(name = Path.GetFileNameWithoutExtension(SelectedRow[0] as string)))
+            try
             {
-                foreach (var path in GameFilesList[name])
+                string name;
+                if (SelectedRow[1] != null && !string.IsNullOrWhiteSpace(trans = SelectedRow[1] + "")
+                    && !trans.Intersect(Path.GetInvalidFileNameChars()).Any()//invalid file/folder name
+                    && !(SelectedRow[0] as string).Intersect(Path.GetInvalidFileNameChars()).Any()//invalid file/folder name
+                    && !trans.IsMultiline()//ignore multiline
+                    && GameFilesList != null 
+                    && GameFilesList.ContainsKey(name = Path.GetFileNameWithoutExtension(SelectedRow[0] as string))
+                    )
                 {
-                    var targetPath = Path.Combine(Path.GetDirectoryName(path), trans + Path.GetExtension(path));
-                    if (!File.Exists(targetPath))
+                    foreach (var path in GameFilesList[name])
                     {
-                        File.Copy(path, targetPath);
+                        var targetPath = Path.Combine(Path.GetDirectoryName(path), trans + Path.GetExtension(path));
+                        if (!File.Exists(targetPath))
+                        {
+                            File.Copy(path, targetPath);
 
-                        //info about translated copy
-                        File.WriteAllText(targetPath + ".tr.txt", "original name:" + name + "\r\noriginal file name is exists in table and in game dir\r\ncreated copy with translated name to prevent possible missing file errors");
+                            //info about translated copy
+                            File.WriteAllText(targetPath + ".tr.txt", "original name:" + name + "\r\noriginal file name is exists in table and in game dir\r\ncreated copy with translated name to prevent possible missing file errors");
+                        }
                     }
+                    return true;
                 }
-                return true;
+            }
+            catch (Exception ex)
+            {
+                new FunctionsLogs().LogToFile(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + SelectedRow[0] as string + "\r\ntranslation=" + (SelectedRow[1] + ""));
             }
             return false;
         }
