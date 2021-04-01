@@ -86,7 +86,7 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             catch (Exception ex)
             {
-                new FunctionsLogs().LogToFile("Error occured while json parse: \r\n"+ex);
+                new FunctionsLogs().LogToFile("Error occured while json parse: \r\n" + ex);
                 //LogToFile(string.Empty, true);
             }
             finally
@@ -516,6 +516,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 addedjobjects = new HashSet<JObject>();
                 if (TablesLinesDict != null && TablesLinesDict.Count > 0)
                 {
+                    //GetTranslatableRows(Jsonname);
                     ParseJTokenWriteWithPreSplitlines(root, Jsonname);
                 }
                 else
@@ -539,6 +540,26 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             return true;
 
+        }
+
+        ///// <summary>
+        ///// list of identifiers if row have translation
+        ///// </summary>
+        //Dictionary<string, bool> IsTranslatableRow;
+        /// <summary>
+        /// IsTranslatableRow[original] will be true if original have translation
+        /// tried to add check if row have translation but here also issue because no displayed rows will be translated
+        /// </summary>
+        /// <param name="Jsonname"></param>
+        private void GetTranslatableRows(string Jsonname)
+        {
+            //IsTranslatableRow = new Dictionary<string, bool>();
+            //foreach (System.Data.DataRow row in thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows)
+            //{
+            //    IsTranslatableRow.Add(row[0] as string,
+            //        !(row[1] == null || string.IsNullOrEmpty(row[1] + "") || Equals(row[1], row[0]))
+            //        );
+            //}
         }
 
         private static bool IsContainsLinedMessages(string Jsonname)
@@ -758,7 +779,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     return;
                 }
 
-                if (TablesLinesDict.ContainsKey(tokenvalue) && TablesLinesDict[tokenvalue].Length > 0)
+                if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/ TablesLinesDict.ContainsKey(tokenvalue) && TablesLinesDict[tokenvalue].Length > 0)
                 {
                     try
                     {
