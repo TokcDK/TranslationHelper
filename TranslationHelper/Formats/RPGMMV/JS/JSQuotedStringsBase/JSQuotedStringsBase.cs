@@ -16,22 +16,26 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         protected override int ParseStringFileLine()
         {
-            if(!IsEmptyOrComment())
+            if (!IsEmptyOrComment())
             {
-                var mc = Regex.Matches(ParseData.line, @"[\""']([^\""'\r\n]+)[\""']");
-
-                for (int m= mc.Count-1; m>=0; m--)
+                foreach (var quote in new[] { "'", @"\""" })
                 {
-                    var result = mc[m].Result("$1");
+                    var mc = Regex.Matches(ParseData.line, /*@"[\""']([^\""'\r\n]+)[\""']"*/
+                          @"" + quote + @"([^" + quote + @"\r\n\\]+(?:\\.[^" + quote + @"\\]*)*)" + quote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
+                        );
+                    for (int m = mc.Count - 1; m >= 0; m--)
+                    {
+                        var result = mc[m].Result("$1");
 
-                    if (thDataWork.OpenFileMode)
-                    {
-                        AddRowData(result, ParseData.line, true);
-                    }
-                    else if(IsValidString(result) && TablesLinesDict.ContainsKey(result))
-                    {
-                        ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(result, TablesLinesDict[result]));
-                        ParseData.Ret = true;
+                        if (thDataWork.OpenFileMode)
+                        {
+                            AddRowData(result, ParseData.line, true);
+                        }
+                        else if (IsValidString(result) && TablesLinesDict.ContainsKey(result))
+                        {
+                            ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(result, TablesLinesDict[result]));
+                            ParseData.Ret = true;
+                        }
                     }
                 }
             }
