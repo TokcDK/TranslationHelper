@@ -568,8 +568,10 @@ namespace TranslationHelper.Projects
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        protected static bool RestoreFile(string file)
+        protected bool RestoreFile(string file)
         {
+            thDataWork.Main.ProgressInfo(true, T._("restore") + ":" + Path.GetFileName(file));
+
             try
             {
                 if (File.Exists(file + ".bak"))
@@ -592,10 +594,12 @@ namespace TranslationHelper.Projects
                     {
                         new FileInfo(file + ".tmp").Attributes = FileAttributes.Normal;
                         File.Delete(file + ".tmp");
+                        thDataWork.Main.ProgressInfo(false);
                         return true;
                     }
                     else if (!tmp && File.Exists(file))
                     {
+                        thDataWork.Main.ProgressInfo(false);
                         return true;
                     }
                 }
@@ -603,6 +607,8 @@ namespace TranslationHelper.Projects
             catch
             {
             }
+
+            thDataWork.Main.ProgressInfo(false);
             return false;
         }
 
@@ -612,7 +618,7 @@ namespace TranslationHelper.Projects
         /// <param name="paths">file paths</param>
         /// <param name="bak">true = backup, false = restore</param>
         /// <returns>true if was processed atleast one file\dir</returns>
-        protected static bool BackupRestorePaths(string[] paths, bool bak = true)
+        protected bool BackupRestorePaths(string[] paths, bool bak = true)
         {
             if (paths == null || paths.Length == 0)
             {
@@ -685,7 +691,7 @@ namespace TranslationHelper.Projects
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        protected static bool BackupFile(string[] filePaths)
+        protected bool BackupFile(string[] filePaths)
         {
             var ret = false;
             foreach (var file in filePaths)
@@ -703,8 +709,10 @@ namespace TranslationHelper.Projects
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        protected static bool BackupFile(string file)
+        protected bool BackupFile(string file)
         {
+            thDataWork.Main.ProgressInfo(true, T._("backup")+":"+Path.GetFileName(file));
+
             try
             {
                 if (File.Exists(file + ".bak"))
@@ -717,12 +725,14 @@ namespace TranslationHelper.Projects
                 }
                 if (File.Exists(file + ".bak"))
                 {
+                    thDataWork.Main.ProgressInfo(false);
                     return true;
                 }
             }
             catch
             {
             }
+            thDataWork.Main.ProgressInfo(false);
             return false;
         }
 

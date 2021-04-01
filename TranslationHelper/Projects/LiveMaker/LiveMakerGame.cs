@@ -150,11 +150,8 @@ namespace TranslationHelper.Projects.LiveMaker
 
         internal override bool Save()
         {
-            return OpenSaveFilesBase(
-                Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted"),
-                new LSBCSV(thDataWork),
-                "*.csv"
-                ) && WriteTranslation();
+            return OpenSaveFilesBase(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted"), Format(), Mask()) 
+                && WriteTranslation();
         }
 
         private bool WriteTranslation()

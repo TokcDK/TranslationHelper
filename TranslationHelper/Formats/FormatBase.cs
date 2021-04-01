@@ -177,13 +177,13 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// add line for wtite in save mode
         /// </summary>
-        protected virtual void SaveModeAddLine()
+        protected virtual void SaveModeAddLine(string newline = "\r\n")
         {
             if (thDataWork.SaveFileMode)
             {
                 if (!firstline)
                 {
-                    ParseData.ResultForWrite.AppendLine();
+                    ParseData.ResultForWrite.Append(newline);
                 }
                 else
                 {
@@ -202,10 +202,11 @@ namespace TranslationHelper.Formats
         /// <param name="original">if not set then will be used ParseData.line</param>
         protected virtual void AddTranslation(string original = null)
         {
-            if (thDataWork.TablesLinesDict.ContainsKey(original ?? ParseData.line))
+            original = original ?? ParseData.line;
+            if (thDataWork.TablesLinesDict.ContainsKey(original))
             {
                 ParseData.Ret = true;
-                ParseData.line = this.TranslationMod(thDataWork.TablesLinesDict[original ?? ParseData.line]);
+                ParseData.line = TranslationMod(thDataWork.TablesLinesDict[original]);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.IO;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.LiveMaker
@@ -21,15 +22,20 @@ namespace TranslationHelper.Formats.LiveMaker
                 }
                 else
                 {
+                    if(ParseData.line== "<TXSPN>【カミラ】<BR>")
+                    {
+
+                    }
                     if (
-                        !ParseData.line.StartsWith("{PLAYSND")
-                        && !ParseData.line.StartsWith("{WAITPLAY")
-                        && !ParseData.line.StartsWith("{CHANGECG")
-                        && !ParseData.line.StartsWith("{CREATECG")
-                        && !ParseData.line.StartsWith("<EVENT")
+                        !ParseData.line.StartsWith("{PLAYSND")//exclude not messages
+                        && !ParseData.line.StartsWith("{WAITPLAY")//exclude not messages
+                        && !ParseData.line.StartsWith("{CHANGECG")//exclude not messages
+                        && !ParseData.line.StartsWith("{CREATECG")//exclude not messages
+                        && !ParseData.line.StartsWith("<EVENT")//exclude not messages
                         && IsValidString(CleanedFromTags(ParseData.line))
                         )
                     {
+                        var fname = Path.GetFileName(thDataWork.FilePath);
                         if (thDataWork.OpenFileMode)
                         {
                             AddRowData(ParseData.line, "", true, false);
@@ -57,7 +63,8 @@ namespace TranslationHelper.Formats.LiveMaker
             return translation.Replace("\r\n", "\r");//using \r instead of \r\n , \r\n only after empty lines;
         }
 
-        private string CleanedFromTags(string line)
+        //check without tags
+        private static string CleanedFromTags(string line)
         {
             return Regex.Replace(line, @"<STYLE ID\=\""[0-9]{1,3}\"">", "")
                 .Replace("<TXSPN>", "")
@@ -65,6 +72,10 @@ namespace TranslationHelper.Formats.LiveMaker
                 .Replace("<PG>", "")
                 .Replace("<BR>", "")
                 ;
+        }
+        protected override void SaveModeAddLine(string newline = "\r\n")
+        {
+            base.SaveModeAddLine(ParseData.line.Length > 0 ? "\r" : newline);//not empty line in lns ends with \r
         }
     }
 }

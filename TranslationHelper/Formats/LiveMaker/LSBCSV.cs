@@ -79,10 +79,7 @@ namespace TranslationHelper.Formats.LiveMaker
                 }
             }
 
-            if (thDataWork.SaveFileMode)
-            {
-                ParseData.ResultForWrite.AppendLine(ParseData.line);
-            }
+            SaveModeAddLine();
 
             return 0;
         }
