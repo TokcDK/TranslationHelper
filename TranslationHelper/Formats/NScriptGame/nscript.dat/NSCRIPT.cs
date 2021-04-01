@@ -42,7 +42,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         protected override int ParseStringFileLine()
         {
-            ParseData.TrimmedLine = ParseData.line;
+            //ParseData.TrimmedLine = ParseData.line;
 
             if (IsComment())
             {

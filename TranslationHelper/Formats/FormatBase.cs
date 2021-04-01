@@ -54,6 +54,7 @@ namespace TranslationHelper.Formats
         /// Parse Data
         /// </summary>
         protected ParseFileData ParseData;
+
         /// <summary>
         /// Base Parse File function
         /// </summary>
@@ -73,10 +74,19 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual void ParseStringFileOpen()
         {
-            using (ParseData.reader = new StreamReader(thDataWork.FilePath, FunctionsFileFolder.GetEncoding(thDataWork.FilePath) ?? DefaultEncoding()))
+            using (ParseData.reader = new StreamReader(thDataWork.FilePath, ParseStringFileEncoding()))
             {
                 ParseStringFileLines();
             }
+        }
+
+        /// <summary>
+        /// get encoding for string file open
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Encoding ParseStringFileEncoding()
+        {
+            return FunctionsFileFolder.GetEncoding(thDataWork.FilePath) ?? DefaultEncoding();
         }
 
         /// <summary>
@@ -163,6 +173,70 @@ namespace TranslationHelper.Formats
             return -1;
         }
 
+        bool firstline = true;
+        /// <summary>
+        /// add line for wtite in save mode
+        /// </summary>
+        protected virtual void SaveModeAddLine()
+        {
+            if (thDataWork.SaveFileMode)
+            {
+                if (!firstline)
+                {
+                    ParseData.ResultForWrite.AppendLine();
+                }
+                else
+                {
+                    firstline = false;
+                }
+
+                ParseData.ResultForWrite.Append(ParseData.line);
+            }
+        }
+
+        /// <summary>
+        /// add translation if exists in DB 
+        /// by default will be checked translation for ParseData.line if not set
+        /// translation will be set to ParseData.line. use other overload to set specific variable for translation
+        /// </summary>
+        /// <param name="original">if not set then will be used ParseData.line</param>
+        protected virtual void AddTranslation(string original = null)
+        {
+            if (thDataWork.TablesLinesDict.ContainsKey(original ?? ParseData.line))
+            {
+                ParseData.Ret = true;
+                ParseData.line = this.TranslationMod(thDataWork.TablesLinesDict[original ?? ParseData.line]);
+            }
+        }
+
+        /// <summary>
+        /// add translation if exists in DB 
+        /// by default for original will be checked translation for ParseData.line if not set
+        /// 'translation' will be set with translation
+        /// </summary>
+        /// <param name="translation">will be set by value of translation</param>
+        /// <param name="original">if not set then will be used ParseData.line</param>
+        protected virtual void AddTranslation(ref string translation, string original = null)
+        {
+            original = original ?? ParseData.line;
+            if (thDataWork.TablesLinesDict.ContainsKey(original))
+            {
+                ParseData.Ret = true;
+                translation = TranslationMod(thDataWork.TablesLinesDict[original]);
+            }
+        }
+
+        /// <summary>
+        /// modification of translation before it will be added
+        /// by default no modifications
+        /// </summary>
+        /// <param name="translation"></param>
+        /// <returns></returns>
+        protected virtual string TranslationMod(string translation)
+        {
+            return translation;
+        }
+
         /// <summary>
         /// read line to ParseData.line from streamreader
         /// </summary>
@@ -171,7 +245,7 @@ namespace TranslationHelper.Formats
         {
             ParseData.line = ParseData.reader.ReadLine();
             ReadLineMod();
-            ParseData.TrimmedLine = ParseData.line;
+            //ParseData.TrimmedLine = ParseData.line;
 
             return ParseData.line;
         }
@@ -325,7 +399,7 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// trimmed line value
             /// </summary>
-            internal string TrimmedLine { get => trimmed; set => trimmed = value != null ? value.Trim() : ""; }
+            internal string TrimmedLine { get => line.Trim(); }
             /// <summary>
             /// Usually here adding file's content for write
             /// </summary>
@@ -338,6 +412,10 @@ namespace TranslationHelper.Formats
             /// Streamreader of the processing file
             /// </summary>
             internal StreamReader reader;
+            /// <summary>
+            /// array of all lines of opened file. For causes when it is using
+            /// </summary>
+            internal string[] LinesArray;
 
             public ParseFileData(THDataWork thDataWork)
             {
@@ -388,32 +466,20 @@ namespace TranslationHelper.Formats
         /// <param name="RowInfo">info about the string</param>
         /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <returns></returns>
-        protected bool AddRowData(string RowData, string RowInfo = "", bool CheckAddHashes = false)
-        {
-            return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes);
-        }
-        /// <summary>
-        /// Add string to table with options
-        /// </summary>
-        /// <param name="RowData">original string</param>
-        /// <param name="RowInfo">info about the string</param>
-        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
-        /// <returns></returns>
-        protected bool AddRowData(string[] RowData, string RowInfo, bool CheckAddHashes = false)
-        {
-            return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes, true, false);
-        }
-        /// <summary>
-        /// Add string to table with options
-        /// </summary>
-        /// <param name="RowData">original string</param>
-        /// <param name="RowInfo">info about the string</param>
-        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
-        /// <param name="CheckInput">cheack original string if valid</param>
-        /// <returns></returns>
-        protected bool AddRowData(string RowData, string RowInfo, bool CheckAddHashes, bool CheckInput)
+        protected bool AddRowData(string RowData, string RowInfo = "", bool CheckAddHashes = false, bool CheckInput = true)
         {
             return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput);
+        }
+        /// <summary>
+        /// Add string to table with options
+        /// </summary>
+        /// <param name="RowData">original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
+        /// <returns></returns>
+        protected bool AddRowData(string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true)
+        {
+            return AddRowData(Path.GetFileName(thDataWork.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput, false);
         }
         /// <summary>
         /// Add string to table with options

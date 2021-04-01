@@ -385,6 +385,7 @@ namespace TranslationHelper.Functions
         /// <returns></returns>
         private string TryOpenProject()
         {
+            thDataWork.CurrentProject.Init();
             thDataWork.CurrentProject.BakRestore();
             thDataWork.OpenFileMode = true;
             if (thDataWork.CurrentProject.Open())

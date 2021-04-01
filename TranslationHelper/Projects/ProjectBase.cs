@@ -18,11 +18,28 @@ namespace TranslationHelper.Projects
         protected ProjectBase(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
+        }
+
+        /// <summary>
+        /// set here som vars before open or kind of
+        /// </summary>
+        internal virtual void Init()
+        {
             if (!string.IsNullOrWhiteSpace(thDataWork.SPath))
             {
                 Properties.Settings.Default.THSelectedGameDir = Path.GetDirectoryName(thDataWork.SPath);
                 Properties.Settings.Default.THSelectedDir = Path.GetDirectoryName(thDataWork.SPath);
+                Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), Path.GetFileName(Properties.Settings.Default.THSelectedGameDir));
             }
+        }
+
+        /// <summary>
+        /// return if selected file of project is exe
+        /// </summary>
+        /// <returns></returns>
+        protected bool IsExe()
+        {
+            return Path.GetExtension(thDataWork.SPath).ToUpperInvariant() == ".EXE";
         }
 
         /// <summary>
@@ -90,6 +107,15 @@ namespace TranslationHelper.Projects
         /// <param name="thData"></param>
         /// <returns></returns>
         internal abstract bool Open();
+
+        /// <summary>
+        /// open or save project files
+        /// </summary>
+        /// <returns></returns>
+        protected bool OpenSaveFilesBase(string DirForSearch, List<FormatBase> format, string[] masks = null, bool Newest = false)
+        {
+            return OpenSaveFilesBase(new DirectoryInfo(DirForSearch), format, masks, Newest);
+        }
 
         /// <summary>
         /// open or save project files

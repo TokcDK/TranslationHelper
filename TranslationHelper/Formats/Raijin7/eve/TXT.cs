@@ -17,7 +17,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
         string Value;
         protected override int ParseStringFileLine()
         {
-            ParseData.TrimmedLine = ParseData.line;
+            //ParseData.TrimmedLine = ParseData.line;
 
             var ret = 1;
 

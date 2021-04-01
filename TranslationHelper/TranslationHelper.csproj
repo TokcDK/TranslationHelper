@@ -194,6 +194,9 @@
     <Compile Include="Formats\KiriKiri\Overall\XP3.cs" />
     <Compile Include="Formats\KiriKiri\ParsePatterns\PatternsBase.cs" />
     <Compile Include="Formats\Liar-soft\GSCTXT.cs" />
+    <Compile Include="Formats\LiveMaker\LiveMakerBase.cs" />
+    <Compile Include="Formats\LiveMaker\LSBCSV.cs" />
+    <Compile Include="Formats\LiveMaker\LSBLNS.cs" />
     <Compile Include="Formats\NScriptGame\nscript.dat\NSCRIPT.cs" />
     <Compile Include="Formats\Raijin7\csv\CSV.cs" />
     <Compile Include="Formats\Raijin7\eve\TXT.cs" />
@@ -339,6 +342,7 @@
     <Compile Include="Projects\KiriKiri\KiriKiriOLD.cs" />
     <Compile Include="Projects\KiriKiri\TJSfile.cs" />
     <Compile Include="Projects\Liar-soft\LiarSoftGames.cs" />
+    <Compile Include="Projects\LiveMaker\LiveMakerGame.cs" />
     <Compile Include="Projects\NScript\NScriptBase.cs" />
     <Compile Include="Projects\NScript\NScriptGame.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
