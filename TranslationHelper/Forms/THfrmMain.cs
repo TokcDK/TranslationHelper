@@ -20,6 +20,7 @@ using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
+using TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects.RPGMMV;
@@ -3119,6 +3120,11 @@ namespace TranslationHelper
         private void makeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Task.Run(() => new MakeTranslatedCopyIfFileWithTheNameExists(thDataWork).All());
+        }
+
+        private void RPGMakerLikeTXTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new RPGMakerLikeTXT(thDataWork).All();
         }
 
         //Материалы

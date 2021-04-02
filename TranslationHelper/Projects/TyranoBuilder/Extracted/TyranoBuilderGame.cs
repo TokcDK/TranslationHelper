@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Windows.Forms;
+﻿using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.TyranoBuilder.Extracted;
@@ -57,6 +55,16 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
             {
                 return OpenSaveFilesBase(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data", "scenario"), new KS(thDataWork), "*.ks");
             }
+        }
+
+        internal override bool BakCreate()
+        {
+            return BackupRestorePaths(new[] { Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data", "scenario") });
+        }
+
+        internal override bool BakRestore()
+        {
+            return BackupRestorePaths(new[] { Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data", "scenario") }, false);
         }
     }
 }

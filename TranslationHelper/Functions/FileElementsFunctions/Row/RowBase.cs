@@ -10,6 +10,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     internal abstract class RowBase
     {
         /// <summary>
+        /// execute one time
+        /// </summary>
+        protected bool NeedInit = true;
+        /// <summary>
+        /// init some vars
+        /// </summary>
+        protected virtual void Init()
+        {
+            if (NeedInit)
+            {
+                SelectedRowsCount = 0;
+                SelectedRowsCountRest = 0;
+                NeedInit = false;
+            }
+        }
+
+        /// <summary>
         /// Main app data
         /// </summary>
         protected THDataWork thDataWork;
@@ -46,9 +63,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal bool Selected(DataRow row)
         {
+            Init();
+
             if (!IsAll && !IsTable)
             {
                 ActionsPreRowsApply();
+            }
+
+            if (DGV == null)
+            {
+                if (threaded)
+                {
+                    thDataWork.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = thDataWork.Main.THFileElementsDataGridView));
+                }
+                else
+                {
+                    DGV = thDataWork.Main.THFileElementsDataGridView;
+                }
             }
 
             try
@@ -56,7 +87,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 SelectedRow = row;
                 SelectedTableIndex = 0;
                 SelectedRowIndex = 0;
-                SelectedRowsCount = 1;
+
+                if (!IsAll && !IsTable)
+                {
+                    SelectedRowsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
+                }
 
                 GetTableData();
 
@@ -86,11 +121,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal bool Selected()
         {
+            Init();
+
             if (DGV == null)
             {
                 if (threaded)
                 {
-                    thDataWork.Main.Invoke((Action)(() => DGV = thDataWork.Main.THFileElementsDataGridView));
+                    thDataWork.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = thDataWork.Main.THFileElementsDataGridView));
                 }
                 else
                 {
@@ -101,7 +138,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             //var selectedDGVCellsCount = DGV.GetCellCount(DataGridViewElementStates.Selected);
 
-            SelectedRowsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
+            if(!IsAll && !IsTable)
+            {
+                SelectedRowsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
+            }
+
             if (SelectedRowsCount > 0)
             {
                 if (!IsAll && !IsTable)
@@ -192,24 +233,30 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal bool Table()
         {
+            Init();
+
+            if (!IsAll)
+            {
+                IsTable = true;
+
+                tablescount = 1;
+            }
+
             GetTableData();
 
             if (IsValidTable(SelectedTable))
             {
                 if (!IsAll)
                 {
-                    IsTable = true;
-
                     ActionsPreRowsApply();
                 }
-
 
                 var RowsCount = SelectedTable.Rows.Count;
                 for (int i = 0; i < RowsCount; i++)
                 {
                     SelectedRow = SelectedTable.Rows[i];
                     SelectedRowIndex = i;
-                    if (IsTable || (IsAll && SelectedTableIndex == tablescount - 1))//set rows count to selectedrowscount for last table
+                    if (!IsAll && IsTable /*|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is*/)
                     {
                         SelectedRowsCount = RowsCount;
                     }
@@ -257,11 +304,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             IsAll = true;
 
+            Init();
+
             ActionsPreRowsApply();
 
             int tindex = 0;
             var tables = thDataWork.THFilesElementsDataset.Tables;
             tablescount = tables.Count;
+            SetSelectedRowsCountForAll();
+
             foreach (DataTable table in tables)
             {
                 SelectedTable = table;
@@ -283,6 +334,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return ret;
         }
 
+        /// <summary>
+        /// get rows count from all tables
+        /// </summary>
+        private void SetSelectedRowsCountForAll()
+        {
+            if (!IsAll)
+            {
+                return;
+            }
+            SelectedRowsCount = 0;
+            foreach(DataTable t in thDataWork.THFilesElementsDataset.Tables)
+            {
+                SelectedRowsCount += t.Rows.Count;
+            }
+        }
+
         protected virtual void CompleteSound()
         {
             System.Media.SystemSounds.Asterisk.Play();
@@ -292,7 +359,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// count of rest rows
         /// </summary>
         protected int SelectedRowsCountRest;
+        /// <summary>
+        /// determine if SelectedRowsCountRest need to set
+        /// </summary>
         bool SetRestRows = true;//
+        /// <summary>
+        /// true when last row processed
+        /// </summary>
+        protected bool IsLastRow;
 
         protected virtual void ApplyConditions()
         {
@@ -308,6 +382,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 return;
             }
+
+            IsLastRow = SelectedRowsCountRest == 0;//set IsLastRow to true because it is last processed row
 
             try
             {

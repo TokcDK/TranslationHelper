@@ -62,7 +62,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                             {
                                 if (thDataWork.OpenFileMode)
                                 {
-                                    AddRowData(value, "", true, false);
+                                    AddRowData(value, ParseData.line, true, false);
                                 }
                                 else
                                 {
@@ -78,29 +78,63 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                         }
                     }
                 }
-                else if (!string.IsNullOrWhiteSpace(ParseData.line) /*&& ParseData.line.StartsWith("[link") || !ParseData.line.StartsWith("[")*/)
+                else if (!string.IsNullOrWhiteSpace(ParseData.line) && !ParseData.line.StartsWith("@") && !ParseData.line.StartsWith("*") /*&& ParseData.line.StartsWith("[link") || !ParseData.line.StartsWith("[")*/)
                 {
-                    var m = Regex.Match(ParseData.line, @"((\[[^\]]+\])*)([^\[\]]+(?:\\.[^\[\]]*)*)((\[[^\]]+\])*)");
+                    var mc = Regex.Matches(ParseData.line, @"(\[*([^\[\]\r\n]+(?:\\.[^\[\]]*)*)\]*)");
 
-                    if (m != null && m.Success && IsValidString(Cleaned(m.Result("$3"))))
+                    if (mc.Count > 0)
                     {
-                        var value = m.Result("$3");
-
-                        if (thDataWork.OpenFileMode)
+                        if(thDataWork.SaveFileMode)
                         {
-                            AddRowData(value, "", true, false);
+                            ParseData.line = "";
                         }
-                        else
+
+                        for (int i = 0; i < mc.Count; i++)
                         {
-                            string trans = null;
-                            AddTranslation(ref trans, value);
-                            if (trans != null)
+                            var value = mc[i].Value;
+
+                            if (thDataWork.OpenFileMode)
                             {
-                                ParseData.line = m.Result("$1") + trans + m.Result("$5");
-                                ParseData.Ret = true;
+                                if (value.StartsWith("[") && value.EndsWith("]"))
+                                {
+                                    continue;
+                                }
+
+                                AddRowData(value, ParseData.line, true, true);
+                            }
+                            else
+                            {
+                                if (!(value.StartsWith("[") && value.EndsWith("]")) && IsValidString(value))
+                                {
+                                    AddTranslation(ref value, value);
+                                    ParseData.Ret = true;
+                                }
+                                ParseData.line += value;
                             }
                         }
                     }
+
+                    //var m = Regex.Match(ParseData.line, @"((\[[^\]]+\])*)([^\[\]]+(?:\\.[^\[\]]*)*)((\[[^\]]+\])*)");
+
+                    //if (m != null && m.Success && IsValidString(Cleaned(m.Result("$3"))))
+                    //{
+                    //    var value = m.Result("$3");
+
+                    //    if (thDataWork.OpenFileMode)
+                    //    {
+                    //        AddRowData(value, "", true, false);
+                    //    }
+                    //    else
+                    //    {
+                    //        string trans = null;
+                    //        AddTranslation(ref trans, value);
+                    //        if (trans != null)
+                    //        {
+                    //            ParseData.line = m.Result("$1") + trans + m.Result("$5");
+                    //            ParseData.Ret = true;
+                    //        }
+                    //    }
+                    //}
                 }
             }
 

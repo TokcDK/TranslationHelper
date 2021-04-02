@@ -229,6 +229,8 @@
     <Compile Include="Formats\WolfRPG\WolfTrans\TXT.cs" />
     <Compile Include="Formats\zzzOtherFormat\OtherFormatBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\CompleteRomajiotherLines.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\ExportFormatsBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\RPGMakerLikeTXT.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\MakeTranslatedCopyIfFileWithTheNameExists.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OpenInWeb.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\RowBase.cs" />
