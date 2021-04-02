@@ -33,7 +33,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                         }
                         else if (IsValidString(result) && TablesLinesDict.ContainsKey(result))
                         {
-                            ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(result, TablesLinesDict[result]));
+                            ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, quote + TablesLinesDict[result] + quote);
                             ParseData.Ret = true;
                         }
                     }

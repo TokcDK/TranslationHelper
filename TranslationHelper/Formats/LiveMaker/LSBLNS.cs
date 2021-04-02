@@ -22,10 +22,6 @@ namespace TranslationHelper.Formats.LiveMaker
                 }
                 else
                 {
-                    if(ParseData.line== "<TXSPN>【カミラ】<BR>")
-                    {
-
-                    }
                     if (
                         !ParseData.line.StartsWith("{PLAYSND")//exclude not messages
                         && !ParseData.line.StartsWith("{WAITPLAY")//exclude not messages
@@ -35,7 +31,6 @@ namespace TranslationHelper.Formats.LiveMaker
                         && IsValidString(CleanedFromTags(ParseData.line))
                         )
                     {
-                        var fname = Path.GetFileName(thDataWork.FilePath);
                         if (thDataWork.OpenFileMode)
                         {
                             AddRowData(ParseData.line, "", true, false);

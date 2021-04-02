@@ -56,7 +56,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                                     {
                                         ParseData.line = ParseData.line
                                             .Remove(mc[i].Index, mc[i].Length)
-                                            .Insert(mc[i].Index, thDataWork.TablesLinesDict[value]);
+                                            .Insert(mc[i].Index, "\"" + thDataWork.TablesLinesDict[value] + "\"");
                                     }
                                 }
                             }

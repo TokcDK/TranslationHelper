@@ -223,6 +223,8 @@
     <Compile Include="Formats\RPGMTransPatch\RPGMTransOther.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransPatchBase.cs" />
     <Compile Include="Formats\RPGMTransPatch\TXT.cs" />
+    <Compile Include="Formats\TyranoBuilder\Extracted\ExportedCSV.cs" />
+    <Compile Include="Formats\TyranoBuilder\Extracted\KS.cs" />
     <Compile Include="Formats\WolfRPG\WolfRPGBase.cs" />
     <Compile Include="Formats\WolfRPG\WolfTrans\TXT.cs" />
     <Compile Include="Formats\zzzOtherFormat\OtherFormatBase.cs" />
@@ -355,6 +357,7 @@
     <Compile Include="Projects\RPGMMV\RPGMMVOLD.cs" />
     <Compile Include="Projects\RPGMTrans\RPGMTransPatch.cs" />
     <Compile Include="Projects\RPGMTrans\RPGMTransOLD.cs" />
+    <Compile Include="Projects\TyranoBuilder\Extracted\TyranoBuilderGame.cs" />
     <Compile Include="Projects\WolfRPG\WolfRPGGame.cs" />
     <Compile Include="Projects\WolfRPG\WolfRPGBase.cs" />
     <Compile Include="Projects\WolfRPG\WRPGOLDOpen.cs" />
