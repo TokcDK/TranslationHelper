@@ -74,6 +74,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return ret;
         }
 
+        readonly FunctionsLogs log = new FunctionsLogs();
+
         /// <summary>
         /// selected rows count
         /// </summary>
@@ -106,7 +108,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     ActionsPreRowsApply();
                 }
-
                 try
                 {
                     GetTableData();
@@ -114,6 +115,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var SelectedRowIndexses = new int[SelectedRowsCount];
                     for (int i = 0; i < SelectedRowsCount; i++)
                     {
+                        log.DebugData.Add("SelectedTableIndex=" + SelectedTableIndex);
+                        log.DebugData.Add("DGV.SelectedCells[i].RowIndex=" + DGV.SelectedCells[i].RowIndex);
+                        log.DebugData.Add("i=" + i);
                         //координаты ячейки
                         SelectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, SelectedTableIndex, DGV.SelectedCells[i].RowIndex);
 
@@ -131,8 +135,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         ApplyConditions();
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    log.LogToFile("an error occured in base row function. error=\r\n" + ex);
                 }
 
                 if (!IsAll && !IsTable)
@@ -287,7 +292,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// count of rest rows
         /// </summary>
         protected int SelectedRowsCountRest;
-        bool SetRestRows=true;//
+        bool SetRestRows = true;//
 
         protected virtual void ApplyConditions()
         {

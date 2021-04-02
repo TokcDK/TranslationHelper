@@ -131,6 +131,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual void ParseStringFilePreOpenExtra()
         {
+            firstline = true;
         }
 
         /// <summary>
@@ -173,7 +174,7 @@ namespace TranslationHelper.Formats
             return -1;
         }
 
-        bool firstline = true;
+        bool firstline;
         /// <summary>
         /// add line for wtite in save mode
         /// </summary>
