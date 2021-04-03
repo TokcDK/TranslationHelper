@@ -463,6 +463,7 @@ namespace TranslationHelper.Functions
             thDataWork.Main.loadTranslationToolStripMenuItem.Enabled = true;
             thDataWork.Main.loadTrasnlationAsToolStripMenuItem.Enabled = true;
             thDataWork.Main.loadTrasnlationAsForcedToolStripMenuItem.Enabled = true;
+            thDataWork.Main.exportToolStripMenuItem1.Enabled = true;
             thDataWork.Main.runTestGameToolStripMenuItem.Enabled = thDataWork.CurrentProject != null && thDataWork.CurrentProject.IsTestRunEnabled;
 
             if (thDataWork.Main.FVariant.Length == 0)

@@ -118,6 +118,7 @@ namespace TranslationHelper.Data
                 thDataWork.Main.toolStripMenuItem14.Enabled = false;
                 thDataWork.Main.uppercaseToolStripMenuItem.Enabled = false;
                 thDataWork.Main.lowercaseToolStripMenuItem.Enabled = false;
+                thDataWork.Main.exportToolStripMenuItem1.Enabled = false;
 
                 thDataWork.Main.runTestGameToolStripMenuItem.Enabled = false;
 
