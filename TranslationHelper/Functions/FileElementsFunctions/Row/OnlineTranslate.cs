@@ -208,7 +208,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 lineNum++;
             }
 
-            if (buffer.Count >= 300 || SelectedRowsCountRest==0)
+            if (IsLastRow || buffer.Count >= 300)
             {
                 try
                 {
@@ -459,14 +459,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var Row = thDataWork.THFilesElementsDataset.Tables[tindex].Rows[rindex];
                 //var linenumMax = (Row[0] + "").GetLinesCount();
 
-                var tequalso = Equals(Row[1], Row[0]);
-                if (Properties.Settings.Default.IgnoreOrigEqualTransLines && tequalso)//skip equal
+                var TranslationEqualOriginal = Equals(Row[1], Row[0]);
+                if (Properties.Settings.Default.IgnoreOrigEqualTransLines && TranslationEqualOriginal)//skip equal
                 {
                     continue;
                 }
 
-                var tnotemptyandnotequalso = (Row[1] != null && !string.IsNullOrEmpty(Row[1] as string) && !tequalso);
-                if (tnotemptyandnotequalso && !Row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))
+                var TranslationIsNotEmptyAndNotEqualOriginal = (Row[1] != null && !string.IsNullOrEmpty(Row[1] as string) && !TranslationEqualOriginal);
+                
+                if (TranslationIsNotEmptyAndNotEqualOriginal && !Row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))
                 {
                     continue;
                 }
@@ -475,7 +476,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     var newValue = new List<string>();
                     var lineNum = 0;
-                    var rowValue = (tnotemptyandnotequalso ? Row[1] : Row[0]) + "";
+                    var rowValue = (TranslationIsNotEmptyAndNotEqualOriginal ? Row[1] : Row[0]) + "";
                     foreach (var line in rowValue.SplitToLines())
                     {
                         if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0) || line.IsSoundsText())
@@ -507,9 +508,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     Row[1] = string.Join(Environment.NewLine, newValue);
 
-                    //apply fixes for cell
-                    new AllHardFixes(thDataWork).Selected(Row);
-                    new FixCells(thDataWork).Selected(Row);
+                    if (!Row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//apply only for finished rows
+                    {
+                        //apply fixes for cell
+                        new AllHardFixes(thDataWork).Selected(Row);
+                        new FixCells(thDataWork).Selected(Row);
+                    }
                 }
                 catch
                 {
