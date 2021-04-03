@@ -119,6 +119,10 @@ namespace TranslationHelper.Data
                 thDataWork.Main.uppercaseToolStripMenuItem.Enabled = false;
                 thDataWork.Main.lowercaseToolStripMenuItem.Enabled = false;
                 thDataWork.Main.exportToolStripMenuItem1.Enabled = false;
+                thDataWork.Main.openProjectsDirToolStripMenuItem.Enabled = false;
+                thDataWork.Main.openTranslationRulesFileToolStripMenuItem.Enabled = false;
+                thDataWork.Main.openCellFixesFileToolStripMenuItem.Enabled = false;
+                thDataWork.Main.reloadRulesToolStripMenuItem.Enabled = false;
 
                 thDataWork.Main.runTestGameToolStripMenuItem.Enabled = false;
 

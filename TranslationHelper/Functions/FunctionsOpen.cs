@@ -465,6 +465,10 @@ namespace TranslationHelper.Functions
             thDataWork.Main.loadTrasnlationAsForcedToolStripMenuItem.Enabled = true;
             thDataWork.Main.exportToolStripMenuItem1.Enabled = true;
             thDataWork.Main.runTestGameToolStripMenuItem.Enabled = thDataWork.CurrentProject != null && thDataWork.CurrentProject.IsTestRunEnabled;
+            thDataWork.Main.openProjectsDirToolStripMenuItem.Enabled = true;
+            thDataWork.Main.openTranslationRulesFileToolStripMenuItem.Enabled = true;
+            thDataWork.Main.openCellFixesFileToolStripMenuItem.Enabled = true;
+            thDataWork.Main.reloadRulesToolStripMenuItem.Enabled = true;
 
             if (thDataWork.Main.FVariant.Length == 0)
             {
