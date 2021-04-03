@@ -12,6 +12,7 @@ using System.Xml;
 using System.Xml.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
+using TranslationHelper.Projects.RPGMMV;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -181,7 +182,7 @@ namespace TranslationHelper.Main.Functions
             {
                 fName = thDataWork.CurrentProject.GetProjectDBFileName();
             }
-            else if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
+            else if (RPGMFunctions.THSelectedSourceType.Contains(new RPGMMVGame(thDataWork).Name()))
             {
                 if (thDataWork.Main.THFilesList.Items.Count == 1 && thDataWork.Main.THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(thDataWork.Main.THFilesList.Items[0].ToString()))
                 {
@@ -194,6 +195,11 @@ namespace TranslationHelper.Main.Functions
                         fName = Path.GetFileNameWithoutExtension(thDataWork.Main.THFilesList.Items[0].ToString());
                     }
                 }
+            }
+            else if (thDataWork.Main.THFilesList.Items.Count == 1 && thDataWork.Main.THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(thDataWork.Main.THFilesList.Items[0].ToString()))
+            {
+                //dbfilename as name of single file in files list
+                fName = Path.GetFileNameWithoutExtension(thDataWork.Main.THFilesList.Items[0].ToString());
             }
             //else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
             //{
