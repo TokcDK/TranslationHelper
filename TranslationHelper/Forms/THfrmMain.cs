@@ -25,7 +25,6 @@ using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects.RPGMMV;
 using TranslationHelper.Projects.RPGMTrans;
-using TranslationHelper.Translators;
 
 namespace TranslationHelper
 {
@@ -763,17 +762,64 @@ namespace TranslationHelper
             thDataWork.CurrentProject.AfterTranslationWriteActions();
         }
 
-        public void ProgressInfo(bool status, string statustext = "")
+        /// <summary>
+        /// control progressbar Current\Max
+        /// </summary>
+        /// <param name="CurrentProgressBar">current value</param>
+        /// <param name="MaxProgressBar">max value</param>
+        public void ProgressInfo(int CurrentProgressBar, int MaxProgressBar)
         {
-            statustext = statustext?.Length == 0 ? T._("working..") : statustext;
-            try
+            ProgressInfo(true, "", true, CurrentProgressBar, MaxProgressBar);
+        }
+
+        /// <summary>
+        /// show status text in left-bottom field of window
+        /// </summary>
+        /// <param name="ShowStatus">show status</param>
+        /// <param name="StatusText"></param>
+        public void ProgressInfo(string StatusText = "")
+        {
+            ProgressInfo(StatusText.Length > 0, StatusText);
+        }
+
+        /// <summary>
+        /// show status text in left-bottom field of window
+        /// </summary>
+        /// <param name="ShowStatus">show status</param>
+        /// <param name="StatusText"></param>
+        public void ProgressInfo(bool ShowStatus, string StatusText = "", bool SetProgressBar = false, int CurrentProgressBar = -1, int MaxProgressBar = -1)
+        {
+            if (SetProgressBar && THActionProgressBar.Visible && THInfolabel.Visible && CurrentProgressBar != -1 && MaxProgressBar != -1)
             {
-                THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = status));
-                THInfolabel.Invoke((Action)(() => THInfolabel.Visible = status));
-                THInfolabel.Invoke((Action)(() => THInfolabel.Text = statustext));
+                if (THActionProgressBar.Style != ProgressBarStyle.Continuous)
+                {
+                    THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Style = ProgressBarStyle.Continuous));
+                }
+                if (THActionProgressBar.Maximum != MaxProgressBar)
+                {
+                    THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Maximum = MaxProgressBar));
+                }
+                if (CurrentProgressBar < MaxProgressBar)
+                {
+                    THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Value = CurrentProgressBar));
+                }
             }
-            catch
+            else
             {
+                StatusText = StatusText?.Length == 0 ? T._("working..") : StatusText;
+                try
+                {
+                    THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = ShowStatus));
+                    THInfolabel.Invoke((Action)(() => THInfolabel.Visible = ShowStatus));
+                    if (!ShowStatus)
+                    {
+                        THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Style = ProgressBarStyle.Marquee));
+                    }
+                    THInfolabel.Invoke((Action)(() => THInfolabel.Text = StatusText));
+                }
+                catch
+                {
+                }
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 
 namespace TranslationHelper.Main.Functions
@@ -48,7 +47,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="Arguments"></param>
         /// <param name="WorkDir"></param>
         /// <returns></returns>
-        public static bool RunProcess(string ProgramPath, string Arguments = "", string WorkDir = "")
+        public static bool RunProcess(string ProgramPath, string Arguments = "", string WorkDir = "", bool CreateNoWindow = false, bool UseShellExecute = true)
         {
             bool ret = false;
             if (File.Exists(ProgramPath))
@@ -57,6 +56,9 @@ namespace TranslationHelper.Main.Functions
                 {
                     Program.StartInfo.ErrorDialog = true;
                     Program.EnableRaisingEvents = true;
+                    Program.StartInfo.CreateNoWindow = CreateNoWindow;
+                    Program.StartInfo.UseShellExecute = UseShellExecute;
+
                     //MessageBox.Show("outdir=" + outdir);
                     Program.StartInfo.FileName = ProgramPath;
                     if (Arguments.Length > 0)

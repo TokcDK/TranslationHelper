@@ -629,6 +629,11 @@ namespace TranslationHelper.Projects
 
             foreach (var subpath in paths)
             {
+                if (string.IsNullOrWhiteSpace(subpath))
+                {
+                    continue;
+                }
+
                 string path;
                 if (subpath.StartsWith(@".\") || subpath.StartsWith(@"..\"))
                 {
