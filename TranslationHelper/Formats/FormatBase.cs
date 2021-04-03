@@ -738,9 +738,17 @@ namespace TranslationHelper.Formats
                     }
 
                     //Сначала добавить полный вариант
-                    if (!TablesLinesDict.ContainsKey(Original) && ((!thDataWork.CurrentProject.TablesLinesDictAddEqual && Translation != Original) || thDataWork.CurrentProject.TablesLinesDictAddEqual))
+                    if (!TablesLinesDict.ContainsKey(Original) /*&& ((!thDataWork.CurrentProject.TablesLinesDictAddEqual && Translation != Original) || thDataWork.CurrentProject.TablesLinesDictAddEqual)*/)
                     {
                         TablesLinesDict.Add(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                        if (OriginalLinesCount == 1)
+                        {
+                            continue;//когда одна строка не тратить время на её разбор
+                        }
+                    }
+                    else if (Original == TablesLinesDict[Original] && Translation != TablesLinesDict[Original])
+                    {
+                        TablesLinesDict[Original] = Translation;
                         if (OriginalLinesCount == 1)
                         {
                             continue;//когда одна строка не тратить время на её разбор
