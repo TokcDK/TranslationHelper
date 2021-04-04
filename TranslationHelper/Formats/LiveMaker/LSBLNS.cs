@@ -26,6 +26,7 @@ namespace TranslationHelper.Formats.LiveMaker
                         !ParseData.line.StartsWith("{PLAYSND")//exclude not messages
                         && !ParseData.line.StartsWith("{WAITPLAY")//exclude not messages
                         && !ParseData.line.StartsWith("{CHANGECG")//exclude not messages
+                        && !ParseData.line.StartsWith("{DELETECG")//exclude not messages
                         && !ParseData.line.StartsWith("{CREATECG")//exclude not messages
                         && !ParseData.line.StartsWith("<EVENT")//exclude not messages
                         && IsValidString(CleanedFromTags(ParseData.line))

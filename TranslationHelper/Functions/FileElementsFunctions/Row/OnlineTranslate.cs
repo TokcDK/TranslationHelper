@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
@@ -59,7 +60,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             bool b;
             return (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0 || (b = base.IsValidRow()) || (!b && SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine()));
-            
+
             //return (b = base.IsValidRow()) || (!b && AnyLineValidForTranslation());
         }
 
@@ -77,6 +78,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         //    return false;
         //}
 
+        /// <summary>
+        /// true if all DB was loaded
+        /// </summary>
         bool AllDBLoaded4All;
         protected override void ActionsPreRowsApply()
         {
@@ -84,15 +88,26 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && IsAll && !AllDBLoaded4All)
             {
-                thDataWork.Main.ProgressInfo(true, "Get all DB");
+                if (!Properties.Settings.Default.EnableTranslationCache)
+                {
+                    //cache disabled but all db loading enabled. ask for load then. maybe not need
+                    var result = MessageBox.Show(T._("Translation cache disabled but load all DB enabled. While all DB loading cache can be enabled in settings. Load all DB?"), T._("Translation cache disabled"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result != DialogResult.Yes)
+                    {
+                        return;
+                    }
 
-                var mergingAllDB = new Task(() => FunctionsDBFile.MergeAllDBtoOne(thDataWork));
-                mergingAllDB.ConfigureAwait(true);
-                mergingAllDB.Start();
-                mergingAllDB.Wait();
-                AllDBLoaded4All = true;
+                    thDataWork.Main.ProgressInfo(true, "Get all DB");
 
-                thDataWork.Main.ProgressInfo(false);
+                    var mergingAllDB = new Task(() => FunctionsDBFile.MergeAllDBtoOne(thDataWork));
+                    mergingAllDB.ConfigureAwait(true);
+                    mergingAllDB.Start();
+                    mergingAllDB.Wait();
+                    AllDBLoaded4All = true;
+
+                    thDataWork.Main.ProgressInfo(false);
+                }
+
             }
         }
         protected override void ActionsPostRowsApply()
@@ -111,12 +126,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             //if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine())
             try
             {
-                thDataWork.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
+                if (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "") || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//translate only empty rows or rows where can be something translated
+                {
+                    thDataWork.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
 
-                SetRowLinesToBuffer();
+                    SetRowLinesToBuffer();
 
-                thDataWork.Main.ProgressInfo(false);
-                return true;
+                    thDataWork.Main.ProgressInfo(false);
+                    return true;
+                }
             }
             catch
             {
@@ -245,7 +263,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 bufferExtracted[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
             }
 
-            var l = new List<string>();
+            var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
             foreach (var PatternReplacementPair in thDataWork.TranslationRegexRules)
             {
                 if (!Regex.IsMatch(line, PatternReplacementPair.Key))
@@ -263,11 +281,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
                         }
 
-                        if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey("$" + g.Name))
-                            bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);
+                        if (PatternReplacementPair.Value.Contains("$" + g.Name))//if replacement contains the group name ($1,$2,$3...$99)
+                        {
 
-                        if (g.Value.IsValidForTranslation() && PatternReplacementPair.Value.Contains("$" + g.Name))
-                            l.Add(g.Value);
+                            if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey("$" + g.Name))
+                            {
+                                bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);//add group name with valueif it is not added and is in replacement
+
+                                if (!GroupValues.Contains(g.Value))
+                                {
+                                    GroupValues.Add(g.Value);//add value for translation if valid
+                                }
+                            }
+                        }
                     }
                     catch
                     {
@@ -278,9 +304,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 break;
             }
 
-            if (l.Count > 0)
+            if (GroupValues.Count > 0)
             {
-                return l.ToArray();
+                return GroupValues.ToArray();
             }
             else
             {
@@ -466,7 +492,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
 
                 var TranslationIsNotEmptyAndNotEqualOriginal = (Row[1] != null && !string.IsNullOrEmpty(Row[1] as string) && !TranslationEqualOriginal);
-                
+
                 if (TranslationIsNotEmptyAndNotEqualOriginal && !Row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))
                 {
                     continue;
