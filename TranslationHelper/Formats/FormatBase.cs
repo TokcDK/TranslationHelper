@@ -746,7 +746,7 @@ namespace TranslationHelper.Formats
                             continue;//когда одна строка не тратить время на её разбор
                         }
                     }
-                    else if (Original == TablesLinesDict[Original] && Translation != TablesLinesDict[Original])
+                    else if (Translation != Original && Original == TablesLinesDict[Original])
                     {
                         TablesLinesDict[Original] = Translation;
                         if (OriginalLinesCount == 1)
