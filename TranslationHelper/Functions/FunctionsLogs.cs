@@ -39,13 +39,21 @@ namespace TranslationHelper.Functions
                     if (THsbLog.Length == 0)
                     {
                         FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log")
-                            , DateTime.Now + " >>" + TextToLog + Environment.NewLine + (DebugData.Count > 0 ? "Debug data:\r\n" + string.Join("\r\n", DebugData) + "\r\n" : "")
+                            , Environment.NewLine
+                            + DateTime.Now + " >>" + TextToLog
+                            + Environment.NewLine
+                            + (DebugData.Count > 0 ? "Debug data:" + Environment.NewLine + string.Join(Environment.NewLine, DebugData) : "")
                             , Properties.Settings.Default.DebugMode);
                     }
                     else
                     {
                         FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log")
-                            , DateTime.Now + " >>" + THsbLog + Environment.NewLine + TextToLog + Environment.NewLine + (DebugData.Count > 0 ? "Debug data:\r\n" + string.Join("\r\n", DebugData) + "\r\n" : "")
+                            , Environment.NewLine
+                            + DateTime.Now + " >>" + THsbLog
+                            + Environment.NewLine
+                            + TextToLog
+                            + Environment.NewLine
+                            + (DebugData.Count > 0 ? "Debug data:" + Environment.NewLine + string.Join(Environment.NewLine, DebugData) : "")
                             , Properties.Settings.Default.DebugMode);
                         //File.Move(Application.StartupPath + "\\TranslationHelper.log", Application.StartupPath + "\\TranslationHelper" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") + ".log");
                         THsbLog.Clear();
