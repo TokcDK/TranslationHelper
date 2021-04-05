@@ -111,5 +111,48 @@ namespace TranslationHelper.Main.Functions
             }
             Process.Start("explorer.exe", folder);
         }
+
+        /// <summary>
+        /// execute with cmd.exe
+        /// </summary>
+        /// <param name="programexe"></param>
+        /// <param name="arguments"></param>
+        /// <param name="workdir"></param>
+        /// <param name="CreateNoWindow"></param>
+        /// <param name="UseShellExecute"></param>
+        /// <returns></returns>
+        internal static bool RunCmd(string programexe, string arguments, string workdir, bool CreateNoWindow = false, bool UseShellExecute = true)
+        {
+            return RunBat(programexe, arguments, workdir, CreateNoWindow, UseShellExecute);
+        }
+
+        /// <summary>
+        /// execute with cmd.exe
+        /// </summary>
+        /// <param name="programexe"></param>
+        /// <param name="arguments"></param>
+        /// <param name="workdir"></param>
+        /// <param name="CreateNoWindow"></param>
+        /// <param name="UseShellExecute"></param>
+        /// <returns></returns>
+        internal static bool RunBat(string cmdline, string workdir, bool CreateNoWindow = false, bool UseShellExecute = true)
+        {
+            return RunProcess("cmd.exe", "\\C " + cmdline, workdir, CreateNoWindow, UseShellExecute);
+        }
+
+        /// <summary>
+        /// execute with cmd.exe
+        /// </summary>
+        /// <param name="programexe"></param>
+        /// <param name="arguments"></param>
+        /// <param name="workdir"></param>
+        /// <param name="CreateNoWindow"></param>
+        /// <param name="UseShellExecute"></param>
+        /// <returns></returns>
+        internal static bool RunBat(string programexe, string arguments, string workdir, bool CreateNoWindow = false, bool UseShellExecute = true)
+        {
+            arguments = "\\C \"\"" + programexe + "\"\" " + arguments;
+            return RunProcess("cmd.exe", arguments, workdir, CreateNoWindow, UseShellExecute);
+        }
     }
 }
