@@ -10,7 +10,6 @@ namespace TranslationHelper.Formats.LiveMaker
         {
         }
 
-        bool firstline = true;
         bool CaptureMessage = false;
         protected override int ParseStringFileLine()
         {
