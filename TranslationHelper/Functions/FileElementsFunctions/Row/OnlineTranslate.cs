@@ -58,8 +58,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool IsValidRow()
         {
-            bool b;
-            return (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0 || (b = base.IsValidRow()) || (!b && SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine()));
+            return base.IsValidRow()
+                && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "")
+                || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine());
 
             //return (b = base.IsValidRow()) || (!b && AnyLineValidForTranslation());
         }
@@ -126,7 +127,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             //if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine())
             try
             {
-                if (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "") || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//translate only empty rows or rows where can be something translated
+                //if (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "") || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//translate only empty rows or rows where can be something translated
                 {
                     thDataWork.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
 
