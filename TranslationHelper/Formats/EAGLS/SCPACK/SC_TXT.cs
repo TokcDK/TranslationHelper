@@ -19,6 +19,11 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         {
         }
 
+        internal override string Ext()
+        {
+            return ".txt";
+        }
+
         internal override bool Open()
         {
             return ParseStringFile(); //OpenSC();
@@ -30,20 +35,18 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                 { "#",
                     StringPatternNames },
                 { "&",
-                    StringPattern }
+                    StringPattern },
+                { "(\"",
+                    @"[0-9]{1,6}\(\""[^\""]*\"",\""([^\""\r\n]+)\""\)" }, // 52(":NameSuffix","大地"),
+                { "\")",
+                    @"[0-9]{1,6}\(\""([^\""\r\n]+)\""\)" } // 161("１１日目　後編選択")
             };
         }
 
         //string lastMentionedCharacter = string.Empty;
         protected override int ParseStringFileLine()
         {
-            if (ParsePatterns())
-            {
-                if (thDataWork.SaveFileMode)
-                {
-                    ParseData.Ret = true;
-                }
-            }
+            ParsePatterns();
 
             //old
             //if (ParseData.line.StartsWith("#"))

@@ -9,6 +9,7 @@ namespace TranslationHelper.Projects.EAGLS
     {
         protected EAGLSBase(THDataWork thDataWork) : base(thDataWork)
         {
+            WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
         }
 
         internal override string ProjectFolderName()
@@ -37,18 +38,20 @@ namespace TranslationHelper.Projects.EAGLS
                 //var pythonexe = @"C:\Python37\python";
                 var scpacker = "\"" + THSettingsData.SCPackerPYPath() + "\"";
                 var scriptdir = "\"" + ScriptDir + "\"";
-                var workdir = "\"" + Properties.Settings.Default.THProjectWorkDir + "\"";
+                var workdir = Properties.Settings.Default.THProjectWorkDir;
+                WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
                 var unpackpack = " " + (pack ? string.Empty : "un") + "pack" + " ";
-                var arguments = scpacker + unpackpack + scriptdir + " " + workdir + " -t -o";
-                var code = FunctionsProcess.RunProgram(pythonexe, arguments);
-                if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(workdir.Trim('"'), "sc_*.txt"))
+                var arguments = scpacker + unpackpack + scriptdir + " \"" + WorkTXTDir + "\" -t -o";
+                Directory.CreateDirectory(WorkTXTDir);
+                var code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
+                if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, "*.txt"))
                 {
-                    arguments = scpacker + unpackpack + scriptdir + " " + workdir + " -t";
-                    code = FunctionsProcess.RunProgram(pythonexe, arguments);
+                    arguments = scpacker + unpackpack + scriptdir + " \"" + WorkTXTDir + "\" -t";
+                    code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
 
-                    if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(workdir.Trim('"'), "sc_*.txt"))
+                    if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, "*.txt"))
                     {
-                        Directory.Delete(workdir);
+                        Directory.Delete(workdir, true);
                         return false;
                     }
                 }
@@ -65,48 +68,53 @@ namespace TranslationHelper.Projects.EAGLS
 
         protected bool OpenFiles()
         {
-            var ret = false;
-            foreach (var txt in Directory.EnumerateFiles(Properties.Settings.Default.THProjectWorkDir, "*.txt"))
-            {
-                if (Path.GetFileName(txt).StartsWith("sc_"))
-                {
-                    thDataWork.Main.ProgressInfo(true, T._("Open") + ": " + Path.GetFileName(txt));
-                    thDataWork.FilePath = txt;
-                    try
-                    {
-                        if (new SC_TXT(thDataWork).Open())
-                        {
-                            ret = true;
-                        }
-                    }
-                    catch { }
-                }
-            }
-            thDataWork.Main.ProgressInfo(false);
-            return ret;
+            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(thDataWork), "*.txt");
+
+
+            //var ret = false;
+            //foreach (var txt in Directory.EnumerateFiles(Properties.Settings.Default.THProjectWorkDir, "*.txt"))
+            //{
+            //    if (Path.GetFileName(txt).StartsWith("sc_"))
+            //    {
+            //        thDataWork.Main.ProgressInfo(true, T._("Open") + ": " + Path.GetFileName(txt));
+            //        thDataWork.FilePath = txt;
+            //        try
+            //        {
+            //            if (new SC_TXT(thDataWork).Open())
+            //            {
+            //                ret = true;
+            //            }
+            //        }
+            //        catch { }
+            //    }
+            //}
+            //thDataWork.Main.ProgressInfo(false);
+            //return ret;
         }
 
         protected bool SaveFiles()
         {
-            var ret = false;
-            foreach (var txt in Directory.EnumerateFiles(Properties.Settings.Default.THProjectWorkDir, "*.txt"))
-            {
-                if (Path.GetFileName(txt).StartsWith("sc_"))
-                {
-                    thDataWork.Main.ProgressInfo(true, T._("Save") + ": " + Path.GetFileName(txt));
-                    thDataWork.FilePath = txt;
-                    try
-                    {
-                        if (new SC_TXT(thDataWork).Save())
-                        {
-                            ret = true;
-                        }
-                    }
-                    catch { }
-                }
-            }
-            thDataWork.Main.ProgressInfo(false);
-            return ret;
+            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(thDataWork), "*.txt");
+
+            //var ret = false;
+            //foreach (var txt in Directory.EnumerateFiles(Properties.Settings.Default.THProjectWorkDir, "*.txt"))
+            //{
+            //    if (Path.GetFileName(txt).StartsWith("sc_"))
+            //    {
+            //        thDataWork.Main.ProgressInfo(true, T._("Save") + ": " + Path.GetFileName(txt));
+            //        thDataWork.FilePath = txt;
+            //        try
+            //        {
+            //            if (new SC_TXT(thDataWork).Save())
+            //            {
+            //                ret = true;
+            //            }
+            //        }
+            //        catch { }
+            //    }
+            //}
+            //thDataWork.Main.ProgressInfo(false);
+            //return ret;
         }
 
         protected string SCPACKpak = string.Empty;

@@ -25,7 +25,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="Arguments"></param>
         /// <param name="WorkDir"></param>
         /// <returns></returns>
-        public static bool RunProgram(string ProgramPath, string Arguments = "", string WorkDir = "")
+        public static bool RunProgram(string ProgramPath, string Arguments = "", string WorkDir = "", bool CreateNoWindow = false, bool UseShellExecute = true)
         {
             //bool ret = false;
             //using (Process Program = new Process())
@@ -37,7 +37,7 @@ namespace TranslationHelper.Main.Functions
             //    Program.WaitForExit();
             //}
 
-            return RunProcess(ProgramPath, Arguments, WorkDir);
+            return RunProcess(ProgramPath, Arguments, WorkDir, CreateNoWindow, UseShellExecute);
         }
 
         /// <summary>

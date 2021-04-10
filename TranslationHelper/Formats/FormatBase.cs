@@ -182,13 +182,13 @@ namespace TranslationHelper.Formats
         {
             if (thDataWork.SaveFileMode)
             {
-                if (!firstline)
+                if (firstline)
                 {
-                    ParseData.ResultForWrite.Append(newline);
+                    firstline = false;
                 }
                 else
                 {
-                    firstline = false;
+                    ParseData.ResultForWrite.Append(newline);
                 }
 
                 ParseData.ResultForWrite.Append(ParseData.line);
@@ -315,9 +315,7 @@ namespace TranslationHelper.Formats
                         foreach (Match m in mc)
                         {
                             var str = m.Result("$1");
-                            AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, true, true);
-                            if (!ParseData.Ret)
-                                ParseData.Ret = true;
+                            ParseData.Ret = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, true, true);
                         }
                     }
                     else
@@ -329,12 +327,11 @@ namespace TranslationHelper.Formats
                             if (IsValidString(str) && CheckAndSetTranslation(ref trans))
                             {
                                 ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
-                                if (!ParseData.Ret)
-                                    ParseData.Ret = true;
+                                ParseData.Ret = true;
                             }
                         }
                     }
-                    return true;
+                    return ParseData.Ret;
                 }
             }
             return false;
