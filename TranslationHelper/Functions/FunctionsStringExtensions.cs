@@ -16,7 +16,7 @@
                 .Replace("'", string.Empty)
                 .Replace("(", "（")
                 .Replace(")", "）")
-                .Replace("...", "……")
+                .Replace("...", "……")                
                 ;
         }
 

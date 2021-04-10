@@ -59,7 +59,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                 {
                     if (IsValidString(CleanedLine(array[i].Trim())))
                     {
-                        var str = PreAddString(array[i]);
+                        var str = array[i];
 
                         if (thDataWork.OpenFileMode)
                         {
@@ -122,7 +122,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             return str;
         }
 
-        protected override string PreAddString(string str)
+        protected override string AddRowDataPreAddOriginalStringMod(string str)
         {
             return (str = str.TrimEnd()).EndsWith("\\") ? str.Remove(str.Length - 1, 1) : str;
         }

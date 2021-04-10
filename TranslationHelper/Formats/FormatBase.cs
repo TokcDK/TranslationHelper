@@ -271,7 +271,9 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// patterns for add
+        /// patterns for add. 
+        /// first string = string which line contains. 
+        /// second string = regex patter from which will be get/set first element $1
         /// </summary>
         protected virtual Dictionary<string, string> Patterns()
         {
@@ -296,7 +298,8 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// extract text from line with regex pattern
+        /// extract text from line with regex pattern.
+        /// will add or save first $1 found.
         /// </summary>
         /// <param name="pattern">Key - Part of line for find in line, Value - regex pattern</param>
         /// <returns></returns>
@@ -311,7 +314,7 @@ namespace TranslationHelper.Formats
                     {
                         foreach (Match m in mc)
                         {
-                            var str = PreAddString(m.Result("$1"));
+                            var str = m.Result("$1");
                             AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, true, true);
                             if (!ParseData.Ret)
                                 ParseData.Ret = true;
@@ -321,7 +324,7 @@ namespace TranslationHelper.Formats
                     {
                         for (int m = mc.Count - 1; m >= 0; m--)
                         {
-                            var str = PreAddString(mc[m].Result("$1"));
+                            var str = mc[m].Result("$1");
                             var trans = str;
                             if (IsValidString(str) && CheckAndSetTranslation(ref trans))
                             {
@@ -337,13 +340,21 @@ namespace TranslationHelper.Formats
             return false;
         }
 
-        protected virtual string PreAddString(string str)
+        /// <summary>
+        /// original string modification before add it with AddRowData.
+        /// default will be returned same string
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        protected virtual string AddRowDataPreAddOriginalStringMod(string str)
         {
             return str;
         }
 
         /// <summary>
-        /// remove invalid symbols for the project or replace them to some valid
+        /// remove invalid symbols for the project or replace them to some valid.
+        /// applied to found translation before add it.
+        /// default is same string.
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -509,7 +520,9 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
         {
-            if (CheckInput && !IsValidString(RowData[0]))
+            var original = AddRowDataPreAddOriginalStringMod(RowData[0]);
+
+            if (CheckInput && !IsValidString(original))
             {
                 return false;
             }
@@ -522,10 +535,10 @@ namespace TranslationHelper.Formats
             if (AddToDictionary)
             {
                 throw new NotImplementedException("Dictionary not implemented");
-                //if (!thDataWork.THFilesElementsDictionary.ContainsKey(RowData[0]))
+                //if (!thDataWork.THFilesElementsDictionary.ContainsKey(original))
                 //{
-                //    thDataWork.THFilesElementsDictionary.Add(RowData[0], RowData.Length == 2 ? RowData[1] : string.Empty);
-                //    thDataWork.THFilesElementsDictionaryInfo.Add(RowData[0], RowInfo);
+                //    thDataWork.THFilesElementsDictionary.Add(original, RowData.Length == 2 ? RowData[1] : string.Empty);
+                //    thDataWork.THFilesElementsDictionaryInfo.Add(original, RowInfo);
                 //}
             }
             else
@@ -535,23 +548,23 @@ namespace TranslationHelper.Formats
 
                 if (Properties.Settings.Default.DontLoadDuplicates && CheckAddHashes && hashes != null)
                 {
-                    hashes.Add(RowData[0]);
+                    hashes.Add(original);
                 }
                 else if (!Properties.Settings.Default.DontLoadDuplicates)
                 {
                     //add coordinates
-                    if (!thDataWork.OriginalsTableRowCoordinats.ContainsKey(RowData[0]))
+                    if (!thDataWork.OriginalsTableRowCoordinats.ContainsKey(original))
                     {
-                        thDataWork.OriginalsTableRowCoordinats.Add(RowData[0], new Dictionary<string, List<int>>());
-                        thDataWork.OriginalsTableRowCoordinats[RowData[0]].Add(tablename, new List<int>());
-                        thDataWork.OriginalsTableRowCoordinats[RowData[0]][tablename].Add(thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count);
+                        thDataWork.OriginalsTableRowCoordinats.Add(original, new Dictionary<string, List<int>>());
+                        thDataWork.OriginalsTableRowCoordinats[original].Add(tablename, new List<int>());
+                        thDataWork.OriginalsTableRowCoordinats[original][tablename].Add(thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count);
                     }
                     else
                     {
-                        if (!thDataWork.OriginalsTableRowCoordinats[RowData[0]].ContainsKey(tablename))
+                        if (!thDataWork.OriginalsTableRowCoordinats[original].ContainsKey(tablename))
                         {
-                            thDataWork.OriginalsTableRowCoordinats[RowData[0]].Add(tablename, new List<int>());
-                            thDataWork.OriginalsTableRowCoordinats[RowData[0]][tablename].Add(thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count);
+                            thDataWork.OriginalsTableRowCoordinats[original].Add(tablename, new List<int>());
+                            thDataWork.OriginalsTableRowCoordinats[original][tablename].Add(thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Count);
                         }
                         else
                         {

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
@@ -9,10 +10,10 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
 {
     class SC_TXT : SCPACKBase
     {
-        private const string StringPattern = "&[0-9]{1,6}\"([^\"]+)\"";
+        private const string StringPattern = "&[0-9]{1,6}\"([^\"\r\n]+)\"";//&17523"「はい……」"
         //#さくら=w0261a
         //#　花　=w0003f
-        private const string StringPatternNames = @"#([^\=]+)(\=w[0-9]{4}[a-z])?$";
+        private const string StringPatternNames = @"#([^\=\r\n]+)(\=w[0-9]{4}[a-z])?$";//#さくら=w0629a
 
         public SC_TXT(THDataWork thDataWork) : base(thDataWork)
         {
@@ -22,105 +23,130 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         {
             return ParseStringFile(); //OpenSC();
         }
+        protected override Dictionary<string, string> Patterns()
+        {
+            return new Dictionary<string, string>()
+            {
+                { "#",
+                    StringPatternNames },
+                { "&",
+                    StringPattern }
+            };
+        }
 
-        string lastMentionedCharacter = string.Empty;
+        //string lastMentionedCharacter = string.Empty;
         protected override int ParseStringFileLine()
         {
-            if (ParseData.line.StartsWith("#"))
+            if (ParsePatterns())
             {
-                if (!ParseData.line.Contains(":NameSuffix"))
+                if (thDataWork.SaveFileMode)
                 {
-                    ParseName();
-
-                    //old more manual parse
-                    //var last = ParseData.line.IndexOf('=');
-
-                    //var newline = (last != -1 ? ParseData.line.Substring(1, last - 1) : ParseData.line.Substring(1)).Trim();
-                    //lastMentionedCharacter = newline;
-                    //if (IsValidString(newline))
-                    //{
-                    //    if (thDataWork.OpenFileMode)
-                    //    {
-                    //        AddRowData(newline, "CharName", true, false);
-                    //    }
-                    //    else
-                    //    {
-                    //        if (TablesLinesDict.ContainsKey(newline))
-                    //        {
-                    //            ParseData.line = "#" + TablesLinesDict[newline].CleanForShiftJIS2004() + (last != -1 ? ParseData.line.Substring(last) : string.Empty);
-                    //            ParseData.Ret = true;
-                    //        }
-                    //    }
-                    //}
-                }
-                else
-                {
-                    lastMentionedCharacter = ParseData.line.Remove(0, 1);
+                    ParseData.Ret = true;
                 }
             }
-            else if (ParseData.line.Contains("&"))
-            {
-                MatchCollection matches = Regex.Matches(ParseData.line, StringPattern);
-                foreach (Match match in matches)
-                {
-                    var val = match.Result("$1");
-                    var newMatch = match;
-                    if (IsValidString(val))
-                    {
-                        if(thDataWork.OpenFileMode)
-                        {
-                            AddRowData(val, lastMentionedCharacter.Length > 0 ? T._("Last char: ") + lastMentionedCharacter : string.Empty, true, false);
-                        }
-                        else
-                        {
-                            if (TablesLinesDict.ContainsKey(val))
-                            {
-                                ParseData.line = ParseData.line.Replace(match.Value, newMatch.Value.Replace(val, TablesLinesDict[val].CleanForShiftJIS2004()).Trim());
-                                ParseData.Ret = true;
-                            }
-                        }
-                    }
-                }
 
-                ParseName();
-            }
+            //old
+            //if (ParseData.line.StartsWith("#"))
+            //{
+            //    if (!ParseData.line.Contains(":NameSuffix"))
+            //    {
+            //        ParseName();
 
-            if(thDataWork.SaveFileMode)
-            {
-                ParseData.ResultForWrite.AppendLine(ParseData.line);
-            }
+            //        //old more manual parse
+            //        //var last = ParseData.line.IndexOf('=');
+
+            //        //var newline = (last != -1 ? ParseData.line.Substring(1, last - 1) : ParseData.line.Substring(1)).Trim();
+            //        //lastMentionedCharacter = newline;
+            //        //if (IsValidString(newline))
+            //        //{
+            //        //    if (thDataWork.OpenFileMode)
+            //        //    {
+            //        //        AddRowData(newline, "CharName", true, false);
+            //        //    }
+            //        //    else
+            //        //    {
+            //        //        if (TablesLinesDict.ContainsKey(newline))
+            //        //        {
+            //        //            ParseData.line = "#" + TablesLinesDict[newline].CleanForShiftJIS2004() + (last != -1 ? ParseData.line.Substring(last) : string.Empty);
+            //        //            ParseData.Ret = true;
+            //        //        }
+            //        //    }
+            //        //}
+            //    }
+            //    else
+            //    {
+            //        lastMentionedCharacter = ParseData.line.Remove(0, 1);
+            //    }
+            //}
+            //else if (ParseData.line.Contains("&"))
+            //{
+            //    MatchCollection matches = Regex.Matches(ParseData.line, StringPattern);
+            //    foreach (Match match in matches)
+            //    {
+            //        var val = match.Result("$1");
+            //        var newMatch = match;
+            //        if (IsValidString(val))
+            //        {
+            //            if (thDataWork.OpenFileMode)
+            //            {
+            //                AddRowData(val, lastMentionedCharacter.Length > 0 ? T._("Last character") + ": " + lastMentionedCharacter : string.Empty, true, false);
+            //            }
+            //            else
+            //            {
+            //                if (TablesLinesDict.ContainsKey(val))
+            //                {
+            //                    ParseData.line = ParseData.line.Replace(match.Value, newMatch.Value.Replace(val, TablesLinesDict[val].CleanForShiftJIS2004()).Trim());
+            //                    ParseData.Ret = true;
+            //                }
+            //            }
+            //        }
+            //    }
+
+            //    ParseName();
+            //}
+
+            SaveModeAddLine();
 
             return 0;
         }
-
-        private void ParseName()
+        protected override string FixInvalidSymbols(string str)
         {
-            //#さくら=w0261a
-            //#　花　=w0003f
-            //#さくら
-            var matches = Regex.Matches(ParseData.line, StringPatternNames);
-            foreach (Match match in matches)
-            {
-                var val = match.Result("$1");
-                var newMatch = match;
-                if (IsValidString(val) && !val.Contains(":NameSuffix"))
-                {
-                    var valtrimmed = val.Trim();
-                    if (thDataWork.OpenFileMode)
-                    {
-                        AddRowData(valtrimmed, T._("CharName"), true);
-                    }
-                    else
-                    {
-                        if (TablesLinesDict.ContainsKey(valtrimmed))
-                        {
-                            ParseData.line = ParseData.line.Replace(match.Value, newMatch.Value.Replace(val, TablesLinesDict[valtrimmed].CleanForShiftJIS2004()));
-                            ParseData.Ret = true;
-                        }
-                    }
-                }
-            }
+            return str.CleanForShiftJIS2004()
+                .Replace(",", "、")
+                .Replace("=", "＝")
+                .Replace(".", "。")
+                ;
         }
+
+        //old
+        //private void ParseName()
+        //{
+        //    //#さくら=w0261a
+        //    //#　花　=w0003f
+        //    //#さくら
+        //    var matches = Regex.Matches(ParseData.line, StringPatternNames);
+        //    foreach (Match match in matches)
+        //    {
+        //        var val = match.Result("$1");
+        //        var newMatch = match;
+        //        if (IsValidString(val) && !val.Contains(":NameSuffix"))
+        //        {
+        //            var valtrimmed = val.Trim();
+        //            if (thDataWork.OpenFileMode)
+        //            {
+        //                AddRowData(valtrimmed, T._("CharName"), true);
+        //            }
+        //            else
+        //            {
+        //                if (TablesLinesDict.ContainsKey(valtrimmed))
+        //                {
+        //                    ParseData.line = ParseData.line.Replace(match.Value, newMatch.Value.Replace(val, TablesLinesDict[valtrimmed].CleanForShiftJIS2004()));
+        //                    ParseData.Ret = true;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         //old
         ///// <summary>
