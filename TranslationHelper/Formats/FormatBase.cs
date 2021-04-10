@@ -175,23 +175,43 @@ namespace TranslationHelper.Formats
         }
 
         bool firstline;
+
         /// <summary>
         /// add line for wtite in save mode
         /// </summary>
-        protected virtual void SaveModeAddLine(string newline = "\r\n")
+        /// <param name="newline"></param>
+        /// <param name="LastEmptyLine">last line must be empty</param>
+        protected virtual void SaveModeAddLine(bool LastEmptyLine = false)
+        {
+            SaveModeAddLine("\r\n", LastEmptyLine);
+        }
+
+        /// <summary>
+        /// add line for wtite in save mode
+        /// </summary>
+        /// <param name="newline"></param>
+        /// <param name="LastEmptyLine">last line must be empty</param>
+        protected virtual void SaveModeAddLine(string newline = "\r\n", bool LastEmptyLine = false)
         {
             if (thDataWork.SaveFileMode)
             {
-                if (firstline)
+                if (LastEmptyLine)
                 {
-                    firstline = false;
+                    ParseData.ResultForWrite.Append(ParseData.line + newline);
                 }
                 else
                 {
-                    ParseData.ResultForWrite.Append(newline);
-                }
+                    if (firstline)
+                    {
+                        firstline = false;
+                    }
+                    else
+                    {
+                        ParseData.ResultForWrite.Append(newline);
+                    }
 
-                ParseData.ResultForWrite.Append(ParseData.line);
+                    ParseData.ResultForWrite.Append(ParseData.line);
+                }
             }
         }
 

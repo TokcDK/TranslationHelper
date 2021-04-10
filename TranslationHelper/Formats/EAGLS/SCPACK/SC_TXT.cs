@@ -108,7 +108,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
             //    ParseName();
             //}
 
-            SaveModeAddLine();
+            SaveModeAddLine(true);
 
             return 0;
         }
@@ -118,6 +118,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                 .Replace(",", "、")
                 .Replace("=", "＝")
                 .Replace(".", "。")
+                .Replace("!", "！")
                 ;
         }
 
