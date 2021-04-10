@@ -109,6 +109,13 @@ namespace TranslationHelper.Projects
         internal abstract bool Open();
 
         /// <summary>
+        /// Save project files
+        /// </summary>
+        /// <param name="thData"></param>
+        /// <returns></returns>
+        internal abstract bool Save();
+
+        /// <summary>
         /// open or save project files
         /// </summary>
         /// <returns></returns>
@@ -213,13 +220,6 @@ namespace TranslationHelper.Projects
 
             return newestfiles.Values.ToList();
         }
-
-        /// <summary>
-        /// Save project files
-        /// </summary>
-        /// <param name="thData"></param>
-        /// <returns></returns>
-        internal abstract bool Save();
 
         /// <summary>
         /// Project folder name to locate files in DB and Work folders
