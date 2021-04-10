@@ -310,12 +310,13 @@ namespace TranslationHelper.Formats
                 var mc = Regex.Matches(ParseData.line, pattern.Value, RegexOptions.Compiled);
                 if (mc.Count > 0)
                 {
+                    var IsSet = false;
                     if (thDataWork.OpenFileMode)
                     {
                         foreach (Match m in mc)
                         {
                             var str = m.Result("$1");
-                            ParseData.Ret = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, true, true);
+                            IsSet = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, true, true);
                         }
                     }
                     else
@@ -328,10 +329,11 @@ namespace TranslationHelper.Formats
                             {
                                 ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
                                 ParseData.Ret = true;
+                                IsSet = true;
                             }
                         }
                     }
-                    return ParseData.Ret;
+                    return IsSet;
                 }
             }
             return false;
