@@ -46,6 +46,11 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         //string lastMentionedCharacter = string.Empty;
         protected override int ParseStringFileLine()
         {
+            if(ParseData.tablename== "00HMovPlay.txt")
+            {
+
+            }
+
             ParsePatterns();
 
             //old

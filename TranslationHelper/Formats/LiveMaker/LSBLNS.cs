@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.LiveMaker
@@ -48,7 +47,7 @@ namespace TranslationHelper.Formats.LiveMaker
                 CaptureMessage = true;
             }
 
-            SaveModeAddLine();
+            SaveModeAddLine(ParseData.line.Length > 0 ? "\r" : "\r\n");//not empty line in lns ends with \r
 
             return 0;
         }
@@ -67,10 +66,6 @@ namespace TranslationHelper.Formats.LiveMaker
                 .Replace("<PG>", "")
                 .Replace("<BR>", "")
                 ;
-        }
-        protected override void SaveModeAddLine(string newline = "\r\n")
-        {
-            base.SaveModeAddLine(ParseData.line.Length > 0 ? "\r" : newline);//not empty line in lns ends with \r
         }
     }
 }

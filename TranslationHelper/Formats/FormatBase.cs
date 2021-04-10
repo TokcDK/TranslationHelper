@@ -181,7 +181,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         /// <param name="newline"></param>
         /// <param name="LastEmptyLine">last line must be empty</param>
-        protected virtual void SaveModeAddLine(bool LastEmptyLine = false)
+        protected virtual void SaveModeAddLine(bool LastEmptyLine)
         {
             SaveModeAddLine("\r\n", LastEmptyLine);
         }
@@ -345,7 +345,7 @@ namespace TranslationHelper.Formats
                         {
                             var str = mc[m].Result("$1");
                             var trans = str;
-                            if (IsValidString(str) && CheckAndSetTranslation(ref trans))
+                            if (IsValidString(str) && CheckAndSetTranslation(ref trans) && trans != str)
                             {
                                 ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
                                 ParseData.Ret = true;
