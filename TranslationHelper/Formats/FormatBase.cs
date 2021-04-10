@@ -614,39 +614,45 @@ namespace TranslationHelper.Formats
                 var tname = Path.GetFileName(thDataWork.FilePath);
                 if (thDataWork.OriginalsTableRowCoordinats[str].ContainsKey(tname))
                 {
+                    var control = str;
                     if (thDataWork.OriginalsTableRowCoordinats[str][tname].Contains(SaveRowIndex))
                     {
                         str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
                         SaveRowIndex++;
-                        return true;
+                        return control != str;
                     }
-                    else
+                    else // set 1st value from avalaible values
                     {
                         foreach (var rind in thDataWork.OriginalsTableRowCoordinats[str][tname])
                         {
                             str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
                             SaveRowIndex++;
-                            return true;
+
+                            return control != str;
                         }
                     }
                 }
-                else
+                else // set 1st value from avalaible values
                 {
+                    var control = str;
                     foreach (var tn in thDataWork.OriginalsTableRowCoordinats[str].Values)
                     {
                         foreach (var rind in tn)
                         {
                             str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
                             SaveRowIndex++;
-                            return true;
+
+                            return control != str;
                         }
                     }
                 }
             }
             else if (thDataWork.TablesLinesDict.ContainsKey(str))
             {
+                var control = str;
                 str = thDataWork.TablesLinesDict[str];
-                return true;
+
+                return control != str;
             }
 
             return false;
