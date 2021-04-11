@@ -16,7 +16,7 @@
                 .Replace("'", string.Empty)//crashing scpack game
                 .Replace("(", "（")//scpack script have same symbol for scripts
                 .Replace(")", "）")//scpack script have same symbol for scripts
-                //.Replace("...", "……")//just for cosmetic reason?
+                .Replace("...", "…")//just for cosmetic reason?
                 ;
         }
 

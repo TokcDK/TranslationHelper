@@ -121,7 +121,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                 //.Replace(";", "；")
                 .Replace("&", "＆")//scpack script have same symbol for scripts
                 ;
-            str = ENJPCharsReplacement(str);//convert en chars to jp
+            //str = ENJPCharsReplacement(str);//convert en chars to jp
             str = str.Replace("％ＨＮ％", ":NameSuffix");//restore hero name var
             return str;
         }
