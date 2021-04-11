@@ -187,6 +187,10 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
+        /// last newline symbol for paste after required line, not before it
+        /// </summary>
+        string lastNewline = "\r\n";
+        /// <summary>
         /// add line for wtite in save mode
         /// </summary>
         /// <param name="newline"></param>
@@ -207,8 +211,10 @@ namespace TranslationHelper.Formats
                     }
                     else
                     {
-                        ParseData.ResultForWrite.Append(newline);
+                        ParseData.ResultForWrite.Append(lastNewline);
                     }
+
+                    lastNewline = newline;//set newline symbol to paste after current line
 
                     ParseData.ResultForWrite.Append(ParseData.line);
                 }
@@ -382,13 +388,31 @@ namespace TranslationHelper.Formats
             return str;
         }
 
+        /// <summary>
+        /// encoding for reading string file
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Encoding ReadEncoding()
+        {
+            return ParseStringFileEncoding();
+        }
+
+        /// <summary>
+        /// encoding for writing string file
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Encoding WriteEncoding()
+        {
+            return ParseStringFileEncoding();
+        }
+
         protected virtual bool WriteFileData(string filePath = "")
         {
             try
             {
                 if (ParseData.Ret && thDataWork.SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(thDataWork.FilePath))
                 {
-                    File.WriteAllText(filePath.Length > 0 ? filePath : GetFilePath(), ParseData.ResultForWrite.ToString(), FunctionsFileFolder.GetEncoding(thDataWork.FilePath));
+                    File.WriteAllText(filePath.Length > 0 ? filePath : GetFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
                     return true;
                 }
             }

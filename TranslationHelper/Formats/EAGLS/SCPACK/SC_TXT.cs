@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.EAGLS.SCPACK
 {
@@ -108,18 +104,169 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
             //    ParseName();
             //}
 
-            SaveModeAddLine(true);
+            SaveModeAddLine(ParseData.line.StartsWith("$") ? "\n" : "\r\n", false);//line starting with $ ends with \n
 
             return 0;
         }
         protected override string FixInvalidSymbols(string str)
         {
-            return str.CleanForShiftJIS2004()
-                .Replace(",", "、")
-                .Replace("=", "＝")
-                .Replace(".", "。")
-                .Replace("!", "！")
+            str = str.Replace(":NameSuffix", "％ＨＮ％");//hide hero name var
+            str = str.CleanForShiftJIS2004()
+                .Replace(",", "、")//scpack script have same symbol for scripts
+                .Replace("=", "＝")//scpack script have same symbol for scripts
+                //.Replace(".", "。")
+                //.Replace("!", "！")
+                //.Replace("%", "％")
+                .Replace(":", "：")//scpack script have same symbol for scripts
+                //.Replace(";", "；")
+                .Replace("&", "＆")//scpack script have same symbol for scripts
                 ;
+            str = ENJPCharsReplacement(str);//convert en chars to jp
+            str = str.Replace("％ＨＮ％", ":NameSuffix");//restore hero name var
+            return str;
+        }
+
+        readonly string[][] ENtoJPReplacementPairs = new string[][] {
+               new string[2]{ "a", "ａ" },
+               new string[2]{ "A", "Ａ" },
+               new string[2]{ "b", "ｂ" },
+               new string[2]{ "B", "Ｂ" },
+               new string[2]{ "c", "ｃ" },
+               new string[2]{ "C", "Ｃ" },
+               new string[2]{ "d", "ｄ" },
+               new string[2]{ "D", "Ｄ" },
+               new string[2]{ "e", "ｅ" },
+               new string[2]{ "E", "Ｅ" },
+               new string[2]{ "f", "ｆ" },
+               new string[2]{ "F", "Ｆ" },
+               new string[2]{ "g", "ｇ" },
+               new string[2]{ "G", "Ｇ" },
+               new string[2]{ "h", "ｈ" },
+               new string[2]{ "H", "Ｈ" },
+               new string[2]{ "i", "ｉ" },
+               new string[2]{ "I", "Ｉ" },
+               new string[2]{ "j", "ｊ" },
+               new string[2]{ "J", "Ｊ" },
+               new string[2]{ "k", "ｋ" },
+               new string[2]{ "K", "Ｋ" },
+               new string[2]{ "l", "ｌ" },
+               new string[2]{ "L", "Ｌ" },
+               new string[2]{ "m", "ｍ" },
+               new string[2]{ "M", "Ｍ" },
+               new string[2]{ "n", "ｎ" },
+               new string[2]{ "N", "Ｎ" },
+               new string[2]{ "o", "ｏ" },
+               new string[2]{ "O", "Ｏ" },
+               new string[2]{ "p", "ｐ" },
+               new string[2]{ "P", "Ｐ" },
+               new string[2]{ "q", "ｑ" },
+               new string[2]{ "Q", "Ｑ" },
+               new string[2]{ "r", "ｒ" },
+               new string[2]{ "R", "Ｒ" },
+               new string[2]{ "s", "ｓ" },
+               new string[2]{ "S", "Ｓ" },
+               new string[2]{ "t", "ｔ" },
+               new string[2]{ "T", "Ｔ" },
+               new string[2]{ "u", "ｕ" },
+               new string[2]{ "U", "Ｕ" },
+               new string[2]{ "v", "ｖ" },
+               new string[2]{ "V", "Ｖ" },
+               new string[2]{ "w", "ｗ" },
+               new string[2]{ "W", "Ｗ" },
+               new string[2]{ "x", "ｘ" },
+               new string[2]{ "X", "Ｘ" },
+               new string[2]{ "y", "ｙ" },
+               new string[2]{ "Y", "Ｙ" },
+               new string[2]{ "z", "ｚ" },
+               new string[2]{ "Z", "Ｚ" },
+               //new string[2]{ ", ", "、" },
+               //new string[2]{ ",", "、" },
+               //new string[2]{ ". ", "。" },
+               //new string[2]{ ".", "。" },
+               //new string[2]{ " ... ", "…" },
+               //new string[2]{ "... ", "…" },
+               //new string[2]{ " ...", "…" },
+               //new string[2]{ "...", "…" },
+               //new string[2]{ "...", "…" },
+               //new string[2]{ "……", "…" },
+               //new string[2]{ "……", "…" },
+               // new string[2]{ "……", "…" },
+               // new string[2]{ "……", "…" },
+               //new string[2]{ " … ", "…" },
+               //new string[2]{ "… ", "…" },
+               //new string[2]{ " …", "…" },
+               // new string[2]{ "。。", "。" },
+               // new string[2]{ "。。", "。" },
+               //new string[2]{ " \" ", " " },
+               //new string[2]{ "\" ", " " },
+               //new string[2]{ " \"", " " },
+               //new string[2]{ "\"", string.Empty },
+                //new string[2]{ " ” ", " " },
+                //new string[2]{ " ”", " " },
+                //new string[2]{ "” ", " " },
+                //new string[2]{ "”", " " },
+               //new string[2]{ "\"", "”" },
+               //new string[2]{ " ~ ", " " },
+               //new string[2]{ "_~", string.Empty },
+               //new string[2]{ "? ", "？" },
+               //new string[2]{ "! ", "！" },
+               //new string[2]{ " '", string.Empty },
+               //new string[2]{ " ’", string.Empty },
+               //new string[2]{ "'", string.Empty },
+               //new string[2]{ "’", string.Empty },
+               //new string[2]{ "{", string.Empty },
+               //new string[2]{ "}", string.Empty },
+               //new string[2]{ " [", " " },
+               //new string[2]{ "] ", " " },
+               //new string[2]{ "[", " " },
+               //new string[2]{ "]", " " },
+               //new string[2]{ " [", "【" },
+               //new string[2]{ "] ", "】" },
+               //new string[2]{ "[", "【" },
+               //new string[2]{ "]", "】" },
+               //new string[2]{ "#", string.Empty },
+               //new string[2]{ "「", " " },
+               //new string[2]{ "『", " " },
+               //new string[2]{ "」", " " },
+               //new string[2]{ "』", " " },
+               //new string[2]{ "$", string.Empty },
+               //new string[2]{ "@", string.Empty },
+               //new string[2]{ "/", "／" },
+               //new string[2]{ "\\", "＼" },
+               //new string[2]{ " (", "（" },
+               //new string[2]{ ") ", "）" },
+               //new string[2]{ "(", "（" },
+               //new string[2]{ ")", "）" },
+               //new string[2]{ ":", "：" },
+               //new string[2]{ ";", "；" },
+               //new string[2]{ "*", "＊" },
+               //new string[2]{ " '", "´" },
+               //new string[2]{ " ’", "´" },,
+               //new string[2]{ "'", "´" },
+               //new string[2]{ "’", "´" },
+               //new string[2]{ "#", "＃" },
+               //new string[2]{ "$", "＄" },
+               //new string[2]{ "%", "％" },
+               //new string[2]{ "&", "＆" },
+               //new string[2]{ ",", "，" },
+               //new string[2]{ "@", "＠" },
+               //new string[2]{ "[", "［" },
+               //new string[2]{ "[", "［" },
+               //new string[2]{ "^", "＾" },
+               //new string[2]{ "_", "＿" },
+               //new string[2]{ "~", "～" },
+               //new string[2]{ "¨", "￣" },
+               //new string[2]{ "\"", "〃" },
+               //new string[2]{ " ", "・" }
+               //new string[2]{ "　", " " },
+               //new string[2]{ "  ", " " },
+               //new string[2]{ "  ", " " },
+               //new string[2]{ " ", "_" }
+    };
+
+        private string ENJPCharsReplacement(string workString)
+        {
+            return FunctionsString.CharsReplacementByPairsFromArray(workString, ENtoJPReplacementPairs);
         }
 
         //old

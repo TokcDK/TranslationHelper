@@ -10,13 +10,13 @@
         internal static string CleanForShiftJIS2004(this string s)
         {
             return s
-                .Replace("\"", string.Empty)
-                .Replace("\u200B", string.Empty)
-                .Replace("\u318D", string.Empty)
-                .Replace("'", string.Empty)
-                .Replace("(", "（")
-                .Replace(")", "）")
-                .Replace("...", "……")                
+                .Replace("\"", string.Empty)//crashing scpack game
+                .Replace("\u200B", string.Empty)//crashing scpack game
+                .Replace("\u318D", string.Empty)//crashing scpack game
+                .Replace("'", string.Empty)//crashing scpack game
+                .Replace("(", "（")//scpack script have same symbol for scripts
+                .Replace(")", "）")//scpack script have same symbol for scripts
+                //.Replace("...", "……")//just for cosmetic reason?
                 ;
         }
 

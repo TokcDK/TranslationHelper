@@ -22,6 +22,8 @@ namespace TranslationHelper.Projects.EAGLS
             return ProjectFolderName();
         }
 
+        string scriptsFIlter = "sc_*.txt";
+
         /// <summary>
         /// unpack txt files from SCPACK or pack translated txt to them. pack by default
         /// </summary>
@@ -45,12 +47,12 @@ namespace TranslationHelper.Projects.EAGLS
                 Directory.CreateDirectory(WorkTXTDir);
 
                 var code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
-                if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, "*.txt"))
+                if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, scriptsFIlter))
                 {
                     arguments = scpacker + unpackpack + scriptdir + " \"" + WorkTXTDir + "\" -t";
                     code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
 
-                    if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, "*.txt"))
+                    if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, scriptsFIlter))
                     {
                         Directory.Delete(workdir, true);
                         return false;
@@ -69,12 +71,12 @@ namespace TranslationHelper.Projects.EAGLS
 
         protected bool OpenFiles()
         {
-            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(thDataWork), "*.txt");
+            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(thDataWork), scriptsFIlter);
         }
 
         protected bool SaveFiles()
         {
-            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(thDataWork), "*.txt");
+            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(thDataWork), scriptsFIlter);
         }
 
         protected string SCPACKpak = string.Empty;
