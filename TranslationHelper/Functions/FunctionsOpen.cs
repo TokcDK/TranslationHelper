@@ -34,9 +34,10 @@ namespace TranslationHelper.Functions
             else
             {
                 thDataWork.Main.IsOpeningInProcess = true;
+                var IsProjectFileSelected = false;
                 //об сообщении Освобождаемый объект никогда не освобождается и почему using здесь
                 //https://stackoverflow.com/questions/2926869/do-you-need-to-dispose-of-objects-and-set-them-to-null
-                using (OpenFileDialog THFOpen = new OpenFileDialog())
+                using (var THFOpen = new OpenFileDialog())
                 {
                     THFOpen.InitialDirectory = thDataWork.Main.Settings.THConfigINI.ReadINI("Paths", "LastPath");
                     THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json;*.scn;*.ks|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
@@ -48,11 +49,12 @@ namespace TranslationHelper.Functions
                             new CleanupData(thDataWork).THCleanupThings();
 
                             thDataWork.SPath = THFOpen.FileName;
+                            IsProjectFileSelected = true;
                         }
                     }
                 }
 
-                if (string.IsNullOrEmpty(thDataWork.SPath))
+                if (!IsProjectFileSelected)
                 {
                     thDataWork.Main.IsOpeningInProcess = false;
                     return;
