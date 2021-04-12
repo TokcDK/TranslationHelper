@@ -86,11 +86,9 @@ namespace TranslationHelper.Formats.RPGMTrans
                         else
                         {
                             var trans = original;
-                            var translated = SetTranslation(ref trans);
 
                             //remove or add untranslated tag when translation was changed
-
-                            if (translated)
+                            if (SetTranslation(ref trans, translation))//if translation was changed from previous
                             {
                                 //remove UNTRANSLATED when string translated and context contains it
                                 if (context.Contains(" < UNTRANSLATED"))
@@ -197,7 +195,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                             if (IsValidString(original))
                             {
                                 var trans = original;
-                                if (SetTranslation(ref trans))
+                                if (SetTranslation(ref trans, translation))//if translation was changed from previous
                                 {
                                     if (translation != trans)
                                     {

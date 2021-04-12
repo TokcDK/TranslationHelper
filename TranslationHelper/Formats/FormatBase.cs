@@ -628,12 +628,16 @@ namespace TranslationHelper.Formats
 
         /// <summary>
         /// check if translation is exists and set str return true if found.
-        /// input string must contain original value for search.
+        /// value = input string, must contain original value for search.
+        /// controltrans = control translation value, if was loaded translation from file
         /// </summary>
         /// <param name="value">input=original, output=translation</param>
+        /// <param name="controltrans">control translation value if was loaded translation from file</param>
         /// <returns>true if translation was set and not equal to input original</returns>
-        internal bool SetTranslation(ref string value)
+        internal bool SetTranslation(ref string value, string controltrans = null)
         {
+            var ret = false;
+
             if (!Properties.Settings.Default.DontLoadDuplicates
                 && thDataWork.OriginalsTableRowCoordinats != null
                 && thDataWork.OriginalsTableRowCoordinats.ContainsKey(value))
@@ -647,7 +651,14 @@ namespace TranslationHelper.Formats
                         value = thDataWork.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
                         value = FixInvalidSymbols(value);
                         SaveRowIndex++;
-                        return control != value;
+
+                        ret = control != value || (controltrans != null && controltrans != value);
+                        if (ret)
+                        {
+                            ParseData.Ret = true;
+                        }
+
+                        //return ret;
                     }
                     else // set 1st value from avalaible values
                     {
@@ -657,7 +668,13 @@ namespace TranslationHelper.Formats
                             value = FixInvalidSymbols(value);
                             SaveRowIndex++;
 
-                            return control != value;
+                            ret = control != value || (controltrans != null && controltrans != value);
+                            if (ret)
+                            {
+                                ParseData.Ret = true;
+                            }
+
+                            //return ret;
                         }
                     }
                 }
@@ -672,7 +689,13 @@ namespace TranslationHelper.Formats
                             value = FixInvalidSymbols(value);
                             SaveRowIndex++;
 
-                            return control != value;
+                            ret = control != value || (controltrans != null && controltrans != value);
+                            if (ret)
+                            {
+                                ParseData.Ret = true;
+                            }
+
+                            //return ret;
                         }
                     }
                 }
@@ -681,11 +704,18 @@ namespace TranslationHelper.Formats
             {
                 var control = value;
                 value = thDataWork.TablesLinesDict[value];
+                value = FixInvalidSymbols(value);
 
-                return control != value;
+                ret = control != value || (controltrans != null && controltrans != value);
+                if (ret)
+                {
+                    ParseData.Ret = true;
+                }
+
+                //return ret;
             }
 
-            return false;
+            return ret;
         }
 
         protected bool CheckTablesContent(string tablename, bool IsDictionary = false)

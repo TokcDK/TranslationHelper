@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
 
@@ -9,7 +10,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         private const string StringPattern = "&[0-9]{1,6}\"([^\"\r\n]+)\"";//&17523"「はい……」"
         //#さくら=w0261a
         //#　花　=w0003f
-        private const string StringPatternNames = @"#([^\=\r\n]+)(\=w[0-9]{4}[a-z])?$";//#さくら=w0629a
+        private const string StringPatternNames = @"#([^\=\r\n]+)(\=w[0-9]{4}[a-z])?";//#さくら=w0629a
 
         public SC_TXT(THDataWork thDataWork) : base(thDataWork)
         {
@@ -32,16 +33,58 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                     StringPatternNames },
                 { "&",
                     StringPattern },
-                { "(\"",
-                    @"[0-9]{1,6}\(\""[^\""]*\"",\""([^\""\r\n]+)\""\)" }, // 52(":NameSuffix","大地"),
-                { "\")",
-                    @"[0-9]{1,6}\(\""([^\""\r\n]+)\""\)" } // 161("１１日目　後編選択")
+                //{ "(\"",
+                //    @"[0-9]{1,6}\(\""[^\""]*\"",\""([^\""\r\n]+)\""\)" }, // 52(":NameSuffix","大地"),
+                //{ "\")",
+                //    @"[0-9]{1,6}\(\""([^\""\r\n]+)\""\)" } // 161("１１日目　後編選択")
             };
+        }
+
+        protected override void ParseStringFileLines()
+        {
+            var file = ParseData.reader.ReadToEnd();
+            foreach (var pattern in Patterns())
+            {
+                var mc = Regex.Matches(file, pattern.Value);
+                if (mc.Count == 0)
+                {
+                    continue;
+                }
+
+                if (thDataWork.OpenFileMode)
+                {
+                    foreach (Match match in mc)
+                    {
+                        AddRowData(match.Result("$1"), "", true);
+                    }
+                }
+                else
+                {
+                    for (int i = mc.Count - 1; i >= 0; i--)
+                    {
+                        var value = mc[i].Result("$1");
+                        if (IsValidString(value))
+                        {
+                            if (SetTranslation(ref value))
+                            {
+                                file = file.Remove(mc[i].Index, mc[i].Length).Insert(mc[i].Index, mc[i].Value.Replace(mc[i].Result("$1"), value));
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (thDataWork.SaveFileMode)
+            {
+                ParseData.ResultForWrite.Append(file);
+            }
         }
 
         //string lastMentionedCharacter = string.Empty;
         protected override int ParseStringFileLine()
         {
+
+
             ParsePatterns();
 
             //old
@@ -110,15 +153,17 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         }
         protected override string FixInvalidSymbols(string str)
         {
+            str = base.FixInvalidSymbols(str);
             str = str.Replace(":NameSuffix", "％ＨＮ％");//hide hero name var
             str = str.CleanForShiftJIS2004()
                 .Replace(",", "、")//scpack script have same symbol for scripts
                 .Replace("=", "＝")//scpack script have same symbol for scripts
-                //.Replace(".", "。")
-                //.Replace("!", "！")
-                //.Replace("%", "％")
+                .Replace(".", "。")
+                .Replace("!", "！")
+                .Replace("?", "？")
+                .Replace("%", "％")
                 .Replace(":", "：")//scpack script have same symbol for scripts
-                //.Replace(";", "；")
+                .Replace(";", "；")
                 .Replace("&", "＆")//scpack script have same symbol for scripts
                 ;
             //str = ENJPCharsReplacement(str);//convert en chars to jp
