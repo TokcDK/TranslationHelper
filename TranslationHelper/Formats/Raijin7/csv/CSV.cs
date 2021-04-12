@@ -71,10 +71,7 @@ namespace TranslationHelper.Formats.Raijin7
                 lineNumber++;
             }
 
-            if (thDataWork.SaveFileMode)
-            {
-                ParseData.ResultForWrite.AppendLine(ParseData.line);
-            }
+            SaveModeAddLine();
 
             return ret;
         }

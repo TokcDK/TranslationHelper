@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.Raijin7
         protected bool IsValid(string v, ref string trans)
         {
             trans = v;
-            return IsValidString(v) && CheckAndSetTranslation(ref trans) && v != trans;
+            return IsValidString(v) && SetTranslation(ref trans) && v != trans;
         }
 
         protected void SetValue(params int[] nums)

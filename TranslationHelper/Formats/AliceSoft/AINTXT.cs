@@ -27,7 +27,7 @@ namespace TranslationHelper.Formats.AliceSoft
                     else
                     {
                         string trans = orig;
-                        if (CheckAndSetTranslation(ref trans))
+                        if (SetTranslation(ref trans))
                         {
                             //set translation and replace in orig line
                             var ind = ParseData.line.IndexOf(orig);
@@ -47,10 +47,7 @@ namespace TranslationHelper.Formats.AliceSoft
                 lastgroupname = ParseData.line;
             }
 
-            if (thDataWork.SaveFileMode)
-            {
-                ParseData.ResultForWrite.AppendLine(ParseData.line);
-            }
+            SaveModeAddLine();
 
             return 0;
         }

@@ -48,7 +48,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     {
                         string str = r.Result("$1");
                         var trans = str;
-                        if (CheckAndSetTranslation(ref trans))
+                        if (SetTranslation(ref trans))
                         {
                             int i;
                             ParseData.line = ParseData.line
@@ -63,10 +63,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
             }
 
-            if (thDataWork.SaveFileMode)
-            {
-                ParseData.ResultForWrite.AppendLine(ParseData.line);
-            }
+            SaveModeAddLine();
 
             return 1;
         }

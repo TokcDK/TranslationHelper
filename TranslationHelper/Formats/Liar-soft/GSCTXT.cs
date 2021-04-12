@@ -15,10 +15,7 @@ namespace TranslationHelper.Formats.Liar_soft
         {
             if (!ParseData.line.StartsWith("#"))
             {
-                if (thDataWork.SaveFileMode)
-                {
-                    ParseData.ResultForWrite.AppendLine(ParseData.line);
-                }
+                SaveModeAddLine();
                 return 0;
             }
 
@@ -37,7 +34,7 @@ namespace TranslationHelper.Formats.Liar_soft
                 {
                     AddRowData(str, "", true, false);
                 }
-                else if(CheckAndSetTranslation(ref str))
+                else if(SetTranslation(ref str))
                 {
                     ParseData.Ret = true;
                 }

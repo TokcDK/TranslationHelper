@@ -64,10 +64,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     }
                 }
 
-                if (thDataWork.SaveFileMode)
-                {
-                    ParseData.ResultForWrite.AppendLine(ParseData.line);
-                }
+                SaveModeAddLine();
             }
 
             return 0;

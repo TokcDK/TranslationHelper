@@ -32,10 +32,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
                 return -1;
             }
 
-            if (thDataWork.SaveFileMode)
-            {
-                ParseData.ResultForWrite.AppendLine(ParseData.line);
-            }
+            SaveModeAddLine();
 
             //skip if begin string not found
             if (IsNotBeginString())
@@ -48,10 +45,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
             while (!(ParseData.line = ParseData.reader.ReadLine()).StartsWith("> CONTEXT"))
             {
                 originalLines.Add(ParseData.line);
-                if (thDataWork.SaveFileMode)
-                {
-                    ParseData.ResultForWrite.AppendLine(ParseData.line);
-                }
+                SaveModeAddLine();
             }
             //------------------------------------
             //add context
@@ -96,7 +90,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
             else
             {
                 var trans = original;
-                var translated = thDataWork.SaveFileMode && CheckAndSetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && (original != trans || trans != translation);
+                var translated = thDataWork.SaveFileMode && SetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && (original != trans || trans != translation);
                 ParseData.ResultForWrite.AppendLine(translated ? context.Replace(" < UNTRANSLATED", string.Empty) : context);
                 if (translated && IsValidString(original))
                 {
@@ -107,7 +101,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
                 {
                     ParseData.ResultForWrite.AppendLine(translation);
                 }
-                ParseData.ResultForWrite.AppendLine(ParseData.line);//add endstring line
+                SaveModeAddLine(); ;//add endstring line
             }
 
             return 0;

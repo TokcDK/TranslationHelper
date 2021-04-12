@@ -86,10 +86,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
                 ret = -1;
             }
 
-            if (thDataWork.SaveFileMode)
-            {
-                ParseData.ResultForWrite.AppendLine(ParseData.line);
-            }
+            SaveModeAddLine();
 
             return ret;
         }

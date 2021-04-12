@@ -68,7 +68,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                         else
                         {
                             var trans=str;
-                            if (CheckAndSetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && str != trans)
+                            if (SetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && str != trans)
                             {
                                 int ind;
                                 array[i] = array[i].Remove(ind = array[i].IndexOf(str), str.Length).Insert(ind, FixInvalidSymbols('`' + trans + '`'));

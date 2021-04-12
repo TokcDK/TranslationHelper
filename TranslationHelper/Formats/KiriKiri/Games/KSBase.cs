@@ -146,14 +146,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         //    }
         //}
 
-        private void SaveModeAddLine()
-        {
-            if (thDataWork.SaveFileMode)
-            {
-                ParseData.ResultForWrite.AppendLine(ParseData.line);
-            }
-        }
-
         private bool IsEmptyOrComment()
         {
             if (!ParseData.IsComment && ParseData.line.Contains("/*"))
@@ -288,7 +280,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                         }
                         else
                         {
-                            if (CheckAndSetTranslation(ref str))
+                            if (SetTranslation(ref str))
                             {
                                 if (!ParseData.Ret)
                                 {

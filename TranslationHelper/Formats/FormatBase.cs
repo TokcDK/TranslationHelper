@@ -351,7 +351,7 @@ namespace TranslationHelper.Formats
                         {
                             var str = mc[m].Result("$1");
                             var trans = str;
-                            if (IsValidString(str) && CheckAndSetTranslation(ref trans) && trans != str)
+                            if (IsValidString(str) && SetTranslation(ref trans) && trans != str)
                             {
                                 ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
                                 ParseData.Ret = true;
@@ -625,58 +625,59 @@ namespace TranslationHelper.Formats
         protected int SaveRowIndex = 0;
 
         /// <summary>
-        /// check if translation is exists and set str return true if found
+        /// check if translation is exists and set str return true if found.
+        /// input string must contain original value for search.
         /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        internal bool CheckAndSetTranslation(ref string str)
+        /// <param name="value">input=original, output=translation</param>
+        /// <returns>true if translation was set and not equal to input original</returns>
+        internal bool SetTranslation(ref string value)
         {
             if (!Properties.Settings.Default.DontLoadDuplicates
                 && thDataWork.OriginalsTableRowCoordinats != null
-                && thDataWork.OriginalsTableRowCoordinats.ContainsKey(str))
+                && thDataWork.OriginalsTableRowCoordinats.ContainsKey(value))
             {
                 var tname = Path.GetFileName(thDataWork.FilePath);
-                if (thDataWork.OriginalsTableRowCoordinats[str].ContainsKey(tname))
+                if (thDataWork.OriginalsTableRowCoordinats[value].ContainsKey(tname))
                 {
-                    var control = str;
-                    if (thDataWork.OriginalsTableRowCoordinats[str][tname].Contains(SaveRowIndex))
+                    var control = value;
+                    if (thDataWork.OriginalsTableRowCoordinats[value][tname].Contains(SaveRowIndex))
                     {
-                        str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
+                        value = thDataWork.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
                         SaveRowIndex++;
-                        return control != str;
+                        return control != value;
                     }
                     else // set 1st value from avalaible values
                     {
-                        foreach (var rind in thDataWork.OriginalsTableRowCoordinats[str][tname])
+                        foreach (var rind in thDataWork.OriginalsTableRowCoordinats[value][tname])
                         {
-                            str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                            value = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
                             SaveRowIndex++;
 
-                            return control != str;
+                            return control != value;
                         }
                     }
                 }
                 else // set 1st value from avalaible values
                 {
-                    var control = str;
-                    foreach (var tn in thDataWork.OriginalsTableRowCoordinats[str].Values)
+                    var control = value;
+                    foreach (var tn in thDataWork.OriginalsTableRowCoordinats[value].Values)
                     {
                         foreach (var rind in tn)
                         {
-                            str = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                            value = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
                             SaveRowIndex++;
 
-                            return control != str;
+                            return control != value;
                         }
                     }
                 }
             }
-            else if (thDataWork.TablesLinesDict.ContainsKey(str))
+            else if (thDataWork.TablesLinesDict.ContainsKey(value))
             {
-                var control = str;
-                str = thDataWork.TablesLinesDict[str];
+                var control = value;
+                value = thDataWork.TablesLinesDict[value];
 
-                return control != str;
+                return control != value;
             }
 
             return false;

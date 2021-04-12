@@ -77,82 +77,60 @@ namespace TranslationHelper.Formats.RPGMTrans
                     var original = originalLines.Joined();
                     var translation = translatedLines.Joined();
                     var context = contextlines.Joined();
-                    if (thDataWork.OpenFileMode)
+                    if (IsValidString(original))
                     {
-                        AddRowData(new[] { original, translation }, context, true);
-                    }
-                    else
-                    {
-                        var OTEqual = original == translation;
-                        var trans = original;
-                        var HasOriginal = CheckAndSetTranslation(ref trans);
-                        var newTransNotEqualOld = HasOriginal && trans != translation;
-                        var translated =  (!OTEqual && !string.IsNullOrEmpty(translation)) || (OTEqual && HasOriginal && newTransNotEqualOld);
-                        if (IsValidString(original))
+                        if (thDataWork.OpenFileMode)
                         {
-                            if (HasOriginal)
-                            {
-                                if (newTransNotEqualOld)
-                                {
-                                    var newTransEqualOrig = trans != original;
-                                    if (!newTransEqualOrig || (newTransEqualOrig && newTransNotEqualOld))
-                                    {
-                                        translated = true;
-                                        translation = trans;
-                                        ParseData.Ret = true;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (OTEqual && !translated)
-                        {
-                            //clean translation when original was equal to translation
-                            translated = false;
-                            translation = string.Empty;
-                            ParseData.Ret = true; //need to write file to fix equal translation
-                        }
-
-                        //remove or add untranslated tag when translation was changed
-                        if (translated)
-                        {
-                            //remove UNTRANSLATED when string translated and context contains it
-                            if (context.Contains(" < UNTRANSLATED"))
-                            {
-                                context = context.Replace(" < UNTRANSLATED", string.Empty);
-                                ParseData.Ret = true;
-                            }
+                            AddRowData(new[] { original, translation }, context, true, false);
                         }
                         else
                         {
-                            //write UNTRANSLATED tag when string is not translated and context have it not added
-                            var wrote = false;
-                            for (int i = 0; i < contextlines.Count; i++)
+                            var trans = original;
+                            var translated = SetTranslation(ref trans);
+
+                            //remove or add untranslated tag when translation was changed
+
+                            if (translated)
                             {
-                                if (!contextlines[i].EndsWith(" < UNTRANSLATED"))
+                                //remove UNTRANSLATED when string translated and context contains it
+                                if (context.Contains(" < UNTRANSLATED"))
                                 {
-                                    contextlines[i] = contextlines[i] + " < UNTRANSLATED";
-                                    wrote = true;
+                                    context = context.Replace(" < UNTRANSLATED", string.Empty);
+                                    ParseData.Ret = true;
                                 }
                             }
-                            if (wrote)
+                            else
                             {
-                                context = contextlines.Joined();
-                                ParseData.Ret = true;
+                                //write UNTRANSLATED tag when string is not translated and context have it not added
+                                var NeedToWriteFile = false;
+                                for (int i = 0; i < contextlines.Count; i++)
+                                {
+                                    if (!contextlines[i].EndsWith(" < UNTRANSLATED"))
+                                    {
+                                        contextlines[i] = contextlines[i] + " < UNTRANSLATED";
+                                        NeedToWriteFile = true;
+                                    }
+                                }
+                                if (NeedToWriteFile)//if any context line was changed
+                                {
+                                    context = contextlines.Joined();
+                                    ParseData.Ret = true; // need to write the file because new translation is equal to original or empty
+                                }
                             }
-                        }
 
-                        ParseData.line =
-                            "> BEGIN STRING"
-                            + Environment.NewLine
-                            + original
-                            + Environment.NewLine
-                            + context
-                            + Environment.NewLine
-                            + translation
-                            + Environment.NewLine
-                            + "> END STRING"
-                            ;
+                            //write block
+                            ParseData.line =
+                                "> BEGIN STRING"
+                                + Environment.NewLine
+                                + original
+                                + Environment.NewLine
+                                + context
+                                + Environment.NewLine
+                                + translation
+                                + Environment.NewLine
+                                + "> END STRING"
+                                ;
+                        }
                     }
                 }
             }
@@ -219,7 +197,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                             if (IsValidString(original))
                             {
                                 var trans = original;
-                                if (CheckAndSetTranslation(ref trans))
+                                if (SetTranslation(ref trans))
                                 {
                                     if (translation != trans)
                                     {
@@ -258,10 +236,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                 }
             }
 
-            if (thDataWork.SaveFileMode)
-            {
-                ParseData.ResultForWrite.AppendLine(ParseData.line);
-            }
+            SaveModeAddLine();
 
             return ret;
         }
