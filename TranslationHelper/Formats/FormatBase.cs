@@ -385,7 +385,9 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual string FixInvalidSymbols(string str)
         {
-            return str;
+            return str
+                .Replace("\u200b", string.Empty)//remove zero length whitespace (can be produced by online translator)
+                ;
         }
 
         /// <summary>
@@ -643,6 +645,7 @@ namespace TranslationHelper.Formats
                     if (thDataWork.OriginalsTableRowCoordinats[value][tname].Contains(SaveRowIndex))
                     {
                         value = thDataWork.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
+                        value = FixInvalidSymbols(value);
                         SaveRowIndex++;
                         return control != value;
                     }
@@ -651,6 +654,7 @@ namespace TranslationHelper.Formats
                         foreach (var rind in thDataWork.OriginalsTableRowCoordinats[value][tname])
                         {
                             value = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                            value = FixInvalidSymbols(value);
                             SaveRowIndex++;
 
                             return control != value;
@@ -665,6 +669,7 @@ namespace TranslationHelper.Formats
                         foreach (var rind in tn)
                         {
                             value = thDataWork.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                            value = FixInvalidSymbols(value);
                             SaveRowIndex++;
 
                             return control != value;
