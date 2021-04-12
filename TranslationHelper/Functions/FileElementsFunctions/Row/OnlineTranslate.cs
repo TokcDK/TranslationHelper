@@ -97,17 +97,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
                         return;
                     }
-
-                    thDataWork.Main.ProgressInfo(true, "Get all DB");
-
-                    var mergingAllDB = new Task(() => FunctionsDBFile.MergeAllDBtoOne(thDataWork));
-                    mergingAllDB.ConfigureAwait(true);
-                    mergingAllDB.Start();
-                    mergingAllDB.Wait();
-                    AllDBLoaded4All = true;
-
-                    thDataWork.Main.ProgressInfo(false);
                 }
+
+                thDataWork.Main.ProgressInfo(true, "Get all DB");
+
+                var mergingAllDB = new Task(() => FunctionsDBFile.MergeAllDBtoOne(thDataWork));
+                mergingAllDB.ConfigureAwait(true);
+                mergingAllDB.Start();
+                mergingAllDB.Wait();
+                AllDBLoaded4All = true;
+
+                thDataWork.Main.ProgressInfo(false);
 
             }
         }
