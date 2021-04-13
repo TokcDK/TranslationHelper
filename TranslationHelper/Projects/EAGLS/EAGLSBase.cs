@@ -16,7 +16,7 @@ namespace TranslationHelper.Projects.EAGLS
         {
             base.Init();
             ProjectName = ProjectName();
-            var w = Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), ProjectName);
+            Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), ProjectName);
             WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
             ScriptDir = Path.Combine(Properties.Settings.Default.THSelectedGameDir, "Script");
             SCPACKpak = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "Script", "SCPACK.pak");
@@ -77,7 +77,7 @@ namespace TranslationHelper.Projects.EAGLS
                 }
 
                 var errorslog = Path.Combine(THSettingsData.SCPackerPYPath(), "errors.log.txt");
-                if (File.Exists(errorslog) && new FileInfo(errorslog).Length>0)
+                if (File.Exists(errorslog) && new FileInfo(errorslog).Length > 0)
                 {
                     MessageBox.Show(T._("Errors was occcured while packing") + "." + T._("Will be opened log and work dir") + ".");
                     FunctionsProcess.RunProcess(errorslog, "");
@@ -91,7 +91,7 @@ namespace TranslationHelper.Projects.EAGLS
             return true;
         }
 
-        protected string ProjectName = string.Empty;
+        protected new string ProjectName = string.Empty;
         protected string ScriptDir = string.Empty;
 
         protected bool OpenFiles()

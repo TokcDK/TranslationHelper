@@ -27,9 +27,9 @@ namespace TranslationHelper.Projects
         {
             if (!string.IsNullOrWhiteSpace(thDataWork.SPath))
             {
-                var sg = Properties.Settings.Default.THSelectedGameDir = Path.GetDirectoryName(thDataWork.SPath);
-                var sd = Properties.Settings.Default.THSelectedDir = Path.GetDirectoryName(thDataWork.SPath);
-                var w = Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), ProjectName());
+                Properties.Settings.Default.THSelectedGameDir = Path.GetDirectoryName(thDataWork.SPath);
+                Properties.Settings.Default.THSelectedDir = Path.GetDirectoryName(thDataWork.SPath);
+                Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), ProjectName());
             }
         }
 
@@ -725,7 +725,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool BackupFile(string file)
         {
-            thDataWork.Main.ProgressInfo(true, T._("backup")+":"+Path.GetFileName(file));
+            thDataWork.Main.ProgressInfo(true, T._("backup") + ":" + Path.GetFileName(file));
 
             try
             {
