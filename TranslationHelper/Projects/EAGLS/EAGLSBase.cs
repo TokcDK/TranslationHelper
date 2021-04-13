@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.EAGLS.SCPACK;
 using TranslationHelper.Main.Functions;
@@ -9,7 +10,17 @@ namespace TranslationHelper.Projects.EAGLS
     {
         protected EAGLSBase(THDataWork thDataWork) : base(thDataWork)
         {
+        }
+
+        internal override void Init()
+        {
+            base.Init();
+            ProjectName = ProjectName();
+            var w = Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), ProjectName);
             WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
+            ScriptDir = Path.Combine(Properties.Settings.Default.THSelectedGameDir, "Script");
+            SCPACKpak = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "Script", "SCPACK.pak");
+            SCPACKidx = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "Script", "SCPACK.idx");
         }
 
         internal override string ProjectFolderName()
@@ -29,7 +40,7 @@ namespace TranslationHelper.Projects.EAGLS
         /// </summary>
         /// <param name="pack"></param>
         /// <returns></returns>
-        protected bool PackUnpackFiles(bool pack = true)
+        protected bool PackUnpackFiles()
         {
             try
             {
@@ -37,26 +48,40 @@ namespace TranslationHelper.Projects.EAGLS
                 var workdir = Properties.Settings.Default.THProjectWorkDir;
 
                 var pythonexe = THSettingsData.Python37ExePath();
-                var scpacker = "\"" + THSettingsData.SCPackerPYPath() + "\"";
-                var scriptdir = "\"" + ScriptDir + "\"";
+                var scpacker = THSettingsData.SCPackerPYPath();
+                var scriptdir = ScriptDir;
 
                 WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
-                var unpackpack = " " + (pack ? string.Empty : "un") + "pack" + " ";
-                var arguments = scpacker + unpackpack + scriptdir + " \"" + WorkTXTDir + "\" -t -o";
+                var mode = (thDataWork.SaveFileMode ? string.Empty : "un") + "pack";
+                var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t -o";
 
                 Directory.CreateDirectory(WorkTXTDir);
+
+                //write command file
+                File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, mode + "1.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
 
                 var code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
                 if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, scriptsFIlter))
                 {
-                    arguments = scpacker + unpackpack + scriptdir + " \"" + WorkTXTDir + "\" -t";
-                    code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
+                    arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t";
 
+                    //write command file
+                    File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, mode + "2.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
+
+                    code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
                     if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, scriptsFIlter))
                     {
                         Directory.Delete(workdir, true);
                         return false;
                     }
+                }
+
+                var errorslog = Path.Combine(THSettingsData.SCPackerPYPath(), "errors.log.txt");
+                if (File.Exists(errorslog) && new FileInfo(errorslog).Length>0)
+                {
+                    MessageBox.Show(T._("Errors was occcured while packing") + "." + T._("Will be opened log and work dir") + ".");
+                    FunctionsProcess.RunProcess(errorslog, "");
+                    FunctionsProcess.RunProcess(Properties.Settings.Default.THProjectWorkDir, "");
                 }
             }
             catch
@@ -84,12 +109,22 @@ namespace TranslationHelper.Projects.EAGLS
         protected string WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
         internal override bool BakCreate()
         {
-            return BackupFile(SCPACKpak) && BackupFile(SCPACKidx) && BackupDir(WorkTXTDir);
+            return BackupRestorePaths(new[]
+            {
+                SCPACKpak,
+                SCPACKidx,
+                WorkTXTDir
+            }, true);
         }
 
         internal override bool BakRestore()
         {
-            return RestoreFile(SCPACKpak) && RestoreFile(SCPACKidx) && RestoreDir(WorkTXTDir);
+            return BackupRestorePaths(new[]
+            {
+                SCPACKpak,
+                SCPACKidx,
+                WorkTXTDir
+            }, false);
         }
     }
 }

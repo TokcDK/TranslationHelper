@@ -22,17 +22,13 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override bool Open()
         {
-            SCPACKpak = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "Script", "SCPACK.pak");
-            SCPACKidx = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "Script", "SCPACK.idx");
             BakRestore();
             return UnpackSCPACK();
         }
 
         private bool UnpackSCPACK()
         {
-            ProjectName = Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath));
-            ScriptDir = Path.Combine(Properties.Settings.Default.THSelectedGameDir, "Script");
-            return PackUnpackFiles(false) && OpenFiles();
+            return PackUnpackFiles() && OpenFiles();
         }
 
         internal override string Name()

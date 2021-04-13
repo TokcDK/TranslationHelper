@@ -158,6 +158,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
             str = str.CleanForShiftJIS2004()
                 .Replace(",", "、")//scpack script have same symbol for scripts
                 .Replace("=", "＝")//scpack script have same symbol for scripts
+                .Replace("～", "~")//unicode encode error
                 .Replace(".", "。")
                 .Replace("!", "！")
                 .Replace("?", "？")

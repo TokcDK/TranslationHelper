@@ -27,10 +27,19 @@ namespace TranslationHelper.Projects
         {
             if (!string.IsNullOrWhiteSpace(thDataWork.SPath))
             {
-                Properties.Settings.Default.THSelectedGameDir = Path.GetDirectoryName(thDataWork.SPath);
-                Properties.Settings.Default.THSelectedDir = Path.GetDirectoryName(thDataWork.SPath);
-                Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), Path.GetFileName(Properties.Settings.Default.THSelectedGameDir));
+                var sg = Properties.Settings.Default.THSelectedGameDir = Path.GetDirectoryName(thDataWork.SPath);
+                var sd = Properties.Settings.Default.THSelectedDir = Path.GetDirectoryName(thDataWork.SPath);
+                var w = Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), ProjectName());
             }
+        }
+
+        /// <summary>
+        /// Name of selected project
+        /// </summary>
+        /// <returns></returns>
+        internal virtual string ProjectName()
+        {
+            return Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath));
         }
 
         /// <summary>

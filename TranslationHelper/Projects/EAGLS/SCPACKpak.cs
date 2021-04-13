@@ -23,9 +23,6 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override bool Open()
         {
-            SCPACKpak = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "SCPACK.pak");
-            SCPACKidx = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "SCPACK.idx");
-            BakRestore();
             return UnpackSCPACK();
         }
 
@@ -33,7 +30,7 @@ namespace TranslationHelper.Projects.EAGLS
         {
             ProjectName = "SCPACK" + (ISpak ? "pak" : "idx") + "_" + thDataWork.SPath.GetCrc32();
             ScriptDir = Properties.Settings.Default.THSelectedGameDir;
-            return PackUnpackFiles(false) && OpenFiles();
+            return PackUnpackFiles() && OpenFiles();
         }
 
         internal override string Name()
