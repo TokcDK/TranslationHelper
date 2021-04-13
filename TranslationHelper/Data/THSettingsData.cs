@@ -48,7 +48,7 @@ namespace TranslationHelper.Data
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string Python37ScriptsPath()
         {
-            return Path.Combine(Python37Path(), "Scripts");
+            return Path.Combine(PythonPath(), "Scripts");
         }
 
         /// <summary>
@@ -327,20 +327,26 @@ namespace TranslationHelper.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string Python37Path()
+        internal static string PythonDirName()
         {
-            return Path.Combine(ResDirPath(), "python37");
-        }
-
-        internal static string Python37Path2()
-        {
-            return @".\" + ResDirName() + @"\python37";
+            return "python38";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string Python37ExePath()
+        internal static string PythonPath()
         {
-            return Path.Combine(Python37Path(), "python.exe");
+            return Path.Combine(ResDirPath(), PythonDirName());
+        }
+
+        internal static string PythonPath2()
+        {
+            return @".\" + ResDirName() + @"\"+ PythonDirName();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string PythonExePath()
+        {
+            return Path.Combine(PythonPath(), "python.exe");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -358,7 +364,7 @@ namespace TranslationHelper.Data
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string Python37ExePath2()
         {
-            return Python37Path2() + @"\python.exe";
+            return PythonPath2() + @"\python.exe";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

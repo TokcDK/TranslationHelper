@@ -47,7 +47,7 @@ namespace TranslationHelper.Projects.EAGLS
                 Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), ProjectName);
                 var workdir = Properties.Settings.Default.THProjectWorkDir;
 
-                var pythonexe = THSettingsData.Python37ExePath();
+                var pythonexe = THSettingsData.PythonExePath();
                 var scpacker = THSettingsData.SCPackerPYPath();
                 var scriptdir = ScriptDir;
 
