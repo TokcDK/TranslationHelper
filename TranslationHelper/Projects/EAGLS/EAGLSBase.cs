@@ -53,7 +53,8 @@ namespace TranslationHelper.Projects.EAGLS
 
                 WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
                 var mode = (thDataWork.SaveFileMode ? string.Empty : "un") + "pack";
-                var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t -o";
+                //var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t -o";
+                var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\"";
 
                 Directory.CreateDirectory(WorkTXTDir);
 
@@ -63,17 +64,20 @@ namespace TranslationHelper.Projects.EAGLS
                 var code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
                 if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, scriptsFIlter))
                 {
-                    arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t";
+                    Directory.Delete(workdir, true);
+                    return false;
 
-                    //write command file
-                    File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, mode + "2.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
+                    //arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t";
 
-                    code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
-                    if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, scriptsFIlter))
-                    {
-                        Directory.Delete(workdir, true);
-                        return false;
-                    }
+                    ////write command file
+                    //File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, mode + "2.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
+
+                    //code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
+                    //if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, scriptsFIlter))
+                    //{
+                    //    Directory.Delete(workdir, true);
+                    //    return false;
+                    //}
                 }
 
                 var errorslog = Path.Combine(THSettingsData.SCPackerPYPath(), "errors.log.txt");
