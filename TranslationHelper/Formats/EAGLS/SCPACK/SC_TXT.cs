@@ -155,17 +155,20 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         {
             str = base.FixInvalidSymbols(str);
             str = str.Replace(":NameSuffix", "％ＨＮ％");//hide hero name var
-            str = str.CleanForShiftJIS2004()
-                .Replace(",", "、")//scpack script have same symbol for scripts
-                .Replace("=", "＝")//scpack script have same symbol for scripts
+            str = str
+                .Replace(",", "、")//scpack script have same symbol for scripts, changed to jp
+                .Replace("\"", "”")//scpack script have same symbol for scripts, changed to jp
+                .Replace("=", "＝")//scpack script have same symbol for scripts, changed to jp
                 .Replace("～", "~")//unicode encode error
                 .Replace(".", "。")
+                .Replace("'", "´")//scpack script have same symbol for scripts, changed to jp
                 .Replace("!", "！")
                 .Replace("?", "？")
                 .Replace("%", "％")
-                .Replace(":", "：")//scpack script have same symbol for scripts
+                .Replace(":", "：")//scpack script have same symbol for scripts, changed to jp
                 .Replace(";", "；")
-                .Replace("&", "＆")//scpack script have same symbol for scripts
+                .Replace("&", "＆")//scpack script have same symbol for scripts, changed to jp
+                .CleanForShiftJIS2004()
                 ;
             //str = ENJPCharsReplacement(str);//convert en chars to jp
             str = str.Replace("％ＨＮ％", ":NameSuffix");//restore hero name var

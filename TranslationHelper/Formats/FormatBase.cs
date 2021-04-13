@@ -386,7 +386,7 @@ namespace TranslationHelper.Formats
         protected virtual string FixInvalidSymbols(string str)
         {
             return str
-                .Replace("\u200b", string.Empty)//remove zero length whitespace (can be produced by online translator)
+                .Replace("\u200b", string.Empty)//remove zero-length-space (can be produced by online translator)
                 ;
         }
 
