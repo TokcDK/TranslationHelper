@@ -153,6 +153,15 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         }
         protected override string FixInvalidSymbols(string str)
         {
+            /* For the record: most game scripts I had available don't use any text formatting, yet quite a few commands are supported:
+(e) puts text on the next row
+(y=・) furigana
+(f=1) set font size to 1 for example, can be 0-9 for gothic and 10-19 for mincho, the mapping number<->fontsize varies between games
+(c=r,g,b) text color; rgb values between 0-255
+(s=r,g,b) text outline; rgb values between 0-255
+(r) reset text formatting
+<> escapes brackets, for example */
+
             str = base.FixInvalidSymbols(str);
             str = str.Replace(":NameSuffix", "％ＨＮ％");//hide hero name var
             str = str
@@ -160,6 +169,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                 .Replace("\"", "”")//scpack script have same symbol for scripts, changed to jp
                 .Replace("=", "＝")//scpack script have same symbol for scripts, changed to jp
                 .Replace("～", "~")//unicode encode error
+                .Replace("...", "…")//just for cosmetic reason?
                 .Replace(".", "。")
                 .Replace("'", "´")//scpack script have same symbol for scripts, changed to jp
                 .Replace("!", "！")
