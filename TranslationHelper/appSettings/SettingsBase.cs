@@ -41,7 +41,7 @@ namespace TranslationHelper.INISettings
             var type = typeof(T);
             foreach (var ClassType in type.Assembly.GetTypes())
             {
-                if (ClassType.IsSubclassOf(type) && !ClassType.IsAbstract)
+                if (ClassType.IsSubclassOf(type) && ClassType.IsClass && !ClassType.IsInterface && !ClassType.IsAbstract)
                 {
                     ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType, args));
                 }
@@ -63,7 +63,7 @@ namespace TranslationHelper.INISettings
             var type = typeof(T);
             foreach (var ClassType in type.Assembly.GetTypes())
             {
-                if (ClassType.IsSubclassOf(type) && !ClassType.IsAbstract)
+                if (ClassType.IsSubclassOf(type) && ClassType.IsClass && !ClassType.IsInterface && !ClassType.IsAbstract)
                 {
                     ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType));
                 }
