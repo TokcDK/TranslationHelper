@@ -48,6 +48,11 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBox = new System.Windows.Forms.CheckBox();
             this.THSettingsToolsTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.cbSearchRowIssueOptionsCheckProjectSpecific = new System.Windows.Forms.CheckBox();
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable = new System.Windows.Forms.CheckBox();
+            this.cbSearchRowIssueOptionsCheckNonRomaji = new System.Windows.Forms.CheckBox();
+            this.cbSearchRowIssueOptionsCheckActors = new System.Windows.Forms.CheckBox();
+            this.SearchRowIssueOptionsLabel = new System.Windows.Forms.Label();
             this.flpQuickTranslatorSelection = new System.Windows.Forms.FlowLayoutPanel();
             this.SettingsAutosaveTimeoutValueTextBox = new System.Windows.Forms.TextBox();
             this.SettingsAutosaveEnabledCheckBox = new System.Windows.Forms.CheckBox();
@@ -55,11 +60,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTranslationLinkTextBox = new System.Windows.Forms.TextBox();
             this.cbxWebTranslatorsSelector = new System.Windows.Forms.ComboBox();
-            this.SearchRowIssueOptionsLabel = new System.Windows.Forms.Label();
-            this.cbSearchRowIssueOptionsCheckActors = new System.Windows.Forms.CheckBox();
-            this.cbSearchRowIssueOptionsCheckNonRomaji = new System.Windows.Forms.CheckBox();
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable = new System.Windows.Forms.CheckBox();
-            this.cbSearchRowIssueOptionsCheckProjectSpecific = new System.Windows.Forms.CheckBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -241,10 +241,6 @@
             // 
             this.THOptionDBCompressionExtComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.THOptionDBCompressionExtComboBox.FormattingEnabled = true;
-            this.THOptionDBCompressionExtComboBox.Items.AddRange(new object[] {
-            "XML (none)",
-            "Gzip (cmx)",
-            "Deflate (cmz)"});
             this.THOptionDBCompressionExtComboBox.Location = new System.Drawing.Point(155, 30);
             this.THOptionDBCompressionExtComboBox.MaxDropDownItems = 3;
             this.THOptionDBCompressionExtComboBox.Name = "THOptionDBCompressionExtComboBox";
@@ -320,6 +316,67 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(524, 379);
             this.panel2.TabIndex = 8;
+            // 
+            // cbSearchRowIssueOptionsCheckProjectSpecific
+            // 
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.AutoSize = true;
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Checked = true;
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Location = new System.Drawing.Point(28, 182);
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Name = "cbSearchRowIssueOptionsCheckProjectSpecific";
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Size = new System.Drawing.Size(162, 17);
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.TabIndex = 21;
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Text = "Check project specific issues";
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.UseVisualStyleBackColor = true;
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckProjectSpecific_CheckedChanged);
+            // 
+            // cbSearchRowIssueOptionsCheckAnyLineTranslatable
+            // 
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.AutoSize = true;
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Checked = true;
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Location = new System.Drawing.Point(28, 159);
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Name = "cbSearchRowIssueOptionsCheckAnyLineTranslatable";
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Size = new System.Drawing.Size(191, 17);
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.TabIndex = 20;
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Text = "Check if any line can be translated";
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.UseVisualStyleBackColor = true;
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckAnyLineTranslatable_CheckedChanged);
+            // 
+            // cbSearchRowIssueOptionsCheckNonRomaji
+            // 
+            this.cbSearchRowIssueOptionsCheckNonRomaji.AutoSize = true;
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Checked = true;
+            this.cbSearchRowIssueOptionsCheckNonRomaji.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Location = new System.Drawing.Point(28, 113);
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Name = "cbSearchRowIssueOptionsCheckNonRomaji";
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Size = new System.Drawing.Size(134, 17);
+            this.cbSearchRowIssueOptionsCheckNonRomaji.TabIndex = 19;
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Text = "Check non romaji exist";
+            this.cbSearchRowIssueOptionsCheckNonRomaji.UseVisualStyleBackColor = true;
+            this.cbSearchRowIssueOptionsCheckNonRomaji.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckNonRomaji_CheckedChanged);
+            // 
+            // cbSearchRowIssueOptionsCheckActors
+            // 
+            this.cbSearchRowIssueOptionsCheckActors.AutoSize = true;
+            this.cbSearchRowIssueOptionsCheckActors.Checked = true;
+            this.cbSearchRowIssueOptionsCheckActors.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSearchRowIssueOptionsCheckActors.Location = new System.Drawing.Point(28, 136);
+            this.cbSearchRowIssueOptionsCheckActors.Name = "cbSearchRowIssueOptionsCheckActors";
+            this.cbSearchRowIssueOptionsCheckActors.Size = new System.Drawing.Size(118, 17);
+            this.cbSearchRowIssueOptionsCheckActors.TabIndex = 18;
+            this.cbSearchRowIssueOptionsCheckActors.Text = "Check Actor names";
+            this.cbSearchRowIssueOptionsCheckActors.UseVisualStyleBackColor = true;
+            this.cbSearchRowIssueOptionsCheckActors.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckActors_CheckedChanged);
+            // 
+            // SearchRowIssueOptionsLabel
+            // 
+            this.SearchRowIssueOptionsLabel.AutoSize = true;
+            this.SearchRowIssueOptionsLabel.Location = new System.Drawing.Point(8, 97);
+            this.SearchRowIssueOptionsLabel.Name = "SearchRowIssueOptionsLabel";
+            this.SearchRowIssueOptionsLabel.Size = new System.Drawing.Size(154, 13);
+            this.SearchRowIssueOptionsLabel.TabIndex = 17;
+            this.SearchRowIssueOptionsLabel.Text = "Search Row issue find options:";
             // 
             // flpQuickTranslatorSelection
             // 
@@ -406,67 +463,6 @@
             this.cbxWebTranslatorsSelector.Size = new System.Drawing.Size(508, 21);
             this.cbxWebTranslatorsSelector.TabIndex = 15;
             this.cbxWebTranslatorsSelector.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            // 
-            // SearchRowIssueOptionsLabel
-            // 
-            this.SearchRowIssueOptionsLabel.AutoSize = true;
-            this.SearchRowIssueOptionsLabel.Location = new System.Drawing.Point(8, 97);
-            this.SearchRowIssueOptionsLabel.Name = "SearchRowIssueOptionsLabel";
-            this.SearchRowIssueOptionsLabel.Size = new System.Drawing.Size(154, 13);
-            this.SearchRowIssueOptionsLabel.TabIndex = 17;
-            this.SearchRowIssueOptionsLabel.Text = "Search Row issue find options:";
-            // 
-            // cbSearchRowIssueOptionsCheckActors
-            // 
-            this.cbSearchRowIssueOptionsCheckActors.AutoSize = true;
-            this.cbSearchRowIssueOptionsCheckActors.Checked = true;
-            this.cbSearchRowIssueOptionsCheckActors.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSearchRowIssueOptionsCheckActors.Location = new System.Drawing.Point(28, 136);
-            this.cbSearchRowIssueOptionsCheckActors.Name = "cbSearchRowIssueOptionsCheckActors";
-            this.cbSearchRowIssueOptionsCheckActors.Size = new System.Drawing.Size(118, 17);
-            this.cbSearchRowIssueOptionsCheckActors.TabIndex = 18;
-            this.cbSearchRowIssueOptionsCheckActors.Text = "Check Actor names";
-            this.cbSearchRowIssueOptionsCheckActors.UseVisualStyleBackColor = true;
-            this.cbSearchRowIssueOptionsCheckActors.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckActors_CheckedChanged);
-            // 
-            // cbSearchRowIssueOptionsCheckNonRomaji
-            // 
-            this.cbSearchRowIssueOptionsCheckNonRomaji.AutoSize = true;
-            this.cbSearchRowIssueOptionsCheckNonRomaji.Checked = true;
-            this.cbSearchRowIssueOptionsCheckNonRomaji.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSearchRowIssueOptionsCheckNonRomaji.Location = new System.Drawing.Point(28, 113);
-            this.cbSearchRowIssueOptionsCheckNonRomaji.Name = "cbSearchRowIssueOptionsCheckNonRomaji";
-            this.cbSearchRowIssueOptionsCheckNonRomaji.Size = new System.Drawing.Size(134, 17);
-            this.cbSearchRowIssueOptionsCheckNonRomaji.TabIndex = 19;
-            this.cbSearchRowIssueOptionsCheckNonRomaji.Text = "Check non romaji exist";
-            this.cbSearchRowIssueOptionsCheckNonRomaji.UseVisualStyleBackColor = true;
-            this.cbSearchRowIssueOptionsCheckNonRomaji.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckNonRomaji_CheckedChanged);
-            // 
-            // cbSearchRowIssueOptionsCheckAnyLineTranslatable
-            // 
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.AutoSize = true;
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Checked = true;
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Location = new System.Drawing.Point(28, 159);
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Name = "cbSearchRowIssueOptionsCheckAnyLineTranslatable";
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Size = new System.Drawing.Size(191, 17);
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.TabIndex = 20;
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Text = "Check if any line can be translated";
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.UseVisualStyleBackColor = true;
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckAnyLineTranslatable_CheckedChanged);
-            // 
-            // cbSearchRowIssueOptionsCheckProjectSpecific
-            // 
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.AutoSize = true;
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.Checked = true;
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.Location = new System.Drawing.Point(28, 182);
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.Name = "cbSearchRowIssueOptionsCheckProjectSpecific";
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.Size = new System.Drawing.Size(162, 17);
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.TabIndex = 21;
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.Text = "Check project specific issues";
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.UseVisualStyleBackColor = true;
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.CheckedChanged += new System.EventHandler(this.cbSearchRowIssueOptionsCheckProjectSpecific_CheckedChanged);
             // 
             // THfrmSettings
             // 

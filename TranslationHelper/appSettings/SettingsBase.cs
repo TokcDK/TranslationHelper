@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.INISettings
@@ -29,21 +30,76 @@ namespace TranslationHelper.INISettings
 
         /// <summary>
         /// Get all inherited classes of an abstract class
+        /// non linq a variant of https://stackoverflow.com/a/5411981
+        /// </summary>
+        /// <typeparam name="T">type of subclasses</typeparam>
+        /// <param name="parameter">parameter required for subclass(remove if not need)</param>
+        /// <returns>List of subclasses of abstract class</returns>
+        internal static List<T> GetListOfSubClasses<T>(params object[] args)
+        {
+            var ListOfSubClasses = new List<T>();
+            var type = typeof(T);
+            foreach (var ClassType in type.Assembly.GetTypes())
+            {
+                if (ClassType.IsSubclassOf(type) && !ClassType.IsAbstract)
+                {
+                    ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType, args));
+                }
+            }
+
+            return ListOfSubClasses;
+        }
+
+        /// <summary>
+        /// Get all inherited classes of an abstract class
+        /// non linq a variant of https://stackoverflow.com/a/5411981
+        /// </summary>
+        /// <typeparam name="T">type of subclasses</typeparam>
+        /// <param name="parameter">parameter required for subclass(remove if not need)</param>
+        /// <returns>List of subclasses of abstract class</returns>
+        internal static List<T> GetListOfSubClasses<T>()
+        {
+            var ListOfSubClasses = new List<T>();
+            var type = typeof(T);
+            foreach (var ClassType in type.Assembly.GetTypes())
+            {
+                if (ClassType.IsSubclassOf(type) && !ClassType.IsAbstract)
+                {
+                    ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType));
+                }
+            }
+
+            return ListOfSubClasses;
+        }
+
+        /// <summary>
+        /// Get all inherited classes of an abstract class
         /// non linq version of https://stackoverflow.com/a/5411981
         /// </summary>
         /// <typeparam name="T">type of subclasses</typeparam>
         /// <param name="parameter">parameter required for subclass(remove if not need)</param>
         /// <returns>List of subclasses of abstract class</returns>
-        internal static List<T> GetListOfSubClasses<T>(THDataWork parameter)
+        internal static List<T> GetListOfInterfaceImplimentations<T>()
         {
             var ListOfSubClasses = new List<T>();
-            foreach (var ClassType in typeof(T).Assembly.GetTypes())
+            var type = typeof(T);
+            foreach (var ClassType in type.Assembly.GetTypes())
             {
-                if (ClassType.IsSubclassOf(typeof(T)) && !ClassType.IsAbstract)
+                if (ClassType.Name.Contains("CMX"))
                 {
-                    ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType, parameter));
+
+                }
+                var b = type.IsAssignableFrom(ClassType);
+                if (type.IsAssignableFrom(ClassType) && ClassType.IsClass && !ClassType.IsInterface && !ClassType.IsAbstract)
+                {
+                    ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType));
                 }
             }
+
+            //var l = AppDomain.CurrentDomain.GetAssemblies()
+            //.SelectMany(s => s.GetTypes())
+            //.Where(p => type.IsAssignableFrom(p))
+            //.ToList();
 
             return ListOfSubClasses;
         }

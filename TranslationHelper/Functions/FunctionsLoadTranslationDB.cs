@@ -692,13 +692,17 @@ namespace TranslationHelper.Functions
 
         internal async static void LoadTranslationIfNeed(THDataWork thDataWork)
         {
-            var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(thDataWork), FunctionsDBFile.GetDBFileName(thDataWork) + FunctionsDBFile.GetDBCompressionExt(thDataWork));
-            if (File.Exists(lastautosavepath))
+            var DBPath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(thDataWork), FunctionsDBFile.GetDBFileName(thDataWork) + FunctionsDBFile.GetDBCompressionExt(thDataWork));
+            if (!File.Exists(DBPath))
+            {
+                FunctionsDBFile.SearchByAllDBFormatExtensions(ref DBPath);
+            }
+            if (File.Exists(DBPath))
             {
                 var LoadFoundDBQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (LoadFoundDBQuestion == DialogResult.Yes)
                 {
-                    await Task.Run(()=>thDataWork.Main.LoadTranslationFromDB(lastautosavepath, false, true)).ConfigureAwait(false);
+                    await Task.Run(()=>thDataWork.Main.LoadTranslationFromDB(DBPath, false, true)).ConfigureAwait(false);
                 }
                 else
                 {

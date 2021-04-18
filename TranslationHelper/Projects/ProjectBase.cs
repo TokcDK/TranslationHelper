@@ -8,6 +8,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Functions;
+using TranslationHelper.INISettings;
 
 namespace TranslationHelper.Projects
 {
@@ -407,30 +408,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal static List<ProjectBase> GetListOfProjects(THDataWork thDataWork)
         {
-            //ProjectsList = new List<ProjectBase>()
-            //{
-            //    new RPGMTransPatch(this)
-            //    ,
-            //    new RPGMGame(this)
-            //    ,
-            //    new RPGMMVGame(this)
-            //    ,
-            //    new KiriKiriGame(this)
-            //    ,
-            //    new Raijin7Game(this)
-            //    ,
-            //    new HowToMakeTrueSlavesRiseofaDarkEmpire(this)
-            //};
-
-            //https://stackoverflow.com/a/5411981
-            //Get all inherited classes of an abstract class
-            IEnumerable<ProjectBase> SubclassesOfProjectBase = typeof(ProjectBase)
-            .Assembly.GetTypes()
-            .Where(t => t.IsSubclassOf(typeof(ProjectBase)) && !t.IsAbstract)
-            .Select(t => (ProjectBase)Activator.CreateInstance(t, thDataWork));
-
-            return (from ProjectBase SubClass in SubclassesOfProjectBase
-                    select SubClass).ToList();
+            return SettingsBaseTools.GetListOfSubClasses<ProjectBase>(thDataWork);
         }
 
         /// <summary>

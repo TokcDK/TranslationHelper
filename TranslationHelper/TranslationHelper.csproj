@@ -228,6 +228,10 @@
     <Compile Include="Formats\WolfRPG\WolfRPGBase.cs" />
     <Compile Include="Formats\WolfRPG\WolfTrans\TXT.cs" />
     <Compile Include="Formats\zzzOtherFormat\OtherFormatBase.cs" />
+    <Compile Include="Functions\DBSaveFormats\CMZ.cs" />
+    <Compile Include="Functions\DBSaveFormats\CMX.cs" />
+    <Compile Include="Functions\DBSaveFormats\DBSaveBase.cs" />
+    <Compile Include="Functions\DBSaveFormats\XML.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\CompleteRomajiotherLines.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\ExportFormatsBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\RPGMakerLikeTXT.cs" />
@@ -260,6 +264,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\Tolower.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUPPERAll.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUpper1st.cs" />
+    <Compile Include="Functions\FunctionsInterfaces.cs" />
     <Compile Include="Functions\FunctionsLoadTranslationDB.cs" />
     <Compile Include="Functions\FunctionsLogs.cs" />
     <Compile Include="Functions\FunctionsMessage.cs" />

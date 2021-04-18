@@ -12,6 +12,9 @@ using System.Xml;
 using System.Xml.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
+using TranslationHelper.Functions;
+using TranslationHelper.Functions.DBSaveFormats;
+using TranslationHelper.INISettings;
 using TranslationHelper.Projects.RPGMMV;
 
 namespace TranslationHelper.Main.Functions
@@ -32,38 +35,19 @@ namespace TranslationHelper.Main.Functions
 
         //https://stackoverflow.com/questions/223738/net-stream-dataset-of-xml-data-to-zip-file
         //http://madprops.org/blog/saving-datasets-locally-with-compression/
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5366:Использовать XmlReader для чтения XML из набора данных", Justification = "<Ожидание>")]
+        /// <summary>
+        /// read xml file
+        /// </summary>
+        /// <param name="DS"></param>
+        /// <param name="fileName"></param>
         public static void ReadDBFile(DataSet DS, string fileName)
         {
-            using (FileStream fs = new FileStream(fileName, FileMode.Open))
-            {
-                Stream s;
-                string fileExtension = Path.GetExtension(fileName);
-                if (fileExtension == ".cmx")
-                {
-                    s = new GZipStream(fs, CompressionMode.Decompress);
-                }
-                else if (fileExtension == ".cmz")
-                {
-                    s = new DeflateStream(fs, CompressionMode.Decompress);
-                }
-                else
-                {
-                    s = fs;
-                }
-                //XmlReaderSettings set = new XmlReaderSettings();
-                //using (var xr = XmlReader.Create(s/*, set*/))
-                //{
-                //    DS.ReadXml(xr);//с этим не может читать hex в xml и не грузит многострочные
-                //}
-                DS.ReadXml(s);
-                s.Close();
-            }
+            ReadWriteDBFile(DS, fileName);
         }
 
-        /// <summary>
-        /// Remove illegal XML characters from a string.
-        /// </summary>
+        // <summary>
+        // Remove illegal XML characters from a string.
+        // </summary>
         //public static string SanitizeXmlString(string xml)
         //{
         //    if (xml == null)
@@ -83,10 +67,9 @@ namespace TranslationHelper.Main.Functions
 
         //    return buffer.ToString();
         //}
-
-        /// <summary>
-        /// Whether a given character is allowed by XML 1.0.
-        /// </summary>
+        // <summary>
+        // Whether a given character is allowed by XML 1.0.
+        // </summary>
         //public static bool IsLegalXmlChar(int character)
         //{
         //    return
@@ -100,51 +83,69 @@ namespace TranslationHelper.Main.Functions
         //    );
         //}
 
+        /// <summary>
+        /// write xml file
+        /// </summary>
+        /// <param name="DS"></param>
+        /// <param name="fileName"></param>
         public static void WriteDBFile(DataSet DS, string fileName)
         {
-            using (FileStream fs = new FileStream(fileName, FileMode.Create))
+            ReadWriteDBFile(DS, fileName, false);
+        }
+
+        /// <summary>
+        /// read or write db file
+        /// </summary>
+        /// <param name="DS"></param>
+        /// <param name="fileName"></param>
+        /// <param name="read"></param>
+        internal static void ReadWriteDBFile(DataSet DS, string fileName, bool read = true)
+        {
+            var DBFormat = FunctionsInterfaces.GetCurrentDBFormat();
+            fileName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "." + DBFormat.Ext);
+            using (var fs = new FileStream(fileName, read ? FileMode.Open : FileMode.Create))
             {
                 Stream s;
-                string fileExtension = Path.GetExtension(fileName);
-                if (fileExtension == ".cmx")
+                //string fileExtension = Path.GetExtension(fileName);
+                s = DBFormat.FileStreamMod(fs, read);
+
+                if (read)
                 {
-                    s = new GZipStream(fs, CompressionMode.Compress);
-                }
-                else if (fileExtension == ".cmz")
-                {
-                    s = new DeflateStream(fs, CompressionMode.Compress);
+                    DS.ReadXml(s);
                 }
                 else
                 {
-                    s = fs;
+                    DS.WriteXml(s);
                 }
-                DS.WriteXml(s);
+
                 s.Close();
             }
         }
 
-        internal static string GetDBCompressionExt(THDataWork thDataWork)
+        /// <summary>
+        /// gets current selected format of database file
+        /// </summary>
+        /// <returns></returns>
+        internal static IDBSave GetCurrentDBFormat()
+        {
+            IDBSave Format = new XML();
+            foreach (var f in SettingsBaseTools.GetListOfInterfaceImplimentations<IDBSave>())
+            {
+                if (f.Description == Properties.Settings.Default.DBCompressionExt)
+                {
+                    return f;
+                }
+            }
+
+            return Format;
+        }
+
+        internal static string GetDBCompressionExt(THDataWork thDataWork = null)
         {
             //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"));
-            if (thDataWork.Main.Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked") == "True")
+            if (TranslationHelper.Properties.Settings.Default.DBCompression)
             {
-                //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression"));
-                if (thDataWork.Main.Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "XML (none)")
-                {
-                    //MessageBox.Show(".xml");
-                    return ".xml";
-                }
-                else if (thDataWork.Main.Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "Gzip (cmx)")
-                {
-                    //MessageBox.Show(".cmx");
-                    return ".cmx";
-                }
-                else if (thDataWork.Main.Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompression") == "Deflate (cmz)")
-                {
-                    //MessageBox.Show(".cmz");
-                    return ".cmz";
-                }
-
+                return "." + FunctionsInterfaces.GetCurrentDBFormat().Ext;
             }
             //MessageBox.Show("Default .xml");
             return ".xml";
@@ -471,7 +472,7 @@ namespace TranslationHelper.Main.Functions
                             db.Add(O, new Dictionary<string, Dictionary<int, string>>());
                         }
 
-                        if (db[O].Values.Count==0 || !db[O].ContainsKey(table.TableName))
+                        if (db[O].Values.Count == 0 || !db[O].ContainsKey(table.TableName))
                         {
                             db[O].Add(table.TableName, new Dictionary<int, string>());
                         }
@@ -494,7 +495,7 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         internal static DataSet ToDataSet(this Dictionary<string, string> dict)
         {
-            using(var DS = new DataSet())
+            using (var DS = new DataSet())
             {
                 DS.Tables.Add("DB");
                 DS.Tables["DB"].Columns.Add("Original");
@@ -611,6 +612,25 @@ namespace TranslationHelper.Main.Functions
                 baseName = Regex.Replace(baseName, baseNamePattern, "$1");
             }
             return baseName;
+        }
+
+        /// <summary>
+        /// search if path exists for any extension from exist DB formats
+        /// </summary>
+        /// <param name="DBPath"></param>
+        internal static void SearchByAllDBFormatExtensions(ref string DBPath)
+        {
+            var dir = Path.GetDirectoryName(DBPath);
+            var name = Path.GetFileNameWithoutExtension(DBPath);
+            foreach (var format in FunctionsInterfaces.GetDBSaveFormats())
+            {
+                var PathForFormat = Path.Combine(dir, name + "." + format.Ext);
+                if (File.Exists(PathForFormat))
+                {
+                    DBPath = PathForFormat;
+                    return;
+                }
+            }
         }
     }
 }
