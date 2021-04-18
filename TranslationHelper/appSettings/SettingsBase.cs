@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.INISettings
@@ -39,11 +38,19 @@ namespace TranslationHelper.INISettings
         {
             var ListOfSubClasses = new List<T>();
             var type = typeof(T);
+            bool noargs = args == null || args.Length == 0;
             foreach (var ClassType in type.Assembly.GetTypes())
             {
-                if (ClassType.IsSubclassOf(type) && ClassType.IsClass && !ClassType.IsInterface && !ClassType.IsAbstract)
+                if (ClassType.IsClass && !ClassType.IsInterface && !ClassType.IsAbstract && ClassType.IsSubclassOf(type))
                 {
-                    ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType, args));
+                    if(noargs)
+                    {
+                        ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType));
+                    }
+                    else
+                    {
+                        ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType, args));
+                    }
                 }
             }
 
@@ -57,19 +64,9 @@ namespace TranslationHelper.INISettings
         /// <typeparam name="T">type of subclasses</typeparam>
         /// <param name="parameter">parameter required for subclass(remove if not need)</param>
         /// <returns>List of subclasses of abstract class</returns>
-        internal static List<T> GetListOfSubClasses<T>()
+        public static List<T> GetListOfSubClasses<T>()
         {
-            var ListOfSubClasses = new List<T>();
-            var type = typeof(T);
-            foreach (var ClassType in type.Assembly.GetTypes())
-            {
-                if (ClassType.IsSubclassOf(type) && ClassType.IsClass && !ClassType.IsInterface && !ClassType.IsAbstract)
-                {
-                    ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType));
-                }
-            }
-
-            return ListOfSubClasses;
+            return GetListOfSubClasses<T>(null);
         }
 
         /// <summary>
@@ -90,7 +87,7 @@ namespace TranslationHelper.INISettings
 
                 }
                 var b = type.IsAssignableFrom(ClassType);
-                if (type.IsAssignableFrom(ClassType) && ClassType.IsClass && !ClassType.IsInterface && !ClassType.IsAbstract)
+                if (ClassType.IsClass && !ClassType.IsInterface && !ClassType.IsAbstract && type.IsAssignableFrom(ClassType))
                 {
                     ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType));
                 }
