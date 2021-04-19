@@ -280,6 +280,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             GetTableData();
 
+            if (SelectedTableIndex == -1)//return when table is not selected
+            {
+                return false;
+            }
+
             if (IsValidTable(SelectedTable))
             {
                 if (!IsAll)

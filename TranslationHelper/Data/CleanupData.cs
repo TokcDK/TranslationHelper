@@ -100,7 +100,7 @@ namespace TranslationHelper.Data
                 thDataWork.Main.cutToolStripMenuItem1.Enabled = false;
                 thDataWork.Main.copyCellValuesToolStripMenuItem.Enabled = false;
                 thDataWork.Main.pasteCellValuesToolStripMenuItem.Enabled = false;
-                thDataWork.Main.clearSelectedCellsToolStripMenuItem.Enabled = false;
+                thDataWork.Main.ClearSelectedCellsToolStripMenuItem.Enabled = false;
                 thDataWork.Main.toUPPERCASEToolStripMenuItem.Enabled = false;
                 thDataWork.Main.firstCharacterToUppercaseToolStripMenuItem.Enabled = false;
                 thDataWork.Main.toLOWERCASEToolStripMenuItem.Enabled = false;

@@ -215,7 +215,7 @@ namespace TranslationHelper
             this.cutToolStripMenuItem1.Text = T._("Cut");
             this.copyCellValuesToolStripMenuItem.Text = T._("Copy");
             this.pasteCellValuesToolStripMenuItem.Text = T._("Paste");
-            this.clearSelectedCellsToolStripMenuItem.Text = T._("Clear selected cells");
+            this.ClearSelectedCellsToolStripMenuItem.Text = T._("Clear selected cells");
             this.toUPPERCASEToolStripMenuItem.Text = T._("UPPERCASE");
             this.firstCharacterToUppercaseToolStripMenuItem.Text = T._("Uppercase");
             this.toLOWERCASEToolStripMenuItem.Text = T._("lowercase");
@@ -530,7 +530,7 @@ namespace TranslationHelper
             cutToolStripMenuItem1.Enabled = true;
             copyCellValuesToolStripMenuItem.Enabled = true;
             pasteCellValuesToolStripMenuItem.Enabled = true;
-            clearSelectedCellsToolStripMenuItem.Enabled = true;
+            ClearSelectedCellsToolStripMenuItem.Enabled = true;
             toUPPERCASEToolStripMenuItem.Enabled = true;
             firstCharacterToUppercaseToolStripMenuItem.Enabled = true;
             toLOWERCASEToolStripMenuItem.Enabled = true;
@@ -1890,14 +1890,17 @@ namespace TranslationHelper
             //LogToFile("Paste End", true);
         }
 
-        bool ClearSelectedCellsIsBusy;
-        private async void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ClearSelectedCellsIsBusy || Properties.Settings.Default.DGVCellInEditMode)
-                return;
-            ClearSelectedCellsIsBusy = true;
-            await Task.Run(() => FunctionsTable.CleanTableCells(thDataWork, Properties.Settings.Default.THFilesListSelectedIndex)).ConfigureAwait(true);
-            ClearSelectedCellsIsBusy = false;
+            new ClearCells(thDataWork).Selected();
+        }
+        private void ClearTableCellsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ClearCells(thDataWork).Table();
+        }
+        private void ClearAllCellsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ClearCells(thDataWork).All();
         }
 
         //==============вырезать, копировать, вставить, для одной или нескольких ячеек
@@ -3179,6 +3182,39 @@ namespace TranslationHelper
         private void RPGMakerLikeTXTToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new RPGMakerLikeTXT(thDataWork).All();
+        }
+
+        private void ClearTableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ClearCells(thDataWork).Table();
+        }
+
+        private void UPPERCASETableToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            new ToUPPER(thDataWork).Table();
+        }
+
+        private void UppercaseTableToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            new ToUpper(thDataWork).Table();
+        }
+
+        private void lowercaseTableToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            new ToLower(thDataWork).Table();
+        }
+
+        private void THFilesList_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var item = THFilesList.IndexFromPoint(e.Location);
+                if (item >= 0)
+                {
+                    THFilesList.SelectedIndex = item;
+                    CMSFilesList.Show(THFilesList, e.Location);
+                }
+            }
         }
 
         //Материалы
