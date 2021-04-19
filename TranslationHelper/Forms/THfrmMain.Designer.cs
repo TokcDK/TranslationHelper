@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -373,7 +373,7 @@
             // tXTToolStripMenuItem
             // 
             this.tXTToolStripMenuItem.Name = "tXTToolStripMenuItem";
-            this.tXTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tXTToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.tXTToolStripMenuItem.Text = "RPGMakerLikeTXT";
             this.tXTToolStripMenuItem.Click += new System.EventHandler(this.RPGMakerLikeTXTToolStripMenuItem_Click);
             // 
@@ -469,7 +469,7 @@
             this.selectedToolStripMenuItem1.Enabled = false;
             this.selectedToolStripMenuItem1.Name = "selectedToolStripMenuItem1";
             this.selectedToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
-            this.selectedToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.selectedToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.selectedToolStripMenuItem1.Text = "Selected";
             this.selectedToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateSelectedToolStripMenuItem_Click);
             // 
@@ -477,21 +477,21 @@
             // 
             this.tableToolStripMenuItem1.Enabled = false;
             this.tableToolStripMenuItem1.Name = "tableToolStripMenuItem1";
-            this.tableToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.tableToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.tableToolStripMenuItem1.Text = "Table";
             this.tableToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateTableToolStripMenuItem1_Click);
             // 
             // allToolStripMenuItem1
             // 
             this.allToolStripMenuItem1.Name = "allToolStripMenuItem1";
-            this.allToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.allToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.allToolStripMenuItem1.Text = "All";
             this.allToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateAllToolStripMenuItem1_Click);
             // 
             // translationInteruptToolStripMenuItem
             // 
             this.translationInteruptToolStripMenuItem.Name = "translationInteruptToolStripMenuItem";
-            this.translationInteruptToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.translationInteruptToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.translationInteruptToolStripMenuItem.Text = "Interupt";
             this.translationInteruptToolStripMenuItem.Visible = false;
             this.translationInteruptToolStripMenuItem.Click += new System.EventHandler(this.InteruptToolStripMenuItem_Click);
@@ -718,14 +718,14 @@
             // splitLinesWhichLongerOfLimitALLToolStripMenuItem
             // 
             this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Name = "splitLinesWhichLongerOfLimitALLToolStripMenuItem";
-            this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Text = "All";
             this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Click += new System.EventHandler(this.SplitLinesWhichLongerOfLimitALLToolStripMenuItem_Click);
             // 
             // splitLinesWhichLongerOfLimitTableToolStripMenuItem
             // 
             this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Name = "splitLinesWhichLongerOfLimitTableToolStripMenuItem";
-            this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Text = "Table";
             this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Click += new System.EventHandler(this.SplitLinesWhichLongerOfLimitTableToolStripMenuItem_Click);
             // 
@@ -873,7 +873,7 @@
             // 
             this.reloadRulesToolStripMenuItem.Enabled = false;
             this.reloadRulesToolStripMenuItem.Name = "reloadRulesToolStripMenuItem";
-            this.reloadRulesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reloadRulesToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.reloadRulesToolStripMenuItem.Text = "Reload rules";
             this.reloadRulesToolStripMenuItem.Click += new System.EventHandler(this.ReloadRulesToolStripMenuItem_Click);
             // 
@@ -994,28 +994,28 @@
             this.THFiltersDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFiltersDataGridView.ColumnHeadersVisible = false;
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle1;
             this.THFiltersDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.THFiltersDataGridView.Enabled = false;
             this.THFiltersDataGridView.Location = new System.Drawing.Point(1, 1);
             this.THFiltersDataGridView.Margin = new System.Windows.Forms.Padding(1);
             this.THFiltersDataGridView.Name = "THFiltersDataGridView";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.THFiltersDataGridView.RowTemplate.Height = 23;
             this.THFiltersDataGridView.Size = new System.Drawing.Size(621, 21);
             this.THFiltersDataGridView.TabIndex = 3;
@@ -1052,8 +1052,8 @@
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(1, 26);
             this.THFileElementsDataGridView.Margin = new System.Windows.Forms.Padding(1, 1, 3, 1);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 325);
             this.THFileElementsDataGridView.TabIndex = 2;
@@ -1111,13 +1111,12 @@
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
             this.toolStripMenuItem6.Size = new System.Drawing.Size(237, 22);
             this.toolStripMenuItem6.Text = "Translate Online";
-            this.toolStripMenuItem6.Click += new System.EventHandler(this.OnlineTranslateSelectedToolStripMenuItem_Click);
             // 
             // TranslateSelectedContextToolStripMenuItem
             // 
             this.TranslateSelectedContextToolStripMenuItem.Enabled = false;
             this.TranslateSelectedContextToolStripMenuItem.Name = "TranslateSelectedContextToolStripMenuItem";
-            this.TranslateSelectedContextToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.TranslateSelectedContextToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.TranslateSelectedContextToolStripMenuItem.Text = "Selected";
             this.TranslateSelectedContextToolStripMenuItem.Click += new System.EventHandler(this.OnlineTranslateSelectedToolStripMenuItem_Click);
             // 
@@ -1125,21 +1124,21 @@
             // 
             this.TranslateTableContextToolStripMenuItem.Enabled = false;
             this.TranslateTableContextToolStripMenuItem.Name = "TranslateTableContextToolStripMenuItem";
-            this.TranslateTableContextToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.TranslateTableContextToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.TranslateTableContextToolStripMenuItem.Text = "Table";
             this.TranslateTableContextToolStripMenuItem.Click += new System.EventHandler(this.OnlineTranslateTableToolStripMenuItem1_Click);
             // 
             // toolStripMenuItem9
             // 
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size(118, 22);
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem9.Text = "All";
             this.toolStripMenuItem9.Click += new System.EventHandler(this.OnlineTranslateAllToolStripMenuItem1_Click);
             // 
             // translationInteruptToolStripMenuItem1
             // 
             this.translationInteruptToolStripMenuItem1.Name = "translationInteruptToolStripMenuItem1";
-            this.translationInteruptToolStripMenuItem1.Size = new System.Drawing.Size(118, 22);
+            this.translationInteruptToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.translationInteruptToolStripMenuItem1.Text = "Interupt";
             this.translationInteruptToolStripMenuItem1.Visible = false;
             this.translationInteruptToolStripMenuItem1.Click += new System.EventHandler(this.InteruptToolStripMenuItem_Click);
