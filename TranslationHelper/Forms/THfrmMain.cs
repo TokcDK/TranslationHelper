@@ -22,6 +22,7 @@ using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
+using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects.RPGMMV;
 using TranslationHelper.Projects.RPGMTrans;
@@ -2148,17 +2149,17 @@ namespace TranslationHelper
 
         private void ToUPPERCASEToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionsString.StringCaseMorph(thDataWork, THFilesList.SelectedIndex, 2);
+            new ToUPPER(thDataWork).Selected();
         }
 
         private void FirstCharacterToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionsString.StringCaseMorph(thDataWork, THFilesList.SelectedIndex, 1);
+            new ToUpper(thDataWork).Selected();
         }
 
         private void TolowercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionsString.StringCaseMorph(thDataWork, THFilesList.SelectedIndex, 0);
+            new ToLower(thDataWork).Selected();
         }
 
         internal bool InteruptTranslation;
@@ -2594,23 +2595,30 @@ namespace TranslationHelper
 
         private void LowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork, TIndex, 0, true)));
-            StringCase.Start();
+            new ToLower(thDataWork).All();
+        }
+
+        private void LowercaseTableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ToLower(thDataWork).Table();
         }
 
         private void UppercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork, TIndex, 1, true)));
-            StringCase.Start();
+            new ToUpper(thDataWork).All();
+        }
+        private void UppercaseTableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ToUpper(thDataWork).Table();
         }
 
         private void UPPERCASEallToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int TIndex = THFilesList.SelectedIndex;
-            Thread StringCase = new Thread(new ParameterizedThreadStart((obj) => FunctionsString.StringCaseMorph(thDataWork, TIndex, 2, true)));
-            StringCase.Start();
+            new ToUPPER(thDataWork).All();
+        }
+        private void UPPERCASETableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ToUPPER(thDataWork).Table();
         }
 
         private void AllIfExistsFiledirWithNameToolStripMenuItem_Click(object sender, EventArgs e)

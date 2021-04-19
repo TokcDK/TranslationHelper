@@ -262,8 +262,8 @@
     <Compile Include="Functions\FileElementsFunctions\Row\SplitLongLines.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\StringCaseMorphBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\Tolower.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUPPERAll.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUpper1st.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUPPER1.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUpper.cs" />
     <Compile Include="Functions\FunctionsInterfaces.cs" />
     <Compile Include="Functions\FunctionsLoadTranslationDB.cs" />
     <Compile Include="Functions\FunctionsLogs.cs" />

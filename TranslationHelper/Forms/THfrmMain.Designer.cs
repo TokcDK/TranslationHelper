@@ -81,9 +81,9 @@
             this.pasteCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearSelectedCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toUPPERCASEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.allToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toUPPERCASEAllToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.firstCharacterToUppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.allToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.firstCharacterToUppercaseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toLOWERCASEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.allToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -168,6 +168,9 @@
             this.tlpFrmMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpWorkInfo = new System.Windows.Forms.TableLayoutPanel();
             this.tlpTextLenPosInfo = new System.Windows.Forms.TableLayoutPanel();
+            this.toUPPERCASETableToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.firstCharacterToUppercaseTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LowercaseTableToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -649,41 +652,44 @@
             // toUPPERCASEToolStripMenuItem
             // 
             this.toUPPERCASEToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.allToolStripMenuItem4});
+            this.toUPPERCASEAllToolStripMenuItem4,
+            this.toUPPERCASETableToolStripMenuItem2});
             this.toUPPERCASEToolStripMenuItem.Enabled = false;
             this.toUPPERCASEToolStripMenuItem.Name = "toUPPERCASEToolStripMenuItem";
             this.toUPPERCASEToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
             this.toUPPERCASEToolStripMenuItem.Text = "UPPERCASE";
             this.toUPPERCASEToolStripMenuItem.Click += new System.EventHandler(this.ToUPPERCASEToolStripMenuItem_Click);
             // 
-            // allToolStripMenuItem4
+            // toUPPERCASEAllToolStripMenuItem4
             // 
-            this.allToolStripMenuItem4.Name = "allToolStripMenuItem4";
-            this.allToolStripMenuItem4.Size = new System.Drawing.Size(88, 22);
-            this.allToolStripMenuItem4.Text = "All";
-            this.allToolStripMenuItem4.Click += new System.EventHandler(this.UPPERCASEallToolStripMenuItem_Click);
+            this.toUPPERCASEAllToolStripMenuItem4.Name = "toUPPERCASEAllToolStripMenuItem4";
+            this.toUPPERCASEAllToolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
+            this.toUPPERCASEAllToolStripMenuItem4.Text = "All";
+            this.toUPPERCASEAllToolStripMenuItem4.Click += new System.EventHandler(this.UPPERCASEallToolStripMenuItem_Click);
             // 
             // firstCharacterToUppercaseToolStripMenuItem
             // 
             this.firstCharacterToUppercaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.allToolStripMenuItem3});
+            this.firstCharacterToUppercaseAllToolStripMenuItem,
+            this.firstCharacterToUppercaseTableToolStripMenuItem});
             this.firstCharacterToUppercaseToolStripMenuItem.Enabled = false;
             this.firstCharacterToUppercaseToolStripMenuItem.Name = "firstCharacterToUppercaseToolStripMenuItem";
             this.firstCharacterToUppercaseToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
             this.firstCharacterToUppercaseToolStripMenuItem.Text = "Uppercase";
             this.firstCharacterToUppercaseToolStripMenuItem.Click += new System.EventHandler(this.FirstCharacterToUppercaseToolStripMenuItem_Click);
             // 
-            // allToolStripMenuItem3
+            // firstCharacterToUppercaseAllToolStripMenuItem
             // 
-            this.allToolStripMenuItem3.Name = "allToolStripMenuItem3";
-            this.allToolStripMenuItem3.Size = new System.Drawing.Size(88, 22);
-            this.allToolStripMenuItem3.Text = "All";
-            this.allToolStripMenuItem3.Click += new System.EventHandler(this.UppercaseAllToolStripMenuItem_Click);
+            this.firstCharacterToUppercaseAllToolStripMenuItem.Name = "firstCharacterToUppercaseAllToolStripMenuItem";
+            this.firstCharacterToUppercaseAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.firstCharacterToUppercaseAllToolStripMenuItem.Text = "All";
+            this.firstCharacterToUppercaseAllToolStripMenuItem.Click += new System.EventHandler(this.UppercaseAllToolStripMenuItem_Click);
             // 
             // toLOWERCASEToolStripMenuItem
             // 
             this.toLOWERCASEToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.allToolStripMenuItem2});
+            this.allToolStripMenuItem2,
+            this.LowercaseTableToolStripMenuItem4});
             this.toLOWERCASEToolStripMenuItem.Enabled = false;
             this.toLOWERCASEToolStripMenuItem.Name = "toLOWERCASEToolStripMenuItem";
             this.toLOWERCASEToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
@@ -693,7 +699,7 @@
             // allToolStripMenuItem2
             // 
             this.allToolStripMenuItem2.Name = "allToolStripMenuItem2";
-            this.allToolStripMenuItem2.Size = new System.Drawing.Size(88, 22);
+            this.allToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
             this.allToolStripMenuItem2.Text = "All";
             this.allToolStripMenuItem2.Click += new System.EventHandler(this.LowercaseAllToolStripMenuItem_Click);
             // 
@@ -742,14 +748,14 @@
             // TSMIEnQuotesAll
             // 
             this.TSMIEnQuotesAll.Name = "TSMIEnQuotesAll";
-            this.TSMIEnQuotesAll.Size = new System.Drawing.Size(103, 22);
+            this.TSMIEnQuotesAll.Size = new System.Drawing.Size(180, 22);
             this.TSMIEnQuotesAll.Text = "All";
             this.TSMIEnQuotesAll.Click += new System.EventHandler(this.TSMIEnQuotesAll_Click);
             // 
             // TSMIEnQuotesTable
             // 
             this.TSMIEnQuotesTable.Name = "TSMIEnQuotesTable";
-            this.TSMIEnQuotesTable.Size = new System.Drawing.Size(103, 22);
+            this.TSMIEnQuotesTable.Size = new System.Drawing.Size(180, 22);
             this.TSMIEnQuotesTable.Text = "Table";
             this.TSMIEnQuotesTable.Click += new System.EventHandler(this.TSMIEnQuotesTable_Click);
             // 
@@ -766,14 +772,14 @@
             // fixMessagesForAllToolStripMenuItem
             // 
             this.fixMessagesForAllToolStripMenuItem.Name = "fixMessagesForAllToolStripMenuItem";
-            this.fixMessagesForAllToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.fixMessagesForAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.fixMessagesForAllToolStripMenuItem.Text = "All";
             this.fixMessagesForAllToolStripMenuItem.Click += new System.EventHandler(this.fixMessagesForAllToolStripMenuItem_Click);
             // 
             // tableToolStripMenuItem
             // 
             this.tableToolStripMenuItem.Name = "tableToolStripMenuItem";
-            this.tableToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.tableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.tableToolStripMenuItem.Text = "Table";
             this.tableToolStripMenuItem.Click += new System.EventHandler(this.tableToolStripMenuItem_Click);
             // 
@@ -865,7 +871,7 @@
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.SettingsToolStripMenuItem_Click);
             // 
@@ -873,7 +879,7 @@
             // 
             this.reloadRulesToolStripMenuItem.Enabled = false;
             this.reloadRulesToolStripMenuItem.Name = "reloadRulesToolStripMenuItem";
-            this.reloadRulesToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.reloadRulesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.reloadRulesToolStripMenuItem.Text = "Reload rules";
             this.reloadRulesToolStripMenuItem.Click += new System.EventHandler(this.ReloadRulesToolStripMenuItem_Click);
             // 
@@ -1592,6 +1598,27 @@
             this.tlpTextLenPosInfo.Size = new System.Drawing.Size(257, 20);
             this.tlpTextLenPosInfo.TabIndex = 8;
             // 
+            // toUPPERCASETableToolStripMenuItem2
+            // 
+            this.toUPPERCASETableToolStripMenuItem2.Name = "toUPPERCASETableToolStripMenuItem2";
+            this.toUPPERCASETableToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.toUPPERCASETableToolStripMenuItem2.Text = "Table";
+            this.toUPPERCASETableToolStripMenuItem2.Click += new System.EventHandler(this.UPPERCASETableToolStripMenuItem_Click);
+            // 
+            // firstCharacterToUppercaseTableToolStripMenuItem
+            // 
+            this.firstCharacterToUppercaseTableToolStripMenuItem.Name = "firstCharacterToUppercaseTableToolStripMenuItem";
+            this.firstCharacterToUppercaseTableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.firstCharacterToUppercaseTableToolStripMenuItem.Text = "Table";
+            this.firstCharacterToUppercaseTableToolStripMenuItem.Click += new System.EventHandler(this.UppercaseTableToolStripMenuItem_Click);
+            // 
+            // LowercaseTableToolStripMenuItem4
+            // 
+            this.LowercaseTableToolStripMenuItem4.Name = "LowercaseTableToolStripMenuItem4";
+            this.LowercaseTableToolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
+            this.LowercaseTableToolStripMenuItem4.Text = "Table";
+            this.LowercaseTableToolStripMenuItem4.Click += new System.EventHandler(this.LowercaseTableToolStripMenuItem_Click);
+            // 
             // THfrmMain
             // 
             this.AccessibleDescription = "Program help with translation of some RPG games";
@@ -1678,8 +1705,8 @@
         public System.Windows.Forms.RichTextBox THTargetRichTextBox;
         public System.Windows.Forms.RichTextBox THSourceRichTextBox;
         private System.Windows.Forms.ToolStripMenuItem rPGMakerTransPatchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem4;
-        private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem toUPPERCASEAllToolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem firstCharacterToUppercaseAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem2;
         internal System.Windows.Forms.ToolStripMenuItem translationInteruptToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem translationInteruptToolStripMenuItem1;
@@ -1784,6 +1811,9 @@
         internal System.Windows.Forms.ToolStripMenuItem openTranslationRulesFileToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem openCellFixesFileToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem reloadRulesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toUPPERCASETableToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem firstCharacterToUppercaseTableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LowercaseTableToolStripMenuItem4;
     }
 }
 

@@ -57,43 +57,52 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             threaded = thDataWork.Main.InvokeRequired;
         }
 
+
+        /// <summary>
+        /// true when SelectedRow(row) was executed from Selected()
+        /// </summary>
+        bool IsInternalSelectedRowExecution = false;
+
         /// <summary>
         /// proceed 1 selected row
         /// </summary>
         /// <returns></returns>
         internal bool Selected(DataRow row)
         {
-            Init();
-
-            if (!IsAll && !IsTable)
-            {
-                ActionsPreRowsApply();
-            }
-
-            if (DGV == null)
-            {
-                if (threaded)
-                {
-                    thDataWork.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = thDataWork.Main.THFileElementsDataGridView));
-                }
-                else
-                {
-                    DGV = thDataWork.Main.THFileElementsDataGridView;
-                }
-            }
-
             try
             {
+                if (!IsInternalSelectedRowExecution)
+                {
+                    Init();
+
+                    GetTableData();
+
+                    if (!IsAll && !IsTable)
+                    {
+                        SelectedRowsCount = 1;
+                    }
+
+                    if (DGV == null)
+                    {
+                        if (threaded)
+                        {
+                            thDataWork.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = thDataWork.Main.THFileElementsDataGridView));
+                        }
+                        else
+                        {
+                            DGV = thDataWork.Main.THFileElementsDataGridView;
+                        }
+                    }
+                }
+
                 SelectedRow = row;
                 SelectedTableIndex = 0;
                 SelectedRowIndex = 0;
 
-                if (!IsAll && !IsTable)
+                if (!IsInternalSelectedRowExecution && !IsAll && !IsTable)
                 {
-                    SelectedRowsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
+                    ActionsPreRowsApply();
                 }
-
-                GetTableData();
 
                 ApplyConditions();
             }
@@ -101,7 +110,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
             }
 
-            if (!IsAll && !IsTable)
+            if (!IsInternalSelectedRowExecution && !IsAll && !IsTable)
             {
                 ActionsPostRowsApply();
             }
@@ -135,23 +144,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
             }
 
-
-            //var selectedDGVCellsCount = DGV.GetCellCount(DataGridViewElementStates.Selected);
-
-            if(!IsAll && !IsTable)
+            if (!IsAll && !IsTable)
             {
                 SelectedRowsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
             }
 
             if (SelectedRowsCount > 0)
             {
-                if (!IsAll && !IsTable)
-                {
-                    ActionsPreRowsApply();
-                }
                 try
                 {
                     GetTableData();
+
+                    if (!IsAll && !IsTable)
+                    {
+                        ActionsPreRowsApply();
+                    }
+
+                    IsInternalSelectedRowExecution = true;
 
                     var SelectedRowIndexses = new int[SelectedRowsCount];
                     for (int i = 0; i < SelectedRowsCount; i++)
@@ -159,9 +168,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         log.DebugData.Add("SelectedTableIndex=" + SelectedTableIndex);
                         log.DebugData.Add("DGV.SelectedCells[i].RowIndex=" + DGV.SelectedCells[i].RowIndex);
                         log.DebugData.Add("i=" + i);
+
                         //координаты ячейки
                         SelectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, SelectedTableIndex, DGV.SelectedCells[i].RowIndex);
-
                     }
 
                     if (!IsAll && !IsTable)
@@ -171,19 +180,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     foreach (int RowIndex in SelectedRowIndexses)
                     {
-                        SelectedRow = SelectedTable.Rows[RowIndex];
-                        SelectedRowIndex = RowIndex;
-                        ApplyConditions();
+                        Selected(SelectedTable.Rows[RowIndex]);
+                    }
+
+                    if (!IsAll && !IsTable)
+                    {
+                        ActionsPostRowsApply();
                     }
                 }
                 catch (Exception ex)
                 {
                     log.LogToFile("an error occured in base row function. error=\r\n" + ex);
-                }
-
-                if (!IsAll && !IsTable)
-                {
-                    ActionsPostRowsApply();
                 }
             }
 
@@ -198,9 +205,38 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         /// <summary>
+        /// apply the actions before all tables wil be processed
+        /// </summary>
+        protected virtual void ActionsPreTablesApply()
+        {
+        }
+
+        /// <summary>
+        /// apply the actions before selected table wil be processed. 
+        /// will be executed only for All or Table, not for Selected()
+        /// </summary>
+        protected virtual void ActionsPreTableApply()
+        {
+        }
+
+        /// <summary>
         /// apply the actions after all rows for selected,table or all was applied
         /// </summary>
         protected virtual void ActionsPostRowsApply()
+        {
+        }
+
+        /// <summary>
+        /// apply the actions after all tables wil be processed
+        /// </summary>
+        protected virtual void ActionsPostTablesApply()
+        {
+        }
+
+        /// <summary>
+        /// apply the actions after selected table wil be processed
+        /// </summary>
+        protected virtual void ActionsPostTableApply()
         {
         }
 
@@ -248,24 +284,39 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 if (!IsAll)
                 {
+                    ActionsPreTablesApply();
+                }
+
+                ActionsPreTableApply();
+
+                if (!IsAll)
+                {
                     ActionsPreRowsApply();
                 }
 
+                IsInternalSelectedRowExecution = true;
+
                 var RowsCount = SelectedTable.Rows.Count;
+                if (!IsAll && IsTable /*|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is*/)
+                {
+                    SelectedRowsCount = RowsCount;
+                }
+
                 for (int i = 0; i < RowsCount; i++)
                 {
-                    SelectedRow = SelectedTable.Rows[i];
-                    SelectedRowIndex = i;
-                    if (!IsAll && IsTable /*|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is*/)
-                    {
-                        SelectedRowsCount = RowsCount;
-                    }
-                    ApplyConditions();
+                    Selected(SelectedTable.Rows[i]);
                 }
 
                 if (!IsAll && IsTable)
                 {
                     ActionsPostRowsApply();
+                }
+
+                ActionsPostTableApply();
+
+                if (!IsAll && IsTable)
+                {
+                    ActionsPostTablesApply();
                 }
             }
 
@@ -306,12 +357,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Init();
 
-            ActionsPreRowsApply();
-
             int tindex = 0;
             var tables = thDataWork.THFilesElementsDataset.Tables;
             tablescount = tables.Count;
             SetSelectedRowsCountForAll();
+
+            ActionsPreTablesApply();
+            ActionsPreRowsApply();
 
             foreach (DataTable table in tables)
             {
@@ -328,6 +380,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             ActionsPostRowsApply();
+            ActionsPostTablesApply();
 
             CompleteSound();
 
@@ -344,7 +397,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return;
             }
             SelectedRowsCount = 0;
-            foreach(DataTable t in thDataWork.THFilesElementsDataset.Tables)
+            foreach (DataTable t in thDataWork.THFilesElementsDataset.Tables)
             {
                 SelectedRowsCount += t.Rows.Count;
             }
