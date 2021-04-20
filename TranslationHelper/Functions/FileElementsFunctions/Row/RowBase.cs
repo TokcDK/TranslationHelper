@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
@@ -258,6 +259,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         /// <summary>
+        /// proceed selected table. Multithreaded.
+        /// </summary>
+        /// <returns></returns>
+        internal async Task<bool> TableT()
+        {
+            return await Task.Run(() => Table()).ConfigureAwait(false);
+        }
+        /// <summary>
         /// true when processed one table
         /// </summary>
         protected bool IsTable;
@@ -341,6 +350,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected virtual bool IsValidTable(DataTable table)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Proceed all tables. Multithreaded.
+        /// </summary>
+        /// <returns></returns>
+        internal async Task<bool> AllT()
+        {
+            return await Task.Run(() => All()).ConfigureAwait(false);
         }
 
         protected DataTable SelectedTable;

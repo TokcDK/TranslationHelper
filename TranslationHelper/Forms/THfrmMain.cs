@@ -145,11 +145,11 @@ namespace TranslationHelper
             }
             catch (ArgumentException argumentException)
             {
-                MessageBox.Show(argumentException.Message);
+                _ = MessageBox.Show(argumentException.Message);
             }
             catch (ApplicationException applicationException)
             {
-                MessageBox.Show(applicationException.Message);
+                _ = MessageBox.Show(applicationException.Message);
             }
         }
 
@@ -561,10 +561,10 @@ namespace TranslationHelper
                 {
                     if (THFileElementsDataGridView.Columns[cindx].Visible)
                     {
-                        THFiltersDataGridView.Columns.Add(THFileElementsDataGridView.Columns[cindx].Name, THFileElementsDataGridView.Columns[cindx].HeaderText);
+                        _ = THFiltersDataGridView.Columns.Add(THFileElementsDataGridView.Columns[cindx].Name, THFileElementsDataGridView.Columns[cindx].HeaderText);
                     }
                 }
-                THFiltersDataGridView.Rows.Add(1);
+                _ = THFiltersDataGridView.Rows.Add(1);
                 THFiltersDataGridView.CurrentRow.Selected = false;
 
                 //во время прокрутки DGV чернела полоса прокрутки и в результате было получено исключение
@@ -576,7 +576,7 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            this.Invoke((Action)(() => CellEnterActions(sender, e)));
+            _ = this.Invoke((Action)(() => CellEnterActions(sender, e)));
         }
 
         private void CellEnterActions(object sender, DataGridViewCellEventArgs e)
@@ -702,7 +702,7 @@ namespace TranslationHelper
                 return;
             }
             int tl = 0;
-            this.Invoke((Action)(() => tl = THTargetRichTextBox.Text.Length));
+            _ = this.Invoke((Action)(() => tl = THTargetRichTextBox.Text.Length));
             if (tl == 0)
             {
                 return;
@@ -711,12 +711,12 @@ namespace TranslationHelper
 
             // Loop over each line
             int THTargetRichTextBoxLinesCount = 0;
-            this.Invoke((Action)(() => THTargetRichTextBoxLinesCount = THTargetRichTextBox.Lines.Length));
+            _ = this.Invoke((Action)(() => THTargetRichTextBoxLinesCount = THTargetRichTextBox.Lines.Length));
             for (int i = 0; i < THTargetRichTextBoxLinesCount; i++)
             {
                 // Current line text
                 string currentLine = string.Empty;
-                this.Invoke((Action)(() => currentLine = THTargetRichTextBox.Lines[i]));
+                _ = this.Invoke((Action)(() => currentLine = THTargetRichTextBox.Lines[i]));
 
                 // Ignore the non-assembly lines
                 if (currentLine.Length > Properties.Settings.Default.THOptionLineCharLimit)
@@ -794,15 +794,15 @@ namespace TranslationHelper
             {
                 if (THActionProgressBar.Style != ProgressBarStyle.Continuous)
                 {
-                    THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Style = ProgressBarStyle.Continuous));
+                    _ = THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Style = ProgressBarStyle.Continuous));
                 }
                 if (THActionProgressBar.Maximum != MaxProgressBar)
                 {
-                    THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Maximum = MaxProgressBar));
+                    _ = THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Maximum = MaxProgressBar));
                 }
                 if (CurrentProgressBar < MaxProgressBar)
                 {
-                    THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Value = CurrentProgressBar));
+                    _ = THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Value = CurrentProgressBar));
                 }
             }
             else
@@ -810,13 +810,13 @@ namespace TranslationHelper
                 StatusText = StatusText?.Length == 0 ? T._("working..") : StatusText;
                 try
                 {
-                    THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = ShowStatus));
-                    THInfolabel.Invoke((Action)(() => THInfolabel.Visible = ShowStatus));
+                    _ = THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = ShowStatus));
+                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Visible = ShowStatus));
                     if (!ShowStatus)
                     {
-                        THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Style = ProgressBarStyle.Marquee));
+                        _ = THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Style = ProgressBarStyle.Marquee));
                     }
-                    THInfolabel.Invoke((Action)(() => THInfolabel.Text = StatusText));
+                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = StatusText));
                 }
                 catch
                 {
@@ -843,7 +843,7 @@ namespace TranslationHelper
                         if (new RPGMTransOLD(thDataWork).SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, RPGMFunctions.RPGMTransPatchVersion))
                         {
                             Properties.Settings.Default.THSelectedDir = THSaveFolderBrowser.SelectedPath;
-                            MessageBox.Show(T._("Save complete!"));
+                            _ = MessageBox.Show(T._("Save complete!"));
                         }
                     }
                 }
@@ -1023,7 +1023,7 @@ namespace TranslationHelper
             {
                 case "RPGMakerTransPatch":
                 case "RPG Maker game with RPGMTransPatch":
-                    await Task.Run(() => new RPGMTransOLD(thDataWork).SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+                    _ = await Task.Run(() => new RPGMTransOLD(thDataWork).SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
                     break;
             }
 
@@ -1201,12 +1201,12 @@ namespace TranslationHelper
             }
 
 
-            THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.Refresh()));
+            _ = THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.Refresh()));
 
 
             LoadTranslationToolStripMenuItem_ClickIsBusy = false;
             FunctionsSounds.LoadDBCompleted();
-            THFilesList.Invoke((Action)(() => THFilesList.Refresh()));
+            _ = THFilesList.Invoke((Action)(() => THFilesList.Refresh()));
         }
 
         private void ReadDBAndLoadDBCompare(DataSet DBDataSet, string sPath, bool forced = false)
@@ -1492,7 +1492,7 @@ namespace TranslationHelper
 
         private void OpenInWebToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new OpenInWeb(thDataWork).Selected();
+            _ = new OpenInWeb(thDataWork).Selected();
         }
 
         private void THTargetTextBox_Leave(object sender, EventArgs e)
@@ -1601,105 +1601,24 @@ namespace TranslationHelper
             return ret;
         }
 
-        private async void CellFixesSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CellFixesSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            await Task.Run(() => new FixCells(thDataWork).Selected()).ConfigureAwait(false);
-
-            //FixSelectedCells();
+            _ = new FixCells(thDataWork).Selected();
         }
 
-        private void FixSelectedCells(bool force = false)
+        private void CellFixesTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CellFixes(1, force);
-
-            //if (THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount() > 0)
-            //{
-            //    //эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
-            //    //на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
-            //    //пока оставлю выполнение в другом потоке, как нибудь проверю без второго потока там, где много исправлять, по крайней мере оставлю для вариантов Таблица и все
-            //    int cind = thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans               
-            //    int tableindex = THFilesList.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-
-            //    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("s", cind, tableindex)));
-            //    //но при выборе только одной строчки почему-то кидает исключение
-            //    //trans.Start();
-
-            //    //убрал здесь выполнение во втором потоке, т.к. слишком мало править, не стоит того
-            //    THFixCells("s", cind, tableindex, -1, force);
-            //}
+            _ = new FixCells(thDataWork).TableT();
         }
 
-        private async void CellFixesTableToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CellFixesAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            await Task.Run(() => new FixCells(thDataWork).Table()).ConfigureAwait(false);
-
-            //CellFixes(2);
-
-            ////эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
-            ////на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
-            ////пока оставлю выполнение в другом потоке, как нибудь проверю без второго потока там, где много исправлять, по крайней мере оставлю для вариантов Таблица и все
-            //int cind = thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans               
-            //int tableindex = THFilesList.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-
-            ////http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("t", cind, tableindex)));
-            ////но при выборе только одной строчки почему-то кидает исключение
-            //trans.Start();
-
-            ////THFixCells("t");
-        }
-
-        private async void CellFixesAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            await Task.Run(() => new FixCells(thDataWork).All()).ConfigureAwait(false);
-
-            //CellFixes(3);
-
-            ////эти два присвоены до начала нового потока, т.к. в другом потоке возникает исключение о попытке доступа к элементу управления, созданному в другом потоке
-            ////на самом деле здась даже не знаю, стоии ли оно того, чтобы кидать эту операцию на новый поток, она по идее и так должна за секунду выполниться
-            ////пока оставлю выполнение в другом потоке, как нибудь проверю без второго потока там, где много исправлять, по крайней мере оставлю для вариантов Таблица и все
-            //int cind = thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans               
-            //int tableindex = THFilesList.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-
-            ////http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("a", cind, tableindex)));
-            ////но при выборе только одной строчки почему-то кидает исключение
-            //trans.Start();
-            ////THFixCells("a");
-        }
-
-        /// <summary>
-        /// run cell fixes
-        /// </summary>
-        /// <param name="method">Selected method:<br/>1 = "s"selected<br/>2 = "t"table<br/>3 = "a"all</param>
-        internal void CellFixes(int method = 1, bool force = false)
-        {
-            if (method == 1 && THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount() == 0)
-                return;
-
-            var cind = thDataWork.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Translation"].Ordinal;//-поле untrans;//-поле untrans               
-            var tableindex = THFilesList.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-
-            Thread trans;
-            if (method == 3) // all
-            {
-                trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("a", cind, tableindex)));
-            }
-            else if (method == 2) // table
-            {
-                trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("t", cind, tableindex)));
-            }
-            else //if (method == 1) // selected
-            {
-                trans = new Thread(new ParameterizedThreadStart((obj) => THFixCells("s", cind, tableindex, -1, force)));
-            }
-            trans.Start();
+            _ = new FixCells(thDataWork).AllT();
         }
 
         private void SetOriginalValueToTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new SetOriginalToTranslation(thDataWork).Selected();
+            _ = new SetOriginalToTranslation(thDataWork).Selected();
         }
 
         private void SetOriginalToTranslation()
@@ -1892,15 +1811,15 @@ namespace TranslationHelper
 
         private void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ClearCells(thDataWork).Selected();
+            _ = new ClearCells(thDataWork).Selected();
         }
         private void ClearTableCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ClearCells(thDataWork).Table();
+            _ = new ClearCells(thDataWork).TableT();
         }
         private void ClearAllCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ClearCells(thDataWork).All();
+            _ = new ClearCells(thDataWork).AllT();
         }
 
         //==============вырезать, копировать, вставить, для одной или нескольких ячеек
@@ -1937,7 +1856,7 @@ namespace TranslationHelper
                         {
                             case "RPGMakerTransPatch":
                             case "RPG Maker game with RPGMTransPatch":
-                                await Task.Run(() => new RPGMTransOLD(thDataWork).SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+                                _ = await Task.Run(() => new RPGMTransOLD(thDataWork).SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
                                 break;
                         }
 
@@ -2001,20 +1920,20 @@ namespace TranslationHelper
                 if (!Properties.Settings.Default.IsTranslationHelperWasClosed && !THInfolabel.Enabled)
                 {
                     THInfolabelEnabled = true;
-                    THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = true));
+                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = true));
                 }
 
                 if (!Properties.Settings.Default.IsTranslationHelperWasClosed)
                 {
-                    THInfolabel.Invoke((Action)(() => THInfolabel.Text = InfoText));
+                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = InfoText));
                 }
 
                 FunctionsThreading.WaitThreaded(1000);
 
                 if (THInfolabelEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THInfolabel.Enabled)
                 {
-                    THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
-                    THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
+                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
+                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
                 }
             }
             catch
@@ -2120,9 +2039,9 @@ namespace TranslationHelper
                                 // свернуть
                                 WindowState = FormWindowState.Minimized;
 
-                                Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
+                                _ = Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
 
-                                FunctionsProcess.RunProcess(largestexe);
+                                _ = FunctionsProcess.RunProcess(largestexe);
 
                                 //await Task.Run(() => Testgame.Start()).ConfigureAwait(true);
                                 //Testgame.WaitForExit();
@@ -2145,24 +2064,24 @@ namespace TranslationHelper
 
                 if (BuckupCreated)
                 {
-                    thDataWork.CurrentProject.BakRestore();
+                    _ = thDataWork.CurrentProject.BakRestore();
                 }
             }
         }
 
         private void ToUPPERCASEToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ToUPPER(thDataWork).Selected();
+            _ = new ToUPPER(thDataWork).Selected();
         }
 
         private void FirstCharacterToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ToUpper(thDataWork).Selected();
+            _ = new ToUpper(thDataWork).Selected();
         }
 
         private void TolowercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ToLower(thDataWork).Selected();
+            _ = new ToLower(thDataWork).Selected();
         }
 
         internal bool InteruptTranslation;
@@ -2309,7 +2228,7 @@ namespace TranslationHelper
                 o += match + " AND ";
                 //MessageBox.Show("match="+ match.ToString()+ ", matchCollection count="+ matchCollection.Count);
             }
-            MessageBox.Show("FOUND=\r\n" + o + "\r\n, matchCollection count=" + matchCollection.Count);
+            _ = MessageBox.Show("FOUND=\r\n" + o + "\r\n, matchCollection count=" + matchCollection.Count);
         }
 
         internal static bool DGVCellInEditMode
@@ -2485,26 +2404,8 @@ namespace TranslationHelper
 
         private void CompleteRomajiotherLinesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Task.Run(() => new CompleteRomajiotherLines(thDataWork).All());
-            Task.Run(() => new SetOrigToTransIfSoundsText(thDataWork).All());
-
-            //int THFilesElementsDatasetTablesCount = thDataWork.THFilesElementsDataset.Tables.Count;
-            //for (int t = 0; t < THFilesElementsDatasetTablesCount; t++)
-            //{
-            //    var table = thDataWork.THFilesElementsDataset.Tables[t];
-            //    int tableRowsCount = table.Rows.Count;
-            //    for (int r = 0; r < tableRowsCount; r++)
-            //    {
-            //        var row = table.Rows[r];
-            //        //if ((THFilesElementsDataset.Tables[t].Rows[r][1] + string.Empty).Length == 0)//убрал проверку пустой ячейки, чтобы насильно переприсваивать
-            //        //{
-            //        if ((row[1] == null || string.IsNullOrEmpty(row[1] as string) || !Equals(row[1], row[0])) && (row[0] as string).HaveMostOfRomajiOtherChars())
-            //        {
-            //            thDataWork.THFilesElementsDataset.Tables[t].Rows[r][1] = row[0];
-            //        }
-            //        //}
-            //    }
-            //}
+            _ = new CompleteRomajiotherLines(thDataWork).AllT();
+            _ = new SetOrigToTransIfSoundsText(thDataWork).AllT();
         }
 
         private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -2549,7 +2450,7 @@ namespace TranslationHelper
 
         private void ShowCheckboxvalueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(Properties.Settings.Default.EnableTranslationCache.ToString(CultureInfo.InvariantCulture));
+            _ = MessageBox.Show(Properties.Settings.Default.EnableTranslationCache.ToString(CultureInfo.InvariantCulture));
         }
 
         private void SaveInnewFormatToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2574,54 +2475,54 @@ namespace TranslationHelper
 
         private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new SplitLongLines(thDataWork).Selected();
+            _ = new SplitLongLines(thDataWork).Selected();
         }
 
         private void SplitLinesWhichLongerOfLimitTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new SplitLongLines(thDataWork).Table();
+            _ = new SplitLongLines(thDataWork).TableT();
 
             FunctionsSounds.GlobalFunctionFinishedWork();
         }
 
         private void SplitLinesWhichLongerOfLimitALLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new SplitLongLines(thDataWork).All();
+            _ = new SplitLongLines(thDataWork).AllT();
 
             FunctionsSounds.GlobalFunctionFinishedWork();
         }
 
         private void FixMessagesInTheTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new FixJPMessagesTranslation(thDataWork).Selected();
+            _ = new FixJPMessagesTranslation(thDataWork).Selected();
         }
 
         private void LowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ToLower(thDataWork).All();
+            _ = new ToLower(thDataWork).AllT();
         }
 
         private void LowercaseTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ToLower(thDataWork).Table();
+            _ = new ToLower(thDataWork).TableT();
         }
 
         private void UppercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ToUpper(thDataWork).All();
+            _ = new ToUpper(thDataWork).AllT();
         }
         private void UppercaseTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ToUpper(thDataWork).Table();
+            _ = new ToUpper(thDataWork).TableT();
         }
 
         private void UPPERCASEallToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ToUPPER(thDataWork).All();
+            _ = new ToUPPER(thDataWork).AllT();
         }
         private void UPPERCASETableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ToUPPER(thDataWork).Table();
+            _ = new ToUPPER(thDataWork).TableT();
         }
 
         private void AllIfExistsFiledirWithNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2690,7 +2591,7 @@ namespace TranslationHelper
 
             HardcodedFixesExecuting = true;
 
-            new AllHardFixes(thDataWork).All();
+            _ = new AllHardFixes(thDataWork).AllT();
 
             //int TCount = thDataWork.THFilesElementsDataset.Tables.Count;
 
@@ -2742,7 +2643,7 @@ namespace TranslationHelper
 
         private void SelectedForceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FixSelectedCells(true);
+            _ = new FixCellsForce(thDataWork).Selected();
         }
 
         private void ReloadRulesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2933,7 +2834,7 @@ namespace TranslationHelper
         {
             if (File.Exists(THSettingsData.TranslationRegexRulesFilePath()))
             {
-                Process.Start("explorer.exe", THSettingsData.TranslationRegexRulesFilePath());
+                _ = Process.Start("explorer.exe", THSettingsData.TranslationRegexRulesFilePath());
             }
         }
 
@@ -2941,7 +2842,7 @@ namespace TranslationHelper
         {
             if (File.Exists(THSettingsData.CellFixesRegexRulesFilePath()))
             {
-                Process.Start("explorer.exe", THSettingsData.CellFixesRegexRulesFilePath());
+                _ = Process.Start("explorer.exe", THSettingsData.CellFixesRegexRulesFilePath());
             }
         }
 
@@ -2977,27 +2878,27 @@ namespace TranslationHelper
 
         private void TSMIEnQuotesToJp_Click(object sender, EventArgs e)
         {
-            new ENQuotesToJP(thDataWork).Selected();
+            _ = new ENQuotesToJP(thDataWork).Selected();
         }
 
         private void TSMISetOriginalToTranslationAll_Click(object sender, EventArgs e)
         {
-            new SetOriginalToTranslation(thDataWork).All();
+            _ = new SetOriginalToTranslation(thDataWork).AllT();
         }
 
         private void TSMISetOriginalToTranslationTable_Click(object sender, EventArgs e)
         {
-            new SetOriginalToTranslation(thDataWork).Table();
+            _ = new SetOriginalToTranslation(thDataWork).TableT();
         }
 
         private void TSMIEnQuotesAll_Click(object sender, EventArgs e)
         {
-            new ENQuotesToJP(thDataWork).All();
+            _ = new ENQuotesToJP(thDataWork).AllT();
         }
 
         private void TSMIEnQuotesTable_Click(object sender, EventArgs e)
         {
-            new ENQuotesToJP(thDataWork).Table();
+            _ = new ENQuotesToJP(thDataWork).TableT();
         }
 
         //Form overall;
@@ -3065,9 +2966,9 @@ namespace TranslationHelper
                     if (chars.Contains(c))
                         continue;
 
-                    MessageBox.Show("'" + c + "' category is " + Char.GetUnicodeCategory(c));
+                    _ = MessageBox.Show("'" + c + "' category is " + Char.GetUnicodeCategory(c));
 
-                    chars.Add(c);
+                    _ = chars.Add(c);
                 }
             }
 
@@ -3088,17 +2989,17 @@ namespace TranslationHelper
 
         private void HardFixesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new AllHardFixes(thDataWork).Selected();
+            _ = new AllHardFixes(thDataWork).Selected();
         }
 
         private void fixMessagesForAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new FixJPMessagesTranslation(thDataWork).All();
+            _ = new FixJPMessagesTranslation(thDataWork).AllT();
         }
 
         private void tableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new FixJPMessagesTranslation(thDataWork).Table();
+            _ = new FixJPMessagesTranslation(thDataWork).TableT();
         }
 
         private void getAndSaveStaticToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3147,7 +3048,7 @@ namespace TranslationHelper
 
         private void AddToCustomDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Task.Run(() => new LoadRowDataToCustomDB(thDataWork).Selected()).ConfigureAwait(false);
+            _ = Task.Run(() => new LoadRowDataToCustomDB(thDataWork).Selected()).ConfigureAwait(false);
         }
 
         private void copyNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3176,32 +3077,32 @@ namespace TranslationHelper
 
         private void makeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Task.Run(() => new MakeTranslatedCopyIfFileWithTheNameExists(thDataWork).All());
+            _ = new MakeTranslatedCopyIfFileWithTheNameExists(thDataWork).AllT();
         }
 
         private void RPGMakerLikeTXTToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new RPGMakerLikeTXT(thDataWork).All();
+            _ = new RPGMakerLikeTXT(thDataWork).AllT();
         }
 
         private void ClearTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ClearCells(thDataWork).Table();
+            _ = new ClearCells(thDataWork).TableT();
         }
 
         private void UPPERCASETableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            new ToUPPER(thDataWork).Table();
+            _ = new ToUPPER(thDataWork).TableT();
         }
 
         private void UppercaseTableToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            new ToUpper(thDataWork).Table();
+            _ = new ToUpper(thDataWork).TableT();
         }
 
         private void lowercaseTableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            new ToLower(thDataWork).Table();
+            _ = new ToLower(thDataWork).TableT();
         }
 
         private void THFilesList_MouseUp(object sender, MouseEventArgs e)
