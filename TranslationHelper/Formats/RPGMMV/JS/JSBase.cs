@@ -44,6 +44,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         protected static bool IsValidToken(JToken token)
         {
             return token.Type == JTokenType.String
+                && (!IsPluginsJS || (IsPluginsJS && token.Path != "Modelname"))
                 //&& (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game
                 && !string.IsNullOrWhiteSpace(token.ToString())
                 && !(THSettingsData.SourceLanguageIsJapanese() && token.ToString().HaveMostOfRomajiOtherChars());
