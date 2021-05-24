@@ -38,11 +38,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected bool ret;
 
         /// <summary>
-        /// true when function executed in another thread
-        /// </summary>
-        protected bool threaded;
-
-        /// <summary>
         /// link to FileElements datagridview
         /// </summary>
         protected System.Windows.Forms.DataGridView DGV;
@@ -55,7 +50,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected RowBase(THDataWork thDataWork)
         {
             this.thDataWork = thDataWork;
-            threaded = thDataWork.Main.InvokeRequired;
         }
 
 
@@ -68,7 +62,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// proceed 1 selected row
         /// </summary>
         /// <returns></returns>
-        internal bool Selected(DataRow row)
+        internal bool Selected(DataRow row, int TableIndex = -1, int RowIndex = -1)
         {
             try
             {
@@ -76,7 +70,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     Init();
 
-                    GetTableData();
+                    GetTableData(TableIndex);
 
                     if (!IsAll && !IsTable)
                     {
@@ -85,20 +79,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     if (DGV == null)
                     {
-                        if (threaded)
-                        {
+#if DEBUG
                             thDataWork.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = thDataWork.Main.THFileElementsDataGridView));
-                        }
-                        else
-                        {
+#else
                             DGV = thDataWork.Main.THFileElementsDataGridView;
-                        }
+#endif
                     }
                 }
 
                 SelectedRow = row;
-                SelectedTableIndex = 0;
-                SelectedRowIndex = 0;
+                SelectedRowIndex = GetRowIndex(RowIndex);
 
                 if (!IsInternalSelectedRowExecution && !IsAll && !IsTable)
                 {
@@ -119,6 +109,28 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return ret;
         }
 
+        /// <summary>
+        /// get index of selected row
+        /// </summary>
+        /// <param name="RowIndex"></param>
+        /// <returns></returns>
+        private int GetRowIndex(int RowIndex = -1)
+        {
+            if (RowIndex != -1)
+            {
+                SelectedRowIndex = RowIndex;
+            }
+            else
+            {
+                if (SelectedRowIndex == -1)
+                {
+                    SelectedRowIndex = SelectedTable.Rows.IndexOf(SelectedRow);
+                }
+            }
+
+            return SelectedRowIndex;
+        }
+
         readonly FunctionsLogs log = new FunctionsLogs();
 
         /// <summary>
@@ -135,14 +147,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (DGV == null)
             {
-                if (threaded)
-                {
-                    thDataWork.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = thDataWork.Main.THFileElementsDataGridView));
-                }
-                else
-                {
-                    DGV = thDataWork.Main.THFileElementsDataGridView;
-                }
+#if DEBUG
+                thDataWork.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = thDataWork.Main.THFileElementsDataGridView));
+#else
+                DGV = thDataWork.Main.THFileElementsDataGridView;
+#endif
             }
 
             if (!IsAll && !IsTable)
@@ -181,7 +190,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     foreach (int RowIndex in SelectedRowIndexses)
                     {
-                        Selected(SelectedTable.Rows[RowIndex]);
+                        Selected(SelectedTable.Rows[RowIndex], SelectedTableIndex, RowIndex);
                     }
 
                     if (!IsAll && !IsTable)
@@ -241,19 +250,29 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        private void GetTableData()
+        private void GetTableData(int TableIndex = -1)
         {
             if (SelectedTableIndex == -1)
             {
-                if (threaded)
-                    thDataWork.Main.Invoke((Action)(() => SelectedTableIndex = thDataWork.Main.THFilesList.SelectedIndex));
+                if (TableIndex != -1)
+                {
+                    SelectedTableIndex = TableIndex;
+                }
                 else
+                {
+#if DEBUG
+                    thDataWork.Main.Invoke((Action)(() => SelectedTableIndex = thDataWork.Main.THFilesList.SelectedIndex));
+#else
                     SelectedTableIndex = thDataWork.Main.THFilesList.SelectedIndex;
+#endif
+                }
             }
+
             if (SelectedTable == null)
             {
                 SelectedTable = thDataWork.THFilesElementsDataset.Tables[SelectedTableIndex];
             }
+
             ColumnIndexOriginal = SelectedTable.Columns[THSettingsData.OriginalColumnName()].Ordinal;// Колонка Original
             ColumnIndexTranslation = SelectedTable.Columns[THSettingsData.TranslationColumnName()].Ordinal;// Колонка Translation
         }
@@ -318,7 +337,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 for (int i = 0; i < RowsCount; i++)
                 {
-                    Selected(SelectedTable.Rows[i]);
+                    Selected(SelectedTable.Rows[i], SelectedTableIndex, i);
                 }
 
                 if (!IsAll && IsTable)

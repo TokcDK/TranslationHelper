@@ -538,8 +538,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     if (!Row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//apply only for finished rows
                     {
                         //apply fixes for cell
-                        new AllHardFixes(thDataWork).Selected(Row);
-                        new FixCells(thDataWork).Selected(Row);
+                        new AllHardFixes(thDataWork).Selected(Row, tindex, rindex);
+                        new FixCells(thDataWork).Selected(Row, tindex, rindex);
                     }
                 }
                 catch
