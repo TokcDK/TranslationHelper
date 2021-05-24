@@ -173,14 +173,29 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     IsInternalSelectedRowExecution = true;
 
                     var SelectedRowIndexses = new int[SelectedRowsCount];
-                    for (int i = 0; i < SelectedRowsCount; i++)
+                    var AddedRows = new HashSet<int>(SelectedRowsCount);
+                    var DGVSelectedCells = DGV.SelectedCells;
+                    var DGVSelectedCellsCount = DGVSelectedCells.Count;
+                    var ind = 0; // index for SelectedRowIndexses
+                    for (int i = 0; i < DGVSelectedCellsCount; i++)
                     {
+                        var DGVRowIndex = DGVSelectedCells[i].RowIndex;
+
+                        if (AddedRows.Contains(DGVRowIndex)) // skip if parent row index already was added
+                        {
+                            continue;
+                        }
+
+                        AddedRows.Add(DGVRowIndex); // add row index as added
+
                         log.DebugData.Add("SelectedTableIndex=" + SelectedTableIndex);
-                        log.DebugData.Add("DGV.SelectedCells[i].RowIndex=" + DGV.SelectedCells[i].RowIndex);
+                        log.DebugData.Add("DataGridView RowIndex=" + DGVRowIndex);
                         log.DebugData.Add("i=" + i);
 
-                        //координаты ячейки
-                        SelectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, SelectedTableIndex, DGV.SelectedCells[i].RowIndex);
+                        //add row index
+                        SelectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(thDataWork, SelectedTableIndex, DGVRowIndex);
+
+                        ind++; //raise added index
                     }
 
                     if (!IsAll && !IsTable)
