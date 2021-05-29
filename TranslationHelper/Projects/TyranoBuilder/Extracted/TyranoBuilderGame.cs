@@ -13,7 +13,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
 
         internal override bool Check()
         {
-            return Path.GetFileName(thDataWork.SPath) == "index.html" && File.Exists(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data", "scenario", "tyrano.ks"));
+            return Path.GetFileName(thDataWork.SPath) == "index.html" && File.Exists(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "data", "scenario", "config.ks"));
         }
 
         internal override string Name()
