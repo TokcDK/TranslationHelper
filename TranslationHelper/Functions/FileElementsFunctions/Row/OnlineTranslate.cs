@@ -577,11 +577,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     int IndexOfTheString = line.IndexOf(bufenum.Current.Key);
                     if (IndexOfTheString > -1)
                     {
-                        return line
+                        if(bufenum.Current.Value!=null)//null when o translation?
+                        {
+                            return line
                             .Remove(IndexOfTheString, bufenum.Current.Key.Length)
                             .Insert(IndexOfTheString,
                             bufenum.Current.Value
                             );
+                        }
+                        else
+                        {
+                            return line;
+                        }
                     }
                 }
 
