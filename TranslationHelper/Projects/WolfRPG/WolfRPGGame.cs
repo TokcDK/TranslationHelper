@@ -184,15 +184,22 @@ namespace TranslationHelper.Projects.WolfRPG
                 //decode wolf files
                 if (thDataWork.OpenFileMode)
                 {
-                    var dxadecodew = THSettingsData.DXADecodeWExePath();
+                    var wolfextractor = THSettingsData.WolfRPGExtractorExePath();
                     foreach (var wolfFile in Directory.EnumerateFiles(Properties.Settings.Default.THSelectedGameDir, "*.wolf", SearchOption.AllDirectories))
                     {
+                        var extractedDirPath = new DirectoryInfo(Path.Combine(dataPath, Path.GetFileNameWithoutExtension(wolfFile)));
+                        if (extractedDirPath.Exists && !extractedDirPath.IsEmpty())
+                        {
+                            continue;
+                        }
+
+                        //.mps, .dat, .project
                         thDataWork.Main.ProgressInfo(true, progressMessageTitle + T._("Extract") + " " + Path.GetFileName(wolfFile));
-                        if (FunctionsProcess.RunProcess(dxadecodew, "\"" + wolfFile + "\""))
+                        if (FunctionsProcess.RunProcess(wolfextractor, "\"" + wolfFile + "\""))
                         {
                             ret = true;
+                            File.Move(wolfFile, wolfFile + ".bak");
                         }
-                        File.Move(wolfFile, wolfFile + ".bak");
                     }
                     if (!Directory.Exists(dataPath))
                     {

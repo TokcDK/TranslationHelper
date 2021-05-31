@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
@@ -32,52 +34,54 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
                 return -1;
             }
 
-            SaveModeAddLine();
-
             //skip if begin string not found
             if (IsNotBeginString())
             {
+                SaveModeAddLine("\n");
                 return 0;
             }
+
             //------------------------------------
             //add original
-            var originalLines = new System.Collections.Generic.List<string>();
-            while (!(ParseData.line = ParseData.reader.ReadLine()).StartsWith("> CONTEXT"))
+            var originalLines = new List<string>();
+            while (!ReadLine().StartsWith("> CONTEXT"))
             {
                 originalLines.Add(ParseData.line);
-                SaveModeAddLine();
             }
+
             //------------------------------------
             //add context
-            var contextLines = new System.Collections.Generic.List<string>
+            var contextLines = new List<string>
             {
                 //add first context line (was set last to line in check of previous block)
-                ParseData.line + (ParseData.line.EndsWith(" < UNTRANSLATED") ? string.Empty : " < UNTRANSLATED")
+                ParseData.line
             };
             //add rest of context lines
-            while ((ParseData.line = ParseData.reader.ReadLine()).StartsWith("> CONTEXT"))
+            while (ReadLine().StartsWith("> CONTEXT"))
             {
                 contextLines.Add(ParseData.line + (ParseData.line.EndsWith(" < UNTRANSLATED") ? string.Empty : " < UNTRANSLATED"));
             }
-            var context = string.Join(Properties.Settings.Default.NewLine, contextLines);
             //------------------------------------
+
             //add translation if exists
-            var translationLines = new System.Collections.Generic.List<string>
+            var translationLines = new List<string>
             {
                 //add last set line in check of previous context block
                 ParseData.line
             };
-            while ((ParseData.line = ParseData.reader.ReadLine()) != "> END STRING")
+            while (ReadLine() != "> END STRING")
             {
                 translationLines.Add(ParseData.line);
             }
             //------------------------------------
+
             var original = string.Join(Properties.Settings.Default.NewLine, originalLines);
             var translation = string.Join(Properties.Settings.Default.NewLine, translationLines);
 
             //add begin end string block data
             if (thDataWork.OpenFileMode)
             {
+                var context = string.Join(Properties.Settings.Default.NewLine, contextLines);
                 if (string.IsNullOrEmpty(translation))
                 {
                     AddRowData(original, context, true);
@@ -90,21 +94,55 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
             else
             {
                 var trans = original;
-                var translated = thDataWork.SaveFileMode && SetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && (original != trans || trans != translation);
-                ParseData.ResultForWrite.AppendLine(translated ? context.Replace(" < UNTRANSLATED", string.Empty) : context);
-                if (translated && IsValidString(original))
+                var translated = thDataWork.SaveFileMode && IsValidString(original) && SetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && (original != trans || trans != translation);
+
+                if (translated)
                 {
                     ParseData.Ret = true;
-                    ParseData.ResultForWrite.AppendLine(trans);
+                    translation = trans;
                 }
-                else
-                {
-                    ParseData.ResultForWrite.AppendLine(translation);
-                }
-                SaveModeAddLine(); ;//add endstring line
+
+                SetContext(contextLines, translated);
+
+                ParseData.line = 
+                    "> BEGIN STRING"
+                    + "\n" +
+                    original
+                    + "\n" +
+                    string.Join("\n", contextLines)
+                    + "\n" +
+                    translation
+                    + "\n" +
+                    "> END STRING"
+                    ;
+
+                SaveModeAddLine("\n");//add endstring line
             }
 
             return 0;
+        }
+
+        private void SetContext(List<string> contextLines, bool translated)
+        {
+            for (int i = 0; i < contextLines.Count; i++)
+            {
+                var ends = contextLines[i].TrimEnd().EndsWith(" < UNTRANSLATED");
+
+                if (translated)
+                {
+                    if (ends)
+                    {
+                        contextLines[i] = contextLines[i].Replace(" < UNTRANSLATED", string.Empty);
+                    }
+                }
+                else
+                {
+                    if (!ends)
+                    {
+                        contextLines[i] = contextLines[i] + " < UNTRANSLATED";
+                    }
+                }
+            }
         }
 
         private bool IsNotBeginString()

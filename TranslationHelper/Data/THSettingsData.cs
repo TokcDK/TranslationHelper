@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
 using TranslationHelper.Properties;
 
@@ -407,6 +408,50 @@ namespace TranslationHelper.Data
         internal static string THTranslationCacheFilePath()
         {
             return Path.Combine(DBDirPath(), THTranslationCacheFileName());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string WolfRPGExtractorExePath()
+        {
+            return WolfRPGExtractorsList()[1];
+        }
+
+        /// <summary>
+        /// list of exe paths for wolf rpg wolf-files extractors
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Dictionary<int, string> WolfRPGExtractorsList()
+        {
+            return new Dictionary<int, string> 
+            {
+                { 1, DXExtractExePath()},
+                { 2, DXADecodeWExePath()},
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string DXExtractDirName()
+        {
+            return "DXExtract";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string DXExtractDirPath()
+        {
+            return Path.Combine(ResDirPath(), DXExtractDirName());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string DXExtractExeName()
+        {
+            return "DXExtract.exe";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string DXExtractExePath()
+        {
+            return Path.Combine(DXExtractDirPath(), DXExtractExeName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
