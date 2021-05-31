@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 
@@ -57,9 +58,17 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
                 ParseData.line
             };
             //add rest of context lines
-            while (ReadLine().StartsWith("> CONTEXT"))
+            bool wolftransfail=false;
+            while (ReadLine().StartsWith("> CONTEXT") || (wolftransfail = ParseData.line.EndsWith(" < UNTRANSLATED"))/*bug in wolftrans, sometime filenames placed in next line*/)
             {
-                contextLines.Add(ParseData.line + (ParseData.line.EndsWith(" < UNTRANSLATED") ? string.Empty : " < UNTRANSLATED"));
+                if (wolftransfail)
+                {
+                    contextLines[contextLines.Count - 1] = contextLines[contextLines.Count - 1] + ParseData.line;
+                }
+                else
+                {
+                    contextLines.Add(ParseData.line);
+                }
             }
             //------------------------------------
 
