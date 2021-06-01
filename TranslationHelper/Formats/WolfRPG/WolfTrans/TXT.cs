@@ -51,50 +51,26 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
         {
             //------------------------------------
             //add original
-            var originalLines = new List<string>();
-            while (!ReadLine().StartsWith("> CONTEXT"))
-            {
-                originalLines.Add(ParseData.line);
-            }
+            GetOriginal(out List<string> originalLines);
 
             //------------------------------------
             //add context
-            var contextLines = new List<string>
-            {
-                //add first context line (was set last to line in check of previous block)
-                ParseData.line
-            };
-            //add rest of context lines
-            bool wolftransfail = false;
-            while (ReadLine().StartsWith("> CONTEXT") || (wolftransfail = ParseData.line.EndsWith(" < UNTRANSLATED"))/*bug in wolftrans, sometime filenames placed in next line*/)
-            {
-                if (wolftransfail)
-                {
-                    contextLines[contextLines.Count - 1] = contextLines[contextLines.Count - 1] + ParseData.line;
-                }
-                else
-                {
-                    contextLines.Add(ParseData.line);
-                }
-            }
+            GetContext(out List<string> contextLines);
             //------------------------------------
 
             //add translation if exists
-            var translationLines = new List<string>
-            {
-                //add last set line in check of previous context block
-                ParseData.line
-            };
-            while (ReadLine() != "> END STRING")
-            {
-                translationLines.Add(ParseData.line);
-            }
+            GetTranslation(out List<string> translationLines);
             //------------------------------------
 
+            //add begin end string block data
+            GetSetBlock(originalLines, contextLines, translationLines);
+        }
+
+        private void GetSetBlock(List<string> originalLines, List<string> contextLines, List<string> translationLines)
+        {
             var original = string.Join(Properties.Settings.Default.NewLine, originalLines);
             var translation = string.Join(Properties.Settings.Default.NewLine, translationLines);
 
-            //add begin end string block data
             if (thDataWork.OpenFileMode)
             {
                 var context = string.Join(Properties.Settings.Default.NewLine, contextLines);
@@ -133,6 +109,51 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
                     ;
 
                 SaveModeAddLine("\n");//add endstring line
+            }
+        }
+
+        private void GetTranslation(out List<string> translationLines)
+        {
+            translationLines = new List<string>
+            {
+                //add last set line in check of previous context block
+                ParseData.line
+            };
+            while (ReadLine() != "> END STRING")
+            {
+                translationLines.Add(ParseData.line);
+            }
+        }
+
+        private void GetContext(out List<string> contextLines)
+        {
+            contextLines = new List<string>
+            {
+                //add first context line (was set last to line in check of previous block)
+                ParseData.line
+            };
+            //add rest of context lines
+            bool wolftransfail = false;
+            while (ReadLine().StartsWith("> CONTEXT") || (wolftransfail = ParseData.line.EndsWith(" < UNTRANSLATED"))/*bug in wolftrans, sometime filenames placed in next line*/)
+            {
+                if (wolftransfail)
+                {
+                    contextLines[contextLines.Count - 1] = contextLines[contextLines.Count - 1] + ParseData.line;
+                }
+                else
+                {
+                    contextLines.Add(ParseData.line);
+                }
+            }
+        }
+
+        private void GetOriginal(out List<string> originalLines)
+        {
+            originalLines = new List<string>();
+
+            while (!ReadLine().StartsWith("> CONTEXT"))
+            {
+                originalLines.Add(ParseData.line);
             }
         }
 
