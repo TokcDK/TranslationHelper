@@ -42,6 +42,13 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
                 return 0;
             }
 
+            ParseBeginEndBlock();
+
+            return 0;
+        }
+
+        private void ParseBeginEndBlock()
+        {
             //------------------------------------
             //add original
             var originalLines = new List<string>();
@@ -58,7 +65,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
                 ParseData.line
             };
             //add rest of context lines
-            bool wolftransfail=false;
+            bool wolftransfail = false;
             while (ReadLine().StartsWith("> CONTEXT") || (wolftransfail = ParseData.line.EndsWith(" < UNTRANSLATED"))/*bug in wolftrans, sometime filenames placed in next line*/)
             {
                 if (wolftransfail)
@@ -113,7 +120,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 
                 SetContext(contextLines, translated);
 
-                ParseData.line = 
+                ParseData.line =
                     "> BEGIN STRING"
                     + "\n" +
                     original
@@ -127,8 +134,6 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 
                 SaveModeAddLine("\n");//add endstring line
             }
-
-            return 0;
         }
 
         private void SetContext(List<string> contextLines, bool translated)
