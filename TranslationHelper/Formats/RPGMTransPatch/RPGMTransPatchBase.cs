@@ -1,9 +1,10 @@
 ﻿using System.Text;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.WolfRPG;
 
 namespace TranslationHelper.Formats.RPGMTrans
 {
-    abstract class RPGMTransPatchBase : FormatBase
+    abstract class RPGMTransPatchBase : RPGTransPatchBase
     {
         //protected StringBuilder buffer;
 

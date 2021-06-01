@@ -2,7 +2,7 @@
 
 namespace TranslationHelper.Formats.WolfRPG
 {
-    abstract class WolfRPGBase : FormatBase
+    abstract class WolfRPGBase : RPGTransPatchBase
     {
         protected WolfRPGBase(THDataWork thDataWork) : base(thDataWork)
         {

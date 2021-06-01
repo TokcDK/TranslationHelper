@@ -53,7 +53,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Parse Data
         /// </summary>
-        protected ParseFileData ParseData;
+        internal ParseFileData ParseData;
 
         /// <summary>
         /// Base Parse File function
@@ -435,7 +435,7 @@ namespace TranslationHelper.Formats
             return thDataWork.FilePath;
         }
 
-        protected class ParseFileData
+        internal class ParseFileData
         {
             /// <summary>
             /// Project work data
