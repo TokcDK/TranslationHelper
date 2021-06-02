@@ -13,30 +13,9 @@ namespace TranslationHelper.Formats.RPGMTrans
             return ".txt";
         }
 
-        protected override void ParseStringFilePreOpenExtra()
-        {
-            unused = false;
-        }
-
         protected override int ParseStringFileLine()
         {
-            //skip if not patch files
-            if (!CheckSetPatchVersion())
-            {
-                return -1;
-            }
-
-            //skip if begin string not found
-            if (IsBeginString())
-            {
-                ParseBeginEndBlock();
-            }
-            else
-            {
-                SaveModeAddLine();
-            }
-
-            return 0;
+            return CheckAndParse();
         }
     }
 }

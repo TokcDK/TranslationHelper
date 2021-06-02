@@ -225,7 +225,7 @@
     <Compile Include="Formats\RPGMTransPatch\TXT.cs" />
     <Compile Include="Formats\TyranoBuilder\Extracted\ExportedCSV.cs" />
     <Compile Include="Formats\TyranoBuilder\Extracted\KS.cs" />
-    <Compile Include="Formats\WolfRPG\RPGTransPatchBase.cs" />
+    <Compile Include="Formats\WolfRPG\RPGMWolfTransPatchBase.cs" />
     <Compile Include="Formats\WolfRPG\WolfRPGBase.cs" />
     <Compile Include="Formats\WolfRPG\WolfTrans\TXT.cs" />
     <Compile Include="Formats\zzzOtherFormat\OtherFormatBase.cs" />

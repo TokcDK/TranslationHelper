@@ -3,10 +3,15 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
-    abstract class RPGTransPatchBase : FormatBase
+    abstract class RPGMWolfTransPatchBase : FormatBase
     {
-        protected RPGTransPatchBase(THDataWork thDataWork) : base(thDataWork)
+        protected RPGMWolfTransPatchBase(THDataWork thDataWork) : base(thDataWork)
         {
+        }
+
+        protected override void ParseStringFilePreOpenExtra()
+        {
+            unused = false;
         }
 
         /// <summary>
@@ -342,6 +347,31 @@ namespace TranslationHelper.Formats.WolfRPG
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// check and parse lines
+        /// </summary>
+        /// <returns></returns>
+        protected int CheckAndParse()
+        {
+            //skip if not patch files
+            if (!CheckSetPatchVersion())
+            {
+                return -1;
+            }
+
+            //skip if begin string not found
+            if (IsBeginString())
+            {
+                ParseBeginEndBlock();
+            }
+            else
+            {
+                SaveModeAddLine();
+            }
+
+            return 0;
         }
     }
 }
