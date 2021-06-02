@@ -35,7 +35,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal virtual string Ext()
         {
-            return "";
+            return null;
         }
 
         /// <summary>
@@ -46,6 +46,15 @@ namespace TranslationHelper.Formats
         internal virtual bool ExtIdentifier()
         {
             return false;
+        }
+
+        /// <summary>
+        /// name of format
+        /// </summary>
+        /// <returns></returns>
+        internal virtual string Name()
+        {
+            return null;
         }
 
         internal virtual bool Open() { return ParseStringFile(); }

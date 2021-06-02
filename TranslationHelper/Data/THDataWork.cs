@@ -67,8 +67,13 @@ namespace TranslationHelper.Data
         /// </summary>
         internal FunctionsOnlineCache OnlineTranslationCache;
 
+        string filepath;
         //current processing file for open/save
-        internal string FilePath { get; set; }
+        internal string FilePath
+        {
+            get { return string.IsNullOrWhiteSpace(filepath) ? SPath : filepath; }
+            set { filepath = value; }
+        }
 
         /// <summary>
         /// main work table data
