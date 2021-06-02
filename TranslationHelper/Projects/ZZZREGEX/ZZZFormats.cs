@@ -34,7 +34,7 @@ namespace TranslationHelper.Projects.ZZZREGEX
             bool noargs = args == null || args.Length == 0;
             foreach (var ClassType in type.Assembly.GetTypes())
             {
-                if (!ClassType.FullName.StartsWith("TranslationHelper.Formats.RPGMTrans.TXT"))
+                if (!ClassType.FullName.StartsWith("TranslationHelper.Formats"))
                 {
                     continue;
                 }
