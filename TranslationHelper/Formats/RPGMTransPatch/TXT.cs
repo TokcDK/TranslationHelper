@@ -1,4 +1,5 @@
-﻿using TranslationHelper.Data;
+﻿using System.IO;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMTrans
 {
@@ -11,6 +12,11 @@ namespace TranslationHelper.Formats.RPGMTrans
         internal override string Ext()
         {
             return ".txt";
+        }
+
+        internal override bool ExtIdentifier()
+        {
+            return File.Exists(Path.GetFullPath(Path.GetDirectoryName(thDataWork.SPath) + @"..\RPGMKTRANSPATCH")) && Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath)) == "patch";
         }
 
         protected override int ParseStringFileLine()

@@ -14,6 +14,11 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
         {
         }
 
+        internal override string Ext()
+        {
+            return ".dat";
+        }
+
         internal override bool Open()
         {
             return ParseStringFile();

@@ -11,6 +11,11 @@ namespace TranslationHelper.Formats.LiveMaker
         {
         }
 
+        internal override string Ext()
+        {
+            return ".csv";
+        }
+
         protected override void ParseStringFileOpen()
         {
             //reading all file and split it by \r\n because streamreader.readline also split by \n

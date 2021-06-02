@@ -17,6 +17,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         {
         }
 
+        internal override string Ext()
+        {
+            return ".txt";
+        }
+
         internal override bool Open()
         {
             return ParseStringFile();

@@ -11,6 +11,11 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             scriptMark = new Script(thDataWork);
         }
 
+        internal override string Ext()
+        {
+            return ".ks";
+        }
+
         bool IsScript = false;
         Script scriptMark;
         protected override int ParseStringFileLine()

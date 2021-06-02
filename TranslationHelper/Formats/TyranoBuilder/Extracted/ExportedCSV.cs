@@ -8,6 +8,11 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
         {
         }
 
+        internal override string Ext()
+        {
+            return ".csv";
+        }
+
         protected override int ParseStringFileLine()
         {
             if (!string.IsNullOrWhiteSpace(ParseData.line) && !ParseData.line.Contains("DO NOT EDIT"))//skip info lines

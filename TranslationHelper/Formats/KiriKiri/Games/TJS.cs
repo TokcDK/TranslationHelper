@@ -10,6 +10,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         {
         }
 
+        internal override string Ext()
+        {
+            return ".tjs";
+        }
+
         protected override void ReadLineMod()
         {
             thDataWork.CurrentProject.ReadLineMod(ref ParseData.line);

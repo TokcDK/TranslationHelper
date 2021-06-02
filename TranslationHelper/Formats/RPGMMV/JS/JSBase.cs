@@ -18,6 +18,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
         }
 
+        internal override string Ext()
+        {
+            return ".js";
+        }
+
         /// <summary>
         /// Get all inherited classes of an abstract class
         /// </summary>

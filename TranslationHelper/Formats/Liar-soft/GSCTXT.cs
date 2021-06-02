@@ -11,6 +11,11 @@ namespace TranslationHelper.Formats.Liar_soft
         {
         }
 
+        internal override string Ext()
+        {
+            return ".txt";
+        }
+
         protected override int ParseStringFileLine()
         {
             if (!ParseData.line.StartsWith("#"))

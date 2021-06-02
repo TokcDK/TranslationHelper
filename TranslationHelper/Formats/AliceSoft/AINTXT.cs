@@ -9,6 +9,11 @@ namespace TranslationHelper.Formats.AliceSoft
         {
         }
 
+        internal override string Ext()
+        {
+            return ".txt";
+        }
+
         string lastgroupname = "";
         readonly string ainstringpattern = @"^;?[sm]\[[0-9]{1,10}\] \= \""(.+)\""$";
         protected override int ParseStringFileLine()

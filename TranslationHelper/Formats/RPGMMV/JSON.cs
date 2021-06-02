@@ -22,6 +22,11 @@ namespace TranslationHelper.Formats.RPGMMV
             return ReadJson(Path.GetFileNameWithoutExtension(thDataWork.FilePath), thDataWork.FilePath);
         }
 
+        internal override string Ext()
+        {
+            return ".json";
+        }
+
         private bool ReadJson(string Jsonname, string sPath)
         {
             //LogToFile("Jsonname = " + Jsonname);

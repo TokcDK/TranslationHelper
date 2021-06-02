@@ -10,6 +10,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
         {
         }
 
+        internal override string Ext()
+        {
+            return ".csv";
+        }
+
         protected override int ParseStringFileLine()
         {
             var values = Regex.Matches(ParseData.line, @"[^\t\r\n]+");

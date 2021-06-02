@@ -9,6 +9,11 @@ namespace TranslationHelper.Formats.Raijin7.eve
         {
         }
 
+        internal override string Ext()
+        {
+            return ".txt";
+        }
+
         internal override bool Open()
         {
             return ParseStringFile();

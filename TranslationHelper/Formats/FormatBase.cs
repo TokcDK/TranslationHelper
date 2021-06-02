@@ -38,6 +38,15 @@ namespace TranslationHelper.Formats
             return "";
         }
 
+        /// <summary>
+        /// identifier to check how to identifi if selected extension must be parsed with this format
+        /// </summary>
+        /// <returns></returns>
+        internal virtual bool ExtIdentifier()
+        {
+            return false;
+        }
+
         internal virtual bool Open() { return ParseStringFile(); }
 
         internal virtual bool Save() { return ParseStringFile(); }

@@ -12,6 +12,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         {
         }
 
+        internal override string Ext()
+        {
+            return ".exe";
+        }
+
         internal override bool Open()
         {
             return OpenSaveEXE();
