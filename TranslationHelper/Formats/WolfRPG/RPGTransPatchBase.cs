@@ -98,7 +98,15 @@ namespace TranslationHelper.Formats.WolfRPG
         /// <param name="advice"></param>
         protected void GetAdvice(out string advice)
         {
-            advice = ReadLine();
+            if (ParseData.line.StartsWith("# ADVICE")) //advice missing sometimes
+            {
+                advice = ParseData.line;
+                ReadLine();
+            }
+            else
+            {
+                advice = "";
+            }
         }
 
         /// <summary>
@@ -253,7 +261,7 @@ namespace TranslationHelper.Formats.WolfRPG
             else
             {
                 var trans = original;
-                var translated = 
+                var translated =
                     thDataWork.SaveFileMode // save mode
                     && IsValidString(original) // valid original
                     && SetTranslation(ref trans)  // translation found
@@ -267,7 +275,7 @@ namespace TranslationHelper.Formats.WolfRPG
                     translation = trans;
                 }
 
-                SetContext(contextLines, !string.IsNullOrEmpty(translation) );
+                SetContext(contextLines, !string.IsNullOrEmpty(translation));
 
                 ParseData.line =
                     P2

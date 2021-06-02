@@ -174,7 +174,7 @@ namespace TranslationHelper.Formats
             return -1;
         }
 
-        bool firstline;
+        bool firstline = true;
 
         /// <summary>
         /// add line for wtite in save mode
