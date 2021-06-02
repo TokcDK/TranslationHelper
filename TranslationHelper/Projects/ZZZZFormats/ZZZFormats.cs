@@ -4,11 +4,11 @@ using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Formats;
 
-namespace TranslationHelper.Projects.ZZZREGEX
+namespace TranslationHelper.Projects.ZZZZFormats
 {
-    class ZZZFormats : ProjectBase
+    class ZZZZFormats : ProjectBase
     {
-        public ZZZFormats(THDataWork thDataWork) : base(thDataWork)
+        public ZZZZFormats(THDataWork thDataWork) : base(thDataWork)
         {
         }
 
