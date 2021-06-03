@@ -1,5 +1,4 @@
-﻿using AIHelper.Manage;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -14,7 +13,7 @@ namespace TranslationHelper
     public partial class THfrmSettings : Form
     {
         //Defaults
-        internal INIFile THConfigINI = new INIFile(Application.ProductName + ".ini");
+        internal INIFileMan.INIFile THConfigINI = new INIFileMan.INIFile(Application.ProductName + ".ini");
         readonly THDataWork thDataWork;
         internal THfrmSettings(THDataWork thDataWork)
         {

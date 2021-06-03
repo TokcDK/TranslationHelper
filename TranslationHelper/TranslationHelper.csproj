@@ -60,9 +60,6 @@
     <Reference Include="HtmlAgilityPack, Version=1.11.29.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.29\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
-      <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Dynamic, Version=1.3.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicLanguageRuntime.1.3.0\lib\net45\Microsoft.Dynamic.dll</HintPath>
     </Reference>
@@ -379,7 +376,6 @@
     <Compile Include="Old elements\RPGMakerMVjsonActors.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonCommonEvents.cs" />
     <Compile Include="ExternalAdditions\FileWriter.cs" />
-    <Compile Include="ExternalAdditions\INIFile.cs" />
     <Compile Include="Old elements\RPGMakerMVjson.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonSystem.cs" />
     <Compile Include="ExternalAdditions\THCreateSymlink.cs" />
@@ -478,6 +474,10 @@
     <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj">
       <Project>{fd599904-9718-4faf-a7b0-48f5d1be39e0}</Project>
       <Name>GetListOfSubClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\INIFileMan\INIFileMan.csproj">
+      <Project>{40ac8009-cecd-44d0-b564-96e07237fd1a}</Project>
+      <Name>INIFileMan</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

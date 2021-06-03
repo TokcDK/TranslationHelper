@@ -1,5 +1,4 @@
-﻿using AIHelper.Manage;
-using System;
+﻿using System;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
@@ -19,7 +18,7 @@ namespace TranslationHelper
         readonly THDataWork thDataWork;
         internal DataGridView THFileElementsDataGridView;
         readonly RichTextBox THTargetRichTextBox;
-        readonly INIFile Config;
+        readonly INIFileMan.INIFile Config;
 
         internal THfrmSearch(THDataWork thDataWork, ListBox listBox, DataGridView DGV, RichTextBox TTB)
         {
