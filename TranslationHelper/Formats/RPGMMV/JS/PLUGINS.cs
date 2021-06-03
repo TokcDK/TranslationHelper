@@ -14,6 +14,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             IsPluginsJS = true;
         }
 
+        internal override bool ExtIdentifier()
+        {
+            return Path.GetFileName(thDataWork.SPath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath)).ToUpperInvariant() == "JS";
+        }
+
         internal override bool Open()
         {
             return ParseJSArrayOfJsons();
@@ -133,7 +138,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
             }
 
-            File.WriteAllText(thDataWork.FilePath, TranslatedResult.ToString().Replace("\r\n","\n")/*js using only \n*/);
+            File.WriteAllText(thDataWork.FilePath, TranslatedResult.ToString().Replace("\r\n", "\n")/*js using only \n*/);
             return true;
         }
 

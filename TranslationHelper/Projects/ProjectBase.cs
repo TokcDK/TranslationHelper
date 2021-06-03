@@ -408,7 +408,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal static List<ProjectBase> GetListOfProjects(THDataWork thDataWork)
         {
-            return SettingsBaseTools.GetListOfSubClasses<ProjectBase>(thDataWork);
+            return GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ProjectBase>(thDataWork);
         }
 
         /// <summary>

@@ -42,17 +42,29 @@ namespace TranslationHelper.Projects.ZZZZFormats
                 var c1 = ClassType.GetMethod("Ext", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 var c2 = ClassType.GetMethod("ExtIdentifier", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 var c3 = ClassType.GetMethod("Name", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (ClassType.IsClass && ClassType.IsSubclassOf(type) && c1 != null && c2 != null && c3 != null)
+                if (!ClassType.IsClass 
+                    || ClassType.IsAbstract 
+                    || ClassType.IsInterface 
+                    || !ClassType.IsSubclassOf(type) 
+                    || c1 == null 
+                    || c2 == null 
+                    || c3 == null)
                 {
-                    if (noargs)
-                    {
-                        ListOfSubClasses.Add((FormatBase)Activator.CreateInstance(ClassType));
-                    }
-                    else
-                    {
-                        ListOfSubClasses.Add((FormatBase)Activator.CreateInstance(ClassType, args));
-                    }
+                    continue;
                 }
+
+                FormatBase instance;
+
+                if (noargs)
+                {
+                    instance = (FormatBase)Activator.CreateInstance(ClassType);
+                }
+                else
+                {
+                    instance = (FormatBase)Activator.CreateInstance(ClassType, args);
+                }
+
+                ListOfSubClasses.Add(instance);
             }
 
             return ListOfSubClasses;

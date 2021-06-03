@@ -129,7 +129,7 @@ namespace TranslationHelper.Main.Functions
         internal static IDBSave GetCurrentDBFormat()
         {
             IDBSave Format = new XML();
-            foreach (var f in SettingsBaseTools.GetListOfInterfaceImplimentations<IDBSave>())
+            foreach (var f in GetListOfSubClasses.Inherited.GetListOfInterfaceImplimentations<IDBSave>())
             {
                 if (f.Description == Properties.Settings.Default.DBCompressionExt)
                 {

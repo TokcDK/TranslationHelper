@@ -23,6 +23,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return ".js";
         }
 
+        internal override string Name()
+        {
+            return "RPGMakerMV plugin js file";
+        }
+
         /// <summary>
         /// Get all inherited classes of an abstract class
         /// </summary>
