@@ -13,7 +13,7 @@ namespace TranslationHelper.Functions
         /// <returns></returns>
         internal static List<IDBSave> GetDBSaveFormats()
         {
-            return SettingsBaseTools.GetListOfInterfaceImplimentations<IDBSave>();
+            return GetListOfSubClasses.Inherited.GetListOfInterfaceImplimentations<IDBSave>();
         }
 
         /// <summary>
