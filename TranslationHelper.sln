@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetListOfSubClasses", "K:\0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INIFileMan", "K:\0GIT\[TokcDK]\LC\LibsCollection\INIFileMan\INIFileMan.csproj", "{40AC8009-CECD-44D0-B564-96E07237FD1A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Using", "Using", "{82EBA20C-9643-4BDE-91E1-9F800109A39C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FD599904-9718-4FAF-A7B0-48F5D1BE39E0} = {82EBA20C-9643-4BDE-91E1-9F800109A39C}
+		{40AC8009-CECD-44D0-B564-96E07237FD1A} = {82EBA20C-9643-4BDE-91E1-9F800109A39C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69618983-1A21-49E5-BCF7-5C12FF8C2E7C}
