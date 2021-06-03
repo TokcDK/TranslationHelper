@@ -494,7 +494,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakCreate()
         {
-            return false;
+            return BackupRestorePaths(new[] { thDataWork.SPath, thDataWork.FilePath });
         }
 
         /// <summary>
@@ -503,7 +503,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakRestore()
         {
-            return false;
+            return BackupRestorePaths(new[] { thDataWork.SPath, thDataWork.FilePath }, false);
         }
 
         /// <summary>
@@ -614,6 +614,8 @@ namespace TranslationHelper.Projects
 
             var ret = false;
 
+            var bakuped = new HashSet<string>(paths.Length);
+
             foreach (var subpath in paths)
             {
                 if (string.IsNullOrWhiteSpace(subpath))
@@ -630,6 +632,13 @@ namespace TranslationHelper.Projects
                 {
                     path = subpath;
                 }
+
+                if (string.IsNullOrWhiteSpace(path) || bakuped.Contains(path))
+                {
+                    continue;
+                }
+
+                bakuped.Add(path);//add path to backuped
 
                 var target = path.EndsWith(".bak") ? path.Remove(path.Length - 4, 4) : path;
                 if (bak)
