@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Globalization;
-using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions
 {

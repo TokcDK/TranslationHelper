@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper.Main.Functions
 {
-    class FunctionsDigit
+    static class FunctionsDigit
     {
         public static bool IsEqualsAnyNumberFromArray(int lineNum, int[] lineNumbers)
         {
