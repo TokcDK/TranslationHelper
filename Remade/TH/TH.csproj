@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{5FCD823F-7B08-4BED-B3C5-8FA819CAB381}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>UICore</RootNamespace>
+    <RootNamespace>TH</RootNamespace>
     <AssemblyName>TH</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,10 +27,13 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TH.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -46,16 +49,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UIForm.cs">
+    <Compile Include="THForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UIForm.Designer.cs">
-      <DependentUpon>UIForm.cs</DependentUpon>
+    <Compile Include="THForm.Designer.cs">
+      <DependentUpon>THForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="UIForm.resx">
-      <DependentUpon>UIForm.cs</DependentUpon>
+    <EmbeddedResource Include="THForm.resx">
+      <DependentUpon>THForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -65,6 +68,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -79,5 +83,18 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MenusBase\MenusCore.csproj">
+      <Project>{aabf637a-12d1-4fbd-9859-c417c2add40f}</Project>
+      <Name>MenusCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj">
+      <Project>{FD599904-9718-4FAF-A7B0-48F5D1BE39E0}</Project>
+      <Name>GetListOfSubClasses</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>if exist "$(OutDir)\Modules\Menus\MenusBase.dll" del "$(OutDir)\Modules\Menus\MenusBase.dll"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

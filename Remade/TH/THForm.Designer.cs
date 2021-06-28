@@ -1,5 +1,5 @@
 ﻿
-namespace UICore
+namespace TH
 {
     partial class UICoreMainForm
     {
@@ -45,7 +45,7 @@ namespace UICore
             this.UICoreMainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UICoreMainPanel.Location = new System.Drawing.Point(0, 0);
             this.UICoreMainPanel.Name = "UICoreMainPanel";
-            this.UICoreMainPanel.Size = new System.Drawing.Size(1037, 576);
+            this.UICoreMainPanel.Size = new System.Drawing.Size(790, 509);
             this.UICoreMainPanel.TabIndex = 0;
             // 
             // UICoreMainMenuWorkspaceTableLayoutPanel
@@ -61,7 +61,7 @@ namespace UICore
             this.UICoreMainMenuWorkspaceTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
             this.UICoreMainMenuWorkspaceTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 95F));
             this.UICoreMainMenuWorkspaceTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.UICoreMainMenuWorkspaceTableLayoutPanel.Size = new System.Drawing.Size(1037, 576);
+            this.UICoreMainMenuWorkspaceTableLayoutPanel.Size = new System.Drawing.Size(790, 509);
             this.UICoreMainMenuWorkspaceTableLayoutPanel.TabIndex = 0;
             // 
             // MenusPanel
@@ -71,35 +71,35 @@ namespace UICore
             this.MenusPanel.Location = new System.Drawing.Point(1, 1);
             this.MenusPanel.Margin = new System.Windows.Forms.Padding(1);
             this.MenusPanel.Name = "MenusPanel";
-            this.MenusPanel.Size = new System.Drawing.Size(1035, 26);
+            this.MenusPanel.Size = new System.Drawing.Size(788, 23);
             this.MenusPanel.TabIndex = 1;
             // 
             // MenusCoreMenuStrip
             // 
             this.MenusCoreMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenusCoreMenuStrip.Name = "MenusCoreMenuStrip";
-            this.MenusCoreMenuStrip.Size = new System.Drawing.Size(1035, 24);
+            this.MenusCoreMenuStrip.Size = new System.Drawing.Size(788, 24);
             this.MenusCoreMenuStrip.TabIndex = 0;
             this.MenusCoreMenuStrip.Text = "MenusCore";
             // 
             // WorkspaceCorePanel
             // 
             this.WorkspaceCorePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.WorkspaceCorePanel.Location = new System.Drawing.Point(1, 28);
+            this.WorkspaceCorePanel.Location = new System.Drawing.Point(1, 25);
             this.WorkspaceCorePanel.Margin = new System.Windows.Forms.Padding(1, 0, 1, 1);
             this.WorkspaceCorePanel.Name = "WorkspaceCorePanel";
-            this.WorkspaceCorePanel.Size = new System.Drawing.Size(1035, 547);
+            this.WorkspaceCorePanel.Size = new System.Drawing.Size(788, 483);
             this.WorkspaceCorePanel.TabIndex = 2;
             // 
             // UICoreMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1037, 576);
+            this.ClientSize = new System.Drawing.Size(790, 509);
             this.Controls.Add(this.UICoreMainPanel);
             this.MainMenuStrip = this.MenusCoreMenuStrip;
             this.Name = "UICoreMainForm";
-            this.Text = "UICoreMainForm";
+            this.Text = "Translation Helper Remade";
             this.UICoreMainPanel.ResumeLayout(false);
             this.UICoreMainMenuWorkspaceTableLayoutPanel.ResumeLayout(false);
             this.MenusPanel.ResumeLayout(false);
@@ -113,8 +113,8 @@ namespace UICore
         private System.Windows.Forms.Panel UICoreMainPanel;
         private System.Windows.Forms.TableLayoutPanel UICoreMainMenuWorkspaceTableLayoutPanel;
         private System.Windows.Forms.Panel MenusPanel;
-        private System.Windows.Forms.MenuStrip MenusCoreMenuStrip;
         private System.Windows.Forms.Panel WorkspaceCorePanel;
+        private System.Windows.Forms.MenuStrip MenusCoreMenuStrip;
     }
 }
 
