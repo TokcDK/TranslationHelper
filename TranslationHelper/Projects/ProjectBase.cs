@@ -8,7 +8,6 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Functions;
-using TranslationHelper.INISettings;
 
 namespace TranslationHelper.Projects
 {
