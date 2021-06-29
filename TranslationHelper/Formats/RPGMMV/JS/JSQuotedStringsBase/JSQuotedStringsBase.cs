@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                         else if (IsValidString(result) && TablesLinesDict.ContainsKey(result))
                         {
                             var quote = regexQuote.Replace(@"\", "");
-                            ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, regexQuote + TablesLinesDict[result] + regexQuote);
+                            ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, quote + TablesLinesDict[result] + quote);
                             ParseData.Ret = true;
                         }
                     }
