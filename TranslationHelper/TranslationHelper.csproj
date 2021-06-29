@@ -201,7 +201,7 @@
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
     <Compile Include="Formats\RPGMMV\GAMEFONTCSS.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\JSQuotedStringsBase.cs" />
-    <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\TEMPLATE.cs" />
+    <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\ZZZOtherJS.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\TMStatusMenuEx.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\SupponShopStock.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\NupuRnd.cs" />

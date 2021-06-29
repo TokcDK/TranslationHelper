@@ -113,9 +113,6 @@ namespace TranslationHelper.Projects.RPGMMV
                 //Proceeed js-files
                 foreach (var JS in ListOfJS)
                 {
-                    HardcodedJS.Add(JS.JSName);//add js to exclude from parsing of other js
-
-                    thDataWork.Main.ProgressInfo(true, ParseFileMessage + JS.JSName);
                     thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
 
                     if (!File.Exists(thDataWork.FilePath))
@@ -125,6 +122,10 @@ namespace TranslationHelper.Projects.RPGMMV
 
                     try
                     {
+                        thDataWork.Main.ProgressInfo(true, ParseFileMessage + JS.JSName);
+
+                        HardcodedJS.Add(JS.JSName);//add js to exclude from parsing of other js
+
                         if (Write && JS.Save())
                         {
                             IsAnyFileCompleted = true;
@@ -153,10 +154,12 @@ namespace TranslationHelper.Projects.RPGMMV
                 //Proceeed other js-files with quotes search
                 foreach (var JS in Directory.EnumerateFiles(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", "plugins"), "*.js"))
                 {
-                    if (HardcodedJS.Contains(Path.GetFileName(JS)) || SkipJSList.Contains(Path.GetFileName(JS)))
+                    string JSName = Path.GetFileName(JS);
+
+                    if (HardcodedJS.Contains(JSName) || SkipJSList.Contains(JSName))
                         continue;
 
-                    thDataWork.Main.ProgressInfo(true, ParseFileMessage + Path.GetFileName(JS));
+                    thDataWork.Main.ProgressInfo(true, ParseFileMessage + JSName);
                     thDataWork.FilePath = JS;
 
                     if (!File.Exists(thDataWork.FilePath))
@@ -166,11 +169,11 @@ namespace TranslationHelper.Projects.RPGMMV
 
                     try
                     {
-                        if (Write && new TEMPLATE(thDataWork).Save())
+                        if (Write && new ZZZOtherJS(thDataWork).Save())
                         {
                             IsAnyFileCompleted = true;
                         }
-                        else if (new TEMPLATE(thDataWork).Open())
+                        else if (new ZZZOtherJS(thDataWork).Open())
                         {
                             IsAnyFileCompleted = true;
                         }

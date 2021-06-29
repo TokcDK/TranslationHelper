@@ -1,13 +1,13 @@
-﻿using TranslationHelper.Data;
+﻿//using TranslationHelper.Data;
 
-namespace TranslationHelper.Formats.RPGMMV.JS
-{
-    class SupponShopStock : JSQuotedStringsBase
-    {
-        public SupponShopStock(THDataWork thDataWork) : base(thDataWork)
-        {
-        }
+//namespace TranslationHelper.Formats.RPGMMV.JS
+//{
+//    class SupponShopStock : JSQuotedStringsBase
+//    {
+//        public SupponShopStock(THDataWork thDataWork) : base(thDataWork)
+//        {
+//        }
 
-        internal override string JSName => "SupponShopStock.js";
-    }
-}
+//        internal override string JSName => "SupponShopStock.js";
+//    }
+//}

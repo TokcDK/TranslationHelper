@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
-    class TEMPLATE : JSQuotedStringsBase
+    class ZZZOtherJS : JSQuotedStringsBase
     {
-        public TEMPLATE(THDataWork thDataWork) : base(thDataWork)
+        public ZZZOtherJS(THDataWork thDataWork) : base(thDataWork)
         {
         }
 

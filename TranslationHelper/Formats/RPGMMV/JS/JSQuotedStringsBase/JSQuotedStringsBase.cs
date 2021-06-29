@@ -18,10 +18,10 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
             if (!IsEmptyOrComment())
             {
-                foreach (var quote in new[] { "'", @"\""" })
+                foreach (var regexQuote in new[] { "'", @"\""" })
                 {
                     var mc = Regex.Matches(ParseData.line, /*@"[\""']([^\""'\r\n]+)[\""']"*/
-                          @"" + quote + @"([^" + quote + @"\r\n\\]+(?:\\.[^" + quote + @"\\]*)*)" + quote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
+                          @"" + regexQuote + @"([^" + regexQuote + @"\r\n\\]+(?:\\.[^" + regexQuote + @"\\]*)*)" + regexQuote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
                         );
                     for (int m = mc.Count - 1; m >= 0; m--)
                     {
@@ -33,14 +33,15 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                         }
                         else if (IsValidString(result) && TablesLinesDict.ContainsKey(result))
                         {
-                            ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, quote + TablesLinesDict[result] + quote);
+                            var quote = regexQuote.Replace(@"\", "");
+                            ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, regexQuote + TablesLinesDict[result] + regexQuote);
                             ParseData.Ret = true;
                         }
                     }
                 }
             }
 
-            SaveModeAddLine();
+            SaveModeAddLine("\n");
 
             return 0;
         }
