@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GetListOfSubClasses;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -34,15 +35,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         /// <returns></returns>
         internal static List<JSBase> GetListOfJS(THDataWork thDataWork)
         {
-            //https://stackoverflow.com/a/5411981
-            //Get all inherited classes of an abstract class
-            IEnumerable<JSBase> SubclassesOfJSBase = typeof(JSBase)
-            .Assembly.GetTypes()
-            .Where(t => t.IsSubclassOf(typeof(JSBase)) && !t.IsAbstract)
-            .Select(t => (JSBase)Activator.CreateInstance(t, thDataWork));
-
-            return (from JSBase SubClass in SubclassesOfJSBase
-                    select SubClass).ToList();
+            return Inherited.GetListOfinheritedSubClasses<JSBase>(thDataWork);
         }
 
         internal abstract string JSName { get; }
