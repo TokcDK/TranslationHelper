@@ -183,6 +183,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 var values = ExtractMulty(line, lineCoordinates, lineNum);
 
+                //parse all extracted values from original
                 foreach (var val in values)
                 {
                     try
@@ -230,6 +231,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 lineNum++;
             }
 
+            //translate if is last row or was added 300+ rows to buffer
             if (IsLastRow || buffer.Count >= 300)
             {
                 try
