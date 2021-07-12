@@ -148,14 +148,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             var original = SelectedRow[0] as string;
             var lineNum = 0;
+            int linesMaxCount = original.GetLinesCount();
             foreach (var line in original.SplitToLines())
             {
-                if (!line.IsValidForTranslation())
-                {
-                    lineNum++;
-                    continue;
-                }
-
                 var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
 
                 //add lineCoordinates and row data
@@ -167,6 +162,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (!buffer[lineCoordinates].ContainsKey(lineNum))
                 {
                     buffer[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
+                }
+
+                //check for line valid
+                if (!line.IsValidForTranslation())
+                {
+                    buffer[lineCoordinates][lineNum].Add(line, line);//add original as translation because line is not valid and will be added as is
+
+                    lineNum++;
+                    continue;
                 }
 
                 //check line value in cache
