@@ -148,7 +148,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             var original = SelectedRow[0] as string;
             var lineNum = 0;
-            int linesMaxCount = original.GetLinesCount();
             foreach (var line in original.SplitToLines())
             {
                 var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
