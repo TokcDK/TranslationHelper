@@ -11,7 +11,7 @@ namespace Menus
         string Text { get; }
 
         /// <summary>
-        /// Menu item tooltip text
+        /// Menu item description text
         /// </summary>
         string Description { get; }
 
