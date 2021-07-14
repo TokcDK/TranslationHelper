@@ -112,15 +112,13 @@ namespace TranslationHelper.Projects
 
         /// <summary>
         /// Open project files
-        /// </summary>
-        /// <param name="thData"></param>
+        /// </summary>        
         /// <returns></returns>
         internal abstract bool Open();
 
         /// <summary>
         /// Save project files
-        /// </summary>
-        /// <param name="thData"></param>
+        /// </summary>        
         /// <returns></returns>
         internal abstract bool Save();
 
