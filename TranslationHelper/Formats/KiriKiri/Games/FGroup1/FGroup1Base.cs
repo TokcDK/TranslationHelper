@@ -4,7 +4,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.FGroup1
 {
     abstract class FGroup1Base : KSBase
     {
-        protected FGroup1Base(THDataWork thDataWork) : base(thDataWork)
+        protected FGroup1Base(ProjectData projectData) : base(projectData)
         {
         }
     }

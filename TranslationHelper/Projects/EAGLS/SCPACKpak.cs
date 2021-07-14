@@ -6,14 +6,14 @@ namespace TranslationHelper.Projects.EAGLS
 {
     class SCPACKpak : EAGLSBase
     {
-        public SCPACKpak(THDataWork thDataWork) : base(thDataWork)
+        public SCPACKpak(ProjectData projectData) : base(projectData)
         {
         }
 
         bool ISpak;
         internal override bool Check()
         {
-            return (ISpak = Path.GetFileName(thDataWork.SPath) == "SCPACK.pak") && File.Exists(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "SCPACK.idx")) || (Path.GetFileName(thDataWork.SPath) == "SCPACK.idx") && File.Exists(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "SCPACK.pak"));
+            return (ISpak = Path.GetFileName(projectData.SPath) == "SCPACK.pak") && File.Exists(Path.Combine(Path.GetDirectoryName(projectData.SPath), "SCPACK.idx")) || (Path.GetFileName(projectData.SPath) == "SCPACK.idx") && File.Exists(Path.Combine(Path.GetDirectoryName(projectData.SPath), "SCPACK.pak"));
         }
 
         internal override string Filters()
@@ -28,14 +28,14 @@ namespace TranslationHelper.Projects.EAGLS
 
         private bool UnpackSCPACK()
         {
-            ProjectName = "SCPACK" + (ISpak ? "pak" : "idx") + "_" + thDataWork.SPath.GetCrc32();
+            ProjectName = "SCPACK" + (ISpak ? "pak" : "idx") + "_" + projectData.SPath.GetCrc32();
             ScriptDir = Properties.Settings.Default.THSelectedGameDir;
             return PackUnpackFiles() && OpenFiles();
         }
 
         internal override string Name()
         {
-            return ProjectTitlePrefix() + Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath));
+            return ProjectTitlePrefix() + Path.GetFileName(Path.GetDirectoryName(projectData.SPath));
         }
 
         internal override bool Save()

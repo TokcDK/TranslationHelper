@@ -16,15 +16,15 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="selectedRowsCount"></param>
         /// <returns></returns>
-        internal static int[] GetDGVRowIndexsesInDataSetTable(THDataWork thDataWork)
+        internal static int[] GetDGVRowIndexsesInDataSetTable(ProjectData projectData)
         {
-            //int[] selindexes = new int[thDataWork.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
+            //int[] selindexes = new int[projectData.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
 
             var tableIndex = 0;
-            thDataWork.Main.Invoke((Action)(()=>tableIndex=thDataWork.Main.THFilesList.SelectedIndex));
+            projectData.Main.Invoke((Action)(()=>tableIndex=projectData.Main.THFilesList.SelectedIndex));
 
 
-            int[] selindexes = GetRowIndexesOfSelectedDGVCells(thDataWork.Main.THFileElementsDataGridView.SelectedCells);
+            int[] selindexes = GetRowIndexesOfSelectedDGVCells(projectData.Main.THFileElementsDataGridView.SelectedCells);
             var selindexesLength = selindexes.Length;
             for (int i = 0; i < selindexesLength; i++)
             {
@@ -37,7 +37,7 @@ namespace TranslationHelper.Main.Functions
                 //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                 //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                 //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                selindexes[i] = GetDGVSelectedRowIndexInDatatable(thDataWork, tableIndex, selindexes[i]);
+                selindexes[i] = GetDGVSelectedRowIndexInDatatable(projectData, tableIndex, selindexes[i]);
 
                 //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
             }
@@ -64,13 +64,13 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// shows first row where translation cell is empty
         /// </summary>
-        /// <param name="thDataWork"></param>
-        internal static void ShowFirstRowWithEmptyTranslation(THDataWork thDataWork)
+        /// <param name="projectData"></param>
+        internal static void ShowFirstRowWithEmptyTranslation(ProjectData projectData)
         {
-            int TCount = thDataWork.THFilesElementsDataset.Tables.Count;
+            int TCount = projectData.THFilesElementsDataset.Tables.Count;
             for (int t = 0; t < TCount; t++)
             {
-                var table = thDataWork.THFilesElementsDataset.Tables[t];
+                var table = projectData.THFilesElementsDataset.Tables[t];
 
                 int RCount = table.Rows.Count;
                 for (int r = 0; r < RCount; r++)
@@ -78,7 +78,7 @@ namespace TranslationHelper.Main.Functions
                     var cell = table.Rows[r][1];
                     if (cell == null || string.IsNullOrEmpty(cell as string))
                     {
-                        ShowSelectedRow(thDataWork, t, "Translation", r);
+                        ShowSelectedRow(projectData, t, "Translation", r);
                         return;
                     }
                 }
@@ -88,13 +88,13 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// shows selected row in selected table
         /// </summary>
-        /// <param name="thDataWork"></param>
+        /// <param name="projectData"></param>
         /// <param name="tableIndex"></param>
         /// <param name="columnName"></param>
         /// <param name="rowIndex"></param>
-        internal static void ShowSelectedRow(THDataWork thDataWork, int tableIndex, string columnName, int rowIndex)
+        internal static void ShowSelectedRow(ProjectData projectData, int tableIndex, string columnName, int rowIndex)
         {
-            if (tableIndex == -1 || tableIndex > thDataWork.THFilesElementsDataset.Tables.Count - 1 || string.IsNullOrEmpty(columnName) || !thDataWork.THFilesElementsDataset.Tables[tableIndex].Columns.Contains(columnName))
+            if (tableIndex == -1 || tableIndex > projectData.THFilesElementsDataset.Tables.Count - 1 || string.IsNullOrEmpty(columnName) || !projectData.THFilesElementsDataset.Tables[tableIndex].Columns.Contains(columnName))
             {
                 return;
             }
@@ -102,24 +102,24 @@ namespace TranslationHelper.Main.Functions
             int RCount = 0;//for debug purposes
             try
             {
-                RCount = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
-                if (tableIndex == thDataWork.Main.THFilesList.SelectedIndex && RCount > 0 && thDataWork.Main.THFileElementsDataGridView.DataSource != null)
+                RCount = projectData.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
+                if (tableIndex == projectData.Main.THFilesList.SelectedIndex && RCount > 0 && projectData.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
                 {
-                    thDataWork.Main.THFilesList.SelectedIndex = tableIndex;
-                    thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableIndex];
+                    projectData.Main.THFilesList.SelectedIndex = tableIndex;
+                    projectData.Main.THFileElementsDataGridView.DataSource = projectData.THFilesElementsDataset.Tables[tableIndex];
 
                 }
 
-                thDataWork.Main.THFileElementsDataGridView.CurrentCell = thDataWork.Main.THFileElementsDataGridView[columnName, rowIndex];
+                projectData.Main.THFileElementsDataGridView.CurrentCell = projectData.Main.THFileElementsDataGridView[columnName, rowIndex];
 
                 //scrool to selected cell
                 //https://stackoverflow.com/a/51399750
-                thDataWork.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
+                projectData.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
 
-                thDataWork.Main.UpdateTextboxes();
+                projectData.Main.UpdateTextboxes();
             }
             catch (Exception ex)
             {
@@ -132,13 +132,13 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// shows selected row in selected table
         /// </summary>
-        /// <param name="thDataWork"></param>
+        /// <param name="projectData"></param>
         /// <param name="tableIndex"></param>
         /// <param name="columnIndex"></param>
         /// <param name="rowIndex"></param>
-        internal static void ShowSelectedRow(THDataWork thDataWork, int tableIndex, int columnIndex, int rowIndex)
+        internal static void ShowSelectedRow(ProjectData projectData, int tableIndex, int columnIndex, int rowIndex)
         {
-            if (tableIndex == -1 || tableIndex > thDataWork.THFilesElementsDataset.Tables.Count - 1 || columnIndex == -1 || columnIndex > thDataWork.THFilesElementsDataset.Tables[tableIndex].Columns.Count - 1)
+            if (tableIndex == -1 || tableIndex > projectData.THFilesElementsDataset.Tables.Count - 1 || columnIndex == -1 || columnIndex > projectData.THFilesElementsDataset.Tables[tableIndex].Columns.Count - 1)
             {
                 return;
             }
@@ -146,22 +146,22 @@ namespace TranslationHelper.Main.Functions
             int RCount = 0;//for debug purposes
             try
             {
-                RCount = thDataWork.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
-                if (tableIndex == thDataWork.Main.THFilesList.SelectedIndex && RCount > 0 && thDataWork.Main.THFileElementsDataGridView.DataSource != null)
+                RCount = projectData.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
+                if (tableIndex == projectData.Main.THFilesList.SelectedIndex && RCount > 0 && projectData.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
                 {
-                    thDataWork.Main.THFilesList.SelectedIndex = tableIndex;
-                    thDataWork.Main.THFileElementsDataGridView.DataSource = thDataWork.THFilesElementsDataset.Tables[tableIndex];
+                    projectData.Main.THFilesList.SelectedIndex = tableIndex;
+                    projectData.Main.THFileElementsDataGridView.DataSource = projectData.THFilesElementsDataset.Tables[tableIndex];
 
                 }
 
-                thDataWork.Main.THFileElementsDataGridView.CurrentCell = thDataWork.Main.THFileElementsDataGridView[columnIndex, rowIndex];
+                projectData.Main.THFileElementsDataGridView.CurrentCell = projectData.Main.THFileElementsDataGridView[columnIndex, rowIndex];
 
                 //scrool to selected cell
                 //https://stackoverflow.com/a/51399750
-                thDataWork.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
+                projectData.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
             }
             catch (Exception ex)
             {
@@ -172,38 +172,38 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// When table not exists it will create table with table thDataWork.TempPath name and Original Column<br>
+        /// When table not exists it will create table with table projectData.TempPath name and Original Column<br>
         /// When table is exists it will remove table if no rows there else will create Translation column
         /// </summary>
-        /// <param name="thDataWork"></param>
+        /// <param name="projectData"></param>
         /// <returns></returns>
-        public static bool SetTableAndColumns(THDataWork thDataWork, bool add = true)
+        public static bool SetTableAndColumns(ProjectData projectData, bool add = true)
         {
-            if (thDataWork.FilePath.Length == 0)
+            if (projectData.FilePath.Length == 0)
                 return false;
 
-            string fileName = Path.GetFileName(thDataWork.FilePath);
+            string fileName = Path.GetFileName(projectData.FilePath);
 
-            if (add && !thDataWork.THFilesElementsDataset.Tables.Contains(fileName))
+            if (add && !projectData.THFilesElementsDataset.Tables.Contains(fileName))
             {
-                _ = thDataWork.THFilesElementsDataset.Tables.Add(fileName);
-                _ = thDataWork.THFilesElementsDataset.Tables[fileName].Columns.Add("Original");
-                _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(fileName);
-                _ = thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Columns.Add("Original");
+                _ = projectData.THFilesElementsDataset.Tables.Add(fileName);
+                _ = projectData.THFilesElementsDataset.Tables[fileName].Columns.Add("Original");
+                _ = projectData.THFilesElementsDatasetInfo.Tables.Add(fileName);
+                _ = projectData.THFilesElementsDatasetInfo.Tables[fileName].Columns.Add("Original");
 
                 return true;
             }
             else
             {
-                if (thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Count == 0)
+                if (projectData.THFilesElementsDataset.Tables[fileName].Rows.Count == 0)
                 {
-                    thDataWork.THFilesElementsDataset.Tables.Remove(fileName);
-                    thDataWork.THFilesElementsDatasetInfo.Tables.Remove(fileName);
+                    projectData.THFilesElementsDataset.Tables.Remove(fileName);
+                    projectData.THFilesElementsDatasetInfo.Tables.Remove(fileName);
                     return false;
                 }
                 else
                 {
-                    _ = thDataWork.THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
+                    _ = projectData.THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
                     return true;
                 }
             }
@@ -427,9 +427,9 @@ namespace TranslationHelper.Main.Functions
         /// <param name="TableIndex"></param>
         /// <param name="rowIndex"></param>
         /// <returns></returns>
-        public static int GetDGVSelectedRowIndexInDatatable(THDataWork thDataWork, int TableIndex, int rowIndex)
+        public static int GetDGVSelectedRowIndexInDatatable(ProjectData projectData, int TableIndex, int rowIndex)
         {
-            var table = thDataWork.THFilesElementsDataset.Tables[TableIndex];
+            var table = projectData.THFilesElementsDataset.Tables[TableIndex];
             if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
             {
                 return rowIndex;
@@ -437,21 +437,21 @@ namespace TranslationHelper.Main.Functions
 
             return table.Rows
                 .IndexOf(
-                ((DataRowView)thDataWork.Main.THFileElementsDataGridView.Rows[rowIndex].DataBoundItem).Row
+                ((DataRowView)projectData.Main.THFileElementsDataGridView.Rows[rowIndex].DataBoundItem).Row
                         );
         }
 
         /// <summary>
         /// get Hashes of row indexes for selected/visible rows
         /// </summary>
-        /// <param name="thDataWork"></param>
+        /// <param name="projectData"></param>
         /// <param name="tableindex"></param>
         /// <param name="IsVisible">set to true if need to search in visible rows</param>
         /// <returns></returns>
-        internal static HashSet<int> GetDGVRowsIndexesHashesInDT(THDataWork thDataWork, int tableindex, bool IsVisible = false)
+        internal static HashSet<int> GetDGVRowsIndexesHashesInDT(ProjectData projectData, int tableindex, bool IsVisible = false)
         {
             DataGridView DGV = null;
-            thDataWork.Main.Invoke((Action)(() => DGV = thDataWork.Main.THFileElementsDataGridView));
+            projectData.Main.Invoke((Action)(() => DGV = projectData.Main.THFileElementsDataGridView));
 
             var selected = new HashSet<int>();
             if (IsVisible)
@@ -463,7 +463,7 @@ namespace TranslationHelper.Main.Functions
                         continue;
                     }
 
-                    selected.Add(GetDGVSelectedRowIndexInDatatable(thDataWork, tableindex, row.Index));
+                    selected.Add(GetDGVSelectedRowIndexInDatatable(projectData, tableindex, row.Index));
                 }
             }
             else
@@ -473,7 +473,7 @@ namespace TranslationHelper.Main.Functions
                     var rowindex = DGV.SelectedCells[i].RowIndex;
                     if (!selected.Contains(rowindex))
                     {
-                        selected.Add(GetDGVSelectedRowIndexInDatatable(thDataWork, tableindex, rowindex));
+                        selected.Add(GetDGVSelectedRowIndexInDatatable(projectData, tableindex, rowindex));
                     }
                 }
             }

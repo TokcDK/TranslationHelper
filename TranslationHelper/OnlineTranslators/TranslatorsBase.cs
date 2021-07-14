@@ -30,17 +30,17 @@ namespace TranslationHelper.Translators
     {
         internal int ErrorsWebCnt = 0;
         internal int ErrorsWebCntOverall = 0;
-        protected THDataWork thDataWork;
-        protected TranslatorsBase(THDataWork thDataWork)
+        protected ProjectData projectData;
+        protected TranslatorsBase(ProjectData projectData)
         {
-            this.thDataWork = thDataWork;
+            this.projectData = projectData;
             if (webClient == null)
             {
-                if (thDataWork.OnlineTranslatorCookies == null)
+                if (projectData.OnlineTranslatorCookies == null)
                 {
-                    thDataWork.OnlineTranslatorCookies = new System.Net.CookieContainer();
+                    projectData.OnlineTranslatorCookies = new System.Net.CookieContainer();
                 }
-                webClient = new WebClientEx(thDataWork.OnlineTranslatorCookies);
+                webClient = new WebClientEx(projectData.OnlineTranslatorCookies);
                 //webClient = new ScrapingBrowser
             }
             //webClient.UseDefaultCredentials = false;            

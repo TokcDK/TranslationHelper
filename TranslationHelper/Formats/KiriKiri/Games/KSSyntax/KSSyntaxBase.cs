@@ -12,10 +12,10 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
         /// <summary>
         /// app data
         /// </summary>
-        protected readonly THDataWork thDataWork;
-        protected KSSyntaxBase(THDataWork thDataWork)
+        protected readonly ProjectData projectData;
+        protected KSSyntaxBase(ProjectData projectData)
         {
-            this.thDataWork = thDataWork;
+            this.projectData = projectData;
         }
 
         /// <summary>

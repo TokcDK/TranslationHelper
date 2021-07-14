@@ -8,13 +8,13 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 {
     class DungeonAndBride : KiriKiriGameBase
     {
-        public DungeonAndBride(THDataWork thDataWork) : base(thDataWork)
+        public DungeonAndBride(ProjectData projectData) : base(projectData)
         {
         }
 
         internal override bool Check()
         {
-            return CheckKiriKiriBase() && ExtensionsFileFolder.GetCrc32(thDataWork.SPath) == "7c2bfd95";
+            return CheckKiriKiriBase() && ExtensionsFileFolder.GetCrc32(projectData.SPath) == "7c2bfd95";
         }
 
         internal override string Name()
@@ -25,9 +25,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         protected override List<Formats.FormatBase> Format()
         {
             return new List<Formats.FormatBase> {
-                new TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2.KS(thDataWork),
-                new TranslationHelper.Formats.KiriKiri.Games.TJS(thDataWork),
-                new TranslationHelper.Formats.KiriKiri.Games.CSV.CSV(thDataWork)
+                new TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2.KS(projectData),
+                new TranslationHelper.Formats.KiriKiri.Games.TJS(projectData),
+                new TranslationHelper.Formats.KiriKiri.Games.CSV.CSV(projectData)
             };
         }
 
@@ -43,11 +43,11 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
         private void ReplaceLatinInlineTagsToJPLatin(ref string line)
         {
-            if (string.IsNullOrWhiteSpace(line) || string.IsNullOrWhiteSpace(thDataWork.FilePath) || line.IndexOf('"') == -1)
+            if (string.IsNullOrWhiteSpace(line) || string.IsNullOrWhiteSpace(projectData.FilePath) || line.IndexOf('"') == -1)
             {
                 return;
             }
-            var mapname = Path.GetFileName(thDataWork.FilePath);
+            var mapname = Path.GetFileName(projectData.FilePath);
             if (!mapname.EndsWith("tjs"))
             {
                 return;

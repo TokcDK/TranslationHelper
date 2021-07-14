@@ -7,7 +7,7 @@ namespace TranslationHelper.Formats.Liar_soft
 {
     class GSCTXT : FormatBase
     {
-        public GSCTXT(THDataWork thDataWork) : base(thDataWork)
+        public GSCTXT(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -35,7 +35,7 @@ namespace TranslationHelper.Formats.Liar_soft
             var str = message.ToString().Remove(0, 1);//remove 1st # symbol
             if (IsValidString(str))
             {
-                if (thDataWork.OpenFileMode)
+                if (projectData.OpenFileMode)
                 {
                     AddRowData(str, "", true, false);
                 }
@@ -45,7 +45,7 @@ namespace TranslationHelper.Formats.Liar_soft
                 }
             }
 
-            if (thDataWork.SaveFileMode)
+            if (projectData.SaveFileMode)
             {
                 ParseData.ResultForWrite.AppendLine("#"+str);
                 ParseData.ResultForWrite.AppendLine(">");
@@ -55,24 +55,24 @@ namespace TranslationHelper.Formats.Liar_soft
         }
         protected override bool ParseStringFilePostOpen()
         {
-            if (thDataWork.OpenFileMode)
+            if (projectData.OpenFileMode)
             {
                 return CheckTablesContent(ParseData.tablename);
             }
             else
             {
                 var ret = WriteFileData();
-                var gscPath = thDataWork.FilePath.Remove(thDataWork.FilePath.Length - 4, 4);
+                var gscPath = projectData.FilePath.Remove(projectData.FilePath.Length - 4, 4);
                 if (ret)
                 {
-                    var gscFile = TransFile.FromFile(thDataWork.FilePath).ToGSC(gscPath);
+                    var gscFile = TransFile.FromFile(projectData.FilePath).ToGSC(gscPath);
                     gscFile.Save(gscPath);
                 }
                 else
                 {
                     File.Delete(gscPath);
                 }
-                File.Delete(thDataWork.FilePath);
+                File.Delete(projectData.FilePath);
 
                 return ret;
             }

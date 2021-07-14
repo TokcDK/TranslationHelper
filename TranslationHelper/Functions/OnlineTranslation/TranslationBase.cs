@@ -4,10 +4,10 @@ namespace TranslationHelper.Functions.OnlineTranslation
 {
     abstract class TranslationBase
     {
-        protected THDataWork thDataWork;
-        protected TranslationBase(THDataWork thDataWork)
+        protected ProjectData projectData;
+        protected TranslationBase(ProjectData projectData)
         {
-            this.thDataWork = thDataWork;
+            this.projectData = projectData;
         }
 
         internal abstract void Get();

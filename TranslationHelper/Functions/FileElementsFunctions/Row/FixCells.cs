@@ -7,7 +7,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class FixCells : RowBase
     {
-        public FixCells(THDataWork thDataWork) : base(thDataWork)
+        public FixCells(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -33,7 +33,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 string rule;
                 string result;
-                foreach (var PatternReplacementPair in thDataWork.CellFixesRegexRules)
+                foreach (var PatternReplacementPair in projectData.CellFixesRegexRules)
                 {
                     //читать правило и результат
                     rule = PatternReplacementPair.Key;
@@ -70,7 +70,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 if (!Equals(row[1], cvalue))
                 {
-                    //thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
+                    //projectData.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
                     row[1] = cvalue;
                     return true;
                 }

@@ -9,10 +9,10 @@ namespace TranslationHelper.Projects.RPGMTrans
 {
     class RPGMTransOLD
     {
-        readonly THDataWork thDataWork;
-        public RPGMTransOLD(THDataWork thDataWork)
+        readonly ProjectData projectData;
+        public RPGMTransOLD(ProjectData projectData)
         {
-            this.thDataWork = thDataWork;
+            this.projectData = projectData;
         }
 
         internal string RPGMTransPatchPrepare(string sPath)
@@ -68,12 +68,12 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //LogToFile(string.Empty, true);
 
                 //Запись в dataGridVivwer
-                for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
+                for (int i = 0; i < projectData.THFilesElementsDataset.Tables.Count; i++)
                 {
                     //MessageBox.Show("ListFiles=" + ListFiles[i]);
                     //THFilesListBox.Items.Add(THRPGMTransPatchFiles[i].Name);
                     //THFilesListBox.Items.Add(DS.Tables[i].TableName);//asdf
-                    thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(thDataWork.THFilesElementsDataset.Tables[i].TableName)));
+                    projectData.Main.THFilesList.Invoke((Action)(() => projectData.Main.THFilesList.Items.Add(projectData.THFilesElementsDataset.Tables[i].TableName)));
                     //THFilesDataGridView.Rows.Add();
                     //THFilesDataGridView.Rows[i].Cells[0].Value = THRPGMTransPatchFiles[i].Name /*Path.GetFileNameWithoutExtension(ListFiles[i])*/;
                     //dGFiles.Rows.Add();
@@ -89,7 +89,7 @@ namespace TranslationHelper.Projects.RPGMTrans
         private int invalidformat;
         public bool OpenRPGMTransPatchFiles(List<string> ListFiles)
         {
-            if (ListFiles == null || thDataWork.THFilesElementsDataset == null)
+            if (ListFiles == null || projectData.THFilesElementsDataset == null)
                 return false;
 
             //измерение времени выполнения
@@ -124,22 +124,22 @@ namespace TranslationHelper.Projects.RPGMTrans
             for (int i = 0; i < ListFiles.Count; i++)   //Обрабатываем всю строку
             {
                 string fname = Path.GetFileNameWithoutExtension(ListFiles[i]);
-                thDataWork.Main.ProgressInfo(true, T._("opening file: ") + fname + ".txt");
+                projectData.Main.ProgressInfo(true, T._("opening file: ") + fname + ".txt");
                 _file = new StreamReader(ListFiles[i]); //Задаем файл
                 //THRPGMTransPatchFiles.Add(new THRPGMTransPatchFile(Path.GetFileNameWithoutExtension(ListFiles[i]), ListFiles[i].ToString(), string.Empty));    //Добaвляем файл
-                _ = thDataWork.THFilesElementsDataset.Tables.Add(fname);
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Original");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Translation");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Context");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Advice");
-                _ = thDataWork.THFilesElementsDataset.Tables[i].Columns.Add("Status");
-                if (thDataWork.THFilesElementsDatasetInfo == null)
+                _ = projectData.THFilesElementsDataset.Tables.Add(fname);
+                _ = projectData.THFilesElementsDataset.Tables[i].Columns.Add("Original");
+                _ = projectData.THFilesElementsDataset.Tables[i].Columns.Add("Translation");
+                _ = projectData.THFilesElementsDataset.Tables[i].Columns.Add("Context");
+                _ = projectData.THFilesElementsDataset.Tables[i].Columns.Add("Advice");
+                _ = projectData.THFilesElementsDataset.Tables[i].Columns.Add("Status");
+                if (projectData.THFilesElementsDatasetInfo == null)
                 {
                 }
                 else
                 {
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(fname);
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Columns.Add("Original");
+                    _ = projectData.THFilesElementsDatasetInfo.Tables.Add(fname);
+                    _ = projectData.THFilesElementsDatasetInfo.Tables[i].Columns.Add("Original");
                 }
 
                 if (RPGMFunctions.RPGMTransPatchVersion == "3")
@@ -198,13 +198,13 @@ namespace TranslationHelper.Projects.RPGMTrans
                             else
                             {
                                 //THRPGMTransPatchFiles[i].blocks.Add(new Block(_context, _advice, _untrans, _trans, _status));  //Пишем
-                                _ = thDataWork.THFilesElementsDataset.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
-                                if (thDataWork.THFilesElementsDatasetInfo == null)
+                                _ = projectData.THFilesElementsDataset.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
+                                if (projectData.THFilesElementsDatasetInfo == null)
                                 {
                                 }
                                 else
                                 {
-                                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
+                                    _ = projectData.THFilesElementsDatasetInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
                                 }
                             }
 
@@ -290,13 +290,13 @@ namespace TranslationHelper.Projects.RPGMTrans
                                     if (_original != Environment.NewLine)
                                     {
                                         //THRPGMTransPatchFiles[i].blocks.Add(new Block(_context, _advice, _untrans, _trans, _status));//Пишем
-                                        _ = thDataWork.THFilesElementsDataset.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
-                                        if (thDataWork.THFilesElementsDatasetInfo == null)
+                                        _ = projectData.THFilesElementsDataset.Tables[i].Rows.Add(_original, _translation, _context, _advice, _status);
+                                        if (projectData.THFilesElementsDatasetInfo == null)
                                         {
                                         }
                                         else
                                         {
-                                            _ = thDataWork.THFilesElementsDatasetInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
+                                            _ = projectData.THFilesElementsDatasetInfo.Tables[i].Rows.Add("Context:" + Environment.NewLine + _context + Environment.NewLine + "Advice:" + Environment.NewLine + _advice);
                                         }
                                     }
                                 }
@@ -336,7 +336,7 @@ namespace TranslationHelper.Projects.RPGMTrans
             {
                 //ConnnectLinesToGrid(0); //подозрения, что вызывается 2 раза
                 //MessageBox.Show("Готово!");
-                thDataWork.Main.FVariant = " * RPG Maker Trans Patch " + RPGMFunctions.RPGMTransPatchVersion;
+                projectData.Main.FVariant = " * RPG Maker Trans Patch " + RPGMFunctions.RPGMTransPatchVersion;
             }
             else if (invalidformat == 1)
             {
@@ -377,11 +377,11 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //MessageBox.Show(progressBar.Maximum.ToString());
                 //progressBar.Value = 0;
 
-                int originalcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
-                int translationcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
-                int contextcolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Context"].Ordinal;
-                int advicecolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Advice"].Ordinal;
-                int statuscolumnindex = thDataWork.THFilesElementsDataset.Tables[0].Columns["Status"].Ordinal;
+                int originalcolumnindex = projectData.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
+                int translationcolumnindex = projectData.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+                int contextcolumnindex = projectData.THFilesElementsDataset.Tables[0].Columns["Context"].Ordinal;
+                int advicecolumnindex = projectData.THFilesElementsDataset.Tables[0].Columns["Advice"].Ordinal;
+                int statuscolumnindex = projectData.THFilesElementsDataset.Tables[0].Columns["Status"].Ordinal;
 
                 if (patchver == "3")
                 {
@@ -391,23 +391,23 @@ namespace TranslationHelper.Projects.RPGMTrans
                     //RPGMKTRANSPATCHwriter.Close();
 
                     //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
-                    for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
+                    for (int i = 0; i < projectData.THFilesElementsDataset.Tables.Count; i++)
                     {
-                        thDataWork.Main.ProgressInfo(true, T._("saving file: ") + thDataWork.THFilesElementsDataset.Tables[i].TableName);
+                        projectData.Main.ProgressInfo(true, T._("saving file: ") + projectData.THFilesElementsDataset.Tables[i].TableName);
 
                         buffer.AppendLine("> RPGMAKER TRANS PATCH FILE VERSION 3.2");// + Environment.NewLine);
                         //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
-                        for (int y = 0; y < thDataWork.THFilesElementsDataset.Tables[i].Rows.Count; y++)
+                        for (int y = 0; y < projectData.THFilesElementsDataset.Tables[i].Rows.Count; y++)
                         {
                             buffer.AppendLine("> BEGIN STRING");// + Environment.NewLine);
                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Original + Environment.NewLine;
-                            buffer.AppendLine(thDataWork.THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] + string.Empty);// + Environment.NewLine);
+                            buffer.AppendLine(projectData.THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] + string.Empty);// + Environment.NewLine);
                             //MessageBox.Show("1: " + ArrayTransFilses[i].blocks[y].Trans);
                             //MessageBox.Show("2: " + ArrayTransFilses[i].blocks[y].Context);
                             //string[] str = THRPGMTransPatchFiles[i].blocks[y].Context.Split('\n');
-                            string[] CONTEXT = (thDataWork.THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
+                            string[] CONTEXT = (projectData.THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
                             //string str1 = string.Empty;
-                            string TRANSLATION = thDataWork.THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + string.Empty;
+                            string TRANSLATION = projectData.THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + string.Empty;
                             for (int g = 0; g < CONTEXT.Length; g++)
                             {
                                 /*CONTEXT[g] = CONTEXT[g].Replace("\r", string.Empty);*///очистка от знака переноса, возникающего после разбития на строки по \n
@@ -450,7 +450,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                             }
                             buffer.Remove(buffer.Length - 2, 2);//удаление лишнего символа \r\n с конца строки
                             //String _path = SelectedDir + "\\patch\\" + THRPGMTransPatchFiles[i].Name + ".txt";
-                            string _path = SelectedDir + "\\patch\\" + thDataWork.THFilesElementsDataset.Tables[i].TableName + ".txt";
+                            string _path = SelectedDir + "\\patch\\" + projectData.THFilesElementsDataset.Tables[i].TableName + ".txt";
                             File.WriteAllText(_path, buffer.ToString());
                             //buffer = string.Empty;
                         }
@@ -469,17 +469,17 @@ namespace TranslationHelper.Projects.RPGMTrans
                 else if (patchver == "2")
                 {
                     //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
-                    for (int i = 0; i < thDataWork.THFilesElementsDataset.Tables.Count; i++)
+                    for (int i = 0; i < projectData.THFilesElementsDataset.Tables.Count; i++)
                     {
-                        thDataWork.Main.ProgressInfo(true, T._("saving file: ") + thDataWork.THFilesElementsDataset.Tables[i].TableName);
+                        projectData.Main.ProgressInfo(true, T._("saving file: ") + projectData.THFilesElementsDataset.Tables[i].TableName);
 
                         bool unusednotfound = true;//для проверки начала неиспользуемых строк, в целях оптимизации
 
                         buffer.AppendLine("# RPGMAKER TRANS PATCH FILE VERSION 2.0");// + Environment.NewLine);
                         //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
-                        for (int y = 0; y < thDataWork.THFilesElementsDataset.Tables[i].Rows.Count; y++)
+                        for (int y = 0; y < projectData.THFilesElementsDataset.Tables[i].Rows.Count; y++)
                         {
-                            string ADVICE = thDataWork.THFilesElementsDataset.Tables[i].Rows[y][advicecolumnindex] + string.Empty;
+                            string ADVICE = projectData.THFilesElementsDataset.Tables[i].Rows[y][advicecolumnindex] + string.Empty;
                             //Если в advice была информация о начале блоков неиспользуемых, то вставить эту строчку
                             if (unusednotfound && ADVICE.Contains("# UNUSED TRANSLATABLES"))
                             {
@@ -489,13 +489,13 @@ namespace TranslationHelper.Projects.RPGMTrans
                             }
                             buffer.AppendLine("# TEXT STRING");// + Environment.NewLine;
                             //if (THRPGMTransPatchFiles[i].blocks[y].Translation == "\r\n")
-                            string TRANSLATION = thDataWork.THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + string.Empty;
+                            string TRANSLATION = projectData.THFilesElementsDataset.Tables[i].Rows[y][translationcolumnindex] + string.Empty;
                             if (TRANSLATION.Length == 0)
                             {
                                 buffer.AppendLine("# UNTRANSLATED");// + Environment.NewLine;
                             }
                             //buffer += "# CONTEXT : " + THRPGMTransPatchFiles[i].blocks[y].Context + Environment.NewLine;
-                            buffer.AppendLine("# CONTEXT : " + thDataWork.THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex]);// + Environment.NewLine;
+                            buffer.AppendLine("# CONTEXT : " + projectData.THFilesElementsDataset.Tables[i].Rows[y][contextcolumnindex]);// + Environment.NewLine;
                             if (ADVICE.Length == 0)
                             {
                                 //иногда # ADVICE отсутствует и при записи нужно пропускать запись этого пункта
@@ -506,7 +506,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                                 buffer.AppendLine("# ADVICE : " + ADVICE);// + Environment.NewLine;
                             }
                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Original;
-                            buffer.AppendLine(thDataWork.THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] + string.Empty);// + Environment.NewLine;
+                            buffer.AppendLine(projectData.THFilesElementsDataset.Tables[i].Rows[y][originalcolumnindex] + string.Empty);// + Environment.NewLine;
                             buffer.AppendLine("# TRANSLATION ");// + Environment.NewLine;
                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Translation;
                             buffer.AppendLine(TRANSLATION);// + Environment.NewLine;
@@ -519,7 +519,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                         {
                             buffer.Remove(buffer.Length - 2, 2);//удаление лишнего символа \r\n с конца строки
                             //String _path = SelectedDir + "\\" + THRPGMTransPatchFiles[i].Name + ".txt";
-                            string _path = Path.Combine(SelectedDir, thDataWork.THFilesElementsDataset.Tables[i].TableName + ".txt");
+                            string _path = Path.Combine(SelectedDir, projectData.THFilesElementsDataset.Tables[i].TableName + ".txt");
                             File.WriteAllText(_path, buffer.ToString());
                             //buffer = string.Empty;
                         }
@@ -545,8 +545,8 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //THActionProgressBar.Visible = false;
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Visible = false));
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
-                thDataWork.Main.ProgressInfo(false, string.Empty);
-                thDataWork.Main.SaveInAction = false;
+                projectData.Main.ProgressInfo(false, string.Empty);
+                projectData.Main.SaveInAction = false;
                 return false;
             }
             finally
@@ -555,10 +555,10 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = false));
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Visible = false));
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
-                thDataWork.Main.ProgressInfo(false, string.Empty);
+                projectData.Main.ProgressInfo(false, string.Empty);
             }
 
-            thDataWork.Main.SaveInAction = false;
+            projectData.Main.SaveInAction = false;
 
 
             //остановка таймера и запись времени

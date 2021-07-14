@@ -5,7 +5,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class CompleteRomajiotherLines : RowBase
     {
-        public CompleteRomajiotherLines(THDataWork thDataWork) : base(thDataWork)
+        public CompleteRomajiotherLines(ProjectData projectData) : base(projectData)
         {
         }
 

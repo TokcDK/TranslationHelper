@@ -140,7 +140,7 @@ namespace TranslationHelper.Main.Functions
             return Format;
         }
 
-        internal static string GetDBCompressionExt(THDataWork thDataWork = null)
+        internal static string GetDBCompressionExt(ProjectData projectData = null)
         {
             //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"));
             if (TranslationHelper.Properties.Settings.Default.DBCompression)
@@ -151,12 +151,12 @@ namespace TranslationHelper.Main.Functions
             return ".xml";
         }
 
-        internal static string GetProjectDBFolder(THDataWork thDataWork = null)
+        internal static string GetProjectDBFolder(ProjectData projectData = null)
         {
             string ret = string.Empty;
-            if (thDataWork != null && thDataWork.CurrentProject != null)
+            if (projectData != null && projectData.CurrentProject != null)
             {
-                ret = thDataWork.CurrentProject.ProjectFolderName();
+                ret = projectData.CurrentProject.ProjectFolderName();
             }
             else if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
             {
@@ -176,31 +176,31 @@ namespace TranslationHelper.Main.Functions
             return ret;
         }
 
-        internal static string GetDBFileName(THDataWork thDataWork, bool IsSaveAs = false)
+        internal static string GetDBFileName(ProjectData projectData, bool IsSaveAs = false)
         {
             string fName = Path.GetFileName(Properties.Settings.Default.THSelectedDir);
-            if (thDataWork.CurrentProject != null && thDataWork.CurrentProject.GetProjectDBFileName().Length > 0)
+            if (projectData.CurrentProject != null && projectData.CurrentProject.GetProjectDBFileName().Length > 0)
             {
-                fName = thDataWork.CurrentProject.GetProjectDBFileName();
+                fName = projectData.CurrentProject.GetProjectDBFileName();
             }
-            else if (RPGMFunctions.THSelectedSourceType.Contains(new RPGMMVGame(thDataWork).Name()))
+            else if (RPGMFunctions.THSelectedSourceType.Contains(new RPGMMVGame(projectData).Name()))
             {
-                if (thDataWork.Main.THFilesList.Items.Count == 1 && thDataWork.Main.THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(thDataWork.Main.THFilesList.Items[0].ToString()))
+                if (projectData.Main.THFilesList.Items.Count == 1 && projectData.Main.THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(projectData.Main.THFilesList.Items[0].ToString()))
                 {
                     if (fName == "data")
                     {
-                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(Properties.Settings.Default.THSelectedDir))) + "_" + Path.GetFileNameWithoutExtension(thDataWork.Main.THFilesList.Items[0].ToString());
+                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(Properties.Settings.Default.THSelectedDir))) + "_" + Path.GetFileNameWithoutExtension(projectData.Main.THFilesList.Items[0].ToString());
                     }
                     else
                     {
-                        fName = Path.GetFileNameWithoutExtension(thDataWork.Main.THFilesList.Items[0].ToString());
+                        fName = Path.GetFileNameWithoutExtension(projectData.Main.THFilesList.Items[0].ToString());
                     }
                 }
             }
-            else if (thDataWork.Main.THFilesList.Items.Count == 1 && thDataWork.Main.THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(thDataWork.Main.THFilesList.Items[0].ToString()))
+            else if (projectData.Main.THFilesList.Items.Count == 1 && projectData.Main.THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(projectData.Main.THFilesList.Items[0].ToString()))
             {
                 //dbfilename as name of single file in files list
-                fName = Path.GetFileNameWithoutExtension(thDataWork.Main.THFilesList.Items[0].ToString());
+                fName = Path.GetFileNameWithoutExtension(projectData.Main.THFilesList.Items[0].ToString());
             }
             //else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
             //{
@@ -540,11 +540,11 @@ namespace TranslationHelper.Main.Functions
             return db;
         }
 
-        internal static void MergeAllDBtoOne(THDataWork thDataWork)
+        internal static void MergeAllDBtoOne(ProjectData projectData)
         {
-            if (thDataWork.AllDBmerged == null)
+            if (projectData.AllDBmerged == null)
             {
-                thDataWork.AllDBmerged = new Dictionary<string, string>();
+                projectData.AllDBmerged = new Dictionary<string, string>();
             }
 
             var newestFilesList = GetNewestFIlesList(THSettingsData.DBDirPath());
@@ -555,10 +555,10 @@ namespace TranslationHelper.Main.Functions
                 {
                     using (var DBDataSet = new DataSet())
                     {
-                        thDataWork.Main.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(DBfile.Value.Name));
+                        projectData.Main.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(DBfile.Value.Name));
 
                         ReadDBFile(DBDataSet, DBfile.Value.FullName);
-                        DBDataSet.ToDictionary(thDataWork.AllDBmerged, true, true);
+                        DBDataSet.ToDictionary(projectData.AllDBmerged, true, true);
                     }
                 }
                 catch

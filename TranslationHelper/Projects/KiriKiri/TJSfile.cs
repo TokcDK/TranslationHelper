@@ -6,13 +6,13 @@ namespace TranslationHelper.Projects.KiriKiri
 {
     class TJSfile : ProjectBase
     {
-        public TJSfile(THDataWork thDataWork) : base(thDataWork)
+        public TJSfile(ProjectData projectData) : base(projectData)
         {
         }
 
         internal override bool Check()
         {
-            return thDataWork.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TJS");
+            return projectData.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TJS");
         }
 
         internal override string ProjectFolderName()
@@ -27,12 +27,12 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Open()
         {
-            return new TJS(thDataWork).Open();
+            return new TJS(projectData).Open();
         }
 
         internal override bool Save()
         {
-            return new TJS(thDataWork).Save();
+            return new TJS(projectData).Save();
         }
     }
 }

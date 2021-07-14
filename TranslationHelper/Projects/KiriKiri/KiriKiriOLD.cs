@@ -14,41 +14,41 @@ namespace TranslationHelper.Projects.KiriKiri
 {
     class KiriKiriOLD
     {
-        readonly THDataWork thDataWork;
-        public KiriKiriOLD(THDataWork thDataWork)
+        readonly ProjectData projectData;
+        public KiriKiriOLD(ProjectData projectData)
         {
-            this.thDataWork = thDataWork;
+            this.projectData = projectData;
         }
 
         internal bool OpenDetect()
         {
             return
-                thDataWork.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".KS")
+                projectData.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".KS")
                 ||
-                thDataWork.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".SCN")
+                projectData.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".SCN")
                 ;
         }
 
         internal string KiriKiriScriptScenario()
         {
-            string filename = Path.GetFileNameWithoutExtension(thDataWork.SPath);
-            string extension = Path.GetExtension(thDataWork.SPath);
+            string filename = Path.GetFileNameWithoutExtension(projectData.SPath);
+            string extension = Path.GetExtension(projectData.SPath);
 
-            _ = thDataWork.THFilesElementsDataset.Tables.Add(filename);
-            _ = thDataWork.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
-            _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(filename);
-            _ = thDataWork.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
+            _ = projectData.THFilesElementsDataset.Tables.Add(filename);
+            _ = projectData.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
+            _ = projectData.THFilesElementsDatasetInfo.Tables.Add(filename);
+            _ = projectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
 
-            DataTable DT = KiriKiriScriptScenarioOpen(thDataWork.SPath, thDataWork.THFilesElementsDataset.Tables[0], thDataWork.THFilesElementsDatasetInfo.Tables[0]);
+            DataTable DT = KiriKiriScriptScenarioOpen(projectData.SPath, projectData.THFilesElementsDataset.Tables[0], projectData.THFilesElementsDatasetInfo.Tables[0]);
             if (DT == null || DT.Rows.Count == 0)
             {
-                thDataWork.THFilesElementsDataset.Tables.Remove(filename);
-                thDataWork.THFilesElementsDatasetInfo.Tables.Remove(filename);
+                projectData.THFilesElementsDataset.Tables.Remove(filename);
+                projectData.THFilesElementsDatasetInfo.Tables.Remove(filename);
             }
             else
             {
-                _ = thDataWork.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
-                thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(filename)));
+                _ = projectData.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                projectData.Main.THFilesList.Invoke((Action)(() => projectData.Main.THFilesList.Items.Add(filename)));
                 if (extension == ".ks")
                 {
                     return "KiriKiri script";
@@ -64,10 +64,10 @@ namespace TranslationHelper.Projects.KiriKiri
         internal bool KiriKiriGame()
         {
             bool ret = false;
-            if (XP3.ExtractXP3files(thDataWork.SPath))
+            if (XP3.ExtractXP3files(projectData.SPath))
             {
                 var KiriKiriFiles = new List<string>();
-                string DirName = Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath));
+                string DirName = Path.GetFileName(Path.GetDirectoryName(projectData.SPath));
                 string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
 
                 foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).GetFiles("*.scn", SearchOption.AllDirectories))
@@ -120,35 +120,35 @@ namespace TranslationHelper.Projects.KiriKiri
                 {
                     filename = Path.GetFileName(kiriKiriFiles[i]);
 
-                    _ = thDataWork.THFilesElementsDataset.Tables.Add(filename);
-                    _ = thDataWork.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(filename);
-                    _ = thDataWork.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
+                    _ = projectData.THFilesElementsDataset.Tables.Add(filename);
+                    _ = projectData.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
+                    _ = projectData.THFilesElementsDatasetInfo.Tables.Add(filename);
+                    _ = projectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
 
                     DataTable DT = null;
 
                     if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
                     {
-                        DT = KiriKiriScriptScenarioOpen(kiriKiriFiles[i], thDataWork.THFilesElementsDataset.Tables[filename], thDataWork.THFilesElementsDatasetInfo.Tables[filename]);
+                        DT = KiriKiriScriptScenarioOpen(kiriKiriFiles[i], projectData.THFilesElementsDataset.Tables[filename], projectData.THFilesElementsDatasetInfo.Tables[filename]);
                     }
                     else if (filename.EndsWith(".csv"))
                     {
-                        DT = CSVOld.KiriKiriCSVOpen(kiriKiriFiles[i], thDataWork.THFilesElementsDataset.Tables[filename], thDataWork.THFilesElementsDatasetInfo.Tables[filename]);
+                        DT = CSVOld.KiriKiriCSVOpen(kiriKiriFiles[i], projectData.THFilesElementsDataset.Tables[filename], projectData.THFilesElementsDatasetInfo.Tables[filename]);
                     }
                     else if (filename.EndsWith(".tsv"))
                     {
-                        DT = TSVOld.KiriKiriTSVOpen(kiriKiriFiles[i], thDataWork.THFilesElementsDataset.Tables[filename], thDataWork.THFilesElementsDatasetInfo.Tables[filename]);
+                        DT = TSVOld.KiriKiriTSVOpen(kiriKiriFiles[i], projectData.THFilesElementsDataset.Tables[filename], projectData.THFilesElementsDatasetInfo.Tables[filename]);
                     }
 
                     if (DT == null || DT.Rows.Count == 0)
                     {
-                        thDataWork.THFilesElementsDataset.Tables.Remove(filename);
-                        thDataWork.THFilesElementsDatasetInfo.Tables.Remove(filename);
+                        projectData.THFilesElementsDataset.Tables.Remove(filename);
+                        projectData.THFilesElementsDatasetInfo.Tables.Remove(filename);
                     }
                     else
                     {
-                        thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(filename)));
-                        _ = thDataWork.THFilesElementsDataset.Tables[filename].Columns.Add("Translation");
+                        projectData.Main.THFilesList.Invoke((Action)(() => projectData.Main.THFilesList.Items.Add(filename)));
+                        _ = projectData.THFilesElementsDataset.Tables[filename].Columns.Add("Translation");
                     }
                 }
 
@@ -398,8 +398,8 @@ namespace TranslationHelper.Projects.KiriKiri
                     string line;
                     //string original = string.Empty;
                     string filename = Path.GetFileNameWithoutExtension(sPath);
-                    _ = thDataWork.THFilesElementsDataset.Tables.Add(filename);
-                    _ = thDataWork.THFilesElementsDataset.Tables[0].Columns.Add("Original");
+                    _ = projectData.THFilesElementsDataset.Tables.Add(filename);
+                    _ = projectData.THFilesElementsDataset.Tables[0].Columns.Add("Original");
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
@@ -411,16 +411,16 @@ namespace TranslationHelper.Projects.KiriKiri
                         {
                             if (line.EndsWith("[k]"))
                             {
-                                thDataWork.THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
+                                projectData.THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
 
                             }
                         }
                     }
 
-                    if (thDataWork.THFilesElementsDataset.Tables[0].Rows.Count > 0)
+                    if (projectData.THFilesElementsDataset.Tables[0].Rows.Count > 0)
                     {
-                        _ = thDataWork.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
-                        thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(filename)));
+                        _ = projectData.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                        projectData.Main.THFilesList.Invoke((Action)(() => projectData.Main.THFilesList.Items.Add(filename)));
                     }
                     else
                     {
@@ -480,7 +480,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 }
                                 else
                                 {
-                                    var row = thDataWork.THFilesElementsDataset.Tables[0].Rows[elementnumber];
+                                    var row = projectData.THFilesElementsDataset.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
                                         || string.IsNullOrEmpty(row[1] as string)
@@ -501,7 +501,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 }
                                 else
                                 {
-                                    var row = thDataWork.THFilesElementsDataset.Tables[0].Rows[elementnumber];
+                                    var row = projectData.THFilesElementsDataset.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
                                         || string.IsNullOrEmpty(row[1] as string)
@@ -522,7 +522,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 }
                                 else
                                 {
-                                    var row = thDataWork.THFilesElementsDataset.Tables[0].Rows[elementnumber];
+                                    var row = projectData.THFilesElementsDataset.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
                                         || string.IsNullOrEmpty(row[1] as string)
@@ -542,7 +542,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 bool startswith = line.StartsWith("o.");
                                 for (int m = 0; m < matches.Count; m++)
                                 {
-                                    var row = thDataWork.THFilesElementsDataset.Tables[0].Rows[elementnumber];
+                                    var row = projectData.THFilesElementsDataset.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
                                         || string.IsNullOrEmpty(row[1] as string)
@@ -567,7 +567,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 }
                                 else
                                 {
-                                    var row = thDataWork.THFilesElementsDataset.Tables[0].Rows[elementnumber];
+                                    var row = projectData.THFilesElementsDataset.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
                                         || string.IsNullOrEmpty(row[1] as string)

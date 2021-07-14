@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
     class Label : KSSyntaxBase
     {
-        public Label(THDataWork thDataWork) : base(thDataWork)
+        public Label(ProjectData projectData) : base(projectData)
         {
         }
 

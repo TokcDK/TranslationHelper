@@ -6,7 +6,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class FixJPMessagesTranslation : RowBase
     {
-        public FixJPMessagesTranslation(THDataWork thDataWork) : base(thDataWork)
+        public FixJPMessagesTranslation(ProjectData projectData) : base(projectData)
         {
             if (sessionData == null)
             {

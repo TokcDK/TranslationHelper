@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 {
     class KS : KSBase
     {
-        public KS(THDataWork thDataWork) : base(thDataWork)
+        public KS(ProjectData projectData) : base(projectData)
         {
         }
 

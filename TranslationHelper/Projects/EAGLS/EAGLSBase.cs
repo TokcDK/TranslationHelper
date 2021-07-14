@@ -8,7 +8,7 @@ namespace TranslationHelper.Projects.EAGLS
 {
     abstract class EAGLSBase : ProjectBase
     {
-        protected EAGLSBase(THDataWork thDataWork) : base(thDataWork)
+        protected EAGLSBase(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -19,8 +19,8 @@ namespace TranslationHelper.Projects.EAGLS
             Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), ProjectName);
             WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
             ScriptDir = Path.Combine(Properties.Settings.Default.THSelectedGameDir, "Script");
-            SCPACKpak = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "Script", "SCPACK.pak");
-            SCPACKidx = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "Script", "SCPACK.idx");
+            SCPACKpak = Path.Combine(Path.GetDirectoryName(projectData.SPath), "Script", "SCPACK.pak");
+            SCPACKidx = Path.Combine(Path.GetDirectoryName(projectData.SPath), "Script", "SCPACK.idx");
         }
 
         internal override string ProjectFolderName()
@@ -52,7 +52,7 @@ namespace TranslationHelper.Projects.EAGLS
                 var scriptdir = ScriptDir;
 
                 WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
-                var mode = (thDataWork.SaveFileMode ? string.Empty : "un") + "pack";
+                var mode = (projectData.SaveFileMode ? string.Empty : "un") + "pack";
                 //var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t -o";
                 var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\"";
 
@@ -100,12 +100,12 @@ namespace TranslationHelper.Projects.EAGLS
 
         protected bool OpenFiles()
         {
-            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(thDataWork), scriptsFIlter);
+            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(projectData), scriptsFIlter);
         }
 
         protected bool SaveFiles()
         {
-            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(thDataWork), scriptsFIlter);
+            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(projectData), scriptsFIlter);
         }
 
         protected string SCPACKpak = string.Empty;

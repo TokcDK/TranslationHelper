@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 {
     class TJS : KiriKiriBase
     {
-        public TJS(THDataWork thDataWork) : base(thDataWork)
+        public TJS(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -17,7 +17,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         protected override void ReadLineMod()
         {
-            thDataWork.CurrentProject.ReadLineMod(ref ParseData.line);
+            projectData.CurrentProject.ReadLineMod(ref ParseData.line);
         }
 
         protected override int ParseStringFileLine()
@@ -51,17 +51,17 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                             var value = mc[i].Result("$1");
                             if (IsValidString(value))
                             {
-                                if (thDataWork.OpenFileMode)
+                                if (projectData.OpenFileMode)
                                 {
                                     AddRowData(value, ParseData.line, true, false);
                                 }
                                 else
                                 {
-                                    if (thDataWork.TablesLinesDict.ContainsKey(value))
+                                    if (projectData.TablesLinesDict.ContainsKey(value))
                                     {
                                         ParseData.line = ParseData.line
                                             .Remove(mc[i].Index, mc[i].Length)
-                                            .Insert(mc[i].Index, "\"" + thDataWork.TablesLinesDict[value] + "\"");
+                                            .Insert(mc[i].Index, "\"" + projectData.TablesLinesDict[value] + "\"");
                                     }
                                 }
                             }

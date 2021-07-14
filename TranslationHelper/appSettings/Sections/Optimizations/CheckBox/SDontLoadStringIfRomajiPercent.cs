@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SDontLoadStringIfRomajiPercent : Optimizations
     {
-        public SDontLoadStringIfRomajiPercent(THDataWork thDataWork) : base(thDataWork)
+        public SDontLoadStringIfRomajiPercent(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -13,7 +13,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => true;
 
-        object SObject { get => thDataWork.Main.Settings.THOptionDontLoadStringIfRomajiPercentCheckBox; }
+        object SObject { get => projectData.Main.Settings.THOptionDontLoadStringIfRomajiPercentCheckBox; }
 
         static bool SVar
         {
@@ -29,7 +29,7 @@ namespace TranslationHelper.INISettings
             }
             else
             {
-                SVar = bool.TryParse(thDataWork.BufferValueString, out bool result) ? result : DefaultBool;
+                SVar = bool.TryParse(projectData.BufferValueString, out bool result) ? result : DefaultBool;
                 (SObject as System.Windows.Forms.CheckBox).Checked = SVar;
             }
         }

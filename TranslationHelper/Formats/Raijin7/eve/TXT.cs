@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
 {
     class TXT : Rajiin7Base
     {
-        public TXT(THDataWork thDataWork) : base(thDataWork)
+        public TXT(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -64,7 +64,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
             {
                 var Values = ParseData.line.Split(',');
                 var RestOfText = ParseData.reader.ReadToEnd();
-                if (thDataWork.OpenFileMode)
+                if (projectData.OpenFileMode)
                 {
                     AddRowData(Values[1], "", true);
                     AddRowData(RestOfText, "", true);
@@ -75,13 +75,13 @@ namespace TranslationHelper.Formats.Raijin7.eve
                     if (IsValid(Values[1], ref trans))
                     {
                         ParseData.Ret = true;
-                        Values[1] = FixInvalidSymbols(thDataWork.TablesLinesDict[Values[1]]);
+                        Values[1] = FixInvalidSymbols(projectData.TablesLinesDict[Values[1]]);
                     }
 
                     if (IsValid(RestOfText, ref trans))
                     {
                         ParseData.Ret = true;
-                        RestOfText = FixInvalidSymbols(thDataWork.TablesLinesDict[RestOfText]);
+                        RestOfText = FixInvalidSymbols(projectData.TablesLinesDict[RestOfText]);
                     }
 
                     ParseData.line = string.Join(",", Values) + Environment.NewLine + RestOfText;

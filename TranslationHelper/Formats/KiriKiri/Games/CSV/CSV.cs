@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
 {
     class CSV : KiriKiriBase
     {
-        public CSV(THDataWork thDataWork) : base(thDataWork)
+        public CSV(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -29,21 +29,21 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
                         var subvalueschanged = false;
                         for (int s=0; s< subvalues.Length;s++)
                         {
-                            if (thDataWork.OpenFileMode)
+                            if (projectData.OpenFileMode)
                             {
                                 AddRowData(subvalues[s], "", true);
                             }
                             else
                             {
-                                if (IsValidString(subvalues[s]) && thDataWork.TablesLinesDict.ContainsKey(subvalues[s]))
+                                if (IsValidString(subvalues[s]) && projectData.TablesLinesDict.ContainsKey(subvalues[s]))
                                 {
-                                    subvalues[s] = thDataWork.TablesLinesDict[subvalues[s]];
+                                    subvalues[s] = projectData.TablesLinesDict[subvalues[s]];
                                     subvalueschanged = true;
                                 }
                             }
                         }
 
-                        if (thDataWork.SaveFileMode && subvalueschanged)
+                        if (projectData.SaveFileMode && subvalueschanged)
                         {
                             ParseData.line = ParseData.line
                                 .Remove(values[i].Index, values[i].Length)
@@ -53,18 +53,18 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
                     }
                     else
                     {
-                        if (thDataWork.OpenFileMode)
+                        if (projectData.OpenFileMode)
                         {
                             AddRowData(values[i].Value, "", true);
                         }
                         else
                         {
                             var value = values[i].Value;
-                            if (IsValidString(value) && thDataWork.TablesLinesDict.ContainsKey(value))
+                            if (IsValidString(value) && projectData.TablesLinesDict.ContainsKey(value))
                             {
                                 ParseData.line = ParseData.line
                                     .Remove(values[i].Index, values[i].Length)
-                                    .Insert(values[i].Index, thDataWork.TablesLinesDict[value]);
+                                    .Insert(values[i].Index, projectData.TablesLinesDict[value]);
                                 ParseData.Ret = true;
                             }
                         }

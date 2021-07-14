@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     abstract class Tools : SettingsBase
     {
-        protected Tools(THDataWork thDataWork) : base(thDataWork)
+        protected Tools(ProjectData projectData) : base(projectData)
         {
         }
 

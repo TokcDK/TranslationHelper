@@ -12,7 +12,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         //#　花　=w0003f
         private const string StringPatternNames = @"#([^\=\r\n]+)(\=w[0-9]{4}[a-z])?";//#さくら=w0629a
 
-        public SC_TXT(THDataWork thDataWork) : base(thDataWork)
+        public SC_TXT(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -51,7 +51,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                     continue;
                 }
 
-                if (thDataWork.OpenFileMode)
+                if (projectData.OpenFileMode)
                 {
                     foreach (Match match in mc)
                     {
@@ -74,7 +74,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                 }
             }
 
-            if (thDataWork.SaveFileMode)
+            if (projectData.SaveFileMode)
             {
                 ParseData.ResultForWrite.Append(file);
             }
@@ -101,7 +101,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
             //        //lastMentionedCharacter = newline;
             //        //if (IsValidString(newline))
             //        //{
-            //        //    if (thDataWork.OpenFileMode)
+            //        //    if (projectData.OpenFileMode)
             //        //    {
             //        //        AddRowData(newline, "CharName", true, false);
             //        //    }
@@ -129,7 +129,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
             //        var newMatch = match;
             //        if (IsValidString(val))
             //        {
-            //            if (thDataWork.OpenFileMode)
+            //            if (projectData.OpenFileMode)
             //            {
             //                AddRowData(val, lastMentionedCharacter.Length > 0 ? T._("Last character") + ": " + lastMentionedCharacter : string.Empty, true, false);
             //            }
@@ -342,7 +342,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         //        if (IsValidString(val) && !val.Contains(":NameSuffix"))
         //        {
         //            var valtrimmed = val.Trim();
-        //            if (thDataWork.OpenFileMode)
+        //            if (projectData.OpenFileMode)
         //            {
         //                AddRowData(valtrimmed, T._("CharName"), true);
         //            }
@@ -365,13 +365,13 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         ///// <returns></returns>
         //private bool OpenSC()
         //{
-        //    string fileName = Path.GetFileNameWithoutExtension(thDataWork.FilePath);
+        //    string fileName = Path.GetFileNameWithoutExtension(projectData.FilePath);
 
         //    try
         //    {
         //        AddTables(fileName);
         //        string lastMentionedCharacter = string.Empty;
-        //        using (StreamReader sr = new StreamReader(thDataWork.FilePath))
+        //        using (StreamReader sr = new StreamReader(projectData.FilePath))
         //        {
         //            string line;
         //            while (!sr.EndOfStream)
@@ -442,13 +442,13 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         //old
         //private bool SaveSC()
         //{
-        //    string fileName = Path.GetFileNameWithoutExtension(thDataWork.FilePath);
+        //    string fileName = Path.GetFileNameWithoutExtension(projectData.FilePath);
         //    SplitTableCellValuesAndTheirLinesToDictionary(fileName, false, false);
         //    StringBuilder Translated = new StringBuilder();
         //    bool changed = false;
         //    try
         //    {
-        //        using (StreamReader sr = new StreamReader(thDataWork.FilePath))
+        //        using (StreamReader sr = new StreamReader(projectData.FilePath))
         //        {
         //            string line;
         //            while (!sr.EndOfStream)
@@ -521,7 +521,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
 
         //    if (changed)
         //    {
-        //        File.WriteAllText(thDataWork.FilePath, Translated.ToString());
+        //        File.WriteAllText(projectData.FilePath, Translated.ToString());
         //        return true;
         //    }
         //    else

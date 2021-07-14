@@ -7,19 +7,19 @@ namespace TranslationHelper.INISettings
 {
     class SDBCompressionExt : Optimizations
     {
-        public SDBCompressionExt(THDataWork thDataWork) : base(thDataWork)
+        public SDBCompressionExt(ProjectData projectData) : base(projectData)
         {
-            if (thDataWork.Main.Settings.THOptionDBCompressionExtComboBox.Items.Count == 0)
+            if (projectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Count == 0)
             {
                 formats = FunctionsInterfaces.GetDBSaveFormats();
                 foreach (var ext in formats)
                 {
-                    thDataWork.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add(ext.Description);
+                    projectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add(ext.Description);
                 }
 
-                //thDataWork.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add("XML (none)");
-                //thDataWork.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add("Gzip (cmx)");
-                //thDataWork.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add("Deflate (cmz)");
+                //projectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add("XML (none)");
+                //projectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add("Gzip (cmx)");
+                //projectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add("Deflate (cmz)");
             }
         }
 
@@ -34,12 +34,12 @@ namespace TranslationHelper.INISettings
         {
             if (!SetObject)
             {
-                Properties.Settings.Default.DBCompressionExt = thDataWork.Main.Settings.THOptionDBCompressionExtComboBox.SelectedItem.ToString();
+                Properties.Settings.Default.DBCompressionExt = projectData.Main.Settings.THOptionDBCompressionExtComboBox.SelectedItem.ToString();
             }
             else
             {
-                Properties.Settings.Default.DBCompressionExt = IsExistsInFormats(thDataWork.BufferValueString) ? thDataWork.BufferValueString : Default;
-                thDataWork.Main.Settings.THOptionDBCompressionExtComboBox.SelectedItem = Properties.Settings.Default.DBCompressionExt;
+                Properties.Settings.Default.DBCompressionExt = IsExistsInFormats(projectData.BufferValueString) ? projectData.BufferValueString : Default;
+                projectData.Main.Settings.THOptionDBCompressionExtComboBox.SelectedItem = Properties.Settings.Default.DBCompressionExt;
             }
         }
 
@@ -66,7 +66,7 @@ namespace TranslationHelper.INISettings
 
         internal override string ID()
         {
-            return thDataWork.Main.Settings.THOptionDBCompressionExtComboBox.Name;
+            return projectData.Main.Settings.THOptionDBCompressionExtComboBox.Name;
         }
     }
 }

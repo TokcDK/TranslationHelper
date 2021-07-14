@@ -14,12 +14,12 @@ namespace TranslationHelper
     {
         //Defaults
         internal INIFileMan.INIFile THConfigINI = new INIFileMan.INIFile(Application.ProductName + ".ini");
-        readonly THDataWork thDataWork;
-        internal THfrmSettings(THDataWork thDataWork)
+        readonly ProjectData projectData;
+        internal THfrmSettings(ProjectData projectData)
         {
             InitializeComponent();
 
-            this.thDataWork = thDataWork;
+            this.projectData = projectData;
 
             SetTooltips();
 
@@ -91,12 +91,12 @@ namespace TranslationHelper
 
         public void GetSettings()
         {
-            if (thDataWork.SettingsIsLoading)
+            if (projectData.SettingsIsLoading)
             {
                 return;
             }
 
-            thDataWork.SettingsIsLoading = true;
+            projectData.SettingsIsLoading = true;
 
             //try
             //{
@@ -115,17 +115,17 @@ namespace TranslationHelper
             //THOptionEnableTranslationCacheCheckBox.Checked = EnableTranslationCacheINI;
             //THOptionAutotranslationForSimularCheckBox.Checked = AutotranslationForIdenticalINI;
 
-            SettingsList = SettingsBaseTools.GetSettingsList(thDataWork);
+            SettingsList = SettingsBaseTools.GetSettingsList(projectData);
 
             foreach (var setting in SettingsList.Keys)
             {
                 if (THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
                 {
-                    thDataWork.BufferValueString = THConfigINI.ReadINI(SettingsList[setting].Section, SettingsList[setting].Key);
+                    projectData.BufferValueString = THConfigINI.ReadINI(SettingsList[setting].Section, SettingsList[setting].Key);
                 }
                 else
                 {
-                    thDataWork.BufferValueString = SettingsList[setting].Default;
+                    projectData.BufferValueString = SettingsList[setting].Default;
                 }
                 SettingsList[setting].Set(true);
             }
@@ -134,7 +134,7 @@ namespace TranslationHelper
 
             AddQuickWebTranslators();
 
-            thDataWork.SettingsIsLoading = false;
+            projectData.SettingsIsLoading = false;
         }
 
         private void AddQuickWebTranslators()

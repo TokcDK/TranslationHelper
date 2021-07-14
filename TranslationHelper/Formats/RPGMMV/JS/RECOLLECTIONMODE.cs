@@ -4,7 +4,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class RECOLLECTIONMODE : JSBase
     {
-        public RECOLLECTIONMODE(THDataWork thDataWork) : base(thDataWork)
+        public RECOLLECTIONMODE(ProjectData projectData) : base(projectData)
         {
         }
 

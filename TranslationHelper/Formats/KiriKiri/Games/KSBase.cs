@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 {
     abstract class KSBase : KiriKiriBase
     {
-        protected KSBase(THDataWork thDataWork) : base(thDataWork)
+        protected KSBase(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -90,13 +90,13 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         //    try
         //    {
-        //        if (thDataWork.OpenFileMode)
+        //        if (projectData.OpenFileMode)
         //        {
         //            AddTables(ParseData.tablename);
         //        }
 
-        //        //using (var reader = new StreamReader(thDataWork.FilePath, true /*FileEncoding()*/))
-        //        using (var reader = new StreamReader(thDataWork.FilePath, FileEncoding()))
+        //        //using (var reader = new StreamReader(projectData.FilePath, true /*FileEncoding()*/))
+        //        using (var reader = new StreamReader(projectData.FilePath, FileEncoding()))
         //        {
         //            encoding = reader.CurrentEncoding;
         //            while ((ParseData.line = reader.ReadLine()) != null)
@@ -122,8 +122,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         //private void InitData(bool OpenKS)
         //{
-        //    thDataWork.OpenFileMode = OpenKS;
-        //    ParseData = new ParseFileData(thDataWork)
+        //    projectData.OpenFileMode = OpenKS;
+        //    ParseData = new ParseFileData(projectData)
         //    {
         //        IsComment = false,
         //    };
@@ -131,7 +131,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         //private void FinalTableCheckORWriteFile()
         //{
-        //    if (thDataWork.OpenFileMode)
+        //    if (projectData.OpenFileMode)
         //    {
         //        ParseData.Ret = CheckTablesContent(ParseData.tablename);
         //    }
@@ -279,7 +279,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
                     if (IsValidString(CleanedStr))
                     {
-                        if (thDataWork.OpenFileMode)
+                        if (projectData.OpenFileMode)
                         {
                             AddRowData(str, string.Empty, true, false);
                         }
@@ -304,10 +304,10 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     }
                     else
                     {
-                        thDataWork.CurrentProject.HideVARSMatchCollectionsList?.Clear();//clear list of matches for hidevarbase
+                        projectData.CurrentProject.HideVARSMatchCollectionsList?.Clear();//clear list of matches for hidevarbase
                     }
                 }
-                if (thDataWork.SaveFileMode && transApplied && ParseData.Ret)
+                if (projectData.SaveFileMode && transApplied && ParseData.Ret)
                 {
                     //character name correction
                     var s = string.Join(newlineSymbol, strarr);
@@ -410,7 +410,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         internal string CleanVars(string str)
         {
             var keyfound = false;
-            foreach (var key in thDataWork.CurrentProject.HideVarsBase.Keys)
+            foreach (var key in projectData.CurrentProject.HideVarsBase.Keys)
             {
                 if (str.Contains(key))
                 {
@@ -423,7 +423,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 return str;
             }
 
-            var mc = Regex.Matches(str, "(" + string.Join(")|(", thDataWork.CurrentProject.HideVarsBase.Values) + ")");
+            var mc = Regex.Matches(str, "(" + string.Join(")|(", projectData.CurrentProject.HideVarsBase.Values) + ")");
             if (mc.Count == 0)
             {
                 return str;
@@ -464,8 +464,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         /// <returns></returns>
         protected override string FixInvalidSymbols(string str)
         {
-            return thDataWork.CurrentProject.RestoreVARS(
-                thDataWork.CurrentProject.HideVARSBase(str)
+            return projectData.CurrentProject.RestoreVARS(
+                projectData.CurrentProject.HideVARSBase(str)
                 .Replace("[r]", "{R}")
                 .Replace("[p]", "{P}")
                 .Replace("[lr]", "{LR}")

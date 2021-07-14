@@ -6,15 +6,15 @@ namespace TranslationHelper.Projects.RPGMMV
 {
     class RPGMMVjson : ProjectBase
     {
-        public RPGMMVjson(THDataWork thDataWork) : base(thDataWork)
+        public RPGMMVjson(ProjectData projectData) : base(projectData)
         {
         }
 
         internal override bool Check()
         {
-            if (Path.GetExtension(thDataWork.SPath).ToUpperInvariant() == ".JSON")
+            if (Path.GetExtension(projectData.SPath).ToUpperInvariant() == ".JSON")
             {
-                if (Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath)) == "data")
+                if (Path.GetFileName(Path.GetDirectoryName(projectData.SPath)) == "data")
                 {
                     return true;
                 }
@@ -54,7 +54,7 @@ namespace TranslationHelper.Projects.RPGMMV
             ParseFileMessage = Write ? T._("write file: ") : T._("opening file: ");
             try
             {
-                if (ParseRPGMakerMVjson(thDataWork.SPath, Write))
+                if (ParseRPGMakerMVjson(projectData.SPath, Write))
                 {
                     return true;
                 }
@@ -63,7 +63,7 @@ namespace TranslationHelper.Projects.RPGMMV
             {
             }
 
-            thDataWork.Main.ProgressInfo(false);
+            projectData.Main.ProgressInfo(false);
             return false;
         }
 
@@ -73,16 +73,16 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 string Jsonname = Path.GetFileNameWithoutExtension(FilePath); // get json file name
 
-                thDataWork.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
+                projectData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
 
                 //string jsondata = File.ReadAllText(FilePath); // get json data
 
                 bool ret = true;
 
-                thDataWork.FilePath = FilePath;
+                projectData.FilePath = FilePath;
                 //ret = ReadJson(Jsonname, sPath);
 
-                ret = Write ? new JSON(thDataWork).Save() : new JSON(thDataWork).Open();
+                ret = Write ? new JSON(projectData).Save() : new JSON(projectData).Open();
 
                 return ret;
             }

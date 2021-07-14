@@ -14,10 +14,10 @@ namespace TranslationHelper.Projects.RPGMMV
 {
     class RPGMMVOLD
     {
-        readonly THDataWork thDataWork;
-        public RPGMMVOLD(THDataWork thDataWork)
+        readonly ProjectData projectData;
+        public RPGMMVOLD(ProjectData projectData)
         {
-            this.thDataWork = thDataWork;
+            this.projectData = projectData;
         }
 
         internal bool OpenRPGMakerMVjson(string sPath)
@@ -52,18 +52,18 @@ namespace TranslationHelper.Projects.RPGMMV
                 //источник: https://stackoverflow.com/questions/23763446/how-to-display-the-json-data-in-datagridview-in-c-sharp-windows-application-from
 
                 string Jsonname = Path.GetFileNameWithoutExtension(sPath); // get json file name
-                if (thDataWork.THFilesElementsDataset.Tables.Contains(Jsonname))
+                if (projectData.THFilesElementsDataset.Tables.Contains(Jsonname))
                 {
                     //MessageBox.Show("true!");
                     return true;
                 }
-                thDataWork.Main.ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
+                projectData.Main.ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
                 string jsondata = File.ReadAllText(sPath); // get json data
 
-                thDataWork.THFilesElementsDataset.Tables.Add(Jsonname); // create table with json name
-                thDataWork.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Original"); //create Original column
-                thDataWork.THFilesElementsDatasetInfo.Tables.Add(Jsonname); // create table with json name
-                thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Columns.Add("Original"); //create Original column
+                projectData.THFilesElementsDataset.Tables.Add(Jsonname); // create table with json name
+                projectData.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Original"); //create Original column
+                projectData.THFilesElementsDatasetInfo.Tables.Add(Jsonname); // create table with json name
+                projectData.THFilesElementsDatasetInfo.Tables[Jsonname].Columns.Add("Original"); //create Original column
                 //MessageBox.Show("Added table:"+Jsonname);
 
                 /*
@@ -200,14 +200,14 @@ namespace TranslationHelper.Projects.RPGMMV
                 //THFileElementsDataGridView.DataSource = ds.Tables[0];
                 //THFileElementsDataGridView.Columns[0].ReadOnly = true;
 
-                if (thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Count > 0)
+                if (projectData.THFilesElementsDataset.Tables[Jsonname].Rows.Count > 0)
                 {
-                    thDataWork.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Translation");
+                    projectData.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Translation");
                 }
                 else
                 {
-                    thDataWork.THFilesElementsDataset.Tables.Remove(Jsonname); // remove table if was no items added
-                    thDataWork.THFilesElementsDatasetInfo.Tables.Remove(Jsonname); // remove table if was no items added
+                    projectData.THFilesElementsDataset.Tables.Remove(Jsonname); // remove table if was no items added
+                    projectData.THFilesElementsDatasetInfo.Tables.Remove(Jsonname); // remove table if was no items added
                 }
 
                 return ret;
@@ -348,10 +348,10 @@ namespace TranslationHelper.Projects.RPGMMV
                             {
                                 //LogToFile("textsb is not empty. add. value=" + mergedstring + ", curcode=" + curcode);
 
-                                thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(mergedstring);
+                                projectData.THFilesElementsDataset.Tables[Jsonname].Rows.Add(mergedstring);
                                 //TempList.Add(mergedstring);//много быстрее
 
-                                thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
+                                projectData.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
                                 //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                             }
                             textsb.Clear();
@@ -365,9 +365,9 @@ namespace TranslationHelper.Projects.RPGMMV
                     else
                     {
 
-                        thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
+                        projectData.THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
 
-                        thDataWork.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
+                        projectData.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
                         //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                     }
                     //}
@@ -434,10 +434,10 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal bool WriteJson(string Jsonname, string sPath)
         {
-            thDataWork.Main.ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
+            projectData.Main.ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
 
             //skip file if table with same name has translation cells in all lines empty
-            if (FunctionsTable.IsTableRowsAllEmpty(thDataWork.THFilesElementsDataset.Tables[Jsonname]))
+            if (FunctionsTable.IsTableRowsAllEmpty(projectData.THFilesElementsDataset.Tables[Jsonname]))
                 return true;
 
             try
@@ -471,14 +471,14 @@ namespace TranslationHelper.Projects.RPGMMV
             catch
             {
                 //LogToFile(string.Empty, true);
-                thDataWork.Main.ProgressInfo(false);
+                projectData.Main.ProgressInfo(false);
                 return false;
             }
             finally
             {
             }
             //LogToFile(string.Empty, true);
-            thDataWork.Main.ProgressInfo(false);
+            projectData.Main.ProgressInfo(false);
             return true;
 
         }
@@ -513,9 +513,9 @@ namespace TranslationHelper.Projects.RPGMMV
                     {
                         //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
 
-                        for (int i1 = startingrow; i1 < thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                        for (int i1 = startingrow; i1 < projectData.THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
                         {
-                            var row = thDataWork.THFilesElementsDataset.Tables[Jsonname].Rows[i1];
+                            var row = projectData.THFilesElementsDataset.Tables[Jsonname].Rows[i1];
                             if ((row[1] + string.Empty).Length == 0)
                             {
                             }

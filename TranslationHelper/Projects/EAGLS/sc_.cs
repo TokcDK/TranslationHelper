@@ -8,13 +8,13 @@ namespace TranslationHelper.Projects.EAGLS
 {
     class sc_ : ProjectBase
     {
-        public sc_(THDataWork thDataWork) : base(thDataWork)
+        public sc_(ProjectData projectData) : base(projectData)
         {
         }
 
         internal override bool Check()
         {
-            return thDataWork.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TXT") && Path.GetFileName(thDataWork.SPath).StartsWith("sc_");
+            return projectData.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TXT") && Path.GetFileName(projectData.SPath).StartsWith("sc_");
         }
 
         internal override string Filters()
@@ -24,13 +24,13 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override bool Open()
         {
-            thDataWork.FilePath = thDataWork.SPath;
-            return new SC_TXT(thDataWork).Open();
+            projectData.FilePath = projectData.SPath;
+            return new SC_TXT(projectData).Open();
         }
 
         internal override string Name()
         {
-            return "EAGLS scenario (" + Path.GetFileNameWithoutExtension(thDataWork.SPath) + ")";
+            return "EAGLS scenario (" + Path.GetFileNameWithoutExtension(projectData.SPath) + ")";
         }
 
         internal override string ProjectFolderName()

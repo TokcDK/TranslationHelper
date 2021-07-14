@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.LiveMaker
 {
     class LSBLNS : LiveMakerBase
     {
-        public LSBLNS(THDataWork thDataWork) : base(thDataWork)
+        public LSBLNS(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -35,7 +35,7 @@ namespace TranslationHelper.Formats.LiveMaker
                         && IsValidString(CleanedFromTags(ParseData.line))
                         )
                     {
-                        if (thDataWork.OpenFileMode)
+                        if (projectData.OpenFileMode)
                         {
                             AddRowData(ParseData.line, "", true, false);
                         }

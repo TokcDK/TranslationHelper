@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.LiveMaker
 {
     abstract class LiveMakerBase : FormatBase
     {
-        protected LiveMakerBase(THDataWork thDataWork) : base(thDataWork)
+        protected LiveMakerBase(ProjectData projectData) : base(projectData)
         {
         }
     }

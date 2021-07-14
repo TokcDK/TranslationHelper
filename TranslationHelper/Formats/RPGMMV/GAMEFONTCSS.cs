@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.RPGMMV
 {
     class GAMEFONTCSS : RPGMMVBase
     {
-        public GAMEFONTCSS(THDataWork thDataWork) : base(thDataWork)
+        public GAMEFONTCSS(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -38,7 +38,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
                 else if ((r = Regex.Match(ParseData.line, @"src: url\(\""([^\""]+)\""\)")).Success)
                 {
-                    if (thDataWork.OpenFileMode)
+                    if (projectData.OpenFileMode)
                     {
                         ParseData.Ret = AddRowData(r.Result("$1"), T._("GameFont.\r\nFont must be installed in system or file placed in folder %GAME%\\www\\fonts\\ \r\n or use absolute path. \r\n Change font to smaller is more preferable than line split function\r\nexample: c:/windows/fonts/browa.ttf"), true, false);
 
@@ -70,7 +70,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         internal override bool Save()
         {
-            thDataWork.SaveFileMode = true;
+            projectData.SaveFileMode = true;
             return ParseStringFile();
         }
 

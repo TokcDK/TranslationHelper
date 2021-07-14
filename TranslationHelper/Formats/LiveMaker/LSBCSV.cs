@@ -7,7 +7,7 @@ namespace TranslationHelper.Formats.LiveMaker
 {
     class LSBCSV : LiveMakerBase
     {
-        public LSBCSV(THDataWork thDataWork) : base(thDataWork)
+        public LSBCSV(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -19,7 +19,7 @@ namespace TranslationHelper.Formats.LiveMaker
         protected override void ParseStringFileOpen()
         {
             //reading all file and split it by \r\n because streamreader.readline also split by \n
-            ParseData.LinesArray = File.ReadAllText(thDataWork.FilePath, ParseStringFileEncoding()).Split(new[] { "\r\n" }, System.StringSplitOptions.None);
+            ParseData.LinesArray = File.ReadAllText(projectData.FilePath, ParseStringFileEncoding()).Split(new[] { "\r\n" }, System.StringSplitOptions.None);
             ParseStringFileLines();
         }
         protected override void ParseStringFileLines()
@@ -39,7 +39,7 @@ namespace TranslationHelper.Formats.LiveMaker
                 }
             }
 
-            if (thDataWork.SaveFileMode && ParseData.Ret)
+            if (projectData.SaveFileMode && ParseData.Ret)
             {
                 var m = Regex.Match(ParseData.ResultForWrite.ToString(), @"^([\s\S]+\r\n)\r\n$");
                 if (m.Success)
@@ -64,7 +64,7 @@ namespace TranslationHelper.Formats.LiveMaker
                 if (IsValidString(original))
                 {
                     var translation = dataarray[4];
-                    if (thDataWork.OpenFileMode)
+                    if (projectData.OpenFileMode)
                     {
                         if (!string.IsNullOrEmpty(translation))
                         {

@@ -10,7 +10,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class SetOrigToTransIfSoundsText : RowBase
     {
-        public SetOrigToTransIfSoundsText(THDataWork thDataWork) : base(thDataWork)
+        public SetOrigToTransIfSoundsText(ProjectData projectData) : base(projectData)
         {
         }
 

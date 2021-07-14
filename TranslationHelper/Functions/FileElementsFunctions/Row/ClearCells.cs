@@ -5,7 +5,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class ClearCells : RowBase
     {
-        public ClearCells(THDataWork thDataWork) : base(thDataWork)
+        public ClearCells(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -14,9 +14,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (IsAll || IsTable)
             {
                 //отключение датасорса для убирания тормозов с параллельной прорисовкой
-                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.DataSource = null));
-                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Update()));
-                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.THFileElementsDataGridView.Refresh()));
+                projectData.Main.Invoke((Action)(() => projectData.Main.THFileElementsDataGridView.DataSource = null));
+                projectData.Main.Invoke((Action)(() => projectData.Main.THFileElementsDataGridView.Update()));
+                projectData.Main.Invoke((Action)(() => projectData.Main.THFileElementsDataGridView.Refresh()));
             }
         }
 
@@ -24,7 +24,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (IsAll || IsTable)
             {
-                thDataWork.Main.Invoke((Action)(() => thDataWork.Main.ActionsOnTHFIlesListElementSelected()));
+                projectData.Main.Invoke((Action)(() => projectData.Main.ActionsOnTHFIlesListElementSelected()));
             }
         }
 

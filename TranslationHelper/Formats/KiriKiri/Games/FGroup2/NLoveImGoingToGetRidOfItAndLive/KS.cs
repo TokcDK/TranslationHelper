@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
 {
     class KS : FGroup2Base
     {
-        public KS(THDataWork thDataWork) : base(thDataWork)
+        public KS(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -37,11 +37,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
         //{
         //    string line;
 
-        //    string tablename = Path.GetFileName(thDataWork.FilePath);
+        //    string tablename = Path.GetFileName(projectData.FilePath);
 
         //    AddTables(tablename);
 
-        //    using (StreamReader reader = new StreamReader(thDataWork.FilePath))
+        //    using (StreamReader reader = new StreamReader(projectData.FilePath))
         //    {
         //        bool messageParse = false;
         //        bool statusInfoParse = false;
@@ -280,9 +280,9 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
         //    {
         //        string line;
 
-        //        string tablename = Path.GetFileName(thDataWork.FilePath);
+        //        string tablename = Path.GetFileName(projectData.FilePath);
 
-        //        using (StreamReader reader = new StreamReader(thDataWork.FilePath))
+        //        using (StreamReader reader = new StreamReader(projectData.FilePath))
         //        {
         //            bool messageParse = false;
         //            bool statusInfoParse = false;
@@ -443,7 +443,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
         //                        //*event_start|それから････････
 
         //                        string[] RowData = line.Split('|');
-        //                        //var row = thDataWork.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
+        //                        //var row = projectData.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
         //                        if (RowData.Length < 2 || !IsValidString(RowData[1]))
         //                        {
         //                            continue;
@@ -452,7 +452,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
         //                        //string value;
         //                        if (IsTranslationValidFor(RowData[1]))
         //                        {
-        //                            RowData[1] = thDataWork.TablesLinesDict[RowData[1]];
+        //                            RowData[1] = projectData.TablesLinesDict[RowData[1]];
         //                            line = string.Join("|", RowData);
         //                        }
         //                        //RowIndex++;
@@ -462,7 +462,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
         //                    {
         //                        //[title name="バージョン情報"]
         //                        string RowData = Regex.Replace(line, TitleRegex, "$1");
-        //                        //var row = thDataWork.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
+        //                        //var row = projectData.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
         //                        if (!IsValidString(RowData))
         //                        {
         //                            continue;
@@ -470,7 +470,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
 
         //                        if (IsTranslationValidFor(RowData))
         //                        {
-        //                            line = line.Replace(RowData, thDataWork.TablesLinesDict[RowData]);
+        //                            line = line.Replace(RowData, projectData.TablesLinesDict[RowData]);
         //                        }
         //                        //RowIndex++;
         //                        //AddRowData(tablename, RowData, "title name");
@@ -508,7 +508,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
         //private bool IsTranslationValidFor(string DataString)
         //{
         //    string value;
-        //    if (thDataWork.TablesLinesDict.ContainsKey(DataString) && !string.IsNullOrEmpty(value = thDataWork.TablesLinesDict[DataString]) && !Equals(DataString, value))
+        //    if (projectData.TablesLinesDict.ContainsKey(DataString) && !string.IsNullOrEmpty(value = projectData.TablesLinesDict[DataString]) && !Equals(DataString, value))
         //    {
         //        return true;
         //    }
@@ -524,7 +524,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
 
         //private string GetTranslation(string tablename, StringBuilder Message, StringBuilder MessageInfo/*, ref int RowIndex*/)
         //{
-        //    //var row = thDataWork.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
+        //    //var row = projectData.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
         //    string cleanedMessage = CheckAndRemoveRubyText(Message.ToString()).Trim();
         //    bool IsTranslated = false;
         //    if (IsValidString(cleanedMessage))
@@ -532,7 +532,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
 
         //        if (IsTranslationValidFor(cleanedMessage))
         //        {
-        //            string[] TranslatedLines = (thDataWork.TablesLinesDict[cleanedMessage]).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        //            string[] TranslatedLines = (projectData.TablesLinesDict[cleanedMessage]).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
         //            string[] OrigLines = MessageInfo.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
         //            if (TranslatedLines.Length == OrigLines.Length)

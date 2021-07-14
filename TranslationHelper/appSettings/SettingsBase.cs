@@ -6,9 +6,9 @@ namespace TranslationHelper.INISettings
 {
     internal static class SettingsBaseTools
     {
-        internal static Dictionary<string, SettingsBase> GetSettingsList(THDataWork thDataWork)
+        internal static Dictionary<string, SettingsBase> GetSettingsList(ProjectData projectData)
         {
-            var listOfSubclasses = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<SettingsBase>(thDataWork);
+            var listOfSubclasses = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<SettingsBase>(projectData);
             return GetSettingsList(listOfSubclasses);
         }
 
@@ -31,10 +31,10 @@ namespace TranslationHelper.INISettings
     abstract class SettingsBase/* : ApplicationSettingsBase*/
     {
         //Dictionary<string, SettingsBase> SettingsList;
-        protected THDataWork thDataWork;
-        protected SettingsBase(THDataWork thDataWork)
+        protected ProjectData projectData;
+        protected SettingsBase(ProjectData projectData)
         {
-            this.thDataWork = thDataWork;
+            this.projectData = projectData;
         }
 
         internal virtual string Section { get => string.Empty; }

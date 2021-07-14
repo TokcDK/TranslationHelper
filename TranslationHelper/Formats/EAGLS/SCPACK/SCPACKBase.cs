@@ -4,7 +4,7 @@ namespace TranslationHelper.Formats.EAGLS
 {
     abstract class SCPACKBase : FormatBase
     {
-        public SCPACKBase(THDataWork thDataWork) : base(thDataWork)
+        public SCPACKBase(ProjectData projectData) : base(projectData)
         {
         }
     }

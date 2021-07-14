@@ -7,13 +7,13 @@ namespace TranslationHelper.Projects.Liar_soft
 {
     class LiarSoftGames : ProjectBase
     {
-        public LiarSoftGames(THDataWork thDataWork) : base(thDataWork)
+        public LiarSoftGames(ProjectData projectData) : base(projectData)
         {
         }
 
         internal override bool Check()
         {
-            return Path.GetExtension(thDataWork.SPath).ToUpperInvariant()==".EXE" && File.Exists(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "scr.xfl"));
+            return Path.GetExtension(projectData.SPath).ToUpperInvariant()==".EXE" && File.Exists(Path.Combine(Path.GetDirectoryName(projectData.SPath), "scr.xfl"));
         }
 
         internal override string Name()
@@ -53,9 +53,9 @@ namespace TranslationHelper.Projects.Liar_soft
             }
 
             //open or save txt/gsc
-            var ret = OpenSaveFilesBase(dir, new GSCTXT(thDataWork), "*.txt");
+            var ret = OpenSaveFilesBase(dir, new GSCTXT(projectData), "*.txt");
 
-            if(thDataWork.SaveFileMode && ret)
+            if(projectData.SaveFileMode && ret)
             {
                 //replace gsc entries with translated
                 for (int i=0; i< archive.Entries.Count; i++)

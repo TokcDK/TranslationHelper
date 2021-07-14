@@ -10,10 +10,10 @@ namespace TranslationHelper.Projects.WolfRPG
 {
     class WRPGOLDOpen
     {
-        readonly THDataWork thDataWork;
-        public WRPGOLDOpen(THDataWork thDataWork)
+        readonly ProjectData projectData;
+        public WRPGOLDOpen(ProjectData projectData)
         {
-            this.thDataWork = thDataWork;
+            this.projectData = projectData;
         }
 
         internal string AnyTxt(string sPath)
@@ -46,7 +46,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
                 Properties.Settings.Default.THSelectedDir = parentFolder;
 
-                return thDataWork.Main.THFilesList.Items.Count > 0 ? "Wolf RPG txt" : string.Empty;
+                return projectData.Main.THFilesList.Items.Count > 0 ? "Wolf RPG txt" : string.Empty;
             }
             return string.Empty;
         }
@@ -82,18 +82,18 @@ namespace TranslationHelper.Projects.WolfRPG
                 try
                 {
                     string fname = Path.GetFileName(txtFile);
-                    thDataWork.Main.ProgressInfo(true, T._("opening file: ") + fname + ".txt");
+                    projectData.Main.ProgressInfo(true, T._("opening file: ") + fname + ".txt");
                     using (StreamReader _file = new StreamReader(txtFile))
                     {
-                        thDataWork.THFilesElementsDataset.Tables.Add(fname);
-                        thDataWork.THFilesElementsDataset.Tables[fname].Columns.Add("Original");
-                        thDataWork.THFilesElementsDataset.Tables[fname].Columns.Add("Translation");
+                        projectData.THFilesElementsDataset.Tables.Add(fname);
+                        projectData.THFilesElementsDataset.Tables[fname].Columns.Add("Original");
+                        projectData.THFilesElementsDataset.Tables[fname].Columns.Add("Translation");
                         //THFilesElementsDataset.Tables[fname].Columns.Add("Context");
                         //THFilesElementsDataset.Tables[fname].Columns.Add("Advice");
                         //THFilesElementsDataset.Tables[fname].Columns.Add("Status");
 
-                        thDataWork.THFilesElementsDatasetInfo.Tables.Add(fname);
-                        thDataWork.THFilesElementsDatasetInfo.Tables[fname].Columns.Add("Original");
+                        projectData.THFilesElementsDatasetInfo.Tables.Add(fname);
+                        projectData.THFilesElementsDatasetInfo.Tables[fname].Columns.Add("Original");
 
                         while (!_file.EndOfStream)   //Читаем до конца
                         {
@@ -154,8 +154,8 @@ namespace TranslationHelper.Projects.WolfRPG
                                 }
                                 else
                                 {
-                                    thDataWork.THFilesElementsDataset.Tables[fname].Rows.Add(_original, _translation/*, _context, _advice, _status*/);
-                                    thDataWork.THFilesElementsDatasetInfo.Tables[fname].Rows.Add(_context/* + Environment.NewLine + "Advice:" + Environment.NewLine + _advice*/);
+                                    projectData.THFilesElementsDataset.Tables[fname].Rows.Add(_original, _translation/*, _context, _advice, _status*/);
+                                    projectData.THFilesElementsDatasetInfo.Tables[fname].Rows.Add(_context/* + Environment.NewLine + "Advice:" + Environment.NewLine + _advice*/);
                                 }
 
                                 _context = string.Empty;  //Чистим
@@ -173,15 +173,15 @@ namespace TranslationHelper.Projects.WolfRPG
 
             if (errorsCount > 0)
             {
-                if (thDataWork.THFilesElementsDataset.Tables.Count == 0)
+                if (projectData.THFilesElementsDataset.Tables.Count == 0)
                 {
                     return string.Empty;
                 }
             }
 
-            foreach (DataTable table in thDataWork.THFilesElementsDataset.Tables)
+            foreach (DataTable table in projectData.THFilesElementsDataset.Tables)
             {
-                thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(table.TableName)));
+                projectData.Main.THFilesList.Invoke((Action)(() => projectData.Main.THFilesList.Items.Add(table.TableName)));
             }
 
             Properties.Settings.Default.THSelectedDir = FolderPath;
@@ -199,22 +199,22 @@ namespace TranslationHelper.Projects.WolfRPG
                     continue;
                 }
 
-                thDataWork.THFilesElementsDataset.Tables.Add(txtFilename);
-                thDataWork.THFilesElementsDatasetInfo.Tables.Add(txtFilename);
-                thDataWork.THFilesElementsDataset.Tables[txtFilename].Columns.Add("Original");
-                thDataWork.THFilesElementsDatasetInfo.Tables[txtFilename].Columns.Add("Original");
+                projectData.THFilesElementsDataset.Tables.Add(txtFilename);
+                projectData.THFilesElementsDatasetInfo.Tables.Add(txtFilename);
+                projectData.THFilesElementsDataset.Tables[txtFilename].Columns.Add("Original");
+                projectData.THFilesElementsDatasetInfo.Tables[txtFilename].Columns.Add("Original");
 
                 OpenWolfRPGMakerTextEHP(txtFile);
 
-                if (thDataWork.THFilesElementsDatasetInfo.Tables[txtFilename] == null || thDataWork.THFilesElementsDatasetInfo.Tables[txtFilename].Rows.Count == 0)
+                if (projectData.THFilesElementsDatasetInfo.Tables[txtFilename] == null || projectData.THFilesElementsDatasetInfo.Tables[txtFilename].Rows.Count == 0)
                 {
-                    thDataWork.THFilesElementsDataset.Tables.Remove(txtFilename);
-                    thDataWork.THFilesElementsDatasetInfo.Tables.Remove(txtFilename);
+                    projectData.THFilesElementsDataset.Tables.Remove(txtFilename);
+                    projectData.THFilesElementsDatasetInfo.Tables.Remove(txtFilename);
                 }
                 else
                 {
-                    thDataWork.THFilesElementsDataset.Tables[txtFilename].Columns.Add("Translation");
-                    thDataWork.Main.THFilesList.Invoke((Action)(() => thDataWork.Main.THFilesList.Items.Add(txtFilename)));
+                    projectData.THFilesElementsDataset.Tables[txtFilename].Columns.Add("Translation");
+                    projectData.Main.THFilesList.Invoke((Action)(() => projectData.Main.THFilesList.Items.Add(txtFilename)));
                 }
             }
         }
@@ -251,8 +251,8 @@ namespace TranslationHelper.Projects.WolfRPG
                             }
                             else
                             {
-                                thDataWork.THFilesElementsDataset.Tables[FileName].Rows.Add(sb.ToString());
-                                thDataWork.THFilesElementsDatasetInfo.Tables[FileName].Rows.Add(FolderName);
+                                projectData.THFilesElementsDataset.Tables[FileName].Rows.Add(sb.ToString());
+                                projectData.THFilesElementsDatasetInfo.Tables[FileName].Rows.Add(FolderName);
                                 recordstarted = false;
                                 sb.Clear();
                                 cnt = 0;
@@ -272,16 +272,16 @@ namespace TranslationHelper.Projects.WolfRPG
             }
             else if (FolderName == "TextP")
             {
-                thDataWork.THFilesElementsDataset.Tables[FileName].Rows.Add(File.ReadAllText(sPath, Encoding.GetEncoding(932)));
-                thDataWork.THFilesElementsDatasetInfo.Tables[FileName].Rows.Add(FolderName);
+                projectData.THFilesElementsDataset.Tables[FileName].Rows.Add(File.ReadAllText(sPath, Encoding.GetEncoding(932)));
+                projectData.THFilesElementsDatasetInfo.Tables[FileName].Rows.Add(FolderName);
             }
         }
 
         internal void ProceedWriteWolfRPGtxt()
         {
-            for (int t = 0; t < thDataWork.THFilesElementsDataset.Tables.Count; t++)
+            for (int t = 0; t < projectData.THFilesElementsDataset.Tables.Count; t++)
             {
-                string FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, thDataWork.THFilesElementsDatasetInfo.Tables[t].Rows[0][0].ToString(), thDataWork.THFilesElementsDataset.Tables[t].TableName);
+                string FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, projectData.THFilesElementsDatasetInfo.Tables[t].Rows[0][0].ToString(), projectData.THFilesElementsDataset.Tables[t].TableName);
 
                 WriteWolfRPGMakerTextEHP(FilePath);
                 //for (int r=0;r< THFilesElementsDataset.Tables[t].Rows.Count; r++)
@@ -322,8 +322,8 @@ namespace TranslationHelper.Projects.WolfRPG
                         }
                         else
                         {
-                            string original = thDataWork.THFilesElementsDataset.Tables[FileName].Rows[r][0].ToString();
-                            string translation = thDataWork.THFilesElementsDataset.Tables[FileName].Rows[r][1] + string.Empty;
+                            string original = projectData.THFilesElementsDataset.Tables[FileName].Rows[r][0].ToString();
+                            string translation = projectData.THFilesElementsDataset.Tables[FileName].Rows[r][1] + string.Empty;
                             sb.AppendLine(translation.Length > 0 ? translation : original);
                             r++;
                             //пропустить то же количество строк
@@ -338,7 +338,7 @@ namespace TranslationHelper.Projects.WolfRPG
             }
             else if (FolderName == "TextP")
             {
-                File.WriteAllText(sPath, thDataWork.THFilesElementsDataset.Tables[FileName].Rows[0][1] + string.Empty, Encoding.GetEncoding(932));
+                File.WriteAllText(sPath, projectData.THFilesElementsDataset.Tables[FileName].Rows[0][1] + string.Empty, Encoding.GetEncoding(932));
             }
         }
 
@@ -347,7 +347,7 @@ namespace TranslationHelper.Projects.WolfRPG
             foreach (var file in Directory.EnumerateFiles(Properties.Settings.Default.THSelectedDir, "*.txt", SearchOption.AllDirectories))
             {
                 string fileName = Path.GetFileName(file);
-                if (thDataWork.THFilesElementsDataset.Tables[fileName] == null)
+                if (projectData.THFilesElementsDataset.Tables[fileName] == null)
                 {
                     continue;
                 }
@@ -356,23 +356,23 @@ namespace TranslationHelper.Projects.WolfRPG
                 {
                     StringBuilder buffer = new StringBuilder();
 
-                    int originalcolumnindex = thDataWork.THFilesElementsDataset.Tables[fileName].Columns["Original"].Ordinal;
-                    int translationcolumnindex = thDataWork.THFilesElementsDataset.Tables[fileName].Columns["Translation"].Ordinal;
+                    int originalcolumnindex = projectData.THFilesElementsDataset.Tables[fileName].Columns["Original"].Ordinal;
+                    int translationcolumnindex = projectData.THFilesElementsDataset.Tables[fileName].Columns["Translation"].Ordinal;
                     //int contextcolumnindex = THFilesElementsDatasetInfo.Tables[fileName].Columns["Context"].Ordinal;
 
-                    thDataWork.Main.ProgressInfo(true, T._("saving file: ") + fileName);
+                    projectData.Main.ProgressInfo(true, T._("saving file: ") + fileName);
 
                     buffer.AppendLine("> WOLF TRANS PATCH FILE VERSION 1.0");// + Environment.NewLine);
                                                                              //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
-                    for (int r = 0; r < thDataWork.THFilesElementsDataset.Tables[fileName].Rows.Count; r++)
+                    for (int r = 0; r < projectData.THFilesElementsDataset.Tables[fileName].Rows.Count; r++)
                     {
-                        string ORIGINAL = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[r][originalcolumnindex] as string;
+                        string ORIGINAL = projectData.THFilesElementsDataset.Tables[fileName].Rows[r][originalcolumnindex] as string;
                         buffer.AppendLine("> BEGIN STRING");// + Environment.NewLine);
                                                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Original + Environment.NewLine;
                         buffer.AppendLine(ORIGINAL);// + Environment.NewLine);
-                        string[] CONTEXT = (thDataWork.THFilesElementsDatasetInfo.Tables[fileName].Rows[r][0] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
+                        string[] CONTEXT = (projectData.THFilesElementsDatasetInfo.Tables[fileName].Rows[r][0] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
                         //string str1 = string.Empty;
-                        string TRANSLATION = thDataWork.THFilesElementsDataset.Tables[fileName].Rows[r][translationcolumnindex] + string.Empty;
+                        string TRANSLATION = projectData.THFilesElementsDataset.Tables[fileName].Rows[r][translationcolumnindex] + string.Empty;
                         for (int g = 0; g < CONTEXT.Length; g++)
                         {
                             /*CONTEXT[g] = CONTEXT[g].Replace("\r", string.Empty);*///очистка от знака переноса, возникающего после разбития на строки по \n
@@ -413,18 +413,18 @@ namespace TranslationHelper.Projects.WolfRPG
                 }
                 catch
                 {
-                    thDataWork.Main.ProgressInfo(false, string.Empty);
-                    thDataWork.Main.SaveInAction = false;
+                    projectData.Main.ProgressInfo(false, string.Empty);
+                    projectData.Main.SaveInAction = false;
                 }
                 finally
                 {
-                    thDataWork.Main.ProgressInfo(false, string.Empty);
+                    projectData.Main.ProgressInfo(false, string.Empty);
                 }
 
             }
 
 
-            thDataWork.Main.SaveInAction = false;
+            projectData.Main.SaveInAction = false;
         }
     }
 }

@@ -11,9 +11,9 @@ namespace TranslationHelper.Main.Functions
 {
     static class FunctionsAutoOperations
     {
-        public static string THExtractTextForTranslation(THDataWork thDataWork, string input)
+        public static string THExtractTextForTranslation(ProjectData projectData, string input)
         {
-            foreach (var PatternReplacementPair in thDataWork.TranslationRegexRules)
+            foreach (var PatternReplacementPair in projectData.TranslationRegexRules)
             {
                 if (Regex.IsMatch(input, PatternReplacementPair.Key))
                 {
@@ -29,12 +29,12 @@ namespace TranslationHelper.Main.Functions
         /// Extract all values for $1-$99 matches
         /// Work in progress
         /// </summary>
-        /// <param name="thDataWork"></param>
+        /// <param name="projectData"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static string[] THExtractTextForTranslationSplit(THDataWork thDataWork, string input)
+        public static string[] THExtractTextForTranslationSplit(ProjectData projectData, string input)
         {
-            foreach (var PatternReplacementPair in thDataWork.TranslationRegexRules)
+            foreach (var PatternReplacementPair in projectData.TranslationRegexRules)
             {
                 if (Regex.IsMatch(input, PatternReplacementPair.Key))
                 {
@@ -74,15 +74,15 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Fixes selected value
         /// </summary>
-        /// <param name="thDataWork"></param>
+        /// <param name="projectData"></param>
         /// <param name="cvalue"></param>
         /// <returns></returns>
-        public static string THFixCells(this string cvalue, THDataWork thDataWork)
+        public static string THFixCells(this string cvalue, ProjectData projectData)
         {
             string rule;
             string result;
 
-            foreach (var PatternReplacementPair in thDataWork.CellFixesRegexRules)
+            foreach (var PatternReplacementPair in projectData.CellFixesRegexRules)
             {
                 //читать правило и результат
                 rule = PatternReplacementPair.Key;
@@ -133,11 +133,11 @@ namespace TranslationHelper.Main.Functions
         /// <param name="tind"></param>
         /// <param name="rind"></param>
         /// <param name="selectedonly"></param>
-        public static void THFixCells(THDataWork thDataWork, string Method, int cind, int tind, int rind = 0, bool forceApply = false)//cind - индекс столбца перевода, задан до старта потока
+        public static void THFixCells(ProjectData projectData, string Method, int cind, int tind, int rind = 0, bool forceApply = false)//cind - индекс столбца перевода, задан до старта потока
         {
             try
             {
-                if (thDataWork.CellFixesRegexRules.Count == 0)
+                if (projectData.CellFixesRegexRules.Count == 0)
                 {
                     return;
                 }
@@ -156,7 +156,7 @@ namespace TranslationHelper.Main.Functions
                 {
                     //cind = THFileElementsDataGridView.Columns["Translation"].Index;//-поле untrans                            
                     initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-                    selcellscnt = FunctionsTable.GetDGVRowIndexsesInDataSetTable(thDataWork);
+                    selcellscnt = FunctionsTable.GetDGVRowIndexsesInDataSetTable(projectData);
                 }
                 else if (Method == "t")
                 {
@@ -177,7 +177,7 @@ namespace TranslationHelper.Main.Functions
                 //LogToFile("1 rule=" + rule + ",tableindex=" + initialtableindex);
                 if (Method == "a")
                 {
-                    tablescount = thDataWork.THFilesElementsDataset.Tables.Count;//все таблицы в dataset
+                    tablescount = projectData.THFilesElementsDataset.Tables.Count;//все таблицы в dataset
                 }
                 else
                 {
@@ -192,7 +192,7 @@ namespace TranslationHelper.Main.Functions
                     if (Method == "a" || Method == "t")
                     {
                         //все строки в выбранной таблице
-                        rowscount = thDataWork.THFilesElementsDataset.Tables[t].Rows.Count;
+                        rowscount = projectData.THFilesElementsDataset.Tables[t].Rows.Count;
                     }
                     else
                     {
@@ -216,7 +216,7 @@ namespace TranslationHelper.Main.Functions
                         }
 
                         //LogToFile("5 selected i row index=" + i + ", value of THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "]=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind]);
-                        var row = thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex];
+                        var row = projectData.THFilesElementsDataset.Tables[t].Rows[rowindex];
                         string cvalue = row[cind] + string.Empty;
                         //не трогать строку перевода, если она пустая
                         if (cvalue.Length > 0 && (forceApply || cvalue != row[cind - 1] as string))
@@ -236,7 +236,7 @@ namespace TranslationHelper.Main.Functions
 
                             string rule;
                             string result;
-                            foreach (var PatternReplacementPair in thDataWork.CellFixesRegexRules)
+                            foreach (var PatternReplacementPair in projectData.CellFixesRegexRules)
                             {
                                 //читать правило и результат
                                 rule = PatternReplacementPair.Key;
@@ -273,7 +273,7 @@ namespace TranslationHelper.Main.Functions
 
                             if (!Equals(row[cind], cvalue))
                             {
-                                //thDataWork.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
+                                //projectData.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
                                 row[cind] = cvalue;
                             }
                         }
@@ -321,7 +321,7 @@ namespace TranslationHelper.Main.Functions
         static int iColumnIndex;
         static string TRC;
         static readonly Dictionary<string, bool> THAutoSetSameTranslationForSimularData = new Dictionary<string, bool>();
-        public static void THAutoSetSameTranslationForSimular(THDataWork thDataWork, int InputTableIndex, int InputRowIndex, int InputColumnIndex, bool ForceSetValue = false)
+        public static void THAutoSetSameTranslationForSimular(ProjectData projectData, int InputTableIndex, int InputRowIndex, int InputColumnIndex, bool ForceSetValue = false)
         {
             if (!Properties.Settings.Default.ProjectIsOpened)
                 return;
@@ -329,10 +329,10 @@ namespace TranslationHelper.Main.Functions
             if (InputTableIndex == -1
                 || InputRowIndex == -1
                 || InputColumnIndex == -1
-                || thDataWork.THFilesElementsDataset == null
-                || InputTableIndex > thDataWork.THFilesElementsDataset.Tables.Count - 1
-                || InputRowIndex > thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows.Count - 1
-                || (thDataWork.THFilesElementsDataset.Tables[InputTableIndex].Rows[InputRowIndex][InputColumnIndex + 1] + string.Empty).Length == 0)
+                || projectData.THFilesElementsDataset == null
+                || InputTableIndex > projectData.THFilesElementsDataset.Tables.Count - 1
+                || InputRowIndex > projectData.THFilesElementsDataset.Tables[InputTableIndex].Rows.Count - 1
+                || (projectData.THFilesElementsDataset.Tables[InputTableIndex].Rows[InputRowIndex][InputColumnIndex + 1] + string.Empty).Length == 0)
             {
                 return;
             }
@@ -366,7 +366,7 @@ namespace TranslationHelper.Main.Functions
                     iColumnIndex = int.Parse(TRC.Split('|')[2], CultureInfo.InvariantCulture);
                     forcevalue = THAutoSetSameTranslationForSimularData[TRC];
 
-                    var InputTable = thDataWork.THFilesElementsDataset.Tables[iTableIndex];
+                    var InputTable = projectData.THFilesElementsDataset.Tables[iTableIndex];
                     var InputTableRow = InputTable.Rows[iRowIndex];
                     var InputTableOriginalCell = InputTableRow[iColumnIndex];
                     int TranslationColumnIndex = iColumnIndex + 1;
@@ -389,12 +389,12 @@ namespace TranslationHelper.Main.Functions
                             return;
 
                         //set same value for duplicates
-                        if (!Properties.Settings.Default.DontLoadDuplicates && thDataWork.OriginalsTableRowCoordinats!=null && thDataWork.OriginalsTableRowCoordinats[InputOrigCellValue].Values.Count > 1)
+                        if (!Properties.Settings.Default.DontLoadDuplicates && projectData.OriginalsTableRowCoordinats!=null && projectData.OriginalsTableRowCoordinats[InputOrigCellValue].Values.Count > 1)
                         {
                             var TableName = InputTable.TableName;
-                            foreach (var t in thDataWork.OriginalsTableRowCoordinats[InputOrigCellValue])
+                            foreach (var t in projectData.OriginalsTableRowCoordinats[InputOrigCellValue])
                             {
-                                var table = thDataWork.THFilesElementsDataset.Tables[t.Key];
+                                var table = projectData.THFilesElementsDataset.Tables[t.Key];
                                 foreach (var rind in t.Value)
                                 {
                                     var row = table.Rows[rind];
@@ -420,10 +420,10 @@ namespace TranslationHelper.Main.Functions
                         MatchCollection mc = reg.Matches(InputOrigCellValue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
                         int mccount = mc.Count;
 
-                        int TableCount = thDataWork.THFilesElementsDataset.Tables.Count;
+                        int TableCount = projectData.THFilesElementsDataset.Tables.Count;
                         for (int Tindx = 0; Tindx < TableCount; Tindx++) //количество файлов
                         {
-                            var Table = thDataWork.THFilesElementsDataset.Tables[Tindx];
+                            var Table = projectData.THFilesElementsDataset.Tables[Tindx];
                             var RowsCount = Table.Rows.Count;
                             //LogToFile("Table "+Tindx+" proceed");
                             for (int Rindx = 0; Rindx < RowsCount; Rindx++) //количество строк в каждом файле
@@ -519,10 +519,10 @@ namespace TranslationHelper.Main.Functions
 
                                                 }
                                                 //только если ячейка пустая
-                                                TargetTranslationCell = thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex];
+                                                TargetTranslationCell = projectData.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex];
                                                 if (!failed && (forcevalue || TargetTranslationCell == null || string.IsNullOrEmpty(TargetTranslationCell as string)))
                                                 {
-                                                    //thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTransCellValue;
+                                                    //projectData.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTransCellValue;
                                                     TRow[TranslationColumnIndex] = InputTransCellValue;
                                                 }
                                             }
@@ -532,7 +532,7 @@ namespace TranslationHelper.Main.Functions
                                     {
                                         if (Equals(TRow[iColumnIndex], InputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
                                         {
-                                            //thDataWork.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
+                                            //projectData.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
                                             TRow[TranslationColumnIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
                                         }
                                     }

@@ -4,7 +4,7 @@ namespace TranslationHelper.Projects.zzzOtherProject
 {
     abstract class OtherProjectBase : ProjectBase
     {
-        protected OtherProjectBase(THDataWork thDataWork) : base(thDataWork)
+        protected OtherProjectBase(ProjectData projectData) : base(projectData)
         {
         }
     }

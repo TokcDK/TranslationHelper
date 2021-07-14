@@ -5,7 +5,7 @@ namespace TranslationHelper.INISettings
 {
     class SDontLoadStringIfRomajiPercentNumber : Optimizations
     {
-        public SDontLoadStringIfRomajiPercentNumber(THDataWork thDataWork) : base(thDataWork)
+        public SDontLoadStringIfRomajiPercentNumber(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -14,7 +14,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultInt + string.Empty;
         internal override int DefaultInt => 90;
 
-        object SObject { get => thDataWork.Main.Settings.DontLoadStringIfRomajiPercentNumberTextBox; }
+        object SObject { get => projectData.Main.Settings.DontLoadStringIfRomajiPercentNumberTextBox; }
 
         static int SVar
         {
@@ -30,7 +30,7 @@ namespace TranslationHelper.INISettings
             }
             else
             {
-                SVar = int.TryParse(thDataWork.BufferValueString, out int result) ? result : DefaultInt;
+                SVar = int.TryParse(projectData.BufferValueString, out int result) ? result : DefaultInt;
                 (SObject as System.Windows.Forms.TextBox).Text = SVar + string.Empty;
             }
         }

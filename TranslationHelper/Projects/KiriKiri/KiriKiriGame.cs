@@ -10,20 +10,20 @@ namespace TranslationHelper.Projects.KiriKiri
 {
     internal class KiriKiriGame : ProjectBase
     {
-        public KiriKiriGame(THDataWork thDataWork) : base(thDataWork)
+        public KiriKiriGame(ProjectData projectData) : base(projectData)
         {
         }
 
         internal override bool Check()
         {
             return false;
-            //Path.GetExtension(thDataWork.SPath) == ".exe"
+            //Path.GetExtension(projectData.SPath) == ".exe"
             //    &&
-            //    FunctionsProcess.GetExeDescription(thDataWork.SPath) != null
+            //    FunctionsProcess.GetExeDescription(projectData.SPath) != null
             //    &&
-            //    FunctionsProcess.GetExeDescription(thDataWork.SPath).ToUpper(CultureInfo.InvariantCulture).Contains("KIRIKIRI")
+            //    FunctionsProcess.GetExeDescription(projectData.SPath).ToUpper(CultureInfo.InvariantCulture).Contains("KIRIKIRI")
             //    &&
-            //    FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(thDataWork.SPath), "*.xp3");
+            //    FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(projectData.SPath), "*.xp3");
         }
 
         internal override string Filters()
@@ -43,10 +43,10 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Open()
         {
-            if (ExtractXP3files(thDataWork.SPath))
+            if (ExtractXP3files(projectData.SPath))
             {
                 var KiriKiriFiles = new List<string>();
-                string DirName = Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath));
+                string DirName = Path.GetFileName(Path.GetDirectoryName(projectData.SPath));
                 string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
 
                 foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.scn", SearchOption.AllDirectories))
@@ -91,35 +91,35 @@ namespace TranslationHelper.Projects.KiriKiri
 
                     bool ret = false;
 
-                    thDataWork.FilePath = kiriKiriFiles[i];
+                    projectData.FilePath = kiriKiriFiles[i];
 
-                    //_ = thDataWork.THFilesElementsDataset.Tables.Add(filename);
-                    //_ = thDataWork.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
-                    //_ = thDataWork.THFilesElementsDatasetInfo.Tables.Add(filename);
-                    //_ = thDataWork.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
+                    //_ = projectData.THFilesElementsDataset.Tables.Add(filename);
+                    //_ = projectData.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
+                    //_ = projectData.THFilesElementsDatasetInfo.Tables.Add(filename);
+                    //_ = projectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
 
                     if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
                     {
-                        ret = new SCRIPT(thDataWork).Open();
+                        ret = new SCRIPT(projectData).Open();
                     }
                     else if (filename.EndsWith(".csv"))
                     {
-                        ret = new CSV(thDataWork).Open();
+                        ret = new CSV(projectData).Open();
                     }
                     else if (filename.EndsWith(".tsv"))
                     {
-                        ret = new TSV(thDataWork).Open();
+                        ret = new TSV(projectData).Open();
                     }
 
                     //if (DT == null || DT.Rows.Count == 0)
                     //{
-                    //    thDataWork.THFilesElementsDataset.Tables.Remove(filename);
-                    //    thDataWork.THFilesElementsDatasetInfo.Tables.Remove(filename);
+                    //    projectData.THFilesElementsDataset.Tables.Remove(filename);
+                    //    projectData.THFilesElementsDatasetInfo.Tables.Remove(filename);
                     //}
                     //else
                     //{
                     //    THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
-                    //    _ = thDataWork.THFilesElementsDataset.Tables[filename].Columns.Add("Translation");
+                    //    _ = projectData.THFilesElementsDataset.Tables[filename].Columns.Add("Translation");
                     //}
                 }
 

@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SWebTranslationLink : Tools
     {
-        public SWebTranslationLink(THDataWork thDataWork) : base(thDataWork)
+        public SWebTranslationLink(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -12,7 +12,7 @@ namespace TranslationHelper.INISettings
 
         internal override string Default => "https://translate.google.com/?ie=UTF-8&op=translate&sl={from}&tl={to}&text={text}";
 
-        object SObject { get => thDataWork.Main.Settings.THSettingsWebTranslationLinkTextBox; }
+        object SObject { get => projectData.Main.Settings.THSettingsWebTranslationLinkTextBox; }
 
         static string SVar
         {
@@ -28,7 +28,7 @@ namespace TranslationHelper.INISettings
             }
             else
             {
-                SVar = thDataWork.BufferValueString;
+                SVar = projectData.BufferValueString;
                 (SObject as System.Windows.Forms.TextBox).Text = SVar;
             }
         }

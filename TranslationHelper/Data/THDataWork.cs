@@ -5,9 +5,9 @@ using TranslationHelper.Projects;
 
 namespace TranslationHelper.Data
 {
-    internal class THDataWork
+    internal class ProjectData
     {
-        internal THDataWork()
+        internal ProjectData()
         {
             THFilesElementsDataset = new DataSet();
             THFilesElementsDatasetInfo = new DataSet();

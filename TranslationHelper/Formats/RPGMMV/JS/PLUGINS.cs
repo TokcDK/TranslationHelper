@@ -9,14 +9,14 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class PLUGINS : JSBase
     {
-        public PLUGINS(THDataWork thDataWork) : base(thDataWork)
+        public PLUGINS(ProjectData projectData) : base(projectData)
         {
             IsPluginsJS = true;
         }
 
         internal override bool ExtIdentifier()
         {
-            return Path.GetFileName(thDataWork.SPath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath)).ToUpperInvariant() == "JS";
+            return Path.GetFileName(projectData.SPath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(projectData.SPath)).ToUpperInvariant() == "JS";
         }
 
         internal override bool Open()
@@ -28,11 +28,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
             string line;
 
-            string tablename = Path.GetFileName(thDataWork.FilePath);
+            string tablename = Path.GetFileName(projectData.FilePath);
 
             AddTables(tablename);
 
-            using (StreamReader reader = new StreamReader(thDataWork.FilePath))
+            using (StreamReader reader = new StreamReader(projectData.FilePath))
             {
                 while (!reader.EndOfStream)
                 {
@@ -75,15 +75,15 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             TranslatedResult = new StringBuilder();
             string line;
             rowindex = 0;
-            string tablename = Path.GetFileName(thDataWork.FilePath);
-            if (FunctionsTable.IsTableRowsAllEmpty(thDataWork.THFilesElementsDataset.Tables[tablename]))
+            string tablename = Path.GetFileName(projectData.FilePath);
+            if (FunctionsTable.IsTableRowsAllEmpty(projectData.THFilesElementsDataset.Tables[tablename]))
             {
                 return false;
             }
 
-            thDataWork.Main.ProgressInfo(true, T._("Writing") + ": " + "plugins.js");
+            projectData.Main.ProgressInfo(true, T._("Writing") + ": " + "plugins.js");
 
-            using (StreamReader reader = new StreamReader(thDataWork.FilePath))
+            using (StreamReader reader = new StreamReader(projectData.FilePath))
             {
                 bool isJsonNotLast = false;
                 bool IsNotFirstLine = false;
@@ -138,7 +138,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
             }
 
-            File.WriteAllText(thDataWork.FilePath, TranslatedResult.ToString().Replace("\r\n", "\n")/*js using only \n*/);
+            File.WriteAllText(projectData.FilePath, TranslatedResult.ToString().Replace("\r\n", "\n")/*js using only \n*/);
             return true;
         }
 

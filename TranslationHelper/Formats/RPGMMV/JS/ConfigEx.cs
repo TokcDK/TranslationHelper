@@ -7,7 +7,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class ConfigEx : JSBase
     {
-        public ConfigEx(THDataWork thDataWork) : base(thDataWork)
+        public ConfigEx(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -20,14 +20,14 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         private bool ParseConfigExJS(bool Iswrite = false)
         {
-            if (thDataWork.FilePath.Length == 0 || !File.Exists(thDataWork.FilePath))
+            if (projectData.FilePath.Length == 0 || !File.Exists(projectData.FilePath))
             {
                 return false;
             }
 
             string line;
 
-            string tablename = Path.GetFileName(thDataWork.FilePath);
+            string tablename = Path.GetFileName(projectData.FilePath);
 
             bool UseDict = false;
             if (Iswrite)
@@ -48,7 +48,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             bool IsComment = false;
             try
             {
-                using (StreamReader reader = new StreamReader(thDataWork.FilePath))
+                using (StreamReader reader = new StreamReader(projectData.FilePath))
                 {
                     while (!reader.EndOfStream)
                     {
@@ -85,7 +85,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                         else
                                         {
 
-                                            var row = thDataWork.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
+                                            var row = projectData.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
                                             if (row[0] as string == StringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
                                             {
                                                 line = line.Replace(StringToAdd, row[1] as string);
@@ -98,8 +98,8 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                     {
                                         string StringForInfo = Regex.Replace(line, @"\.addCommand\('[^']+', '([^']+)'\);", "$2");
                                         AddRowData(tablename, StringToAdd, "addCommand\\" + StringForInfo, true);
-                                        //thDataWork.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
-                                        //thDataWork.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
+                                        //projectData.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
+                                        //projectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
                                     }
                                 }
                             }
@@ -121,7 +121,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             {
                 try
                 {
-                    File.WriteAllText(thDataWork.FilePath, ResultForWrite.ToString());
+                    File.WriteAllText(projectData.FilePath, ResultForWrite.ToString());
                 }
                 catch
                 {

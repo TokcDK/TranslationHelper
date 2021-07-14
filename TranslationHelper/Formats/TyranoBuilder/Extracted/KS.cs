@@ -6,9 +6,9 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
     class KS : FormatBase
     {
-        public KS(THDataWork thDataWork) : base(thDataWork)
+        public KS(ProjectData projectData) : base(projectData)
         {
-            scriptMark = new Script(thDataWork);
+            scriptMark = new Script(projectData);
         }
 
         internal override string Ext()
@@ -65,17 +65,17 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                             var value = glinkStringData[i].Result("$1");
                             if (IsValidString(value))
                             {
-                                if (thDataWork.OpenFileMode)
+                                if (projectData.OpenFileMode)
                                 {
                                     AddRowData(value, ParseData.line, true, false);
                                 }
                                 else
                                 {
-                                    if (thDataWork.TablesLinesDict.ContainsKey(value) && thDataWork.TablesLinesDict[value] != value)
+                                    if (projectData.TablesLinesDict.ContainsKey(value) && projectData.TablesLinesDict[value] != value)
                                     {
                                         ParseData.line = ParseData.line
                                             .Remove(glinkStringData[i].Index, glinkStringData[i].Length)
-                                            .Insert(glinkStringData[i].Index, "text=\"" + thDataWork.TablesLinesDict[value] + "\"");
+                                            .Insert(glinkStringData[i].Index, "text=\"" + projectData.TablesLinesDict[value] + "\"");
                                         ParseData.Ret = true;
                                     }
                                 }
@@ -89,7 +89,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 
                     if (mc.Count > 0)
                     {
-                        if(thDataWork.SaveFileMode)
+                        if(projectData.SaveFileMode)
                         {
                             ParseData.line = "";
                         }
@@ -98,7 +98,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                         {
                             var value = mc[i].Value;
 
-                            if (thDataWork.OpenFileMode)
+                            if (projectData.OpenFileMode)
                             {
                                 if (value.StartsWith("[") && value.EndsWith("]"))
                                 {
@@ -125,7 +125,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                     //{
                     //    var value = m.Result("$3");
 
-                    //    if (thDataWork.OpenFileMode)
+                    //    if (projectData.OpenFileMode)
                     //    {
                     //        AddRowData(value, "", true, false);
                     //    }

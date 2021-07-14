@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SEnableAutosave : Tools
     {
-        public SEnableAutosave(THDataWork thDataWork) : base(thDataWork)
+        public SEnableAutosave(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -13,7 +13,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => true;
 
-        object SObject { get => thDataWork.Main.Settings.SettingsAutosaveEnabledCheckBox; }
+        object SObject { get => projectData.Main.Settings.SettingsAutosaveEnabledCheckBox; }
 
         static bool SVar
         {
@@ -29,7 +29,7 @@ namespace TranslationHelper.INISettings
             }
             else
             {
-                SVar = bool.TryParse(thDataWork.BufferValueString, out bool result) ? result : DefaultBool;
+                SVar = bool.TryParse(projectData.BufferValueString, out bool result) ? result : DefaultBool;
                 (SObject as System.Windows.Forms.CheckBox).Checked = SVar;
             }
         }

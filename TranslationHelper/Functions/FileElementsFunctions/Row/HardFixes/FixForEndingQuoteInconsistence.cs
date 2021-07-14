@@ -4,7 +4,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class FixForEndingQuoteInconsistence : HardFixesBase
     {
-        public FixForEndingQuoteInconsistence(THDataWork thDataWork) : base(thDataWork)
+        public FixForEndingQuoteInconsistence(ProjectData projectData) : base(projectData)
         {
         }
 

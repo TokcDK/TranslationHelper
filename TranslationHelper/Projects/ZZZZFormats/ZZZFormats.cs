@@ -8,13 +8,13 @@ namespace TranslationHelper.Projects.ZZZZFormats
 {
     class ZZZZFormats : ProjectBase
     {
-        public ZZZZFormats(THDataWork thDataWork) : base(thDataWork)
+        public ZZZZFormats(ProjectData projectData) : base(projectData)
         {
         }
 
         private void GetValidOpenable()
         {
-            formats = GetListOfSubClasses(thDataWork);
+            formats = GetListOfSubClasses(projectData);
         }
 
         List<FormatBase> formats;
@@ -76,7 +76,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
             foreach (var format in formats)
             {
-                if (format.Ext() == Path.GetExtension(thDataWork.SPath) && format.ExtIdentifier())
+                if (format.Ext() == Path.GetExtension(projectData.SPath) && format.ExtIdentifier())
                 {
                     SelectedFormat = format;
                     return true;

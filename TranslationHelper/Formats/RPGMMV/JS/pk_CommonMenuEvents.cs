@@ -4,7 +4,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class pk_CommonMenuEvents : JSBase
     {
-        public pk_CommonMenuEvents(THDataWork thDataWork) : base(thDataWork)
+        public pk_CommonMenuEvents(ProjectData projectData) : base(projectData)
         {
         }
 

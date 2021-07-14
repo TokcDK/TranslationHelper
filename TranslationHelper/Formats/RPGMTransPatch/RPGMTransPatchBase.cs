@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.RPGMTrans
     {
         //protected StringBuilder buffer;
 
-        public RPGMTransPatchBase(THDataWork thDataWork/*, StringBuilder sBuffer*/) : base(thDataWork)
+        public RPGMTransPatchBase(ProjectData projectData/*, StringBuilder sBuffer*/) : base(projectData)
         {
             //buffer = sBuffer;
         }

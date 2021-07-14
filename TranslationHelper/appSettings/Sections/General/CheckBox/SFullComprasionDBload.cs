@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SFullComprasionDBload : General
     {
-        public SFullComprasionDBload(THDataWork thDataWork) : base(thDataWork)
+        public SFullComprasionDBload(ProjectData projectData) : base(projectData)
         {
         }
 
@@ -13,7 +13,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => false;
 
-        object SObject { get => thDataWork.Main.Settings.THOptionFullComprasionDBloadCheckBox; }
+        object SObject { get => projectData.Main.Settings.THOptionFullComprasionDBloadCheckBox; }
 
         static bool SVar
         {
@@ -25,11 +25,11 @@ namespace TranslationHelper.INISettings
         {
             if (!SetObject)
             {
-                SVar = thDataWork.Main.Settings.THOptionDBCompressionCheckBox.Checked;
+                SVar = projectData.Main.Settings.THOptionDBCompressionCheckBox.Checked;
             }
             else
             {
-                SVar = bool.TryParse(thDataWork.BufferValueString, out bool result) ? result : DefaultBool;
+                SVar = bool.TryParse(projectData.BufferValueString, out bool result) ? result : DefaultBool;
                 (SObject as System.Windows.Forms.CheckBox).Checked = SVar;
             }
         }

@@ -8,14 +8,14 @@ namespace TranslationHelper.Projects.NScript
 {
     class NScriptGame : NScriptBase
     {
-        public NScriptGame(THDataWork thDataWork) : base(thDataWork)
+        public NScriptGame(ProjectData projectData) : base(projectData)
         {
         }
 
         internal override bool Check()
         {
-            return Path.GetExtension(thDataWork.SPath).ToUpperInvariant() == ".EXE"
-                && File.Exists(Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "nscript.dat"));
+            return Path.GetExtension(projectData.SPath).ToUpperInvariant() == ".EXE"
+                && File.Exists(Path.Combine(Path.GetDirectoryName(projectData.SPath), "nscript.dat"));
         }
 
         internal override string Name()
@@ -30,24 +30,24 @@ namespace TranslationHelper.Projects.NScript
 
         private bool OpenSaveNScript()
         {
-            thDataWork.Main.ProgressInfo(true, (thDataWork.OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
-            thDataWork.FilePath = Path.Combine(Properties.Settings.Default.THSelectedGameDir, "nscript.dat");
+            projectData.Main.ProgressInfo(true, (projectData.OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
+            projectData.FilePath = Path.Combine(Properties.Settings.Default.THSelectedGameDir, "nscript.dat");
             bool ret;
-            if (thDataWork.OpenFileMode)
+            if (projectData.OpenFileMode)
             {
-                if (!File.Exists(thDataWork.FilePath + ".orig"))//backup for manual restore
+                if (!File.Exists(projectData.FilePath + ".orig"))//backup for manual restore
                 {
-                    File.Copy(thDataWork.FilePath, thDataWork.FilePath + ".orig");
+                    File.Copy(projectData.FilePath, projectData.FilePath + ".orig");
                 }
 
-                ret = new Formats.NScriptGame.nscript.dat.NSCRIPT(thDataWork).Open();
+                ret = new Formats.NScriptGame.nscript.dat.NSCRIPT(projectData).Open();
             }
             else
             {
-                ret = new Formats.NScriptGame.nscript.dat.NSCRIPT(thDataWork).Save();
+                ret = new Formats.NScriptGame.nscript.dat.NSCRIPT(projectData).Save();
             }
 
-            thDataWork.Main.ProgressInfo(false);
+            projectData.Main.ProgressInfo(false);
             return ret;
         }
 
@@ -98,8 +98,8 @@ namespace TranslationHelper.Projects.NScript
                     ret = true;
                 }
 
-                //var nscripttxt = Path.Combine(Path.GetDirectoryName(thDataWork.SPath), "nscript.txt");
-                //Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjecFolderName(), Path.GetFileName(Path.GetDirectoryName(thDataWork.SPath)));
+                //var nscripttxt = Path.Combine(Path.GetDirectoryName(projectData.SPath), "nscript.txt");
+                //Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjecFolderName(), Path.GetFileName(Path.GetDirectoryName(projectData.SPath)));
                 //if (!File.Exists(nscripttxt) && !(ret=File.Exists(targetnscripttxt)))
                 //{
                 //    var exe = THSettingsData.ArcConvExePath();

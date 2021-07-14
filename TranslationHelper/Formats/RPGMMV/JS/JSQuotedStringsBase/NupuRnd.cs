@@ -4,7 +4,7 @@
 //{
 //    class NupuRnd : JSQuotedStringsBase
 //    {
-//        public NupuRnd(THDataWork thDataWork) : base(thDataWork)
+//        public NupuRnd(projectData projectData) : base(projectData)
 //        {
 //        }
 

@@ -14,11 +14,11 @@ namespace TranslationHelper.Functions
     {
         internal Dictionary<string, string> cache = new Dictionary<string, string>();
 
-        private readonly THDataWork thDataWork;
+        private readonly ProjectData projectData;
 
-        public FunctionsOnlineCache(THDataWork thDataWork)
+        public FunctionsOnlineCache(ProjectData projectData)
         {
-            this.thDataWork = thDataWork;
+            this.projectData = projectData;
         }
 
         internal string GetValueFromCacheOrReturnEmpty(string keyValue)
@@ -28,12 +28,12 @@ namespace TranslationHelper.Functions
 
             if (Properties.Settings.Default.EnableTranslationCache 
                 && Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll 
-                && thDataWork.AllDBmerged != null 
-                && thDataWork.AllDBmerged.Count > 0 
-                && thDataWork.AllDBmerged.ContainsKey(keyValue) 
-                && !string.IsNullOrWhiteSpace(thDataWork.AllDBmerged[keyValue]))
+                && projectData.AllDBmerged != null 
+                && projectData.AllDBmerged.Count > 0 
+                && projectData.AllDBmerged.ContainsKey(keyValue) 
+                && !string.IsNullOrWhiteSpace(projectData.AllDBmerged[keyValue]))
             {
-                return thDataWork.AllDBmerged[keyValue];
+                return projectData.AllDBmerged[keyValue];
             }
             else if (Properties.Settings.Default.EnableTranslationCache 
                 && cache != null 
@@ -48,13 +48,13 @@ namespace TranslationHelper.Functions
                 var trimmed = keyValue.TrimAllExceptLettersOrDigits();
                 if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll
                    && trimmed.Length > 0
-                   && thDataWork.AllDBmerged != null
-                   && thDataWork.AllDBmerged.Count > 0
-                   && thDataWork.AllDBmerged.ContainsKey(trimmed)
-                   && !string.IsNullOrWhiteSpace(thDataWork.AllDBmerged[trimmed]))
+                   && projectData.AllDBmerged != null
+                   && projectData.AllDBmerged.Count > 0
+                   && projectData.AllDBmerged.ContainsKey(trimmed)
+                   && !string.IsNullOrWhiteSpace(projectData.AllDBmerged[trimmed]))
                 {
                     var ind = keyValue.IndexOf(trimmed);
-                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, thDataWork.AllDBmerged[trimmed]);
+                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, projectData.AllDBmerged[trimmed]);
                 }
                 else if (
                     trimmed.Length > 0
@@ -101,32 +101,32 @@ namespace TranslationHelper.Functions
         /// <summary>
         /// init cache when it was not init
         /// </summary>
-        /// <param name="thDataWork"></param>
-        internal static void Init(THDataWork thDataWork)
+        /// <param name="projectData"></param>
+        internal static void Init(ProjectData projectData)
         {
             //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
             //    return;
 
             Properties.Settings.Default.OnlineTranslationCacheUseCount++;
-            if (thDataWork.OnlineTranslationCache == null)
+            if (projectData.OnlineTranslationCache == null)
             {
-                thDataWork.OnlineTranslationCache = new FunctionsOnlineCache(thDataWork);
-                thDataWork.OnlineTranslationCache.Read();
+                projectData.OnlineTranslationCache = new FunctionsOnlineCache(projectData);
+                projectData.OnlineTranslationCache.Read();
             }
         }
 
         /// <summary>
         /// unload cache when need
         /// </summary>
-        /// <param name="thDataWork"></param>
-        internal static void Unload(THDataWork thDataWork)
+        /// <param name="projectData"></param>
+        internal static void Unload(ProjectData projectData)
         {
             Properties.Settings.Default.OnlineTranslationCacheUseCount--;
             if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)
             {
-                if (thDataWork.OnlineTranslationCache != null)
+                if (projectData.OnlineTranslationCache != null)
                 {
-                    thDataWork.OnlineTranslationCache = null;
+                    projectData.OnlineTranslationCache = null;
                 }
             }
         }
@@ -160,17 +160,17 @@ namespace TranslationHelper.Functions
             }
         }
 
-        public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/THDataWork thDataWork, string Original, string Translation)
+        public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/ProjectData projectData, string Original, string Translation)
         {
             if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed)
             {
-                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || thDataWork.OnlineTranslationCache.cache.ContainsKey(Original) || string.IsNullOrWhiteSpace(Translation) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
+                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || projectData.OnlineTranslationCache.cache.ContainsKey(Original) || string.IsNullOrWhiteSpace(Translation) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
                 {
                 }
                 else
                 {
                     //THTranslationCache.Tables[0].Rows.Add(Original, Translation);
-                    thDataWork.OnlineTranslationCache.cache.Add(Original, Translation);
+                    projectData.OnlineTranslationCache.cache.Add(Original, Translation);
                 }
             }
         }

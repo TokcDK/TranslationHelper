@@ -4,7 +4,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
     class Attribute : KSSyntaxBase
     {
-        public Attribute(THDataWork thDataWork) : base(thDataWork)
+        public Attribute(ProjectData projectData) : base(projectData)
         {
         }
 

@@ -7,7 +7,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
 {
     class NLoveImGoingToGetRidOfItAndLive : PGroup2Base
     {
-        public NLoveImGoingToGetRidOfItAndLive(THDataWork thDataWork) : base(thDataWork)
+        public NLoveImGoingToGetRidOfItAndLive(ProjectData projectData) : base(projectData)
         {
             exeCRC = "a83b58570eee4fabfd0e91f3fc67beab";
         }
@@ -21,7 +21,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         {
             if (CheckKiriKiriBase())
             {
-                if (exeCRC.Length > 0 && thDataWork.SPath.GetMD5() == exeCRC)
+                if (exeCRC.Length > 0 && projectData.SPath.GetMD5() == exeCRC)
                 {
                     return true;
                 }
@@ -31,7 +31,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
 
         protected override List<Formats.FormatBase> Format()
         {
-            return new List<Formats.FormatBase> { new TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(thDataWork) };
+            return new List<Formats.FormatBase> { new TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(projectData) };
         }
 
         protected override string[] Mask()
@@ -43,22 +43,22 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         //{
         //    bool ret = false;
 
-        //    thDataWork.CurrentProject.FillTablesLinesDict();
+        //    projectData.CurrentProject.FillTablesLinesDict();
 
         //    //PatchDir
         //    //var PatchDir = Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "_patch"));
 
         //    foreach (var file in Directory.EnumerateFileSystemEntries(Properties.Settings.Default.THProjectWorkDir, "*.ks", SearchOption.AllDirectories))
         //    {
-        //        if (!thDataWork.THFilesElementsDataset.Tables.Contains(Path.GetFileName(file)))
+        //        if (!projectData.THFilesElementsDataset.Tables.Contains(Path.GetFileName(file)))
         //        {
         //            continue;
         //        }
-        //        thDataWork.FilePath = file;
-        //        thDataWork.Main.ProgressInfo(true, T._("opening file: ") + Path.GetFileName(file));
+        //        projectData.FilePath = file;
+        //        projectData.Main.ProgressInfo(true, T._("opening file: ") + Path.GetFileName(file));
         //        try
         //        {
-        //            if (new Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(thDataWork).Save())
+        //            if (new Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS(projectData).Save())
         //            {
         //                ret = true;
         //            }
@@ -67,11 +67,11 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         //        {
         //        }
         //    }
-        //    thDataWork.TablesLinesDict.Clear();
+        //    projectData.TablesLinesDict.Clear();
 
         //    //PackTranslatedFilesInPatch();
 
-        //    thDataWork.Main.ProgressInfo(false);
+        //    projectData.Main.ProgressInfo(false);
 
         //    return ret;
         //}

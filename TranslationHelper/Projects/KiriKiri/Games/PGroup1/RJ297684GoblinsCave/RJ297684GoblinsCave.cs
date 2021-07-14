@@ -7,7 +7,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
 {
     class RJ297684GoblinsCave : PGroup1Base
     {
-        public RJ297684GoblinsCave(THDataWork thDataWork) : base(thDataWork)
+        public RJ297684GoblinsCave(ProjectData projectData) : base(projectData)
         {
             exeCRC = "7c2bfd95";
         }
@@ -19,12 +19,12 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
 
         internal override bool Check()
         {
-            return CheckKiriKiriBase() && exeCRC.Length > 0 && thDataWork.SPath.GetCrc32() == exeCRC;
+            return CheckKiriKiriBase() && exeCRC.Length > 0 && projectData.SPath.GetCrc32() == exeCRC;
         }
 
         protected override List<FormatBase> Format()
         {
-            return new List<FormatBase>() { new Formats.KiriKiri.Games.FGroup1.RJ297684GoblinsCave.KS(thDataWork) };
+            return new List<FormatBase>() { new Formats.KiriKiri.Games.FGroup1.RJ297684GoblinsCave.KS(projectData) };
         }
 
         protected override string[] Mask()

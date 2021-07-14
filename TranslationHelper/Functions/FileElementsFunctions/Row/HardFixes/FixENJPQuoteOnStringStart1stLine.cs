@@ -5,7 +5,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class FixENJPQuoteOnStringStart1stLine : HardFixesBase
     {
-        public FixENJPQuoteOnStringStart1stLine(THDataWork thDataWork) : base(thDataWork)
+        public FixENJPQuoteOnStringStart1stLine(ProjectData projectData) : base(projectData)
         {
         }
 

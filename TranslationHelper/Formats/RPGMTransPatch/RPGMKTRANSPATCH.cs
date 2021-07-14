@@ -13,13 +13,13 @@ namespace TranslationHelper.Formats.RPGMTransPatch
 {
     class RPGMKTRANSPATCH : RPGMTransPatchBase
     {
-        public RPGMKTRANSPATCH(THDataWork thDataWork) : base(thDataWork)
+        public RPGMKTRANSPATCH(ProjectData projectData) : base(projectData)
         {
         }
 
         internal override bool Open() 
         {
-            return new TranslationHelper.Formats.RPGMTrans.TXT(thDataWork).Open(); 
+            return new TranslationHelper.Formats.RPGMTrans.TXT(projectData).Open(); 
         }
 
         internal override bool Save() 
@@ -35,12 +35,12 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                 "> RPGMAKER TRANS PATCH FILE VERSION 3.2"//v3
             };
 
-            var TablesCount = thDataWork.THFilesElementsDataset.Tables.Count;
+            var TablesCount = projectData.THFilesElementsDataset.Tables.Count;
             for (int t=0; t < TablesCount; t++)
             {
                 try
                 {
-                    var table = thDataWork.THFilesElementsDataset.Tables[t];
+                    var table = projectData.THFilesElementsDataset.Tables[t];
                     var tableRowsCount = table.Rows.Count;
                     for (int r = 0; r < tableRowsCount; r++)
                     {
@@ -50,7 +50,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                         var translation = row[1] as string;
 
                         List<string> context = new List<string>();
-                        var infoRow = thDataWork.THFilesElementsDatasetInfo.Tables[t].Rows[r] + string.Empty;
+                        var infoRow = projectData.THFilesElementsDatasetInfo.Tables[t].Rows[r] + string.Empty;
                         foreach (var line in infoRow.SplitToLines())
                         {
                             if (line.StartsWith("> CONTEXT"))
