@@ -25,7 +25,7 @@ namespace TH
                 var menu = new ToolStripMenuItem
                 {
                     Text = plugin.Text,
-                    ToolTipText = plugin.ToolTipText
+                    ToolTipText = plugin.Description
                 };
 
                 //Register click event

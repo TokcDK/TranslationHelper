@@ -7,7 +7,7 @@ namespace MenuOpen
     {
         public string Text => "Open";
 
-        public string ToolTipText => "Open project";
+        public string Description => "Open project";
 
         public string Parent => "File";
 

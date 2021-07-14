@@ -8,7 +8,7 @@ namespace TestMenu
     {
         public string Text => "TestMenu";
 
-        public string ToolTipText => "This Is Test Menu";
+        public string Description => "This Is Test Menu";
 
         public string Parent => "File";
 

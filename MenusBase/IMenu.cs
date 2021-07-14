@@ -13,7 +13,7 @@ namespace Menus
         /// <summary>
         /// Menu item tooltip text
         /// </summary>
-        string ToolTipText { get; }
+        string Description { get; }
 
         /// <summary>
         /// Main menu(like File, Edit, View) name where it must be placed.
