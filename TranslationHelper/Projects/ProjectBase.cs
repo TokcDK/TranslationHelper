@@ -23,7 +23,7 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// set here som vars before open or kind of
         /// </summary>
-        internal virtual void Init()
+        public virtual void Init()
         {
             if (!string.IsNullOrWhiteSpace(ProjectData.SPath))
             {

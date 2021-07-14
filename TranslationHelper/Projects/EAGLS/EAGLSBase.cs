@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.EAGLS
         {
         }
 
-        internal override void Init()
+        public override void Init()
         {
             base.Init();
             ProjectName = ProjectName();
