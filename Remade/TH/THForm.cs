@@ -1,7 +1,9 @@
 ﻿using GetListOfSubClasses;
 using Menus;
+using System;
 using System.IO;
 using System.Windows.Forms;
+using THCore;
 
 namespace TH
 {
@@ -11,13 +13,21 @@ namespace TH
         {
             InitializeComponent();
 
+            SetVars();
+
             LoadMenus();
+        }
+
+        private void SetVars()
+        {
+            SharedData.StartupPath = Application.StartupPath;
+            SharedData.MenuModulesDirPath = Path.Combine(SharedData.StartupPath, "Modules", "Menus");
         }
 
         private void LoadMenus()
         {
             //Load Menus
-            var Plugins = Inherited.GetListOfInterfaceImplimentations<IMenu>(Path.Combine(Application.StartupPath, "Modules", "Menus"));
+            var Plugins = Inherited.GetListOfInterfaceImplimentations<IMenu>(SharedData.MenuModulesDirPath);
 
             foreach (var plugin in Plugins)
             {

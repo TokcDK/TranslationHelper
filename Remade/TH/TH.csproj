@@ -88,6 +88,10 @@
       <Project>{aabf637a-12d1-4fbd-9859-c417c2add40f}</Project>
       <Name>MenusCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\THCore\THCore.csproj">
+      <Project>{D457DD7C-028E-4A38-A2F3-3914FA66FB0E}</Project>
+      <Name>THCore</Name>
+    </ProjectReference>
     <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj">
       <Project>{FD599904-9718-4FAF-A7B0-48F5D1BE39E0}</Project>
       <Name>GetListOfSubClasses</Name>
