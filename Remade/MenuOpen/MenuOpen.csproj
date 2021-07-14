@@ -49,6 +49,10 @@
       <Project>{AABF637A-12D1-4FBD-9859-C417C2ADD40F}</Project>
       <Name>MenusCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\THCore\THCore.csproj">
+      <Project>{D457DD7C-028E-4A38-A2F3-3914FA66FB0E}</Project>
+      <Name>THCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

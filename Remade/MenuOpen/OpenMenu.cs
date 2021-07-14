@@ -1,5 +1,6 @@
 ﻿using Menus;
 using System;
+using THCore;
 
 namespace MenuOpen
 {
@@ -9,7 +10,7 @@ namespace MenuOpen
 
         public string Description => "Open project";
 
-        public string Parent => "File";
+        public string Parent => SharedData.Menus.FileMenuName;
 
         public string Category => null;
 
