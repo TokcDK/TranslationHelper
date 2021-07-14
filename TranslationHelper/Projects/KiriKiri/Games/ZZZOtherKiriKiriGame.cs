@@ -17,7 +17,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
         internal override string Name()
         {
-            return Path.GetFileName(Properties.Settings.Default.THProjectWorkDir) + "(" + ProjectData.SPath + ")";
+            return Path.GetFileName(ProjectData.ProjectWorkDir) + "(" + ProjectData.SPath + ")";
         }
 
         protected override List<Formats.FormatBase> Format()

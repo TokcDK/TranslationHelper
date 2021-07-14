@@ -32,7 +32,7 @@ namespace TranslationHelper.Projects.LiveMaker
 
         internal override bool Open()
         {
-            return ExtractRes() && OpenSaveFilesBase(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted"), Format(), Mask(), false);
+            return ExtractRes() && OpenSaveFilesBase(Path.Combine(ProjectData.ProjectWorkDir, "Extracted"), Format(), Mask(), false);
         }
         protected List<Formats.FormatBase> Format()
         {
@@ -50,8 +50,8 @@ namespace TranslationHelper.Projects.LiveMaker
         private bool ExtractRes()
         {
             //https://pylivemaker.readthedocs.io/en/latest/usage.html
-            var GameDir = Properties.Settings.Default.THSelectedGameDir;
-            var WorkDir = (Properties.Settings.Default.THProjectWorkDir = Properties.Settings.Default.THProjectWorkDir.Length == 0 ? Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), Path.GetFileName(GameDir)) : Properties.Settings.Default.THProjectWorkDir);
+            var GameDir = ProjectData.SelectedGameDir;
+            var WorkDir = (ProjectData.ProjectWorkDir = ProjectData.ProjectWorkDir.Length == 0 ? Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), Path.GetFileName(GameDir)) : ProjectData.ProjectWorkDir);
 
             try
             {
@@ -165,7 +165,7 @@ namespace TranslationHelper.Projects.LiveMaker
 
         internal override bool Save()
         {
-            return OpenSaveFilesBase(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted"), Format(), Mask())
+            return OpenSaveFilesBase(Path.Combine(ProjectData.ProjectWorkDir, "Extracted"), Format(), Mask())
                 && WriteTranslation();
         }
 
@@ -173,8 +173,8 @@ namespace TranslationHelper.Projects.LiveMaker
         {
             try
             {
-                var csvdir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted");
-                var gameresoutput = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "output");
+                var csvdir = Path.Combine(ProjectData.ProjectWorkDir, "Extracted");
+                var gameresoutput = Path.Combine(ProjectData.ProjectWorkDir, "output");
 
                 if (Extensions.ExtensionsFileFolder.ContainsFiles(csvdir, "*.csv")
                     && Extensions.ExtensionsFileFolder.ContainsFiles(gameresoutput, "*.lsb"))
@@ -230,7 +230,7 @@ namespace TranslationHelper.Projects.LiveMaker
 
                 //copy lsb for insert
                 ProjectData.Main.ProgressInfo(T._("Copy lsb for insertion"));
-                var insertDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "insert");
+                var insertDir = Path.Combine(ProjectData.ProjectWorkDir, "insert");
                 Directory.CreateDirectory(insertDir);
                 foreach (var lsb in Directory.EnumerateFiles(gameresoutput, "00*.lsb"))
                 {
@@ -294,18 +294,18 @@ namespace TranslationHelper.Projects.LiveMaker
 
         internal override bool BakCreate()
         {
-            var bakData = Directory.GetFiles(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "output"), "*.lsb");
+            var bakData = Directory.GetFiles(Path.Combine(ProjectData.ProjectWorkDir, "output"), "*.lsb");
 
             bakData = bakData.Union(new[] { ProjectData.SPath }).ToArray();
 
-            if (Directory.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted")))
+            if (Directory.Exists(Path.Combine(ProjectData.ProjectWorkDir, "Extracted")))
             {
-                bakData = bakData.Union(Directory.GetFiles(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted"), "*.csv")).ToArray();
+                bakData = bakData.Union(Directory.GetFiles(Path.Combine(ProjectData.ProjectWorkDir, "Extracted"), "*.csv")).ToArray();
             }
 
-            if (Directory.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted", "LNS")))
+            if (Directory.Exists(Path.Combine(ProjectData.ProjectWorkDir, "Extracted", "LNS")))
             {
-                bakData = bakData.Union(Directory.GetFiles(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted", "LNS"), "*.lns", SearchOption.AllDirectories)).ToArray();
+                bakData = bakData.Union(Directory.GetFiles(Path.Combine(ProjectData.ProjectWorkDir, "Extracted", "LNS"), "*.lns", SearchOption.AllDirectories)).ToArray();
             }
 
             return BackupRestorePaths(bakData);
@@ -315,21 +315,21 @@ namespace TranslationHelper.Projects.LiveMaker
         {
             string[] bakData = new string[1];
 
-            if(Directory.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "output")))
+            if(Directory.Exists(Path.Combine(ProjectData.ProjectWorkDir, "output")))
             {
-                bakData = Directory.GetFiles(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "output"), "*.lsb");
+                bakData = Directory.GetFiles(Path.Combine(ProjectData.ProjectWorkDir, "output"), "*.lsb");
             }
 
             bakData = bakData.Union(new[] { ProjectData.SPath }).ToArray();
 
-            if (Directory.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted")))
+            if (Directory.Exists(Path.Combine(ProjectData.ProjectWorkDir, "Extracted")))
             {
-                bakData = bakData.Union(Directory.GetFiles(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted"), "*.csv")).ToArray();
+                bakData = bakData.Union(Directory.GetFiles(Path.Combine(ProjectData.ProjectWorkDir, "Extracted"), "*.csv")).ToArray();
             }
 
-            if (Directory.Exists(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted", "LNS")))
+            if (Directory.Exists(Path.Combine(ProjectData.ProjectWorkDir, "Extracted", "LNS")))
             {
-                bakData = bakData.Union(Directory.GetFiles(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Extracted", "LNS"), "*.lns", SearchOption.AllDirectories)).ToArray();
+                bakData = bakData.Union(Directory.GetFiles(Path.Combine(ProjectData.ProjectWorkDir, "Extracted", "LNS"), "*.lns", SearchOption.AllDirectories)).ToArray();
             }
 
             return BackupRestorePaths(bakData, false);

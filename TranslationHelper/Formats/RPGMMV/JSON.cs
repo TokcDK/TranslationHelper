@@ -36,8 +36,8 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
                 JToken root;
-                //MessageBox.Show(Properties.Settings.Default.THSelectedDir);
-                //using (var reader = new StreamReader(Properties.Settings.Default.THSelectedDir+"\\"+ Jsonname+".json"))
+                //MessageBox.Show(ProjectData.SelectedDir);
+                //using (var reader = new StreamReader(ProjectData.SelectedDir+"\\"+ Jsonname+".json"))
                 using (StreamReader reader = new StreamReader(sPath))
                 {
                     using (JsonTextReader jsonReader = new JsonTextReader(reader))

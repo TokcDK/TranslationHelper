@@ -829,7 +829,7 @@ namespace TranslationHelper
                     return;
                 }
 
-                THSaveFolderBrowser.SelectedPath = Properties.Settings.Default.THSelectedDir; //Установить начальный путь на тот, что был установлен при открытии.
+                THSaveFolderBrowser.SelectedPath = ProjectData.SelectedDir; //Установить начальный путь на тот, что был установлен при открытии.
 
                 if (THSaveFolderBrowser.ShowDialog() == DialogResult.OK)
                 {
@@ -837,7 +837,7 @@ namespace TranslationHelper
                     {
                         if (new RPGMTransOLD().SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, RPGMFunctions.RPGMTransPatchVersion))
                         {
-                            Properties.Settings.Default.THSelectedDir = THSaveFolderBrowser.SelectedPath;
+                            ProjectData.SelectedDir = THSaveFolderBrowser.SelectedPath;
                             _ = MessageBox.Show(T._("Save complete!"));
                         }
                     }
@@ -1018,7 +1018,7 @@ namespace TranslationHelper
             {
                 case "RPGMakerTransPatch":
                 case "RPG Maker game with RPGMTransPatch":
-                    _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+                    _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(ProjectData.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
                     break;
             }
 
@@ -1043,7 +1043,7 @@ namespace TranslationHelper
                 AutosaveActivated = true;
 
                 dbpath = Path.Combine(Application.StartupPath, "DB");
-                string dbfilename = Path.GetFileNameWithoutExtension(Properties.Settings.Default.THSelectedDir) + "_autosave";
+                string dbfilename = Path.GetFileNameWithoutExtension(ProjectData.SelectedDir) + "_autosave";
                 string autosavepath = Path.Combine(dbpath, "Auto", dbfilename + ".bak1" + ".cmx");
                 if (File.Exists(autosavepath))
                 {
@@ -1850,7 +1850,7 @@ namespace TranslationHelper
                         {
                             case "RPGMakerTransPatch":
                             case "RPG Maker game with RPGMTransPatch":
-                                _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+                                _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(ProjectData.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
                                 break;
                         }
 
@@ -1988,14 +1988,14 @@ namespace TranslationHelper
                                     break;
                                 }
                             }
-                            ///*THMsg*/MessageBox.Show(Properties.Settings.Default.THSelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                            ///*THMsg*/MessageBox.Show(ProjectData.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
                             if (changed)
                             {
 
                                 ///*THMsg*/MessageBox.Show("start writing");
 
                                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                                success = await Task.Run(() => new RPGMMVOLD().WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(true);
+                                success = await Task.Run(() => new RPGMMVOLD().WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(ProjectData.SelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(true);
                                 if (!success)
                                 {
                                     break;
@@ -2011,7 +2011,7 @@ namespace TranslationHelper
                         {
                             try
                             {
-                                DirectoryInfo di = new DirectoryInfo(Properties.Settings.Default.THSelectedDir);
+                                DirectoryInfo di = new DirectoryInfo(ProjectData.SelectedDir);
                                 FileInfo[] fiArr = di.GetFiles("*.exe");
                                 string largestexe = string.Empty;
                                 long filesize = 0;
@@ -2024,7 +2024,7 @@ namespace TranslationHelper
                                     }
                                 }
                                 //MessageBox.Show("outdir=" + outdir);
-                                //Testgame.StartInfo.FileName = Path.Combine(Properties.Settings.Default.THSelectedDir,"game.exe");
+                                //Testgame.StartInfo.FileName = Path.Combine(ProjectData.SelectedDir,"game.exe");
                                 //Testgame.StartInfo.FileName = largestexe;
                                 //RPGMakerTransPatch.StartInfo.Arguments = string.Empty;
                                 //Testgame.StartInfo.UseShellExecute = true;
@@ -2033,7 +2033,7 @@ namespace TranslationHelper
                                 // свернуть
                                 WindowState = FormWindowState.Minimized;
 
-                                _ = Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
+                                _ = Process.Start("explorer.exe", ProjectData.SelectedDir);
 
                                 _ = FunctionsProcess.RunProcess(largestexe);
 
@@ -2529,7 +2529,7 @@ namespace TranslationHelper
 
         private void SetOriginalToTranslationIfFileExistsInAnyFolder()
         {
-            string[] ProjectFilesList = Directory.GetFiles(Properties.Settings.Default.THSelectedGameDir, "*.*", SearchOption.AllDirectories);
+            string[] ProjectFilesList = Directory.GetFiles(ProjectData.SelectedGameDir, "*.*", SearchOption.AllDirectories);
             for (int i = 0; i < ProjectFilesList.Length; i++)
             {
                 ProjectFilesList[i] = Path.GetFileNameWithoutExtension(ProjectFilesList[i]);

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -102,12 +103,12 @@ namespace TranslationHelper.Main.Functions
         internal static void OpenProjectsDir()
         {
             string folder;
-            if (Directory.Exists(folder = Properties.Settings.Default.THProjectWorkDir))
+            if (Directory.Exists(folder = ProjectData.ProjectWorkDir))
             {
             }
             else
             {
-                folder = Properties.Settings.Default.THSelectedDir;
+                folder = ProjectData.SelectedDir;
             }
             Process.Start("explorer.exe", folder);
         }

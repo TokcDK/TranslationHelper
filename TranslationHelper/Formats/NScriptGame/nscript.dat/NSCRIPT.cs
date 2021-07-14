@@ -196,21 +196,21 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     //ONSCRIPTER
                     {
                         //copy onscripter
-                        if (!Directory.Exists(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "onscripter")))
-                            Path.Combine(THSettingsData.ResDirPath(), "onscripter").CopyAll(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "onscripter"));
+                        if (!Directory.Exists(Path.Combine(ProjectData.SelectedGameDir, "onscripter")))
+                            Path.Combine(THSettingsData.ResDirPath(), "onscripter").CopyAll(Path.Combine(ProjectData.SelectedGameDir, "onscripter"));
 
                         //write run.bat
                         //onscripter -r "gamedir" --dll "dllpath" -f fontpath --window
-                        var g = Directory.GetFiles(Properties.Settings.Default.THSelectedGameDir, "*.dll");
-                        var ls = g.Select(fn => "--dll \"" + Path.Combine(Properties.Settings.Default.THSelectedGameDir, Path.GetFileName(fn)) + "\" ");
+                        var g = Directory.GetFiles(ProjectData.SelectedGameDir, "*.dll");
+                        var ls = g.Select(fn => "--dll \"" + Path.Combine(ProjectData.SelectedGameDir, Path.GetFileName(fn)) + "\" ");
                         string dlls = string.Join("", ls);
                         var batcontent = "ONScripter "
-                            + "-r \"" + Properties.Settings.Default.THSelectedGameDir + "\" "
+                            + "-r \"" + ProjectData.SelectedGameDir + "\" "
                             + dlls
                             + "-f C:\\Windows\\Fonts\\msgothic.ttc "
                             + "--window"
                         ;
-                        File.WriteAllText(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "onscripter", "Run.bat"), batcontent);
+                        File.WriteAllText(Path.Combine(ProjectData.SelectedGameDir, "onscripter", "Run.bat"), batcontent);
                     }
                     return true;
                 }

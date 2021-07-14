@@ -100,6 +100,9 @@ namespace TranslationHelper.Data
         /// main table/row index coordinats data for same translation for identical and for write functions
         /// </summary>
         internal static Dictionary<string, Dictionary<string, List<int>>> OriginalsTableRowCoordinats { get; set; }
+        public static string SelectedGameDir;
+        public static string SelectedDir;
+        public static string ProjectWorkDir;
 
         /// <summary>
         /// target textbox control value

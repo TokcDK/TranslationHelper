@@ -16,9 +16,9 @@ namespace TranslationHelper.Projects.EAGLS
         {
             base.Init();
             ProjectName = ProjectName();
-            Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), ProjectName);
-            WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
-            ScriptDir = Path.Combine(Properties.Settings.Default.THSelectedGameDir, "Script");
+            ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), ProjectName);
+            WorkTXTDir = Path.Combine(ProjectData.ProjectWorkDir, "txt");
+            ScriptDir = Path.Combine(ProjectData.SelectedGameDir, "Script");
             SCPACKpak = Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "Script", "SCPACK.pak");
             SCPACKidx = Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "Script", "SCPACK.idx");
         }
@@ -44,14 +44,14 @@ namespace TranslationHelper.Projects.EAGLS
         {
             try
             {
-                Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), ProjectName);
-                var workdir = Properties.Settings.Default.THProjectWorkDir;
+                ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), ProjectName);
+                var workdir = ProjectData.ProjectWorkDir;
 
                 var pythonexe = THSettingsData.PythonExePath();
                 var scpacker = THSettingsData.SCPackerPYPath();
                 var scriptdir = ScriptDir;
 
-                WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
+                WorkTXTDir = Path.Combine(ProjectData.ProjectWorkDir, "txt");
                 var mode = (ProjectData.SaveFileMode ? string.Empty : "un") + "pack";
                 //var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t -o";
                 var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\"";
@@ -59,7 +59,7 @@ namespace TranslationHelper.Projects.EAGLS
                 Directory.CreateDirectory(WorkTXTDir);
 
                 //write command file
-                File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, mode + "1.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
+                File.WriteAllText(Path.Combine(ProjectData.ProjectWorkDir, mode + "1.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
 
                 var code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
                 if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, scriptsFIlter))
@@ -70,7 +70,7 @@ namespace TranslationHelper.Projects.EAGLS
                     //arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t";
 
                     ////write command file
-                    //File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, mode + "2.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
+                    //File.WriteAllText(Path.Combine(ProjectData.ProjectWorkDir, mode + "2.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
 
                     //code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
                     //if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, scriptsFIlter))
@@ -85,7 +85,7 @@ namespace TranslationHelper.Projects.EAGLS
                 {
                     MessageBox.Show(T._("Errors was occcured while packing") + "." + T._("Will be opened log and work dir") + ".");
                     FunctionsProcess.RunProcess(errorslog, "");
-                    FunctionsProcess.RunProcess(Properties.Settings.Default.THProjectWorkDir, "");
+                    FunctionsProcess.RunProcess(ProjectData.ProjectWorkDir, "");
                 }
             }
             catch
@@ -108,9 +108,9 @@ namespace TranslationHelper.Projects.EAGLS
             return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(), scriptsFIlter);
         }
 
-        protected string SCPACKpak = string.Empty;
-        protected string SCPACKidx = string.Empty;
-        protected string WorkTXTDir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "txt");
+        protected string SCPACKpak;
+        protected string SCPACKidx;
+        protected string WorkTXTDir;
         internal override bool BakCreate()
         {
             return BackupRestorePaths(new[]

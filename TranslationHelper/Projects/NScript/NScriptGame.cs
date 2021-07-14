@@ -31,7 +31,7 @@ namespace TranslationHelper.Projects.NScript
         private bool OpenSaveNScript()
         {
             ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
-            ProjectData.FilePath = Path.Combine(Properties.Settings.Default.THSelectedGameDir, "nscript.dat");
+            ProjectData.FilePath = Path.Combine(ProjectData.SelectedGameDir, "nscript.dat");
             bool ret;
             if (ProjectData.OpenFileMode)
             {
@@ -57,8 +57,8 @@ namespace TranslationHelper.Projects.NScript
 
             try
             {
-                var nscriptdat = Path.Combine(Properties.Settings.Default.THSelectedDir, "nscript.dat");
-                //var nsdecingame = Path.Combine(Properties.Settings.Default.THSelectedDir, THSettingsData.NSDECexeName());
+                var nscriptdat = Path.Combine(ProjectData.SelectedDir, "nscript.dat");
+                //var nsdecingame = Path.Combine(ProjectData.SelectedDir, THSettingsData.NSDECexeName());
                 //if (!File.Exists(nsdecingame))
                 //{
                 //    File.Copy(THSettingsData.NSDECexePath(), nsdecingame);
@@ -67,7 +67,7 @@ namespace TranslationHelper.Projects.NScript
                 //var ssss = encryptDecrypt(File.ReadAllText(nscriptdat, Encoding.GetEncoding(932)));
                 //var ssss = EncryptOrDecrypt(File.ReadAllText(nscriptdat, Encoding.GetEncoding(932)),"84");
 
-                var targetnscripttxt = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "nscript.txt");
+                var targetnscripttxt = Path.Combine(ProjectData.ProjectWorkDir, "nscript.txt");
 
                 using (var s = new FileStream(nscriptdat, FileMode.Open, FileAccess.Read))
                 using (var br = new BinaryReader(s, Encoding.GetEncoding(932)))
@@ -93,13 +93,13 @@ namespace TranslationHelper.Projects.NScript
 
                     string decryptedStr = Encoding.GetEncoding(932).GetString(decryptedBytes).Replace("\n", Environment.NewLine);
 
-                    Directory.CreateDirectory(Properties.Settings.Default.THProjectWorkDir);
+                    Directory.CreateDirectory(ProjectData.ProjectWorkDir);
                     File.WriteAllText(targetnscripttxt, decryptedStr, Encoding.GetEncoding(932));
                     ret = true;
                 }
 
                 //var nscripttxt = Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "nscript.txt");
-                //Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjecFolderName(), Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath)));
+                //ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjecFolderName(), Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath)));
                 //if (!File.Exists(nscripttxt) && !(ret=File.Exists(targetnscripttxt)))
                 //{
                 //    var exe = THSettingsData.ArcConvExePath();
@@ -111,8 +111,8 @@ namespace TranslationHelper.Projects.NScript
                 //if (File.Exists(nscripttxt) && !File.Exists(targetnscripttxt))
                 //{
                 //    ret = true;
-                //    //var projectdir = Properties.Settings.Default.THProjectWorkDir;
-                //    Directory.CreateDirectory(Properties.Settings.Default.THProjectWorkDir);
+                //    //var projectdir = ProjectData.ProjectWorkDir;
+                //    Directory.CreateDirectory(ProjectData.ProjectWorkDir);
 
                 //    File.Move(nscripttxt, targetnscripttxt);
                 //}
@@ -132,12 +132,12 @@ namespace TranslationHelper.Projects.NScript
 
         internal override bool BakCreate()
         {
-            return BackupFile(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "nscript.dat"));
+            return BackupFile(Path.Combine(ProjectData.SelectedGameDir, "nscript.dat"));
         }
 
         internal override bool BakRestore()
         {
-            return RestoreFile(Path.Combine(Properties.Settings.Default.THSelectedGameDir, "nscript.dat"));
+            return RestoreFile(Path.Combine(ProjectData.SelectedGameDir, "nscript.dat"));
         }
     }
 }

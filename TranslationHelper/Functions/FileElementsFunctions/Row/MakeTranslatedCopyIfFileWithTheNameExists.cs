@@ -20,7 +20,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (NeedToAddFilePaths)
             {
                 GameFilesList = new Dictionary<string, List<string>>();
-                foreach (var file in Directory.GetFiles(Properties.Settings.Default.THSelectedGameDir, "*", SearchOption.AllDirectories))
+                foreach (var file in Directory.GetFiles(ProjectData.SelectedGameDir, "*", SearchOption.AllDirectories))
                 {
                     var name = Path.GetFileNameWithoutExtension(file);
                     if (GameFilesList.ContainsKey(name))

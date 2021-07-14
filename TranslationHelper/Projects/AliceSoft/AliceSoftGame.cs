@@ -29,14 +29,14 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override bool Open()
         {
-            return PackUnpack() && OpenSaveFilesBase(Properties.Settings.Default.THProjectWorkDir, new AINTXT(), "*.ain.txt");
+            return PackUnpack() && OpenSaveFilesBase(ProjectData.ProjectWorkDir, new AINTXT(), "*.ain.txt");
         }
 
         private bool PackUnpack()
         {
             if (ProjectData.OpenFileMode)
             {
-                Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath)));
+                ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath)));
             }
 
             var ret = false;
@@ -49,12 +49,12 @@ namespace TranslationHelper.Projects.AliceSoft
                     continue;
                 first = true;
 
-                var targetworkainpath = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "orig.ain");
+                var targetworkainpath = Path.Combine(ProjectData.ProjectWorkDir, "orig.ain");
                 var targetworkaintxtpath = targetworkainpath + ".txt";
 
                 if (ProjectData.OpenFileMode)
                 {
-                    Directory.CreateDirectory(Properties.Settings.Default.THProjectWorkDir);
+                    Directory.CreateDirectory(ProjectData.ProjectWorkDir);
 
                     var args = "ain dump -t -o \"" + targetworkaintxtpath + "\" \"" + targetworkainpath + "\"";
 
@@ -77,7 +77,7 @@ namespace TranslationHelper.Projects.AliceSoft
 
                         var args = "ain edit -t \"" + targetworkaintxtpath + "\" -o \"" + outain + "\" \"" + targetworkainpath + "\"";
 
-                        File.WriteAllText(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "write.bat"),
+                        File.WriteAllText(Path.Combine(ProjectData.ProjectWorkDir, "write.bat"),
                             " \"" + THSettingsData.AliceToolsExePath() + "\" " + args
                             + "\r\npause"
 
@@ -125,7 +125,7 @@ namespace TranslationHelper.Projects.AliceSoft
             ProjectData.OpenFileMode = true;
             PackUnpack();//restore original txt before each writing because it will be writed with translated strings while 1st write and will be need to restore it
             ProjectData.SaveFileMode = true;
-            return OpenSaveFilesBase(Properties.Settings.Default.THProjectWorkDir, new AINTXT(), "*.ain.txt") && PackUnpack();
+            return OpenSaveFilesBase(ProjectData.ProjectWorkDir, new AINTXT(), "*.ain.txt") && PackUnpack();
         }
     }
 }

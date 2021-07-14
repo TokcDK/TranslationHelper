@@ -220,7 +220,7 @@ namespace TranslationHelper.Data
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string RPGMakerMVProjectSkipjsRulesFilePath()
         {
-            return Path.Combine(Properties.Settings.Default.THSelectedGameDir, "www", "js", RPGMakerMVProjectSkipjsRulesFileName());
+            return Path.Combine(ProjectData.SelectedGameDir, "www", "js", RPGMakerMVProjectSkipjsRulesFileName());
         }
 
         /// <summary>

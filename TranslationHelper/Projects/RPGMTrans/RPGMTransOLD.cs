@@ -21,8 +21,8 @@ namespace TranslationHelper.Projects.RPGMTrans
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
             //MessageBox.Show("THFOpen.FileName=" + THFOpen.FileName);
             //MessageBox.Show("dir=" + dir);
-            Properties.Settings.Default.THSelectedDir = dir + string.Empty;
-            //MessageBox.Show("Properties.Settings.Default.THSelectedDir=" + Properties.Settings.Default.THSelectedDir);
+            ProjectData.SelectedDir = dir + string.Empty;
+            //MessageBox.Show("ProjectData.SelectedDir=" + ProjectData.SelectedDir);
 
             //MessageBox.Show("sType=" + sType);
 
@@ -36,7 +36,7 @@ namespace TranslationHelper.Projects.RPGMTrans
             var patchdir = dir;
             StreamReader patchfile = new StreamReader(sPath);
             //MessageBox.Show(patchfile.ReadLine());
-            if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "patch"))) //если есть подпапка patch, тогда это версия патча 3
+            if (patchfile.ReadLine() == "> RPGMAKER TRANS PATCH V3" || Directory.Exists(Path.Combine(ProjectData.SelectedDir, "patch"))) //если есть подпапка patch, тогда это версия патча 3
             {
                 RPGMFunctions.RPGMTransPatchVersion = "3";
                 patchdir = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(sPath), "patch"));

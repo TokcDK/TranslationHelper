@@ -44,7 +44,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 Folder = Path.Combine(parentFolder, "TextP");
                 ProceedTextEHPFolders(Folder);
 
-                Properties.Settings.Default.THSelectedDir = parentFolder;
+                ProjectData.SelectedDir = parentFolder;
 
                 return ProjectData.Main.THFilesList.Items.Count > 0 ? "Wolf RPG txt" : string.Empty;
             }
@@ -184,7 +184,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(table.TableName)));
             }
 
-            Properties.Settings.Default.THSelectedDir = FolderPath;
+            ProjectData.SelectedDir = FolderPath;
             return "WOLF TRANS PATCH";
         }
 
@@ -281,7 +281,7 @@ namespace TranslationHelper.Projects.WolfRPG
         {
             for (int t = 0; t < ProjectData.THFilesElementsDataset.Tables.Count; t++)
             {
-                string FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, ProjectData.THFilesElementsDatasetInfo.Tables[t].Rows[0][0].ToString(), ProjectData.THFilesElementsDataset.Tables[t].TableName);
+                string FilePath = Path.Combine(ProjectData.SelectedDir, ProjectData.THFilesElementsDatasetInfo.Tables[t].Rows[0][0].ToString(), ProjectData.THFilesElementsDataset.Tables[t].TableName);
 
                 WriteWolfRPGMakerTextEHP(FilePath);
                 //for (int r=0;r< THFilesElementsDataset.Tables[t].Rows.Count; r++)
@@ -344,7 +344,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal void WriteWOLFTRANSPATCH()
         {
-            foreach (var file in Directory.EnumerateFiles(Properties.Settings.Default.THSelectedDir, "*.txt", SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles(ProjectData.SelectedDir, "*.txt", SearchOption.AllDirectories))
             {
                 string fileName = Path.GetFileName(file);
                 if (ProjectData.THFilesElementsDataset.Tables[fileName] == null)

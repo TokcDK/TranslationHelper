@@ -164,7 +164,7 @@ namespace TranslationHelper.Functions
         {
             if (tHSelectedGameDir.Length == 0)
             {
-                tHSelectedGameDir = Properties.Settings.Default.THSelectedDir;
+                tHSelectedGameDir = ProjectData.SelectedDir;
             }
 
             //для rpgmaker mv. если была папка data, которая в папке www
@@ -181,8 +181,8 @@ namespace TranslationHelper.Functions
         {
             ProjectData.SPath = sPath;
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-            Properties.Settings.Default.THSelectedDir = dir.FullName;
-            Properties.Settings.Default.THSelectedGameDir = dir.FullName;
+            ProjectData.SelectedDir = dir.FullName;
+            ProjectData.SelectedGameDir = dir.FullName;
 
             ProjectData.Main.frmMainPanel.Invoke((Action)(() => ProjectData.Main.frmMainPanel.Visible = true));
 
@@ -215,7 +215,7 @@ namespace TranslationHelper.Functions
 
         private string TryDetectOpenOldProjects(string sPath)
         {
-            var dir = Properties.Settings.Default.THSelectedDir;
+            var dir = ProjectData.SelectedDir;
 
             if (new KiriKiriOLD().OpenDetect())
             {
@@ -259,13 +259,13 @@ namespace TranslationHelper.Functions
                         return "KiriKiri game";
                     }
                 }
-                else if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", "system.json")))
+                else if (File.Exists(Path.Combine(ProjectData.SelectedDir, "www", "data", "system.json")))
                 {
                     try
                     {
-                        //Properties.Settings.Default.THSelectedDir += "\\www\\data";
+                        //ProjectData.SelectedDir += "\\www\\data";
                         //var MVJsonFIles = new List<string>();
-                        mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data/")));
+                        mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(ProjectData.SelectedDir, "www", "data/")));
                         foreach (FileInfo file in mvdatadir.EnumerateFiles("*.json"))
                         {
                             //MessageBox.Show("file.FullName=" + file.FullName);
@@ -367,8 +367,8 @@ namespace TranslationHelper.Functions
                                 //dGFiles.Rows[i].Cells[0].Value = THRPGMTransPatchFiles[i].Name;
                             }
 
-                            Properties.Settings.Default.THSelectedGameDir = Properties.Settings.Default.THSelectedDir;
-                            Properties.Settings.Default.THSelectedDir = ProjectData.Main.extractedpatchpath.Replace(Path.DirectorySeparatorChar + "patch", string.Empty);
+                            ProjectData.SelectedGameDir = ProjectData.SelectedDir;
+                            ProjectData.SelectedDir = ProjectData.Main.extractedpatchpath.Replace(Path.DirectorySeparatorChar + "patch", string.Empty);
                             //MessageBox.Show(THSelectedSourceType + " loaded!");
                             //ProgressInfo(false, string.Empty);
                             return "RPG Maker game with RPGMTransPatch";
@@ -441,17 +441,17 @@ namespace TranslationHelper.Functions
                 }
             }
 
-            Properties.Settings.Default.THSelectedGameDir = GetCorrectedGameDIr(Properties.Settings.Default.THSelectedGameDir);
+            ProjectData.SelectedGameDir = GetCorrectedGameDIr(ProjectData.SelectedGameDir);
 
             if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch") || RPGMFunctions.THSelectedSourceType.Contains("KiriKiri game"))
             {
-                ProjectData.Main.Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedGameDir);
+                ProjectData.Main.Settings.THConfigINI.WriteINI("Paths", "LastPath", ProjectData.SelectedGameDir);
             }
             else
             {
                 try
                 {
-                    ProjectData.Main.Settings.THConfigINI.WriteINI("Paths", "LastPath", Properties.Settings.Default.THSelectedDir);
+                    ProjectData.Main.Settings.THConfigINI.WriteINI("Paths", "LastPath", ProjectData.SelectedDir);
                 }
                 catch (Exception ex)
                 {

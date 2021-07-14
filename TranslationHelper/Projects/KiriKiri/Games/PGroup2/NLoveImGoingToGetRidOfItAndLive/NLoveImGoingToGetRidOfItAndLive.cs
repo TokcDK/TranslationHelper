@@ -46,9 +46,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         //    ProjectData.CurrentProject.FillTablesLinesDict();
 
         //    //PatchDir
-        //    //var PatchDir = Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, "_patch"));
+        //    //var PatchDir = Directory.CreateDirectory(Path.Combine(ProjectData.ProjectWorkDir, "_patch"));
 
-        //    foreach (var file in Directory.EnumerateFileSystemEntries(Properties.Settings.Default.THProjectWorkDir, "*.ks", SearchOption.AllDirectories))
+        //    foreach (var file in Directory.EnumerateFileSystemEntries(ProjectData.ProjectWorkDir, "*.ks", SearchOption.AllDirectories))
         //    {
         //        if (!ProjectData.THFilesElementsDataset.Tables.Contains(Path.GetFileName(file)))
         //        {

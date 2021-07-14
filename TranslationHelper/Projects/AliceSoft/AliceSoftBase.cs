@@ -26,12 +26,12 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override bool BakCreate()
         {
-            return BackupRestorePaths(Directory.GetFiles(Properties.Settings.Default.THSelectedGameDir, "*.ain"));
+            return BackupRestorePaths(Directory.GetFiles(ProjectData.SelectedGameDir, "*.ain"));
         }
 
         internal override bool BakRestore()
         {
-            return BackupRestorePaths(Directory.GetFiles(Properties.Settings.Default.THSelectedGameDir, "*.ain"));
+            return BackupRestorePaths(Directory.GetFiles(ProjectData.SelectedGameDir, "*.ain"));
         }
 
         internal override string NewlineSymbol => "\\n";

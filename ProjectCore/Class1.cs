@@ -1,23 +1,21 @@
-﻿using System;
+﻿using l10n;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using TranslationHelper.Data;
-using TranslationHelper.Extensions;
-using TranslationHelper.Formats;
-using TranslationHelper.Functions;
+using THCore;
 
 namespace TranslationHelper.Projects
 {
     internal abstract class ProjectBase
     {
-        
+
 
         protected ProjectBase()
         {
-            
+
         }
 
         /// <summary>
@@ -27,9 +25,9 @@ namespace TranslationHelper.Projects
         {
             if (!string.IsNullOrWhiteSpace(ProjectData.SPath))
             {
-                ProjectData.SelectedGameDir = Path.GetDirectoryName(ProjectData.SPath);
-                ProjectData.SelectedDir = Path.GetDirectoryName(ProjectData.SPath);
-                ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), ProjectName());
+                Properties.Settings.Default.THSelectedGameDir = Path.GetDirectoryName(ProjectData.SPath);
+                Properties.Settings.Default.THSelectedDir = Path.GetDirectoryName(ProjectData.SPath);
+                Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), ProjectName());
             }
         }
 
@@ -625,7 +623,7 @@ namespace TranslationHelper.Projects
                 string path;
                 if (subpath.StartsWith(@".\") || subpath.StartsWith(@"..\"))
                 {
-                    path = Path.GetFullPath(Path.Combine(ProjectData.SelectedDir, subpath));
+                    path = Path.GetFullPath(Path.Combine(Properties.Settings.Default.THSelectedDir, subpath));
                 }
                 else
                 {
@@ -752,7 +750,7 @@ namespace TranslationHelper.Projects
         /// </summary>
         internal virtual void AfterTranslationWriteActions()
         {
-            System.Diagnostics.Process.Start("explorer.exe", ProjectData.SelectedDir);
+            System.Diagnostics.Process.Start("explorer.exe", Properties.Settings.Default.THSelectedDir);
         }
 
         /// <summary>

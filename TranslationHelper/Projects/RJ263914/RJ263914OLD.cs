@@ -17,7 +17,7 @@ namespace TranslationHelper.Projects.RJ263914
 
         internal string ProceedRubyRPGGame(string GameDirectory, bool IsWrite = false)
         {
-            Properties.Settings.Default.THSelectedGameDir = GameDirectory;
+            ProjectData.SelectedGameDir = GameDirectory;
             string binDir = Path.Combine(GameDirectory, "data", "bin");
             string[][] folderNames = new string[14][] {
                 new string[2] { "enemes", "enemes" }

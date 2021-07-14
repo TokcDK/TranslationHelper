@@ -178,7 +178,7 @@ namespace TranslationHelper.Main.Functions
 
         internal static string GetDBFileName(bool IsSaveAs = false)
         {
-            string fName = Path.GetFileName(Properties.Settings.Default.THSelectedDir);
+            string fName = Path.GetFileName(ProjectData.SelectedDir);
             if (ProjectData.CurrentProject != null && ProjectData.CurrentProject.GetProjectDBFileName().Length > 0)
             {
                 fName = ProjectData.CurrentProject.GetProjectDBFileName();
@@ -189,7 +189,7 @@ namespace TranslationHelper.Main.Functions
                 {
                     if (fName == "data")
                     {
-                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(Properties.Settings.Default.THSelectedDir))) + "_" + Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.Items[0].ToString());
+                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(ProjectData.SelectedDir))) + "_" + Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.Items[0].ToString());
                     }
                     else
                     {
