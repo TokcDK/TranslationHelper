@@ -10,7 +10,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
 {
     class TranslationBigBlock : TranslationBase
     {
-        public TranslationBigBlock(ProjectData projectData) : base(projectData)
+        public TranslationBigBlock() : base()
         {
         }
 
@@ -32,17 +32,17 @@ namespace TranslationHelper.Functions.OnlineTranslation
             {
                 if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && Method == "a")
                 {
-                    projectData.Main.ProgressInfo(true, "Get all databases");
-                    FunctionsDBFile.MergeAllDBtoOne(projectData);
+                    ProjectData.Main.ProgressInfo(true, "Get all databases");
+                    FunctionsDBFile.MergeAllDBtoOne();
                 }
 
-                projectData.Main.Invoke((Action)(() => projectData.Main.translationInteruptToolStripMenuItem.Visible = true));
+                ProjectData.Main.Invoke((Action)(() => ProjectData.Main.translationInteruptToolStripMenuItem.Visible = true));
 
                 //using (DataSet THTranslationCache = new DataSet())
                 {
                     //Init translation cache
                     //FunctionsTable.TranslationCacheInit(THTranslationCache);
-                    CacheInitWhenNeed(projectData);
+                    CacheInitWhenNeed();
 
                     int maxchars = 1000; //большие значения ломаю ответ сервера, например отсутствует или ломается разделитель при значении 1000, потом надо будет подстроить идеальный максимум
                     int CurrentCharsCount = 0;
@@ -55,20 +55,20 @@ namespace TranslationHelper.Functions.OnlineTranslation
                     int TableMaxIndex;
                     int RowsCountInTable;
                     int CurrentRowIndex;
-                    TableMaxIndex = (Method == "a") ? projectData.THFilesElementsDataset.Tables.Count : TableMaxIndex = TableIndex + 1;
+                    TableMaxIndex = (Method == "a") ? ProjectData.THFilesElementsDataset.Tables.Count : TableMaxIndex = TableIndex + 1;
 
-                    //int tcount = projectData.THFilesElementsDataset.Tables.Count;
+                    //int tcount = ProjectData.THFilesElementsDataset.Tables.Count;
                     //for (int t = 0; t < tcount; t++)
                     for (int t = TableIndex; t < TableMaxIndex; t++)
                     {
-                        var Table = projectData.THFilesElementsDataset.Tables[t];
+                        var Table = ProjectData.THFilesElementsDataset.Tables[t];
 
                         if (FunctionsTable.IsTableRowsCompleted(Table))
                         {
                             continue;
                         }
 
-                        Task.Run(() => projectData.Main.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
+                        Task.Run(() => ProjectData.Main.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
 
                         RowsCountInTable = (Method == "a" || Method == "t") ? Table.Rows.Count : SelectedIndexes.Length;
 
@@ -81,11 +81,11 @@ namespace TranslationHelper.Functions.OnlineTranslation
                                 //Thread.CurrentThread.Abort();
                                 return;
                             }
-                            else if (projectData.Main.InteruptTranslation)
+                            else if (ProjectData.Main.InteruptTranslation)
                             {
-                                projectData.Main.Invoke((Action)(() => projectData.Main.translationInteruptToolStripMenuItem.Visible = false));
-                                CacheUnloadWhenNeed(projectData);
-                                projectData.Main.ProgressInfo(false);
+                                ProjectData.Main.Invoke((Action)(() => ProjectData.Main.translationInteruptToolStripMenuItem.Visible = false));
+                                CacheUnloadWhenNeed();
+                                ProjectData.Main.ProgressInfo(false);
                                 //Thread.CurrentThread.Abort();
                                 return;
                             }
@@ -111,8 +111,8 @@ namespace TranslationHelper.Functions.OnlineTranslation
                             }
 
                             var Row = Table.Rows[CurrentRowIndex];
-                            //projectData.Main.ProgressInfo(true, progressinfo);
-                            //projectData.Main.ProgressInfo(true, T._("translating") + ": " + t + "/" + tcount + " (" + r + "/" + rcount + ")");
+                            //ProjectData.Main.ProgressInfo(true, progressinfo);
+                            //ProjectData.Main.ProgressInfo(true, T._("translating") + ": " + t + "/" + tcount + " (" + r + "/" + rcount + ")");
 
                             InputOriginalLine = Row[OrigColIndex] as string;
                             if (string.IsNullOrWhiteSpace(InputOriginalLine)/* || InputOriginalLine.Length >= maxchars*/ || InputOriginalLine.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
@@ -127,12 +127,12 @@ namespace TranslationHelper.Functions.OnlineTranslation
                             if (Cell == null || string.IsNullOrEmpty(Cell as string))
                             {
                                 //string InputOriginalLineFromCache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
-                                string InputOriginalLineFromCache = projectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(InputOriginalLine);
+                                string InputOriginalLineFromCache = ProjectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(InputOriginalLine);
 
 
                                 if (InputOriginalLineFromCache.Length > 0)
                                 {
-                                    projectData.THFilesElementsDataset.Tables[t].Rows[CurrentRowIndex][OrigColIndex + 1] = InputOriginalLineFromCache;
+                                    ProjectData.THFilesElementsDataset.Tables[t].Rows[CurrentRowIndex][OrigColIndex + 1] = InputOriginalLineFromCache;
                                     continue;
                                 }
                                 else
@@ -152,7 +152,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
 
                                         string Translation = string.Empty;
                                         //cache = FunctionsTable.TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
-                                        cache = projectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(linevalue);//поиск подстроки в кеше
+                                        cache = ProjectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(linevalue);//поиск подстроки в кеше
                                         if (cache.Length > 0)
                                         {
                                             Translation = cache;//если нашло в кеше, присвоить как перевод
@@ -167,11 +167,11 @@ namespace TranslationHelper.Functions.OnlineTranslation
                                                 }
                                                 else
                                                 {
-                                                    extractedvalue = projectData.Main.THExtractTextForTranslation(linevalue);//извлечение подстроки
+                                                    extractedvalue = ProjectData.Main.THExtractTextForTranslation(linevalue);//извлечение подстроки
 
                                                     // только если извлеченное значение отличается от оригинальной строки
                                                     //cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
-                                                    cache = extractedvalue == linevalue ? string.Empty : projectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue);//поиск извлеченной подстроки в кеше
+                                                    cache = extractedvalue == linevalue ? string.Empty : ProjectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue);//поиск извлеченной подстроки в кеше
                                                     if (cache.Length > 0)
                                                     {
                                                         Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
@@ -219,7 +219,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
                     }
 
                     //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
-                    projectData.OnlineTranslationCache.Write();
+                    ProjectData.OnlineTranslationCache.Write();
                 }
             }
             catch (Exception ex)
@@ -227,32 +227,32 @@ namespace TranslationHelper.Functions.OnlineTranslation
                 System.Windows.Forms.MessageBox.Show(ex.ToString());
             }
 
-            CacheUnloadWhenNeed(projectData);
+            CacheUnloadWhenNeed();
 
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
         }
 
-        private static void CacheInitWhenNeed(ProjectData projectData)
+        private static void CacheInitWhenNeed()
         {
             //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
             //    return;
 
             Properties.Settings.Default.OnlineTranslationCacheUseCount++;
-            if (projectData.OnlineTranslationCache == null)
+            if (ProjectData.OnlineTranslationCache == null)
             {
-                projectData.OnlineTranslationCache = new FunctionsOnlineCache(projectData);
-                projectData.OnlineTranslationCache.Read();
+                ProjectData.OnlineTranslationCache = new FunctionsOnlineCache();
+                ProjectData.OnlineTranslationCache.Read();
             }
         }
 
-        private static void CacheUnloadWhenNeed(ProjectData projectData)
+        private static void CacheUnloadWhenNeed()
         {
             Properties.Settings.Default.OnlineTranslationCacheUseCount--;
             if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)
             {
-                if (projectData.OnlineTranslationCache != null)
+                if (ProjectData.OnlineTranslationCache != null)
                 {
-                    projectData.OnlineTranslationCache = null;
+                    ProjectData.OnlineTranslationCache = null;
                 }
             }
         }
@@ -263,7 +263,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
             {
                 return Translation;
                 //return Properties.Settings.Default.ApplyFixesOnTranslation ?
-                //    FunctionsStringFixes.ApplyHardFixes(Extracted, Translation.THFixCells(projectData), projectData) : Translation;
+                //    FunctionsStringFixes.ApplyHardFixes(Extracted, Translation.THFixCells()) : Translation;
             }
             //переделано через удаление и вставку строки, чтобы точно вставлялась нужная
             //строка в нужное место и с рассчетом на будущее, когда возможно строки будут выдираться из исходной
@@ -280,14 +280,14 @@ namespace TranslationHelper.Functions.OnlineTranslation
                 //    .Remove(IndexOfTheString, Extracted.Length)
                 //    .Insert(IndexOfTheString,
                 //    Properties.Settings.Default.ApplyFixesOnTranslation ?
-                //    FunctionsStringFixes.ApplyHardFixes(Extracted, Translation.THFixCells(projectData), projectData) : Translation
+                //    FunctionsStringFixes.ApplyHardFixes(Extracted, Translation.THFixCells()) : Translation
                 //    );
             }
             else
             {
                 return Translation;
                 //return Properties.Settings.Default.ApplyFixesOnTranslation ?
-                //    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells(projectData), projectData) : Translation;
+                //    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells()) : Translation;
             }
         }
 
@@ -333,7 +333,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
 
 
             //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
-            projectData.OnlineTranslationCache.Write();//промежуточная запись кеша
+            ProjectData.OnlineTranslationCache.Write();//промежуточная запись кеша
 
             InputLines.Clear();
             InputLinesInfo.Clear();
@@ -404,7 +404,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
                             {
                                 ResultValue.Append(
                                 Properties.Settings.Default.ApplyFixesOnTranslation ?
-                                    FunctionsStringFixes.ApplyHardFixes(TranslatedLines[TranslatedLinesIndex], InfoRow.GetCachedTranslation.THFixCells(projectData), projectData)
+                                    FunctionsStringFixes.ApplyHardFixes(TranslatedLines[TranslatedLinesIndex], InfoRow.GetCachedTranslation.THFixCells())
                                     : InfoRow.GetCachedTranslation
                                 );
                             }
@@ -479,7 +479,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
             if (ResultValue.Length > 0 && PreviousTableIndex > -1 && PreviousRowIndex > -1)
             {
                 string s; //иногда значения без перевода и равны оригиналу, но отдельным переводом выбранной ячейки получается нормально
-                var Row = projectData.THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex];
+                var Row = ProjectData.THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex];
                 var Cell = Row[0];
                 if (Equals(Cell, ResultValue))
                 {
@@ -498,14 +498,14 @@ namespace TranslationHelper.Functions.OnlineTranslation
                         //apply fixes for translation
                         if (Properties.Settings.Default.ApplyFixesOnTranslation)
                         {
-                            s = s.THFixCells(projectData);//cell fixes
-                            s = FunctionsStringFixes.ApplyHardFixes(Row[0] as string, s, projectData);//hardcoded fixes
+                            s = s.THFixCells();//cell fixes
+                            s = FunctionsStringFixes.ApplyHardFixes(Row[0] as string, s);//hardcoded fixes
                         }
 
                         Row[1] = s;
 
                         //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
-                        FunctionsOnlineCache.AddToTranslationCacheIfValid(projectData, Cell as string, s);
+                        FunctionsOnlineCache.AddToTranslationCacheIfValid(Cell as string, s);
 
                         //закоментировано для повышения производительности
                         //THAutoSetSameTranslationForSimular(PreviousTableIndex, PreviousRowIndex, 0);
@@ -522,7 +522,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
         {
             for (int i = 0; i < originalLines.Length; i++)
             {
-                var s = projectData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
+                var s = ProjectData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
                 if (!string.IsNullOrEmpty(s))
                 {
                     originalLines[i] = s;
@@ -534,7 +534,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
         {
             for (int i = 0; i < translatedLines.Length; i++)
             {
-                var s = projectData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
+                var s = ProjectData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
                 if (!string.IsNullOrEmpty(s) && s != translatedLines[i])
                 {
                     translatedLines[i] = s;

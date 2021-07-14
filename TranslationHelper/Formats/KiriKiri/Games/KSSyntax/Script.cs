@@ -4,7 +4,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
     class Script : KSSyntaxBase
     {
-        public Script(ProjectData projectData) : base(projectData)
+        public Script() : base()
         {
         }
 

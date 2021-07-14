@@ -4,7 +4,7 @@ namespace TranslationHelper.Formats.RPGMMV
 {
     abstract class RPGMMVBase : FormatBase
     {
-        public RPGMMVBase(ProjectData projectData) : base(projectData)
+        public RPGMMVBase() : base()
         {
         }
     }

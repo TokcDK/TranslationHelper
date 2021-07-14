@@ -5,7 +5,7 @@ namespace TranslationHelper.INISettings
 {
     class SDBAutosaveTimeout : Tools
     {
-        public SDBAutosaveTimeout(ProjectData projectData) : base(projectData)
+        public SDBAutosaveTimeout() : base()
         {
         }
 
@@ -14,7 +14,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultInt + string.Empty;
         internal override int DefaultInt => 300;
 
-        object SObject { get => projectData.Main.Settings.SettingsAutosaveTimeoutValueTextBox; }
+        object SObject { get => ProjectData.Main.Settings.SettingsAutosaveTimeoutValueTextBox; }
 
         static int SVar
         {
@@ -30,7 +30,7 @@ namespace TranslationHelper.INISettings
             }
             else
             {
-                SVar = int.TryParse(projectData.BufferValueString, out int result) ? result : DefaultInt;
+                SVar = int.TryParse(ProjectData.BufferValueString, out int result) ? result : DefaultInt;
                 (SObject as System.Windows.Forms.TextBox).Text = SVar + string.Empty;
             }
         }

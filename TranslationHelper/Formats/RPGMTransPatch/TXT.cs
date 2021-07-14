@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.RPGMTrans
 {
     class TXT : RPGMTransPatchBase
     {
-        public TXT(ProjectData projectData) : base(projectData)
+        public TXT() : base()
         {
         }
 
@@ -16,8 +16,8 @@ namespace TranslationHelper.Formats.RPGMTrans
 
         internal override bool ExtIdentifier()
         {
-            var patchfile = Path.GetFullPath(Path.GetDirectoryName(projectData.SPath) + @"\..\RPGMKTRANSPATCH");
-            return File.Exists(patchfile) && Path.GetFileName(Path.GetDirectoryName(projectData.SPath)) == "patch";
+            var patchfile = Path.GetFullPath(Path.GetDirectoryName(ProjectData.SPath) + @"\..\RPGMKTRANSPATCH");
+            return File.Exists(patchfile) && Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath)) == "patch";
         }
 
         internal override string Name()

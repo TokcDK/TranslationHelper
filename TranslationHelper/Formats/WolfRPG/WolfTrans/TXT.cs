@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 {
     class TXT : WolfRPGBase
     {
-        public TXT(ProjectData projectData) : base(projectData)
+        public TXT() : base()
         {
         }
 
@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 
         internal override bool Save()
         {
-            projectData.SaveFileMode = true;
+            ProjectData.SaveFileMode = true;
             return ParseStringFile();
         }
 
@@ -35,9 +35,9 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
         {
             try
             {
-                if (ParseData.Ret && projectData.SaveFileMode && ParseData.ResultForWrite.Length > 0)
+                if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0)
                 {
-                    File.WriteAllText(filePath.Length > 0 ? filePath : projectData.FilePath, ParseData.ResultForWrite.ToString().Replace(Properties.Settings.Default.NewLine, "\n"), FunctionsFileFolder.GetEncoding(projectData.FilePath));
+                    File.WriteAllText(filePath.Length > 0 ? filePath : ProjectData.FilePath, ParseData.ResultForWrite.ToString().Replace(Properties.Settings.Default.NewLine, "\n"), FunctionsFileFolder.GetEncoding(ProjectData.FilePath));
                     return true;
                 }
             }

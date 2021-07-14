@@ -42,7 +42,7 @@ namespace TranslationHelper.OnlineTranslators
         private int _translationCount;
         private int _resetAfter = RandomNumbers.Next(75, 125);
 
-        public GoogleNew(ProjectData projectData) : base(projectData)
+        public GoogleNew() : base()
         {
             Initialize();
         }

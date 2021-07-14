@@ -7,7 +7,7 @@ namespace TranslationHelper.Formats.Liar_soft
 {
     class GSCTXT : FormatBase
     {
-        public GSCTXT(ProjectData projectData) : base(projectData)
+        public GSCTXT() : base()
         {
         }
 
@@ -35,7 +35,7 @@ namespace TranslationHelper.Formats.Liar_soft
             var str = message.ToString().Remove(0, 1);//remove 1st # symbol
             if (IsValidString(str))
             {
-                if (projectData.OpenFileMode)
+                if (ProjectData.OpenFileMode)
                 {
                     AddRowData(str, "", true, false);
                 }
@@ -45,7 +45,7 @@ namespace TranslationHelper.Formats.Liar_soft
                 }
             }
 
-            if (projectData.SaveFileMode)
+            if (ProjectData.SaveFileMode)
             {
                 ParseData.ResultForWrite.AppendLine("#"+str);
                 ParseData.ResultForWrite.AppendLine(">");
@@ -55,24 +55,24 @@ namespace TranslationHelper.Formats.Liar_soft
         }
         protected override bool ParseStringFilePostOpen()
         {
-            if (projectData.OpenFileMode)
+            if (ProjectData.OpenFileMode)
             {
                 return CheckTablesContent(ParseData.tablename);
             }
             else
             {
                 var ret = WriteFileData();
-                var gscPath = projectData.FilePath.Remove(projectData.FilePath.Length - 4, 4);
+                var gscPath = ProjectData.FilePath.Remove(ProjectData.FilePath.Length - 4, 4);
                 if (ret)
                 {
-                    var gscFile = TransFile.FromFile(projectData.FilePath).ToGSC(gscPath);
+                    var gscFile = TransFile.FromFile(ProjectData.FilePath).ToGSC(gscPath);
                     gscFile.Save(gscPath);
                 }
                 else
                 {
                     File.Delete(gscPath);
                 }
-                File.Delete(projectData.FilePath);
+                File.Delete(ProjectData.FilePath);
 
                 return ret;
             }

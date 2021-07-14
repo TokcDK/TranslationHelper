@@ -15,14 +15,14 @@ namespace TranslationHelper.Projects.RPGMMV
     class RPGMMVGame : ProjectBase
     {
         readonly List<JSBase> ListOfJS;
-        public RPGMMVGame(ProjectData projectData) : base(projectData)
+        public RPGMMVGame() : base()
         {
-            ListOfJS = JSBase.GetListOfJS(projectData);
+            ListOfJS = JSBase.GetListOfJS();
         }
 
         internal override bool Check()
         {
-            if (Path.GetExtension(projectData.SPath) == ".exe")
+            if (Path.GetExtension(ProjectData.SPath) == ".exe")
             {
                 if (File.Exists(Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", "system.json")))
                 {
@@ -64,8 +64,8 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             if (tind != -1 && rind != -1)
             {
-                string cell = projectData.THFilesElementsDatasetInfo.Tables[tind].Rows[rind][0] + string.Empty;
-                if (cell.Contains("Code=655") || cell.Contains("Code=355") /*|| projectData.THFilesElementsDataset.Tables[tind].TableName.ToUpperInvariant().EndsWith(".JS")*/)
+                string cell = ProjectData.THFilesElementsDatasetInfo.Tables[tind].Rows[rind][0] + string.Empty;
+                if (cell.Contains("Code=655") || cell.Contains("Code=355") /*|| ProjectData.THFilesElementsDataset.Tables[tind].TableName.ToUpperInvariant().EndsWith(".JS")*/)
                 {
                     return true;
                 }
@@ -91,16 +91,16 @@ namespace TranslationHelper.Projects.RPGMMV
             try
             {
                 //gamefont.css to be possible to change font
-                projectData.Main.ProgressInfo(true, ParseFileMessage + "gamefont.css");
-                projectData.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css");
+                ProjectData.Main.ProgressInfo(true, ParseFileMessage + "gamefont.css");
+                ProjectData.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "fonts", "gamefont.css");
 
                 try
                 {
-                    if (Write && new GAMEFONTCSS(projectData).Save())
+                    if (Write && new GAMEFONTCSS().Save())
                     {
                         IsAnyFileCompleted = true;
                     }
-                    else if (new GAMEFONTCSS(projectData).Open())
+                    else if (new GAMEFONTCSS().Open())
                     {
                         IsAnyFileCompleted = true;
                     }
@@ -113,16 +113,16 @@ namespace TranslationHelper.Projects.RPGMMV
                 //Proceeed js-files
                 foreach (var JS in ListOfJS)
                 {
-                    projectData.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
+                    ProjectData.FilePath = Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
 
-                    if (!File.Exists(projectData.FilePath))
+                    if (!File.Exists(ProjectData.FilePath))
                     {
                         continue;
                     }
 
                     try
                     {
-                        projectData.Main.ProgressInfo(true, ParseFileMessage + JS.JSName);
+                        ProjectData.Main.ProgressInfo(true, ParseFileMessage + JS.JSName);
 
                         HardcodedJS.Add(JS.JSName);//add js to exclude from parsing of other js
 
@@ -159,21 +159,21 @@ namespace TranslationHelper.Projects.RPGMMV
                     if (HardcodedJS.Contains(JSName) || SkipJSList.Contains(JSName))
                         continue;
 
-                    projectData.Main.ProgressInfo(true, ParseFileMessage + JSName);
-                    projectData.FilePath = JS;
+                    ProjectData.Main.ProgressInfo(true, ParseFileMessage + JSName);
+                    ProjectData.FilePath = JS;
 
-                    if (!File.Exists(projectData.FilePath))
+                    if (!File.Exists(ProjectData.FilePath))
                     {
                         continue;
                     }
 
                     try
                     {
-                        if (Write && new ZZZOtherJS(projectData).Save())
+                        if (Write && new ZZZOtherJS().Save())
                         {
                             IsAnyFileCompleted = true;
                         }
-                        else if (new ZZZOtherJS(projectData).Open())
+                        else if (new ZZZOtherJS().Open())
                         {
                             IsAnyFileCompleted = true;
                         }
@@ -205,7 +205,7 @@ namespace TranslationHelper.Projects.RPGMMV
             {
             }
 
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
             return IsAnyFileCompleted; ;
         }
 
@@ -244,16 +244,16 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 string Jsonname = Path.GetFileNameWithoutExtension(FilePath); // get json file name
 
-                projectData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
+                ProjectData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
 
                 //string jsondata = File.ReadAllText(FilePath); // get json data
 
                 bool ret = true;
 
-                projectData.FilePath = FilePath;
+                ProjectData.FilePath = FilePath;
                 //ret = ReadJson(Jsonname, sPath);
 
-                ret = Write ? new JSON(projectData).Save() : new JSON(projectData).Open();
+                ret = Write ? new JSON().Save() : new JSON().Open();
 
                 return ret;
             }
@@ -416,17 +416,17 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             if (translation.StartsWith(@"\n<>"))
             {
-                if (projectData.OnlineTranslationCache == null)
+                if (ProjectData.OnlineTranslationCache == null)
                 {
-                    projectData.OnlineTranslationCache = new FunctionsOnlineCache(projectData);
-                    projectData.OnlineTranslationCache.Read();
+                    ProjectData.OnlineTranslationCache = new FunctionsOnlineCache();
+                    ProjectData.OnlineTranslationCache.Read();
                 }
 
                 FillTablesLinesDict();
 
                 var name = Regex.Replace(original, @"^\\n<(.+)>[\s\S]*$", "$1");
 
-                var translatedname = projectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(name);
+                var translatedname = ProjectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(name);
 
                 if (translatedname.Length > 0)
                 {
@@ -434,9 +434,9 @@ namespace TranslationHelper.Projects.RPGMMV
                 }
                 else
                 {
-                    if (projectData.TablesLinesDict.ContainsKey(name))
+                    if (ProjectData.TablesLinesDict.ContainsKey(name))
                     {
-                        return translation.Insert(3, projectData.TablesLinesDict[name]);
+                        return translation.Insert(3, ProjectData.TablesLinesDict[name]);
                     }
                     return translation.Insert(3, name);
                 }
@@ -466,19 +466,19 @@ namespace TranslationHelper.Projects.RPGMMV
             var SkipJSMenuName = T._("Skip JS");
             var SkipJSMenu = new System.Windows.Forms.ToolStripMenuItem
             {
-                Text = "[" + projectData.CurrentProject.Name() + "]" + SkipJSMenuName
+                Text = "[" + ProjectData.CurrentProject.Name() + "]" + SkipJSMenuName
             };
             category.DropDownItems.Add(SkipJSMenu);
             SkipJSMenu.Click += RPGMMVGameSkipJSMenu_Click;
 
             var SkipJSFileOpen = new System.Windows.Forms.ToolStripMenuItem
             {
-                Text = "[" + projectData.CurrentProject.Name() + "]" + SkipJSMenuName + "-->" + T._("Open")
+                Text = "[" + ProjectData.CurrentProject.Name() + "]" + SkipJSMenuName + "-->" + T._("Open")
             };
             category.DropDownItems.Add(SkipJSFileOpen);
             SkipJSFileOpen.Click += RPGMMVGameSkipJSFileOpen_Click;
 
-            projectData.Main.Invoke((Action)(() => projectData.Main.CMSFilesList.Items.Add(category)));
+            ProjectData.Main.Invoke((Action)(() => ProjectData.Main.CMSFilesList.Items.Add(category)));
         }
 
         /// <summary>
@@ -499,7 +499,7 @@ namespace TranslationHelper.Projects.RPGMMV
         private void RPGMMVGameSkipJSMenu_Click(object sender, System.EventArgs e)
         {
             //read and check the name
-            var name = projectData.Main.GetFilesListSelectedName();
+            var name = ProjectData.Main.GetFilesListSelectedName();
             if (string.IsNullOrWhiteSpace(name) || !name.ToUpperInvariant().EndsWith(".JS"))
             {
                 return;

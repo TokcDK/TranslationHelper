@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.Raijin7
 {
     abstract class Rajiin7Base : FormatBase
     {
-        protected Rajiin7Base(ProjectData projectData) : base(projectData)
+        protected Rajiin7Base() : base()
         {
         }
 
@@ -30,7 +30,7 @@ namespace TranslationHelper.Formats.Raijin7
             foreach (var num in numbers)
             {
                 var trans="";
-                if (projectData.OpenFileMode)
+                if (ProjectData.OpenFileMode)
                 {
                     AddRowData(Values[num], "", true);
                 }

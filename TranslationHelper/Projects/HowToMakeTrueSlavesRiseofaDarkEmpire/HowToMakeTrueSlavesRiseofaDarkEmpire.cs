@@ -5,7 +5,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 {
     class HowToMakeTrueSlavesRiseofaDarkEmpire : ProjectBase
     {
-        public HowToMakeTrueSlavesRiseofaDarkEmpire(ProjectData projectData) : base(projectData)
+        public HowToMakeTrueSlavesRiseofaDarkEmpire() : base()
         {
         }
 
@@ -21,11 +21,11 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         internal override bool Check()
         {
-            return Path.GetExtension(projectData.SPath) == ".exe"
+            return Path.GetExtension(ProjectData.SPath) == ".exe"
                 &&
-                Path.GetFileNameWithoutExtension(projectData.SPath) == "正しい性奴隷の使い方"
+                Path.GetFileNameWithoutExtension(ProjectData.SPath) == "正しい性奴隷の使い方"
                 &&
-                Directory.Exists(Path.Combine(Path.GetDirectoryName(projectData.SPath), "data", "Script"));
+                Directory.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "data", "Script"));
         }
 
         internal override string Filters()
@@ -41,7 +41,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
         private bool OpenFiles()
         {
             OpenFilesSerial();
-            return projectData.THFilesElementsDataset.Tables.Count > 0;
+            return ProjectData.THFilesElementsDataset.Tables.Count > 0;
         }
 
         /// <summary>
@@ -52,19 +52,19 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
         {
             var ret = false;
 
-            projectData.Main.ProgressInfo(true, Path.GetFileName(projectData.SPath));
-            projectData.FilePath = projectData.SPath;
-            if (projectData.OpenFileMode ? new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE(projectData).Open() : new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE(projectData).Save())
+            ProjectData.Main.ProgressInfo(true, Path.GetFileName(ProjectData.SPath));
+            ProjectData.FilePath = ProjectData.SPath;
+            if (ProjectData.OpenFileMode ? new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE().Open() : new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE().Save())
             {
                 ret = true;
             }
 
 
-            var openPath = Path.Combine(Path.GetDirectoryName(projectData.SPath), "data");
+            var openPath = Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "data");
 
             if (!Directory.Exists(openPath + ".skip") && !File.Exists(openPath + ".skip"))
             {
-                var txtFormat = new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT(projectData);
+                var txtFormat = new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT();
                 if (OpenSaveFilesBase(new DirectoryInfo(openPath), txtFormat, "*.txt"))
                 {
                     ret = true;
@@ -74,8 +74,8 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
             //old
             //foreach (string txt in Directory.EnumerateFiles(openPath, "*.txt", SearchOption.AllDirectories))
             //{
-            //    projectData.FilePath = txt;
-            //    projectData.Main.ProgressInfo(true, Path.GetFileName(txt));
+            //    ProjectData.FilePath = txt;
+            //    ProjectData.Main.ProgressInfo(true, Path.GetFileName(txt));
 
             //    if (IsOpen)
             //    {
@@ -87,7 +87,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
             //    }
             //}
 
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
             return ret;
         }
 

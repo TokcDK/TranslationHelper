@@ -8,7 +8,7 @@ namespace TranslationHelper.Projects
 {
     class Raijin7Game : ProjectBase
     {
-        public Raijin7Game(ProjectData projectData) : base(projectData)
+        public Raijin7Game() : base()
         {
             HideVarsBase = new Dictionary<string, string>
             {
@@ -24,8 +24,8 @@ namespace TranslationHelper.Projects
 
         internal override bool Check()
         {
-            string dirPath = Path.GetDirectoryName(projectData.SPath);
-            return Path.GetExtension(projectData.SPath) == ".exe"
+            string dirPath = Path.GetDirectoryName(ProjectData.SPath);
+            return Path.GetExtension(ProjectData.SPath) == ".exe"
                 && Directory.Exists(Path.Combine(dirPath, "eve"))
                 && Directory.Exists(Path.Combine(dirPath, "csv"))
                 ;
@@ -53,12 +53,12 @@ namespace TranslationHelper.Projects
 
         bool OpenSave()
         {
-            var dirPath = Path.GetDirectoryName(projectData.SPath);
+            var dirPath = Path.GetDirectoryName(ProjectData.SPath);
             var ret = false;
 
-            if (OpenSaveFilesBase(Path.Combine(dirPath, "eve"), new TXT(projectData), "*.txt"))
+            if (OpenSaveFilesBase(Path.Combine(dirPath, "eve"), new TXT(), "*.txt"))
                 ret = true;
-            if (OpenSaveFilesBase(Path.Combine(dirPath, "csv"), new CSV(projectData), "*.csv"))
+            if (OpenSaveFilesBase(Path.Combine(dirPath, "csv"), new CSV(), "*.csv"))
                 ret = true;
 
             return ret;
@@ -67,8 +67,8 @@ namespace TranslationHelper.Projects
         internal override bool BakCreate()
         {
             return BackupRestorePaths(new[] { 
-                Path.Combine(Path.GetDirectoryName(projectData.SPath), "eve"),
-                Path.Combine(Path.GetDirectoryName(projectData.SPath), "csv")
+                Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "eve"),
+                Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "csv")
             });
         }
 
@@ -79,8 +79,8 @@ namespace TranslationHelper.Projects
         internal override bool BakRestore()
         {
             return BackupRestorePaths(new[] {
-                Path.Combine(Path.GetDirectoryName(projectData.SPath), "eve"),
-                Path.Combine(Path.GetDirectoryName(projectData.SPath), "csv")
+                Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "eve"),
+                Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "csv")
             }
             ,false);
         }

@@ -12,16 +12,14 @@ using TranslationHelper.Main.Functions;
 namespace TranslationHelper.Formats
 {
     abstract class FormatBase
-    {
-        protected ProjectData projectData;
+    {      
 
         protected Dictionary<string, string> TablesLinesDict;
 
-        protected FormatBase(ProjectData projectData)
+        protected FormatBase()
         {
-            this.projectData = projectData;
-            TablesLinesDict = projectData.TablesLinesDict;
-            hashes = projectData.hashes;
+            TablesLinesDict = ProjectData.TablesLinesDict;
+            hashes = ProjectData.hashes;
         }
 
         internal virtual bool Check()
@@ -64,7 +62,7 @@ namespace TranslationHelper.Formats
         protected bool IsValidString(string inputString)
         {
             //preclean string
-            inputString = projectData.CurrentProject.CleanStringForCheck(inputString);
+            inputString = ProjectData.CurrentProject.CleanStringForCheck(inputString);
 
             return !string.IsNullOrWhiteSpace(inputString) && !inputString.ForJPLangHaveMostOfRomajiOtherChars();
         }
@@ -93,7 +91,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual void ParseStringFileOpen()
         {
-            using (ParseData.reader = new StreamReader(projectData.FilePath, ParseStringFileEncoding()))
+            using (ParseData.reader = new StreamReader(ProjectData.FilePath, ParseStringFileEncoding()))
             {
                 ParseStringFileLines();
             }
@@ -105,7 +103,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual Encoding ParseStringFileEncoding()
         {
-            return FunctionsFileFolder.GetEncoding(projectData.FilePath) ?? DefaultEncoding();
+            return FunctionsFileFolder.GetEncoding(ProjectData.FilePath) ?? DefaultEncoding();
         }
 
         /// <summary>
@@ -130,14 +128,14 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual void ParseStringFilePreOpen()
         {
-            ParseData = new ParseFileData(projectData);
+            ParseData = new ParseFileData();
 
-            if (projectData.OpenFileMode)
+            if (ProjectData.OpenFileMode)
             {
                 AddTables(TableName());
             }
 
-            if (projectData.SaveFileMode)
+            if (ProjectData.SaveFileMode)
             {
                 SplitTableCellValuesAndTheirLinesToDictionary(TableName(), false, false);
             }
@@ -159,7 +157,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual bool ParseStringFilePostOpen()
         {
-            if (projectData.OpenFileMode)
+            if (ProjectData.OpenFileMode)
             {
                 return CheckTablesContent(ParseData.tablename);
             }
@@ -216,7 +214,7 @@ namespace TranslationHelper.Formats
         /// <param name="LastEmptyLine">last line must be empty</param>
         protected virtual void SaveModeAddLine(string newline = "\r\n", bool LastEmptyLine = false)
         {
-            if (projectData.SaveFileMode)
+            if (ProjectData.SaveFileMode)
             {
                 if (LastEmptyLine)
                 {
@@ -249,10 +247,10 @@ namespace TranslationHelper.Formats
         protected virtual void AddTranslation(string original = null)
         {
             original = original ?? ParseData.line;
-            if (projectData.TablesLinesDict.ContainsKey(original))
+            if (ProjectData.TablesLinesDict.ContainsKey(original))
             {
                 ParseData.Ret = true;
-                ParseData.line = TranslationMod(projectData.TablesLinesDict[original]);
+                ParseData.line = TranslationMod(ProjectData.TablesLinesDict[original]);
             }
         }
 
@@ -266,10 +264,10 @@ namespace TranslationHelper.Formats
         protected virtual void AddTranslation(ref string translation, string original = null)
         {
             original = original ?? ParseData.line;
-            if (projectData.TablesLinesDict.ContainsKey(original))
+            if (ProjectData.TablesLinesDict.ContainsKey(original))
             {
                 ParseData.Ret = true;
-                translation = TranslationMod(projectData.TablesLinesDict[original]);
+                translation = TranslationMod(ProjectData.TablesLinesDict[original]);
             }
         }
 
@@ -356,7 +354,7 @@ namespace TranslationHelper.Formats
                 if (mc.Count > 0)
                 {
                     var IsSet = false;
-                    if (projectData.OpenFileMode)
+                    if (ProjectData.OpenFileMode)
                     {
                         foreach (Match m in mc)
                         {
@@ -431,7 +429,7 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                if (ParseData.Ret && projectData.SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(projectData.FilePath))
+                if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(ProjectData.FilePath))
                 {
                     File.WriteAllText(filePath.Length > 0 ? filePath : GetFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
                     return true;
@@ -451,7 +449,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual string GetFilePath()
         {
-            return projectData.FilePath;
+            return ProjectData.FilePath;
         }
 
         internal class ParseFileData
@@ -459,7 +457,7 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// Project work data
             /// </summary>
-            protected readonly ProjectData projectData;
+            protected 
             /// <summary>
             /// tablename/filename
             /// </summary>
@@ -494,11 +492,11 @@ namespace TranslationHelper.Formats
             /// </summary>
             internal string[] LinesArray;
 
-            public ParseFileData(ProjectData projectData)
+            public ParseFileData()
             {
-                this.projectData = projectData;
-                tablename = Path.GetFileName(projectData.FilePath);
-                if (projectData.SaveFileMode)
+                
+                tablename = Path.GetFileName(ProjectData.FilePath);
+                if (ProjectData.SaveFileMode)
                 {
                     ResultForWrite = new StringBuilder();
                 }
@@ -507,31 +505,31 @@ namespace TranslationHelper.Formats
 
         protected void AddTables()
         {
-            if (!string.IsNullOrEmpty(projectData.FilePath))
+            if (!string.IsNullOrEmpty(ProjectData.FilePath))
             {
-                AddTables(Path.GetFileName(projectData.FilePath));
+                AddTables(Path.GetFileName(ProjectData.FilePath));
             }
         }
         protected void AddTables(string tablename, string[] extraColumns = null)
         {
-            if (!projectData.THFilesElementsDataset.Tables.Contains(tablename))
+            if (!ProjectData.THFilesElementsDataset.Tables.Contains(tablename))
             {
-                projectData.THFilesElementsDataset.Tables.Add(tablename);
-                projectData.THFilesElementsDataset.Tables[tablename].Columns.Add("Original");
-                projectData.THFilesElementsDataset.Tables[tablename].Columns.Add("Translation");
+                ProjectData.THFilesElementsDataset.Tables.Add(tablename);
+                ProjectData.THFilesElementsDataset.Tables[tablename].Columns.Add("Original");
+                ProjectData.THFilesElementsDataset.Tables[tablename].Columns.Add("Translation");
 
                 if (extraColumns != null && extraColumns.Length > 0)
                 {
                     foreach (var columnName in extraColumns)
                     {
-                        projectData.THFilesElementsDataset.Tables[tablename].Columns.Add(columnName);
+                        ProjectData.THFilesElementsDataset.Tables[tablename].Columns.Add(columnName);
                     }
                 }
             }
-            if (!projectData.THFilesElementsDatasetInfo.Tables.Contains(tablename))
+            if (!ProjectData.THFilesElementsDatasetInfo.Tables.Contains(tablename))
             {
-                projectData.THFilesElementsDatasetInfo.Tables.Add(tablename);
-                projectData.THFilesElementsDatasetInfo.Tables[tablename].Columns.Add("Info");
+                ProjectData.THFilesElementsDatasetInfo.Tables.Add(tablename);
+                ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Columns.Add("Info");
             }
         }
 
@@ -545,7 +543,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected bool AddRowData(string RowData, string RowInfo = "", bool CheckAddHashes = false, bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(projectData.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput);
+            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput);
         }
         /// <summary>
         /// Add string to table with options
@@ -556,7 +554,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected bool AddRowData(string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(projectData.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput, false);
+            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput, false);
         }
         /// <summary>
         /// Add string to table with options
@@ -599,16 +597,16 @@ namespace TranslationHelper.Formats
             if (AddToDictionary)
             {
                 throw new NotImplementedException("Dictionary not implemented");
-                //if (!projectData.THFilesElementsDictionary.ContainsKey(original))
+                //if (!ProjectData.THFilesElementsDictionary.ContainsKey(original))
                 //{
-                //    projectData.THFilesElementsDictionary.Add(original, RowData.Length == 2 ? RowData[1] : string.Empty);
-                //    projectData.THFilesElementsDictionaryInfo.Add(original, RowInfo);
+                //    ProjectData.THFilesElementsDictionary.Add(original, RowData.Length == 2 ? RowData[1] : string.Empty);
+                //    ProjectData.THFilesElementsDictionaryInfo.Add(original, RowInfo);
                 //}
             }
             else
             {
-                projectData.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
-                projectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
+                ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
+                ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
 
                 if (Properties.Settings.Default.DontLoadDuplicates && CheckAddHashes && hashes != null)
                 {
@@ -617,22 +615,22 @@ namespace TranslationHelper.Formats
                 else if (!Properties.Settings.Default.DontLoadDuplicates)
                 {
                     //add coordinates
-                    if (!projectData.OriginalsTableRowCoordinats.ContainsKey(original))
+                    if (!ProjectData.OriginalsTableRowCoordinats.ContainsKey(original))
                     {
-                        projectData.OriginalsTableRowCoordinats.Add(original, new Dictionary<string, List<int>>());
-                        projectData.OriginalsTableRowCoordinats[original].Add(tablename, new List<int>());
-                        projectData.OriginalsTableRowCoordinats[original][tablename].Add(projectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
+                        ProjectData.OriginalsTableRowCoordinats.Add(original, new Dictionary<string, List<int>>());
+                        ProjectData.OriginalsTableRowCoordinats[original].Add(tablename, new List<int>());
+                        ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
                     }
                     else
                     {
-                        if (!projectData.OriginalsTableRowCoordinats[original].ContainsKey(tablename))
+                        if (!ProjectData.OriginalsTableRowCoordinats[original].ContainsKey(tablename))
                         {
-                            projectData.OriginalsTableRowCoordinats[original].Add(tablename, new List<int>());
-                            projectData.OriginalsTableRowCoordinats[original][tablename].Add(projectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
+                            ProjectData.OriginalsTableRowCoordinats[original].Add(tablename, new List<int>());
+                            ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
                         }
                         else
                         {
-                            projectData.OriginalsTableRowCoordinats[RowData[0]][tablename].Add(projectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
+                            ProjectData.OriginalsTableRowCoordinats[RowData[0]][tablename].Add(ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
                         }
                     }
                 }
@@ -658,16 +656,16 @@ namespace TranslationHelper.Formats
             var ret = false;
 
             if (!Properties.Settings.Default.DontLoadDuplicates
-                && projectData.OriginalsTableRowCoordinats != null
-                && projectData.OriginalsTableRowCoordinats.ContainsKey(value))
+                && ProjectData.OriginalsTableRowCoordinats != null
+                && ProjectData.OriginalsTableRowCoordinats.ContainsKey(value))
             {
-                var tname = Path.GetFileName(projectData.FilePath);
-                if (projectData.OriginalsTableRowCoordinats[value].ContainsKey(tname))
+                var tname = Path.GetFileName(ProjectData.FilePath);
+                if (ProjectData.OriginalsTableRowCoordinats[value].ContainsKey(tname))
                 {
                     var control = value;
-                    if (projectData.OriginalsTableRowCoordinats[value][tname].Contains(SaveRowIndex))
+                    if (ProjectData.OriginalsTableRowCoordinats[value][tname].Contains(SaveRowIndex))
                     {
-                        value = projectData.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
+                        value = ProjectData.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
                         value = FixInvalidSymbols(value);
                         SaveRowIndex++;
 
@@ -681,9 +679,9 @@ namespace TranslationHelper.Formats
                     }
                     else // set 1st value from avalaible values
                     {
-                        foreach (var rind in projectData.OriginalsTableRowCoordinats[value][tname])
+                        foreach (var rind in ProjectData.OriginalsTableRowCoordinats[value][tname])
                         {
-                            value = projectData.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                            value = ProjectData.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
                             value = FixInvalidSymbols(value);
                             SaveRowIndex++;
 
@@ -700,11 +698,11 @@ namespace TranslationHelper.Formats
                 else // set 1st value from avalaible values
                 {
                     var control = value;
-                    foreach (var tn in projectData.OriginalsTableRowCoordinats[value].Values)
+                    foreach (var tn in ProjectData.OriginalsTableRowCoordinats[value].Values)
                     {
                         foreach (var rind in tn)
                         {
-                            value = projectData.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                            value = ProjectData.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
                             value = FixInvalidSymbols(value);
                             SaveRowIndex++;
 
@@ -719,10 +717,10 @@ namespace TranslationHelper.Formats
                     }
                 }
             }
-            else if (projectData.TablesLinesDict.ContainsKey(value))
+            else if (ProjectData.TablesLinesDict.ContainsKey(value))
             {
                 var control = value;
-                value = projectData.TablesLinesDict[value];
+                value = ProjectData.TablesLinesDict[value];
                 value = FixInvalidSymbols(value);
 
                 ret = control != value || (controltrans != null && controltrans != value);
@@ -739,25 +737,25 @@ namespace TranslationHelper.Formats
 
         protected bool CheckTablesContent(string tablename, bool IsDictionary = false)
         {
-            if (IsDictionary /*&& projectData.THFilesElementsDictionary != null && projectData.THFilesElementsDictionary.Count > 0 && projectData.THFilesElementsDataset.Tables[tablename] != null && projectData.THFilesElementsDataset.Tables[tablename].Rows.Count == 0*/)
+            if (IsDictionary /*&& ProjectData.THFilesElementsDictionary != null && ProjectData.THFilesElementsDictionary.Count > 0 && ProjectData.THFilesElementsDataset.Tables[tablename] != null && ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count == 0*/)
             {
                 throw new NotImplementedException("Dictionary not implemented");
-                //return projectData.THFilesElementsDataset.Tables[tablename].FillWithDictionary(projectData.THFilesElementsDictionary);
+                //return ProjectData.THFilesElementsDataset.Tables[tablename].FillWithDictionary(ProjectData.THFilesElementsDictionary);
             }
-            else if (projectData.THFilesElementsDataset.Tables[tablename].Rows.Count > 0)
+            else if (ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count > 0)
             {
                 return true;
             }
             else
             {
-                if (projectData.THFilesElementsDataset.Tables.Contains(tablename))
+                if (ProjectData.THFilesElementsDataset.Tables.Contains(tablename))
                 {
-                    projectData.THFilesElementsDataset.Tables.Remove(tablename); // remove table if was no items added
+                    ProjectData.THFilesElementsDataset.Tables.Remove(tablename); // remove table if was no items added
                 }
 
-                if (projectData.THFilesElementsDatasetInfo.Tables.Contains(tablename))
+                if (ProjectData.THFilesElementsDatasetInfo.Tables.Contains(tablename))
                 {
-                    projectData.THFilesElementsDatasetInfo.Tables.Remove(tablename); // remove table if was no items added
+                    ProjectData.THFilesElementsDatasetInfo.Tables.Remove(tablename); // remove table if was no items added
                 }
 
                 return false;
@@ -771,7 +769,7 @@ namespace TranslationHelper.Formats
         /// <param name="TableName"></param>
         internal void SplitTableCellValuesToDictionaryLines(string TableName)
         {
-            if (!projectData.THFilesElementsDataset.Tables.Contains(TableName))
+            if (!ProjectData.THFilesElementsDataset.Tables.Contains(TableName))
                 return;
 
             if (TablesLinesDict != null && TablesLinesDict.Count > 0)
@@ -779,7 +777,7 @@ namespace TranslationHelper.Formats
                 TablesLinesDict.Clear();
             }
 
-            foreach (DataRow Row in projectData.THFilesElementsDataset.Tables[TableName].Rows)
+            foreach (DataRow Row in ProjectData.THFilesElementsDataset.Tables[TableName].Rows)
             {
                 string Original;
                 string Translation;
@@ -803,7 +801,7 @@ namespace TranslationHelper.Formats
         {
             if (OnlyOneTable)
             {
-                if (!projectData.THFilesElementsDataset.Tables.Contains(TableName))
+                if (!ProjectData.THFilesElementsDataset.Tables.Contains(TableName))
                     return;
 
                 if (TablesLinesDict.Count > 0)
@@ -820,7 +818,7 @@ namespace TranslationHelper.Formats
             }
 
 
-            foreach (DataTable Table in projectData.THFilesElementsDataset.Tables)
+            foreach (DataTable Table in ProjectData.THFilesElementsDataset.Tables)
             {
                 if (OnlyOneTable && Table.TableName != TableName)
                 {
@@ -855,7 +853,7 @@ namespace TranslationHelper.Formats
                     }
 
                     //Сначала добавить полный вариант
-                    if (!TablesLinesDict.ContainsKey(Original) /*&& ((!projectData.CurrentProject.TablesLinesDictAddEqual && Translation != Original) || projectData.CurrentProject.TablesLinesDictAddEqual)*/)
+                    if (!TablesLinesDict.ContainsKey(Original) /*&& ((!ProjectData.CurrentProject.TablesLinesDictAddEqual && Translation != Original) || ProjectData.CurrentProject.TablesLinesDictAddEqual)*/)
                     {
                         TablesLinesDict.Add(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                         if (OriginalLinesCount == 1)

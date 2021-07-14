@@ -5,7 +5,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class FixBrokenNameVar2 : HardFixesBase
     {
-        public FixBrokenNameVar2(ProjectData projectData) : base(projectData)
+        public FixBrokenNameVar2() : base()
         {
         }
 

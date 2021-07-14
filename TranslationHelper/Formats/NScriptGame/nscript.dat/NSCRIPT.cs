@@ -10,7 +10,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 {
     internal class NSCRIPT : FormatBase
     {
-        public NSCRIPT(ProjectData projectData) : base(projectData)
+        public NSCRIPT() : base()
         {
         }
 
@@ -26,9 +26,9 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         protected override void ParseStringFileOpen()
         {
-            var nscripttxt = System.Text.Encoding.GetEncoding(932).GetString(File.ReadAllBytes(projectData.FilePath).XorUnxor());
+            var nscripttxt = System.Text.Encoding.GetEncoding(932).GetString(File.ReadAllBytes(ProjectData.FilePath).XorUnxor());
 
-            File.WriteAllText(projectData.FilePath + ".OpenTest.txt", nscripttxt, System.Text.Encoding.GetEncoding(932));
+            File.WriteAllText(ProjectData.FilePath + ".OpenTest.txt", nscripttxt, System.Text.Encoding.GetEncoding(932));
 
             foreach (var line in nscripttxt.SplitToLines())
             {
@@ -51,7 +51,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
             if (IsComment())
             {
-                if (projectData.SaveFileMode)
+                if (ProjectData.SaveFileMode)
                     ParseData.ResultForWrite.Append(ParseData.line + '\n');
                 return 0;
             }
@@ -66,7 +66,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     {
                         var str = array[i];
 
-                        if (projectData.OpenFileMode)
+                        if (ProjectData.OpenFileMode)
                         {
                             AddRowData(str, "", true);
                         }
@@ -80,18 +80,18 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                             }
                         }
                     }
-                    if (projectData.SaveFileMode)
+                    if (ProjectData.SaveFileMode)
                     {
                         lines.Add(array[i]);
                     }
                 }
-                if (projectData.SaveFileMode && lines.Count > 0)
+                if (ProjectData.SaveFileMode && lines.Count > 0)
                 {
                     ParseData.line = string.Join(":", lines);
                 }
             }
 
-            if (projectData.SaveFileMode)
+            if (ProjectData.SaveFileMode)
                 ParseData.ResultForWrite.Append(ParseData.line + '\n');
             return 1;
         }
@@ -177,13 +177,13 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
         {
             try
             {
-                if (ParseData.Ret && projectData.SaveFileMode && ParseData.ResultForWrite.Length > 0)
+                if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0)
                 {
                     var Enc = System.Text.Encoding.GetEncoding(932);
                     var nscripttxtTranslated = ParseData.ResultForWrite.ToString();
                     if (filePath.Length == 0)
                     {
-                        filePath = projectData.FilePath;
+                        filePath = ProjectData.FilePath;
                     }
                     File.WriteAllText(filePath + ".SaveTest.txt", nscripttxtTranslated, Enc);
                     var nscriptdatTranslated = Enc.GetBytes(nscripttxtTranslated).XorUnxor();

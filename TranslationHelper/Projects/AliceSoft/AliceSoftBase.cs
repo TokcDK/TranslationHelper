@@ -10,7 +10,7 @@ namespace TranslationHelper.Projects.AliceSoft
 {
     abstract class AliceSoftBase : ProjectBase
     {
-        protected AliceSoftBase(ProjectData projectData) : base(projectData)
+        protected AliceSoftBase() : base()
         {
         }
 

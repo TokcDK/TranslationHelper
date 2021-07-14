@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     abstract class General : SettingsBase
     {
-        protected General(ProjectData projectData) : base(projectData)
+        protected General() : base()
         {
         }
 

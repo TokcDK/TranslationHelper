@@ -9,13 +9,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class SplitLongLinesSpec : RowBase
     {
-        public SplitLongLinesSpec(ProjectData projectData) : base(projectData)
+        public SplitLongLinesSpec() : base()
         {
         }
 
         protected override bool IsValidTable(DataTable table)
         {
-            return !projectData.CurrentProject.LineSplitProjectSpecificSkipForTable(table);
+            return !ProjectData.CurrentProject.LineSplitProjectSpecificSkipForTable(table);
         }
 
         protected override bool Apply()
@@ -26,7 +26,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 && transCellValue != origCellValue
                 && FunctionsString.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit
                 /*&& !FunctionsString.IsStringContainsSpecialSymbols(transCellValue)*/
-                && !projectData.CurrentProject.LineSplitProjectSpecificSkipForLine(origCellValue, transCellValue, SelectedTableIndex, SelectedRowIndex))
+                && !ProjectData.CurrentProject.LineSplitProjectSpecificSkipForLine(origCellValue, transCellValue, SelectedTableIndex, SelectedRowIndex))
             {
                 SelectedRow[ColumnIndexTranslation] = SplitNew(transCellValue);
 

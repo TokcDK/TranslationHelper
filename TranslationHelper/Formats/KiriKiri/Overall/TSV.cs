@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.KiriKiri
 {
     class TSV : FormatBase
     {
-        public TSV(ProjectData projectData) : base(projectData)
+        public TSV() : base()
         {
         }
 
@@ -20,11 +20,11 @@ namespace TranslationHelper.Formats.KiriKiri
 
         public bool KiriKiriTSVOpen()
         {
-            FunctionsTable.SetTableAndColumns(projectData);
+            FunctionsTable.SetTableAndColumns();
 
-            using (StreamReader file = new StreamReader(projectData.FilePath, Encoding.GetEncoding(932)))
+            using (StreamReader file = new StreamReader(ProjectData.FilePath, Encoding.GetEncoding(932)))
             {
-                string fileName = Path.GetFileName(projectData.FilePath);
+                string fileName = Path.GetFileName(ProjectData.FilePath);
                 string line;
                 while (!file.EndOfStream)
                 {
@@ -49,8 +49,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = projectData.THFilesElementsDataset.Tables[fileName].Rows.Add(subline);
-                                    _ = projectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(NameValues[0]);
+                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(subline);
+                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(NameValues[0]);
                                 }
                             }
                         }
@@ -58,7 +58,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 }
             }
 
-            return FunctionsTable.SetTableAndColumns(projectData, false);
+            return FunctionsTable.SetTableAndColumns(false);
         }
 
         internal override bool Save()

@@ -8,10 +8,10 @@ namespace TranslationHelper.Projects.RPGMaker
 {
     class RPGMGameOLD
     {
-        readonly ProjectData projectData;
-        public RPGMGameOLD(ProjectData projectData)
+        
+        public RPGMGameOLD()
         {
-            this.projectData = projectData;
+            
         }
 
         internal bool TryToExtractToRPGMakerTransPatch(string sPath, string extractdir = "Work")
@@ -28,7 +28,7 @@ namespace TranslationHelper.Projects.RPGMaker
 
             if (extractdir == "Work")
             {
-                projectData.Main.extractedpatchpath = outdir + "_patch";// Распаковывать в Work\ProjectDir\
+                ProjectData.Main.extractedpatchpath = outdir + "_patch";// Распаковывать в Work\ProjectDir\
             }
 
             //if (!Directory.Exists(outdir))

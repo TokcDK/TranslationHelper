@@ -6,7 +6,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class FixENJPQuoteOnStringStart2ndLine : HardFixesBase
     {
-        public FixENJPQuoteOnStringStart2ndLine(ProjectData projectData) : base(projectData)
+        public FixENJPQuoteOnStringStart2ndLine() : base()
         {
         }
 

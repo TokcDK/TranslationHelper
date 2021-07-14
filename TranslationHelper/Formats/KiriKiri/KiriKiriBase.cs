@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.KiriKiri
         /// overall kirikiri environment for all formats
         /// </summary>
         /// <param name="projectData"></param>
-        protected KiriKiriBase(ProjectData projectData) : base(projectData)
+        protected KiriKiriBase() : base()
         {
         }
 
@@ -32,13 +32,13 @@ namespace TranslationHelper.Formats.KiriKiri
         /// <returns></returns>
         internal virtual Encoding FileEncoding()
         {
-            //using (var fs = new FileStream(projectData.FilePath, FileMode.Open, FileAccess.Read))
+            //using (var fs = new FileStream(ProjectData.FilePath, FileMode.Open, FileAccess.Read))
             //    return FunctionsFileFolder.GetEncoding(fs);
-            return FunctionsFileFolder.GetEncoding(projectData.FilePath);
-            //return FunctionsFileFolder.GetEncoding(projectData.FilePath);
-            //if (Enc == null && !string.IsNullOrEmpty(projectData.FilePath))
+            return FunctionsFileFolder.GetEncoding(ProjectData.FilePath);
+            //return FunctionsFileFolder.GetEncoding(ProjectData.FilePath);
+            //if (Enc == null && !string.IsNullOrEmpty(ProjectData.FilePath))
             //{
-            //    Enc = FunctionsFileFolder.GetEncoding(projectData.FilePath);
+            //    Enc = FunctionsFileFolder.GetEncoding(ProjectData.FilePath);
             //}
             //else
             //{
@@ -59,7 +59,7 @@ namespace TranslationHelper.Formats.KiriKiri
         protected override string GetFilePath()
         {
             //write translated files to patch dir
-            return Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchDirName, Path.GetFileName(projectData.FilePath));
+            return Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchDirName, Path.GetFileName(ProjectData.FilePath));
         }
         protected override Encoding DefaultEncoding()
         {

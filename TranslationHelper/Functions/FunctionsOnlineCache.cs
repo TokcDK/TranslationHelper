@@ -14,13 +14,6 @@ namespace TranslationHelper.Functions
     {
         internal Dictionary<string, string> cache = new Dictionary<string, string>();
 
-        private readonly ProjectData projectData;
-
-        public FunctionsOnlineCache(ProjectData projectData)
-        {
-            this.projectData = projectData;
-        }
-
         internal string GetValueFromCacheOrReturnEmpty(string keyValue)
         {
             if (!Properties.Settings.Default.EnableTranslationCache)
@@ -28,12 +21,12 @@ namespace TranslationHelper.Functions
 
             if (Properties.Settings.Default.EnableTranslationCache 
                 && Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll 
-                && projectData.AllDBmerged != null 
-                && projectData.AllDBmerged.Count > 0 
-                && projectData.AllDBmerged.ContainsKey(keyValue) 
-                && !string.IsNullOrWhiteSpace(projectData.AllDBmerged[keyValue]))
+                && ProjectData.AllDBmerged != null 
+                && ProjectData.AllDBmerged.Count > 0 
+                && ProjectData.AllDBmerged.ContainsKey(keyValue) 
+                && !string.IsNullOrWhiteSpace(ProjectData.AllDBmerged[keyValue]))
             {
-                return projectData.AllDBmerged[keyValue];
+                return ProjectData.AllDBmerged[keyValue];
             }
             else if (Properties.Settings.Default.EnableTranslationCache 
                 && cache != null 
@@ -48,13 +41,13 @@ namespace TranslationHelper.Functions
                 var trimmed = keyValue.TrimAllExceptLettersOrDigits();
                 if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll
                    && trimmed.Length > 0
-                   && projectData.AllDBmerged != null
-                   && projectData.AllDBmerged.Count > 0
-                   && projectData.AllDBmerged.ContainsKey(trimmed)
-                   && !string.IsNullOrWhiteSpace(projectData.AllDBmerged[trimmed]))
+                   && ProjectData.AllDBmerged != null
+                   && ProjectData.AllDBmerged.Count > 0
+                   && ProjectData.AllDBmerged.ContainsKey(trimmed)
+                   && !string.IsNullOrWhiteSpace(ProjectData.AllDBmerged[trimmed]))
                 {
                     var ind = keyValue.IndexOf(trimmed);
-                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, projectData.AllDBmerged[trimmed]);
+                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, ProjectData.AllDBmerged[trimmed]);
                 }
                 else if (
                     trimmed.Length > 0
@@ -102,16 +95,16 @@ namespace TranslationHelper.Functions
         /// init cache when it was not init
         /// </summary>
         /// <param name="projectData"></param>
-        internal static void Init(ProjectData projectData)
+        internal static void Init()
         {
             //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
             //    return;
 
             Properties.Settings.Default.OnlineTranslationCacheUseCount++;
-            if (projectData.OnlineTranslationCache == null)
+            if (ProjectData.OnlineTranslationCache == null)
             {
-                projectData.OnlineTranslationCache = new FunctionsOnlineCache(projectData);
-                projectData.OnlineTranslationCache.Read();
+                ProjectData.OnlineTranslationCache = new FunctionsOnlineCache();
+                ProjectData.OnlineTranslationCache.Read();
             }
         }
 
@@ -119,14 +112,14 @@ namespace TranslationHelper.Functions
         /// unload cache when need
         /// </summary>
         /// <param name="projectData"></param>
-        internal static void Unload(ProjectData projectData)
+        internal static void Unload()
         {
             Properties.Settings.Default.OnlineTranslationCacheUseCount--;
             if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)
             {
-                if (projectData.OnlineTranslationCache != null)
+                if (ProjectData.OnlineTranslationCache != null)
                 {
-                    projectData.OnlineTranslationCache = null;
+                    ProjectData.OnlineTranslationCache = null;
                 }
             }
         }
@@ -160,17 +153,17 @@ namespace TranslationHelper.Functions
             }
         }
 
-        public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/ProjectData projectData, string Original, string Translation)
+        public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/string Original, string Translation)
         {
             if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed)
             {
-                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || projectData.OnlineTranslationCache.cache.ContainsKey(Original) || string.IsNullOrWhiteSpace(Translation) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
+                if (string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || ProjectData.OnlineTranslationCache.cache.ContainsKey(Original) || string.IsNullOrWhiteSpace(Translation) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
                 {
                 }
                 else
                 {
                     //THTranslationCache.Tables[0].Rows.Add(Original, Translation);
-                    projectData.OnlineTranslationCache.cache.Add(Original, Translation);
+                    ProjectData.OnlineTranslationCache.cache.Add(Original, Translation);
                 }
             }
         }

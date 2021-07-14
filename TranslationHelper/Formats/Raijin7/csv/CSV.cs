@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.Raijin7
 {
     class CSV : Rajiin7Base
     {
-        public CSV(ProjectData projectData) : base(projectData)
+        public CSV() : base()
         {
         }
 

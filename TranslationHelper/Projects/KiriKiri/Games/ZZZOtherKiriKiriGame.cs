@@ -6,7 +6,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 {
     class ZZZOtherKiriKiriGame : KiriKiriGameBase
     {
-        public ZZZOtherKiriKiriGame(ProjectData projectData) : base(projectData)
+        public ZZZOtherKiriKiriGame() : base()
         {
         }
 
@@ -17,15 +17,15 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
         internal override string Name()
         {
-            return Path.GetFileName(Properties.Settings.Default.THProjectWorkDir) + "(" + projectData.SPath + ")";
+            return Path.GetFileName(Properties.Settings.Default.THProjectWorkDir) + "(" + ProjectData.SPath + ")";
         }
 
         protected override List<Formats.FormatBase> Format()
         {
             return new List<Formats.FormatBase>
             {
-                new Formats.KiriKiri.Games.KS(projectData),
-                new Formats.KiriKiri.Games.CSV.CSV(projectData)
+                new Formats.KiriKiri.Games.KS(),
+                new Formats.KiriKiri.Games.CSV.CSV()
             };
         }
 

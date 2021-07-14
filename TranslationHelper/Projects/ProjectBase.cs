@@ -13,11 +13,11 @@ namespace TranslationHelper.Projects
 {
     internal abstract class ProjectBase
     {
-        protected ProjectData projectData;
+        
 
-        protected ProjectBase(ProjectData projectData)
+        protected ProjectBase()
         {
-            this.projectData = projectData;
+            
         }
 
         /// <summary>
@@ -25,10 +25,10 @@ namespace TranslationHelper.Projects
         /// </summary>
         internal virtual void Init()
         {
-            if (!string.IsNullOrWhiteSpace(projectData.SPath))
+            if (!string.IsNullOrWhiteSpace(ProjectData.SPath))
             {
-                Properties.Settings.Default.THSelectedGameDir = Path.GetDirectoryName(projectData.SPath);
-                Properties.Settings.Default.THSelectedDir = Path.GetDirectoryName(projectData.SPath);
+                Properties.Settings.Default.THSelectedGameDir = Path.GetDirectoryName(ProjectData.SPath);
+                Properties.Settings.Default.THSelectedDir = Path.GetDirectoryName(ProjectData.SPath);
                 Properties.Settings.Default.THProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), ProjectName());
             }
         }
@@ -39,7 +39,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual string ProjectName()
         {
-            return Path.GetFileName(Path.GetDirectoryName(projectData.SPath));
+            return Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath));
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool IsExe()
         {
-            return Path.GetExtension(projectData.SPath).ToUpperInvariant() == ".EXE";
+            return Path.GetExtension(ProjectData.SPath).ToUpperInvariant() == ".EXE";
         }
 
         /// <summary>
@@ -190,16 +190,16 @@ namespace TranslationHelper.Projects
                     if (exclusions != null && file.FullName.IsStringAContainsAnyFromArray(exclusions))//skip exclusions
                         continue;
 
-                    projectData.FilePath = file.FullName;
-                    projectData.Main.ProgressInfo(true, (projectData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
-                    if (projectData.OpenFileMode ? format.Open() : format.Save())
+                    ProjectData.FilePath = file.FullName;
+                    ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
+                    if (ProjectData.OpenFileMode ? format.Open() : format.Save())
                     {
                         ret = true;
                     }
                 }
             }
 
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
             return ret;
         }
         protected static List<FileInfo> GetNewestFilesList(DirectoryInfo dir, string mask = "*.*")
@@ -315,7 +315,7 @@ namespace TranslationHelper.Projects
         internal List<MatchCollection> HideVARSMatchCollectionsList;
         internal string HideVARSBase(string str, Dictionary<string, string> HideVARSPatterns = null)
         {
-            HideVARSPatterns = HideVARSPatterns ?? projectData.CurrentProject.HideVarsBase;
+            HideVARSPatterns = HideVARSPatterns ?? ProjectData.CurrentProject.HideVarsBase;
 
             if (HideVARSPatterns == null || HideVARSPatterns.Count == 0)
             {
@@ -405,9 +405,9 @@ namespace TranslationHelper.Projects
         /// Get all inherited classes of an abstract class
         /// </summary>
         /// <returns></returns>
-        internal static List<ProjectBase> GetListOfProjects(ProjectData projectData)
+        internal static List<ProjectBase> GetListOfProjects()
         {
-            return GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ProjectBase>(projectData);
+            return GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ProjectBase>();
         }
 
         /// <summary>
@@ -422,16 +422,16 @@ namespace TranslationHelper.Projects
 
         internal void FillTHFilesElementsDictionary()
         {
-            if (projectData.TablesLinesDict == null || projectData.TablesLinesDict.Count == 0)
+            if (ProjectData.TablesLinesDict == null || ProjectData.TablesLinesDict.Count == 0)
             {
-                foreach (DataTable table in projectData.THFilesElementsDataset.Tables)
+                foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
                 {
                     foreach (DataRow row in table.Rows)
                     {
                         string orig;
-                        if (!string.IsNullOrEmpty(orig = row[0] + string.Empty) && !projectData.TablesLinesDict.ContainsKey(orig))
+                        if (!string.IsNullOrEmpty(orig = row[0] + string.Empty) && !ProjectData.TablesLinesDict.ContainsKey(orig))
                         {
-                            projectData.TablesLinesDict.Add(orig, row[1] + string.Empty);
+                            ProjectData.TablesLinesDict.Add(orig, row[1] + string.Empty);
                         }
                     }
                 }
@@ -441,16 +441,16 @@ namespace TranslationHelper.Projects
         internal void FillTablesLinesDict()
         {
             bool notnull;
-            if ((notnull = projectData.TablesLinesDict != null) && projectData.TablesLinesDict.Count > 0)
+            if ((notnull = ProjectData.TablesLinesDict != null) && ProjectData.TablesLinesDict.Count > 0)
             {
                 return;
             }
             else if (!notnull)
             {
-                projectData.TablesLinesDict = new Dictionary<string, string>();
+                ProjectData.TablesLinesDict = new Dictionary<string, string>();
             }
 
-            foreach (DataTable table in projectData.THFilesElementsDataset.Tables)
+            foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
             {
                 foreach (DataRow row in table.Rows)
                 {
@@ -458,7 +458,7 @@ namespace TranslationHelper.Projects
                     string trans;
                     if (!string.IsNullOrWhiteSpace(orig = row[0] + string.Empty) && !string.IsNullOrEmpty(trans = row[1] + string.Empty))
                     {
-                        projectData.TablesLinesDict.AddTry(orig, trans);
+                        ProjectData.TablesLinesDict.AddTry(orig, trans);
 
                         if (!trans.StartsWith(@"\n<>") && Regex.IsMatch(orig, @"\\n<.+>[\s\S]*$"))
                         {
@@ -466,7 +466,7 @@ namespace TranslationHelper.Projects
                             trans = Regex.Replace(trans, @"\\n<(.+)>[\s\S]*$", "$1");
                             if (orig != trans)
                             {
-                                projectData.TablesLinesDict.AddTry(
+                                ProjectData.TablesLinesDict.AddTry(
                                 orig
                                 ,
                                 trans
@@ -493,7 +493,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakCreate()
         {
-            return BackupRestorePaths(new[] { projectData.SPath, projectData.FilePath });
+            return BackupRestorePaths(new[] { ProjectData.SPath, ProjectData.FilePath });
         }
 
         /// <summary>
@@ -502,7 +502,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakRestore()
         {
-            return BackupRestorePaths(new[] { projectData.SPath, projectData.FilePath }, false);
+            return BackupRestorePaths(new[] { ProjectData.SPath, ProjectData.FilePath }, false);
         }
 
         /// <summary>
@@ -556,7 +556,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool RestoreFile(string file)
         {
-            projectData.Main.ProgressInfo(true, T._("restore") + ":" + Path.GetFileName(file));
+            ProjectData.Main.ProgressInfo(true, T._("restore") + ":" + Path.GetFileName(file));
 
             try
             {
@@ -580,12 +580,12 @@ namespace TranslationHelper.Projects
                     {
                         new FileInfo(file + ".tmp").Attributes = FileAttributes.Normal;
                         File.Delete(file + ".tmp");
-                        projectData.Main.ProgressInfo(false);
+                        ProjectData.Main.ProgressInfo(false);
                         return true;
                     }
                     else if (!tmp && File.Exists(file))
                     {
-                        projectData.Main.ProgressInfo(false);
+                        ProjectData.Main.ProgressInfo(false);
                         return true;
                     }
                 }
@@ -594,7 +594,7 @@ namespace TranslationHelper.Projects
             {
             }
 
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
             return false;
         }
 
@@ -711,7 +711,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool BackupFile(string file)
         {
-            projectData.Main.ProgressInfo(true, T._("backup") + ":" + Path.GetFileName(file));
+            ProjectData.Main.ProgressInfo(true, T._("backup") + ":" + Path.GetFileName(file));
 
             try
             {
@@ -725,14 +725,14 @@ namespace TranslationHelper.Projects
                 }
                 if (File.Exists(file + ".bak"))
                 {
-                    projectData.Main.ProgressInfo(false);
+                    ProjectData.Main.ProgressInfo(false);
                     return true;
                 }
             }
             catch
             {
             }
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
             return false;
         }
 

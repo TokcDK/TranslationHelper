@@ -6,15 +6,15 @@ namespace TranslationHelper.Projects.RPGMMV
 {
     class RPGMMVjson : ProjectBase
     {
-        public RPGMMVjson(ProjectData projectData) : base(projectData)
+        public RPGMMVjson() : base()
         {
         }
 
         internal override bool Check()
         {
-            if (Path.GetExtension(projectData.SPath).ToUpperInvariant() == ".JSON")
+            if (Path.GetExtension(ProjectData.SPath).ToUpperInvariant() == ".JSON")
             {
-                if (Path.GetFileName(Path.GetDirectoryName(projectData.SPath)) == "data")
+                if (Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath)) == "data")
                 {
                     return true;
                 }
@@ -54,7 +54,7 @@ namespace TranslationHelper.Projects.RPGMMV
             ParseFileMessage = Write ? T._("write file: ") : T._("opening file: ");
             try
             {
-                if (ParseRPGMakerMVjson(projectData.SPath, Write))
+                if (ParseRPGMakerMVjson(ProjectData.SPath, Write))
                 {
                     return true;
                 }
@@ -63,7 +63,7 @@ namespace TranslationHelper.Projects.RPGMMV
             {
             }
 
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
             return false;
         }
 
@@ -73,16 +73,16 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 string Jsonname = Path.GetFileNameWithoutExtension(FilePath); // get json file name
 
-                projectData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
+                ProjectData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
 
                 //string jsondata = File.ReadAllText(FilePath); // get json data
 
                 bool ret = true;
 
-                projectData.FilePath = FilePath;
+                ProjectData.FilePath = FilePath;
                 //ret = ReadJson(Jsonname, sPath);
 
-                ret = Write ? new JSON(projectData).Save() : new JSON(projectData).Open();
+                ret = Write ? new JSON().Save() : new JSON().Open();
 
                 return ret;
             }

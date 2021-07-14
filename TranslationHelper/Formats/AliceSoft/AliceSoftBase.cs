@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.AliceSoft
 {
     abstract class AliceSoftBase : FormatBase
     {
-        protected AliceSoftBase(ProjectData projectData) : base(projectData)
+        protected AliceSoftBase() : base()
         {
         }
     }

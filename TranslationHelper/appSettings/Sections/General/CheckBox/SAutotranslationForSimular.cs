@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SAutotranslationForSimular : General
     {
-        public SAutotranslationForSimular(ProjectData projectData) : base(projectData)
+        public SAutotranslationForSimular() : base()
         {
         }
 
@@ -13,7 +13,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => true;
 
-        object SCheckBox { get => projectData.Main.Settings.THOptionAutotranslationForSimularCheckBox; }
+        object SCheckBox { get => ProjectData.Main.Settings.THOptionAutotranslationForSimularCheckBox; }
 
         static bool SVar
         {
@@ -29,7 +29,7 @@ namespace TranslationHelper.INISettings
             }
             else
             {
-                SVar = bool.TryParse(projectData.BufferValueString, out bool result) ? result : DefaultBool;
+                SVar = bool.TryParse(ProjectData.BufferValueString, out bool result) ? result : DefaultBool;
                 (SCheckBox as System.Windows.Forms.CheckBox).Checked = SVar;
             }
         }

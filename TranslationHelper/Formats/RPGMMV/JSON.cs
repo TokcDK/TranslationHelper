@@ -13,13 +13,13 @@ namespace TranslationHelper.Formats.RPGMMV
 {
     class JSON : RPGMMVBase
     {
-        public JSON(ProjectData projectData) : base(projectData)
+        public JSON() : base()
         {
         }
 
         internal override bool Open()
         {
-            return ReadJson(Path.GetFileNameWithoutExtension(projectData.FilePath), projectData.FilePath);
+            return ReadJson(Path.GetFileNameWithoutExtension(ProjectData.FilePath), ProjectData.FilePath);
         }
 
         internal override string Ext()
@@ -463,11 +463,11 @@ namespace TranslationHelper.Formats.RPGMMV
             //if (hashes.Contains(Value))
             //    return;
 
-            //projectData.THFilesElementsDataset.Tables[Jsonname].Rows.Add(Value);
+            //ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows.Add(Value);
             //TempList.Add(Value);//много быстрее
             //hashes.Add(Value);
 
-            //projectData.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(Info);
+            //ProjectData.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(Info);
             //TempListInfo.Add(Info);//много быстрее
         }
 
@@ -475,17 +475,17 @@ namespace TranslationHelper.Formats.RPGMMV
 
         internal override bool Save()
         {
-            return WriteJson(Path.GetFileNameWithoutExtension(projectData.FilePath), projectData.FilePath);
+            return WriteJson(Path.GetFileNameWithoutExtension(ProjectData.FilePath), ProjectData.FilePath);
         }
 
         private bool WriteJson(string Jsonname, string sPath)
         {
-            if (projectData.THFilesElementsDataset.Tables.Contains(Jsonname) && FunctionsTable.IsTableRowsAllEmpty(projectData.THFilesElementsDataset.Tables[Jsonname]))
+            if (ProjectData.THFilesElementsDataset.Tables.Contains(Jsonname) && FunctionsTable.IsTableRowsAllEmpty(ProjectData.THFilesElementsDataset.Tables[Jsonname]))
             {
                 return false;
             }
 
-            projectData.Main.ProgressInfo(true, T._("Writing") + ": " + Jsonname + ".json");
+            ProjectData.Main.ProgressInfo(true, T._("Writing") + ": " + Jsonname + ".json");
             try
             {
                 //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
@@ -526,7 +526,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
                 else
                 {
-                    if (!projectData.THFilesElementsDataset.Tables.Contains(Jsonname))
+                    if (!ProjectData.THFilesElementsDataset.Tables.Contains(Jsonname))
                     {
                         return false;
                     }
@@ -559,7 +559,7 @@ namespace TranslationHelper.Formats.RPGMMV
         private void GetTranslatableRows(string Jsonname)
         {
             //IsTranslatableRow = new Dictionary<string, bool>();
-            //foreach (System.Data.DataRow row in projectData.THFilesElementsDataset.Tables[Jsonname].Rows)
+            //foreach (System.Data.DataRow row in ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows)
             //{
             //    IsTranslatableRow.Add(row[0] as string,
             //        !(row[1] == null || string.IsNullOrEmpty(row[1] + "") || Equals(row[1], row[0]))
@@ -615,10 +615,10 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
 
-                int rcount = projectData.THFilesElementsDataset.Tables[JsonName].Rows.Count;
+                int rcount = ProjectData.THFilesElementsDataset.Tables[JsonName].Rows.Count;
                 for (int r = StartingRow; r < rcount; r++)
                 {
-                    var row = projectData.THFilesElementsDataset.Tables[JsonName].Rows[r];
+                    var row = ProjectData.THFilesElementsDataset.Tables[JsonName].Rows[r];
                     if ((row[1] + string.Empty).Length == 0)
                     {
                     }

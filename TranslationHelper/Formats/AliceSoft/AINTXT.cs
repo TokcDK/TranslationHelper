@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.AliceSoft
 {
     class AINTXT : AliceSoftBase
     {
-        public AINTXT(ProjectData projectData) : base(projectData)
+        public AINTXT() : base()
         {
         }
 
@@ -25,7 +25,7 @@ namespace TranslationHelper.Formats.AliceSoft
 
                 if (IsValidString(orig))
                 {
-                    if (projectData.OpenFileMode)
+                    if (ProjectData.OpenFileMode)
                     {
                         AddRowData(orig, T._("Last group") + ": " + lastgroupname, true, false);
                     }

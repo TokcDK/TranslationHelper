@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
     class TAG1 : KSSyntaxBase
     {
-        public TAG1(ProjectData projectData) : base(projectData)
+        public TAG1() : base()
         {
         }
 
@@ -17,7 +17,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
         {
             return new List<KSSyntaxBase>
             {
-                new Attribute(projectData)
+                new Attribute()
             };
         }
     }

@@ -4,7 +4,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 {
     class ToUpper : StringCaseMorphBase
     {
-        public ToUpper(ProjectData projectData) : base(projectData)
+        public ToUpper() : base()
         {
         }
 

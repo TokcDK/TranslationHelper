@@ -5,10 +5,10 @@ namespace TranslationHelper.Data
 {
     class CleanupData
     {
-        readonly ProjectData projectData;
-        public CleanupData(ProjectData projectData)
+        
+        public CleanupData()
         {
-            this.projectData = projectData;
+            
         }
 
         internal void THCleanupThings()
@@ -16,126 +16,126 @@ namespace TranslationHelper.Data
             try
             {
                 //Close other forms
-                if (projectData.Main.search != null)
+                if (ProjectData.Main.search != null)
                 {
-                    if (!projectData.Main.search.IsDisposed)
+                    if (!ProjectData.Main.search.IsDisposed)
                     {
-                        projectData.Main.search.Close();
-                        projectData.Main.search.Dispose();
+                        ProjectData.Main.search.Close();
+                        ProjectData.Main.search.Dispose();
                     }
-                    projectData.Main.search = null;
+                    ProjectData.Main.search = null;
                 }
-                //if (projectData.Main.Settings != null)
+                //if (ProjectData.Main.Settings != null)
                 //{
-                //    if (!projectData.Main.Settings.IsDisposed)
+                //    if (!ProjectData.Main.Settings.IsDisposed)
                 //    {
-                //        projectData.Main.Settings.Close();
-                //        projectData.Main.Settings.Dispose();
+                //        ProjectData.Main.Settings.Close();
+                //        ProjectData.Main.Settings.Dispose();
                 //    }
-                //    projectData.Main.Settings = null;
+                //    ProjectData.Main.Settings = null;
                 //}
 
                 //to prevent some autooperations while project will not be opened
                 Properties.Settings.Default.ProjectIsOpened = false;
 
                 //Reset vars
-                projectData.Main.Text = "Translation Helper by Dev";
-                projectData.Main.THInfoTextBox.Text = string.Empty;
-                projectData.Main.THSourceRichTextBox.Text = string.Empty;
-                projectData.Main.THTargetRichTextBox.Text = string.Empty;
-                projectData.Main.TableCompleteInfoLabel.Text = string.Empty;
-                projectData.Main.TranslationLongestLineLenghtLabel.Text = string.Empty;
-                projectData.Main.ControlsSwitchActivated = false;
+                ProjectData.Main.Text = "Translation Helper by Dev";
+                ProjectData.Main.THInfoTextBox.Text = string.Empty;
+                ProjectData.Main.THSourceRichTextBox.Text = string.Empty;
+                ProjectData.Main.THTargetRichTextBox.Text = string.Empty;
+                ProjectData.Main.TableCompleteInfoLabel.Text = string.Empty;
+                ProjectData.Main.TranslationLongestLineLenghtLabel.Text = string.Empty;
+                ProjectData.Main.ControlsSwitchActivated = false;
 
                 //Clean data
-                projectData.Main.THFilesList.Items.Clear();
-                projectData.THFilesElementsDataset.Reset();
-                projectData.THFilesElementsDatasetInfo.Reset();
-                projectData.THFilesElementsALLDataTable.Reset();
-                projectData.Main.THFileElementsDataGridView.Columns.Clear();
-                projectData.hashes.Clear();
-                projectData.AllDBmerged = null;
+                ProjectData.Main.THFilesList.Items.Clear();
+                ProjectData.THFilesElementsDataset.Reset();
+                ProjectData.THFilesElementsDatasetInfo.Reset();
+                ProjectData.THFilesElementsALLDataTable.Reset();
+                ProjectData.Main.THFileElementsDataGridView.Columns.Clear();
+                ProjectData.hashes.Clear();
+                ProjectData.AllDBmerged = null;
                 //THFileElementsDataGridView.Rows.Clear();
-                projectData.FilePath = string.Empty;
-                projectData.SPath = string.Empty;
+                ProjectData.FilePath = string.Empty;
+                ProjectData.SPath = string.Empty;
 
                 //Reload regex rules
-                projectData.Main.ReloadTranslationRegexRules();
-                projectData.Main.ReloadCellFixesRegexRules();
+                ProjectData.Main.ReloadTranslationRegexRules();
+                ProjectData.Main.ReloadCellFixesRegexRules();
 
                 //Dispose objects
-                //projectData.THFilesElementsDataset.Dispose();
-                //projectData.THFilesElementsDatasetInfo.Dispose();
-                //projectData.THFilesElementsALLDataTable.Dispose();
+                //ProjectData.THFilesElementsDataset.Dispose();
+                //ProjectData.THFilesElementsDatasetInfo.Dispose();
+                //ProjectData.THFilesElementsALLDataTable.Dispose();
 
                 //Hide some items 
-                projectData.Main.tlpTextLenPosInfo.Visible = false;
-                projectData.Main.TableCompleteInfoLabel.Visible = false;
-                projectData.Main.THWorkSpaceSplitContainer.Visible = false;
+                ProjectData.Main.tlpTextLenPosInfo.Visible = false;
+                ProjectData.Main.TableCompleteInfoLabel.Visible = false;
+                ProjectData.Main.THWorkSpaceSplitContainer.Visible = false;
 
                 //Disable items
-                projectData.Main.saveToolStripMenuItem.Enabled = false;
-                projectData.Main.saveAsToolStripMenuItem.Enabled = false;
-                projectData.Main.editToolStripMenuItem.Enabled = false;
-                projectData.Main.viewToolStripMenuItem.Enabled = false;
-                projectData.Main.saveTranslationToolStripMenuItem.Enabled = false;
-                projectData.Main.writeTranslationInGameToolStripMenuItem.Enabled = false;
-                projectData.Main.loadTranslationToolStripMenuItem.Enabled = false;
-                projectData.Main.loadTrasnlationAsToolStripMenuItem.Enabled = false;
-                projectData.Main.loadTrasnlationAsForcedToolStripMenuItem.Enabled = false;
-                projectData.Main.saveTranslationAsToolStripMenuItem.Enabled = false;
-                projectData.Main.savemenusNOTenabled = true;
-                projectData.Main.THSourceRichTextBox.Enabled = false;
-                projectData.Main.THTargetRichTextBox.Enabled = false;
-                projectData.Main.openInWebToolStripMenuItem.Enabled = false;
-                projectData.Main.selectedToolStripMenuItem1.Enabled = false;
-                projectData.Main.tableToolStripMenuItem1.Enabled = false;
-                projectData.Main.fixCellsSelectedToolStripMenuItem.Enabled = false;
-                projectData.Main.fixCellsTableToolStripMenuItem.Enabled = false;
-                projectData.Main.setOriginalValueToTranslationToolStripMenuItem.Enabled = false;
-                projectData.Main.completeRomajiotherLinesToolStripMenuItem.Enabled = false;
-                projectData.Main.completeRomajiotherLinesToolStripMenuItem1.Enabled = false;
-                projectData.Main.forceSameForSimularToolStripMenuItem.Enabled = false;
-                projectData.Main.forceSameForSimularToolStripMenuItem1.Enabled = false;
-                projectData.Main.cutToolStripMenuItem1.Enabled = false;
-                projectData.Main.copyCellValuesToolStripMenuItem.Enabled = false;
-                projectData.Main.pasteCellValuesToolStripMenuItem.Enabled = false;
-                projectData.Main.ClearSelectedCellsToolStripMenuItem.Enabled = false;
-                projectData.Main.toUPPERCASEToolStripMenuItem.Enabled = false;
-                projectData.Main.firstCharacterToUppercaseToolStripMenuItem.Enabled = false;
-                projectData.Main.toLOWERCASEToolStripMenuItem.Enabled = false;
-                projectData.Main.setColumnSortingToolStripMenuItem.Enabled = false;
-                projectData.Main.OpenInWebContextToolStripMenuItem.Enabled = false;
-                projectData.Main.TranslateSelectedContextToolStripMenuItem.Enabled = false;
-                projectData.Main.TranslateTableContextToolStripMenuItem.Enabled = false;
-                projectData.Main.fixSymbolsContextToolStripMenuItem.Enabled = false;
-                projectData.Main.fixSymbolsTableContextToolStripMenuItem.Enabled = false;
-                projectData.Main.OriginalToTransalationContextToolStripMenuItem.Enabled = false;
-                projectData.Main.CutToolStripMenuItem.Enabled = false;
-                projectData.Main.CopyToolStripMenuItem.Enabled = false;
-                projectData.Main.pasteToolStripMenuItem.Enabled = false;
-                projectData.Main.CleanSelectedCellsToolStripMenuItem1.Enabled = false;
-                projectData.Main.toolStripMenuItem14.Enabled = false;
-                projectData.Main.uppercaseToolStripMenuItem.Enabled = false;
-                projectData.Main.lowercaseToolStripMenuItem.Enabled = false;
-                projectData.Main.exportToolStripMenuItem1.Enabled = false;
-                projectData.Main.openProjectsDirToolStripMenuItem.Enabled = false;
-                projectData.Main.openTranslationRulesFileToolStripMenuItem.Enabled = false;
-                projectData.Main.openCellFixesFileToolStripMenuItem.Enabled = false;
-                projectData.Main.reloadRulesToolStripMenuItem.Enabled = false;
+                ProjectData.Main.saveToolStripMenuItem.Enabled = false;
+                ProjectData.Main.saveAsToolStripMenuItem.Enabled = false;
+                ProjectData.Main.editToolStripMenuItem.Enabled = false;
+                ProjectData.Main.viewToolStripMenuItem.Enabled = false;
+                ProjectData.Main.saveTranslationToolStripMenuItem.Enabled = false;
+                ProjectData.Main.writeTranslationInGameToolStripMenuItem.Enabled = false;
+                ProjectData.Main.loadTranslationToolStripMenuItem.Enabled = false;
+                ProjectData.Main.loadTrasnlationAsToolStripMenuItem.Enabled = false;
+                ProjectData.Main.loadTrasnlationAsForcedToolStripMenuItem.Enabled = false;
+                ProjectData.Main.saveTranslationAsToolStripMenuItem.Enabled = false;
+                ProjectData.Main.savemenusNOTenabled = true;
+                ProjectData.Main.THSourceRichTextBox.Enabled = false;
+                ProjectData.Main.THTargetRichTextBox.Enabled = false;
+                ProjectData.Main.openInWebToolStripMenuItem.Enabled = false;
+                ProjectData.Main.selectedToolStripMenuItem1.Enabled = false;
+                ProjectData.Main.tableToolStripMenuItem1.Enabled = false;
+                ProjectData.Main.fixCellsSelectedToolStripMenuItem.Enabled = false;
+                ProjectData.Main.fixCellsTableToolStripMenuItem.Enabled = false;
+                ProjectData.Main.setOriginalValueToTranslationToolStripMenuItem.Enabled = false;
+                ProjectData.Main.completeRomajiotherLinesToolStripMenuItem.Enabled = false;
+                ProjectData.Main.completeRomajiotherLinesToolStripMenuItem1.Enabled = false;
+                ProjectData.Main.forceSameForSimularToolStripMenuItem.Enabled = false;
+                ProjectData.Main.forceSameForSimularToolStripMenuItem1.Enabled = false;
+                ProjectData.Main.cutToolStripMenuItem1.Enabled = false;
+                ProjectData.Main.copyCellValuesToolStripMenuItem.Enabled = false;
+                ProjectData.Main.pasteCellValuesToolStripMenuItem.Enabled = false;
+                ProjectData.Main.ClearSelectedCellsToolStripMenuItem.Enabled = false;
+                ProjectData.Main.toUPPERCASEToolStripMenuItem.Enabled = false;
+                ProjectData.Main.firstCharacterToUppercaseToolStripMenuItem.Enabled = false;
+                ProjectData.Main.toLOWERCASEToolStripMenuItem.Enabled = false;
+                ProjectData.Main.setColumnSortingToolStripMenuItem.Enabled = false;
+                ProjectData.Main.OpenInWebContextToolStripMenuItem.Enabled = false;
+                ProjectData.Main.TranslateSelectedContextToolStripMenuItem.Enabled = false;
+                ProjectData.Main.TranslateTableContextToolStripMenuItem.Enabled = false;
+                ProjectData.Main.fixSymbolsContextToolStripMenuItem.Enabled = false;
+                ProjectData.Main.fixSymbolsTableContextToolStripMenuItem.Enabled = false;
+                ProjectData.Main.OriginalToTransalationContextToolStripMenuItem.Enabled = false;
+                ProjectData.Main.CutToolStripMenuItem.Enabled = false;
+                ProjectData.Main.CopyToolStripMenuItem.Enabled = false;
+                ProjectData.Main.pasteToolStripMenuItem.Enabled = false;
+                ProjectData.Main.CleanSelectedCellsToolStripMenuItem1.Enabled = false;
+                ProjectData.Main.toolStripMenuItem14.Enabled = false;
+                ProjectData.Main.uppercaseToolStripMenuItem.Enabled = false;
+                ProjectData.Main.lowercaseToolStripMenuItem.Enabled = false;
+                ProjectData.Main.exportToolStripMenuItem1.Enabled = false;
+                ProjectData.Main.openProjectsDirToolStripMenuItem.Enabled = false;
+                ProjectData.Main.openTranslationRulesFileToolStripMenuItem.Enabled = false;
+                ProjectData.Main.openCellFixesFileToolStripMenuItem.Enabled = false;
+                ProjectData.Main.reloadRulesToolStripMenuItem.Enabled = false;
 
-                projectData.Main.runTestGameToolStripMenuItem.Enabled = false;
+                ProjectData.Main.runTestGameToolStripMenuItem.Enabled = false;
 
-                projectData.Main.TargetTextBoxLinePositionLabelData.Text = string.Empty;
-                projectData.Main.TargetTextBoxColumnPositionLabelData.Text = string.Empty;
+                ProjectData.Main.TargetTextBoxLinePositionLabelData.Text = string.Empty;
+                ProjectData.Main.TargetTextBoxColumnPositionLabelData.Text = string.Empty;
 
                 //remove project category
                 var CategoryName = T._("Project");
-                foreach(var menu in projectData.Main.CMSFilesList.Items)
+                foreach(var menu in ProjectData.Main.CMSFilesList.Items)
                 {
                     if(menu is System.Windows.Forms.ToolStripMenuItem t && t.Text== CategoryName)
                     {
-                        projectData.Main.CMSFilesList.Items.Remove(t);
+                        ProjectData.Main.CMSFilesList.Items.Remove(t);
                         break;
                     }
                 }

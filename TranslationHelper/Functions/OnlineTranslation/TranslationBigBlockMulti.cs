@@ -7,7 +7,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
 {
     class TranslationBigBlockMulti : TranslationBase
     {
-        public TranslationBigBlockMulti(ProjectData projectData) : base(projectData)
+        public TranslationBigBlockMulti() : base()
         {
         }
 
@@ -18,7 +18,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
 
         internal void TranslateByBlock()
         {
-            foreach (DataTable table in projectData.THFilesElementsDataset.Tables)
+            foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
             {
                 foreach (DataRow row in table.Rows)
                 {

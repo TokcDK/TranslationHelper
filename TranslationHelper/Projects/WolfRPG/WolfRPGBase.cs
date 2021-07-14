@@ -6,7 +6,7 @@ namespace TranslationHelper.Projects.WolfRPG
 {
     abstract class WolfRPGBase : ProjectBase
     {
-        protected WolfRPGBase(ProjectData projectData) : base(projectData)
+        protected WolfRPGBase() : base()
         {
             HideVarsBase = new Dictionary<string, string>
             {

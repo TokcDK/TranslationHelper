@@ -14,12 +14,12 @@ namespace TranslationHelper
     {
         //Defaults
         internal INIFileMan.INIFile THConfigINI = new INIFileMan.INIFile(Application.ProductName + ".ini");
-        readonly ProjectData projectData;
-        internal THfrmSettings(ProjectData projectData)
+        
+        internal THfrmSettings()
         {
             InitializeComponent();
 
-            this.projectData = projectData;
+            
 
             SetTooltips();
 
@@ -91,12 +91,12 @@ namespace TranslationHelper
 
         public void GetSettings()
         {
-            if (projectData.SettingsIsLoading)
+            if (ProjectData.SettingsIsLoading)
             {
                 return;
             }
 
-            projectData.SettingsIsLoading = true;
+            ProjectData.SettingsIsLoading = true;
 
             //try
             //{
@@ -115,17 +115,17 @@ namespace TranslationHelper
             //THOptionEnableTranslationCacheCheckBox.Checked = EnableTranslationCacheINI;
             //THOptionAutotranslationForSimularCheckBox.Checked = AutotranslationForIdenticalINI;
 
-            SettingsList = SettingsBaseTools.GetSettingsList(projectData);
+            SettingsList = SettingsBaseTools.GetSettingsList();
 
             foreach (var setting in SettingsList.Keys)
             {
                 if (THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
                 {
-                    projectData.BufferValueString = THConfigINI.ReadINI(SettingsList[setting].Section, SettingsList[setting].Key);
+                    ProjectData.BufferValueString = THConfigINI.ReadINI(SettingsList[setting].Section, SettingsList[setting].Key);
                 }
                 else
                 {
-                    projectData.BufferValueString = SettingsList[setting].Default;
+                    ProjectData.BufferValueString = SettingsList[setting].Default;
                 }
                 SettingsList[setting].Set(true);
             }
@@ -134,7 +134,7 @@ namespace TranslationHelper
 
             AddQuickWebTranslators();
 
-            projectData.SettingsIsLoading = false;
+            ProjectData.SettingsIsLoading = false;
         }
 
         private void AddQuickWebTranslators()

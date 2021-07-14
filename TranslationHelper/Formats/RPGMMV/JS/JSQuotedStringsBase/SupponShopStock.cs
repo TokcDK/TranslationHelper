@@ -4,7 +4,7 @@
 //{
 //    class SupponShopStock : JSQuotedStringsBase
 //    {
-//        public SupponShopStock(projectData projectData) : base(projectData)
+//        public SupponShopStock() : base()
 //        {
 //        }
 

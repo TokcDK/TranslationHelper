@@ -5,20 +5,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class AllHardFixes : HardFixesBase
     {
-        public AllHardFixes(ProjectData projectData) : base(projectData)
+        public AllHardFixes() : base()
         {
             HardFixesList = new List<HardFixesBase>()
             {
-                new ProjectSpecificFixes(projectData),
-                new FixENJPQuoteOnStringStart2ndLine(projectData),
-                new FixENJPQuoteOnStringStart1stLine(projectData),
-                new FixForRPGMAkerQuotationInSomeStrings(projectData),
-                new FixForRPGMAkerQuotationInSomeStrings2(projectData),
-                new FixForEndingQuoteInconsistence(projectData),
-                new FixBrokenNameVar(projectData),
-                new FixBrokenNameVar2(projectData),
-                //new RemoveIeroglifs(projectData)
-                //new LuaLiaFix(projectData),
+                new ProjectSpecificFixes(),
+                new FixENJPQuoteOnStringStart2ndLine(),
+                new FixENJPQuoteOnStringStart1stLine(),
+                new FixForRPGMAkerQuotationInSomeStrings(),
+                new FixForRPGMAkerQuotationInSomeStrings2(),
+                new FixForEndingQuoteInconsistence(),
+                new FixBrokenNameVar(),
+                new FixBrokenNameVar2(),
+                //new RemoveIeroglifs()
+                //new LuaLiaFix(),
             };
         }
 

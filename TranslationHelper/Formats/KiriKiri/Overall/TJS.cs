@@ -8,7 +8,7 @@ namespace TranslationHelper.Formats.KiriKiri
 {
     class TJS : FormatBase
     {
-        public TJS(ProjectData projectData) : base(projectData)
+        public TJS() : base()
         {
         }
 
@@ -21,13 +21,13 @@ namespace TranslationHelper.Formats.KiriKiri
         {
             try
             {
-                using (StreamReader file = new StreamReader(projectData.SPath, Encoding.GetEncoding(932)))
+                using (StreamReader file = new StreamReader(ProjectData.SPath, Encoding.GetEncoding(932)))
                 {
                     string line;
                     //string original = string.Empty;
-                    string filename = Path.GetFileNameWithoutExtension(projectData.SPath);
-                    _ = projectData.THFilesElementsDataset.Tables.Add(filename);
-                    _ = projectData.THFilesElementsDataset.Tables[0].Columns.Add("Original");
+                    string filename = Path.GetFileNameWithoutExtension(ProjectData.SPath);
+                    _ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
+                    _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Original");
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
@@ -39,7 +39,7 @@ namespace TranslationHelper.Formats.KiriKiri
                         {
                             if (line.EndsWith("[k]"))
                             {
-                                projectData.THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
+                                ProjectData.THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
 
                                 //int i = 0;
                                 //while (line.EndsWith("[k]"))
@@ -73,9 +73,9 @@ namespace TranslationHelper.Formats.KiriKiri
                         }
                     }
 
-                    //if (projectData.THFilesElementsDataset.Tables[0].Rows.Count > 0)
+                    //if (ProjectData.THFilesElementsDataset.Tables[0].Rows.Count > 0)
                     //{
-                    //    _ = projectData.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                    //    _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
                     //    THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
                     //}
                     //else

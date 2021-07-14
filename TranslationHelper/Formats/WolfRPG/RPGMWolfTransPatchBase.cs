@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.WolfRPG
 {
     abstract class RPGMWolfTransPatchBase : FormatBase
     {
-        protected RPGMWolfTransPatchBase(ProjectData projectData) : base(projectData)
+        protected RPGMWolfTransPatchBase() : base()
         {
         }
 
@@ -266,7 +266,7 @@ namespace TranslationHelper.Formats.WolfRPG
             var original = string.Join("\n", originalLines);
             var translation = string.Join("\n", translationLines);
 
-            if (projectData.OpenFileMode)
+            if (ProjectData.OpenFileMode)
             {
                 if (P2 && IsitemAttr)//skip itemAttr for p2
                 {
@@ -287,7 +287,7 @@ namespace TranslationHelper.Formats.WolfRPG
             {
                 var trans = original;
                 var translated =
-                    projectData.SaveFileMode // save mode
+                    ProjectData.SaveFileMode // save mode
                     && IsValidString(original) // valid original
                     && SetTranslation(ref trans)  // translation found
                     && (!string.IsNullOrEmpty(trans)) // translation not null and not empty

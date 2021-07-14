@@ -139,7 +139,7 @@
     <Compile Include="appSettings\Sections\General\CheckBox\SLineCharLimit.cs" />
     <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
     <Compile Include="Data\CleanupData.cs" />
-    <Compile Include="Data\THDataWork.cs" />
+    <Compile Include="Data\ProjectData.cs" />
     <Compile Include="Data\THSettingsData.cs" />
     <Compile Include="Extensions\ExtensionsBytes.cs" />
     <Compile Include="Extensions\ExtensionsDataRow.cs" />

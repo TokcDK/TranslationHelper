@@ -73,7 +73,7 @@ namespace TranslationHelper.Extensions
             return string.Join(Environment.NewLine, Lines); //ReturnLine.ToString();
         }
 
-        internal static string GetSplittedLine(this string Line, int Limit, ProjectData projectData = null)
+        internal static string GetSplittedLine(this string Line, int Limit)
         {
             string Trigger/* = string.Empty*/;
             string newLine = (Trigger = Regex.Match(Line, @"(if|en)\([^\r\n]+\)$").Value).Length > 0 ? Line.Replace(Trigger, string.Empty) : Line;

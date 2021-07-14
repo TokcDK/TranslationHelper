@@ -8,7 +8,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 {
     class EXE : FormatBase
     {
-        public EXE(ProjectData projectData) : base(projectData)
+        public EXE() : base()
         {
         }
 
@@ -24,7 +24,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         private bool OpenSaveEXE()
         {
-            if (string.IsNullOrWhiteSpace(projectData.FilePath) || !File.Exists(projectData.FilePath) || Path.GetExtension(projectData.FilePath) != ".exe")
+            if (string.IsNullOrWhiteSpace(ProjectData.FilePath) || !File.Exists(ProjectData.FilePath) || Path.GetExtension(ProjectData.FilePath) != ".exe")
             {
                 return false;
             }
@@ -36,14 +36,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             List<byte> NewEXEBytesForWrite = null;//new file content
             var translatedbytesControlPosition = 0;
-            if (projectData.SaveFileMode)
+            if (ProjectData.SaveFileMode)
             {
                 NewEXEBytesForWrite = new List<byte>();//init only for translation
             }
 
             var filetranslated = false;
 
-            using (var fs = new FileStream(projectData.SPath, FileMode.Open, FileAccess.Read))
+            using (var fs = new FileStream(ProjectData.SPath, FileMode.Open, FileAccess.Read))
             using (var br = new BinaryReader(fs, Encoding.GetEncoding(932)))
             {
                 byte currentbyte;
@@ -57,7 +57,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 var ffbytesBeforeForSave = new List<byte>();
                 var strtranslated = false;
 
-                if (projectData.OpenFileMode)
+                if (ProjectData.OpenFileMode)
                 {
                     br.BaseStream.Position = startpos;//go to strings part
                 }
@@ -107,7 +107,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             //{
                             //    ffbytesAfter.Add(currentbyte);
                             //}
-                            //else if (projectData.SaveFileMode && currentbyte == 0xff) // only need for save mode
+                            //else if (ProjectData.SaveFileMode && currentbyte == 0xff) // only need for save mode
                             //{
                             //    ffbytesBefore.Add(currentbyte);//save FF bytes for next string to write
                             //}
@@ -134,7 +134,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     }
                                 }
 
-                                if (projectData.OpenFileMode)
+                                if (ProjectData.OpenFileMode)
                                 {
                                     //recalculate maxbytes
                                     if (strhaveotherbytes)
@@ -158,7 +158,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             //<<--check string
 
                             //write all bytes-->>
-                            if (projectData.SaveFileMode && strtranslated)
+                            if (ProjectData.SaveFileMode && strtranslated)
                             {
                                 var lastwritepos = br.BaseStream.Position - 1; //-1 because 1st byte of next string already read in currentbyte
 
@@ -256,7 +256,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     }
                                 }
                             }
-                            else if (projectData.SaveFileMode)
+                            else if (ProjectData.SaveFileMode)
                             {
                                 foreach (var b in candidate)//add main string bytes form candidate itself
                                 {
@@ -277,7 +277,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             strtranslated = false;
                             //ffbytesAfter.Clear();
                             //ffbytesAfterMode = false;
-                            //if (projectData.SaveFileMode)
+                            //if (ProjectData.SaveFileMode)
                             //{
                             //    if (ffbytesBefore.Count > 0)
                             //    {
@@ -295,7 +295,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             if (br.BaseStream.Position >= endpos)
                             {
 
-                                if (projectData.SaveFileMode)
+                                if (ProjectData.SaveFileMode)
                                 {
                                     //add currentbyte to translation because it was already read but cyrcle will over
                                     NewEXEBytesForWrite.Add(currentbyte);
@@ -317,7 +317,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     }
                 }
 
-                if (projectData.SaveFileMode)
+                if (ProjectData.SaveFileMode)
                 {
                     //add rest bytes of the stream
                     while (BaseStreamLength > br.BaseStream.Position)
@@ -328,7 +328,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 }
             }
 
-            if (projectData.OpenFileMode)
+            if (ProjectData.OpenFileMode)
             {
                 return CheckTablesContent(ParseData.tablename);
             }
@@ -336,7 +336,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             {
                 if (filetranslated)
                 {
-                    File.WriteAllBytes(projectData.FilePath, NewEXEBytesForWrite.ToArray());
+                    File.WriteAllBytes(ProjectData.FilePath, NewEXEBytesForWrite.ToArray());
                 }
 
                 return true;

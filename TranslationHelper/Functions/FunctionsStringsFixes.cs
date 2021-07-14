@@ -10,7 +10,7 @@ namespace TranslationHelper.Functions
 {
     static class FunctionsStringFixes
     {
-        internal static string ApplyHardFixes(string original, string translation, ProjectData projectData = null, int tind = -1, int rind = -1)
+        internal static string ApplyHardFixes(string original, string translation, int tind = -1, int rind = -1)
         {
             if (string.IsNullOrWhiteSpace(translation) || original == translation || string.IsNullOrWhiteSpace(original))
             {
@@ -79,7 +79,7 @@ namespace TranslationHelper.Functions
                 //translation = LuaLiaFix(original, translation);
 
                 //Project's specific fixes
-                translation = projectData?.CurrentProject.HardcodedFixes(original, translation);
+                translation = ProjectData.CurrentProject.HardcodedFixes(original, translation);
             }
             catch (Exception ex)
             {

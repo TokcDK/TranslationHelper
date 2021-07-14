@@ -8,13 +8,9 @@ namespace TranslationHelper.Projects
     {
         public int RPGMTransPatchVersion { get; private set; }
 
-        public RPGMTransPatch(ProjectData thData) : base(thData)
-        {
-        }
-
         internal override bool Check()
         {
-            if (Path.GetFileName(projectData.SPath) == "RPGMKTRANSPATCH")
+            if (Path.GetFileName(ProjectData.SPath) == "RPGMKTRANSPATCH")
             {
                 return true;
             }
@@ -34,12 +30,12 @@ namespace TranslationHelper.Projects
 
         internal override bool Open()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(projectData.SPath), new TXT(projectData), "*.txt");
+            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SPath), new TXT(), "*.txt");
         }
 
         internal override bool Save()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(projectData.SPath), new TXT(projectData), "*.txt");
+            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SPath), new TXT(), "*.txt");
         }
     }
 }

@@ -15,15 +15,11 @@ namespace TranslationHelper.Projects
     {
         public int RPGMTransPatchVersion { get; private set; }
 
-        public RPGMGame(ProjectData thData) : base(thData)
-        {
-        }
-
         internal override bool Check()
         {
-            if (Path.GetExtension(projectData.SPath) == ".exe")
+            if (Path.GetExtension(ProjectData.SPath) == ".exe")
             {
-                DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(projectData.SPath));
+                DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(ProjectData.SPath));
 
                 if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2"))
                     || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss3a")
@@ -81,7 +77,7 @@ namespace TranslationHelper.Projects
         {
             patchdir = Path.Combine(Properties.Settings.Default.THProjectWorkDir, Path.GetFileName(Properties.Settings.Default.THSelectedGameDir) + "_patch");
 
-            return OpenSaveFilesBase(patchdir, new TXT(projectData), "*.txt");
+            return OpenSaveFilesBase(patchdir, new TXT(), "*.txt");
         }
 
         private bool Patching()
@@ -95,7 +91,7 @@ namespace TranslationHelper.Projects
 
             FixOldPatchDirsLocation(workdir);
 
-            if (projectData.OpenFileMode && IsPatchFilesExist(patchdirPath))
+            if (ProjectData.OpenFileMode && IsPatchFilesExist(patchdirPath))
             {
                 DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
@@ -111,7 +107,7 @@ namespace TranslationHelper.Projects
             }
 
             var ret = CreateUpdatePatch(GameDirPath.FullName, workdir);
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
             return ret;
         }
 
@@ -173,14 +169,14 @@ namespace TranslationHelper.Projects
                 }
             })
             {
-                projectData.Main.ProgressInfo(true, T._("Writing ") + "Patch.cmd");
+                ProjectData.Main.ProgressInfo(true, T._("Writing ") + "Patch.cmd");
                 var patch = Path.Combine(Properties.Settings.Default.THProjectWorkDir, "Patch.cmd");
                 File.WriteAllText(patch, "\r\n\"" + rpgmakertranscli + "\" " + args + "\r\npause");
                 try
                 {
-                    projectData.Main.ProgressInfo(true, T._("Restore baks"));
+                    ProjectData.Main.ProgressInfo(true, T._("Restore baks"));
                     BakRestore();//restore original files before patch creation
-                    projectData.Main.ProgressInfo(true, T._("Patching"));
+                    ProjectData.Main.ProgressInfo(true, T._("Patching"));
                     ret = program.Start();
                     program.WaitForExit();
                 }
@@ -193,27 +189,27 @@ namespace TranslationHelper.Projects
                 if (!ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
                 {
                     new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                    projectData.Main.ProgressInfo(true, T._("Patching failed"));
+                    ProjectData.Main.ProgressInfo(true, T._("Patching failed"));
                     CleanDirs(workdir);
 
-                    projectData.Main.ProgressInfo(true, " " + T._("Somethig wrong") + ".. " + T._("Trying 2nd variant"));
+                    ProjectData.Main.ProgressInfo(true, " " + T._("Somethig wrong") + ".. " + T._("Trying 2nd variant"));
                     //2nd try because was error sometime after 1st patch creation execution
                     BakRestore();
                     program.StartInfo.Arguments = args + " -b";
 
-                    projectData.Main.ProgressInfo(true, T._("Writing ") + "Patch.cmd");
+                    ProjectData.Main.ProgressInfo(true, T._("Writing ") + "Patch.cmd");
                     File.WriteAllText(patch, "\r\n\"" + rpgmakertranscli + "\" " + args + " -b" + "\r\npause");
 
-                    projectData.Main.ProgressInfo(true, T._("Patching") + "-b");
+                    ProjectData.Main.ProgressInfo(true, T._("Patching") + "-b");
                     ret = program.Start();
                     program.WaitForExit();
                 }
 
                 //extract Game.rgss
-                if (projectData.OpenFileMode && !ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
+                if (ProjectData.OpenFileMode && !ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
                 {
                     new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                    projectData.Main.ProgressInfo(true, T._("Last try"));
+                    ProjectData.Main.ProgressInfo(true, T._("Last try"));
                     //Maybe rgss3 file was not extracted and need to extract it manually
                     string GameRgss3Path = RPGMFunctions.GetRPGMakerArc(gamedirPath);
                     if (GameRgss3Path.Length == 0)
@@ -229,7 +225,7 @@ namespace TranslationHelper.Projects
 
                     var rgssdecrypterargs = "\"--output=" + tempExtractDir + "\" \"" + GameRgss3Path + "\"";
 
-                    projectData.Main.ProgressInfo(true, T._("Extracting") + " " + "Game.rgss3");
+                    ProjectData.Main.ProgressInfo(true, T._("Extracting") + " " + "Game.rgss3");
                     FunctionsProcess.RunProgram(rgssdecrypter, rgssdecrypterargs);
 
                     if (!tempExtractDir.HasAnyDirs())
@@ -281,7 +277,7 @@ namespace TranslationHelper.Projects
                         {
                             CleanDirs(workdir);
 
-                            projectData.Main.ProgressInfo(true, T._("Patching") + " 3");
+                            ProjectData.Main.ProgressInfo(true, T._("Patching") + " 3");
                             //попытка с параметром -b - Use UTF-8 BOM in Patch files
                             program.StartInfo.FileName = rpgmakertranscli;
                             program.StartInfo.Arguments = args + " -b";
@@ -292,7 +288,7 @@ namespace TranslationHelper.Projects
                             if (!ret)
                             {
                                 new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                                projectData.Main.ProgressInfo(true, T._("Patching failed"));
+                                ProjectData.Main.ProgressInfo(true, T._("Patching failed"));
                                 MessageBox.Show(T._("Error occured while patch execution."));
                                 CleanDirs(workdir);
                                 return false;
@@ -301,7 +297,7 @@ namespace TranslationHelper.Projects
                             if (program.ExitCode > 0)
                             {
                                 new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                                projectData.Main.ProgressInfo(true, T._("Patching failed"));
+                                ProjectData.Main.ProgressInfo(true, T._("Patching failed"));
                                 MessageBox.Show(T._("Patch creation finished unsuccesfully.")
                                     + "Exit code="
                                     + program.ExitCode
@@ -357,15 +353,15 @@ namespace TranslationHelper.Projects
 
         internal override bool Save()
         {
-            OpenSaveFilesBase(patchdir, new TXT(projectData));//not need to check return value here
+            OpenSaveFilesBase(patchdir, new TXT());//not need to check return value here
 
             return Patching();
-            //return OpenSaveFilesBase(patchdir, new TXT(projectData), "*.txt") && Patching();
+            //return OpenSaveFilesBase(patchdir, new TXT(), "*.txt") && Patching();
         }
 
         internal override void PreSaveDB()
         {
-            OpenSaveFilesBase(patchdir, new TXT(projectData), "*.txt");
+            OpenSaveFilesBase(patchdir, new TXT(), "*.txt");
         }
 
         internal override void AfterTranslationWriteActions()

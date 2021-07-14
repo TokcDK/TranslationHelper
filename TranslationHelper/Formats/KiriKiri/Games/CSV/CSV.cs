@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
 {
     class CSV : KiriKiriBase
     {
-        public CSV(ProjectData projectData) : base(projectData)
+        public CSV() : base()
         {
         }
 
@@ -29,21 +29,21 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
                         var subvalueschanged = false;
                         for (int s=0; s< subvalues.Length;s++)
                         {
-                            if (projectData.OpenFileMode)
+                            if (ProjectData.OpenFileMode)
                             {
                                 AddRowData(subvalues[s], "", true);
                             }
                             else
                             {
-                                if (IsValidString(subvalues[s]) && projectData.TablesLinesDict.ContainsKey(subvalues[s]))
+                                if (IsValidString(subvalues[s]) && ProjectData.TablesLinesDict.ContainsKey(subvalues[s]))
                                 {
-                                    subvalues[s] = projectData.TablesLinesDict[subvalues[s]];
+                                    subvalues[s] = ProjectData.TablesLinesDict[subvalues[s]];
                                     subvalueschanged = true;
                                 }
                             }
                         }
 
-                        if (projectData.SaveFileMode && subvalueschanged)
+                        if (ProjectData.SaveFileMode && subvalueschanged)
                         {
                             ParseData.line = ParseData.line
                                 .Remove(values[i].Index, values[i].Length)
@@ -53,18 +53,18 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
                     }
                     else
                     {
-                        if (projectData.OpenFileMode)
+                        if (ProjectData.OpenFileMode)
                         {
                             AddRowData(values[i].Value, "", true);
                         }
                         else
                         {
                             var value = values[i].Value;
-                            if (IsValidString(value) && projectData.TablesLinesDict.ContainsKey(value))
+                            if (IsValidString(value) && ProjectData.TablesLinesDict.ContainsKey(value))
                             {
                                 ParseData.line = ParseData.line
                                     .Remove(values[i].Index, values[i].Length)
-                                    .Insert(values[i].Index, projectData.TablesLinesDict[value]);
+                                    .Insert(values[i].Index, ProjectData.TablesLinesDict[value]);
                                 ParseData.Ret = true;
                             }
                         }

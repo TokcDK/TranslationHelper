@@ -6,15 +6,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class ENQuotesToJP : RowBase
     {
-        public ENQuotesToJP(ProjectData projectData) : base(projectData)
+        public ENQuotesToJP() : base()
         {
-            if (projectData.ENQuotesToJPLearnDataFoundPrev == null)
+            if (ProjectData.ENQuotesToJPLearnDataFoundPrev == null)
             {
-                projectData.ENQuotesToJPLearnDataFoundPrev = new System.Collections.Generic.Dictionary<char, int>();
+                ProjectData.ENQuotesToJPLearnDataFoundPrev = new System.Collections.Generic.Dictionary<char, int>();
             }
-            if (projectData.ENQuotesToJPLearnDataFoundNext == null)
+            if (ProjectData.ENQuotesToJPLearnDataFoundNext == null)
             {
-                projectData.ENQuotesToJPLearnDataFoundNext = new System.Collections.Generic.Dictionary<char, int>();
+                ProjectData.ENQuotesToJPLearnDataFoundNext = new System.Collections.Generic.Dictionary<char, int>();
             }
         }
 
@@ -33,9 +33,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected void PostLearn()
         {
             MessageBox.Show(
-                (projectData.ENQuotesToJPLearnDataFoundPrev != null && projectData.ENQuotesToJPLearnDataFoundPrev.Keys.Count > 0 ? "Prev:\r\n" + string.Join("\r\n", projectData.ENQuotesToJPLearnDataFoundPrev) : "")
+                (ProjectData.ENQuotesToJPLearnDataFoundPrev != null && ProjectData.ENQuotesToJPLearnDataFoundPrev.Keys.Count > 0 ? "Prev:\r\n" + string.Join("\r\n", ProjectData.ENQuotesToJPLearnDataFoundPrev) : "")
                 + "\r\n\r\n" +
-                (projectData.ENQuotesToJPLearnDataFoundNext != null && projectData.ENQuotesToJPLearnDataFoundNext.Keys.Count > 0 ? "Next:\r\n" + string.Join("\r\n", projectData.ENQuotesToJPLearnDataFoundNext) : "")
+                (ProjectData.ENQuotesToJPLearnDataFoundNext != null && ProjectData.ENQuotesToJPLearnDataFoundNext.Keys.Count > 0 ? "Next:\r\n" + string.Join("\r\n", ProjectData.ENQuotesToJPLearnDataFoundNext) : "")
                 );
         }
 
@@ -162,24 +162,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (IsAll || IsTable)
                 if (prev)
                 {
-                    if (projectData.ENQuotesToJPLearnDataFoundPrev.ContainsKey(c))
+                    if (ProjectData.ENQuotesToJPLearnDataFoundPrev.ContainsKey(c))
                     {
-                        projectData.ENQuotesToJPLearnDataFoundPrev[c]++;
+                        ProjectData.ENQuotesToJPLearnDataFoundPrev[c]++;
                     }
                     else
                     {
-                        projectData.ENQuotesToJPLearnDataFoundPrev.Add(c, 1);
+                        ProjectData.ENQuotesToJPLearnDataFoundPrev.Add(c, 1);
                     }
                 }
                 else
                 {
-                    if (projectData.ENQuotesToJPLearnDataFoundNext.ContainsKey(c))
+                    if (ProjectData.ENQuotesToJPLearnDataFoundNext.ContainsKey(c))
                     {
-                        projectData.ENQuotesToJPLearnDataFoundNext[c]++;
+                        ProjectData.ENQuotesToJPLearnDataFoundNext[c]++;
                     }
                     else
                     {
-                        projectData.ENQuotesToJPLearnDataFoundNext.Add(c, 1);
+                        ProjectData.ENQuotesToJPLearnDataFoundNext.Add(c, 1);
                     }
                 }
 

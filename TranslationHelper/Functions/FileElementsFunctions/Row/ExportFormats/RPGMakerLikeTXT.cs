@@ -4,7 +4,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
 {
     class RPGMakerLikeTXT : ExportFormatsBase
     {
-        public RPGMakerLikeTXT(ProjectData projectData) : base(projectData)
+        public RPGMakerLikeTXT() : base()
         {
         }
 

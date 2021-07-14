@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 {
     abstract class KiriKiriGameBase : ProjectBase
     {
-        protected KiriKiriGameBase(ProjectData projectData) : base(projectData)
+        protected KiriKiriGameBase() : base()
         {
             HideVarsBase = new Dictionary<string, string>()
             {
@@ -23,13 +23,13 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         protected bool CheckKiriKiriBase()
         {
             return
-            Path.GetExtension(projectData.SPath).ToUpperInvariant() == ".EXE"
+            Path.GetExtension(ProjectData.SPath).ToUpperInvariant() == ".EXE"
                 &&
-                FunctionsProcess.GetExeDescription(projectData.SPath) != null
+                FunctionsProcess.GetExeDescription(ProjectData.SPath) != null
                 &&
-                FunctionsProcess.GetExeDescription(projectData.SPath).ToUpper(CultureInfo.InvariantCulture).Contains("KIRIKIRI")
+                FunctionsProcess.GetExeDescription(ProjectData.SPath).ToUpper(CultureInfo.InvariantCulture).Contains("KIRIKIRI")
                 &&
-                FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(projectData.SPath), "*.xp3");
+                FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(ProjectData.SPath), "*.xp3");
         }
 
         protected const string PatchDirName = "_patch";
@@ -50,7 +50,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         {
             var ret = false;
 
-            if (projectData.OpenFileMode)
+            if (ProjectData.OpenFileMode)
             {
                 ret = ExtractXP3Data();
 
@@ -64,7 +64,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 //PatchDir
                 Directory.CreateDirectory(Path.Combine(Properties.Settings.Default.THProjectWorkDir, PatchDirName));
 
-                projectData.CurrentProject.FillTablesLinesDict();
+                ProjectData.CurrentProject.FillTablesLinesDict();
             }
 
             var dir = new DirectoryInfo(GetXP3OrigDirPath());
@@ -80,15 +80,15 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 ret = true;
             }
 
-            projectData.TablesLinesDict.Clear();
+            ProjectData.TablesLinesDict.Clear();
 
-            if (ret && projectData.SaveFileMode)
+            if (ret && ProjectData.SaveFileMode)
             {
-                projectData.Main.ProgressInfo(true, T._("Creating translation patch"));
+                ProjectData.Main.ProgressInfo(true, T._("Creating translation patch"));
                 ret = PackTranslatedFilesInPatch();
             }
 
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
             return ret;
         }
 
@@ -103,7 +103,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         {
             return new List<FormatBase>
                 {
-                   new  Formats.KiriKiri.Games.KS(projectData)
+                   new  Formats.KiriKiri.Games.KS()
                 };
         }
 
@@ -131,7 +131,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             {
                 //Properties.Settings.Default.THSelectedGameDir
 
-                KiriKiriWorkOrigFolder = Path.Combine(THSettingsData.WorkDirPath(), projectData.CurrentProject.ProjectFolderName(), Path.GetFileName(Properties.Settings.Default.THSelectedGameDir), "Orig");
+                KiriKiriWorkOrigFolder = Path.Combine(THSettingsData.WorkDirPath(), ProjectData.CurrentProject.ProjectFolderName(), Path.GetFileName(Properties.Settings.Default.THSelectedGameDir), "Orig");
 
                 //string DirName = Path.GetFileName(Properties.Settings.Default.THSelectedGameDir);;
                 Properties.Settings.Default.THProjectWorkDir = Path.GetDirectoryName(KiriKiriWorkOrigFolder);
@@ -146,7 +146,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 var SkipAlreadyExtractedAsked = false;
                 foreach (var name in ProjectXP3List)
                 {
-                    projectData.Main.ProgressInfo(true, progressMessageTitle + T._("Proceed") + ":" + name);
+                    ProjectData.Main.ProgressInfo(true, progressMessageTitle + T._("Proceed") + ":" + name);
                     var xp3path = Path.Combine(Properties.Settings.Default.THSelectedGameDir, name);
                     if (File.Exists(xp3path))
                     {
@@ -156,8 +156,8 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                             + Path.GetFileNameWithoutExtension(xp3path)
                             );
 
-                        projectData.Main.ProgressInfo(true, progressMessageTitle + (usecrc ? T._("Calculate control crc") : string.Empty) + ":" + name);
-                        var crc = usecrc ? xp3path.GetCrc32(true, projectData.Main.THActionProgressBar) : string.Empty;
+                        ProjectData.Main.ProgressInfo(true, progressMessageTitle + (usecrc ? T._("Calculate control crc") : string.Empty) + ":" + name);
+                        var crc = usecrc ? xp3path.GetCrc32(true, ProjectData.Main.THActionProgressBar) : string.Empty;
                         var XP3crc32Path = usecrc ? targetSubFolder + ".xp3." + crc + ".crc32" : string.Empty;
                         var KiriKiriEXEargs = "-i \"" + xp3path + "\" -o \"" + targetSubFolder + "\"";
                         if (!targetSubFolder.Exists)
@@ -179,7 +179,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                                 {
                                     if (SkipAlreadyExtracted)
                                     {
-                                        projectData.Main.ProgressInfo(true, progressMessageTitle + T._("Skipped:") + ":" + name);
+                                        ProjectData.Main.ProgressInfo(true, progressMessageTitle + T._("Skipped:") + ":" + name);
                                         ret = true;
                                         continue;
                                     }
@@ -213,7 +213,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                             }
                         }
 
-                        projectData.Main.ProgressInfo(true, progressMessageTitle + T._("Extract files from") + " " + name);
+                        ProjectData.Main.ProgressInfo(true, progressMessageTitle + T._("Extract files from") + " " + name);
                         FunctionsProcess.RunProcess(kirikiriunpacker, KiriKiriEXEargs);
 
                         if (!ret)
@@ -243,7 +243,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             {
             }
 
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
             return ret;
         }
 
@@ -594,7 +594,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                             {
                                 Directory.Delete(Path.Combine(Properties.Settings.Default.THProjectWorkDir, name.Replace(".xp3", string.Empty)));
                             }
-                            if (projectData.OpenFileMode)
+                            if (ProjectData.OpenFileMode)
                             {
                                 return dataFiles.ToArray();
                             }

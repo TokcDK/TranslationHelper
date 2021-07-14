@@ -30,7 +30,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// Main app data
         /// </summary>
-        protected ProjectData projectData;
+        
 
         /// <summary>
         /// return value for Table/All functions. Depends on return of Apply
@@ -47,9 +47,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         protected Dictionary<string, string> sessionData;
 
-        protected RowBase(ProjectData projectData)
+        protected RowBase()
         {
-            this.projectData = projectData;
+            
         }
 
 
@@ -80,9 +80,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     if (DGV == null)
                     {
 #if DEBUG
-                            projectData.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = projectData.Main.THFileElementsDataGridView));
+                            ProjectData.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = ProjectData.Main.THFileElementsDataGridView));
 #else
-                            DGV = projectData.Main.THFileElementsDataGridView;
+                            DGV = ProjectData.Main.THFileElementsDataGridView;
 #endif
                     }
                 }
@@ -148,9 +148,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (DGV == null)
             {
 #if DEBUG
-                projectData.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = projectData.Main.THFileElementsDataGridView));
+                ProjectData.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = ProjectData.Main.THFileElementsDataGridView));
 #else
-                DGV = projectData.Main.THFileElementsDataGridView;
+                DGV = ProjectData.Main.THFileElementsDataGridView;
 #endif
             }
 
@@ -193,7 +193,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         log.DebugData.Add("i=" + i);
 
                         //add row index
-                        SelectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(projectData, SelectedTableIndex, DGVRowIndex);
+                        SelectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(SelectedTableIndex, DGVRowIndex);
 
                         ind++; //raise added index
                     }
@@ -276,16 +276,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 else
                 {
 #if DEBUG
-                    projectData.Main.Invoke((Action)(() => SelectedTableIndex = projectData.Main.THFilesList.SelectedIndex));
+                    ProjectData.Main.Invoke((Action)(() => SelectedTableIndex = ProjectData.Main.THFilesList.SelectedIndex));
 #else
-                    SelectedTableIndex = projectData.Main.THFilesList.SelectedIndex;
+                    SelectedTableIndex = ProjectData.Main.THFilesList.SelectedIndex;
 #endif
                 }
             }
 
             if (SelectedTable == null)
             {
-                SelectedTable = projectData.THFilesElementsDataset.Tables[SelectedTableIndex];
+                SelectedTable = ProjectData.THFilesElementsDataset.Tables[SelectedTableIndex];
             }
 
             ColumnIndexOriginal = SelectedTable.Columns[THSettingsData.OriginalColumnName()].Ordinal;// Колонка Original
@@ -415,7 +415,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             Init();
 
             int tindex = 0;
-            var tables = projectData.THFilesElementsDataset.Tables;
+            var tables = ProjectData.THFilesElementsDataset.Tables;
             tablescount = tables.Count;
             SetSelectedRowsCountForAll();
 
@@ -454,7 +454,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return;
             }
             SelectedRowsCount = 0;
-            foreach (DataTable t in projectData.THFilesElementsDataset.Tables)
+            foreach (DataTable t in ProjectData.THFilesElementsDataset.Tables)
             {
                 SelectedRowsCount += t.Rows.Count;
             }

@@ -16,7 +16,7 @@ namespace TranslationHelper
 {
     class GoogleAPIOLD : TranslatorsBase
     {
-        public GoogleAPIOLD(ProjectData projectData) : base(projectData)
+        public GoogleAPIOLD() : base()
         {
         }
 
@@ -145,7 +145,7 @@ namespace TranslationHelper
                     string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
                     if (webClient == null)
-                        webClient = new WebClientEx(projectData.OnlineTranslatorCookies ?? new CookieContainer());
+                        webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
                     //webClient = new ScrapySharp.Network.ScrapingBrowser();
 
                     //using (WebClient webClient = new WebClient())
@@ -210,7 +210,7 @@ namespace TranslationHelper
                     catch (WebException ex)
                     {
                         new Functions.FunctionsLogs().LogToFile("google translation web error:" + Environment.NewLine + ex);
-                        projectData.OnlineTranslatorCookies = null;
+                        ProjectData.OnlineTranslatorCookies = null;
                     }
                     catch (Exception ex)
                     {
@@ -276,7 +276,7 @@ namespace TranslationHelper
 
             if (webClient == null)
             {
-                webClient = new WebClientEx(projectData.OnlineTranslatorCookies ?? new CookieContainer());
+                webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
                 //webClient = new ScrapySharp.Network.ScrapingBrowser();
             }
             //using (WebClient webClient = new WebClient())
@@ -304,8 +304,8 @@ namespace TranslationHelper
                 }
                 catch (WebException)
                 {
-                    projectData.OnlineTranslatorCookies = null;
-                    projectData.OnlineTranslatorCookies = new CookieContainer();
+                    ProjectData.OnlineTranslatorCookies = null;
+                    ProjectData.OnlineTranslatorCookies = new CookieContainer();
 
                     while (ErrorsWebCnt > 0 && ErrorsWebCntOverall < 10)
                     {
@@ -392,7 +392,7 @@ namespace TranslationHelper
             catch (WebException ex)
             {
                 new Functions.FunctionsLogs().LogToFile("google array translation web error:" + Environment.NewLine + ex + Environment.NewLine + "uri=" + uri);
-                projectData.OnlineTranslatorCookies = null;
+                ProjectData.OnlineTranslatorCookies = null;
                 ErrorsWebCnt++;
             }
             catch (Exception ex)

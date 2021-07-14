@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 {
     abstract class JSQuotedStringsBase : JSBase
     {
-        protected JSQuotedStringsBase(ProjectData projectData) : base(projectData)
+        protected JSQuotedStringsBase() : base()
         {
         }
 
@@ -27,7 +27,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                     {
                         var result = mc[m].Result("$1");
 
-                        if (projectData.OpenFileMode)
+                        if (ProjectData.OpenFileMode)
                         {
                             AddRowData(result, ParseData.line, true);
                         }

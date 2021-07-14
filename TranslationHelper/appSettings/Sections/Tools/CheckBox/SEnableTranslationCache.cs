@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SEnableTranslationCache : Tools
     {
-        public SEnableTranslationCache(ProjectData projectData) : base(projectData)
+        public SEnableTranslationCache() : base()
         {
         }
 
@@ -13,7 +13,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => true;
 
-        object SObject { get => projectData.Main.Settings.THOptionEnableTranslationCacheCheckBox; }
+        object SObject { get => ProjectData.Main.Settings.THOptionEnableTranslationCacheCheckBox; }
 
         static bool SVar
         {
@@ -29,7 +29,7 @@ namespace TranslationHelper.INISettings
             }
             else
             {
-                SVar = bool.TryParse(projectData.BufferValueString, out bool result) ? result : DefaultBool;
+                SVar = bool.TryParse(ProjectData.BufferValueString, out bool result) ? result : DefaultBool;
                 (SObject as System.Windows.Forms.CheckBox).Checked = SVar;
             }
         }

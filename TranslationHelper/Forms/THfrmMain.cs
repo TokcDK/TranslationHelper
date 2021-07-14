@@ -36,7 +36,7 @@ namespace TranslationHelper
         internal string extractedpatchpath = string.Empty;
 
         internal string FVariant = string.Empty;
-        internal ProjectData projectData;
+        
 
         internal static string THTranslationCachePath
         {
@@ -49,18 +49,13 @@ namespace TranslationHelper
             InitializeComponent();
             //LangF = new THLang();
 
+            ProjectData.Init(this);
+
             Properties.Settings.Default.ApplicationStartupPath = Application.StartupPath;
             Properties.Settings.Default.ApplicationProductName = Application.ProductName;
             Properties.Settings.Default.NewLine = Environment.NewLine;
 
             BindShortCuts();
-
-            //Init Work Data
-            projectData = new ProjectData
-            {
-                //need for use main form elements like ProgressBar
-                Main = this
-            };
 
             SetSettings();
 
@@ -177,7 +172,7 @@ namespace TranslationHelper
         //Settings
         private void SetSettings()
         {
-            Settings = new THfrmSettings(projectData);
+            Settings = new THfrmSettings();
             Settings.GetSettings();
         }
 
@@ -259,8 +254,8 @@ namespace TranslationHelper
             THTargetRichTextBox.DetectUrls = false;
 
             //Hide some items 
-            projectData.Main.tlpTextLenPosInfo.Visible = false;
-            projectData.Main.frmMainPanel.Visible = false;
+            ProjectData.Main.tlpTextLenPosInfo.Visible = false;
+            ProjectData.Main.frmMainPanel.Visible = false;
         }
 
         ToolTip THToolTip;
@@ -291,7 +286,7 @@ namespace TranslationHelper
         internal bool IsOpeningInProcess;
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new FunctionsOpen(projectData).OpenProject();
+            new FunctionsOpen().OpenProject();
         }
 
         private void SetDoublebuffered(bool value)
@@ -417,7 +412,7 @@ namespace TranslationHelper
                     {
                         Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.SelectedIndex;
 
-                        BindToDataTableGridView(projectData.THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
+                        BindToDataTableGridView(ProjectData.THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
                     }
 
                     ShowNonEmptyRowsCount();//Show how many rows have translation
@@ -462,18 +457,18 @@ namespace TranslationHelper
             {
                 try
                 {
-                    if (DT.TableName == "[ALL]" && projectData.THFilesElementsDataset.Tables.Count > 1)
+                    if (DT.TableName == "[ALL]" && ProjectData.THFilesElementsDataset.Tables.Count > 1)
                     {
                         //отображение содержимого всех таблиц в одной
                         //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
                         //int ThisInd = THFilesList.SelectedIndex;
-                        //using (DataTable dtnew = projectData.THFilesElementsDataset.Tables[0].Copy())
+                        //using (DataTable dtnew = ProjectData.THFilesElementsDataset.Tables[0].Copy())
                         //{
-                        //    for (var i = 1; i < projectData.THFilesElementsDataset.Tables.Count; i++)
+                        //    for (var i = 1; i < ProjectData.THFilesElementsDataset.Tables.Count; i++)
                         //    {
                         //        if (i!= ThisInd)
                         //        {
-                        //            dtnew.Merge(projectData.THFilesElementsDataset.Tables[i]);
+                        //            dtnew.Merge(ProjectData.THFilesElementsDataset.Tables[i]);
                         //        }
                         //    }
 
@@ -596,7 +591,7 @@ namespace TranslationHelper
                 var tableIndex = Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.SelectedIndex;
                 var columnIndex = Properties.Settings.Default.DGVSelectedColumnIndex = THFileElementsDataGridView.CurrentCell.ColumnIndex;
                 var rowIndex = Properties.Settings.Default.DGVSelectedRowIndex = THFileElementsDataGridView.CurrentCell.RowIndex;
-                var realrowIndex = Properties.Settings.Default.DGVSelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(projectData, tableIndex, rowIndex);
+                var realrowIndex = Properties.Settings.Default.DGVSelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(tableIndex, rowIndex);
 
                 if (THFileElementsDataGridView.DataSource == null || rowIndex == -1 || tableIndex == -1)
                 {
@@ -642,10 +637,10 @@ namespace TranslationHelper
                     {
                         //запоминание последнего значения ячейки перед считыванием в THTargetRichTextBox,
                         //для предотвращения записи значения обратно в ячейку, если она была изменена до изменения текстбокса
-                        projectData.TargetTextBoxPreValue = TranslationCellValue;
+                        ProjectData.TargetTextBoxPreValue = TranslationCellValue;
 
                         //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
-                        THTargetRichTextBox.Text = projectData.TargetTextBoxPreValue;
+                        THTargetRichTextBox.Text = ProjectData.TargetTextBoxPreValue;
 
                         FormatTextBox();
 
@@ -672,9 +667,9 @@ namespace TranslationHelper
                         //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
                         //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
 
-                        if (projectData.THFilesElementsDatasetInfo != null && projectData.THFilesElementsDatasetInfo.Tables.Count > tableIndex && projectData.THFilesElementsDatasetInfo.Tables[tableIndex].Rows.Count > rowIndex)
+                        if (ProjectData.THFilesElementsDatasetInfo != null && ProjectData.THFilesElementsDatasetInfo.Tables.Count > tableIndex && ProjectData.THFilesElementsDatasetInfo.Tables[tableIndex].Rows.Count > rowIndex)
                         {
-                            THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + projectData.THFilesElementsDatasetInfo.Tables[tableIndex].Rows[rowIndex][0];
+                            THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + ProjectData.THFilesElementsDatasetInfo.Tables[tableIndex].Rows[rowIndex][0];
                         }
 
                         THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(SelectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(SelectedCellValue);
@@ -739,7 +734,7 @@ namespace TranslationHelper
 
         private void ShowNonEmptyRowsCount()
         {
-            int RowsCount = FunctionsTable.GetDatasetRowsCount(projectData.THFilesElementsDataset);
+            int RowsCount = FunctionsTable.GetDatasetRowsCount(ProjectData.THFilesElementsDataset);
             if (RowsCount == 0)
             {
                 TableCompleteInfoLabel.Visible = false;
@@ -747,7 +742,7 @@ namespace TranslationHelper
             else
             {
                 TableCompleteInfoLabel.Visible = true;
-                TableCompleteInfoLabel.Text = FunctionsTable.GetDatasetNonEmptyRowsCount(projectData.THFilesElementsDataset) + "/" + RowsCount;
+                TableCompleteInfoLabel.Text = FunctionsTable.GetDatasetNonEmptyRowsCount(ProjectData.THFilesElementsDataset) + "/" + RowsCount;
             }
         }
 
@@ -755,12 +750,12 @@ namespace TranslationHelper
         internal bool FileDataWasChanged;
         private async void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (projectData.TablesLinesDict != null && projectData.TablesLinesDict.Count > 0)
+            if (ProjectData.TablesLinesDict != null && ProjectData.TablesLinesDict.Count > 0)
             {
-                projectData.TablesLinesDict.Clear();
+                ProjectData.TablesLinesDict.Clear();
             }
-            await Task.Run(() => new FunctionsSave(projectData).PrepareToWrite()).ConfigureAwait(true);
-            projectData.CurrentProject.AfterTranslationWriteActions();
+            await Task.Run(() => new FunctionsSave().PrepareToWrite()).ConfigureAwait(true);
+            ProjectData.CurrentProject.AfterTranslationWriteActions();
         }
 
         /// <summary>
@@ -840,7 +835,7 @@ namespace TranslationHelper
                 {
                     if (RPGMFunctions.THSelectedSourceType == "RPGMakerTransPatch")
                     {
-                        if (new RPGMTransOLD(projectData).SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, RPGMFunctions.RPGMTransPatchVersion))
+                        if (new RPGMTransOLD().SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, RPGMFunctions.RPGMTransPatchVersion))
                         {
                             Properties.Settings.Default.THSelectedDir = THSaveFolderBrowser.SelectedPath;
                             _ = MessageBox.Show(T._("Save complete!"));
@@ -921,7 +916,7 @@ namespace TranslationHelper
                 //MessageBox.Show(string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value));
                 //https://10tec.com/articles/why-datagridview-slow.aspx
                 //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value);
-                projectData.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.RowFilter = OverallFilter;
+                ProjectData.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.RowFilter = OverallFilter;
             }
             catch
             {
@@ -934,7 +929,7 @@ namespace TranslationHelper
             {
                 if (Settings == null || Settings.IsDisposed)
                 {
-                    Settings = new THfrmSettings(projectData);
+                    Settings = new THfrmSettings();
                 }
 
                 if (Settings.Visible)
@@ -964,7 +959,7 @@ namespace TranslationHelper
 
             var grid = sender as DataGridView;
 
-            int rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(projectData, THFilesList.SelectedIndex, e.RowIndex);//здесь получаю реальный индекс из Datatable
+            int rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.SelectedIndex, e.RowIndex);//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
             using (StringFormat centerFormat = new StringFormat()
@@ -1010,12 +1005,12 @@ namespace TranslationHelper
         string lastautosavepath;
         private async void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (projectData.Main.SaveInAction)
+            if (ProjectData.Main.SaveInAction)
             {
                 return;
             }
 
-            lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(projectData), FunctionsDBFile.GetDBFileName(projectData) + FunctionsDBFile.GetDBCompressionExt(projectData));
+            lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
 
             ProgressInfo(true);
 
@@ -1023,13 +1018,13 @@ namespace TranslationHelper
             {
                 case "RPGMakerTransPatch":
                 case "RPG Maker game with RPGMTransPatch":
-                    _ = await Task.Run(() => new RPGMTransOLD(projectData).SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+                    _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
                     break;
             }
 
-            projectData.SaveFileMode = true;
-            await Task.Run(() => projectData.CurrentProject.PreSaveDB()).ConfigureAwait(true);
-            await Task.Run(() => WriteDBFileLite(projectData.THFilesElementsDataset, lastautosavepath)).ConfigureAwait(true);
+            ProjectData.SaveFileMode = true;
+            await Task.Run(() => ProjectData.CurrentProject.PreSaveDB()).ConfigureAwait(true);
+            await Task.Run(() => WriteDBFileLite(ProjectData.THFilesElementsDataset, lastautosavepath)).ConfigureAwait(true);
 
             FunctionsSounds.SaveDBComplete();
             ProgressInfo(false);
@@ -1040,7 +1035,7 @@ namespace TranslationHelper
         bool AutosaveActivated;
         private void Autosave()
         {
-            if (!Properties.Settings.Default.EnableDBAutosave || AutosaveActivated || projectData.THFilesElementsDataset == null)
+            if (!Properties.Settings.Default.EnableDBAutosave || AutosaveActivated || ProjectData.THFilesElementsDataset == null)
             {
             }
             else
@@ -1077,7 +1072,7 @@ namespace TranslationHelper
                 IndicateSave.Start();
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                Thread trans = new Thread(new ParameterizedThreadStart((obj) => SaveLoop(projectData.THFilesElementsDataset, autosavepath)));
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => SaveLoop(ProjectData.THFilesElementsDataset, autosavepath)));
                 trans.Start();
 
                 //ProgressInfo(true);
@@ -1143,7 +1138,7 @@ namespace TranslationHelper
             {
                 IsOpeningInProcess = true;
 
-                lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(projectData), FunctionsDBFile.GetDBFileName(projectData) + FunctionsDBFile.GetDBCompressionExt(projectData));
+                lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
                 if (File.Exists(lastautosavepath))
                 {
                     await Task.Run(() => LoadTranslationFromDB(lastautosavepath, false, force)).ConfigureAwait(true);
@@ -1153,7 +1148,7 @@ namespace TranslationHelper
                     var result = MessageBox.Show(T._("DB not found. Try to load from all exist?"), T._("DB not found"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (result == DialogResult.Yes)
                     {
-                        await Task.Run(() => projectData.Main.LoadTranslationFromDB(lastautosavepath, true)).ConfigureAwait(true);
+                        await Task.Run(() => ProjectData.Main.LoadTranslationFromDB(lastautosavepath, true)).ConfigureAwait(true);
                     }
                 }
 
@@ -1187,8 +1182,8 @@ namespace TranslationHelper
             if (UseAllDB)
             {
                 ProgressInfo(true, "Get all databases");
-                FunctionsDBFile.MergeAllDBtoOne(projectData);
-                new FunctionsLoadTranslationDB(projectData).THLoadDBCompareFromDictionaryParallellTables(projectData.AllDBmerged);
+                FunctionsDBFile.MergeAllDBtoOne();
+                new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionaryParallellTables(ProjectData.AllDBmerged);
             }
             else
             {
@@ -1232,16 +1227,16 @@ namespace TranslationHelper
 
                 //отключение DataSource для избежания проблем от изменений DataGridView
                 //bool tableSourceWasCleaned = false;
-                //if (projectData.Main.THFileElementsDataGridView.DataSource != null)
+                //if (ProjectData.Main.THFileElementsDataGridView.DataSource != null)
                 //{
                 //    tableSourceWasCleaned = true;
-                //    projectData.Main.Invoke((Action)(() => projectData.Main.THFileElementsDataGridView.DataSource = null));
-                //    projectData.Main.Invoke((Action)(() => projectData.Main.THFileElementsDataGridView.Update()));
-                //    projectData.Main.Invoke((Action)(() => projectData.Main.THFileElementsDataGridView.Refresh()));
+                //    ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = null));
+                //    ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Update()));
+                //    ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                 //}
 
                 //стандартное считывание. Самое медленное
-                //new FunctionsLoadTranslationDB(projectData).THLoadDBCompare(DBDataSet);
+                //new FunctionsLoadTranslationDB().THLoadDBCompare(DBDataSet);
 
                 //считывание через словарь с предварительным чтением в dataset и конвертацией в словарь
                 //Своего рода среднее решение, которое быстрее решения с сравнением из БД в DataSet
@@ -1250,29 +1245,29 @@ namespace TranslationHelper
                 //чтение из xml в dataset может занимать по нескольку секунд для больших файлов
                 //основную часть времени отнимал вывод информации о файлах!!
                 //00.051
-                //new FunctionsLoadTranslationDB(projectData).THLoadDBCompareFromDictionary(DBDataSet.ToDictionary(), forced);
+                //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionary(DBDataSet.ToDictionary(), forced);
                 if (Properties.Settings.Default.DontLoadDuplicates)
                 {
-                    new FunctionsLoadTranslationDB(projectData).THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary(), forced);
+                    new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary(), forced);
                 }
                 else
                 {
-                    new FunctionsLoadTranslationDB(projectData).THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary2(), forced);
+                    new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary2(), forced);
                 }
 
                 //многопоточный вариант предыдущего, но т.к. datatable is threadunsafe то возникают разные ошибки и повреждение внутреннего индекса таблицы, хоть это и быстрее, но после добавления lock разницы не видно
-                //new FunctionsLoadTranslationDB(projectData).THLoadDBCompareFromDictionaryParallel(DBDataSet.DBDataSetToDBDictionary());
+                //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionaryParallel(DBDataSet.DBDataSetToDBDictionary());
 
 
                 //это медленнее первого варианта 
                 //00.151
-                //new FunctionsLoadTranslationDB(projectData).THLoadDBCompareFromDictionary2(DBDataSet.DBDataSetToDBDictionary());
+                //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionary2(DBDataSet.DBDataSetToDBDictionary());
 
                 //считывание через словарь Чтение xml в словарь на текущий момент имеет проблемы
                 //с невозможностью чтения закодированых в hex символов(решил как костыль через try catch) и пока не может читать сжатые xml
                 //нужно постепенно доработать код, исправить проблемы и перейти полностью на этот наибыстрейший вариант
                 //т.к. с ним и xml бд будет меньше размером
-                //new FunctionsLoadTranslationDB(projectData).THLoadDBCompareFromDictionary(FunctionsDBFile.ReadXMLDBToDictionary(sPath));
+                //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionary(FunctionsDBFile.ReadXMLDBToDictionary(sPath));
 
             }
             catch
@@ -1304,7 +1299,7 @@ namespace TranslationHelper
                 {
                     THFOpenBD.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
 
-                    THFOpenBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder(projectData);
+                    THFOpenBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
 
                     if (THFOpenBD.ShowDialog() == DialogResult.OK)
                     {
@@ -1343,10 +1338,10 @@ namespace TranslationHelper
                 }
 
                 int tableind = THFilesList.SelectedIndex;
-                int rind = FunctionsTable.GetDGVSelectedRowIndexInDatatable(projectData, THFilesList.SelectedIndex, e.RowIndex);
+                int rind = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.SelectedIndex, e.RowIndex);
                 int cind = THFileElementsDataGridView.Columns["Original"].Index;
 
-                if (rind > -1 && rind < projectData.THFilesElementsDataset.Tables[tableind].Rows.Count && (projectData.THFilesElementsDataset.Tables[tableind].Rows[rind][1] + string.Empty).Length > 0)
+                if (rind > -1 && rind < ProjectData.THFilesElementsDataset.Tables[tableind].Rows.Count && (ProjectData.THFilesElementsDataset.Tables[tableind].Rows[rind][1] + string.Empty).Length > 0)
                 {
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                     //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)));
@@ -1366,7 +1361,7 @@ namespace TranslationHelper
         internal bool IsTranslating;
         private void OnlineTranslateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate(projectData).Selected()));
+            Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate().Selected()));
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1384,7 +1379,7 @@ namespace TranslationHelper
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
             //    int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
             //    int tableindex = THFilesList.SelectedIndex;
-            //    int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable(projectData);
+            //    int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable();
 
             //    ///*THMsg*/MessageBox.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
 
@@ -1393,8 +1388,8 @@ namespace TranslationHelper
             //    //await Task.Run(() => OnlineTranslateSelected(cind, tableindex, selindexes));  
 
             //    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(projectData).THOnlineTranslate(cind, tableindex, selindexes, "s")));
-            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(projectData).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "s")));
+            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation().THOnlineTranslate(cind, tableindex, selindexes, "s")));
+            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation().THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "s")));
             //    ////
             //    ////..и фикс ошибки:
             //    ////System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1411,7 +1406,7 @@ namespace TranslationHelper
 
         private void OnlineTranslateTableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate(projectData).Table()));
+            Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate().Table()));
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1430,13 +1425,13 @@ namespace TranslationHelper
             //        return;
             //    }
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
-            //    int cind = projectData.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Original"].Ordinal;//-поле untrans
+            //    int cind = ProjectData.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Original"].Ordinal;//-поле untrans
             //    int tableindex = THFilesList.SelectedIndex;
             //    int[] selindexes = new int[1];
 
             //    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(projectData).THOnlineTranslate(cind, tableindex, selindexes, "t")));
-            //    Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(projectData).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "t")));
+            //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation().THOnlineTranslate(cind, tableindex, selindexes, "t")));
+            //    Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation().THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "t")));
             //    //
             //    //..и фикс ошибки:
             //    //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1453,7 +1448,7 @@ namespace TranslationHelper
 
         private void OnlineTranslateAllToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate(projectData).All()));
+            Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate().All()));
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1467,14 +1462,14 @@ namespace TranslationHelper
             //try
             //{
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
-            //    int cind = projectData.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;//-поле untrans
+            //    int cind = ProjectData.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;//-поле untrans
             //    int tableindex = 0;
             //    int[] selindexes = new int[1];
 
             //    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
             //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslate(cind, tableindex, selindexes, "a")));
             //    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THOnlineTranslateByBigBlocks(cind, tableindex, selindexes, "a")));
-            //    Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation(projectData).THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "a")));
+            //    Thread trans = new Thread(new ParameterizedThreadStart((obj) => new FunctionsOnlineTranslation().THOnlineTranslateByBigBlocks2(cind, tableindex, selindexes, "a")));
             //    //
             //    //..и фикс ошибки:
             //    //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1492,7 +1487,7 @@ namespace TranslationHelper
 
         private void OpenInWebToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new OpenInWeb(projectData).Selected();
+            _ = new OpenInWeb().Selected();
         }
 
         private void THTargetTextBox_Leave(object sender, EventArgs e)
@@ -1504,7 +1499,7 @@ namespace TranslationHelper
             //else//если текстовое поле 2 не пустое
             //{
             //    //не менять, если значение текстбокса не поменялось
-            //    if (THTargetRichTextBox.Text != projectData.TargetTextBoxPreValue)
+            //    if (THTargetRichTextBox.Text != ProjectData.TargetTextBoxPreValue)
             //    {
             //        THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
             //    }
@@ -1555,7 +1550,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsFixingCells = true;
 
-            FunctionsAutoOperations.THFixCells(projectData, method, cind, tind, rind, forceApply);
+            FunctionsAutoOperations.THFixCells(method, cind, tind, rind, forceApply);
 
             //снять занятость по окончании
             THIsFixingCells = false;
@@ -1572,7 +1567,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsExtractingTextForTranslation = true;
 
-            string ret = FunctionsAutoOperations.THExtractTextForTranslation(projectData, input);
+            string ret = FunctionsAutoOperations.THExtractTextForTranslation(input);
 
             //снять занятость по окончании
             THIsExtractingTextForTranslation = false;
@@ -1594,7 +1589,7 @@ namespace TranslationHelper
             //установить занятость при старте
             THIsExtractingTextForTranslation = true;
 
-            var ret = FunctionsAutoOperations.THExtractTextForTranslationSplit(projectData, input);
+            var ret = FunctionsAutoOperations.THExtractTextForTranslationSplit(input);
 
             //снять занятость по окончании
             THIsExtractingTextForTranslation = false;
@@ -1603,22 +1598,22 @@ namespace TranslationHelper
 
         private void CellFixesSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixCells(projectData).Selected();
+            _ = new FixCells().Selected();
         }
 
         private void CellFixesTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixCells(projectData).TableT();
+            _ = new FixCells().TableT();
         }
 
         private void CellFixesAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixCells(projectData).AllT();
+            _ = new FixCells().AllT();
         }
 
         private void SetOriginalValueToTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new SetOriginalToTranslation(projectData).Selected();
+            _ = new SetOriginalToTranslation().Selected();
         }
 
         private void SetOriginalToTranslation()
@@ -1629,22 +1624,22 @@ namespace TranslationHelper
                 try
                 {
                     int tableIndex = THFilesList.SelectedIndex;
-                    int cind = projectData.THFilesElementsDataset.Tables[tableIndex].Columns["Original"].Ordinal;// Колонка Original
-                    int cindTrans = projectData.THFilesElementsDataset.Tables[tableIndex].Columns["Translation"].Ordinal;// Колонка Original
+                    int cind = ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns["Original"].Ordinal;// Колонка Original
+                    int cindTrans = ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns["Translation"].Ordinal;// Колонка Original
                     int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         //координаты ячейки
-                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(projectData, THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
 
                     }
                     foreach (var rind in selectedRowIndexses)
                     {
-                        string origCellValue = projectData.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] as string;
-                        string transCellValue = projectData.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
+                        string origCellValue = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] as string;
+                        string transCellValue = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
                         if (transCellValue != origCellValue || transCellValue.Length == 0)
                         {
-                            projectData.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] = origCellValue;
+                            ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] = origCellValue;
                         }
 
                     }
@@ -1660,7 +1655,7 @@ namespace TranslationHelper
         {
             if (forcevalue || (Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
-                FunctionsAutoOperations.THAutoSetSameTranslationForSimular(projectData, InputTableIndex, InputRowIndex, InputCellIndex, forcevalue);
+                FunctionsAutoOperations.THAutoSetSameTranslationForSimular(InputTableIndex, InputRowIndex, InputCellIndex, forcevalue);
 
                 //LogToFile(string.Empty,true);
                 cellchanged = false;
@@ -1712,7 +1707,6 @@ namespace TranslationHelper
             {
                 SelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable
                     (
-                    projectData,
                     THFilesList.SelectedIndex,
                     THFileElementsDataGridView.SelectedCells[0].RowIndex
                     );
@@ -1811,22 +1805,22 @@ namespace TranslationHelper
 
         private void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ClearCells(projectData).Selected();
+            _ = new ClearCells().Selected();
         }
         private void ClearTableCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ClearCells(projectData).TableT();
+            _ = new ClearCells().TableT();
         }
         private void ClearAllCellsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ClearCells(projectData).AllT();
+            _ = new ClearCells().AllT();
         }
 
         //==============вырезать, копировать, вставить, для одной или нескольких ячеек
 
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            projectData.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.Sort = string.Empty;
+            ProjectData.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.Sort = string.Empty;
         }
 
         private async void SaveTranslationAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1835,8 +1829,8 @@ namespace TranslationHelper
             {
                 THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
 
-                THFSaveBDAs.InitialDirectory = FunctionsDBFile.GetProjectDBFolder(projectData);
-                THFSaveBDAs.FileName = FunctionsDBFile.GetDBFileName(projectData, true) + FunctionsDBFile.GetDBCompressionExt(projectData);
+                THFSaveBDAs.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
+                THFSaveBDAs.FileName = FunctionsDBFile.GetDBFileName(true) + FunctionsDBFile.GetDBCompressionExt();
 
                 if (THFSaveBDAs.ShowDialog() == DialogResult.OK)
                 {
@@ -1856,15 +1850,15 @@ namespace TranslationHelper
                         {
                             case "RPGMakerTransPatch":
                             case "RPG Maker game with RPGMTransPatch":
-                                _ = await Task.Run(() => new RPGMTransOLD(projectData).SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+                                _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(Properties.Settings.Default.THSelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
                                 break;
                         }
 
                         //SaveNEWDB(THFilesElementsDataset, THFSaveBDAs.FileName);
                         //WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
 
-                        await Task.Run(() => WriteDBFileLite(projectData.THFilesElementsDataset, THFSaveBDAs.FileName)).ConfigureAwait(true);
-                        //Task task = new Task(() => WriteDBFileLite(projectData.THFilesElementsDataset, THFSaveBDAs.FileName));
+                        await Task.Run(() => WriteDBFileLite(ProjectData.THFilesElementsDataset, THFSaveBDAs.FileName)).ConfigureAwait(true);
+                        //Task task = new Task(() => WriteDBFileLite(ProjectData.THFilesElementsDataset, THFSaveBDAs.FileName));
                         //task.Start();
                         //task.Wait();
 
@@ -1956,24 +1950,24 @@ namespace TranslationHelper
 
         private async void RunTestGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (projectData.TablesLinesDict != null && projectData.TablesLinesDict.Count > 0)
+            if (ProjectData.TablesLinesDict != null && ProjectData.TablesLinesDict.Count > 0)
             {
-                projectData.TablesLinesDict.Clear();
+                ProjectData.TablesLinesDict.Clear();
             }
 
-            if (projectData.CurrentProject != null || RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
+            if (ProjectData.CurrentProject != null || RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
             {
                 bool BuckupCreated = false;
                 try
                 {
                     bool success = false;
-                    if (projectData.CurrentProject != null)
+                    if (ProjectData.CurrentProject != null)
                     {
                         ProgressInfo(true, "Creating buckups");
-                        if (!(BuckupCreated = projectData.CurrentProject.BakCreate()))
+                        if (!(BuckupCreated = ProjectData.CurrentProject.BakCreate()))
                             return;
 
-                        success = await Task.Run(() => projectData.CurrentProject.Save()).ConfigureAwait(true);
+                        success = await Task.Run(() => ProjectData.CurrentProject.Save()).ConfigureAwait(true);
                     }
                     else
                     {
@@ -1983,9 +1977,9 @@ namespace TranslationHelper
                             //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
 
                             bool changed = false;
-                            for (int r = 0; r < projectData.THFilesElementsDataset.Tables[f].Rows.Count; r++)
+                            for (int r = 0; r < ProjectData.THFilesElementsDataset.Tables[f].Rows.Count; r++)
                             {
-                                if ((projectData.THFilesElementsDataset.Tables[f].Rows[r]["Translation"] + string.Empty).Length == 0)
+                                if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r]["Translation"] + string.Empty).Length == 0)
                                 {
                                 }
                                 else
@@ -2001,7 +1995,7 @@ namespace TranslationHelper
                                 ///*THMsg*/MessageBox.Show("start writing");
 
                                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                                success = await Task.Run(() => new RPGMMVOLD(projectData).WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(true);
+                                success = await Task.Run(() => new RPGMMVOLD().WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(Properties.Settings.Default.THSelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(true);
                                 if (!success)
                                 {
                                     break;
@@ -2064,24 +2058,24 @@ namespace TranslationHelper
 
                 if (BuckupCreated)
                 {
-                    _ = projectData.CurrentProject.BakRestore();
+                    _ = ProjectData.CurrentProject.BakRestore();
                 }
             }
         }
 
         private void ToUPPERCASEToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUPPER(projectData).Selected();
+            _ = new ToUPPER().Selected();
         }
 
         private void FirstCharacterToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUpper(projectData).Selected();
+            _ = new ToUpper().Selected();
         }
 
         private void TolowercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToLower(projectData).Selected();
+            _ = new ToLower().Selected();
         }
 
         internal bool InteruptTranslation;
@@ -2096,9 +2090,9 @@ namespace TranslationHelper
             Properties.Settings.Default.IsTranslationHelperWasClosed = true;
             InteruptTranslation = true;
             //THToolTip.Dispose();
-            //projectData.THFilesElementsDataset.Dispose();
-            //projectData.THFilesElementsDatasetInfo.Dispose();
-            //projectData.THFilesElementsALLDataTable.Dispose();
+            //ProjectData.THFilesElementsDataset.Dispose();
+            //ProjectData.THFilesElementsDatasetInfo.Dispose();
+            //ProjectData.THFilesElementsALLDataTable.Dispose();
             //Settings.Dispose();
 
             //global brushes with ordinary/selected colors
@@ -2113,7 +2107,7 @@ namespace TranslationHelper
 
         private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            THFileElementsDataGridView.DataSource = projectData.THFilesElementsALLDataTable;
+            THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsALLDataTable;
 
             //смотрел тут но в данном случае пришел к тому что отображает все также только одну таблицу
             //https://social.msdn.microsoft.com/Forums/en-US/f63f612f-20be-4bad-a91c-474396941800/display-dataset-data-in-gridview-from-multiple-data-tables?forum=adodotnetdataset
@@ -2147,7 +2141,7 @@ namespace TranslationHelper
                 {
                     if (search == null || search.IsDisposed)
                     {
-                        search = new THfrmSearch(projectData, THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
+                        search = new THfrmSearch(THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
                     }
 
                     if (search.Visible)
@@ -2190,7 +2184,7 @@ namespace TranslationHelper
                     if (tableindex > -1 && cell != null)
                     {
                         columnName = THFileElementsDataGridView.Columns[cell.ColumnIndex].Name;
-                        realRowIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(projectData, tableindex, cell.RowIndex);
+                        realRowIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(tableindex, cell.RowIndex);
                     }
 
                     for (int c = 0; c < THFiltersDataGridView.Columns.Count; c++)
@@ -2198,14 +2192,14 @@ namespace TranslationHelper
                         THFiltersDataGridView.Rows[0].Cells[c].Value = string.Empty;
                     }
 
-                    var table = projectData.THFilesElementsDataset.Tables[tableindex];
+                    var table = ProjectData.THFilesElementsDataset.Tables[tableindex];
                     table.DefaultView.RowFilter = string.Empty;
                     table.DefaultView.Sort = string.Empty;
                     THFileElementsDataGridView.Refresh();
 
                     if (realRowIndex > -1 && tableindex > -1 && columnName.Length > 0)
                     {
-                        FunctionsTable.ShowSelectedRow(projectData, tableindex, columnName, realRowIndex);
+                        FunctionsTable.ShowSelectedRow(tableindex, columnName, realRowIndex);
                     }
                 }
                 catch
@@ -2351,7 +2345,7 @@ namespace TranslationHelper
                     backgroundBrush = ListBoxItemBackgroundBrushSelected;
                 else if ((index % 2) == 0)
                 {
-                    if (FunctionsTable.IsTableRowsCompleted(projectData.THFilesElementsDataset.Tables[e.Index]))
+                    if (FunctionsTable.IsTableRowsCompleted(ProjectData.THFilesElementsDataset.Tables[e.Index]))
                     {
                         backgroundBrush = ListBoxItemBackgroundBrush1Complete;
                     }
@@ -2362,7 +2356,7 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    if (FunctionsTable.IsTableRowsCompleted(projectData.THFilesElementsDataset.Tables[e.Index]))
+                    if (FunctionsTable.IsTableRowsCompleted(ProjectData.THFilesElementsDataset.Tables[e.Index]))
                     {
                         backgroundBrush = ListBoxItemBackgroundBrush2Complete;
                     }
@@ -2404,8 +2398,8 @@ namespace TranslationHelper
 
         private void CompleteRomajiotherLinesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new CompleteRomajiotherLines(projectData).AllT();
-            _ = new SetOrigToTransIfSoundsText(projectData).AllT();
+            _ = new CompleteRomajiotherLines().AllT();
+            _ = new SetOrigToTransIfSoundsText().AllT();
         }
 
         private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -2465,64 +2459,64 @@ namespace TranslationHelper
                 return;
             }
 
-            int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable(projectData);
+            int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable();
 
             foreach (int index in selindexes)
             {
-                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, FunctionsTable.GetDGVSelectedRowIndexInDatatable(projectData, THFilesList.SelectedIndex, index), 0, true, true);
+                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.SelectedIndex, index), 0, true, true);
             }
         }
 
         private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new SplitLongLines(projectData).Selected();
+            _ = new SplitLongLines().Selected();
         }
 
         private void SplitLinesWhichLongerOfLimitTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new SplitLongLines(projectData).TableT();
+            _ = new SplitLongLines().TableT();
 
             FunctionsSounds.GlobalFunctionFinishedWork();
         }
 
         private void SplitLinesWhichLongerOfLimitALLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new SplitLongLines(projectData).AllT();
+            _ = new SplitLongLines().AllT();
 
             FunctionsSounds.GlobalFunctionFinishedWork();
         }
 
         private void FixMessagesInTheTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixJPMessagesTranslation(projectData).Selected();
+            _ = new FixJPMessagesTranslation().Selected();
         }
 
         private void LowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToLower(projectData).AllT();
+            _ = new ToLower().AllT();
         }
 
         private void LowercaseTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToLower(projectData).TableT();
+            _ = new ToLower().TableT();
         }
 
         private void UppercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUpper(projectData).AllT();
+            _ = new ToUpper().AllT();
         }
         private void UppercaseTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUpper(projectData).TableT();
+            _ = new ToUpper().TableT();
         }
 
         private void UPPERCASEallToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUPPER(projectData).AllT();
+            _ = new ToUPPER().AllT();
         }
         private void UPPERCASETableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUPPER(projectData).TableT();
+            _ = new ToUPPER().TableT();
         }
 
         private void AllIfExistsFiledirWithNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2542,22 +2536,22 @@ namespace TranslationHelper
             }
             ProjectFilesList = ProjectFilesList.Distinct().ToArray();
 
-            int cind = projectData.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;// Колонка Original
-            int cindTrans = projectData.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;// Колонка Original
+            int cind = ProjectData.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;// Колонка Original
+            int cindTrans = ProjectData.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;// Колонка Original
             //string[] Files = Directory.GetFiles(Properties.Settings.Default.THWorkProjectDir, "*.*", SearchOption.AllDirectories);
             //string[] Dirs = Directory.GetDirectories(Properties.Settings.Default.THWorkProjectDir, "*", SearchOption.AllDirectories);
-            int tablesCount = projectData.THFilesElementsDataset.Tables.Count;
+            int tablesCount = ProjectData.THFilesElementsDataset.Tables.Count;
             for (int t = 0; t < tablesCount; t++)
             {
-                int rowsCount = projectData.THFilesElementsDataset.Tables[t].Rows.Count;
+                int rowsCount = ProjectData.THFilesElementsDataset.Tables[t].Rows.Count;
                 for (int r = 0; r < rowsCount; r++)
                 {
-                    string origCellValue = projectData.THFilesElementsDataset.Tables[t].Rows[r][cind] as string;
-                    string transCellValue = projectData.THFilesElementsDataset.Tables[t].Rows[r][cindTrans] + string.Empty;
+                    string origCellValue = ProjectData.THFilesElementsDataset.Tables[t].Rows[r][cind] as string;
+                    string transCellValue = ProjectData.THFilesElementsDataset.Tables[t].Rows[r][cindTrans] + string.Empty;
 
                     if ((transCellValue.Length == 0 || origCellValue != transCellValue) && FunctionsFileFolder.GetAnyFileWithTheNameExist(ProjectFilesList, origCellValue))
                     {
-                        projectData.THFilesElementsDataset.Tables[t].Rows[r][cindTrans] = origCellValue;
+                        ProjectData.THFilesElementsDataset.Tables[t].Rows[r][cindTrans] = origCellValue;
                     }
                 }
             }
@@ -2575,7 +2569,7 @@ namespace TranslationHelper
 
         private void TableCompleteInfoLabel_Click(object sender, EventArgs e)
         {
-            FunctionsTable.ShowFirstRowWithEmptyTranslation(projectData);
+            FunctionsTable.ShowFirstRowWithEmptyTranslation();
         }
 
         private async void ExtraFixesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2591,13 +2585,13 @@ namespace TranslationHelper
 
             HardcodedFixesExecuting = true;
 
-            _ = new AllHardFixes(projectData).AllT();
+            _ = new AllHardFixes().AllT();
 
-            //int TCount = projectData.THFilesElementsDataset.Tables.Count;
+            //int TCount = ProjectData.THFilesElementsDataset.Tables.Count;
 
             //Parallel.For(0, TCount, t =>
             //    {
-            //        var table = projectData.THFilesElementsDataset.Tables[t];
+            //        var table = ProjectData.THFilesElementsDataset.Tables[t];
             //        var RCount = table.Rows.Count;
             //        Parallel.For(0, RCount,
             //            r =>
@@ -2607,7 +2601,7 @@ namespace TranslationHelper
             //                if (!string.IsNullOrWhiteSpace(row[0] + string.Empty))
             //                {
             //                    //Set result value
-            //                    string result = FunctionsStringFixes.ApplyHardFixes(row[0] as string, translation, projectData);
+            //                    string result = FunctionsStringFixes.ApplyHardFixes(row[0] as string, translation);
             //                    if (!Equals(result, translation))
             //                    {
             //                        lock (row)
@@ -2622,10 +2616,10 @@ namespace TranslationHelper
 
             //for (int t = 0; t < TCount; t++)
             //{
-            //    int RCount = projectData.THFilesElementsDataset.Tables[t].Rows.Count;
+            //    int RCount = ProjectData.THFilesElementsDataset.Tables[t].Rows.Count;
             //    for (int r = 0; r < RCount; r++)
             //    {
-            //        var row = projectData.THFilesElementsDataset.Tables[t].Rows[r];
+            //        var row = ProjectData.THFilesElementsDataset.Tables[t].Rows[r];
 
             //        //Set result value
             //        row[1] = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
@@ -2635,15 +2629,15 @@ namespace TranslationHelper
             HardcodedFixesExecuting = false;
 
             //clear translation cache
-            if (projectData.OnlineTranslationCache != null)
+            if (ProjectData.OnlineTranslationCache != null)
             {
-                projectData.OnlineTranslationCache = null;
+                ProjectData.OnlineTranslationCache = null;
             }
         }
 
         private void SelectedForceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixCellsForce(projectData).Selected();
+            _ = new FixCellsForce().Selected();
         }
 
         private void ReloadRulesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2656,9 +2650,9 @@ namespace TranslationHelper
         internal void ReloadTranslationRegexRules()
         {
             //Reload TranslationRegexRules
-            if (projectData.TranslationRegexRules.Count > 0)
+            if (ProjectData.TranslationRegexRules.Count > 0)
             {
-                projectData.TranslationRegexRules.Clear();
+                ProjectData.TranslationRegexRules.Clear();
             }
 
             //если файл с правилами существует
@@ -2696,9 +2690,9 @@ namespace TranslationHelper
                                 ReadRule = !ReadRule;
                             }
 
-                            if (!projectData.TranslationRegexRules.ContainsKey(regexPattern))
+                            if (!ProjectData.TranslationRegexRules.ContainsKey(regexPattern))
                             {
-                                projectData.TranslationRegexRules.Add(regexPattern, regexReplacement);
+                                ProjectData.TranslationRegexRules.Add(regexPattern, regexReplacement);
                             }
                         }
                         catch
@@ -2713,9 +2707,9 @@ namespace TranslationHelper
         internal void ReloadCellFixesRegexRules()
         {
             //Reload TranslationRegexRules
-            if (projectData.CellFixesRegexRules.Count > 0)
+            if (ProjectData.CellFixesRegexRules.Count > 0)
             {
-                projectData.CellFixesRegexRules.Clear();
+                ProjectData.CellFixesRegexRules.Clear();
             }
 
             //если файл с правилами существует
@@ -2753,7 +2747,7 @@ namespace TranslationHelper
                                 ReadRule = !ReadRule;
                             }
 
-                            projectData.CellFixesRegexRules.AddTry(regexPattern, regexReplacement);
+                            ProjectData.CellFixesRegexRules.AddTry(regexPattern, regexReplacement);
                         }
                         catch
                         {
@@ -2810,12 +2804,12 @@ namespace TranslationHelper
                     //int i = Properties.Settings.Default.DGVSelectedRowIndex;
                     //int r = Properties.Settings.Default.DGVSelectedRowRealIndex;
                     if (SelectedRowRealIndex ==
-                        (realrowindex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(projectData,
+                        (realrowindex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(
                         Properties.Settings.Default.THFilesListSelectedIndex,
                         rowindex = row.Index))
                         )
                     {
-                        FunctionsTable.ShowSelectedRow(projectData, THFilesList.SelectedIndex, Properties.Settings.Default.DGVSelectedColumnIndex, rowindex);
+                        FunctionsTable.ShowSelectedRow(THFilesList.SelectedIndex, Properties.Settings.Default.DGVSelectedColumnIndex, rowindex);
                         Properties.Settings.Default.DGVSelectedRowIndex = rowindex;
                         Properties.Settings.Default.DGVSelectedRowRealIndex = realrowindex;
                         SelectedRowRealIndex = realrowindex;
@@ -2878,27 +2872,27 @@ namespace TranslationHelper
 
         private void TSMIEnQuotesToJp_Click(object sender, EventArgs e)
         {
-            _ = new ENQuotesToJP(projectData).Selected();
+            _ = new ENQuotesToJP().Selected();
         }
 
         private void TSMISetOriginalToTranslationAll_Click(object sender, EventArgs e)
         {
-            _ = new SetOriginalToTranslation(projectData).AllT();
+            _ = new SetOriginalToTranslation().AllT();
         }
 
         private void TSMISetOriginalToTranslationTable_Click(object sender, EventArgs e)
         {
-            _ = new SetOriginalToTranslation(projectData).TableT();
+            _ = new SetOriginalToTranslation().TableT();
         }
 
         private void TSMIEnQuotesAll_Click(object sender, EventArgs e)
         {
-            _ = new ENQuotesToJP(projectData).AllT();
+            _ = new ENQuotesToJP().AllT();
         }
 
         private void TSMIEnQuotesTable_Click(object sender, EventArgs e)
         {
-            _ = new ENQuotesToJP(projectData).TableT();
+            _ = new ENQuotesToJP().TableT();
         }
 
         //Form overall;
@@ -2989,17 +2983,17 @@ namespace TranslationHelper
 
         private void HardFixesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new AllHardFixes(projectData).Selected();
+            _ = new AllHardFixes().Selected();
         }
 
         private void fixMessagesForAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixJPMessagesTranslation(projectData).AllT();
+            _ = new FixJPMessagesTranslation().AllT();
         }
 
         private void tableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixJPMessagesTranslation(projectData).TableT();
+            _ = new FixJPMessagesTranslation().TableT();
         }
 
         private void getAndSaveStaticToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3010,7 +3004,7 @@ namespace TranslationHelper
                 try
                 {
                     var dict = new Dictionary<string, string>();
-                    projectData.Main.ProgressInfo(true, T._("Loading") + ": " + T._("Static translations") + "-" + "XUA");
+                    ProjectData.Main.ProgressInfo(true, T._("Loading") + ": " + T._("Static translations") + "-" + "XUA");
                     System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//tls12 for github
                     var xuaStatic = wc.DownloadString(new Uri("https://github.com/bbepis/XUnity.AutoTranslator/raw/master/src/XUnity.AutoTranslator.Plugin.Core/Translations/StaticTranslations.txt"));
                     foreach (var line in xuaStatic.SplitToLines())
@@ -3033,7 +3027,7 @@ namespace TranslationHelper
 
                 }
             }
-            projectData.Main.ProgressInfo(false);
+            ProjectData.Main.ProgressInfo(false);
         }
 
         private void loadTrasnlationAsForcedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3048,7 +3042,7 @@ namespace TranslationHelper
 
         private void AddToCustomDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = Task.Run(() => new LoadRowDataToCustomDB(projectData).Selected()).ConfigureAwait(false);
+            _ = Task.Run(() => new LoadRowDataToCustomDB().Selected()).ConfigureAwait(false);
         }
 
         private void copyNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3077,32 +3071,32 @@ namespace TranslationHelper
 
         private void makeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new MakeTranslatedCopyIfFileWithTheNameExists(projectData).AllT();
+            _ = new MakeTranslatedCopyIfFileWithTheNameExists().AllT();
         }
 
         private void RPGMakerLikeTXTToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new RPGMakerLikeTXT(projectData).AllT();
+            _ = new RPGMakerLikeTXT().AllT();
         }
 
         private void ClearTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ClearCells(projectData).TableT();
+            _ = new ClearCells().TableT();
         }
 
         private void UPPERCASETableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _ = new ToUPPER(projectData).TableT();
+            _ = new ToUPPER().TableT();
         }
 
         private void UppercaseTableToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            _ = new ToUpper(projectData).TableT();
+            _ = new ToUpper().TableT();
         }
 
         private void lowercaseTableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _ = new ToLower(projectData).TableT();
+            _ = new ToLower().TableT();
         }
 
         private void THFilesList_MouseUp(object sender, MouseEventArgs e)

@@ -9,7 +9,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class FixCellsForce : FixCells
     {
-        public FixCellsForce(ProjectData projectData) : base(projectData)
+        public FixCellsForce() : base()
         {
         }
 

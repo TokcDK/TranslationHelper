@@ -5,14 +5,14 @@ namespace TranslationHelper.Projects.EAGLS
 {
     class EAGLSGame : EAGLSBase
     {
-        public EAGLSGame(ProjectData projectData) : base(projectData)
+        public EAGLSGame() : base()
         {
         }
 
         internal override bool Check()
         {
-            return File.Exists(Path.Combine(Path.GetDirectoryName(projectData.SPath), "Script", "SCPACK.pak"))
-                && File.Exists(Path.Combine(Path.GetDirectoryName(projectData.SPath), "Script", "SCPACK.idx"));
+            return File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "Script", "SCPACK.pak"))
+                && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "Script", "SCPACK.idx"));
         }
 
         internal override string Filters()
@@ -33,7 +33,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override string Name()
         {
-            return ProjectTitlePrefix() + Path.GetFileName(Path.GetDirectoryName(projectData.SPath));
+            return ProjectTitlePrefix() + Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath));
         }
 
         internal override bool Save()

@@ -4,14 +4,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class ProjectSpecificFixes : HardFixesBase
     {
-        public ProjectSpecificFixes(ProjectData projectData) : base(projectData)
+        public ProjectSpecificFixes() : base()
         {
         }
 
         protected override bool Apply()
         {
             var translation = SelectedRow[ColumnIndexTranslation] + "";
-            var newtranslation = projectData.CurrentProject.HardcodedFixes(SelectedRow[ColumnIndexOriginal] as string, translation);
+            var newtranslation = ProjectData.CurrentProject.HardcodedFixes(SelectedRow[ColumnIndexOriginal] as string, translation);
             if (newtranslation != translation)
             {
                 SelectedRow[ColumnIndexTranslation] = newtranslation;

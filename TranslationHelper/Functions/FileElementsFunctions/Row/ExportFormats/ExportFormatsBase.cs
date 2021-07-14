@@ -9,7 +9,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
 {
     abstract class ExportFormatsBase : RowBase
     {
-        protected ExportFormatsBase(ProjectData projectData) : base(projectData)
+        protected ExportFormatsBase() : base()
         {
         }
 

@@ -7,7 +7,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class GraphicalDesignMode : JSBase
     {
-        public GraphicalDesignMode(ProjectData projectData) : base(projectData)
+        public GraphicalDesignMode() : base()
         {
         }
 
@@ -20,14 +20,14 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
             string line;
 
-            string tablename = Path.GetFileName(projectData.FilePath);
+            string tablename = Path.GetFileName(ProjectData.FilePath);
 
             AddTables(tablename);
 
             bool StartReadingSvar = false;
             bool IsComment = false;
             StringBuilder Svar = new StringBuilder();
-            using (StreamReader reader = new StreamReader(projectData.FilePath))
+            using (StreamReader reader = new StreamReader(ProjectData.FilePath))
             {
                 while (!reader.EndOfStream)
                 {
@@ -113,12 +113,12 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             string line;
             rowindex = 0;
 
-            string tablename = Path.GetFileName(projectData.FilePath);
+            string tablename = Path.GetFileName(ProjectData.FilePath);
 
             bool StartReadingSvar = false;
             bool IsComment = false;
             //StringBuilder Svar = new StringBuilder();
-            using (StreamReader reader = new StreamReader(projectData.FilePath))
+            using (StreamReader reader = new StreamReader(ProjectData.FilePath))
             {
                 while (!reader.EndOfStream)
                 {
@@ -177,7 +177,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
             try
             {
-                File.WriteAllText(projectData.FilePath, TranslatedResult.ToString());
+                File.WriteAllText(ProjectData.FilePath, TranslatedResult.ToString());
             }
             catch
             {

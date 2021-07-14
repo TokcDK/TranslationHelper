@@ -6,7 +6,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
 {
     class VirginLode2 : PGroup1Base
     {
-        public VirginLode2(ProjectData projectData) : base(projectData)
+        public VirginLode2() : base()
         {
             exeCRC = "dacf4898da60741356cc5c254774e5cb";
         }
@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
         {
             if (CheckKiriKiriBase())
             {
-                if (exeCRC.Length > 0 && projectData.SPath.GetMD5() == exeCRC)
+                if (exeCRC.Length > 0 && ProjectData.SPath.GetMD5() == exeCRC)
                 {
                     return true;
                 }
@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
 
         protected override List<Formats.FormatBase> Format()
         {
-            return new List<Formats.FormatBase> { new TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2.KS(projectData) };
+            return new List<Formats.FormatBase> { new TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2.KS() };
         }
 
         protected override string[] Mask()

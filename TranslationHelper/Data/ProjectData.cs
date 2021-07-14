@@ -5,10 +5,16 @@ using TranslationHelper.Projects;
 
 namespace TranslationHelper.Data
 {
-    internal class ProjectData
+    public static class ProjectData
     {
-        internal ProjectData()
+        /// <summary>
+        /// init values and set references
+        /// </summary>
+        /// <param name="hfrmMain"></param>
+        public static void Init(THfrmMain hfrmMain)
         {
+            Main = hfrmMain;
+
             THFilesElementsDataset = new DataSet();
             THFilesElementsDatasetInfo = new DataSet();
             THFilesElementsALLDataTable = new DataSet();
@@ -19,57 +25,57 @@ namespace TranslationHelper.Data
             SPath = string.Empty;
             FilePath = string.Empty;
 
-            ProjectsList = ProjectBase.GetListOfProjects(this);
+            ProjectsList = ProjectBase.GetListOfProjects();
         }
 
         /// <summary>
         /// true - when file open, false - when file writing
         /// </summary>
-        internal bool OpenFileMode = true;
+        internal static bool OpenFileMode = true;
         /// <summary>
         /// true - when file write, false - when file open
         /// </summary>
-        internal bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }
+        internal static bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }
 
         /// <summary>
         /// regex rules which appling to original to show what need to translate
         /// </summary>
-        internal Dictionary<string, string> TranslationRegexRules = new Dictionary<string, string>();
-        internal Dictionary<string, string> TranslationRegexRulesGroup = new Dictionary<string, string>();
+        internal static Dictionary<string, string> TranslationRegexRules = new Dictionary<string, string>();
+        internal static Dictionary<string, string> TranslationRegexRulesGroup = new Dictionary<string, string>();
 
         /// <summary>
         /// translation cell fix regex rules. same as search and replace with regex using
         /// </summary>
-        internal Dictionary<string, string> CellFixesRegexRules = new Dictionary<string, string>();
+        internal static Dictionary<string, string> CellFixesRegexRules = new Dictionary<string, string>();
 
         /// <summary>
         /// reference to the main form
         /// </summary>
-        internal THfrmMain Main;
+        internal static THfrmMain Main;
 
         /// <summary>
         /// CurrentProject
         /// </summary>
-        internal ProjectBase CurrentProject;
+        internal static ProjectBase CurrentProject;
 
         /// <summary>
         /// internal ProjectBase Project
         /// </summary>
-        internal List<ProjectBase> ProjectsList;
+        internal static List<ProjectBase> ProjectsList;
 
         /// <summary>
         /// usually 'S'elected file 'Path' in file browse dialog
         /// </summary>
-        internal string SPath { get; set; }
+        internal static string SPath { get; set; }
 
         /// <summary>
         /// Online Translation Cache
         /// </summary>
-        internal FunctionsOnlineCache OnlineTranslationCache;
+        internal static FunctionsOnlineCache OnlineTranslationCache;
 
-        string filepath;
+        static string filepath;
         //current processing file for open/save
-        internal string FilePath
+        internal static string FilePath
         {
             get { return string.IsNullOrWhiteSpace(filepath) ? SPath : filepath; }
             set { filepath = value; }
@@ -78,59 +84,59 @@ namespace TranslationHelper.Data
         /// <summary>
         /// main work table data
         /// </summary>
-        internal DataSet THFilesElementsDataset { get; set; }
+        internal static DataSet THFilesElementsDataset { get; set; }
 
         /// <summary>
         /// main work table infos
         /// </summary>
-        internal DataSet THFilesElementsDatasetInfo { get; set; }
+        internal static DataSet THFilesElementsDatasetInfo { get; set; }
 
         /// <summary>
         /// main work table data for all (wip)
         /// </summary>
-        internal DataSet THFilesElementsALLDataTable { get; set; }
+        internal static DataSet THFilesElementsALLDataTable { get; set; }
 
         /// <summary>
         /// main table/row index coordinats data for same translation for identical and for write functions
         /// </summary>
-        internal Dictionary<string, Dictionary<string, List<int>>> OriginalsTableRowCoordinats { get; set; }
+        internal static Dictionary<string, Dictionary<string, List<int>>> OriginalsTableRowCoordinats { get; set; }
 
         /// <summary>
         /// target textbox control value
         /// </summary>
-        internal string TargetTextBoxPreValue;
+        internal static string TargetTextBoxPreValue;
 
         /// <summary>
         /// filtering records duplicates while adding to main work data table
         /// </summary>
-        internal HashSet<string> hashes = new HashSet<string>();
+        internal static HashSet<string> hashes = new HashSet<string>();
 
         /// <summary>
         /// для целей записи, скидывание сюда данных таблицы
         /// </summary>
-        internal Dictionary<string, string> TablesLinesDict = new Dictionary<string, string>();
+        internal static Dictionary<string, string> TablesLinesDict = new Dictionary<string, string>();
 
         /// <summary>
         /// все баз данных в кучу здесь
         /// </summary>
-        internal Dictionary<string, string> AllDBmerged;// = new Dictionary<string, string>();
+        internal static Dictionary<string, string> AllDBmerged;// = new Dictionary<string, string>();
 
         /// <summary>
         /// Buffer temp value. String type.
         /// </summary>
-        internal string BufferValueString;
+        internal static string BufferValueString;
 
         /// <summary>
         /// true when settings is loading
         /// </summary>
-        internal bool SettingsIsLoading;
+        internal static bool SettingsIsLoading;
 
         /// <summary>
         /// The program session online translation cookies
         /// </summary>
-        internal System.Net.CookieContainer OnlineTranslatorCookies;
+        internal static System.Net.CookieContainer OnlineTranslatorCookies;
 
-        internal Dictionary<char, int> ENQuotesToJPLearnDataFoundPrev;
-        internal Dictionary<char, int> ENQuotesToJPLearnDataFoundNext;
+        internal static Dictionary<char, int> ENQuotesToJPLearnDataFoundPrev;
+        internal static Dictionary<char, int> ENQuotesToJPLearnDataFoundNext;
     }
 }

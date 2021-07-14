@@ -4,7 +4,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1
 {
     abstract class PGroup1Base : KiriKiriGameBase
     {
-        protected PGroup1Base(ProjectData projectData) : base(projectData)
+        protected PGroup1Base() : base()
         {
         }
     }

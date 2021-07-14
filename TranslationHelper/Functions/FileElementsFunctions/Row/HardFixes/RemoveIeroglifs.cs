@@ -6,7 +6,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class RemoveIeroglifs : HardFixesBase
     {
-        public RemoveIeroglifs(ProjectData projectData) : base(projectData)
+        public RemoveIeroglifs() : base()
         {
         }
 

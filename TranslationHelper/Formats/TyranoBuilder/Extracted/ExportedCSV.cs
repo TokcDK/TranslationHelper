@@ -4,7 +4,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
     class ExportedCSV : FormatBase
     {
-        public ExportedCSV(ProjectData projectData) : base(projectData)
+        public ExportedCSV() : base()
         {
         }
 
@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             if (!string.IsNullOrWhiteSpace(ParseData.line) && !ParseData.line.Contains("DO NOT EDIT"))//skip info lines
             {
                 var data = ParseData.line.Split('\t');
-                if (projectData.OpenFileMode)
+                if (ProjectData.OpenFileMode)
                 {
                     AddRowData(data[0], "", true, false);
                 }

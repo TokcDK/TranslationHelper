@@ -10,15 +10,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
     abstract class KSSyntaxBase
     {
         /// <summary>
-        /// app data
-        /// </summary>
-        protected readonly ProjectData projectData;
-        protected KSSyntaxBase(ProjectData projectData)
-        {
-            this.projectData = projectData;
-        }
-
-        /// <summary>
         /// determine regex of start identifier for the block
         /// </summary>
         /// <returns></returns>

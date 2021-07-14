@@ -4,7 +4,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes.Temp
 {
     class LuaLiaFix : HardFixesTempBase
     {
-        public LuaLiaFix(ProjectData projectData) : base(projectData)
+        public LuaLiaFix() : base()
         {
         }
 

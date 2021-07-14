@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 {
     abstract class JSBase : RPGMMVBase
     {
-        public JSBase(ProjectData projectData) : base(projectData)
+        public JSBase() : base()
         {
         }
 
@@ -33,9 +33,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         /// Get all inherited classes of an abstract class
         /// </summary>
         /// <returns></returns>
-        internal static List<JSBase> GetListOfJS(ProjectData projectData)
+        internal static List<JSBase> GetListOfJS()
         {
-            return Inherited.GetListOfinheritedSubClasses<JSBase>(projectData);
+            return Inherited.GetListOfinheritedSubClasses<JSBase>();
         }
 
         internal abstract string JSName { get; }
@@ -123,7 +123,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 if (!IsValidToken(token))
                     return;
 
-                var row = projectData.THFilesElementsDataset.Tables[Jsonname].Rows[rowindex];
+                var row = ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows[rowindex];
                 if (Equals(token.ToString(), row[0]) && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
                 {
                     (token as JValue).Value = row[1] as string;
@@ -215,14 +215,14 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
             string line;
 
-            string tablename = Path.GetFileName(projectData.FilePath);
+            string tablename = Path.GetFileName(ProjectData.FilePath);
 
             AddTables(tablename);
 
             bool StartReadingSvar = false;
             bool IsComment = false;
             StringBuilder Svar = new StringBuilder();
-            using (StreamReader reader = new StreamReader(projectData.FilePath))
+            using (StreamReader reader = new StreamReader(ProjectData.FilePath))
             {
                 while (!reader.EndOfStream)
                 {
@@ -292,8 +292,8 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             string line;
             rowindex = 0;
 
-            string tablename = Path.GetFileName(projectData.FilePath);
-            if (FunctionsTable.IsTableRowsAllEmpty(projectData.THFilesElementsDataset.Tables[tablename]))
+            string tablename = Path.GetFileName(ProjectData.FilePath);
+            if (FunctionsTable.IsTableRowsAllEmpty(ProjectData.THFilesElementsDataset.Tables[tablename]))
             {
                 return false;
             }
@@ -301,7 +301,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             bool StartReadingSvar = false;
             bool IsComment = false;
             StringBuilder Svar = new StringBuilder();
-            using (StreamReader reader = new StreamReader(projectData.FilePath))
+            using (StreamReader reader = new StreamReader(ProjectData.FilePath))
             {
                 while (!reader.EndOfStream)
                 {
@@ -378,7 +378,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
             try
             {
-                File.WriteAllText(projectData.FilePath, TranslatedResult.ToString());
+                File.WriteAllText(ProjectData.FilePath, TranslatedResult.ToString());
             }
             catch
             {
@@ -409,14 +409,14 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         /// <returns></returns>
         protected bool ParseJSSingleLinesWithRegex(string RegexPattern, string LinePartForSearch = "", bool LinePartForSearchContains = true, string RegexPartOfPatternToSave = "$1", string SInfo = "", bool Iswrite = false)
         {
-            if (projectData.FilePath.Length == 0 || !File.Exists(projectData.FilePath))
+            if (ProjectData.FilePath.Length == 0 || !File.Exists(ProjectData.FilePath))
             {
                 return false;
             }
 
             string line;
 
-            string tablename = Path.GetFileName(projectData.FilePath);
+            string tablename = Path.GetFileName(ProjectData.FilePath);
 
             bool UseDict = false;
             if (Iswrite)
@@ -438,7 +438,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             try
             {
                 bool SearchText = LinePartForSearch.Length > 0;
-                using (StreamReader reader = new StreamReader(projectData.FilePath))
+                using (StreamReader reader = new StreamReader(ProjectData.FilePath))
                 {
                     while (!reader.EndOfStream)
                     {
@@ -485,7 +485,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                         else
                                         {
 
-                                            var row = projectData.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
+                                            var row = ProjectData.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
                                             if (row[0] as string == StringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
                                             {
                                                 line = line.Replace(StringToAdd, row[1] as string);
@@ -497,8 +497,8 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                     else
                                     {
                                         AddRowData(tablename, StringToAdd, SInfo, true);
-                                        //projectData.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
-                                        //projectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
+                                        //ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
+                                        //ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
                                     }
                                 }
                             }
@@ -520,7 +520,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             {
                 try
                 {
-                    File.WriteAllText(projectData.FilePath, ResultForWrite.ToString());
+                    File.WriteAllText(ProjectData.FilePath, ResultForWrite.ToString());
                 }
                 catch
                 {

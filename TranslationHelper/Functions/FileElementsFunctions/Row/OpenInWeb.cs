@@ -11,7 +11,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// open selected rows in web translator
         /// </summary>
-        public OpenInWeb(ProjectData projectData) : base(projectData)
+        public OpenInWeb() : base()
         {
         }
         protected override bool IsValidRow()
