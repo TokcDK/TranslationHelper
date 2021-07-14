@@ -13,7 +13,7 @@ using THCore;
 //  https://github.com/VitaliiTsilnyk/NGettext
 namespace l10n
 {
-    internal class T
+    public class T
     {
         static Catalog GetGlobal()
         {
