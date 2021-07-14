@@ -23,13 +23,13 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         protected bool CheckKiriKiriBase()
         {
             return
-            Path.GetExtension(ProjectData.SPath).ToUpperInvariant() == ".EXE"
+            Path.GetExtension(ProjectData.SelectedFilePath).ToUpperInvariant() == ".EXE"
                 &&
-                FunctionsProcess.GetExeDescription(ProjectData.SPath) != null
+                FunctionsProcess.GetExeDescription(ProjectData.SelectedFilePath) != null
                 &&
-                FunctionsProcess.GetExeDescription(ProjectData.SPath).ToUpper(CultureInfo.InvariantCulture).Contains("KIRIKIRI")
+                FunctionsProcess.GetExeDescription(ProjectData.SelectedFilePath).ToUpper(CultureInfo.InvariantCulture).Contains("KIRIKIRI")
                 &&
-                FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(ProjectData.SPath), "*.xp3");
+                FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.xp3");
         }
 
         protected const string PatchDirName = "_patch";

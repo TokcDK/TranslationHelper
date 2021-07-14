@@ -17,9 +17,9 @@ namespace TranslationHelper.Projects
 
         internal override bool Check()
         {
-            if (Path.GetExtension(ProjectData.SPath) == ".exe")
+            if (Path.GetExtension(ProjectData.SelectedFilePath) == ".exe")
             {
-                DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(ProjectData.SPath));
+                DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(ProjectData.SelectedFilePath));
 
                 if (File.Exists(Path.Combine(dir.FullName, "Data", "System.rvdata2"))
                     || FunctionsFileFolder.IsInDirExistsAnyFile(dir.FullName, "*.rgss3a")

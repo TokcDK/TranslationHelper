@@ -57,7 +57,7 @@ namespace TranslationHelper.Data
                 ProjectData.AllDBmerged = null;
                 //THFileElementsDataGridView.Rows.Clear();
                 ProjectData.FilePath = string.Empty;
-                ProjectData.SPath = string.Empty;
+                ProjectData.SelectedFilePath = string.Empty;
 
                 //Reload regex rules
                 ProjectData.Main.ReloadTranslationRegexRules();

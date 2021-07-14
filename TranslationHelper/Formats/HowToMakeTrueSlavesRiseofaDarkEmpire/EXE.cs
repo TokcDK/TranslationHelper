@@ -43,7 +43,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             var filetranslated = false;
 
-            using (var fs = new FileStream(ProjectData.SPath, FileMode.Open, FileAccess.Read))
+            using (var fs = new FileStream(ProjectData.SelectedFilePath, FileMode.Open, FileAccess.Read))
             using (var br = new BinaryReader(fs, Encoding.GetEncoding(932)))
             {
                 byte currentbyte;

@@ -21,11 +21,11 @@ namespace TranslationHelper.Formats.KiriKiri
         {
             try
             {
-                using (StreamReader file = new StreamReader(ProjectData.SPath, Encoding.GetEncoding(932)))
+                using (StreamReader file = new StreamReader(ProjectData.SelectedFilePath, Encoding.GetEncoding(932)))
                 {
                     string line;
                     //string original = string.Empty;
-                    string filename = Path.GetFileNameWithoutExtension(ProjectData.SPath);
+                    string filename = Path.GetFileNameWithoutExtension(ProjectData.SelectedFilePath);
                     _ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
                     _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Original");
                     while (!file.EndOfStream)

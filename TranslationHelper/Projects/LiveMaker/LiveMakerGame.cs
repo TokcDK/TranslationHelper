@@ -17,7 +17,7 @@ namespace TranslationHelper.Projects.LiveMaker
 
         internal override bool Check()
         {
-            return IsExe() && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "live.dll"));
+            return IsExe() && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "live.dll"));
         }
 
         internal override string Name()
@@ -59,7 +59,7 @@ namespace TranslationHelper.Projects.LiveMaker
                 var gameextractcommand =
                     //THSettingsData.PyLiveMakerLMARExtractionToolsPath()
                     " x \""
-                    + ProjectData.SPath
+                    + ProjectData.SelectedFilePath
                     + "\" -o \""
                     + gameresoutput
                     + "\""
@@ -264,20 +264,20 @@ namespace TranslationHelper.Projects.LiveMaker
                 //File.Delete(Bat);
 
                 //temporary rename backup because lmlsb will not write lsb when backup file exists
-                if (File.Exists(ProjectData.SPath + ".bak"))
+                if (File.Exists(ProjectData.SelectedFilePath + ".bak"))
                 {
-                    File.Move(ProjectData.SPath + ".bak", ProjectData.SPath + ".bak1");
+                    File.Move(ProjectData.SelectedFilePath + ".bak", ProjectData.SelectedFilePath + ".bak1");
                 }
 
                 //insert lsb to exe from insert dir
                 ProjectData.Main.ProgressInfo(T._("Inserting lsb in game") + "...");
-                var command = "-r \"" + ProjectData.SPath + "\" \"" + "..\\insert\"";
+                var command = "-r \"" + ProjectData.SelectedFilePath + "\" \"" + "..\\insert\"";
                 FunctionsProcess.RunProcess(THSettingsData.PyLiveMakerLMPATCHExtractionToolPath(), command, gameresoutput, true, false);
 
                 //delete old bak if new was made by lmlsb
-                if (File.Exists(ProjectData.SPath + ".bak"))
+                if (File.Exists(ProjectData.SelectedFilePath + ".bak"))
                 {
-                    File.Delete(ProjectData.SPath + ".bak1");
+                    File.Delete(ProjectData.SelectedFilePath + ".bak1");
                 }
 
                 ProjectData.Main.ProgressInfo();
@@ -296,7 +296,7 @@ namespace TranslationHelper.Projects.LiveMaker
         {
             var bakData = Directory.GetFiles(Path.Combine(ProjectData.ProjectWorkDir, "output"), "*.lsb");
 
-            bakData = bakData.Union(new[] { ProjectData.SPath }).ToArray();
+            bakData = bakData.Union(new[] { ProjectData.SelectedFilePath }).ToArray();
 
             if (Directory.Exists(Path.Combine(ProjectData.ProjectWorkDir, "Extracted")))
             {
@@ -320,7 +320,7 @@ namespace TranslationHelper.Projects.LiveMaker
                 bakData = Directory.GetFiles(Path.Combine(ProjectData.ProjectWorkDir, "output"), "*.lsb");
             }
 
-            bakData = bakData.Union(new[] { ProjectData.SPath }).ToArray();
+            bakData = bakData.Union(new[] { ProjectData.SelectedFilePath }).ToArray();
 
             if (Directory.Exists(Path.Combine(ProjectData.ProjectWorkDir, "Extracted")))
             {

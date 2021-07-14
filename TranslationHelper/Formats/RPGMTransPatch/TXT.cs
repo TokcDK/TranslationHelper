@@ -16,8 +16,8 @@ namespace TranslationHelper.Formats.RPGMTrans
 
         internal override bool ExtIdentifier()
         {
-            var patchfile = Path.GetFullPath(Path.GetDirectoryName(ProjectData.SPath) + @"\..\RPGMKTRANSPATCH");
-            return File.Exists(patchfile) && Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath)) == "patch";
+            var patchfile = Path.GetFullPath(Path.GetDirectoryName(ProjectData.SelectedFilePath) + @"\..\RPGMKTRANSPATCH");
+            return File.Exists(patchfile) && Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)) == "patch";
         }
 
         internal override string Name()

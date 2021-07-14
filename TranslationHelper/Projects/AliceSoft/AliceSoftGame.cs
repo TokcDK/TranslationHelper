@@ -16,8 +16,8 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override bool Check()
         {
-            string dirPath = Path.GetDirectoryName(ProjectData.SPath);
-            return Path.GetExtension(ProjectData.SPath) == ".exe"
+            string dirPath = Path.GetDirectoryName(ProjectData.SelectedFilePath);
+            return Path.GetExtension(ProjectData.SelectedFilePath) == ".exe"
                 && new DirectoryInfo(dirPath).HasAnyFiles("*.ain")
                 ;
         }
@@ -36,13 +36,13 @@ namespace TranslationHelper.Projects.AliceSoft
         {
             if (ProjectData.OpenFileMode)
             {
-                ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath)));
+                ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)));
             }
 
             var ret = false;
 
             var first = false;
-            foreach (var ain in Directory.GetFiles(Path.GetDirectoryName(ProjectData.SPath), "*.ain"))
+            foreach (var ain in Directory.GetFiles(Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.ain"))
             {
                 //only 1st file, for any case
                 if (first)

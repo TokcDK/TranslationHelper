@@ -24,8 +24,8 @@ namespace TranslationHelper.Projects
 
         internal override bool Check()
         {
-            string dirPath = Path.GetDirectoryName(ProjectData.SPath);
-            return Path.GetExtension(ProjectData.SPath) == ".exe"
+            string dirPath = Path.GetDirectoryName(ProjectData.SelectedFilePath);
+            return Path.GetExtension(ProjectData.SelectedFilePath) == ".exe"
                 && Directory.Exists(Path.Combine(dirPath, "eve"))
                 && Directory.Exists(Path.Combine(dirPath, "csv"))
                 ;
@@ -53,7 +53,7 @@ namespace TranslationHelper.Projects
 
         bool OpenSave()
         {
-            var dirPath = Path.GetDirectoryName(ProjectData.SPath);
+            var dirPath = Path.GetDirectoryName(ProjectData.SelectedFilePath);
             var ret = false;
 
             if (OpenSaveFilesBase(Path.Combine(dirPath, "eve"), new TXT(), "*.txt"))
@@ -67,8 +67,8 @@ namespace TranslationHelper.Projects
         internal override bool BakCreate()
         {
             return BackupRestorePaths(new[] { 
-                Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "eve"),
-                Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "csv")
+                Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "eve"),
+                Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "csv")
             });
         }
 
@@ -79,8 +79,8 @@ namespace TranslationHelper.Projects
         internal override bool BakRestore()
         {
             return BackupRestorePaths(new[] {
-                Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "eve"),
-                Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "csv")
+                Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "eve"),
+                Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "csv")
             }
             ,false);
         }

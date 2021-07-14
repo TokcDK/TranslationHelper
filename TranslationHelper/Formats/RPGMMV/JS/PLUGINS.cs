@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         internal override bool ExtIdentifier()
         {
-            return Path.GetFileName(ProjectData.SPath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath)).ToUpperInvariant() == "JS";
+            return Path.GetFileName(ProjectData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)).ToUpperInvariant() == "JS";
         }
 
         internal override bool Open()

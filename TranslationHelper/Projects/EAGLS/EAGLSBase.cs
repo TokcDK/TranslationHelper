@@ -19,8 +19,8 @@ namespace TranslationHelper.Projects.EAGLS
             ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), ProjectName);
             WorkTXTDir = Path.Combine(ProjectData.ProjectWorkDir, "txt");
             ScriptDir = Path.Combine(ProjectData.SelectedGameDir, "Script");
-            SCPACKpak = Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "Script", "SCPACK.pak");
-            SCPACKidx = Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "Script", "SCPACK.idx");
+            SCPACKpak = Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "Script", "SCPACK.pak");
+            SCPACKidx = Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "Script", "SCPACK.idx");
         }
 
         internal override string ProjectFolderName()

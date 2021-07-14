@@ -12,9 +12,9 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override bool Check()
         {
-            if (Path.GetExtension(ProjectData.SPath).ToUpperInvariant() == ".JSON")
+            if (Path.GetExtension(ProjectData.SelectedFilePath).ToUpperInvariant() == ".JSON")
             {
-                if (Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath)) == "data")
+                if (Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)) == "data")
                 {
                     return true;
                 }
@@ -54,7 +54,7 @@ namespace TranslationHelper.Projects.RPGMMV
             ParseFileMessage = Write ? T._("write file: ") : T._("opening file: ");
             try
             {
-                if (ParseRPGMakerMVjson(ProjectData.SPath, Write))
+                if (ParseRPGMakerMVjson(ProjectData.SelectedFilePath, Write))
                 {
                     return true;
                 }

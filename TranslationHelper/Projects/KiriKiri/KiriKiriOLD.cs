@@ -23,23 +23,23 @@ namespace TranslationHelper.Projects.KiriKiri
         internal bool OpenDetect()
         {
             return
-                ProjectData.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".KS")
+                ProjectData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".KS")
                 ||
-                ProjectData.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".SCN")
+                ProjectData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".SCN")
                 ;
         }
 
         internal string KiriKiriScriptScenario()
         {
-            string filename = Path.GetFileNameWithoutExtension(ProjectData.SPath);
-            string extension = Path.GetExtension(ProjectData.SPath);
+            string filename = Path.GetFileNameWithoutExtension(ProjectData.SelectedFilePath);
+            string extension = Path.GetExtension(ProjectData.SelectedFilePath);
 
             _ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
             _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
             _ = ProjectData.THFilesElementsDatasetInfo.Tables.Add(filename);
             _ = ProjectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
 
-            DataTable DT = KiriKiriScriptScenarioOpen(ProjectData.SPath, ProjectData.THFilesElementsDataset.Tables[0], ProjectData.THFilesElementsDatasetInfo.Tables[0]);
+            DataTable DT = KiriKiriScriptScenarioOpen(ProjectData.SelectedFilePath, ProjectData.THFilesElementsDataset.Tables[0], ProjectData.THFilesElementsDatasetInfo.Tables[0]);
             if (DT == null || DT.Rows.Count == 0)
             {
                 ProjectData.THFilesElementsDataset.Tables.Remove(filename);
@@ -64,10 +64,10 @@ namespace TranslationHelper.Projects.KiriKiri
         internal bool KiriKiriGame()
         {
             bool ret = false;
-            if (XP3.ExtractXP3files(ProjectData.SPath))
+            if (XP3.ExtractXP3files(ProjectData.SelectedFilePath))
             {
                 var KiriKiriFiles = new List<string>();
-                string DirName = Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath));
+                string DirName = Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath));
                 string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
 
                 foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).GetFiles("*.scn", SearchOption.AllDirectories))

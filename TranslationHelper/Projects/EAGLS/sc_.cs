@@ -14,7 +14,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override bool Check()
         {
-            return ProjectData.SPath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TXT") && Path.GetFileName(ProjectData.SPath).StartsWith("sc_");
+            return ProjectData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TXT") && Path.GetFileName(ProjectData.SelectedFilePath).StartsWith("sc_");
         }
 
         internal override string Filters()
@@ -24,13 +24,13 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override bool Open()
         {
-            ProjectData.FilePath = ProjectData.SPath;
+            ProjectData.FilePath = ProjectData.SelectedFilePath;
             return new SC_TXT().Open();
         }
 
         internal override string Name()
         {
-            return "EAGLS scenario (" + Path.GetFileNameWithoutExtension(ProjectData.SPath) + ")";
+            return "EAGLS scenario (" + Path.GetFileNameWithoutExtension(ProjectData.SelectedFilePath) + ")";
         }
 
         internal override string ProjectFolderName()

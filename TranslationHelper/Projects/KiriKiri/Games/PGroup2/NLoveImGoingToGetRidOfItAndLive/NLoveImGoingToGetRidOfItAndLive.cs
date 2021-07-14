@@ -21,7 +21,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         {
             if (CheckKiriKiriBase())
             {
-                if (exeCRC.Length > 0 && ProjectData.SPath.GetMD5() == exeCRC)
+                if (exeCRC.Length > 0 && ProjectData.SelectedFilePath.GetMD5() == exeCRC)
                 {
                     return true;
                 }

@@ -14,7 +14,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
         internal override bool Check()
         {
-            return CheckKiriKiriBase() && ExtensionsFileFolder.GetCrc32(ProjectData.SPath) == "7c2bfd95";
+            return CheckKiriKiriBase() && ExtensionsFileFolder.GetCrc32(ProjectData.SelectedFilePath) == "7c2bfd95";
         }
 
         internal override string Name()

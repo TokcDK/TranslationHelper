@@ -48,7 +48,7 @@ namespace TranslationHelper.Functions
                         {
                             new CleanupData().THCleanupThings();
 
-                            ProjectData.SPath = THFOpen.FileName;
+                            ProjectData.SelectedFilePath = THFOpen.FileName;
                             IsProjectFileSelected = true;
                         }
                     }
@@ -88,7 +88,7 @@ namespace TranslationHelper.Functions
                     //}
 
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => RPGMFunctions.THSelectedSourceType = GetSourceType(ProjectData.SPath)).ConfigureAwait(true);
+                    await Task.Run(() => RPGMFunctions.THSelectedSourceType = GetSourceType(ProjectData.SelectedFilePath)).ConfigureAwait(true);
 
                     //THSelectedSourceType = GetSourceType(THFOpen.FileName);
 
@@ -179,7 +179,7 @@ namespace TranslationHelper.Functions
         internal DirectoryInfo mvdatadir;
         private string GetSourceType(string sPath)
         {
-            ProjectData.SPath = sPath;
+            ProjectData.SelectedFilePath = sPath;
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
             ProjectData.SelectedDir = dir.FullName;
             ProjectData.SelectedGameDir = dir.FullName;

@@ -22,7 +22,7 @@ namespace TranslationHelper.Data
             //THFilesElementsDictionary = new Dictionary<string, string>();
             //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
 
-            SPath = string.Empty;
+            SelectedFilePath = string.Empty;
             FilePath = string.Empty;
 
             ProjectsList = ProjectBase.GetListOfProjects();
@@ -66,7 +66,7 @@ namespace TranslationHelper.Data
         /// <summary>
         /// usually 'S'elected file 'Path' in file browse dialog
         /// </summary>
-        internal static string SPath { get; set; }
+        internal static string SelectedFilePath { get; set; }
 
         /// <summary>
         /// Online Translation Cache
@@ -77,7 +77,7 @@ namespace TranslationHelper.Data
         //current processing file for open/save
         internal static string FilePath
         {
-            get { return string.IsNullOrWhiteSpace(filepath) ? SPath : filepath; }
+            get { return string.IsNullOrWhiteSpace(filepath) ? SelectedFilePath : filepath; }
             set { filepath = value; }
         }
 

@@ -11,8 +11,8 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override bool Check()
         {
-            return File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "Script", "SCPACK.pak"))
-                && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "Script", "SCPACK.idx"));
+            return File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "Script", "SCPACK.pak"))
+                && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "Script", "SCPACK.idx"));
         }
 
         internal override string Filters()
@@ -33,7 +33,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override string Name()
         {
-            return ProjectTitlePrefix() + Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath));
+            return ProjectTitlePrefix() + Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath));
         }
 
         internal override bool Save()

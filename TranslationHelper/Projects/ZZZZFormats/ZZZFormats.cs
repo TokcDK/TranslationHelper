@@ -76,7 +76,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
             foreach (var format in formats)
             {
-                if (format.Ext() == Path.GetExtension(ProjectData.SPath) && format.ExtIdentifier())
+                if (format.Ext() == Path.GetExtension(ProjectData.SelectedFilePath) && format.ExtIdentifier())
                 {
                     SelectedFormat = format;
                     return true;

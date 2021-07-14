@@ -22,7 +22,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override bool Check()
         {
-            if (Path.GetExtension(ProjectData.SPath) == ".exe")
+            if (Path.GetExtension(ProjectData.SelectedFilePath) == ".exe")
             {
                 if (File.Exists(Path.Combine(ProjectData.SelectedDir, "www", "data", "system.json")))
                 {

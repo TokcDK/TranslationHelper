@@ -21,11 +21,11 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         internal override bool Check()
         {
-            return Path.GetExtension(ProjectData.SPath) == ".exe"
+            return Path.GetExtension(ProjectData.SelectedFilePath) == ".exe"
                 &&
-                Path.GetFileNameWithoutExtension(ProjectData.SPath) == "正しい性奴隷の使い方"
+                Path.GetFileNameWithoutExtension(ProjectData.SelectedFilePath) == "正しい性奴隷の使い方"
                 &&
-                Directory.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "data", "Script"));
+                Directory.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "data", "Script"));
         }
 
         internal override string Filters()
@@ -52,15 +52,15 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
         {
             var ret = false;
 
-            ProjectData.Main.ProgressInfo(true, Path.GetFileName(ProjectData.SPath));
-            ProjectData.FilePath = ProjectData.SPath;
+            ProjectData.Main.ProgressInfo(true, Path.GetFileName(ProjectData.SelectedFilePath));
+            ProjectData.FilePath = ProjectData.SelectedFilePath;
             if (ProjectData.OpenFileMode ? new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE().Open() : new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE().Save())
             {
                 ret = true;
             }
 
 
-            var openPath = Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "data");
+            var openPath = Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "data");
 
             if (!Directory.Exists(openPath + ".skip") && !File.Exists(openPath + ".skip"))
             {

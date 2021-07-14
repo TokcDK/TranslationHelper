@@ -25,10 +25,10 @@ namespace TranslationHelper.Projects
         /// </summary>
         public virtual void Init()
         {
-            if (!string.IsNullOrWhiteSpace(ProjectData.SPath))
+            if (!string.IsNullOrWhiteSpace(ProjectData.SelectedFilePath))
             {
-                ProjectData.SelectedGameDir = Path.GetDirectoryName(ProjectData.SPath);
-                ProjectData.SelectedDir = Path.GetDirectoryName(ProjectData.SPath);
+                ProjectData.SelectedGameDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
+                ProjectData.SelectedDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
                 ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), ProjectName());
             }
         }
@@ -39,7 +39,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual string ProjectName()
         {
-            return Path.GetFileName(Path.GetDirectoryName(ProjectData.SPath));
+            return Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath));
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool IsExe()
         {
-            return Path.GetExtension(ProjectData.SPath).ToUpperInvariant() == ".EXE";
+            return Path.GetExtension(ProjectData.SelectedFilePath).ToUpperInvariant() == ".EXE";
         }
 
         /// <summary>
@@ -493,7 +493,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakCreate()
         {
-            return BackupRestorePaths(new[] { ProjectData.SPath, ProjectData.FilePath });
+            return BackupRestorePaths(new[] { ProjectData.SelectedFilePath, ProjectData.FilePath });
         }
 
         /// <summary>
@@ -502,7 +502,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakRestore()
         {
-            return BackupRestorePaths(new[] { ProjectData.SPath, ProjectData.FilePath }, false);
+            return BackupRestorePaths(new[] { ProjectData.SelectedFilePath, ProjectData.FilePath }, false);
         }
 
         /// <summary>

@@ -14,8 +14,8 @@ namespace TranslationHelper.Projects.NScript
 
         internal override bool Check()
         {
-            return Path.GetExtension(ProjectData.SPath).ToUpperInvariant() == ".EXE"
-                && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SPath), "nscript.dat"));
+            return Path.GetExtension(ProjectData.SelectedFilePath).ToUpperInvariant() == ".EXE"
+                && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "nscript.dat"));
         }
 
         internal override string Name()
