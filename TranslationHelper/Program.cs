@@ -16,7 +16,7 @@ namespace TranslationHelper
 #pragma warning disable CA2000 // Ликвидировать объекты перед потерей области
             //try
             //{
-                Application.Run(new THfrmMain());
+                Application.Run(new FormMain());
             //}
             //catch (Exception ex)
             //{

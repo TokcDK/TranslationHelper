@@ -29,7 +29,7 @@ using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper
 {
-    public partial class THfrmMain : Form
+    public partial class FormMain : Form
     {
         internal THfrmSettings Settings;
 
@@ -44,7 +44,7 @@ namespace TranslationHelper
             set => Properties.Settings.Default.THTranslationCachePath = value;
         }
 
-        public THfrmMain()
+        public FormMain()
         {
             InitializeComponent();
             //LangF = new THLang();

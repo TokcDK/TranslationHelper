@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper
 {
-    partial class THfrmMain
+    partial class FormMain
     {
         /// <summary>
         /// Обязательная переменная конструктора.

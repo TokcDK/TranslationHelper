@@ -11,7 +11,7 @@ namespace TranslationHelper.Data
         /// init values and set references
         /// </summary>
         /// <param name="hfrmMain"></param>
-        public static void Init(THfrmMain hfrmMain)
+        public static void Init(FormMain hfrmMain)
         {
             Main = hfrmMain;
 
@@ -51,7 +51,7 @@ namespace TranslationHelper.Data
         /// <summary>
         /// reference to the main form
         /// </summary>
-        internal static THfrmMain Main;
+        internal static FormMain Main;
 
         /// <summary>
         /// CurrentProject
