@@ -92,7 +92,7 @@ namespace TranslationHelper
         /// like Ctrl+Alt+T. The method HotKeyRegister.GetModifiers could check whether 
         /// "T" is pressed.
         /// </summary>
-        private void tbHotKey_KeyDown(object sender, KeyEventArgs e)
+        private void TbHotKey_KeyDown(object sender, KeyEventArgs e)
         {
             // The key event should not be sent to the underlying control.
             e.SuppressKeyPress = true;
@@ -100,8 +100,7 @@ namespace TranslationHelper
             // Check whether the modifier keys are pressed.
             if (e.Modifiers != Keys.None)
             {
-                Keys key = Keys.None;
-                KeyModifiers modifiers = HotKeyRegister.GetModifiers(e.KeyData, out key);
+                KeyModifiers modifiers = HotKeyRegister.GetModifiers(e.KeyData, out Keys key);
 
                 // If the pressed key is valid...
                 if (key != Keys.None)
@@ -122,7 +121,7 @@ namespace TranslationHelper
         /// <summary>
         /// Handle the Click event of btnRegister.
         /// </summary>
-        private void btnRegister_Click(object sender, EventArgs e)
+        private void BtnRegister_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1524,37 +1523,37 @@ namespace TranslationHelper
 
         }
 
-        bool THIsFixingCells;
-        /// <summary>
-        /// Исправления формата спецсимволов в заданной ячейке перевода
-        /// <br/>Для выбранных ячеек, таблицы или для всех значений задать:
-        /// <br/>method:
-        /// <br/>"a" - All
-        /// <br/>"t" - Table
-        /// <br/>"s" - Selected
-        /// <br/>..а также cind - индекс колонки, где ячейки перевода и tind - индекс таблицы, для вариантов Table и Selected
-        /// <br/>Для одной выбранной ячейки, когда, например, определенная обрабатывается в коде, <br/>задать tind, cind и rind, а также true для onselectedonly
-        /// </summary>
-        /// <param name="method"></param>
-        /// <param name="cind"></param>
-        /// <param name="tind"></param>
-        /// <param name="rind"></param>
-        /// <param name="selectedonly"></param>
-        private void THFixCells(string method, int cind, int tind, int rind = 0, bool forceApply = false)//cind - индекс столбца перевода, задан до старта потока
-        {
-            //возвращать, если занято, когда исправление в процессе
-            if (THIsFixingCells)
-            {
-                return;
-            }
-            //установить занятость при старте
-            THIsFixingCells = true;
+        //bool THIsFixingCells;
+        ///// <summary>
+        ///// Исправления формата спецсимволов в заданной ячейке перевода
+        ///// <br/>Для выбранных ячеек, таблицы или для всех значений задать:
+        ///// <br/>method:
+        ///// <br/>"a" - All
+        ///// <br/>"t" - Table
+        ///// <br/>"s" - Selected
+        ///// <br/>..а также cind - индекс колонки, где ячейки перевода и tind - индекс таблицы, для вариантов Table и Selected
+        ///// <br/>Для одной выбранной ячейки, когда, например, определенная обрабатывается в коде, <br/>задать tind, cind и rind, а также true для onselectedonly
+        ///// </summary>
+        ///// <param name="method"></param>
+        ///// <param name="cind"></param>
+        ///// <param name="tind"></param>
+        ///// <param name="rind"></param>
+        ///// <param name="selectedonly"></param>
+        //private void THFixCells(string method, int cind, int tind, int rind = 0, bool forceApply = false)//cind - индекс столбца перевода, задан до старта потока
+        //{
+        //    //возвращать, если занято, когда исправление в процессе
+        //    if (THIsFixingCells)
+        //    {
+        //        return;
+        //    }
+        //    //установить занятость при старте
+        //    THIsFixingCells = true;
 
-            FunctionsAutoOperations.THFixCells(method, cind, tind, rind, forceApply);
+        //    FunctionsAutoOperations.THFixCells(method, cind, tind, rind, forceApply);
 
-            //снять занятость по окончании
-            THIsFixingCells = false;
-        }
+        //    //снять занятость по окончании
+        //    THIsFixingCells = false;
+        //}
 
         bool THIsExtractingTextForTranslation;
         internal string THExtractTextForTranslation(string input)
@@ -2527,7 +2526,7 @@ namespace TranslationHelper
             newthread.Start();
         }
 
-        private void SetOriginalToTranslationIfFileExistsInAnyFolder()
+        private static void SetOriginalToTranslationIfFileExistsInAnyFolder()
         {
             string[] ProjectFilesList = Directory.GetFiles(ProjectData.SelectedGameDir, "*.*", SearchOption.AllDirectories);
             for (int i = 0; i < ProjectFilesList.Length; i++)
@@ -2647,7 +2646,7 @@ namespace TranslationHelper
             FunctionsSounds.LoadDBCompleted();
         }
 
-        internal void ReloadTranslationRegexRules()
+        internal static void ReloadTranslationRegexRules()
         {
             //Reload TranslationRegexRules
             if (ProjectData.TranslationRegexRules.Count > 0)
@@ -2704,7 +2703,7 @@ namespace TranslationHelper
             }
         }
 
-        internal void ReloadCellFixesRegexRules()
+        internal static void ReloadCellFixesRegexRules()
         {
             //Reload TranslationRegexRules
             if (ProjectData.CellFixesRegexRules.Count > 0)
@@ -2824,7 +2823,7 @@ namespace TranslationHelper
             FunctionsProcess.OpenProjectsDir();
         }
 
-        private void openTranslationRulesFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenTranslationRulesFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (File.Exists(THSettingsData.TranslationRegexRulesFilePath()))
             {
@@ -2832,7 +2831,7 @@ namespace TranslationHelper
             }
         }
 
-        private void openCellFixesFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenCellFixesFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (File.Exists(THSettingsData.CellFixesRegexRulesFilePath()))
             {
@@ -2851,12 +2850,12 @@ namespace TranslationHelper
                 tlpTextLenPosInfo.Visible = true;
         }
 
-        private void testXorDecriptToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TestXorDecriptToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tests.Xorfornscript.DecryptXor();
         }
 
-        private void testXorEncriptToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TestXorEncriptToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tests.Xorfornscript.EncryptXor();
         }
@@ -2896,7 +2895,7 @@ namespace TranslationHelper
         }
 
         //Form overall;
-        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TestToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //MessageBox.Show(string.Join("\r\n---------\r\n", dict));
 
@@ -2986,17 +2985,17 @@ namespace TranslationHelper
             _ = new AllHardFixes().Selected();
         }
 
-        private void fixMessagesForAllToolStripMenuItem_Click(object sender, EventArgs e)
+        private void FixMessagesForAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new FixJPMessagesTranslation().AllT();
         }
 
-        private void tableToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new FixJPMessagesTranslation().TableT();
         }
 
-        private void getAndSaveStaticToolStripMenuItem_Click(object sender, EventArgs e)
+        private void GetAndSaveStaticToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //get static XUA translation
             using (var wc = new WebClient())
@@ -3030,7 +3029,7 @@ namespace TranslationHelper
             ProjectData.Main.ProgressInfo(false);
         }
 
-        private void loadTrasnlationAsForcedToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadTrasnlationAsForcedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadDBAs(true);
         }
@@ -3045,7 +3044,7 @@ namespace TranslationHelper
             _ = Task.Run(() => new LoadRowDataToCustomDB().Selected()).ConfigureAwait(false);
         }
 
-        private void copyNameToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CopyNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(GetFilesListSelectedName());
         }
@@ -3069,7 +3068,7 @@ namespace TranslationHelper
             return "";
         }
 
-        private void makeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MakeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new MakeTranslatedCopyIfFileWithTheNameExists().AllT();
         }
@@ -3094,7 +3093,7 @@ namespace TranslationHelper
             _ = new ToUpper().TableT();
         }
 
-        private void lowercaseTableToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void LowercaseTableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             _ = new ToLower().TableT();
         }

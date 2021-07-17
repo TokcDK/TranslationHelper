@@ -60,8 +60,8 @@ namespace TranslationHelper.Data
                 ProjectData.SelectedFilePath = string.Empty;
 
                 //Reload regex rules
-                ProjectData.Main.ReloadTranslationRegexRules();
-                ProjectData.Main.ReloadCellFixesRegexRules();
+                FormMain.ReloadTranslationRegexRules();
+                FormMain.ReloadCellFixesRegexRules();
 
                 //Dispose objects
                 //ProjectData.THFilesElementsDataset.Dispose();

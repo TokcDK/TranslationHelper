@@ -368,7 +368,7 @@
             this.loadTrasnlationAsForcedToolStripMenuItem.Name = "loadTrasnlationAsForcedToolStripMenuItem";
             this.loadTrasnlationAsForcedToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.loadTrasnlationAsForcedToolStripMenuItem.Text = "Load Translation as (forced)";
-            this.loadTrasnlationAsForcedToolStripMenuItem.Click += new System.EventHandler(this.loadTrasnlationAsForcedToolStripMenuItem_Click);
+            this.loadTrasnlationAsForcedToolStripMenuItem.Click += new System.EventHandler(this.LoadTrasnlationAsForcedToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem1
             // 
@@ -400,7 +400,7 @@
             this.testXorDecriptToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.testXorDecriptToolStripMenuItem.Text = "test xor decript";
             this.testXorDecriptToolStripMenuItem.Visible = false;
-            this.testXorDecriptToolStripMenuItem.Click += new System.EventHandler(this.testXorDecriptToolStripMenuItem_Click);
+            this.testXorDecriptToolStripMenuItem.Click += new System.EventHandler(this.TestXorDecriptToolStripMenuItem_Click);
             // 
             // testXorEncriptToolStripMenuItem
             // 
@@ -408,14 +408,14 @@
             this.testXorEncriptToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.testXorEncriptToolStripMenuItem.Text = "test xor encript";
             this.testXorEncriptToolStripMenuItem.Visible = false;
-            this.testXorEncriptToolStripMenuItem.Click += new System.EventHandler(this.testXorEncriptToolStripMenuItem_Click);
+            this.testXorEncriptToolStripMenuItem.Click += new System.EventHandler(this.TestXorEncriptToolStripMenuItem_Click);
             // 
             // testToolStripMenuItem
             // 
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
             this.testToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.testToolStripMenuItem.Text = "test";
-            this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
+            this.testToolStripMenuItem.Click += new System.EventHandler(this.TestToolStripMenuItem_Click);
             // 
             // getAndSaveStaticToolStripMenuItem
             // 
@@ -423,7 +423,7 @@
             this.getAndSaveStaticToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.getAndSaveStaticToolStripMenuItem.Text = "Get and save static";
             this.getAndSaveStaticToolStripMenuItem.Visible = false;
-            this.getAndSaveStaticToolStripMenuItem.Click += new System.EventHandler(this.getAndSaveStaticToolStripMenuItem_Click);
+            this.getAndSaveStaticToolStripMenuItem.Click += new System.EventHandler(this.GetAndSaveStaticToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -804,14 +804,14 @@
             this.fixMessagesForAllToolStripMenuItem.Name = "fixMessagesForAllToolStripMenuItem";
             this.fixMessagesForAllToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.fixMessagesForAllToolStripMenuItem.Text = "All";
-            this.fixMessagesForAllToolStripMenuItem.Click += new System.EventHandler(this.fixMessagesForAllToolStripMenuItem_Click);
+            this.fixMessagesForAllToolStripMenuItem.Click += new System.EventHandler(this.FixMessagesForAllToolStripMenuItem_Click);
             // 
             // tableToolStripMenuItem
             // 
             this.tableToolStripMenuItem.Name = "tableToolStripMenuItem";
             this.tableToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.tableToolStripMenuItem.Text = "Table";
-            this.tableToolStripMenuItem.Click += new System.EventHandler(this.tableToolStripMenuItem_Click);
+            this.tableToolStripMenuItem.Click += new System.EventHandler(this.TableToolStripMenuItem_Click);
             // 
             // extraHardFixesToolStripMenuItem
             // 
@@ -825,7 +825,7 @@
             this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem.Name = "makeTranslatedFilecopyForExistOriginalsToolStripMenuItem";
             this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
             this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem.Text = "Make translated filecopy for exist originals";
-            this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem.Click += new System.EventHandler(this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click);
+            this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem.Click += new System.EventHandler(this.MakeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -879,7 +879,7 @@
             this.openTranslationRulesFileToolStripMenuItem.Name = "openTranslationRulesFileToolStripMenuItem";
             this.openTranslationRulesFileToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
             this.openTranslationRulesFileToolStripMenuItem.Text = "Open translation rules file";
-            this.openTranslationRulesFileToolStripMenuItem.Click += new System.EventHandler(this.openTranslationRulesFileToolStripMenuItem_Click);
+            this.openTranslationRulesFileToolStripMenuItem.Click += new System.EventHandler(this.OpenTranslationRulesFileToolStripMenuItem_Click);
             // 
             // openCellFixesFileToolStripMenuItem
             // 
@@ -887,7 +887,7 @@
             this.openCellFixesFileToolStripMenuItem.Name = "openCellFixesFileToolStripMenuItem";
             this.openCellFixesFileToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
             this.openCellFixesFileToolStripMenuItem.Text = "Open cell fixes rules file";
-            this.openCellFixesFileToolStripMenuItem.Click += new System.EventHandler(this.openCellFixesFileToolStripMenuItem_Click);
+            this.openCellFixesFileToolStripMenuItem.Click += new System.EventHandler(this.OpenCellFixesFileToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -990,7 +990,7 @@
             this.copyNameToolStripMenuItem.Name = "copyNameToolStripMenuItem";
             this.copyNameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyNameToolStripMenuItem.Text = "Copy Name";
-            this.copyNameToolStripMenuItem.Click += new System.EventHandler(this.copyNameToolStripMenuItem_Click);
+            this.copyNameToolStripMenuItem.Click += new System.EventHandler(this.CopyNameToolStripMenuItem_Click);
             // 
             // tlpFileElements
             // 
@@ -1673,7 +1673,7 @@
             this.lowercaseTableToolStripMenuItem1.Name = "lowercaseTableToolStripMenuItem1";
             this.lowercaseTableToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.lowercaseTableToolStripMenuItem1.Text = "lowercase";
-            this.lowercaseTableToolStripMenuItem1.Click += new System.EventHandler(this.lowercaseTableToolStripMenuItem1_Click);
+            this.lowercaseTableToolStripMenuItem1.Click += new System.EventHandler(this.LowercaseTableToolStripMenuItem1_Click);
             // 
             // THfrmMain
             // 
