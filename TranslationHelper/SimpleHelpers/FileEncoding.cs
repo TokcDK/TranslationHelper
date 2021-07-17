@@ -149,7 +149,7 @@ namespace TranslationHelper.SimpleHelpers
                     if (++nullSequences > 1)
                         break;
                 }
-                else if (rawData[i - 1] == 0 && rawData[i] < 9/*https://github.com/khalidsalomao/SimpleHelpers.Net/issues/16*/)
+                else if (rawData[i - 1] == 0 && rawData[i] < 9 /* https://github.com/khalidsalomao/SimpleHelpers.Net/issues/16 */)
                 {
                     ++controlSequences;
                 }
@@ -201,6 +201,7 @@ namespace TranslationHelper.SimpleHelpers
             return false;
         }
 
+        //from simple helpers changed required older ude.csharp to newer ude.netstandart 1.2
         readonly Ude.CharsetDetector ude = new Ude.CharsetDetector();
         bool _started;
 
