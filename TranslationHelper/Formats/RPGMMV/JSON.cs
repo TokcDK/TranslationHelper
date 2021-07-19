@@ -247,13 +247,12 @@ namespace TranslationHelper.Formats.RPGMMV
 
                     if (IsValidString(tokenvalue))
                     {
-                        string c;
                         AddRowData(JsonName, tokenvalue, "JsonPath: "
                             + Environment.NewLine
                             + jsonToken.Path
-                            + (!string.IsNullOrWhiteSpace(c = GetCodeValueOfParent(jsonToken)) ? Environment.NewLine + "Code=" + c :
-                            IsWithMergedMessages && !string.IsNullOrWhiteSpace(curcode) ? Environment.NewLine + "Code=" + curcode : string.Empty)
-                            + (c.Length > 0 && (c == "402" || c == "102") ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                            + (!string.IsNullOrWhiteSpace(curcode) ? Environment.NewLine + "Code=" + curcode :
+                            IsWithMergedMessages && !string.IsNullOrWhiteSpace(this.curcode) ? Environment.NewLine + "Code=" + this.curcode : string.Empty)
+                            + (curcode.Length > 0 && (curcode == "402" || curcode == "102") ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                             , true, false);
                     }
                 }
@@ -302,6 +301,8 @@ namespace TranslationHelper.Formats.RPGMMV
                     }
                     ParseJToken(property.Value, JsonName/*, property.Name*/);
                 }
+
+                ResetCurrentCode();
             }
             else if (jsonToken is JArray JsonArray)
             {
@@ -320,6 +321,17 @@ namespace TranslationHelper.Formats.RPGMMV
             else
             {
                 //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
+            }
+        }
+
+        /// <summary>
+        /// reset current code if it is was exist
+        /// </summary>
+        private void ResetCurrentCode()
+        {
+            if (curcode.Length > 0)
+            {
+                curcode = string.Empty;
             }
         }
 
@@ -343,96 +355,96 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
                 else
                 {
-                    string c;
                     AddData(JsonName, mergedstring, "JsonPath: "
                         + Environment.NewLine
                         + JsonToken.Path
-                        + (!string.IsNullOrWhiteSpace(c = GetCodeValueOfParent(JsonToken, CheckPreviousToken, IsValue)) ? Environment.NewLine + "Code=" + c :
-                        IsWithMergedMessages && !string.IsNullOrWhiteSpace(curcode) ? Environment.NewLine + "Code=" + curcode : string.Empty)
-                        + (c.Length > 0 && (c == "402" || c == "102") ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                        + (!string.IsNullOrWhiteSpace(curcode) ? Environment.NewLine + "Code=" + curcode :
+                        IsWithMergedMessages && !string.IsNullOrWhiteSpace(this.curcode) ? Environment.NewLine + "Code=" + this.curcode : string.Empty)
+                        + (curcode.Length > 0 && (curcode == "402" || curcode == "102") ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                         );
                 }
                 MessageMerged.Clear();
             }
         }
 
-        /// <summary>
-        /// get jobject with code jproperty
-        /// </summary>
-        /// <param name="jsonToken"></param>
-        /// <param name="previous">true means get previous jobject before this</param>
-        /// <returns></returns>
-        private static string GetCodeValueOfParent(JToken jsonToken, bool previous = false, bool IsValue = true)
-        {
-            if (previous)
-            {
-                if (jsonToken.Parent != null)
-                {
-                    if (jsonToken.Parent.Parent != null)
-                    {
-                        if (IsValue)
-                        {
-                            if (jsonToken.Parent.Parent.Parent != null && jsonToken.Parent.Parent.Parent is JObject obj)
-                            {
-                                if (obj.Previous != null)
-                                {
-                                    if (obj.Previous is JObject obj1)
-                                    {
-                                        if (obj1.ContainsKey("code"))
-                                        {
-                                            return obj1.Value<long>("code") + string.Empty;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else if (jsonToken.Parent.Parent is JObject obj)
-                        {
-                            if (obj.Previous != null)
-                            {
-                                if (obj.Previous is JObject obj1)
-                                {
-                                    if (obj1.ContainsKey("code"))
-                                    {
-                                        return obj1.Value<long>("code") + string.Empty;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else if (jsonToken.Parent != null)
-            {
-                if (jsonToken.Parent.Parent != null)
-                {
-                    if (IsValue)
-                    {
-                        if (jsonToken.Parent.Parent.Parent != null)
-                        {
-                            if (jsonToken.Parent.Parent.Parent is JObject obj)
-                            {
-                                if (obj.ContainsKey("code"))
-                                {
-                                    return obj.Value<long>("code") + string.Empty;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (jsonToken.Parent.Parent.Parent is JObject obj)
-                        {
-                            if (obj.ContainsKey("code"))
-                            {
-                                return obj.Value<long>("code") + string.Empty;
-                            }
-                        }
-                    }
-                }
-            }
-            return string.Empty;
-        }
+        //curcode must be set and reseted correctly
+        ///// <summary>
+        ///// get jobject with code jproperty
+        ///// </summary>
+        ///// <param name="jsonToken"></param>
+        ///// <param name="previous">true means get previous jobject before this</param>
+        ///// <returns></returns>
+        //private static string GetCodeValueOfParent(JToken jsonToken, bool previous = false, bool IsValue = true)
+        //{
+        //    if (previous)
+        //    {
+        //        if (jsonToken.Parent != null)
+        //        {
+        //            if (jsonToken.Parent.Parent != null)
+        //            {
+        //                if (IsValue)
+        //                {
+        //                    if (jsonToken.Parent.Parent.Parent != null && jsonToken.Parent.Parent.Parent is JObject obj)
+        //                    {
+        //                        if (obj.Previous != null)
+        //                        {
+        //                            if (obj.Previous is JObject obj1)
+        //                            {
+        //                                if (obj1.ContainsKey("code"))
+        //                                {
+        //                                    return obj1.Value<long>("code") + string.Empty;
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                else if (jsonToken.Parent.Parent is JObject obj)
+        //                {
+        //                    if (obj.Previous != null)
+        //                    {
+        //                        if (obj.Previous is JObject obj1)
+        //                        {
+        //                            if (obj1.ContainsKey("code"))
+        //                            {
+        //                                return obj1.Value<long>("code") + string.Empty;
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else if (jsonToken.Parent != null)
+        //    {
+        //        if (jsonToken.Parent.Parent != null)
+        //        {
+        //            if (IsValue)
+        //            {
+        //                if (jsonToken.Parent.Parent.Parent != null)
+        //                {
+        //                    if (jsonToken.Parent.Parent.Parent is JObject obj)
+        //                    {
+        //                        if (obj.ContainsKey("code"))
+        //                        {
+        //                            return obj.Value<long>("code") + string.Empty;
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            {
+        //                if (jsonToken.Parent.Parent.Parent is JObject obj)
+        //                {
+        //                    if (obj.ContainsKey("code"))
+        //                    {
+        //                        return obj.Value<long>("code") + string.Empty;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return string.Empty;
+        //}
 
         /// <summary>
         /// String for this codes must not be appeared
@@ -505,7 +517,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 if (IsWithMergedMessages)
                 {
                     //сброс значений для CommonEvents
-                    curcode = string.Empty;
+                    //curcode = string.Empty; // commented, see ResetCurrentCode()
                     propertyName = string.Empty;
                     skipit = false;
 
@@ -746,6 +758,8 @@ namespace TranslationHelper.Formats.RPGMMV
                     }
                     ParseJTokenWrite(property.Value, JsonName/*, property.Name*/);
                 }
+
+                ResetCurrentCode();
             }
             else if (JsonToken is JArray JsonArray)
             {
@@ -908,6 +922,8 @@ namespace TranslationHelper.Formats.RPGMMV
                     }
                     ParseJTokenWriteWithPreSplitlines(property.Value, JsonName/*, property.Name*/);
                 }
+
+                ResetCurrentCode();
             }
             else if (JsonToken is JArray JsonArray)
             {
