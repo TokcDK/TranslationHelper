@@ -203,7 +203,7 @@ namespace TranslationHelper.Formats.RPGMMV
         //}
 
         private StringBuilder MessageMerged;
-        private string curcode = string.Empty;
+        private int curcode = -1;
         //string cType;
         //private string cCode = string.Empty;
         private string propertyName = string.Empty;
@@ -247,12 +247,13 @@ namespace TranslationHelper.Formats.RPGMMV
 
                     if (IsValidString(tokenvalue))
                     {
+                        bool HasCurCode = curcode > -1;
                         AddRowData(JsonName, tokenvalue, "JsonPath: "
                             + Environment.NewLine
                             + jsonToken.Path
-                            + (!string.IsNullOrWhiteSpace(curcode) ? Environment.NewLine + "Code=" + curcode :
-                            IsWithMergedMessages && !string.IsNullOrWhiteSpace(this.curcode) ? Environment.NewLine + "Code=" + this.curcode : string.Empty)
-                            + (curcode.Length > 0 && (curcode == "402" || curcode == "102") ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                            + (HasCurCode ? Environment.NewLine + "Code=" + curcode + GetCodeName(curcode) :
+                            IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + curcode + GetCodeName(curcode) : string.Empty)
+                            + (HasCurCode && (curcode == 402 || curcode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                             , true, false);
                     }
                 }
@@ -266,10 +267,10 @@ namespace TranslationHelper.Formats.RPGMMV
 
                     if (IsWithMergedMessages)//asdfg skip code 108,408,356
                     {
-                        var IsCode = propertyName.Length == 4 && propertyName == "code";
+                        bool IsCode = IsInteger(property.Value.Type) && propertyName == "code";
                         if (IsCode)
                         {
-                            curcode = property.Value + string.Empty;
+                            curcode = (int)property.Value;
                         }
                         if (skipit)
                         {
@@ -325,13 +326,23 @@ namespace TranslationHelper.Formats.RPGMMV
         }
 
         /// <summary>
+        /// true if type is JTokenType.Integer
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static bool IsInteger(JTokenType type)
+        {
+            return type == JTokenType.Integer;
+        }
+
+        /// <summary>
         /// reset current code if it is was exist
         /// </summary>
         private void ResetCurrentCode()
         {
-            if (curcode.Length > 0)
+            if (curcode > -1)
             {
-                curcode = string.Empty;
+                curcode = -1;
             }
         }
 
@@ -355,16 +366,152 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
                 else
                 {
+                    bool HasCurCode = curcode > -1;
                     AddData(JsonName, mergedstring, "JsonPath: "
                         + Environment.NewLine
                         + JsonToken.Path
-                        + (!string.IsNullOrWhiteSpace(curcode) ? Environment.NewLine + "Code=" + curcode :
-                        IsWithMergedMessages && !string.IsNullOrWhiteSpace(this.curcode) ? Environment.NewLine + "Code=" + this.curcode : string.Empty)
-                        + (curcode.Length > 0 && (curcode == "402" || curcode == "102") ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                        + (HasCurCode ? Environment.NewLine + "Code=" + curcode + GetCodeName(curcode) :
+                        IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + curcode + GetCodeName(curcode) : string.Empty)
+                        + (HasCurCode && (curcode == 402 || curcode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                         );
                 }
                 MessageMerged.Clear();
             }
+        }
+
+        readonly Dictionary<int, string> EventCodes = new Dictionary<int, string>()
+        {
+            { 0, "End Show Choices" },
+            { 412, "End Conditional Branch" },
+            { 604, "End Battle Result" },
+            { 101, "Show Text" },
+            { 401, "Show Text" },
+            { 102, "Show Choices" },
+            { 402, "When [**]" },
+            { 403, "When Cancel" },
+            { 103, "Input Number" },
+            { 104, "Select Item" },
+            { 105, "Show Scrolling Text" },
+            { 108, "Comment" },
+            { 408, "Comment" },
+            { 111, "Conditional Branch" },
+            { 411, "Else" },
+            { 112, "Loop" },
+            { 413, "Repeat Above" },
+            { 113, "Break Loop" },
+            { 115, "Exit Event Processing" },
+            { 117, "Common Event" },
+            { 118, "Label" },
+            { 119, "Jump to Label" },
+            { 121, "Control Switches" },
+            { 122, "Control Variables" },
+            { 123, "Control Self Switch" },
+            { 124, "Control Timer" },
+            { 125, "Change Gold" },
+            { 126, "Change Items" },
+            { 127, "Change Weapons" },
+            { 128, "Change Armor" },
+            { 129, "Change Party Member" },
+            { 132, "Change Battle BGM" },
+            { 133, "Change Battle End ME" },
+            { 134, "Change Save Access" },
+            { 135, "Change Menu Access" },
+            { 136, "Change Encounter Disable" },
+            { 137, "Change Formation Access" },
+            { 138, "Change Window Color" },
+            { 201, "Transfer Player" },
+            { 202, "Set Vehicle Location" },
+            { 203, "Set Event Location" },
+            { 204, "Scroll Map" },
+            { 205, "Set Move Route" },
+            { 206, "Getting On and Off Vehicles" },
+            { 211, "Change Transparency" },
+            { 212, "Show Animation" },
+            { 213, "Show Balloon Icon" },
+            { 214, "Temporarily Erase Event" },
+            { 216, "Change Player Followers" },
+            { 217, "Gather Followers" },
+            { 221, "Fadeout Screen" },
+            { 222, "Fadein Screen" },
+            { 223, "Tint Screen" },
+            { 224, "Screen Flash" },
+            { 225, "Screen Shake" },
+            { 230, "Wait" },
+            { 231, "Show Picture" },
+            { 232, "Move Picture" },
+            { 233, "Rotate Picture" },
+            { 234, "Tint Picture" },
+            { 235, "Erase Picture" },
+            { 236, "Set Weather" },
+            { 241, "Play BGM" },
+            { 242, "Fadeout BGM" },
+            { 243, "Save BGM" },
+            { 244, "Resume BGM" },
+            { 245, "Play BGS" },
+            { 246, "Fadeout BGS" },
+            { 249, "Play ME" },
+            { 250, "Play SE" },
+            { 251, "Stop SE" },
+            { 261, "Play Movie" },
+            { 281, "Change Map Name Display" },
+            { 282, "Change Tileset" },
+            { 283, "Change Battle Background" },
+            { 284, "Change Parallax Background" },
+            { 285, "Get Location Info" },
+            { 301, "Battle Processing" },
+            { 601, "If Win" },
+            { 602, "If Escape" },
+            { 603, "If Lose" },
+            { 302, "Shop Processing" },
+            { 303, "Name Input Processing" },
+            { 311, "Change HP" },
+            { 312, "Change MP" },
+            { 313, "Change State" },
+            { 314, "Recover All" },
+            { 315, "Change EXP" },
+            { 316, "Change Level" },
+            { 317, "Change Parameters" },
+            { 318, "Change Skills" },
+            { 319, "Change Equipment" },
+            { 320, "Change Name" },
+            { 321, "Change Class" },
+            { 322, "Change Actor Graphic" },
+            { 323, "Change Vehicle Graphic" },
+            { 324, "Change Nickname" },
+            { 331, "Change Enemy HP" },
+            { 332, "Change Enemy MP" },
+            { 333, "Change Enemy State" },
+            { 334, "Enemy Recover All" },
+            { 335, "Enemy Appear" },
+            { 336, "Enemy Transform" },
+            { 337, "Show Battle Animation" },
+            { 339, "Force Action" },
+            { 340, "Abort Battle" },
+            { 351, "Open Menu Screen" },
+            { 352, "Open Save Screen" },
+            { 353, "Game Over" },
+            { 354, "Return to Title Screen" },
+            { 355, "Script" },
+            { 655, "Script" }
+        };
+
+        /// <summary>
+        /// returns event name if found
+        /// </summary>
+        /// <param name="curcode"></param>
+        /// <returns></returns>
+        private string GetCodeName(int curcode)
+        {
+            if (EventCodes.ContainsKey(curcode))
+            {
+                var EventName = EventCodes[curcode];
+                if (EventName.Length > 0)
+                {
+                    return "\r\nEvent=\"" + EventName + "\"";
+                }
+            }
+
+            return string.Empty;
         }
 
         //curcode must be set and reseted correctly
@@ -451,9 +598,9 @@ namespace TranslationHelper.Formats.RPGMMV
         /// </summary>
         /// <param name="curcode"></param>
         /// <returns></returns>
-        private static bool IsExcludedCode(string curcode)
+        private static bool IsExcludedCode(int curcode)
         {
-            return false /*curcode.Length == 3 && (curcode == "108" || curcode == "408" || curcode == "356")*/;
+            return false /*curcode.Length == 3 && (curcode == 108 || curcode == 408 || curcode == 356)*/;
         }
 
         /// <summary>
@@ -461,9 +608,9 @@ namespace TranslationHelper.Formats.RPGMMV
         /// </summary>
         /// <param name="curcode"></param>
         /// <returns></returns>
-        private static bool IsMessageCode(string curcode)
+        private static bool IsMessageCode(int curcode)
         {
-            return (curcode == "401" || curcode == "405");
+            return (curcode == 401 || curcode == 405);
         }
 
         //List<string> TempList;
@@ -722,9 +869,9 @@ namespace TranslationHelper.Formats.RPGMMV
                     propertyName = property.Name;
                     if (IsWithMergedMessages)//asdfg skip code 108,408,356
                     {
-                        if (propertyName.Length == 4 && propertyName == "code")
+                        if (IsInteger(property.Value.Type) && propertyName == "code")
                         {
-                            curcode = property.Value + string.Empty;
+                            curcode = (int)property.Value;
                             //cCode = "Code" + curcode;
                             //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
@@ -745,10 +892,9 @@ namespace TranslationHelper.Formats.RPGMMV
                         }
                         else
                         {
-                            if (propertyName.Length == 4 && propertyName == "code")
+                            if (IsInteger(property.Value.Type) && propertyName == "code")
                             {
-                                string propertyValue = property.Value + string.Empty;
-                                if (IsExcludedCode(propertyValue))
+                                if (IsExcludedCode((int)property.Value))
                                 {
                                     skipit = true;
                                     continue;
@@ -885,10 +1031,10 @@ namespace TranslationHelper.Formats.RPGMMV
                     propertyName = property.Name;
                     if (IsWithMergedMessages)//asdfg skip code 108,408,356
                     {
-                        var IsCode = propertyName.Length == 4 && propertyName == "code";
+                        var IsCode = IsInteger(property.Value.Type) && propertyName == "code";
                         if (IsCode)
                         {
-                            curcode = property.Value + string.Empty;
+                            curcode = (int)property.Value;
                             //cCode = "Code" + curcode;
                             //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
