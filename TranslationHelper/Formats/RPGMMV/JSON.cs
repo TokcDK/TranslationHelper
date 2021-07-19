@@ -203,7 +203,7 @@ namespace TranslationHelper.Formats.RPGMMV
         //}
 
         private StringBuilder MessageMerged;
-        private int curcode = -1;
+        private int CurrentEventCode = -1;
         //string cType;
         //private string cCode = string.Empty;
         private string propertyName = string.Empty;
@@ -229,7 +229,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 string tokenvalue = jsonToken.ToString();
 
-                if (IsWithMergedMessages && IsMessageCode(curcode))
+                if (IsWithMergedMessages && IsMessageCode(CurrentEventCode))
                 {
                     if (MessageMerged.ToString().Length > 0)
                     {
@@ -249,13 +249,13 @@ namespace TranslationHelper.Formats.RPGMMV
                     var tokenvalueNoComment = commentIndex > -1 ? tokenvalue.Substring(0, commentIndex) : tokenvalue;
                     if (IsValidString(tokenvalueNoComment))
                     {
-                        bool HasCurCode = curcode > -1;
+                        bool HasCurCode = CurrentEventCode > -1;
                         AddRowData(JsonName, tokenvalue, "JsonPath: "
                             + Environment.NewLine
                             + jsonToken.Path
-                            + (HasCurCode ? Environment.NewLine + "Code=" + curcode + GetCodeName(curcode) :
-                            IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + curcode + GetCodeName(curcode) : string.Empty)
-                            + (HasCurCode && (curcode == 402 || curcode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                            + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
+                            IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
+                            + (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                             , true, false);
                     }
                 }
@@ -272,11 +272,11 @@ namespace TranslationHelper.Formats.RPGMMV
                         bool IsCode = IsInteger(property.Value.Type) && propertyName == "code";
                         if (IsCode)
                         {
-                            curcode = (int)property.Value;
+                            CurrentEventCode = (int)property.Value;
                         }
                         if (skipit)
                         {
-                            if (IsExcludedCode(curcode))
+                            if (IsExcludedCode(CurrentEventCode))
                             {
                                 if (!IsCode && propertyName == "parameters")//asdf
                                 {
@@ -294,7 +294,7 @@ namespace TranslationHelper.Formats.RPGMMV
                             if (IsCode)
                             {
                                 //string propertyValue = property.Value + string.Empty;
-                                if (IsExcludedCode(curcode))
+                                if (IsExcludedCode(CurrentEventCode))
                                 {
                                     skipit = true;
                                     continue;
@@ -342,9 +342,9 @@ namespace TranslationHelper.Formats.RPGMMV
         /// </summary>
         private void ResetCurrentCode()
         {
-            if (curcode > -1)
+            if (CurrentEventCode > -1)
             {
-                curcode = -1;
+                CurrentEventCode = -1;
             }
         }
 
@@ -368,13 +368,13 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
                 else
                 {
-                    bool HasCurCode = curcode > -1;
+                    bool HasCurCode = CurrentEventCode > -1;
                     AddData(JsonName, mergedstring, "JsonPath: "
                         + Environment.NewLine
                         + JsonToken.Path
-                        + (HasCurCode ? Environment.NewLine + "Code=" + curcode + GetCodeName(curcode) :
-                        IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + curcode + GetCodeName(curcode) : string.Empty)
-                        + (HasCurCode && (curcode == 402 || curcode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                        + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
+                        IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
+                        + (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                         );
                 }
                 MessageMerged.Clear();
@@ -873,13 +873,13 @@ namespace TranslationHelper.Formats.RPGMMV
                     {
                         if (IsInteger(property.Value.Type) && propertyName == "code")
                         {
-                            curcode = (int)property.Value;
+                            CurrentEventCode = (int)property.Value;
                             //cCode = "Code" + curcode;
                             //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
                         if (skipit)
                         {
-                            if (IsExcludedCode(curcode))
+                            if (IsExcludedCode(CurrentEventCode))
                             {
                                 if (property.Name == "parameters")//asdf
                                 {
@@ -1036,13 +1036,13 @@ namespace TranslationHelper.Formats.RPGMMV
                         var IsCode = IsInteger(property.Value.Type) && propertyName == "code";
                         if (IsCode)
                         {
-                            curcode = (int)property.Value;
+                            CurrentEventCode = (int)property.Value;
                             //cCode = "Code" + curcode;
                             //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
                         if (skipit)
                         {
-                            if (IsExcludedCode(curcode))
+                            if (IsExcludedCode(CurrentEventCode))
                             {
                                 if (!IsCode && propertyName == "parameters")//asdf
                                 {
@@ -1060,7 +1060,7 @@ namespace TranslationHelper.Formats.RPGMMV
                             if (IsCode)
                             {
                                 //string propertyValue = property.Value + string.Empty;
-                                if (IsExcludedCode(curcode))
+                                if (IsExcludedCode(CurrentEventCode))
                                 {
                                     skipit = true;
                                     continue;
