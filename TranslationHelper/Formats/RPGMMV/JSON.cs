@@ -245,7 +245,9 @@ namespace TranslationHelper.Formats.RPGMMV
                         AddMergedMessage(jsonToken, JsonName);
                     }
 
-                    if (IsValidString(tokenvalue))
+                    int commentIndex = tokenvalue.IndexOf("//");
+                    var tokenvalueNoComment = commentIndex > -1 ? tokenvalue.Substring(0, commentIndex) : tokenvalue;
+                    if (IsValidString(tokenvalueNoComment))
                     {
                         bool HasCurCode = curcode > -1;
                         AddRowData(JsonName, tokenvalue, "JsonPath: "
