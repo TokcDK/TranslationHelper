@@ -263,8 +263,10 @@ namespace TranslationHelper.Formats.RPGMMV
             else if (jsonToken is JObject JsonObject)
             {
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
+                JToken lastProperty = null;
                 foreach (var property in JsonObject.Properties())
                 {
+                    lastProperty = property;
                     propertyName = property.Name;
 
                     if (IsWithMergedMessages)//asdfg skip code 108,408,356
@@ -305,25 +307,40 @@ namespace TranslationHelper.Formats.RPGMMV
                     ParseJToken(property.Value, JsonName/*, property.Name*/);
                 }
 
+                // добавление объединенных сообщений для события 401, если новых строк больше нет
+                if (CurrentEventCode == 401 && MessageMerged.Length > 0 )
+                {
+                    if (jsonToken.Next == null 
+                        || !(jsonToken.Next is JObject obj)
+                        || !(obj.First is JProperty prop)
+                        || prop.Name != "code"
+                        || (int)prop.Value != CurrentEventCode
+                        )
+                    {
+                        AddMergedMessage(lastProperty, JsonName, true, false);
+                    }
+                }
+
                 ResetCurrentCode();
             }
             else if (jsonToken is JArray JsonArray)
-            {         
+            {
                 int arrayCount = JsonArray.Count;
                 for (int i = 0; i < arrayCount; i++)
                 {
                     ParseJToken(JsonArray[i], JsonName);
                 }
 
+                //заменил записью выше
                 //если последний массив properties был пустой, то добавить записанное сообщение
-                if (//IsWithMergedMessages 
-                    //&& propertyName == "parameters"
-                    //&& arrayCount == 0 /*не понял, почему именно делал здесь запись объединенного сообщения, если последний массив пуст, хотя вроде нужно сохранять сообщение в любом случае, когда список закончился, т.к. сообщения, которые должны были быть объединены, все в списке*/
-                    //&& 
-                    MessageMerged.Length > 0) //добавить объединенное сообщение, если оно не пустое
-                {
-                    AddMergedMessage(jsonToken, JsonName, true, false);
-                }
+                //if (IsWithMergedMessages
+                //    && propertyName == "parameters"
+                //    && arrayCount == 0 /**/
+                //    &&
+                //    MessageMerged.Length > 0) //добавить объединенное сообщение, если оно не пустое
+                //{
+                //    AddMergedMessage(jsonToken, JsonName, true, false);
+                //}
             }
             else
             {
@@ -959,6 +976,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     return;
                 }
 
+                //предполагается, что ячейки из таблицы были разбиты на строки и добавлены в словарь
                 if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/ TablesLinesDict.ContainsKey(tokenvalue) && TablesLinesDict[tokenvalue].Length > 0)
                 {
                     try
@@ -1035,6 +1053,7 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             else if (JsonToken is JObject JsonObject)
             {
+                //skip new added json object
                 if (addedjobjects.Contains(JsonObject))
                 {
                     return;
