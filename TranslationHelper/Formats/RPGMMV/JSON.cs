@@ -381,6 +381,9 @@ namespace TranslationHelper.Formats.RPGMMV
             }
         }
 
+        /// <summary>
+        /// list of event codes
+        /// </summary>
         readonly Dictionary<int, string> EventCodes = new Dictionary<int, string>()
         {
             { 0, "End Show Choices" },
