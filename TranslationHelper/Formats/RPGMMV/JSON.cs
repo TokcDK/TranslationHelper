@@ -233,7 +233,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 {
                     if (MessageMerged.ToString().Length > 0)
                     {
-                        MessageMerged.AppendLine();
+                        MessageMerged.Append('\n');//add \n between lines in merged message
                     }
                     //LogToFile("code 401 adding value to merge=" + tokenvalue + ", curcode=" + curcode);
                     MessageMerged.Append(tokenvalue);
@@ -308,7 +308,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 ResetCurrentCode();
             }
             else if (jsonToken is JArray JsonArray)
-            {
+            {         
                 int arrayCount = JsonArray.Count;
                 for (int i = 0; i < arrayCount; i++)
                 {
@@ -316,7 +316,11 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
 
                 //если последний массив properties был пустой, то добавить записанное сообщение
-                if (IsWithMergedMessages && propertyName == "parameters" && arrayCount == 0 && MessageMerged.Length > 0)
+                if (//IsWithMergedMessages 
+                    //&& propertyName == "parameters"
+                    //&& arrayCount == 0 /*не понял, почему именно делал здесь запись объединенного сообщения, если последний массив пуст, хотя вроде нужно сохранять сообщение в любом случае, когда список закончился, т.к. сообщения, которые должны были быть объединены, все в списке*/
+                    //&& 
+                    MessageMerged.Length > 0) //добавить объединенное сообщение, если оно не пустое
                 {
                     AddMergedMessage(jsonToken, JsonName, true, false);
                 }
