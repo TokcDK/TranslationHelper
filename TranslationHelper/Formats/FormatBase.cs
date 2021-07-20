@@ -888,7 +888,7 @@ namespace TranslationHelper.Formats
                     {
                         try
                         {
-                            if (LinesCountisEqual)
+                            if (LinesCountisEqual) //когда количество строк равно, просто добавлять валидные строки в словарь
                             {
                                 if (!TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
                                 {
@@ -897,35 +897,41 @@ namespace TranslationHelper.Formats
                             }
                             else
                             {
-                                if (lineNumber < OriginalLinesCount - 1)
+                                if (lineNumber < OriginalLinesCount - 1) // пока номер строки меньше номера последней строки в оригинале
                                 {
                                     if (!TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
                                     {
                                         TablesLinesDict.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                     }
                                 }
-                                else
+                                else // номер строки равен номеру последней строки оригинала
                                 {
-                                    if (lineNumber == TranslationLinesCount - 1)
+                                    if (lineNumber == TranslationLinesCount - 1) //если номер строки равен номеру последней строки в переводе
                                     {
-                                        if (extralines.Count > 0)
+                                        if (extralines.Count > 0) // если список экстра строк не пустой
                                         {
-                                            extralines.Add(TranslationLines[lineNumber]);
-                                            string result = string.Join(Environment.NewLine, extralines);
-                                            if (!TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) && result.Length > 0 && OriginalLines[OriginalLinesCount - 1] != result)
+                                            extralines.Add(TranslationLines[lineNumber]); // добавить последнюю строку в переводе
+                                            string result = string.Join(Environment.NewLine, extralines); // объединить экстра строки в одну
+
+                                            
+                                            if (!TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) //если словарь не содержит последнюю строку оригинала
+                                                && result.Trim().Length > 0 // объединенные строки без пробельных символов и символов новой строки - не пустые 
+                                                && OriginalLines[OriginalLinesCount - 1] != result) // оригинал не равен переводу
                                             {
+                                                //добавить оригинал с переводом содержащим больше строк, чем в оригинале
                                                 TablesLinesDict.Add(OriginalLines[OriginalLinesCount - 1], result/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                             }
                                         }
                                         else
                                         {
+                                            // при пустом списке экстра строк добавить в словарь оригинал с переводом, если валидный
                                             if (!TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[OriginalLinesCount - 1] != TranslationLines[lineNumber])
                                             {
                                                 TablesLinesDict.Add(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                             }
                                         }
                                     }
-                                    else
+                                    else // пока номер текущей строки меньше номера последней строки в переводе, добавлять экстра строки в один список
                                     {
                                         extralines.Add(TranslationLines[lineNumber]);
                                     }

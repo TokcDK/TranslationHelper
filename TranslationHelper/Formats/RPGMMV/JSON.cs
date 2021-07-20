@@ -742,21 +742,21 @@ namespace TranslationHelper.Formats.RPGMMV
         ///// list of identifiers if row have translation
         ///// </summary>
         //Dictionary<string, bool> IsTranslatableRow;
-        /// <summary>
-        /// IsTranslatableRow[original] will be true if original have translation
-        /// tried to add check if row have translation but here also issue because no displayed rows will be translated
-        /// </summary>
-        /// <param name="Jsonname"></param>
-        private void GetTranslatableRows(string Jsonname)
-        {
-            //IsTranslatableRow = new Dictionary<string, bool>();
-            //foreach (System.Data.DataRow row in ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows)
-            //{
-            //    IsTranslatableRow.Add(row[0] as string,
-            //        !(row[1] == null || string.IsNullOrEmpty(row[1] + "") || Equals(row[1], row[0]))
-            //        );
-            //}
-        }
+        ///// <summary>
+        ///// IsTranslatableRow[original] will be true if original have translation
+        ///// tried to add check if row have translation but here also issue because no displayed rows will be translated
+        ///// </summary>
+        ///// <param name="Jsonname"></param>
+        //private void GetTranslatableRows(string Jsonname)
+        //{
+        //    //IsTranslatableRow = new Dictionary<string, bool>();
+        //    //foreach (System.Data.DataRow row in ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows)
+        //    //{
+        //    //    IsTranslatableRow.Add(row[0] as string,
+        //    //        !(row[1] == null || string.IsNullOrEmpty(row[1] + "") || Equals(row[1], row[0]))
+        //    //        );
+        //    //}
+        //}
 
         private static bool IsContainsLinedMessages(string Jsonname)
         {
@@ -981,16 +981,18 @@ namespace TranslationHelper.Formats.RPGMMV
                 {
                     try
                     {
-                        bool test = true;
-                        if (test && JsonToken.Parent != null && JsonToken.Parent.Parent != null && JsonToken.Parent.Parent.Parent != null && (JsonToken.Parent.Parent.Parent is JObject thisCodeObject) && TablesLinesDict[tokenvalue].GetLinesCount() > tokenvalue.GetLinesCount())
+                        int tokenvalueLinesCount;
+                        if (JsonToken.Parent != null 
+                            && JsonToken.Parent.Parent != null 
+                            && JsonToken.Parent.Parent.Parent != null 
+                            && (JsonToken.Parent.Parent.Parent is JObject currentJObject) 
+                            && TablesLinesDict[tokenvalue].GetLinesCount() > (tokenvalueLinesCount = tokenvalue.GetLinesCount()))
                         {
-                            int tokenvalueLinesCount = tokenvalue.GetLinesCount();
                             int ind = 0;
                             List<string> stringToWrite = new List<string>();
                             bool NotWrited = true;
                             bool IsTheJObjetAdded = false;
-                            //JsonToken.Parent.Add(",\""+ ExtraLineValue + "\"");
-                            //JsonToken.Parent.Parent.Add("{\"code\":401,\"indent\":0,\"parameters\":[\"" + ExtraLineValue +"\"]}");
+
                             foreach (var line in TablesLinesDict[tokenvalue].SplitToLines())
                             {
                                 if (ind < tokenvalueLinesCount)
@@ -1006,32 +1008,14 @@ namespace TranslationHelper.Formats.RPGMMV
                                         NotWrited = false;
                                     }
 
-                                    //добавить новый объект с экстра строкой сразу после текущего
-                                    //new JObject("{\"code\":401,\"indent\":0,\"parameters\":[\"" + line + "\"]}")
-
-                                    //if(thisCodeObject.ContainsKey("code"))
-                                    //{
-                                    //    //var t = thisCodeObject.Value<long>("code");
-                                    //}
-                                    var NewJObject = GetNewJObject(thisCodeObject, line);
-                                    thisCodeObject.AddAfterSelf(NewJObject);
-                                    if (!IsTheJObjetAdded && !addedjobjects.Contains(NewJObject))
+                                    var newJObject = GetNewJObject(currentJObject, line);
+                                    currentJObject.AddAfterSelf(newJObject);
+                                    if (!IsTheJObjetAdded && !addedjobjects.Contains(newJObject))
                                     {
                                         IsTheJObjetAdded = true;
-                                        addedjobjects.Add(NewJObject);
+                                        addedjobjects.Add(newJObject);
                                     }
-                                    thisCodeObject = NewJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
-                                    //thisCodeObject.AddAfterSelf(
-                                    //    new JObject
-                                    //(
-                                    //    new JProperty("code", new JValue(401)),
-                                    //    new JProperty("indent", new JValue(0)),
-                                    //    new JProperty("parameters", new JArray(new JValue(line)))
-                                    //)
-                                    //    );
-                                    //var j = JsonToken.Parent;
-                                    //add extra as child parameter value
-                                    //(JsonToken.Parent as JProperty).Add(",\"" + line + "\"");
+                                    currentJObject = newJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
                                 }
                             }
 
@@ -1069,7 +1053,6 @@ namespace TranslationHelper.Formats.RPGMMV
                         if (IsCode)
                         {
                             CurrentEventCode = (int)property.Value;
-                            //cCode = "Code" + curcode;
                             //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
                         if (skipit)
@@ -1125,52 +1108,50 @@ namespace TranslationHelper.Formats.RPGMMV
             }
         }
 
-        private static JObject GetNewJObject(JContainer thisCodeObject, string line)
+        /// <summary>
+        /// copy all objects from input jContainer in new JObject and replace parameters value to new
+        /// </summary>
+        /// <param name="jContainer">input JContainer</param>
+        /// <param name="line">line to which replace parameters value</param>
+        /// <returns></returns>
+        private static JObject GetNewJObject(JContainer jContainer, string line)
         {
             JObject ret = new JObject();
-            foreach (var JsonProperty in (thisCodeObject as JObject).Properties())
+            foreach (var jProperty in (jContainer as JObject).Properties())
             {
-                if (JsonProperty.Name == "parameters")
+                if (jProperty.Name == "parameters")
                 {
-                    if (JsonProperty.Value is JValue)
+                    if (jProperty.Value is JValue)
                     {
-                        ret.Add(new JProperty(JsonProperty.Name, new JValue(line)));
+                        ret.Add(new JProperty(jProperty.Name, new JValue(line)));
                     }
-                    else if (JsonProperty.Value is JObject)
+                    else if (jProperty.Value is JObject)
                     {
-                        ret.Add(new JProperty(JsonProperty.Name, new JObject("{" + line + "}")));
+                        ret.Add(new JProperty(jProperty.Name, new JObject("{" + line + "}")));
                     }
-                    else if (JsonProperty.Value is JArray)
+                    else if (jProperty.Value is JArray)
                     {
-                        ret.Add(new JProperty(JsonProperty.Name, new JArray(new object[] { line })));
+                        ret.Add(new JProperty(jProperty.Name, new JArray(new object[] { line })));
                     }
                 }
                 else
                 {
-                    if (JsonProperty.Value is JValue val)
+                    if (jProperty.Value is JValue jValue)
                     {
-                        ret.Add(new JProperty(JsonProperty.Name, new JValue(val)));
+                        ret.Add(new JProperty(jProperty.Name, new JValue(jValue)));
                     }
-                    else if (JsonProperty.Value is JObject obj)
+                    else if (jProperty.Value is JObject jObject)
                     {
-                        ret.Add(new JProperty(JsonProperty.Name, new JObject(obj)));
+                        ret.Add(new JProperty(jProperty.Name, new JObject(jObject)));
                     }
-                    else if (JsonProperty.Value is JArray arr)
+                    else if (jProperty.Value is JArray jArray)
                     {
-                        ret.Add(new JProperty(JsonProperty.Name, new JArray(arr)));
+                        ret.Add(new JProperty(jProperty.Name, new JArray(jArray)));
                     }
                 }
             }
 
             return ret;
-
-            //new JObject
-            //                        (
-            //                            new JProperty("code", new JValue(401)),
-            //                            new JProperty("indent", new JValue(0)),
-            //                            new JProperty("parameters", new JArray(new JValue(line)))
-            //                        )
-            //                            );
         }
     }
 }
