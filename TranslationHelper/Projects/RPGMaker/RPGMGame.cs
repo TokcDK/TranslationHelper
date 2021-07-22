@@ -281,11 +281,11 @@ namespace TranslationHelper.Projects
                             //попытка с параметром -b - Use UTF-8 BOM in Patch files
                             program.StartInfo.FileName = rpgmakertranscli;
                             program.StartInfo.Arguments = args + " -b";
-                            program.Start();
+                            ret = program.Start();
                             program.WaitForExit();
 
                             //error checks
-                            //if (!ret)
+                            if (!ret)
                             {
                                 new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
                                 ProjectData.Main.ProgressInfo(true, T._("Patching failed"));
