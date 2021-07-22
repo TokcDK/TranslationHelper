@@ -495,8 +495,9 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         internal static DataSet ToDataSet(this Dictionary<string, string> dict)
         {
-            using (var DS = new DataSet())
+            //using (var DS = new DataSet())
             {
+                var DS = new DataSet();
                 DS.Tables.Add("DB");
                 DS.Tables["DB"].Columns.Add("Original");
                 DS.Tables["DB"].Columns.Add("Translation");

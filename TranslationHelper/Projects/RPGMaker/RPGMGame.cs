@@ -285,7 +285,7 @@ namespace TranslationHelper.Projects
                             program.WaitForExit();
 
                             //error checks
-                            if (!ret)
+                            //if (!ret)
                             {
                                 new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
                                 ProjectData.Main.ProgressInfo(true, T._("Patching failed"));

@@ -280,7 +280,7 @@ namespace TranslationHelper.Projects.RJ263914
                         rowIndex = 0;
                     }
                     string[] lines = File.ReadAllLines(filePath);
-                    if (lines.Length == 2 && !lines[1].IsDigitsOnly() && !string.IsNullOrEmpty(lines[1]))
+                    if (lines.Length == 2 && !string.IsNullOrEmpty(lines[1]) && !lines[1].IsDigitsOnly())
                     {
                         if (IsWrite)
                         {
@@ -339,7 +339,7 @@ namespace TranslationHelper.Projects.RJ263914
                         if (lineArray.Length > 4)
                         {
                             //line = lineArray[4];
-                            if (!lineArray[4].IsDigitsOnly() && !string.IsNullOrEmpty(lineArray[4]))
+                            if (!string.IsNullOrEmpty(lineArray[4]) && !lineArray[4].IsDigitsOnly())
                             {
                                 if (IsWrite)
                                 {
@@ -393,7 +393,7 @@ namespace TranslationHelper.Projects.RJ263914
                     {
                         string[] lines = line.Split(',');
                         //line = line.Split(',')[1];
-                        if (!lines[1].IsDigitsOnly() && !string.IsNullOrEmpty(lines[1]))
+                        if (!string.IsNullOrEmpty(lines[1]) && !lines[1].IsDigitsOnly())
                         {
                             if (IsWrite)
                             {
@@ -442,7 +442,7 @@ namespace TranslationHelper.Projects.RJ263914
                     line = sr.ReadLine();
                     if (FunctionsDigit.IsEqualsAnyNumberFromArray(lineNum, lineNumbers))
                     {
-                        if (!line.IsDigitsOnly() && !string.IsNullOrEmpty(line) && line != "\\n")
+                        if (!string.IsNullOrEmpty(line) && !line.IsDigitsOnly() && line != "\\n")
                         {
                             if (IsWrite)
                             {
@@ -498,7 +498,7 @@ namespace TranslationHelper.Projects.RJ263914
 
                         for (int i = 0; i < strings.Length; i++)
                         {
-                            if (!strings[i].IsDigitsOnly() && !string.IsNullOrEmpty(strings[i]))
+                            if (!string.IsNullOrEmpty(strings[i]) && !strings[i].IsDigitsOnly())
                             {
                                 if (IsWrite)
                                 {

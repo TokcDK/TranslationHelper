@@ -25,7 +25,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override string OnlineTranslationProjectSpecificPosttranslationAction(string o, string t, int tind = -1, int rind = -1)
         {
-            HardcodedFixes(o, t);
+            t = HardcodedFixes(o, t);
 
             return RestoreVARS(t);
         }

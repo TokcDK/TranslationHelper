@@ -282,7 +282,7 @@ namespace TranslationHelper
             ////////////////////////////
         }
 
-        internal bool IsOpeningInProcess;
+        internal volatile bool IsOpeningInProcess;
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FunctionsOpen().OpenProject();
@@ -745,7 +745,7 @@ namespace TranslationHelper
             }
         }
 
-        internal bool SaveInAction;
+        internal volatile bool SaveInAction;
         internal bool FileDataWasChanged;
         private async void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {

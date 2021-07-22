@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 {
                     line = file.ReadLine();
 
-                    if (line.StartsWith(";") || string.IsNullOrWhiteSpace(line))
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";"))
                     {
                     }
                     else

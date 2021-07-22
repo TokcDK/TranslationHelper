@@ -98,7 +98,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     {
                         if (currentbyte == 0 || currentbyte == 0xff) //we count here rest of zero ff bytes
                         {
-                            if (currentbyte == 0 || currentbyte == 0xff)
+                            //if (currentbyte == 0 || currentbyte == 0xff)
                             {
                                 //ffbytesAfterMode = false;
                                 zeroffbytesAfter.Add(currentbyte);

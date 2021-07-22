@@ -799,10 +799,6 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
 
                 string parameter0value = tokenvalue;
-                if (parameter0value.Length == 0)
-                {
-                    return;
-                }
 
                 //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
 
@@ -841,7 +837,7 @@ namespace TranslationHelper.Formats.RPGMMV
                             }
                             else // если перевод вдруг был переведен так, что не равен количеством строк оригиналу, тогда поделить его на равные строки
                             {
-                                if (transA.Length > 0) // но перед этим, если перевод больше одной строки
+                                //if (transA.Length > 0) // но перед этим, если перевод больше одной строки
                                 {
                                     foreach (string ts in transA)
                                     {

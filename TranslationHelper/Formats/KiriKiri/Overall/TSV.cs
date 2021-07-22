@@ -29,7 +29,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 while (!file.EndOfStream)
                 {
                     line = file.ReadLine();
-                    if (line.StartsWith(";") || string.IsNullOrWhiteSpace(line))
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";"))
                     {
                     }
                     else

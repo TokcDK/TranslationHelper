@@ -277,8 +277,9 @@ namespace TranslationHelper.Main.Functions
 
         public static DataTable RemoveAllRowsDuplicatesWithRepeatingOriginals(DataTable table)
         {
-            using (DataTable tempTable = new DataTable())
+            //using (DataTable tempTable = new DataTable())
             {
+                DataTable tempTable = new DataTable();
                 foreach (DataColumn column in table.Columns)
                 {
                     tempTable.Columns.Add(column.ColumnName);
