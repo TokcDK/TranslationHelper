@@ -19,8 +19,7 @@ namespace TranslationHelper.Functions
             if (!Properties.Settings.Default.EnableTranslationCache)
                 return string.Empty;
 
-            if (Properties.Settings.Default.EnableTranslationCache 
-                && Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll 
+            if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll 
                 && ProjectData.AllDBmerged != null 
                 && ProjectData.AllDBmerged.Count > 0 
                 && ProjectData.AllDBmerged.ContainsKey(keyValue) 
@@ -28,8 +27,7 @@ namespace TranslationHelper.Functions
             {
                 return ProjectData.AllDBmerged[keyValue];
             }
-            else if (Properties.Settings.Default.EnableTranslationCache 
-                && cache != null 
+            else if (cache != null 
                 && cache.Count > 0 
                 && cache.ContainsKey(keyValue) 
                 && !string.IsNullOrWhiteSpace(cache[keyValue]))

@@ -231,7 +231,7 @@ namespace TranslationHelper.Main.Functions
                     for (int r = 0; r < rowscount; r++)
                     {
                         var cell = table.Rows[r][1];
-                        if (cell == null && string.IsNullOrEmpty(cell as string))
+                        if (cell == null || string.IsNullOrEmpty(cell as string))
                         {
                         }
                         else
