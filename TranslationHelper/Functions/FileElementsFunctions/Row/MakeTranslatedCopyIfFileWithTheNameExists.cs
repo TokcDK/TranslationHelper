@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -43,15 +44,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 string name;
                 if (SelectedRow[1] != null && !string.IsNullOrWhiteSpace(trans = SelectedRow[1] + "")
-                    && !trans.Intersect(Path.GetInvalidFileNameChars()).Any()//invalid file/folder name
+                    && !FunctionsFileFolder.HasInvalidChars(trans)
                     && !(SelectedRow[0] as string).Intersect(Path.GetInvalidFileNameChars()).Any()//invalid file/folder name
                     && !trans.IsMultiline()//ignore multiline
                     && GameFilesList != null 
                     && GameFilesList.ContainsKey(name = Path.GetFileNameWithoutExtension(SelectedRow[0] as string))
+                    && !FunctionsFileFolder.HasInvalidChars(name)
                     )
                 {
                     foreach (var path in GameFilesList[name])
                     {
+                        if (string.IsNullOrWhiteSpace(path))
+                        {
+                            continue;
+                        }
+
                         var targetPath = Path.Combine(Path.GetDirectoryName(path), trans + Path.GetExtension(path));
                         if (!File.Exists(targetPath))
                         {

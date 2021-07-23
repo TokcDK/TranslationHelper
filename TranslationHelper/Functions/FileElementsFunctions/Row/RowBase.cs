@@ -188,9 +188,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                         AddedRows.Add(DGVRowIndex); // add row index as added
 
-                        log.DebugData.Add("SelectedTableIndex=" + SelectedTableIndex);
-                        log.DebugData.Add("DataGridView RowIndex=" + DGVRowIndex);
-                        log.DebugData.Add("i=" + i);
+                        //log.DebugData.Add("SelectedTableIndex=" + SelectedTableIndex);
+                        //log.DebugData.Add("DataGridView RowIndex=" + DGVRowIndex);
+                        //log.DebugData.Add("i=" + i);
 
                         //add row index
                         SelectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(SelectedTableIndex, DGVRowIndex);

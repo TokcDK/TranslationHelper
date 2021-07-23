@@ -87,6 +87,16 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
+        /// true when input text has invalid chars and cant be used in dir/file path
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        internal static bool HasInvalidChars(string text)
+        {
+            return text.Intersect(Path.GetInvalidFileNameChars()).Any();//invalid file/folder name;
+        }
+
+        /// <summary>
         /// True if the file is using by other program.
         /// </summary>
         /// <param name="path"></param>
