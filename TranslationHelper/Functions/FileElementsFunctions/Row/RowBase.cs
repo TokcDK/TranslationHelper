@@ -192,8 +192,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         //log.DebugData.Add("DataGridView RowIndex=" + DGVRowIndex);
                         //log.DebugData.Add("i=" + i);
 
-                        //add row index
-                        SelectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(SelectedTableIndex, DGVRowIndex);
+                        try
+                        {
+                            //add row index
+                            SelectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(SelectedTableIndex, DGVRowIndex);
+                        }
+                        catch
+                        {
+
+                        }
 
                         ind++; //raise added index
                     }

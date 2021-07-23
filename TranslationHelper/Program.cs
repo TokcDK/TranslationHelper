@@ -13,7 +13,6 @@ namespace TranslationHelper
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-#pragma warning disable CA2000 // Ликвидировать объекты перед потерей области
             //try
             //{
                 Application.Run(new FormMain());
@@ -22,7 +21,6 @@ namespace TranslationHelper
             //{
             //    new Functions.FunctionsLogs().LogToFile(Environment.NewLine + "Main appplication error occured. Error text:" + Environment.NewLine + ex + Environment.NewLine);
             //}
-#pragma warning restore CA2000 // Ликвидировать объекты перед потерей области
         }
     }
 }
