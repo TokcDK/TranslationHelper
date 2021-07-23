@@ -76,7 +76,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                 }
 
                 //проверки для измежания ошибок, идти дальше когда позиция mc3 тремя символами ранее не совпадает с mc2, а также не содержит \\ в последних 3х символах перед mc3
-                if (mc3PosIndex - 3 > -1 && mc2PosIndex > -1 && mc3PosIndex - 3 != mc2PosIndex && !translation.Substring(mc3PosIndex - 3, 3).Contains(@"\\"))
+                if (mc3PosIndex - 3 > -1 && /*mc2PosIndex > -1 &&*/ mc3PosIndex - 3 != mc2PosIndex && !translation.Substring(mc3PosIndex - 3, 3).Contains(@"\\"))
                 {
                     newValue = newValue.Remove(mc2PosIndex, 3);//удаление \\N в позиции mc2
 

@@ -121,13 +121,14 @@ namespace TranslationHelper.Extensions
             //https://stackoverflow.com/a/57450238
             using (var crc32 = new CRCServiceProvider())
             {
+                showprogress = showprogress && pb != null;
                 string hash = string.Empty;
                 using (var fs = File.Open(fileName, FileMode.Open))
                 {
                     var array = crc32.ComputeHash(fs);
                     var arrayLength = array.Length;
                     System.Windows.Forms.ProgressBarStyle oldpbstyle = System.Windows.Forms.ProgressBarStyle.Marquee;
-                    if (showprogress && pb != null)
+                    if (showprogress)
                     {
                         pb.Invoke((Action)(() => pb.Maximum = arrayLength));
                         oldpbstyle = pb.Style;
@@ -136,14 +137,14 @@ namespace TranslationHelper.Extensions
                     }
                     for (int i = 0; i < arrayLength; i++)
                     {
-                        if (showprogress && pb?.Value <= pb.Maximum)
+                        if (showprogress && pb.Value <= pb.Maximum)
                         {
                             pb.Invoke((Action)(() => pb.Value = i));
                         }
                         hash += array[i].ToString("x2")/*.ToLowerInvariant()*/;
                     }
 
-                    if (showprogress && pb?.Value > 0)
+                    if (showprogress && pb.Value > 0)
                     {
                         pb.Invoke((Action)(() => pb.Value = 0));
                         pb.Invoke((Action)(() => pb.Style = oldpbstyle));

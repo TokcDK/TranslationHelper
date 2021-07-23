@@ -12,7 +12,7 @@ using TranslationHelper.Main.Functions;
 namespace TranslationHelper.Formats
 {
     abstract class FormatBase
-    {      
+    {
 
         protected Dictionary<string, string> TablesLinesDict;
 
@@ -348,7 +348,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected bool ParsePattern(KeyValuePair<string, string> pattern, bool useInlineSearch = true)
         {
-            if (((useInlineSearch && ParseData.line.IndexOf(pattern.Key) != -1) || !useInlineSearch) && Regex.IsMatch(ParseData.line, pattern.Value, RegexOptions.Compiled))
+            if ((!useInlineSearch || ParseData.line.IndexOf(pattern.Key) != -1) && Regex.IsMatch(ParseData.line, pattern.Value, RegexOptions.Compiled))
             {
                 var mc = Regex.Matches(ParseData.line, pattern.Value, RegexOptions.Compiled);
                 if (mc.Count > 0)
@@ -457,7 +457,7 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// Project work data
             /// </summary>
-            protected 
+            protected
             /// <summary>
             /// tablename/filename
             /// </summary>
@@ -494,7 +494,7 @@ namespace TranslationHelper.Formats
 
             public ParseFileData()
             {
-                
+
                 tablename = Path.GetFileName(ProjectData.FilePath);
                 if (ProjectData.SaveFileMode)
                 {
@@ -772,7 +772,12 @@ namespace TranslationHelper.Formats
             if (!ProjectData.THFilesElementsDataset.Tables.Contains(TableName))
                 return;
 
-            if (TablesLinesDict != null && TablesLinesDict.Count > 0)
+            if (TablesLinesDict == null)
+            {
+                TablesLinesDict = new Dictionary<string, string>();
+            }
+
+            if (TablesLinesDict.Count > 0)
             {
                 TablesLinesDict.Clear();
             }
@@ -913,7 +918,7 @@ namespace TranslationHelper.Formats
                                             extralines.Add(TranslationLines[lineNumber]); // добавить последнюю строку в переводе
                                             string result = string.Join(Environment.NewLine, extralines); // объединить экстра строки в одну
 
-                                            
+
                                             if (!TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) //если словарь не содержит последнюю строку оригинала
                                                 && result.Trim().Length > 0 // объединенные строки без пробельных символов и символов новой строки - не пустые 
                                                 && OriginalLines[OriginalLinesCount - 1] != result) // оригинал не равен переводу

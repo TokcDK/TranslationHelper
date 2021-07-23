@@ -73,7 +73,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (Exception ex)
             {
-                new FunctionsLogs().LogToFile(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + SelectedRow[0] as string + "\r\ntranslation=" + (SelectedRow[1] + ""));
+                new FunctionsLogs().LogToFile(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + SelectedRow[0] + "\r\ntranslation=" + SelectedRow[1]);
             }
             return false;
         }

@@ -165,7 +165,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                 //continue;
                             }
                         }//endcomments
-                        else if (!IsComment && line.TrimStart().StartsWith(SvarIdentifier))
+                        else if (line.TrimStart().StartsWith(SvarIdentifier))
                         {
                             StartReadingSvar = true;
                         }

@@ -515,8 +515,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         {
                             newValue.Add(line);
                         }
-                        else if (coordinate.Value[lineNum].Count > 0
-                            && bufferExtracted != null
+                        else if (bufferExtracted != null
                             && bufferExtracted.Count > 0
                             && bufferExtracted.ContainsKey(coordinate.Key)
                             && bufferExtracted[coordinate.Key].ContainsKey(lineNum)

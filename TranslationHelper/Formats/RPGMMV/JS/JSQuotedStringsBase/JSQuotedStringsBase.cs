@@ -57,7 +57,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 ParseData.IsComment = false;
             }
 
-            return ParseData.IsComment || ParseData.TrimmedLine.Length == 0 || (ParseData.TrimmedLine.Length > 0 && ParseData.TrimmedLine[0] == ';') || ParseData.TrimmedLine.StartsWith("//");
+            return ParseData.IsComment || ParseData.TrimmedLine.Length == 0 || ParseData.TrimmedLine[0] == ';' || ParseData.TrimmedLine.StartsWith("//");
         }
 
         internal override bool Save()

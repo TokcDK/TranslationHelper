@@ -35,7 +35,7 @@ namespace TranslationHelper.Extensions
                         if (Lines[LasLineIndex].Length > 0)
                         {
                             //когда последняя строка, к которой присоединится новая, кончается не на пробел или другой разделитель, добавить пробел перед добавляемой строкой
-                            if (Lines[LasLineIndex].Length > 0 && char.IsLetterOrDigit(Convert.ToChar(Lines[LasLineIndex].Substring(Lines[LasLineIndex].Length - 1), CultureInfo.InvariantCulture)))
+                            if (char.IsLetterOrDigit(Convert.ToChar(Lines[LasLineIndex].Substring(Lines[LasLineIndex].Length - 1), CultureInfo.InvariantCulture)))
                             {
                                 string trimmedSubline = subline.TrimStart();
                                 //сделать перву букву добавляемой строки в нижнем регистре

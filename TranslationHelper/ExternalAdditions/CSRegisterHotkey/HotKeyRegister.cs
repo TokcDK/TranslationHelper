@@ -213,7 +213,7 @@ namespace CSRegisterHotkey
         {
             // The property WParam of Message is typically used to store small pieces 
             // of information. In this scenario, it stores the ID.
-            if (m.Msg == WM_HOTKEY
+            if (this != null && m.Msg == WM_HOTKEY
                 && m.HWnd == Handle
                 && m.WParam == (IntPtr)this.ID
                 && HotKeyPressed != null)
