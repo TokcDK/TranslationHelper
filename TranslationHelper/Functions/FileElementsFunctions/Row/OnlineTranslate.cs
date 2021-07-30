@@ -181,7 +181,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     continue;
                 }
 
-                var values = ExtractMulty(line, lineCoordinates, lineNum);
+                var values = line.ExtractMulty(lineCoordinates, lineNum, bufferExtracted);
 
                 //parse all extracted values from original
                 foreach (var val in values)
@@ -246,77 +246,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 //write cache periodically
                 ProjectData.OnlineTranslationCache.Write();
-            }
-        }
-
-        /// <summary>
-        /// extract captured groups from string
-        /// </summary>
-        /// <param name="line"></param>
-        /// <param name="lineCoordinates"></param>
-        /// <param name="lineNum"></param>
-        /// <returns></returns>
-        private string[] ExtractMulty(string line, string lineCoordinates, int lineNum)
-        {
-            if (!bufferExtracted.ContainsKey(lineCoordinates))
-            {
-                //init data
-                bufferExtracted.Add(lineCoordinates, new Dictionary<int, Dictionary<string, string>>());//add coordinates
-            }
-            if (!bufferExtracted[lineCoordinates].ContainsKey(lineNum))
-            {
-                //init data
-                bufferExtracted[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
-            }
-
-            var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
-            foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
-            {
-                if (!Regex.IsMatch(line, PatternReplacementPair.Key))
-                {
-                    continue;
-                }
-
-                foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
-                {
-                    try
-                    {
-
-                        if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(PatternReplacementPair.Key))//add pattern-replacement data
-                        {
-                            bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
-                        }
-
-                        if (PatternReplacementPair.Value.Contains("$" + g.Name))//if replacement contains the group name ($1,$2,$3...$99)
-                        {
-
-                            if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey("$" + g.Name))
-                            {
-                                bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);//add group name with valueif it is not added and is in replacement
-
-                                if (!GroupValues.Contains(g.Value))
-                                {
-                                    GroupValues.Add(g.Value);//add value for translation if valid
-                                }
-                            }
-                        }
-                    }
-                    catch
-                    {
-
-                    }
-                }
-
-                break;
-            }
-
-            if (GroupValues.Count > 0)
-            {
-                return GroupValues.ToArray();
-            }
-            else
-            {
-                return new string[1] { line };
             }
         }
 

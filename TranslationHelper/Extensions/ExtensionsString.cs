@@ -10,6 +10,131 @@ namespace TranslationHelper.Extensions
 {
     internal static class ExtensionsString
     {
+        /// <summary>
+        /// extract captured groups from string
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="lineCoordinates"></param>
+        /// <param name="lineNum"></param>
+        /// <returns></returns>
+        internal static string[] ExtractMulty(this string line, string lineCoordinates, int lineNum, Dictionary<string/*table index,row index*/, Dictionary<int/*line number*/, Dictionary<string/*text from original*/, string/*text of translation*/>>> bufferExtracted = null)
+        {
+            if (bufferExtracted != null)
+            {
+                bufferExtracted = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
+            }
+
+            if (!bufferExtracted.ContainsKey(lineCoordinates))
+            {
+                //init data
+                bufferExtracted.Add(lineCoordinates, new Dictionary<int, Dictionary<string, string>>());//add coordinates
+            }
+            if (!bufferExtracted[lineCoordinates].ContainsKey(lineNum))
+            {
+                //init data
+                bufferExtracted[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
+            }
+
+            var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
+            foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
+            {
+                if (!Regex.IsMatch(line, PatternReplacementPair.Key))
+                {
+                    continue;
+                }
+
+                foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
+                {
+                    try
+                    {
+
+                        if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(PatternReplacementPair.Key))//add pattern-replacement data
+                        {
+                            bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
+                        }
+
+                        if (PatternReplacementPair.Value.Contains("$" + g.Name))//if replacement contains the group name ($1,$2,$3...$99)
+                        {
+
+                            if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey("$" + g.Name))
+                            {
+                                bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);//add group name with valueif it is not added and is in replacement
+
+                                if (!GroupValues.Contains(g.Value))
+                                {
+                                    GroupValues.Add(g.Value);//add value for translation if valid
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                break;
+            }
+
+            if (GroupValues.Count > 0)
+            {
+                return GroupValues.ToArray();
+            }
+            else
+            {
+                return new string[1] { line };
+            }
+        }
+
+        /// <summary>
+        /// extract captured groups from string
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="lineCoordinates"></param>
+        /// <param name="lineNum"></param>
+        /// <returns></returns>
+        internal static string[] ExtractMulty(this string line)
+        {
+            var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
+            foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
+            {
+                if (!Regex.IsMatch(line, PatternReplacementPair.Key))
+                {
+                    continue;
+                }
+
+                foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
+                {
+                    try
+                    {
+
+                        if (PatternReplacementPair.Value.Contains("$" + g.Name))//if replacement contains the group name ($1,$2,$3...$99)
+                        {
+                            if (!GroupValues.Contains(g.Value))
+                            {
+                                GroupValues.Add(g.Value);//add value for translation if valid
+                            }
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                break;
+            }
+
+            if (GroupValues.Count > 0)
+            {
+                return GroupValues.ToArray();
+            }
+            else
+            {
+                return new string[1] { line };
+            }
+        }
+
         internal static string SplitMultiLineIfBeyondOfLimit(this string Line, int Limit, int linesCountLimit = -1)
         {
             if (string.IsNullOrWhiteSpace(Line)/* || !Line.IsMultiline()*/)

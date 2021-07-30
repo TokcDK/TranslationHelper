@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
@@ -15,61 +14,111 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         bool NeedToAddFilePaths = true;
-        Dictionary<string, List<string>> GameFilesList;
+        Dictionary<string, PathsForTheName> GameFilesList;
         protected override void ActionsPreRowsApply()
         {
             if (NeedToAddFilePaths)
             {
-                GameFilesList = new Dictionary<string, List<string>>();
+                GameFilesList = new Dictionary<string, PathsForTheName>();
                 foreach (var file in Directory.GetFiles(ProjectData.SelectedGameDir, "*", SearchOption.AllDirectories))
                 {
                     var name = Path.GetFileNameWithoutExtension(file);
-                    if (GameFilesList.ContainsKey(name))
+                    if (!GameFilesList.ContainsKey(name))
                     {
-                        GameFilesList[name].Add(file);
+                        GameFilesList.Add(name, new PathsForTheName());//add file name with path
                     }
-                    else
-                    {
-                        GameFilesList.Add(Path.GetFileNameWithoutExtension(file), new List<string> { file });//add file name with path
-                    }
+                    GameFilesList[name].PathsList.Add(file);
                 }
                 NeedToAddFilePaths = false;
             }
         }
 
+        class PathsForTheName
+        {
+            /// <summary>
+            /// list of paths in game's folder for the file's name without extension
+            /// </summary>
+            internal List<string> PathsList = new List<string>();
+        }
+
         protected override bool Apply()
         {
-            string trans;
+
+            string orig = SelectedRow[0] as string;
+            if (orig.IsMultiline()) // skip multiline
+            {
+                return false;
+            }
+
+            string trans = SelectedRow[1] + "";
+            if (trans.IsMultiline()) // skip multiline
+            {
+                return false;
+            }
+
+            if (trans.Contains("Sewer"))
+            {
+
+            }
+
             try
             {
-                string name;
-                if (SelectedRow[1] != null && !string.IsNullOrWhiteSpace(trans = SelectedRow[1] + "")
-                    && !FunctionsFileFolder.HasInvalidChars(trans)
-                    && !(SelectedRow[0] as string).Intersect(Path.GetInvalidFileNameChars()).Any()//invalid file/folder name
-                    && !trans.IsMultiline()//ignore multiline
-                    && GameFilesList != null 
-                    && GameFilesList.ContainsKey(name = Path.GetFileNameWithoutExtension(SelectedRow[0] as string))
-                    && !FunctionsFileFolder.HasInvalidChars(name)
-                    )
+                bool hasExtractedFromOrig = false;
+                var extractedFromOrig = orig.ExtractMulty();
+                string nameOrig = orig;
+                if ( extractedFromOrig.Length == 1 && !string.IsNullOrWhiteSpace(extractedFromOrig[0]))
                 {
-                    foreach (var path in GameFilesList[name])
-                    {
-                        if (string.IsNullOrWhiteSpace(path))
-                        {
-                            continue;
-                        }
-
-                        var targetPath = Path.Combine(Path.GetDirectoryName(path), trans + Path.GetExtension(path));
-                        if (!File.Exists(targetPath))
-                        {
-                            File.Copy(path, targetPath);
-
-                            //info about translated copy
-                            File.WriteAllText(targetPath + ".tr.txt", "original name:" + name + "\r\noriginal file name is exists in table and in game dir\r\ncreated copy with translated name to prevent possible missing file errors");
-                        }
-                    }
-                    return true;
+                    nameOrig = extractedFromOrig[0];
+                    hasExtractedFromOrig = true;
                 }
+
+                if (FunctionsFileFolder.HasInvalidChars(nameOrig))
+                {
+                    return false;
+                }
+
+                nameOrig = Path.GetFileNameWithoutExtension(nameOrig);
+
+                string transName = trans;
+                if (hasExtractedFromOrig)
+                {
+                    var extractedFromTrans = trans.ExtractMulty();
+
+                    if (extractedFromTrans.Length == 1 && !string.IsNullOrWhiteSpace(extractedFromTrans[0]))
+                    {
+                        transName = extractedFromTrans[0];
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(transName) || FunctionsFileFolder.HasInvalidChars(transName)) // skip empty and invalid trans
+                {
+                    return false;
+                }
+
+                transName = Path.GetFileNameWithoutExtension(transName);
+
+                if (GameFilesList == null || !GameFilesList.ContainsKey(nameOrig)) // skip if not in game folder's files list
+                {
+                    return false;
+                }
+
+                foreach (var path in GameFilesList[nameOrig].PathsList) // iterate all paths
+                {
+                    if (string.IsNullOrWhiteSpace(path)) // skip empty?
+                    {
+                        continue;
+                    }
+
+                    var targetPath = Path.Combine(Path.GetDirectoryName(path), transName + Path.GetExtension(path)); // target translated path
+                    if (!File.Exists(targetPath))
+                    {
+                        File.Copy(path, targetPath);
+
+                        //info about translated copy
+                        File.WriteAllText(targetPath + ".tr.txt", "original name:" + nameOrig + "\r\noriginal file name is exists in table and in game dir\r\ncreated copy with translated name to prevent possible missing file errors");
+                    }
+                }
+                return true;
             }
             catch (Exception ex)
             {

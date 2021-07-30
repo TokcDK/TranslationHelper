@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
@@ -80,7 +79,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         /// <param name="DSTransCell"></param>
         /// <param name="variant"></param>
         /// <returns></returns>
-        private static string ChangeRegistryCaseForTheCell(string DSTransCell, int variant)
+        private string ChangeRegistryCaseForTheCell(string DSTransCell, int variant)
         {
             switch (variant)
             {
@@ -101,11 +100,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             }
         }
 
-        internal static string StringToUpper(string inputString)
+        internal string StringToUpper(string inputString)
         {
             if (char.IsLetter(inputString[0]))
             {
-                inputString = char.ToUpper(inputString[0], CultureInfo.InvariantCulture) + inputString.Substring(1);
+                if ((SelectedRow[0] as string)[0] != inputString[0]) // skip if char in original equals char in translation with same index
+                {
+                    inputString = char.ToUpper(inputString[0], CultureInfo.InvariantCulture) + inputString.Substring(1);
+                }
             }
             else
             {
@@ -118,7 +120,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                     }
                     else
                     {
-                        if (c > 0 && (@char == 's' && inputString[c - 1] == '\'' || inputString[c - 1] == '\\'))
+                        string orig;
+                        if ((c > 0 && (@char == 's' && inputString[c - 1] == '\'' || inputString[c - 1] == '\\')) // comment
+                            ||
+                            (orig = SelectedRow[0] as string).Length > c && orig[c] == inputString[c]) // skip if char in original equals char in translation with same index
                         {
                         }
                         else
