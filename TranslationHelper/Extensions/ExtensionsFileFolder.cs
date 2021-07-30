@@ -1,9 +1,9 @@
-﻿using Soft160.Data.Cryptography;
+﻿using CheckForEmptyDir;
+using Soft160.Data.Cryptography;
 using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Extensions
 {
@@ -16,7 +16,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool IsEmpty(this DirectoryInfo dir)
         {
-            return FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(dir.FullName);
+            return dir.FullName.IsNullOrEmptyDirectory();
         }
 
         /// <summary>
@@ -24,9 +24,9 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        internal static bool HasNoFiles(this DirectoryInfo dir, string mask = "*")
+        internal static bool HasNoFiles(this DirectoryInfo dir, string mask = "*", bool recursive = true)
         {
-            return !HasAnyFiles(dir, mask);
+            return dir.IsNullOrEmptyDirectory(mask, searchForFiles: true, searchForDirs: false, recursive: recursive);
         }
 
 
@@ -35,9 +35,9 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="dir"></param>
         /// <returns></returns>
-        internal static bool HasAnyFiles(this DirectoryInfo dir, string mask = "*")
+        internal static bool HasAnyFiles(this DirectoryInfo dir, string mask = "*", bool recursive = true)
         {
-            return dir.FullName.ContainsFiles(mask, true, true);
+            return !dir.IsNullOrEmptyDirectory(mask, searchForFiles: true, searchForDirs: false, recursive: recursive);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool HasAnyDirs(this DirectoryInfo dir, string mask = "*")
         {
-            return dir.FullName.ContainsFiles(mask, false, true);
+            return !dir.IsNullOrEmptyDirectory(mask, searchForFiles: false, searchForDirs: true);
         }
 
         /// <summary>
@@ -58,29 +58,9 @@ namespace TranslationHelper.Extensions
         /// <param name="SearchFiles"></param>
         /// <param name="Recursive"></param>
         /// <returns></returns>
-        internal static bool ContainsFiles(this string FolderPath, string mask = "*", bool SearchFiles = true, bool Recursive = false)
+        internal static bool ContainsFiles(this string FolderPath, string mask = "*.*", bool recursive = true)
         {
-            if (!Directory.Exists(FolderPath))
-            {
-                return false;
-            }
-
-            if (SearchFiles)
-            {
-                foreach (var _ in Directory.EnumerateFiles(FolderPath, mask, Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                foreach (var _ in Directory.EnumerateDirectories(FolderPath, mask, Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return !FolderPath.IsNullOrEmptyDirectory(mask, searchForFiles: true, searchForDirs: false, recursive: recursive);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5351:Не используйте взломанные алгоритмы шифрования", Justification = "<Ожидание>")]

@@ -1,91 +1,13 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using TranslationHelper.Extensions;
-using TranslationHelper.Functions;
 using TranslationHelper.SimpleHelpers;
 
 namespace TranslationHelper.Main.Functions
 {
     internal static class FunctionsFileFolder
     {
-        private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        internal struct WIN32_FIND_DATA
-        {
-            public uint dwFileAttributes;
-            public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
-            public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
-            public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
-            public uint nFileSizeHigh;
-            public uint nFileSizeLow;
-            public uint dwReserved0;
-            public uint dwReserved1;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-            public string cFileName;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
-            public string cAlternateFileName;
-        }
-
-        //https://stackoverflow.com/a/757925
-        //быстро проверить, пуста ли папка
-        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string Mask = "*"/*, string[] exclusions = null*/)
-        {
-            if (string.IsNullOrEmpty(path) || !Directory.Exists(path)
-                //|| (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(path)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(path)))
-                )
-            {
-                return true; //return true if path is empty
-                //throw new ArgumentNullException(path);
-            }
-
-            //if (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(path)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(path)))
-            //{
-            //    return true;
-            //}
-
-            if (path.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
-            {
-                path += Mask;
-            }
-            else
-            {
-                path += Path.DirectorySeparatorChar + Mask;
-            }
-
-            var findHandle = NativeMethods.FindFirstFile(path, out WIN32_FIND_DATA findData);
-
-            if (findHandle != INVALID_HANDLE_VALUE)
-            {
-                try
-                {
-                    bool empty = true;
-                    do
-                    {
-                        if (findData.cFileName != "." && findData.cFileName != ".."/* && !ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions)*/)
-                        {
-                            empty = false;
-                        }
-                    } while (empty && NativeMethods.FindNextFile(findHandle, out findData));
-
-                    return empty;
-                }
-                finally
-                {
-                    NativeMethods.FindClose(findHandle);
-                }
-            }
-            return true;
-
-            //throw new Exception("Failed to get directory first file",
-            //    Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-            //throw new DirectoryNotFoundException();
-        }
-
         /// <summary>
         /// true when input text has invalid chars and cant be used in dir/file path
         /// </summary>
@@ -143,9 +65,9 @@ namespace TranslationHelper.Main.Functions
             return newFilePath;
         }
 
-        internal static bool IsInDirExistsAnyFile(string FolderPath, string mask = "*", bool SearchFiles = true, bool Recursive = false)
+        internal static bool IsInDirExistsAnyFile(string FolderPath, string mask = "*", bool recursive = true)
         {
-            return FolderPath.ContainsFiles(mask, SearchFiles, Recursive);
+            return FolderPath.ContainsFiles(mask, recursive: recursive);
         }
 
         internal static bool GetAnyFileWithTheNameExist(string[] array, string name)

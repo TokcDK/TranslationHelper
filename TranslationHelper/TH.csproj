@@ -236,7 +236,6 @@
     <Compile Include="Functions\FunctionsLogs.cs" />
     <Compile Include="Functions\FunctionsMessage.cs" />
     <Compile Include="Functions\FunctionsStringExtensions.cs" />
-    <Compile Include="Functions\NativeMethods.cs" />
     <Compile Include="Functions\FunctionsOnlineTranslation.cs" />
     <Compile Include="Functions\FunctionsOpen.cs" />
     <Compile Include="Functions\FunctionsSave.cs" />
@@ -409,6 +408,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\CheckForEmptyDir\CheckForEmptyDir.csproj">
+      <Project>{636976fe-5ffe-4e17-bcb1-7b858a78a8a3}</Project>
+      <Name>CheckForEmptyDir</Name>
+    </ProjectReference>
     <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj">
       <Project>{fd599904-9718-4faf-a7b0-48f5d1be39e0}</Project>
       <Name>GetListOfSubClasses</Name>

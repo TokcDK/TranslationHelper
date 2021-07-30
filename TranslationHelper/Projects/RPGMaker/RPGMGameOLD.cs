@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMTrans;
 using TranslationHelper.Main.Functions;
 
@@ -38,7 +39,7 @@ namespace TranslationHelper.Projects.RPGMaker
             //    //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
 
             //}
-            if (Directory.Exists(outdir + "_patch") && FunctionsFileFolder.IsInDirExistsAnyFile(outdir + "_patch", "RPGMKTRANSPATCH", true, true))
+            if (Directory.Exists(outdir + "_patch") && (outdir + "_patch").ContainsFiles("RPGMKTRANSPATCH", recursive: true))
             {
                 DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)

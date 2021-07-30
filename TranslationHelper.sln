@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THCore", "THCore\THCore.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Current", "Current", "{FF5D029E-60F0-45E0-AF24-985FC27812BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckForEmptyDir", "K:\0GIT\[TokcDK]\LC\LibsCollection\CheckForEmptyDir\CheckForEmptyDir.csproj", "{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,10 @@ Global
 		{D457DD7C-028E-4A38-A2F3-3914FA66FB0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D457DD7C-028E-4A38-A2F3-3914FA66FB0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D457DD7C-028E-4A38-A2F3-3914FA66FB0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +98,7 @@ Global
 		{A804BF2C-9E39-4487-971D-0A524180E2D0} = {D2A5C426-860E-4A67-8ED4-7A5EA59636FF}
 		{D457DD7C-028E-4A38-A2F3-3914FA66FB0E} = {0E1E9084-AE6C-4326-BF94-29DDF3B8A3DC}
 		{FF5D029E-60F0-45E0-AF24-985FC27812BB} = {1E12C4F5-64A6-4147-8F64-BF83B3783E0D}
+		{636976FE-5FFE-4E17-BCB1-7B858A78A8A3} = {82EBA20C-9643-4BDE-91E1-9F800109A39C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69618983-1A21-49E5-BCF7-5C12FF8C2E7C}

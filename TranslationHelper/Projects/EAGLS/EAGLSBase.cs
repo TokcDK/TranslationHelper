@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using CheckForEmptyDir;
+using System.IO;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.EAGLS.SCPACK;
@@ -62,7 +63,7 @@ namespace TranslationHelper.Projects.EAGLS
                 File.WriteAllText(Path.Combine(ProjectData.ProjectWorkDir, mode + "1.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
 
                 var code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
-                if (!code || FunctionsFileFolder.CheckDirectoryNullOrEmpty_Fast(WorkTXTDir, scriptsFIlter))
+                if (!code || WorkTXTDir.IsNullOrEmptyDirectory(scriptsFIlter))
                 {
                     Directory.Delete(workdir, true);
                     return false;

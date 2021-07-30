@@ -20,9 +20,9 @@ namespace TranslationHelper.Projects.WolfRPG
         {
             string d;
             return Path.GetExtension(ProjectData.SelectedFilePath) == ".exe"
-                && (FunctionsFileFolder.IsInDirExistsAnyFile(d = Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.wolf", true)
-                || (Directory.Exists(d = Path.Combine(d, "Data")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.wolf", true))
-                || (Directory.Exists(d = Path.Combine(d, "MapData")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.mps", true))
+                && (FunctionsFileFolder.IsInDirExistsAnyFile(d = Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.wolf", recursive: true)
+                || (Directory.Exists(d = Path.Combine(d, "Data")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.wolf", recursive: true))
+                || (Directory.Exists(d = Path.Combine(d, "MapData")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.mps", recursive: true))
                 );
         }
 
@@ -368,19 +368,19 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override bool BakRestore()
         {
-            foreach(var bak in Directory.EnumerateFiles(Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.wolf.bak", SearchOption.AllDirectories))
+            foreach (var bak in Directory.EnumerateFiles(Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.wolf.bak", SearchOption.AllDirectories))
             {
                 var ExtractedDirPath = bak.Remove(bak.Length - 9, 9);
                 if (!Directory.Exists(ExtractedDirPath))
                 {
-                    Directory.Move(bak, bak.Remove(bak.Length-4,4));
+                    Directory.Move(bak, bak.Remove(bak.Length - 4, 4));
                 }
             }
             return BackupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).ToArray(), false);
         }
 
         internal override bool CheckForRowIssue(System.Data.DataRow row)
-        {            
+        {
             string o;
             string t;
             string p;
