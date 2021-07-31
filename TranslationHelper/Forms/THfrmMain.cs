@@ -3077,7 +3077,7 @@ namespace TranslationHelper
 
         private void RPGMakerLikeTXTToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new RpgMakerLikeTxt().AllT();
+            _ = new RpgMakerLikeTxt().All();
         }
 
         private void ClearTableToolStripMenuItem_Click(object sender, EventArgs e)

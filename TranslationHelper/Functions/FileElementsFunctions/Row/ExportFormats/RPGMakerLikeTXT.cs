@@ -10,8 +10,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
 
         protected override string Filter => "TXT file|*.txt";
 
-        protected override string MarkerOiginal => "\r\n[ORIGINAL]\r\n";
+        protected override string MarkerOiginal => "[ORIGINAL]\r\n";
 
-        protected override string MarkerTranslation => "\r\n[Translation]\r\n";
+        protected override string MarkerTranslation => "\r\n[TRANSLATION]\r\n";
     }
 }
