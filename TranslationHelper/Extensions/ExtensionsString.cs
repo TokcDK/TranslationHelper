@@ -19,7 +19,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static string[] ExtractMulty(this string line, string lineCoordinates, int lineNum, Dictionary<string/*table index,row index*/, Dictionary<int/*line number*/, Dictionary<string/*text from original*/, string/*text of translation*/>>> bufferExtracted = null)
         {
-            if (bufferExtracted != null)
+            if (bufferExtracted == null)
             {
                 bufferExtracted = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
             }

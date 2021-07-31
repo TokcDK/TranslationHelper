@@ -121,7 +121,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                     else
                     {
                         string orig;
-                        if ((c > 0 && (@char == 's' && inputString[c - 1] == '\'' || inputString[c - 1] == '\\')) // comment
+                        if ((c > 0 && (@char == 's' && inputString[c - 1] == '\'' || inputString[c - 1] == '\\')) // 's or \s
                             ||
                             (orig = SelectedRow[0] as string).Length > c && orig[c] == inputString[c]) // skip if char in original equals char in translation with same index
                         {
