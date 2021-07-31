@@ -273,9 +273,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var orig = new List<string>();
             foreach (var coordinate in buffer)//get all coordinate keys
             {
-                foreach (var linenumber in coordinate.Value) // get all sublines
+                foreach (var lineNumber in coordinate.Value) // get all sublines
                 {
-                    foreach (var linetext in linenumber.Value) // get all sublines
+                    foreach (var linetext in lineNumber.Value) // get all sublines
                     {
                         if (!orig.Contains(linetext.Key) && linetext.Value == null && linetext.Key.IsValidForTranslation())
                         {
@@ -300,17 +300,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 ProjectData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
             }
 
-            var neworiginalLines = new string[originalLines.Length];
-            Array.Copy(originalLines, neworiginalLines, originalLines.Length);
-            for (int i = 0; i < neworiginalLines.Length; i++)
+            var newOriginalLines = new string[originalLines.Length];
+            Array.Copy(originalLines, newOriginalLines, originalLines.Length);
+            for (int i = 0; i < newOriginalLines.Length; i++)
             {
                 var s = ProjectData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
                 if (!string.IsNullOrEmpty(s))
                 {
-                    neworiginalLines[i] = s;
+                    newOriginalLines[i] = s;
                 }
             }
-            return neworiginalLines;
+            return newOriginalLines;
         }
 
         /// <summary>
@@ -348,10 +348,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             string[] translated = null;
             try
             {
-                var OriginalLinesPreapplied = ApplyProjectPretranslationAction(originals);
-                if (OriginalLinesPreapplied.Length > 0)
+                var originalLinesArePreApplied = ApplyProjectPretranslationAction(originals);
+                if (originalLinesArePreApplied.Length > 0)
                 {
-                    translated = Translator.Translate(OriginalLinesPreapplied);
+                    translated = Translator.Translate(originalLinesArePreApplied);
                     if (translated == null || originals.Length != translated.Length)
                     {
                         return new string[1] { "" };
@@ -388,8 +388,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     FunctionsOnlineCache.AddToTranslationCacheIfValid(originals[i], translated[i]);
                 }
 
-            var Coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
-            foreach (var coordinate in Coordinates)//get all coordinate keys
+            var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
+            foreach (var coordinate in coordinates)//get all coordinate keys
             {
                 var lineNumbers = new Dictionary<int, Dictionary<string, string>>(coordinate.Value);
                 foreach (var linenumber in lineNumbers) // get all sublines
@@ -411,8 +411,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         private void SetBufferToRows()
         {
-            var Coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
-            foreach (var coordinate in Coordinates)//get all coordinate keys
+            var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
+            foreach (var coordinate in coordinates)//get all coordinate keys
             {
                 var TR = coordinate.Key.Split(',');
                 var tindex = int.Parse(TR[0]);
@@ -420,15 +420,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var Row = ProjectData.THFilesElementsDataset.Tables[tindex].Rows[rindex];
                 //var linenumMax = (Row[0] + "").GetLinesCount();
 
-                var TranslationEqualOriginal = Equals(Row[1], Row[0]);
-                if (Properties.Settings.Default.IgnoreOrigEqualTransLines && TranslationEqualOriginal)//skip equal
+                var cellTranslationEqualOriginal = Equals(Row[1], Row[0]);
+                if (Properties.Settings.Default.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal)//skip equal
                 {
                     continue;
                 }
 
-                var TranslationIsNotEmptyAndNotEqualOriginal = (Row[1] != null && !string.IsNullOrEmpty(Row[1] as string) && !TranslationEqualOriginal);
+                var cellTranslationIsNotEmptyAndNotEqualOriginal = (Row[1] != null && !string.IsNullOrEmpty(Row[1] as string) && !cellTranslationEqualOriginal);
 
-                if (TranslationIsNotEmptyAndNotEqualOriginal && !Row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))
+                if (cellTranslationIsNotEmptyAndNotEqualOriginal && !Row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))
                 {
                     continue;
                 }
@@ -437,7 +437,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     var newValue = new List<string>();
                     var lineNum = 0;
-                    var rowValue = (TranslationIsNotEmptyAndNotEqualOriginal ? Row[1] : Row[0]) + "";
+                    var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? Row[1] : Row[0]) + "";
                     foreach (var line in rowValue.SplitToLines())
                     {
                         if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0) || line.IsSoundsText())
