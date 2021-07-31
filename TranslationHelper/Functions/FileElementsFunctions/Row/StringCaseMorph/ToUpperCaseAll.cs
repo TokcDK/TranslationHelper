@@ -8,6 +8,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         {
         }
 
-        protected override int Variant => 2;
+        protected override VariantCase Variant => VariantCase.UPPER;
     }
 }

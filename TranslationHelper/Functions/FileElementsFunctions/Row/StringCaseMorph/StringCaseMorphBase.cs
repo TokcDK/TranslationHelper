@@ -39,7 +39,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         /// <summary>
         /// 0=lowercase,1=Uppercase,2=UPPERCASE
         /// </summary>
-        protected abstract int Variant { get; }
+        protected abstract VariantCase Variant { get; }
+
+        protected enum VariantCase
+        {
+            Lower = 0,
+            Upper = 1,
+            UPPER = 2
+        }
 
         /// <summary>
         /// if table name is 'Animations'
@@ -52,10 +59,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             var dsTransCell = SelectedRow[1] + string.Empty;
             if (!string.IsNullOrWhiteSpace(dsTransCell)// not empty translation
                 && dsTransCell != dsOrigCell//not equal to original
-                && (Variant != 1 || !dsTransCell.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
+                && (Variant != VariantCase.Upper || !dsTransCell.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
                 )
             {
-                if (_isAnimations && Variant == 1 && dsTransCell.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
+                if (_isAnimations && Variant == VariantCase.Upper && dsTransCell.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
                 {
                     string[] parts = dsTransCell.Split('/');
                     for (int i = 0; i < parts.Length; i++)
@@ -79,20 +86,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         /// <param name="dsTransCell"></param>
         /// <param name="variant"></param>
         /// <returns></returns>
-        private string ChangeRegistryCaseForTheCell(string dsTransCell, int variant)
+        private string ChangeRegistryCaseForTheCell(string dsTransCell, VariantCase variant)
         {
             switch (variant)
             {
-                case 0:
+                case VariantCase.Lower:
                     //lowercase
 #pragma warning disable CA1308 // Нормализуйте строки до прописных букв
                     return dsTransCell.ToLowerInvariant();
 #pragma warning restore CA1308 // Нормализуйте строки до прописных букв
-                case 1:
+                case VariantCase.Upper:
                     //Uppercase
                     //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1
                     return StringToUpper(dsTransCell);
-                case 2:
+                case VariantCase.UPPER:
                     //UPPERCASE
                     return dsTransCell.ToUpperInvariant();
                 default:
