@@ -563,7 +563,7 @@ namespace TranslationHelper.Extensions
             //Fix of last newline \n symbol was not returned 
             bool EndsWithNewLine = input.EndsWith("\n");
 
-            using (System.IO.StringReader reader = new System.IO.StringReader(input))
+            using (var reader = new System.IO.StringReader(input))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)

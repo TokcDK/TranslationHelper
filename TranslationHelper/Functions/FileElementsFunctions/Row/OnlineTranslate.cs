@@ -58,7 +58,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool IsValidRow()
         {
-            return base.IsValidRow()
+            return !Properties.Settings.Default.InterruptTtanslation && base.IsValidRow()
                 && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "")
                 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine());
 
@@ -120,6 +120,27 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             FunctionsOnlineCache.Unload();
 
             ProjectData.Main.ProgressInfo(false);
+
+            if (!IsAll && !IsTable && Properties.Settings.Default.InterruptTtanslation)
+            {
+                Properties.Settings.Default.InterruptTtanslation = false;
+            }
+        }
+
+        protected override void ActionsPostTableApply()
+        {
+            if (!IsAll && Properties.Settings.Default.InterruptTtanslation)
+            {
+                Properties.Settings.Default.InterruptTtanslation = false;
+            }
+        }
+
+        protected override void ActionsPostTablesApply()
+        {
+            if (Properties.Settings.Default.InterruptTtanslation)
+            {
+                Properties.Settings.Default.InterruptTtanslation = false;
+            }
         }
 
         protected override bool Apply()
@@ -226,6 +247,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     //write cache periodically
                     ProjectData.OnlineTranslationCache.Write();
+
+                    if (Properties.Settings.Default.InterruptTtanslation) // stop translating after last pack of text when translation is interrupted
+                    {
+                        return;
+                    }
                 }
 
                 lineNum++;
@@ -510,7 +536,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     int indexOfTheString = line.IndexOf(bufenum.Current.Key);
                     if (indexOfTheString > -1)
                     {
-                        if(bufenum.Current.Value!=null)//null when o translation?
+                        if (bufenum.Current.Value != null)//null when o translation?
                         {
                             return line
                             .Remove(indexOfTheString, bufenum.Current.Key.Length)

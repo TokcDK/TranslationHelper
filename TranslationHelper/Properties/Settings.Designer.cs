@@ -574,5 +574,21 @@ namespace TranslationHelper.Properties {
                 this["SearchRowIssueOptionsCheckProjectSpecific"] = value;
             }
         }
+
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool InterruptTtanslation
+        {
+            get
+            {
+                return ((bool)(this["InterruptTtanslation"]));
+            }
+            set
+            {
+                this["InterruptTtanslation"] = value;
+            }
+        }
     }
 }

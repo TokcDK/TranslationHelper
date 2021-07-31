@@ -165,12 +165,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     GetTableData();
 
+                    _isInternalSelectedRowExecution = true;
+
                     if (!IsAll && !IsTable)
                     {
-                        ActionsPreRowsApply();
+                        ActionsPreRowsApply(); // need here also as in All because must be executed even if only selected rows was selected
                     }
-
-                    _isInternalSelectedRowExecution = true;
 
                     var selectedRowIndexses = new int[SelectedRowsCount];
                     var addedRows = new HashSet<int>(SelectedRowsCount);
@@ -217,7 +217,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     if (!IsAll && !IsTable)
                     {
-                        ActionsPostRowsApply();
+                        ActionsPostRowsApply(); // need here also as in All because must be executed even if only selected rows was selected
                     }
                 }
                 catch (Exception ex)
@@ -231,6 +231,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         /// <summary>
         /// apply the actions before all rows for selected,table or all was applied
+        /// will be executed before Selected or before Table or before All
         /// </summary>
         protected virtual void ActionsPreRowsApply()
         {
@@ -238,6 +239,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         /// <summary>
         /// apply the actions before all tables wil be processed
+        /// will be executed before Table or before All
         /// </summary>
         protected virtual void ActionsPreTablesApply()
         {
@@ -245,7 +247,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         /// <summary>
         /// apply the actions before selected table wil be processed. 
-        /// will be executed only for All or Table, not for Selected()
+        /// will be executed each time before table parse
         /// </summary>
         protected virtual void ActionsPreTableApply()
         {
@@ -253,22 +255,25 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         /// <summary>
         /// apply the actions after all rows for selected,table or all was applied
+        /// will be executed after Selected or after Table or after All
         /// </summary>
         protected virtual void ActionsPostRowsApply()
         {
         }
 
         /// <summary>
-        /// apply the actions after all tables wil be processed
+        /// apply the actions after selected table wil be processed
+        /// will be executed ech time after table parsed
         /// </summary>
-        protected virtual void ActionsPostTablesApply()
+        protected virtual void ActionsPostTableApply()
         {
         }
 
         /// <summary>
-        /// apply the actions after selected table wil be processed
+        /// apply the actions after all tables wil be processed
+        /// will be executed after Table or after All
         /// </summary>
-        protected virtual void ActionsPostTableApply()
+        protected virtual void ActionsPostTablesApply()
         {
         }
 
@@ -339,14 +344,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 if (!IsAll)
                 {
-                    ActionsPreTablesApply();
+                    ActionsPreTablesApply(); // need here also as in All because must be executed even if only one table was selected
                 }
 
                 ActionsPreTableApply();
 
                 if (!IsAll)
                 {
-                    ActionsPreRowsApply();
+                    ActionsPreRowsApply(); // need here also as in All because must be executed even if only one table was selected
                 }
 
                 _isInternalSelectedRowExecution = true;
@@ -364,14 +369,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 if (!IsAll && IsTable)
                 {
-                    ActionsPostRowsApply();
+                    ActionsPostRowsApply(); // need here also as in All because must be executed even if only one table was selected
                 }
 
                 ActionsPostTableApply();
 
-                if (!IsAll && IsTable)
+                if (!IsAll && IsTable) 
                 {
-                    ActionsPostTablesApply();
+                    ActionsPostTablesApply(); // need here also as in All because must be executed even if only one table was selected
                 }
             }
 

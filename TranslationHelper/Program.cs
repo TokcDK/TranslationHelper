@@ -15,7 +15,7 @@ namespace TranslationHelper
             Application.SetCompatibleTextRenderingDefault(false);
             //try
             //{
-                Application.Run(new FormMain());
+            Application.Run(new FormMain());
             //}
             //catch (Exception ex)
             //{

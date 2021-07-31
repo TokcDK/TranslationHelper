@@ -1360,7 +1360,7 @@ namespace TranslationHelper
         internal bool IsTranslating;
         private void OnlineTranslateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate().Selected()));
+            Thread trans = new Thread((obj) => new OnlineTranslate().Selected());
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1405,7 +1405,7 @@ namespace TranslationHelper
 
         private void OnlineTranslateTableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate().Table()));
+            Thread trans = new Thread((obj) => new OnlineTranslate().Table());
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1447,7 +1447,7 @@ namespace TranslationHelper
 
         private void OnlineTranslateAllToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Thread trans = new Thread(new ParameterizedThreadStart((obj) => new OnlineTranslate().All()));
+            Thread trans = new Thread((obj) => new OnlineTranslate().All());
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -2080,6 +2080,7 @@ namespace TranslationHelper
         internal bool InteruptTranslation;
         private void InteruptToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Properties.Settings.Default.InterruptTtanslation = true;
             InteruptTranslation = true;
         }
 
@@ -2087,6 +2088,7 @@ namespace TranslationHelper
         private void THMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.IsTranslationHelperWasClosed = true;
+            Properties.Settings.Default.InterruptTtanslation = true;
             InteruptTranslation = true;
             //THToolTip.Dispose();
             //ProjectData.THFilesElementsDataset.Dispose();
