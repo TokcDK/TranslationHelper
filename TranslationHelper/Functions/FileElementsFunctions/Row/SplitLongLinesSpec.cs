@@ -39,7 +39,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         //rpg maker symbols
-        Dictionary<string, string> symbols = new Dictionary<string, string>
+        Dictionary<string, string> _symbols = new Dictionary<string, string>
             {
                 { @"(if|en)\([^\r\n]+\)$", string.Empty},
                 { @"[\\]{1,4}C\[[0-9]{1,3}\]", string.Empty},
@@ -70,7 +70,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             int cnt = 0;
             var returnedline = line;
-            foreach (var symbol in symbols)
+            foreach (var symbol in _symbols)
             {
                 var replacerIsEmpty = symbol.Value.Length == 0;
                 MatchCollection mc = Regex.Matches(returnedline, symbol.Key);
@@ -93,7 +93,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             int cnt = 0;
             var cleanedline = line;
-            foreach (var symbol in symbols)
+            foreach (var symbol in _symbols)
             {
                 var replacerIsEmpty = symbol.Value.Length == 0;
                 MatchCollection mc = Regex.Matches(cleanedline, symbol.Key);

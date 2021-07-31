@@ -35,17 +35,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// return value for Table/All functions. Depends on return of Apply
         /// </summary>
-        protected bool ret;
+        protected bool Ret;
 
         /// <summary>
         /// link to FileElements datagridview
         /// </summary>
-        protected System.Windows.Forms.DataGridView DGV;
+        protected System.Windows.Forms.DataGridView Dgv;
 
         /// <summary>
         /// an be used by some functions
         /// </summary>
-        protected Dictionary<string, string> sessionData;
+        protected Dictionary<string, string> SessionData;
 
         protected RowBase()
         {
@@ -56,31 +56,31 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// true when SelectedRow(row) was executed from Selected()
         /// </summary>
-        bool IsInternalSelectedRowExecution = false;
+        bool _isInternalSelectedRowExecution = false;
 
         /// <summary>
         /// proceed 1 selected row
         /// </summary>
         /// <returns></returns>
-        internal bool Selected(DataRow row, int TableIndex = -1, int RowIndex = -1)
+        internal bool Selected(DataRow row, int tableIndex = -1, int rowIndex = -1)
         {
             try
             {
-                if (!IsInternalSelectedRowExecution)
+                if (!_isInternalSelectedRowExecution)
                 {
                     Init();
 
-                    GetTableData(TableIndex);
+                    GetTableData(tableIndex);
 
                     if (!IsAll && !IsTable)
                     {
                         SelectedRowsCount = 1;
                     }
 
-                    if (DGV == null)
+                    if (Dgv == null)
                     {
 #if DEBUG
-                            ProjectData.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = ProjectData.Main.THFileElementsDataGridView));
+                            ProjectData.Main.THFileElementsDataGridView.Invoke((Action)(() => Dgv = ProjectData.Main.THFileElementsDataGridView));
 #else
                             DGV = ProjectData.Main.THFileElementsDataGridView;
 #endif
@@ -88,9 +88,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
 
                 SelectedRow = row;
-                SelectedRowIndex = GetRowIndex(RowIndex);
+                SelectedRowIndex = GetRowIndex(rowIndex);
 
-                if (!IsInternalSelectedRowExecution && !IsAll && !IsTable)
+                if (!_isInternalSelectedRowExecution && !IsAll && !IsTable)
                 {
                     ActionsPreRowsApply();
                 }
@@ -101,24 +101,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
             }
 
-            if (!IsInternalSelectedRowExecution && !IsAll && !IsTable)
+            if (!_isInternalSelectedRowExecution && !IsAll && !IsTable)
             {
                 ActionsPostRowsApply();
             }
 
-            return ret;
+            return Ret;
         }
 
         /// <summary>
         /// get index of selected row
         /// </summary>
-        /// <param name="RowIndex"></param>
+        /// <param name="rowIndex"></param>
         /// <returns></returns>
-        private int GetRowIndex(int RowIndex = -1)
+        private int GetRowIndex(int rowIndex = -1)
         {
-            if (RowIndex != -1)
+            if (rowIndex != -1)
             {
-                SelectedRowIndex = RowIndex;
+                SelectedRowIndex = rowIndex;
             }
             else
             {
@@ -131,7 +131,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return SelectedRowIndex;
         }
 
-        readonly FunctionsLogs log = new FunctionsLogs();
+        readonly FunctionsLogs _log = new FunctionsLogs();
 
         /// <summary>
         /// selected rows count
@@ -145,10 +145,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             Init();
 
-            if (DGV == null)
+            if (Dgv == null)
             {
 #if DEBUG
-                ProjectData.Main.THFileElementsDataGridView.Invoke((Action)(() => DGV = ProjectData.Main.THFileElementsDataGridView));
+                ProjectData.Main.THFileElementsDataGridView.Invoke((Action)(() => Dgv = ProjectData.Main.THFileElementsDataGridView));
 #else
                 DGV = ProjectData.Main.THFileElementsDataGridView;
 #endif
@@ -156,7 +156,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (!IsAll && !IsTable)
             {
-                SelectedRowsCount = DGV.GetCountOfRowsWithSelectedCellsCount();
+                SelectedRowsCount = Dgv.GetCountOfRowsWithSelectedCellsCount();
             }
 
             if (SelectedRowsCount > 0)
@@ -170,23 +170,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         ActionsPreRowsApply();
                     }
 
-                    IsInternalSelectedRowExecution = true;
+                    _isInternalSelectedRowExecution = true;
 
-                    var SelectedRowIndexses = new int[SelectedRowsCount];
-                    var AddedRows = new HashSet<int>(SelectedRowsCount);
-                    var DGVSelectedCells = DGV.SelectedCells;
-                    var DGVSelectedCellsCount = DGVSelectedCells.Count;
+                    var selectedRowIndexses = new int[SelectedRowsCount];
+                    var addedRows = new HashSet<int>(SelectedRowsCount);
+                    var dgvSelectedCells = Dgv.SelectedCells;
+                    var dgvSelectedCellsCount = dgvSelectedCells.Count;
                     var ind = 0; // index for SelectedRowIndexses
-                    for (int i = 0; i < DGVSelectedCellsCount; i++)
+                    for (int i = 0; i < dgvSelectedCellsCount; i++)
                     {
-                        var DGVRowIndex = DGVSelectedCells[i].RowIndex;
+                        var dgvRowIndex = dgvSelectedCells[i].RowIndex;
 
-                        if (AddedRows.Contains(DGVRowIndex)) // skip if parent row index already was added
+                        if (addedRows.Contains(dgvRowIndex)) // skip if parent row index already was added
                         {
                             continue;
                         }
 
-                        AddedRows.Add(DGVRowIndex); // add row index as added
+                        addedRows.Add(dgvRowIndex); // add row index as added
 
                         //log.DebugData.Add("SelectedTableIndex=" + SelectedTableIndex);
                         //log.DebugData.Add("DataGridView RowIndex=" + DGVRowIndex);
@@ -195,7 +195,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         try
                         {
                             //add row index
-                            SelectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(SelectedTableIndex, DGVRowIndex);
+                            selectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(SelectedTableIndex, dgvRowIndex);
                         }
                         catch
                         {
@@ -207,12 +207,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     if (!IsAll && !IsTable)
                     {
-                        Array.Sort(SelectedRowIndexses);//sort indexes
+                        Array.Sort(selectedRowIndexses);//sort indexes
                     }
 
-                    foreach (int RowIndex in SelectedRowIndexses)
+                    foreach (int rowIndex in selectedRowIndexses)
                     {
-                        Selected(SelectedTable.Rows[RowIndex], SelectedTableIndex, RowIndex);
+                        Selected(SelectedTable.Rows[rowIndex], SelectedTableIndex, rowIndex);
                     }
 
                     if (!IsAll && !IsTable)
@@ -222,11 +222,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
                 catch (Exception ex)
                 {
-                    log.LogToFile("an error occured in base row function. error=\r\n" + ex);
+                    _log.LogToFile("an error occured in base row function. error=\r\n" + ex);
                 }
             }
 
-            return ret;
+            return Ret;
         }
 
         /// <summary>
@@ -272,13 +272,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        private void GetTableData(int TableIndex = -1)
+        private void GetTableData(int tableIndex = -1)
         {
             if (SelectedTableIndex == -1)
             {
-                if (TableIndex != -1)
+                if (tableIndex != -1)
                 {
-                    SelectedTableIndex = TableIndex;
+                    SelectedTableIndex = tableIndex;
                 }
                 else
                 {
@@ -325,7 +325,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 IsTable = true;
 
-                tablescount = 1;
+                Tablescount = 1;
             }
 
             GetTableData();
@@ -349,15 +349,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     ActionsPreRowsApply();
                 }
 
-                IsInternalSelectedRowExecution = true;
+                _isInternalSelectedRowExecution = true;
 
-                var RowsCount = SelectedTable.Rows.Count;
+                var rowsCount = SelectedTable.Rows.Count;
                 if (!IsAll && IsTable /*|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is*/)
                 {
-                    SelectedRowsCount = RowsCount;
+                    SelectedRowsCount = rowsCount;
                 }
 
-                for (int i = 0; i < RowsCount; i++)
+                for (int i = 0; i < rowsCount; i++)
                 {
                     Selected(SelectedTable.Rows[i], SelectedTableIndex, i);
                 }
@@ -380,7 +380,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 CompleteSound();
             }
 
-            return ret;
+            return Ret;
         }
 
         /// <summary>
@@ -406,7 +406,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected int SelectedTableIndex = -1;
         protected DataRow SelectedRow;
         protected int SelectedRowIndex;
-        protected int tablescount = 0;
+        protected int Tablescount = 0;
         /// <summary>
         /// true when processed all tables
         /// </summary>
@@ -423,7 +423,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             int tindex = 0;
             var tables = ProjectData.THFilesElementsDataset.Tables;
-            tablescount = tables.Count;
+            Tablescount = tables.Count;
             SetSelectedRowsCountForAll();
 
             ActionsPreTablesApply();
@@ -448,7 +448,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             CompleteSound();
 
-            return ret;
+            return Ret;
         }
 
         /// <summary>
@@ -479,7 +479,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// determine if SelectedRowsCountRest need to set
         /// </summary>
-        bool SetRestRows = true;//
+        bool _setRestRows = true;//
         /// <summary>
         /// true when last row processed
         /// </summary>
@@ -487,9 +487,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected virtual void ApplyConditions()
         {
-            if (SetRestRows)//set rest of rows with bool just because bool is faster
+            if (_setRestRows)//set rest of rows with bool just because bool is faster
             {
-                SetRestRows = false;
+                _setRestRows = false;
                 SelectedRowsCountRest = SelectedRowsCount;
             }
 
@@ -506,7 +506,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 if (Apply())
                 {
-                    ret = true;
+                    Ret = true;
                 }
             }
             catch

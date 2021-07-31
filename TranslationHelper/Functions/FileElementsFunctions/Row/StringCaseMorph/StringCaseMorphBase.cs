@@ -20,7 +20,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void CheckAnims()
         {
-            IsAnimations = SelectedTable.TableName == Animations;
+            _isAnimations = SelectedTable.TableName == Animations;
         }
 
         protected override void ActionsPreRowsApply()
@@ -39,34 +39,34 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         /// <summary>
         /// 0=lowercase,1=Uppercase,2=UPPERCASE
         /// </summary>
-        protected abstract int variant { get; }
+        protected abstract int Variant { get; }
 
         /// <summary>
         /// if table name is 'Animations'
         /// </summary>
-        bool IsAnimations = false;
+        bool _isAnimations = false;
 
         protected override bool Apply()
         {
-            var DSOrigCell = SelectedRow[0] as string;
-            var DSTransCell = SelectedRow[1] + string.Empty;
-            if (!string.IsNullOrWhiteSpace(DSTransCell)// not empty translation
-                && DSTransCell != DSOrigCell//not equal to original
-                && (variant != 1 || !DSTransCell.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
+            var dsOrigCell = SelectedRow[0] as string;
+            var dsTransCell = SelectedRow[1] + string.Empty;
+            if (!string.IsNullOrWhiteSpace(dsTransCell)// not empty translation
+                && dsTransCell != dsOrigCell//not equal to original
+                && (Variant != 1 || !dsTransCell.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
                 )
             {
-                if (IsAnimations && variant == 1 && DSTransCell.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
+                if (_isAnimations && Variant == 1 && dsTransCell.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
                 {
-                    string[] parts = DSTransCell.Split('/');
+                    string[] parts = dsTransCell.Split('/');
                     for (int i = 0; i < parts.Length; i++)
                     {
-                        parts[i] = ChangeRegistryCaseForTheCell(parts[i], variant);
+                        parts[i] = ChangeRegistryCaseForTheCell(parts[i], Variant);
                     }
                     SelectedRow[1] = string.Join("/", parts);
                 }
                 else
                 {
-                    SelectedRow[1] = ChangeRegistryCaseForTheCell(DSTransCell, variant);
+                    SelectedRow[1] = ChangeRegistryCaseForTheCell(dsTransCell, Variant);
                 }
             }
 
@@ -76,27 +76,27 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         /// <summary>
         /// 0=lowercase,1=Uppercase,2=UPPERCASE
         /// </summary>
-        /// <param name="DSTransCell"></param>
+        /// <param name="dsTransCell"></param>
         /// <param name="variant"></param>
         /// <returns></returns>
-        private string ChangeRegistryCaseForTheCell(string DSTransCell, int variant)
+        private string ChangeRegistryCaseForTheCell(string dsTransCell, int variant)
         {
             switch (variant)
             {
                 case 0:
                     //lowercase
 #pragma warning disable CA1308 // Нормализуйте строки до прописных букв
-                    return DSTransCell.ToLowerInvariant();
+                    return dsTransCell.ToLowerInvariant();
 #pragma warning restore CA1308 // Нормализуйте строки до прописных букв
                 case 1:
                     //Uppercase
                     //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1
-                    return StringToUpper(DSTransCell);
+                    return StringToUpper(dsTransCell);
                 case 2:
                     //UPPERCASE
-                    return DSTransCell.ToUpperInvariant();
+                    return dsTransCell.ToUpperInvariant();
                 default:
-                    return DSTransCell;
+                    return dsTransCell;
             }
         }
 
@@ -111,8 +111,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             }
             else
             {
-                int DSTransCellLength = inputString.Length;
-                for (int c = 0; c < DSTransCellLength; c++)
+                int dsTransCellLength = inputString.Length;
+                for (int c = 0; c < dsTransCellLength; c++)
                 {
                     char @char = inputString[c];
                     if (IsCustomSymbol(@char) || char.IsWhiteSpace(@char) || char.IsPunctuation(@char))
@@ -128,7 +128,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                         }
                         else
                         {
-                            inputString = inputString.Substring(0, c) + char.ToUpper(inputString[c], CultureInfo.InvariantCulture) + (c == DSTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
+                            inputString = inputString.Substring(0, c) + char.ToUpper(inputString[c], CultureInfo.InvariantCulture) + (c == dsTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
                         }
                         break;
                     }

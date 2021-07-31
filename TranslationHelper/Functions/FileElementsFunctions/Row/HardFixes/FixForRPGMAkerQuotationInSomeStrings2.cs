@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
-    class FixForRPGMAkerQuotationInSomeStrings2 : HardFixesBase
+    class FixForRpgmAkerQuotationInSomeStrings2 : HardFixesBase
     {
-        public FixForRPGMAkerQuotationInSomeStrings2() : base()
+        public FixForRpgmAkerQuotationInSomeStrings2() : base()
         {
         }
 

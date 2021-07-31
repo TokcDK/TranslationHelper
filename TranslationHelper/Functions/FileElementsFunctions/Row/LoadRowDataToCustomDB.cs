@@ -7,29 +7,29 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class LoadRowDataToCustomDB : RowBase
+    class LoadRowDataToCustomDb : RowBase
     {
-        public LoadRowDataToCustomDB() : base()
+        public LoadRowDataToCustomDb() : base()
         {
         }
 
-        Dictionary<string, string> dict = new Dictionary<string, string>();
-        string custom = THSettingsData.CustomDBPath();
+        Dictionary<string, string> _dict = new Dictionary<string, string>();
+        string _custom = THSettingsData.CustomDBPath();
         protected override void ActionsPreRowsApply()
         {
             //load DB if need
-            if (File.Exists(custom))
+            if (File.Exists(_custom))
             {
-                using (var DBDataSet = new System.Data.DataSet())
+                using (var dbDataSet = new System.Data.DataSet())
                 {
                     ProjectData.Main.ProgressInfo(true, "Load custom DB");
 
-                    var loadcustom = new Task(() => FunctionsDBFile.ReadDBFile(DBDataSet, custom));
+                    var loadcustom = new Task(() => FunctionsDBFile.ReadDBFile(dbDataSet, _custom));
                     loadcustom.ConfigureAwait(true);
                     loadcustom.Start();
                     loadcustom.Wait();
 
-                    dict = DBDataSet.ToDictionary();
+                    _dict = dbDataSet.ToDictionary();
 
                     ProjectData.Main.ProgressInfo(false);
                 }
@@ -41,7 +41,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             //save DB
             ProjectData.Main.ProgressInfo(true, "Save custom DB");
 
-            var loadcustom = new Task(() => FunctionsDBFile.WriteDBFile(dict.ToDataSet(), custom));
+            var loadcustom = new Task(() => FunctionsDBFile.WriteDBFile(_dict.ToDataSet(), _custom));
             loadcustom.ConfigureAwait(true);
             loadcustom.Start();
             loadcustom.Wait();
@@ -55,26 +55,26 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var trans = SelectedRow[1] + "";
 
             //add orig or replace exist
-            if (dict.ContainsKey(orig))
+            if (_dict.ContainsKey(orig))
             {
-                dict[orig] = trans;
+                _dict[orig] = trans;
             }
             else
             {
-                dict.Add(orig, trans);
+                _dict.Add(orig, trans);
             }
 
             var trimmedorig = orig.TrimAllExceptLettersOrDigits();
 
             //when trimmed not equal orig add also trimmed
             if (trimmedorig != orig)
-                if (dict.ContainsKey(trimmedorig))
+                if (_dict.ContainsKey(trimmedorig))
                 {
-                    dict[trimmedorig] = trans.TrimAllExceptLettersOrDigits();
+                    _dict[trimmedorig] = trans.TrimAllExceptLettersOrDigits();
                 }
                 else
                 {
-                    dict.Add(trimmedorig, trans.TrimAllExceptLettersOrDigits());
+                    _dict.Add(trimmedorig, trans.TrimAllExceptLettersOrDigits());
                 }
 
             return true;

@@ -3,9 +3,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
-    class FixENJPQuoteOnStringStart1stLine : HardFixesBase
+    class FixEnjpQuoteOnStringStart1StLine : HardFixesBase
     {
-        public FixENJPQuoteOnStringStart1stLine() : base()
+        public FixEnjpQuoteOnStringStart1StLine() : base()
         {
         }
 
@@ -23,34 +23,34 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             if (transValue.Length == 0 || !(quotes = new string[4] { "\"", "``", "`", "“" }).Contains(transValue.Substring(0, 1)))
                 return false;
 
-            bool oStartsJP;
-            bool oEndsJP;
-            bool tStartsEN;
-            bool tStartsJP;
-            bool tEndsEN;
-            bool tEndsJP;
+            bool oStartsJp;
+            bool oEndsJp;
+            bool tStartsEn;
+            bool tStartsJp;
+            bool tEndsEn;
+            bool tEndsJp;
 
             var ret = false;
             for (int i = 0; i < quotes.Length; i++)
             {
                 var origValue = SelectedRow[ColumnIndexOriginal] as string;
-                oStartsJP = origValue.StartsWith("「");
-                oEndsJP = origValue.EndsWith("」");
-                tStartsEN = transValue.StartsWith(quotes[i]);
-                tStartsJP = transValue.StartsWith("「");
-                tEndsEN = transValue.EndsWith(quotes[i]);
-                tEndsJP = transValue.EndsWith("」");
-                if (transValue.Length > (quotes[i].Length * 2) && oStartsJP && !tStartsEN && !tStartsJP && oEndsJP && tEndsEN && !tEndsJP)
+                oStartsJp = origValue.StartsWith("「");
+                oEndsJp = origValue.EndsWith("」");
+                tStartsEn = transValue.StartsWith(quotes[i]);
+                tStartsJp = transValue.StartsWith("「");
+                tEndsEn = transValue.EndsWith(quotes[i]);
+                tEndsJp = transValue.EndsWith("」");
+                if (transValue.Length > (quotes[i].Length * 2) && oStartsJp && !tStartsEn && !tStartsJp && oEndsJp && tEndsEn && !tEndsJp)
                 {
                     transValue = "「" + transValue.Substring(quotes[i].Length, transValue.Length - quotes[i].Length) + "」";
                     ret = true;
                 }
-                else if (transValue.Length > quotes[i].Length && oEndsJP && tEndsEN && !tEndsJP)
+                else if (transValue.Length > quotes[i].Length && oEndsJp && tEndsEn && !tEndsJp)
                 {
                     transValue = transValue.Substring(0, transValue.Length - quotes[i].Length) + "」";
                     ret = true;
                 }
-                else if (transValue.Length > quotes[i].Length && oStartsJP && tStartsEN && !tStartsJP)
+                else if (transValue.Length > quotes[i].Length && oStartsJp && tStartsEn && !tStartsJp)
                 {
                     transValue = "「" + transValue.Substring(quotes[i].Length);
                     ret = true;

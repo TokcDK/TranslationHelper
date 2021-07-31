@@ -4,13 +4,13 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class FixJPMessagesTranslation : RowBase
+    class FixJpMessagesTranslation : RowBase
     {
-        public FixJPMessagesTranslation() : base()
+        public FixJpMessagesTranslation() : base()
         {
-            if (sessionData == null)
+            if (SessionData == null)
             {
-                sessionData = new Dictionary<string, string>
+                SessionData = new Dictionary<string, string>
                 {
                 { "は倒れた！", " is down!" },
                 { "を倒した！", " was down!" },
@@ -54,9 +54,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return false;
             }
 
-            if (sessionData.ContainsKey(strOriginal))
+            if (SessionData.ContainsKey(strOriginal))
             {
-                SelectedRow[ColumnIndexTranslation] = sessionData[strOriginal];
+                SelectedRow[ColumnIndexTranslation] = SessionData[strOriginal];
             }
             else if ((strOriginal.StartsWith("は") || strOriginal.StartsWith("を")) && !strTranslation.StartsWith(" "))
             {

@@ -10,10 +10,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             HardFixesList = new List<HardFixesBase>()
             {
                 new ProjectSpecificFixes(),
-                new FixENJPQuoteOnStringStart2ndLine(),
-                new FixENJPQuoteOnStringStart1stLine(),
-                new FixForRPGMAkerQuotationInSomeStrings(),
-                new FixForRPGMAkerQuotationInSomeStrings2(),
+                new FixEnjpQuoteOnStringStart2NdLine(),
+                new FixEnjpQuoteOnStringStart1StLine(),
+                new FixForRpgmAkerQuotationInSomeStrings(),
+                new FixForRpgmAkerQuotationInSomeStrings2(),
                 new FixForEndingQuoteInconsistence(),
                 new FixBrokenNameVar(),
                 new FixBrokenNameVar2(),

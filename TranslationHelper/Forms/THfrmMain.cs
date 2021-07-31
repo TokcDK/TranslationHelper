@@ -2064,17 +2064,17 @@ namespace TranslationHelper
 
         private void ToUPPERCASEToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUPPER().Selected();
+            _ = new ToUpperCaseAll().Selected();
         }
 
         private void FirstCharacterToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUpper().Selected();
+            _ = new ToUpperCaseFirst().Selected();
         }
 
         private void TolowercaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToLower().Selected();
+            _ = new ToLowerCaseAll().Selected();
         }
 
         internal bool InteruptTranslation;
@@ -2487,35 +2487,35 @@ namespace TranslationHelper
 
         private void FixMessagesInTheTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixJPMessagesTranslation().Selected();
+            _ = new FixJpMessagesTranslation().Selected();
         }
 
         private void LowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToLower().AllT();
+            _ = new ToLowerCaseAll().AllT();
         }
 
         private void LowercaseTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToLower().TableT();
+            _ = new ToLowerCaseAll().TableT();
         }
 
         private void UppercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUpper().AllT();
+            _ = new ToUpperCaseFirst().AllT();
         }
         private void UppercaseTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUpper().TableT();
+            _ = new ToUpperCaseFirst().TableT();
         }
 
         private void UPPERCASEallToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUPPER().AllT();
+            _ = new ToUpperCaseAll().AllT();
         }
         private void UPPERCASETableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new ToUPPER().TableT();
+            _ = new ToUpperCaseAll().TableT();
         }
 
         private void AllIfExistsFiledirWithNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2871,7 +2871,7 @@ namespace TranslationHelper
 
         private void TSMIEnQuotesToJp_Click(object sender, EventArgs e)
         {
-            _ = new ENQuotesToJP().Selected();
+            _ = new EnQuotesToJp().Selected();
         }
 
         private void TSMISetOriginalToTranslationAll_Click(object sender, EventArgs e)
@@ -2886,12 +2886,12 @@ namespace TranslationHelper
 
         private void TSMIEnQuotesAll_Click(object sender, EventArgs e)
         {
-            _ = new ENQuotesToJP().AllT();
+            _ = new EnQuotesToJp().AllT();
         }
 
         private void TSMIEnQuotesTable_Click(object sender, EventArgs e)
         {
-            _ = new ENQuotesToJP().TableT();
+            _ = new EnQuotesToJp().TableT();
         }
 
         //Form overall;
@@ -2987,12 +2987,12 @@ namespace TranslationHelper
 
         private void FixMessagesForAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixJPMessagesTranslation().AllT();
+            _ = new FixJpMessagesTranslation().AllT();
         }
 
         private void TableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixJPMessagesTranslation().TableT();
+            _ = new FixJpMessagesTranslation().TableT();
         }
 
         private void GetAndSaveStaticToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3041,7 +3041,7 @@ namespace TranslationHelper
 
         private void AddToCustomDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = Task.Run(() => new LoadRowDataToCustomDB().Selected()).ConfigureAwait(false);
+            _ = Task.Run(() => new LoadRowDataToCustomDb().Selected()).ConfigureAwait(false);
         }
 
         private void CopyNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3075,7 +3075,7 @@ namespace TranslationHelper
 
         private void RPGMakerLikeTXTToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new RPGMakerLikeTXT().AllT();
+            _ = new RpgMakerLikeTxt().AllT();
         }
 
         private void ClearTableToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3085,17 +3085,17 @@ namespace TranslationHelper
 
         private void UPPERCASETableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _ = new ToUPPER().TableT();
+            _ = new ToUpperCaseAll().TableT();
         }
 
         private void UppercaseTableToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            _ = new ToUpper().TableT();
+            _ = new ToUpperCaseFirst().TableT();
         }
 
         private void LowercaseTableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _ = new ToLower().TableT();
+            _ = new ToLowerCaseAll().TableT();
         }
 
         private void THFilesList_MouseUp(object sender, MouseEventArgs e)

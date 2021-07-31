@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
 {
-    class RPGMakerLikeTXT : ExportFormatsBase
+    class RpgMakerLikeTxt : ExportFormatsBase
     {
-        public RPGMakerLikeTXT() : base()
+        public RpgMakerLikeTxt() : base()
         {
         }
 

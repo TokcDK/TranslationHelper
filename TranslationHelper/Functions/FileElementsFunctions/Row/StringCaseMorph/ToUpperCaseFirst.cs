@@ -2,12 +2,12 @@
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 {
-    class ToUpperAll : StringCaseMorphBase
+    class ToUpperCaseFirst : StringCaseMorphBase
     {
-        public ToUpperAll() : base()
+        public ToUpperCaseFirst() : base()
         {
         }
 
-        protected override int Variant => 2;
+        protected override int Variant => 1;
     }
 }

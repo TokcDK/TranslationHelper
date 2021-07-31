@@ -21,16 +21,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             internal string GetTranslation { get; set; }
             internal bool GetIsExtracted { get; }
 
-            internal Buffer(string Original, string Translation, bool IsExtracted)
+            internal Buffer(string original, string translation, bool isExtracted)
             {
-                GetOriginal = Original;
-                GetTranslation = Translation;
-                GetIsExtracted = IsExtracted;
+                GetOriginal = original;
+                GetTranslation = translation;
+                GetIsExtracted = isExtracted;
             }
         }
 
-        Dictionary<string/*table index,row index*/, Dictionary<int/*line number*/, Dictionary<string/*text from original*/, string/*text of translation*/>>> buffer;
-        Dictionary<string/*table index,row index*/, Dictionary<int/*line number*/, Dictionary<string/*text from original*/, string/*text of translation*/>>> bufferExtracted;
+        readonly Dictionary<string/*table index,row index*/, Dictionary<int/*line number*/, Dictionary<string/*text from original*/, string/*text of translation*/>>> _buffer;
+        readonly Dictionary<string/*table index,row index*/, Dictionary<int/*line number*/, Dictionary<string/*text from original*/, string/*text of translation*/>>> _bufferExtracted;
 
         int Size { get; set; }
         static int MaxSize { get => 1000; }
@@ -42,17 +42,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         public OnlineTranslate() : base()
         {
-            if (buffer == null)
+            if (_buffer == null)
             {
-                buffer = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
+                _buffer = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
             }
-            if (bufferExtracted == null)
+            if (_bufferExtracted == null)
             {
-                bufferExtracted = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
+                _bufferExtracted = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
             }
-            if (Translator == null)
+            if (_translator == null)
             {
-                Translator = new GoogleAPIOLD();
+                _translator = new GoogleAPIOLD();
             }
         }
 
@@ -82,12 +82,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// true if all DB was loaded
         /// </summary>
-        bool AllDBLoaded4All;
+        bool _allDbLoaded4All;
         protected override void ActionsPreRowsApply()
         {
             FunctionsOnlineCache.Init();
 
-            if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && IsAll && !AllDBLoaded4All)
+            if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && IsAll && !_allDbLoaded4All)
             {
                 if (!Properties.Settings.Default.EnableTranslationCache)
                 {
@@ -101,11 +101,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 ProjectData.Main.ProgressInfo(true, "Get all DB");
 
-                var mergingAllDB = new Task(() => FunctionsDBFile.MergeAllDBtoOne());
-                mergingAllDB.ConfigureAwait(true);
-                mergingAllDB.Start();
-                mergingAllDB.Wait();
-                AllDBLoaded4All = true;
+                var mergingAllDb = new Task(() => FunctionsDBFile.MergeAllDBtoOne());
+                mergingAllDb.ConfigureAwait(true);
+                mergingAllDb.Start();
+                mergingAllDb.Wait();
+                _allDbLoaded4All = true;
 
                 ProjectData.Main.ProgressInfo(false);
 
@@ -115,7 +115,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             TranslateStrings();
             Size = 0;
-            buffer.Clear();
+            _buffer.Clear();
             ProjectData.OnlineTranslationCache.Write();
             FunctionsOnlineCache.Unload();
 
@@ -153,20 +153,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
 
                 //add lineCoordinates and row data
-                if (!buffer.ContainsKey(lineCoordinates))
+                if (!_buffer.ContainsKey(lineCoordinates))
                 {
                     //init data
-                    buffer.Add(lineCoordinates, new Dictionary<int, Dictionary<string, string>>());//add coordinates
+                    _buffer.Add(lineCoordinates, new Dictionary<int, Dictionary<string, string>>());//add coordinates
                 }
-                if (!buffer[lineCoordinates].ContainsKey(lineNum))
+                if (!_buffer[lineCoordinates].ContainsKey(lineNum))
                 {
-                    buffer[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
+                    _buffer[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
                 }
 
                 //check for line valid
                 if (!line.IsValidForTranslation())
                 {
-                    buffer[lineCoordinates][lineNum].Add(line, line);//add original as translation because line is not valid and will be added as is
+                    _buffer[lineCoordinates][lineNum].Add(line, line);//add original as translation because line is not valid and will be added as is
 
                     lineNum++;
                     continue;
@@ -176,33 +176,33 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var linecache = ProjectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
                 if (!string.IsNullOrEmpty(linecache))
                 {
-                    buffer[lineCoordinates][lineNum].Add(line, linecache);
+                    _buffer[lineCoordinates][lineNum].Add(line, linecache);
                     lineNum++;
                     continue;
                 }
 
-                var values = line.ExtractMulty(lineCoordinates, lineNum, bufferExtracted);
+                var values = line.ExtractMulty(lineCoordinates, lineNum, _bufferExtracted);
 
                 //parse all extracted values from original
                 foreach (var val in values)
                 {
                     try
                     {
-                        if (!buffer[lineCoordinates][lineNum].ContainsKey(val))
+                        if (!_buffer[lineCoordinates][lineNum].ContainsKey(val))
                         {
                             var valcache = ProjectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val);
 
                             if (!string.IsNullOrEmpty(valcache))
                             {
-                                buffer[lineCoordinates][lineNum].Add(val, valcache);
+                                _buffer[lineCoordinates][lineNum].Add(val, valcache);
                             }
                             else if (val.IsSoundsText())
                             {
-                                buffer[lineCoordinates][lineNum].Add(val, val);
+                                _buffer[lineCoordinates][lineNum].Add(val, val);
                             }
                             else
                             {
-                                buffer[lineCoordinates][lineNum].Add(val, null);
+                                _buffer[lineCoordinates][lineNum].Add(val, null);
                                 Size += val.Length;
                             }
                         }
@@ -222,7 +222,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
                     }
                     Size = 0;
-                    buffer.Clear();
+                    _buffer.Clear();
 
                     //write cache periodically
                     ProjectData.OnlineTranslationCache.Write();
@@ -232,7 +232,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             //translate if is last row or was added 300+ rows to buffer
-            if (IsLastRow || buffer.Count >= 300)
+            if (IsLastRow || _buffer.Count >= 300)
             {
                 try
                 {
@@ -242,14 +242,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                 }
                 Size = 0;
-                buffer.Clear();
+                _buffer.Clear();
 
                 //write cache periodically
                 ProjectData.OnlineTranslationCache.Write();
             }
         }
 
-        readonly GoogleAPIOLD Translator;
+        readonly GoogleAPIOLD _translator;
         /// <summary>
         /// get originals and translate them
         /// </summary>
@@ -271,7 +271,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private string[] GetOriginals()
         {
             var orig = new List<string>();
-            foreach (var coordinate in buffer)//get all coordinate keys
+            foreach (var coordinate in _buffer)//get all coordinate keys
             {
                 foreach (var lineNumber in coordinate.Value) // get all sublines
                 {
@@ -351,7 +351,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var originalLinesArePreApplied = ApplyProjectPretranslationAction(originals);
                 if (originalLinesArePreApplied.Length > 0)
                 {
-                    translated = Translator.Translate(originalLinesArePreApplied);
+                    translated = _translator.Translate(originalLinesArePreApplied);
                     if (translated == null || originals.Length != translated.Length)
                     {
                         return new string[1] { "" };
@@ -388,7 +388,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     FunctionsOnlineCache.AddToTranslationCacheIfValid(originals[i], translated[i]);
                 }
 
-            var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
+            var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(_buffer);
             foreach (var coordinate in coordinates)//get all coordinate keys
             {
                 var lineNumbers = new Dictionary<int, Dictionary<string, string>>(coordinate.Value);
@@ -399,7 +399,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
                         if (linetext.Value == null && translations.ContainsKey(linetext.Key))
                         {
-                            buffer[coordinate.Key][linenumber.Key][linetext.Key] = translations[linetext.Key];
+                            _buffer[coordinate.Key][linenumber.Key][linetext.Key] = translations[linetext.Key];
                         }
                     }
                 }
@@ -411,24 +411,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         private void SetBufferToRows()
         {
-            var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(buffer);
+            var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(_buffer);
             foreach (var coordinate in coordinates)//get all coordinate keys
             {
-                var TR = coordinate.Key.Split(',');
-                var tindex = int.Parse(TR[0]);
-                var rindex = int.Parse(TR[1]);
-                var Row = ProjectData.THFilesElementsDataset.Tables[tindex].Rows[rindex];
+                var tr = coordinate.Key.Split(',');
+                var tindex = int.Parse(tr[0]);
+                var rindex = int.Parse(tr[1]);
+                var row = ProjectData.THFilesElementsDataset.Tables[tindex].Rows[rindex];
                 //var linenumMax = (Row[0] + "").GetLinesCount();
 
-                var cellTranslationEqualOriginal = Equals(Row[1], Row[0]);
+                var cellTranslationEqualOriginal = Equals(row[1], row[0]);
                 if (Properties.Settings.Default.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal)//skip equal
                 {
                     continue;
                 }
 
-                var cellTranslationIsNotEmptyAndNotEqualOriginal = (Row[1] != null && !string.IsNullOrEmpty(Row[1] as string) && !cellTranslationEqualOriginal);
+                var cellTranslationIsNotEmptyAndNotEqualOriginal = (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !cellTranslationEqualOriginal);
 
-                if (cellTranslationIsNotEmptyAndNotEqualOriginal && !Row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))
+                if (cellTranslationIsNotEmptyAndNotEqualOriginal && !row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))
                 {
                     continue;
                 }
@@ -437,18 +437,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     var newValue = new List<string>();
                     var lineNum = 0;
-                    var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? Row[1] : Row[0]) + "";
+                    var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
                     foreach (var line in rowValue.SplitToLines())
                     {
                         if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0) || line.IsSoundsText())
                         {
                             newValue.Add(line);
                         }
-                        else if (bufferExtracted != null
-                            && bufferExtracted.Count > 0
-                            && bufferExtracted.ContainsKey(coordinate.Key)
-                            && bufferExtracted[coordinate.Key].ContainsKey(lineNum)
-                            && bufferExtracted[coordinate.Key][lineNum].Count > 0
+                        else if (_bufferExtracted != null
+                            && _bufferExtracted.Count > 0
+                            && _bufferExtracted.ContainsKey(coordinate.Key)
+                            && _bufferExtracted[coordinate.Key].ContainsKey(lineNum)
+                            && _bufferExtracted[coordinate.Key][lineNum].Count > 0
                             )
                         {
                             newValue.Add(GetMergedValue(coordinate.Key, lineNum, line));
@@ -466,13 +466,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         lineNum++;
                     }
 
-                    Row[1] = string.Join(Environment.NewLine, newValue);
+                    row[1] = string.Join(Environment.NewLine, newValue);
 
-                    if (!Row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//apply only for finished rows
+                    if (!row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//apply only for finished rows
                     {
                         //apply fixes for cell
-                        new AllHardFixes().Selected(Row, tindex, rindex);
-                        new FixCells().Selected(Row, tindex, rindex);
+                        new AllHardFixes().Selected(row, tindex, rindex);
+                        new FixCells().Selected(row, tindex, rindex);
                     }
                 }
                 catch
@@ -490,7 +490,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private string GetMergedValue(string coordinates, int lineNum, string line)
         {
-            using (var enumer = bufferExtracted[coordinates][lineNum].GetEnumerator())
+            using (var enumer = _bufferExtracted[coordinates][lineNum].GetEnumerator())
             {
                 enumer.MoveNext();
                 var extractionkeyvalue = enumer.Current;
@@ -504,17 +504,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 if (Regex.IsMatch(replacement.Trim(), @"^\$[1-9]$"))
                 {
-                    var bufenum = buffer[coordinates][lineNum].GetEnumerator();
+                    var bufenum = _buffer[coordinates][lineNum].GetEnumerator();
                     bufenum.MoveNext();
 
-                    int IndexOfTheString = line.IndexOf(bufenum.Current.Key);
-                    if (IndexOfTheString > -1)
+                    int indexOfTheString = line.IndexOf(bufenum.Current.Key);
+                    if (indexOfTheString > -1)
                     {
                         if(bufenum.Current.Value!=null)//null when o translation?
                         {
                             return line
-                            .Remove(IndexOfTheString, bufenum.Current.Key.Length)
-                            .Insert(IndexOfTheString,
+                            .Remove(indexOfTheString, bufenum.Current.Key.Length)
+                            .Insert(indexOfTheString,
                             bufenum.Current.Value
                             );
                         }
@@ -533,8 +533,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     if (replacement.Contains(substitution.Key))
                     {
                         string val = substitution.Value;
-                        if (buffer[coordinates][lineNum].ContainsKey(substitution.Value))
-                            val = buffer[coordinates][lineNum][substitution.Value];
+                        if (_buffer[coordinates][lineNum].ContainsKey(substitution.Value))
+                            val = _buffer[coordinates][lineNum][substitution.Value];
 
                         replacement = replacement.Replace(substitution.Key, val);
                     }

@@ -33,11 +33,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 string rule;
                 string result;
-                foreach (var PatternReplacementPair in ProjectData.CellFixesRegexRules)
+                foreach (var patternReplacementPair in ProjectData.CellFixesRegexRules)
                 {
                     //читать правило и результат
-                    rule = PatternReplacementPair.Key;
-                    result = PatternReplacementPair.Value;
+                    rule = patternReplacementPair.Key;
+                    result = patternReplacementPair.Value;
 
                     //задать правило
                     var regexrule = new Regex(rule);

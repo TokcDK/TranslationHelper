@@ -4,9 +4,9 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
-    class FixENJPQuoteOnStringStart2ndLine : HardFixesBase
+    class FixEnjpQuoteOnStringStart2NdLine : HardFixesBase
     {
-        public FixENJPQuoteOnStringStart2ndLine() : base()
+        public FixEnjpQuoteOnStringStart2NdLine() : base()
         {
         }
 
@@ -24,14 +24,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         {
             try
             {
-                var OriginalValue = SelectedRow[ColumnIndexOriginal] as string;
-                if (OriginalValue.IsMultiline())
+                var originalValue = SelectedRow[ColumnIndexOriginal] as string;
+                if (originalValue.IsMultiline())
                 {
                     string origSecondLine = string.Empty;
                     int origSecondlineIndex = 0;
                     try
                     {
-                        foreach (var line in OriginalValue.SplitToLines())
+                        foreach (var line in originalValue.SplitToLines())
                         {
                             if (origSecondlineIndex == 0)
                             {
@@ -57,17 +57,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                     {
                         bool endsWith = false;
 
-                        var TranslationValue = SelectedRow[ColumnIndexTranslation] + "";
-                        if (TranslationValue.IsMultiline())
+                        var translationValue = SelectedRow[ColumnIndexTranslation] + "";
+                        if (translationValue.IsMultiline())
                         {
                             string quoteString;
-                            bool StartsWithJpQuote1 = false;
-                            bool StartsWithJpQuote2 = false;
+                            bool startsWithJpQuote1 = false;
+                            bool startsWithJpQuote2 = false;
                             string secondline = string.Empty;
                             int secondlineIndex = 0;
                             try
                             {
-                                foreach (var line in TranslationValue.SplitToLines())
+                                foreach (var line in translationValue.SplitToLines())
                                 {
                                     if (secondlineIndex == 0)
                                     {
@@ -87,53 +87,53 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                                 return false;
                             }
 
-                            string StartQuoteStringEN = string.Empty;
-                            string EndQuoteStringEN = string.Empty;
+                            string startQuoteStringEn = string.Empty;
+                            string endQuoteStringEn = string.Empty;
 
                             if (secondline.StartsWith("''"))
                             {
-                                StartQuoteStringEN = "''";
+                                startQuoteStringEn = "''";
                             }
                             else if (secondline.StartsWith("'"))
                             {
-                                StartQuoteStringEN = "'";
+                                startQuoteStringEn = "'";
                             }
                             else if (secondline.StartsWith("“"))
                             {
-                                StartQuoteStringEN = "“";
+                                startQuoteStringEn = "“";
                             }
                             else if (secondline.StartsWith("\""))
                             {
-                                StartQuoteStringEN = "\"";
+                                startQuoteStringEn = "\"";
                             }
                             else if (secondline.StartsWith("「"))
                             {
-                                StartsWithJpQuote1 = true;
+                                startsWithJpQuote1 = true;
                             }
                             else if (secondline.StartsWith("『"))
                             {
-                                StartsWithJpQuote2 = true;
+                                startsWithJpQuote2 = true;
                             }
 
-                            if (TranslationValue.EndsWith("''"))
+                            if (translationValue.EndsWith("''"))
                             {
-                                EndQuoteStringEN = "''";
+                                endQuoteStringEn = "''";
                             }
-                            else if (TranslationValue.EndsWith("'"))
+                            else if (translationValue.EndsWith("'"))
                             {
-                                EndQuoteStringEN = "'";
+                                endQuoteStringEn = "'";
                             }
-                            else if (TranslationValue.EndsWith("“"))
+                            else if (translationValue.EndsWith("“"))
                             {
-                                EndQuoteStringEN = "“";
+                                endQuoteStringEn = "“";
                             }
-                            else if (TranslationValue.EndsWith("\""))
+                            else if (translationValue.EndsWith("\""))
                             {
-                                EndQuoteStringEN = "\"";
+                                endQuoteStringEn = "\"";
                             }
 
 
-                            if (StartQuoteStringEN.Length > 0 || EndQuoteStringEN.Length > 0)
+                            if (startQuoteStringEn.Length > 0 || endQuoteStringEn.Length > 0)
                             {
                                 if (quote1)
                                 {
@@ -148,15 +148,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                                     return false;
                                 }
 
-                                int EndQuoteStringENLength = EndQuoteStringEN.Length;
-                                endsWith = EndQuoteStringENLength > 0;
+                                int endQuoteStringEnLength = endQuoteStringEn.Length;
+                                endsWith = endQuoteStringEnLength > 0;
 
                                 string resultString = string.Empty;
                                 int ind = 0;
 
-                                if (StartQuoteStringEN.Length > 0 || (!StartsWithJpQuote1 && !StartsWithJpQuote2))
+                                if (startQuoteStringEn.Length > 0 || (!startsWithJpQuote1 && !startsWithJpQuote2))
                                 {
-                                    foreach (string line in TranslationValue.SplitToLines())
+                                    foreach (string line in translationValue.SplitToLines())
                                     {
                                         //new line for multiline
                                         if (ind > 0)
@@ -171,12 +171,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                                         else
                                         {
                                             int lineLength = line.Length;
-                                            int StartQuoteStringENLength = StartQuoteStringEN.Length;
-                                            if (lineLength > 1 && StartQuoteStringENLength > 0 && line.StartsWith(StartQuoteStringEN))
+                                            int startQuoteStringEnLength = startQuoteStringEn.Length;
+                                            if (lineLength > 1 && startQuoteStringEnLength > 0 && line.StartsWith(startQuoteStringEn))
                                             {
-                                                resultString += quoteString + line.Remove(0, StartQuoteStringENLength);
+                                                resultString += quoteString + line.Remove(0, startQuoteStringEnLength);
                                             }
-                                            else if (lineLength == 0 || (lineLength == 1 && StartQuoteStringENLength > 0 && line == StartQuoteStringEN))
+                                            else if (lineLength == 0 || (lineLength == 1 && startQuoteStringEnLength > 0 && line == startQuoteStringEn))
                                             {
                                                 resultString += quoteString;
                                             }
@@ -194,14 +194,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                                 }
                                 else
                                 {
-                                    resultString = TranslationValue;
+                                    resultString = translationValue;
                                 }
 
-                                string EndQuoteString = (quote1 ? "」" : "』");
+                                string endQuoteString = (quote1 ? "」" : "』");
                                 resultString = resultString.TrimEnd();
-                                if (OriginalValue.EndsWith(EndQuoteString) && !resultString.EndsWith(EndQuoteString))
+                                if (originalValue.EndsWith(endQuoteString) && !resultString.EndsWith(endQuoteString))
                                 {
-                                    resultString = (endsWith ? resultString.Remove(resultString.Length - EndQuoteStringENLength, EndQuoteStringENLength) : resultString) + EndQuoteString;
+                                    resultString = (endsWith ? resultString.Remove(resultString.Length - endQuoteStringEnLength, endQuoteStringEnLength) : resultString) + endQuoteString;
                                 }
 
                                 SelectedRow[ColumnIndexTranslation] = resultString;

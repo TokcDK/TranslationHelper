@@ -38,13 +38,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             //рабочие переменные
             int max = mc3.Count;//максимум итераций цикла
             int mc2Correction = mc3.Count > mc2.Count ? mc3.Count - mc2.Count : 0;//когда mc2 нашло меньше, чем mc3
-            int PositionCorrectionMC3 = 0;//переменная для коррекции номера позиции в стоке, т.к. \\N выдирается и позиция меняется на 3
+            int positionCorrectionMc3 = 0;//переменная для коррекции номера позиции в стоке, т.к. \\N выдирается и позиция меняется на 3
             int minimalIndex = 9999999; //минимальный индекс, для правильного контроля коррекции позиции
             string newValue = translation;//значение, которое будет редактироваться и возвращено
             for (int i = max - 1; i >= 0; i--)//цикл задается в обратную сторону, т.к. так проще контроллировать смещение позиции
             {
-                int mc2i = i - mc2Correction;//задание индекса в коллекции для mc2, т.к. их может быть меньше
-                if (mc2i == -1)//если mc2 закончится, выйти из цикла
+                int mc2I = i - mc2Correction;//задание индекса в коллекции для mc2, т.к. их может быть меньше
+                if (mc2I == -1)//если mc2 закончится, выйти из цикла
                 {
                     break;
                 }
@@ -52,15 +52,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                 //если индекс позиции больше последнего минимального, подкорректировать на 3, когда совпадение раньше, коррекция не требуется
                 if (mc3[i].Index > minimalIndex)
                 {
-                    PositionCorrectionMC3 += 3;
+                    positionCorrectionMc3 += 3;
                 }
                 else
                 {
-                    PositionCorrectionMC3 = 0;
+                    positionCorrectionMc3 = 0;
                 }
 
-                int mc3PosIndex = mc3[i].Index - PositionCorrectionMC3;//новый индекс с учетом коррекции
-                int mc2PosIndex = mc2[mc2i].Index;
+                int mc3PosIndex = mc3[i].Index - positionCorrectionMc3;//новый индекс с учетом коррекции
+                int mc2PosIndex = mc2[mc2I].Index;
                 if (mc2PosIndex < 0)//если позиция для mc2 меньше нуля, установить её в ноль и проверить, если там нужное значение, иначе выйти из цикла
                 {
                     mc2PosIndex = 0;

@@ -13,23 +13,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        bool NeedToAddFilePaths = true;
-        Dictionary<string, PathsForTheName> GameFilesList;
+        bool _needToAddFilePaths = true;
+        Dictionary<string, PathsForTheName> _gameFilesList;
         protected override void ActionsPreRowsApply()
         {
-            if (NeedToAddFilePaths)
+            if (_needToAddFilePaths)
             {
-                GameFilesList = new Dictionary<string, PathsForTheName>();
+                _gameFilesList = new Dictionary<string, PathsForTheName>();
                 foreach (var file in Directory.GetFiles(ProjectData.SelectedGameDir, "*", SearchOption.AllDirectories))
                 {
                     var name = Path.GetFileNameWithoutExtension(file);
-                    if (!GameFilesList.ContainsKey(name))
+                    if (!_gameFilesList.ContainsKey(name))
                     {
-                        GameFilesList.Add(name, new PathsForTheName());//add file name with path
+                        _gameFilesList.Add(name, new PathsForTheName());//add file name with path
                     }
-                    GameFilesList[name].PathsList.Add(file);
+                    _gameFilesList[name].PathsList.Add(file);
                 }
-                NeedToAddFilePaths = false;
+                _needToAddFilePaths = false;
             }
         }
 
@@ -97,12 +97,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 transName = Path.GetFileNameWithoutExtension(transName);
 
-                if (GameFilesList == null || !GameFilesList.ContainsKey(nameOrig)) // skip if not in game folder's files list
+                if (_gameFilesList == null || !_gameFilesList.ContainsKey(nameOrig)) // skip if not in game folder's files list
                 {
                     return false;
                 }
 
-                foreach (var path in GameFilesList[nameOrig].PathsList) // iterate all paths
+                foreach (var path in _gameFilesList[nameOrig].PathsList) // iterate all paths
                 {
                     if (string.IsNullOrWhiteSpace(path)) // skip empty?
                     {
