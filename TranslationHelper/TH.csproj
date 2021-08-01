@@ -231,6 +231,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToLowerCaseAll.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUpperCaseAll.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUpperCaseFirst.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\TrimEndSpace.cs" />
     <Compile Include="Functions\FunctionsInterfaces.cs" />
     <Compile Include="Functions\FunctionsLoadTranslationDB.cs" />
     <Compile Include="Functions\FunctionsLogs.cs" />

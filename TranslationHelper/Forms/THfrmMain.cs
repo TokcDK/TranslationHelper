@@ -3113,6 +3113,21 @@ namespace TranslationHelper
             }
         }
 
+        private async void TableToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            await new TrimEndSpace().TableT();
+        }
+
+        private async void AllToolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            await new TrimEndSpace().AllT();
+        }
+
+        private void TrimEndToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            new TrimEndSpace().Selected();
+        }
+
         //Материалы
         //по оптимизации кода
         //https://cc.davelozinski.com/c-sharp/fastest-way-to-compare-strings
