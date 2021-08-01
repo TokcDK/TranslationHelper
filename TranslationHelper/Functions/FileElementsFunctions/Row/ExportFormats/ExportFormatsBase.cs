@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
 {
@@ -60,7 +58,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
         {
             Init();
 
-            _allRows.Add(OriginalMod(SelectedRow[0]+"") + MarkerTranslation + TranslationMod(SelectedRow[1]+""));
+            _allRows.Add(OriginalMod(SelectedRow[0] + "") + MarkerTranslation + TranslationMod(SelectedRow[1] + ""));
 
             if (IsLastRow)
             {

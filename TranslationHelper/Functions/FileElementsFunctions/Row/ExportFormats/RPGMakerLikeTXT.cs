@@ -1,6 +1,4 @@
-﻿using TranslationHelper.Data;
-
-namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
+﻿namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
 {
     class RpgMakerLikeTxt : ExportFormatsBase
     {
