@@ -226,30 +226,33 @@ namespace TranslationHelper
             return ResultOfTranslation;
         }
 
-        public override string[] Translate(string[] OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
+        public override string[] Translate(string[] originalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
-            if (ErrorsWebCntOverall > 9 || OriginalText == null)
+            if (ErrorsWebCntOverall > 9 || originalText == null)
             {
                 return null;
             }
 
             Thread.Sleep((int)(new Random().NextDouble() * 2000));
 
-            var num = OriginalText.Length;
-            var array = new string[num];
+            var originalTextArrayLength = originalText.Length;
+            var array = new string[originalTextArrayLength];
             var stringBuilder = new StringBuilder();
-            for (int i = 0; i < num; i++)
+            for (int i = 0; i < originalTextArrayLength; i++)
             {
-                if (OriginalText[i].Length == 0)
+                if (originalText[i].Length == 0)
                 {
                     array[i] = string.Empty;
                 }
                 else
                 {
-                    if (sessionCache.ContainsKey(OriginalText[i]))
+                    if (sessionCache.ContainsKey(originalText[i]))
                     {
-                        array[i] = sessionCache[OriginalText[i]];
+                        array[i] = sessionCache[originalText[i]];
                     }
+
+                    bool oneOrLast = i == originalTextArrayLength - 1;
+
                     //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
                     //https://stackoverflow.com/questions/47709517/google-translate-api-how-to-add-newline-without-changing-the-phrase-meaning
                     _ = stringBuilder.Append(string.Concat(new string[]
@@ -259,14 +262,16 @@ namespace TranslationHelper
                                 //"#># ",
                                 //"<br>",
                                 //Environment.NewLine,
-                                Regex.Replace(Regex.Replace(OriginalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None), @"<br>", "QBRQ", RegexOptions.None),
+                                Regex.Replace(Regex.Replace(originalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None), @"<br>", "QBRQ", RegexOptions.None),
                                 //" #<#",
                                 //Conversions.ToString(i),
                                 //"##\r\n"
-                                Environment.NewLine,
-                                //<br> заменил на </br>, последний также воспринимается как новая строка, влияя на перевод и не клонировался в середину там, где была проблема с <br> <== upd: <br> Гугл один раз раздвоил, сунув копию в середину, из-за чего была ошибка при раборе строк перевода <== <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
-                                "</br>",
+                                oneOrLast ? "" : (
                                 Environment.NewLine
+                                //<br> заменил на </br>, последний также воспринимается как новая строка, влияя на перевод и не клонировался в середину там, где была проблема с <br> <== upd: <br> Гугл один раз раздвоил, сунув копию в середину, из-за чего была ошибка при раборе строк перевода <== <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
+                                + "</br>"
+                                + Environment.NewLine
+                                )
                     }));
                 }
             }
@@ -463,7 +468,7 @@ namespace TranslationHelper
             array = array.Select(x => x.Replace("NBRN", "</br>")).ToArray();
 
             //take берет все элементы кроме последнего пустого элемента массива, чтобы в основном коде не уменьшать его счет на один;
-            return array.Take(array.Length - 1).ToArray();
+            return array;//.Take(array.Length - 1).ToArray(); // commented skip last element because there will not be empty line anymore
         }
 
         private const string DNTT = "DNTT";
