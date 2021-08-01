@@ -56,35 +56,34 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return false;
             }
 
-            if (trans.Contains("Sewer"))
-            {
-
-            }
-
             try
             {
                 bool hasExtractedFromOrig = false;
                 var extractedFromOrig = orig.ExtractMulty();
-                string nameOrig = orig;
-                if ( extractedFromOrig.Length == 1 && !string.IsNullOrWhiteSpace(extractedFromOrig[0]))
+                string origName = orig;
+                if (extractedFromOrig.Length == 1 // only one extracted
+                    && !string.IsNullOrWhiteSpace(extractedFromOrig[0]) // not empty extracted value
+                    && extractedFromOrig[0] != origName.Trim()) // not just trimmed extracted value
                 {
-                    nameOrig = extractedFromOrig[0];
+                    origName = extractedFromOrig[0];
                     hasExtractedFromOrig = true;
                 }
 
-                if (FunctionsFileFolder.HasInvalidChars(nameOrig))
+                if (FunctionsFileFolder.HasInvalidChars(origName))
                 {
                     return false;
                 }
 
-                nameOrig = Path.GetFileNameWithoutExtension(nameOrig);
+                origName = Path.GetFileNameWithoutExtension(origName);
 
                 string transName = trans;
                 if (hasExtractedFromOrig)
                 {
                     var extractedFromTrans = trans.ExtractMulty();
 
-                    if (extractedFromTrans.Length == 1 && !string.IsNullOrWhiteSpace(extractedFromTrans[0]))
+                    if (extractedFromTrans.Length == 1 // only one extracted
+                        && !string.IsNullOrWhiteSpace(extractedFromTrans[0]) // not empty extracted value
+                        && extractedFromTrans[0] != transName.Trim()) // not just trimmed extracted value
                     {
                         transName = extractedFromTrans[0];
                     }
@@ -97,12 +96,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 transName = Path.GetFileNameWithoutExtension(transName);
 
-                if (_gameFilesList == null || !_gameFilesList.ContainsKey(nameOrig)) // skip if not in game folder's files list
+                if (_gameFilesList == null || !_gameFilesList.ContainsKey(origName)) // skip if not in game folder's files list
                 {
                     return false;
                 }
 
-                foreach (var path in _gameFilesList[nameOrig].PathsList) // iterate all paths
+                foreach (var path in _gameFilesList[origName].PathsList) // iterate all paths
                 {
                     if (string.IsNullOrWhiteSpace(path)) // skip empty?
                     {
@@ -115,7 +114,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         File.Copy(path, targetPath);
 
                         //info about translated copy
-                        File.WriteAllText(targetPath + ".tr.txt", "original name:" + nameOrig + "\r\noriginal file name is exists in table and in game dir\r\ncreated copy with translated name to prevent possible missing file errors");
+                        File.WriteAllText(targetPath + ".tr.txt", "original name:" + origName + "\r\noriginal file name is exists in table and in game dir\r\ncreated copy with translated name to prevent possible missing file errors");
                     }
                 }
                 return true;
