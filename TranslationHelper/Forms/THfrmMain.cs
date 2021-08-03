@@ -1207,7 +1207,7 @@ namespace TranslationHelper
         {
             if (sPath.Length == 0)
             {
-                sPath = Settings.THConfigINI.ReadINI("Paths", "LastAutoSavePath");
+                sPath = Settings.THConfigINI.ReadKey("Paths", "LastAutoSavePath");
             }
 
             if (!File.Exists(sPath))
@@ -1895,7 +1895,7 @@ namespace TranslationHelper
                     await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(true);
                 }
 
-                Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath);
+                Settings.THConfigINI.SetKey("Paths", "LastAutoSavePath", lastautosavepath);
             }
             catch
             {

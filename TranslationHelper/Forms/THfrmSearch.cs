@@ -2,6 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -227,14 +228,14 @@ namespace TranslationHelper
         {
             try
             {
-                SearchQueries = Config.ReadSectionValuesToArray("Search Queries");
+                SearchQueries = Config.ReadSectionValues("Search Queries").ToArray();
                 if (SearchQueries != null && SearchQueries.Length > 0)
                 {
                     RemoveQuotesFromLoadedSearchValues(ref SearchQueries);
                     SearchFormFindWhatComboBox.Items.Clear();
                     SearchFormFindWhatComboBox.Items.AddRange(SearchQueries);
                 }
-                SearchReplacers = Config.ReadSectionValuesToArray("Search Replacers");
+                SearchReplacers = Config.ReadSectionValues("Search Replacers").ToArray();
                 if (SearchReplacers != null && SearchReplacers.Length > 0)
                 {
                     RemoveQuotesFromLoadedSearchValues(ref SearchReplacers);

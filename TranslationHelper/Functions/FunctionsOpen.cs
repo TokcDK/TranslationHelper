@@ -39,7 +39,7 @@ namespace TranslationHelper.Functions
                 //https://stackoverflow.com/questions/2926869/do-you-need-to-dispose-of-objects-and-set-them-to-null
                 using (var THFOpen = new OpenFileDialog())
                 {
-                    THFOpen.InitialDirectory = ProjectData.Main.Settings.THConfigINI.ReadINI("Paths", "LastPath");
+                    THFOpen.InitialDirectory = ProjectData.Main.Settings.THConfigINI.ReadKey("Paths", "LastPath");
                     THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json;*.scn;*.ks|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
 
                     if (THFOpen.ShowDialog() == DialogResult.OK)
@@ -445,13 +445,13 @@ namespace TranslationHelper.Functions
 
             if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch") || RPGMFunctions.THSelectedSourceType.Contains("KiriKiri game"))
             {
-                ProjectData.Main.Settings.THConfigINI.WriteINI("Paths", "LastPath", ProjectData.SelectedGameDir);
+                ProjectData.Main.Settings.THConfigINI.SetKey("Paths", "LastPath", ProjectData.SelectedGameDir);
             }
             else
             {
                 try
                 {
-                    ProjectData.Main.Settings.THConfigINI.WriteINI("Paths", "LastPath", ProjectData.SelectedDir);
+                    ProjectData.Main.Settings.THConfigINI.SetKey("Paths", "LastPath", ProjectData.SelectedDir);
                 }
                 catch (Exception ex)
                 {

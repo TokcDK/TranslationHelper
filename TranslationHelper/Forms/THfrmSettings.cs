@@ -121,7 +121,7 @@ namespace TranslationHelper
             {
                 if (THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
                 {
-                    ProjectData.BufferValueString = THConfigINI.ReadINI(SettingsList[setting].Section, SettingsList[setting].Key);
+                    ProjectData.BufferValueString = THConfigINI.ReadKey(SettingsList[setting].Section, SettingsList[setting].Key);
                 }
                 else
                 {
@@ -369,12 +369,12 @@ namespace TranslationHelper
             {
                 bool keyExists;
                 if (((keyExists = THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
-                    && THConfigINI.ReadINI(SettingsList[setting].Section, SettingsList[setting].Key) != SettingsList[setting].Get()) || !keyExists)
+                    && THConfigINI.ReadKey(SettingsList[setting].Section, SettingsList[setting].Key) != SettingsList[setting].Get()) || !keyExists)
                 {
-                    THConfigINI.WriteINI(SettingsList[setting].Section, SettingsList[setting].Key, SettingsList[setting].Get(), false);
+                    THConfigINI.SetKey(SettingsList[setting].Section, SettingsList[setting].Key, SettingsList[setting].Get(), false);
                 }
             }
-            THConfigINI.SaveINI();
+            THConfigINI.Write();
         }
 
         private void SettingsAutosaveTimeoutValueTextBox_TextChanged(object sender, EventArgs e)
