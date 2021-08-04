@@ -121,7 +121,7 @@ namespace TranslationHelper
             {
                 if (THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
                 {
-                    ProjectData.BufferValueString = THConfigINI.ReadKey(SettingsList[setting].Section, SettingsList[setting].Key);
+                    ProjectData.BufferValueString = THConfigINI.GetKey(SettingsList[setting].Section, SettingsList[setting].Key);
                 }
                 else
                 {
@@ -369,7 +369,7 @@ namespace TranslationHelper
             {
                 bool keyExists;
                 if (((keyExists = THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
-                    && THConfigINI.ReadKey(SettingsList[setting].Section, SettingsList[setting].Key) != SettingsList[setting].Get()) || !keyExists)
+                    && THConfigINI.GetKey(SettingsList[setting].Section, SettingsList[setting].Key) != SettingsList[setting].Get()) || !keyExists)
                 {
                     THConfigINI.SetKey(SettingsList[setting].Section, SettingsList[setting].Key, SettingsList[setting].Get(), false);
                 }

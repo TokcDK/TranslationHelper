@@ -228,14 +228,14 @@ namespace TranslationHelper
         {
             try
             {
-                SearchQueries = Config.ReadSectionValues("Search Queries").ToArray();
+                SearchQueries = Config.GetSectionValues("Search Queries").ToArray();
                 if (SearchQueries != null && SearchQueries.Length > 0)
                 {
                     RemoveQuotesFromLoadedSearchValues(ref SearchQueries);
                     SearchFormFindWhatComboBox.Items.Clear();
                     SearchFormFindWhatComboBox.Items.AddRange(SearchQueries);
                 }
-                SearchReplacers = Config.ReadSectionValues("Search Replacers").ToArray();
+                SearchReplacers = Config.GetSectionValues("Search Replacers").ToArray();
                 if (SearchReplacers != null && SearchReplacers.Length > 0)
                 {
                     RemoveQuotesFromLoadedSearchValues(ref SearchReplacers);
@@ -276,14 +276,14 @@ namespace TranslationHelper
                     SearchQueries = new string[SearchFormFindWhatComboBox.Items.Count];
                     SearchFormFindWhatComboBox.Items.CopyTo(SearchQueries, 0);
                     AddQuotesToWritingSearchValues(ref SearchQueries);
-                    Config.WriteArrayToSectionValues("Search Queries", SearchQueries);
+                    Config.SetArrayToSectionValues("Search Queries", SearchQueries);
                 }
                 if (SearchFormReplaceWithComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(SearchReplacers, SearchFormReplaceWithComboBox.Items))
                 {
                     SearchReplacers = new string[SearchFormReplaceWithComboBox.Items.Count];
                     SearchFormReplaceWithComboBox.Items.CopyTo(SearchReplacers, 0);
                     AddQuotesToWritingSearchValues(ref SearchReplacers);
-                    Config.WriteArrayToSectionValues("Search Replacers", SearchReplacers);
+                    Config.SetArrayToSectionValues("Search Replacers", SearchReplacers);
                 }
             }
             catch

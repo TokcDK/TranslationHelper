@@ -1207,7 +1207,7 @@ namespace TranslationHelper
         {
             if (sPath.Length == 0)
             {
-                sPath = Settings.THConfigINI.ReadKey("Paths", "LastAutoSavePath");
+                sPath = Settings.THConfigINI.GetKey("Paths", "LastAutoSavePath");
             }
 
             if (!File.Exists(sPath))
