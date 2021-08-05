@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Extensions
@@ -35,14 +36,22 @@ namespace TranslationHelper.Extensions
                 bufferExtracted[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
             }
 
+            var log = new FunctionsLogs();
             var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
             try
             {
                 foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
                 {
-                    if (!Regex.IsMatch(line, PatternReplacementPair.Key))
+                    try
                     {
-                        continue;
+                        if (!Regex.IsMatch(line, PatternReplacementPair.Key))
+                        {
+                            continue;
+                        }
+                    }
+                    catch (System.ArgumentException ex)
+                    {
+                        log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
                     }
 
                     foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
@@ -78,7 +87,7 @@ namespace TranslationHelper.Extensions
                     break;
                 }
             }
-            catch(System.InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
+            catch (System.InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
             {
                 // retry extraction
                 return line.ExtractMulty(lineCoordinates, lineNum, bufferExtracted);
@@ -438,11 +447,11 @@ namespace TranslationHelper.Extensions
                 FunctionsRomajiKana.GetCharsInRange(s, 0x4E00, 0x9FBF).Any()//kanji
                 || FunctionsRomajiKana.GetCharsInRange(s, 0x3040, 0x309F).Any()//hiragana
                 || FunctionsRomajiKana.GetCharsInRange(s, 0x30A0, 0x30FF).Any()//katakana
-                || s== "『"
-                || s== "「"
-                || s== "」"
-                || s== "』"
-                || s== "　"
+                || s == "『"
+                || s == "「"
+                || s == "」"
+                || s == "』"
+                || s == "　"
                 )
             {
                 return true;

@@ -38,6 +38,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     //здесь функция извлечения
                     //cvalue = ExtractLines(cvalue);
 
+                    var log = new FunctionsLogs();
                     string rule;
                     string result;
                     foreach (var patternReplacementPair in ProjectData.CellFixesRegexRules)
@@ -46,11 +47,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         rule = patternReplacementPair.Key;
                         result = patternReplacementPair.Value;
 
-                        //задать правило
-                        var regexrule = new Regex(rule);
 
-                        //найти совпадение с заданным правилом в выбранной ячейке
-                        var mc = regexrule.Matches(cvalue);
+                        Regex regexrule;
+                        MatchCollection mc;
+                        try
+                        {
+                            //задать правило
+                            regexrule = new Regex(rule);
+
+                            //найти совпадение с заданным правилом в выбранной ячейке
+                            mc = regexrule.Matches(cvalue);
+                        }
+                        catch (System.ArgumentException ex)
+                        {
+                            log.LogToFile("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
+                            continue;
+                        }
+
                         //перебрать все айденные совпадения
                         foreach (Match m in mc)
                         {
