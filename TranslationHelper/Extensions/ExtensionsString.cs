@@ -36,44 +36,52 @@ namespace TranslationHelper.Extensions
             }
 
             var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
-            foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
+            try
             {
-                if (!Regex.IsMatch(line, PatternReplacementPair.Key))
+                foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
                 {
-                    continue;
-                }
-
-                foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
-                {
-                    try
+                    if (!Regex.IsMatch(line, PatternReplacementPair.Key))
                     {
+                        continue;
+                    }
 
-                        if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(PatternReplacementPair.Key))//add pattern-replacement data
+                    foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
+                    {
+                        try
                         {
-                            bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
-                        }
 
-                        if (PatternReplacementPair.Value.Contains("$" + g.Name))//if replacement contains the group name ($1,$2,$3...$99)
-                        {
-
-                            if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey("$" + g.Name))
+                            if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(PatternReplacementPair.Key))//add pattern-replacement data
                             {
-                                bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);//add group name with valueif it is not added and is in replacement
+                                bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
+                            }
 
-                                if (!GroupValues.Contains(g.Value))
+                            if (PatternReplacementPair.Value.Contains("$" + g.Name))//if replacement contains the group name ($1,$2,$3...$99)
+                            {
+
+                                if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey("$" + g.Name))
                                 {
-                                    GroupValues.Add(g.Value);//add value for translation if valid
+                                    bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);//add group name with valueif it is not added and is in replacement
+
+                                    if (!GroupValues.Contains(g.Value))
+                                    {
+                                        GroupValues.Add(g.Value);//add value for translation if valid
+                                    }
                                 }
                             }
                         }
-                    }
-                    catch
-                    {
+                        catch
+                        {
 
+                        }
                     }
+
+                    break;
                 }
-
-                break;
+            }
+            catch(System.InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
+            {
+                // retry extraction
+                return line.ExtractMulty(lineCoordinates, lineNum, bufferExtracted);
             }
 
             if (GroupValues.Count > 0)

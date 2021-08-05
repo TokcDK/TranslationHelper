@@ -2650,11 +2650,8 @@ namespace TranslationHelper
 
         internal static void ReloadTranslationRegexRules()
         {
-            //Reload TranslationRegexRules
-            if (ProjectData.TranslationRegexRules.Count > 0)
-            {
-                ProjectData.TranslationRegexRules.Clear();
-            }
+            // make temp dict
+            var ProjectDataTranslationRegexRules = new Dictionary<string, string>();
 
             //если файл с правилами существует
             if (File.Exists(THSettingsData.TranslationRegexRulesFilePath()))
@@ -2691,10 +2688,7 @@ namespace TranslationHelper
                                 ReadRule = !ReadRule;
                             }
 
-                            if (!ProjectData.TranslationRegexRules.ContainsKey(regexPattern))
-                            {
-                                ProjectData.TranslationRegexRules.Add(regexPattern, regexReplacement);
-                            }
+                            ProjectDataTranslationRegexRules.AddTry(regexPattern, regexReplacement);
                         }
                         catch
                         {
@@ -2703,15 +2697,14 @@ namespace TranslationHelper
                     }
                 }
             }
+
+            // re:Set rules
+            ProjectData.TranslationRegexRules = ProjectDataTranslationRegexRules;
         }
 
         internal static void ReloadCellFixesRegexRules()
         {
-            //Reload TranslationRegexRules
-            if (ProjectData.CellFixesRegexRules.Count > 0)
-            {
-                ProjectData.CellFixesRegexRules.Clear();
-            }
+            var ProjectDataCellFixesRegexRules = new Dictionary<string, string>();
 
             //если файл с правилами существует
             if (File.Exists(THSettingsData.CellFixesRegexRulesFilePath()))
@@ -2748,7 +2741,7 @@ namespace TranslationHelper
                                 ReadRule = !ReadRule;
                             }
 
-                            ProjectData.CellFixesRegexRules.AddTry(regexPattern, regexReplacement);
+                            ProjectDataCellFixesRegexRules.AddTry(regexPattern, regexReplacement);
                         }
                         catch
                         {
@@ -2757,6 +2750,9 @@ namespace TranslationHelper
                     }
                 }
             }
+
+            // re:Set rules
+            ProjectData.CellFixesRegexRules = ProjectDataCellFixesRegexRules;
         }
 
         private void THTargetRichTextBox_TextChanged(object sender, EventArgs e)
