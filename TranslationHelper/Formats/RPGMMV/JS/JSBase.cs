@@ -50,7 +50,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 && (!IsPluginsJS || token.Path != "Modelname")
                 //&& (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game
                 && !string.IsNullOrWhiteSpace(token.ToString())
-                && !(THSettingsData.SourceLanguageIsJapanese() && token.ToString().HaveMostOfRomajiOtherChars());
+                && !(THSettings.SourceLanguageIsJapanese() && token.ToString().HaveMostOfRomajiOtherChars());
         }
 
         protected bool PluginsJSnameFound;

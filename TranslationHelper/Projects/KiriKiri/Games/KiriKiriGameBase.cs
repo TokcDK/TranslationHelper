@@ -131,7 +131,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             {
                 //ProjectData.SelectedGameDir
 
-                KiriKiriWorkOrigFolder = Path.Combine(THSettingsData.WorkDirPath(), ProjectData.CurrentProject.ProjectFolderName(), Path.GetFileName(ProjectData.SelectedGameDir), "Orig");
+                KiriKiriWorkOrigFolder = Path.Combine(THSettings.WorkDirPath(), ProjectData.CurrentProject.ProjectFolderName(), Path.GetFileName(ProjectData.SelectedGameDir), "Orig");
 
                 //string DirName = Path.GetFileName(ProjectData.SelectedGameDir);;
                 ProjectData.ProjectWorkDir = Path.GetDirectoryName(KiriKiriWorkOrigFolder);
@@ -271,7 +271,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             targetSubFolder.Create();
         }
 
-        readonly string kirikiriunpacker = THSettingsData.KiriKiriToolExePath();
+        readonly string kirikiriunpacker = THSettings.KiriKiriToolExePath();
 
         protected bool PackTranslatedFilesInPatch()
         {
@@ -303,7 +303,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                 string KiriKiriEXEargs = "-c -i \"" + PatchDir.FullName + "\" -o \"" + patch + "\"";
 
-                var LE = THSettingsData.LocaleEmulatorEXE();
+                var LE = THSettings.LocaleEmulatorEXE();
                 var args = Path.GetFileName(kirikiriunpacker) + " " + "-c -i \"" + PatchDir.Name + "\" -o \"" + PatchName + ".xp3" + "\"";
 
 
@@ -319,13 +319,13 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                 if (!arc_conv && !File.Exists(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(kirikiriunpacker))))
                 {
-                    File.Copy(THSettingsData.KiriKiriToolExePath(), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(kirikiriunpacker)));
-                    File.Copy(THSettingsData.KiriKiriToolDllPath(), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettingsData.KiriKiriToolDllPath())));
+                    File.Copy(THSettings.KiriKiriToolExePath(), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(kirikiriunpacker)));
+                    File.Copy(THSettings.KiriKiriToolDllPath(), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.KiriKiriToolDllPath())));
                 }
-                else if (arc_conv && !File.Exists(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettingsData.ArcConvExePath()))))
+                else if (arc_conv && !File.Exists(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath()))))
                 {
-                    File.Copy(THSettingsData.ArcConvExePath(), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettingsData.ArcConvExePath())));
-                    File.Copy(Path.Combine(THSettingsData.ArcConvDirPath(), Path.GetFileNameWithoutExtension(THSettingsData.ArcConvExePath()) + ".dat"), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileNameWithoutExtension(THSettingsData.ArcConvExePath()) + ".dat"));
+                    File.Copy(THSettings.ArcConvExePath(), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath())));
+                    File.Copy(Path.Combine(THSettings.ArcConvDirPath(), Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat"), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat"));
                 }
 
                 var targetPatchPath = Path.Combine(ProjectData.SelectedGameDir, PatchName + ".xp3");
@@ -358,16 +358,16 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 {
                     args = " --pack xp3 \"" + PatchDir.Name + "\" \"" + PatchName + ".xp3" + "\"";
                     copyutil =
-                        "if not exist \"" + THSettingsData.ArcConvExeName() + "\" copy \"" + THSettingsData.ArcConvExePath() + "\" \"" + ProjectData.ProjectWorkDir + "\\\""
+                        "if not exist \"" + THSettings.ArcConvExeName() + "\" copy \"" + THSettings.ArcConvExePath() + "\" \"" + ProjectData.ProjectWorkDir + "\\\""
                         + "\r\n"
-                        + "if not exist arc_conv.dat copy \"" + Path.GetDirectoryName(THSettingsData.ArcConvExePath()) + "\\arc_conv.dat\" \"" + ProjectData.ProjectWorkDir + "\\\""
+                        + "if not exist arc_conv.dat copy \"" + Path.GetDirectoryName(THSettings.ArcConvExePath()) + "\\arc_conv.dat\" \"" + ProjectData.ProjectWorkDir + "\\\""
                         ;
                     delutil =
-                        "if exist \"" + THSettingsData.ArcConvExeName() + "\" del \"" + THSettingsData.ArcConvExeName() + "\""
+                        "if exist \"" + THSettings.ArcConvExeName() + "\" del \"" + THSettings.ArcConvExeName() + "\""
                         + "\r\n"
-                        + "if exist \"" + Path.GetDirectoryName(THSettingsData.ArcConvExePath()) + "\\arc_conv.dat\" del \"" + Path.GetDirectoryName(THSettingsData.ArcConvExePath()) + "\\arc_conv.dat\""
+                        + "if exist \"" + Path.GetDirectoryName(THSettings.ArcConvExePath()) + "\\arc_conv.dat\" del \"" + Path.GetDirectoryName(THSettings.ArcConvExePath()) + "\\arc_conv.dat\""
                         ;
-                    runpack = THSettingsData.ArcConvExeName() + args;
+                    runpack = THSettings.ArcConvExeName() + args;
                 }
 
                 var cmdContent =
@@ -387,7 +387,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                     ;
                 File.WriteAllText(Path.Combine(ProjectData.ProjectWorkDir, "MakePatch.cmd"), cmdContent);
 
-                FunctionsProcess.RunProcess(arc_conv ? THSettingsData.ArcConvExePath() : LE, args, ProjectData.ProjectWorkDir);
+                FunctionsProcess.RunProcess(arc_conv ? THSettings.ArcConvExePath() : LE, args, ProjectData.ProjectWorkDir);
 
                 if (!File.Exists(patch))
                 {
@@ -395,7 +395,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 }
                 if (!File.Exists(patch))
                 {
-                    FunctionsProcess.RunProcess(arc_conv ? THSettingsData.ArcConvExePath() : LE, args, ProjectData.ProjectWorkDir);
+                    FunctionsProcess.RunProcess(arc_conv ? THSettings.ArcConvExePath() : LE, args, ProjectData.ProjectWorkDir);
 
                     if (!File.Exists(patch))
                     {
@@ -423,7 +423,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                         try
                         {
                             File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(kirikiriunpacker)));
-                            File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettingsData.KiriKiriToolDllPath())));
+                            File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.KiriKiriToolDllPath())));
                             removed = true;
                         }
                         catch
@@ -432,10 +432,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                         }
                     }
                 }
-                else if (arc_conv && File.Exists(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettingsData.ArcConvExePath()))))
+                else if (arc_conv && File.Exists(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath()))))
                 {
-                    File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettingsData.ArcConvExePath())));
-                    File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileNameWithoutExtension(THSettingsData.ArcConvExePath()) + ".dat"));
+                    File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath())));
+                    File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat"));
                 }
             }
             catch

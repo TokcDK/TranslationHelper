@@ -300,8 +300,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 SelectedTable = ProjectData.THFilesElementsDataset.Tables[SelectedTableIndex];
             }
 
-            ColumnIndexOriginal = SelectedTable.Columns[THSettingsData.OriginalColumnName()].Ordinal;// Колонка Original
-            ColumnIndexTranslation = SelectedTable.Columns[THSettingsData.TranslationColumnName()].Ordinal;// Колонка Translation
+            ColumnIndexOriginal = SelectedTable.Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
+            ColumnIndexTranslation = SelectedTable.Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Translation
         }
 
         /// <summary>

@@ -5,12 +5,26 @@ using TranslationHelper.Properties;
 
 namespace TranslationHelper.Data
 {
-    internal class THSettingsData
+    internal class THSettings
     {
+        /// <summary>
+        /// startup path of the application
+        /// </summary>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string ApplicationStartupPath()
         {
             return Settings.Default.ApplicationStartupPath;
+        }
+
+        /// <summary>
+        /// Log name of the application
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string ApplicationLogName()
+        {
+            return Properties.Settings.Default.ApplicationProductName + ".log";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -204,7 +218,7 @@ namespace TranslationHelper.Data
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string RPGMakerMVSkipjsRulesFilePath()
         {
-            return Path.Combine(THSettingsData.RulesDirPath(), RPGMakerMVSkipjsRulesFileName());
+            return Path.Combine(THSettings.RulesDirPath(), RPGMakerMVSkipjsRulesFileName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -232,8 +246,8 @@ namespace TranslationHelper.Data
         {
             return new[]
                 {
-                    THSettingsData.RPGMakerMVSkipjsRulesFilePath(),//overall file
-                    THSettingsData.RPGMakerMVProjectSkipjsRulesFilePath()//game specific file
+                    THSettings.RPGMakerMVSkipjsRulesFilePath(),//overall file
+                    THSettings.RPGMakerMVProjectSkipjsRulesFilePath()//game specific file
                 };
         }
 
@@ -341,7 +355,7 @@ namespace TranslationHelper.Data
 
         internal static string PythonPath2()
         {
-            return @".\" + ResDirName() + @"\"+ PythonDirName();
+            return @".\" + ResDirName() + @"\" + PythonDirName();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -423,7 +437,7 @@ namespace TranslationHelper.Data
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static Dictionary<int, string> WolfRPGExtractorsList()
         {
-            return new Dictionary<int, string> 
+            return new Dictionary<int, string>
             {
                 { 1, DXExtractExePath()},
                 { 2, DXADecodeWExePath()},

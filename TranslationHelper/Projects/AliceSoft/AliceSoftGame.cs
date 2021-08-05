@@ -36,7 +36,7 @@ namespace TranslationHelper.Projects.AliceSoft
         {
             if (ProjectData.OpenFileMode)
             {
-                ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)));
+                ProjectData.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)));
             }
 
             var ret = false;
@@ -62,7 +62,7 @@ namespace TranslationHelper.Projects.AliceSoft
                         File.Delete(targetworkainpath);
                     File.Copy(ain, targetworkainpath);
 
-                    FunctionsProcess.RunProcess(THSettingsData.AliceToolsExePath(), args);
+                    FunctionsProcess.RunProcess(THSettings.AliceToolsExePath(), args);
 
                     if (File.Exists(targetworkaintxtpath))
                     {
@@ -78,12 +78,12 @@ namespace TranslationHelper.Projects.AliceSoft
                         var args = "ain edit -t \"" + targetworkaintxtpath + "\" -o \"" + outain + "\" \"" + targetworkainpath + "\"";
 
                         File.WriteAllText(Path.Combine(ProjectData.ProjectWorkDir, "write.bat"),
-                            " \"" + THSettingsData.AliceToolsExePath() + "\" " + args
+                            " \"" + THSettings.AliceToolsExePath() + "\" " + args
                             + "\r\npause"
 
                             );
 
-                        FunctionsProcess.RunProcess(THSettingsData.AliceToolsExePath(), args);
+                        FunctionsProcess.RunProcess(THSettings.AliceToolsExePath(), args);
 
                         if (File.Exists(outain))
                         {

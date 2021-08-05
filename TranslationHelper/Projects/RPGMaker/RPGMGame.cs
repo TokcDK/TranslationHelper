@@ -83,7 +83,7 @@ namespace TranslationHelper.Projects
         private bool Patching()
         {
             var GameDirPath = new DirectoryInfo(ProjectData.SelectedGameDir);
-            var workdir = new DirectoryInfo(Path.Combine(THSettingsData.WorkDirPath(), ProjectFolderName(), GameDirPath.Name));
+            var workdir = new DirectoryInfo(Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), GameDirPath.Name));
             ProjectData.ProjectWorkDir = workdir.FullName;
             var patchdirPath = Path.Combine(workdir.FullName, workdir.Name + "_patch");
 
@@ -127,7 +127,7 @@ namespace TranslationHelper.Projects
         private bool CreateUpdatePatch(string gamedirPath, DirectoryInfo workdir)
         {
             bool ret;
-            var rpgmakertranscli = THSettingsData.RPGMakerTransEXEPath();
+            var rpgmakertranscli = THSettings.RPGMakerTransEXEPath();
             //string projectname = Path.GetFileName(outdir);
 
             //rpg maker trans cli options
@@ -221,7 +221,7 @@ namespace TranslationHelper.Projects
 
                     tempExtractDir.Create();
 
-                    var rgssdecrypter = THSettingsData.RGSSDecrypterEXEPath();
+                    var rgssdecrypter = THSettings.RGSSDecrypterEXEPath();
 
                     var rgssdecrypterargs = "\"--output=" + tempExtractDir + "\" \"" + GameRgss3Path + "\"";
 

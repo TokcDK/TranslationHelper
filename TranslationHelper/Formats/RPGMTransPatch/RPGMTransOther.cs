@@ -12,7 +12,7 @@ namespace TranslationHelper.Formats.RPGMTrans
         public static bool CreateRPGMakerTransPatch(string inputdir, string outdir)
         {
             bool ret;
-            var rpgmakertranscli = THSettingsData.RPGMakerTransEXEPath();
+            var rpgmakertranscli = THSettings.RPGMakerTransEXEPath();
             //string projectname = Path.GetFileName(outdir);
 
             //параметры

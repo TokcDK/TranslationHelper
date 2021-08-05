@@ -211,7 +211,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         private void SetSkipJSLists(HashSet<string> SkipJSList)
         {
-            foreach (var skipjsfilePath in THSettingsData.RPGMakerMVSkipjsRulesFilesList())
+            foreach (var skipjsfilePath in THSettings.RPGMakerMVSkipjsRulesFilesList())
             {
                 SetSkipJSList(SkipJSList, skipjsfilePath);
             }
@@ -488,7 +488,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <param name="e"></param>
         private void RPGMMVGameSkipJSFileOpen_Click(object sender, EventArgs e)
         {
-            Process.Start(THSettingsData.RPGMakerMVSkipjsRulesFilePath());
+            Process.Start(THSettings.RPGMakerMVSkipjsRulesFilePath());
         }
 
         /// <summary>
@@ -507,17 +507,17 @@ namespace TranslationHelper.Projects.RPGMMV
 
             //read only js names
             var SkipJSList = new HashSet<string>();
-            SetSkipJSList(SkipJSList, THSettingsData.RPGMakerMVSkipjsRulesFilePath());
+            SetSkipJSList(SkipJSList, THSettings.RPGMakerMVSkipjsRulesFilePath());
 
             //read all list
             List<string> SkipJSOveralList;
-            if (SkipJSList.Count == 0 || !File.Exists(THSettingsData.RPGMakerMVSkipjsRulesFilePath()))
+            if (SkipJSList.Count == 0 || !File.Exists(THSettings.RPGMakerMVSkipjsRulesFilePath()))
             {
                 SkipJSOveralList = new List<string>();
             }
             else
             {
-                SkipJSOveralList = File.ReadAllLines(THSettingsData.RPGMakerMVSkipjsRulesFilePath()).ToList();
+                SkipJSOveralList = File.ReadAllLines(THSettings.RPGMakerMVSkipjsRulesFilePath()).ToList();
             }
 
             //check if name already exists in list
@@ -527,7 +527,7 @@ namespace TranslationHelper.Projects.RPGMMV
             }
 
             //write list
-            File.WriteAllLines(THSettingsData.RPGMakerMVSkipjsRulesFilePath(), SkipJSOveralList);
+            File.WriteAllLines(THSettings.RPGMakerMVSkipjsRulesFilePath(), SkipJSOveralList);
         }
     }
 }

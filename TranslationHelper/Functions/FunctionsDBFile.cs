@@ -548,7 +548,7 @@ namespace TranslationHelper.Main.Functions
                 ProjectData.AllDBmerged = new Dictionary<string, string>();
             }
 
-            var newestFilesList = GetNewestFIlesList(THSettingsData.DBDirPath());
+            var newestFilesList = GetNewestFIlesList(THSettings.DBDirPath());
 
             foreach (var DBfile in newestFilesList)
             {
@@ -574,7 +574,7 @@ namespace TranslationHelper.Main.Functions
             foreach (var DBFile in Directory.EnumerateFiles(DBDir, "*", SearchOption.AllDirectories))
             {
                 var ext = Path.GetExtension(DBFile);
-                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBFile.Contains("THTranslationCache") || DBFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(DBFile)) == THSettingsData.DBAutoSavesDirName())
+                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBFile.Contains("THTranslationCache") || DBFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(DBFile)) == THSettings.DBAutoSavesDirName())
                 {
                     continue;
                 }

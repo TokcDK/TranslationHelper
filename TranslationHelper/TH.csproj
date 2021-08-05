@@ -107,7 +107,7 @@
     <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
     <Compile Include="Data\CleanupData.cs" />
     <Compile Include="Data\ProjectData.cs" />
-    <Compile Include="Data\THSettingsData.cs" />
+    <Compile Include="Data\THSettings.cs" />
     <Compile Include="Extensions\ExtensionsBytes.cs" />
     <Compile Include="Extensions\ExtensionsDataRow.cs" />
     <Compile Include="Extensions\ExtensionsDictionary.cs" />

@@ -1022,11 +1022,11 @@ namespace TranslationHelper
                             {
                                 if (SearchFormReplaceWithTextBox.Text == "=")
                                 {
-                                    row[THSettingsData.TranslationColumnName()] = row[THSettingsData.OriginalColumnName()];
+                                    row[THSettings.TranslationColumnName()] = row[THSettings.OriginalColumnName()];
                                 }
                                 else if (string.IsNullOrEmpty(SearchFormReplaceWithTextBox.Text))
                                 {
-                                    row[THSettingsData.TranslationColumnName()] = string.Empty;
+                                    row[THSettings.TranslationColumnName()] = string.Empty;
                                 }
                             }
                             else
@@ -1036,7 +1036,7 @@ namespace TranslationHelper
                                     if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                                     {
                                         StoreQueryAndReplacer = true;
-                                        row[THSettingsData.TranslationColumnName()] = Regex.Replace(GetFirstIfNotEmpty(row[THSettingsData.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
+                                        row[THSettings.TranslationColumnName()] = Regex.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
                                     }
                                 }
                                 else
@@ -1044,7 +1044,7 @@ namespace TranslationHelper
                                     if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                                     {
                                         StoreQueryAndReplacer = true;
-                                        row[THSettingsData.TranslationColumnName()] = ReplaceEx.Replace(GetFirstIfNotEmpty(row[THSettingsData.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                        row[THSettings.TranslationColumnName()] = ReplaceEx.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                                     }
                                 }
                             }

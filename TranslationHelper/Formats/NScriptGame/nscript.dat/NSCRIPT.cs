@@ -197,7 +197,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     {
                         //copy onscripter
                         if (!Directory.Exists(Path.Combine(ProjectData.SelectedGameDir, "onscripter")))
-                            Path.Combine(THSettingsData.ResDirPath(), "onscripter").CopyAll(Path.Combine(ProjectData.SelectedGameDir, "onscripter"));
+                            Path.Combine(THSettings.ResDirPath(), "onscripter").CopyAll(Path.Combine(ProjectData.SelectedGameDir, "onscripter"));
 
                         //write run.bat
                         //onscripter -r "gamedir" --dll "dllpath" -f fontpath --window

@@ -14,7 +14,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         Dictionary<string, string> _dict = new Dictionary<string, string>();
-        string _custom = THSettingsData.CustomDBPath();
+        string _custom = THSettings.CustomDBPath();
         protected override void ActionsPreRowsApply()
         {
             //load DB if need

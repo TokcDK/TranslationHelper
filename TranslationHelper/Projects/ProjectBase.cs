@@ -29,7 +29,7 @@ namespace TranslationHelper.Projects
             {
                 ProjectData.SelectedGameDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
                 ProjectData.SelectedDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
-                ProjectData.ProjectWorkDir = Path.Combine(THSettingsData.WorkDirPath(), this.ProjectFolderName(), ProjectName());
+                ProjectData.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName(), ProjectName());
             }
         }
 

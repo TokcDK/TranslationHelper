@@ -64,13 +64,13 @@ namespace TranslationHelper
             //https://stackoverflow.com/questions/91747/background-color-of-a-listbox-item-winforms
             THFilesList.DrawMode = DrawMode.OwnerDrawFixed;
 
-            THTranslationCachePath = THSettingsData.THTranslationCacheFilePath();
+            THTranslationCachePath = THSettings.THTranslationCacheFilePath();
 
             //THFileElementsDataGridView set doublebuffered to true
             SetDoublebuffered(true);
-            if (File.Exists(THSettingsData.THLogPath()) && new FileInfo(THSettingsData.THLogPath()).Length > 1000000)
+            if (File.Exists(THSettings.THLogPath()) && new FileInfo(THSettings.THLogPath()).Length > 1000000)
             {
-                File.Delete(THSettingsData.THLogPath());
+                File.Delete(THSettings.THLogPath());
             }
 
             //Test Проверка ключа Git для планируемой функции использования Git
@@ -2654,10 +2654,10 @@ namespace TranslationHelper
             var ProjectDataTranslationRegexRules = new Dictionary<string, string>();
 
             //если файл с правилами существует
-            if (File.Exists(THSettingsData.TranslationRegexRulesFilePath()))
+            if (File.Exists(THSettings.TranslationRegexRulesFilePath()))
             {
                 //читать файл с правилами
-                using (var rules = new StreamReader(THSettingsData.TranslationRegexRulesFilePath()))
+                using (var rules = new StreamReader(THSettings.TranslationRegexRulesFilePath()))
                 {
                     //regex правило и результат из файла
                     var regexPattern = string.Empty;
@@ -2707,10 +2707,10 @@ namespace TranslationHelper
             var ProjectDataCellFixesRegexRules = new Dictionary<string, string>();
 
             //если файл с правилами существует
-            if (File.Exists(THSettingsData.CellFixesRegexRulesFilePath()))
+            if (File.Exists(THSettings.CellFixesRegexRulesFilePath()))
             {
                 //читать файл с правилами
-                using (var rules = new StreamReader(THSettingsData.CellFixesRegexRulesFilePath()))
+                using (var rules = new StreamReader(THSettings.CellFixesRegexRulesFilePath()))
                 {
                     //regex правило и результат из файла
                     var regexPattern = string.Empty;
@@ -2823,17 +2823,17 @@ namespace TranslationHelper
 
         private void OpenTranslationRulesFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists(THSettingsData.TranslationRegexRulesFilePath()))
+            if (File.Exists(THSettings.TranslationRegexRulesFilePath()))
             {
-                _ = Process.Start("explorer.exe", THSettingsData.TranslationRegexRulesFilePath());
+                _ = Process.Start("explorer.exe", THSettings.TranslationRegexRulesFilePath());
             }
         }
 
         private void OpenCellFixesFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists(THSettingsData.CellFixesRegexRulesFilePath()))
+            if (File.Exists(THSettings.CellFixesRegexRulesFilePath()))
             {
-                _ = Process.Start("explorer.exe", THSettingsData.CellFixesRegexRulesFilePath());
+                _ = Process.Start("explorer.exe", THSettings.CellFixesRegexRulesFilePath());
             }
         }
 
@@ -3017,7 +3017,7 @@ namespace TranslationHelper
                         }
                     }
 
-                    FunctionsDBFile.WriteDictToXMLDB(dict, Path.Combine(THSettingsData.DBDirPath(), "XUA.cmx"));
+                    FunctionsDBFile.WriteDictToXMLDB(dict, Path.Combine(THSettings.DBDirPath(), "XUA.cmx"));
                 }
                 catch
                 {
