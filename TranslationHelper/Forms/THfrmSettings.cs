@@ -374,7 +374,7 @@ namespace TranslationHelper
                     THConfigINI.SetKey(SettingsList[setting].Section, SettingsList[setting].Key, SettingsList[setting].Get(), false);
                 }
             }
-            THConfigINI.Write();
+            THConfigINI.WriteFile();
         }
 
         private void SettingsAutosaveTimeoutValueTextBox_TextChanged(object sender, EventArgs e)
