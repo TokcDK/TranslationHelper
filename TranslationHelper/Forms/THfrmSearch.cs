@@ -975,7 +975,7 @@ namespace TranslationHelper
                 return;
             }
 
-            FixRegexReplacementFromTextbox();
+            var replacementUnescaped = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
 
             lblSearchMsg.Visible = false;
             oDsResults = ProjectData.THFilesElementsDataset.Clone();
@@ -1019,11 +1019,11 @@ namespace TranslationHelper
 
                 if (SearchInInfoCheckBox.Checked)
                 {
-                    if (SearchFormReplaceWithTextBox.Text == "=")
+                    if (replacementUnescaped == "=")
                     {
                         row[THSettings.TranslationColumnName()] = row[THSettings.OriginalColumnName()];
                     }
-                    else if (string.IsNullOrEmpty(SearchFormReplaceWithTextBox.Text))
+                    else if (string.IsNullOrEmpty(replacementUnescaped))
                     {
                         row[THSettings.TranslationColumnName()] = string.Empty;
                     }
@@ -1035,7 +1035,7 @@ namespace TranslationHelper
                         if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                         {
                             StoreQueryAndReplacer = true;
-                            row[THSettings.TranslationColumnName()] = Regex.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, RegexOptions.IgnoreCase);
+                            row[THSettings.TranslationColumnName()] = Regex.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, replacementUnescaped, RegexOptions.IgnoreCase);
                         }
                     }
                     else
@@ -1043,7 +1043,7 @@ namespace TranslationHelper
                         if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                         {
                             StoreQueryAndReplacer = true;
-                            row[THSettings.TranslationColumnName()] = ReplaceEx.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                            row[THSettings.TranslationColumnName()] = ReplaceEx.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, replacementUnescaped, StringComparison.OrdinalIgnoreCase);
                         }
                     }
                 }
@@ -1063,11 +1063,6 @@ namespace TranslationHelper
             }
 
             return text;
-        }
-
-        private void FixRegexReplacementFromTextbox()
-        {
-            SearchFormReplaceWithTextBox.Text = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
         }
 
         private void THSearch_FormClosed(object sender, FormClosedEventArgs e)
