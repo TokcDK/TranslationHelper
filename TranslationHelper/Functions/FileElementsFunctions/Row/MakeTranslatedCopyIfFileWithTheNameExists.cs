@@ -112,7 +112,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var targetPath = Path.Combine(Path.GetDirectoryName(path), transName + Path.GetExtension(path)); // target translated path
                     if (!File.Exists(targetPath))
                     {
-                        File.Copy(path, targetPath);
+                        THCreateSymlink.File(path, targetPath);
+                        //File.Copy(path, targetPath);
 
                         //info about translated copy
                         File.WriteAllText(targetPath + ".tr.txt", "original name:" + origName + "\r\noriginal file name is exists in table and in game dir\r\ncreated copy with translated name to prevent possible missing file errors");
