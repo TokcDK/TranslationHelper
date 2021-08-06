@@ -38,7 +38,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     //здесь функция извлечения
                     //cvalue = ExtractLines(cvalue);
 
-                    var log = new FunctionsLogs();
                     string rule;
                     string result;
                     foreach (var patternReplacementPair in ProjectData.CellFixesRegexRules)
@@ -60,7 +59,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         }
                         catch (System.ArgumentException ex)
                         {
-                            log.LogToFile("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
+                           _log.LogToFile("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
                             ProjectData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
                             continue;
                         }

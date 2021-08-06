@@ -387,7 +387,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (Exception ex)
             {
-                new FunctionsLogs().LogToFile("Error while translation:"
+                _log.LogToFile("Error while translation:"
                     + Environment.NewLine
                     + ex
                     + Environment.NewLine

@@ -131,7 +131,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return SelectedRowIndex;
         }
 
-        readonly FunctionsLogs _log = new FunctionsLogs();
+        protected readonly FunctionsLogs _log = new FunctionsLogs();
 
         /// <summary>
         /// selected rows count
