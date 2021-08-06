@@ -112,17 +112,23 @@ namespace TranslationHelper.Extensions
         /// <param name="lineCoordinates"></param>
         /// <param name="lineNum"></param>
         /// <returns></returns>
-        internal static string[] ExtractMulty(this string line)
+        internal static string[] ExtractMulty(this string line, bool onlyOne = false, List<int> outIndexes=null)
         {
             var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
             foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
             {
-                if (!Regex.IsMatch(line, PatternReplacementPair.Key))
+                Match m = Regex.Match(line, PatternReplacementPair.Key);
+                if (!m.Success)
                 {
                     continue;
                 }
 
-                foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
+                if(onlyOne && m.Groups.Count > 1)
+                {
+                    continue;
+                }
+
+                foreach (Group g in m.Groups)
                 {
                     try
                     {
@@ -131,6 +137,11 @@ namespace TranslationHelper.Extensions
                         {
                             if (!GroupValues.Contains(g.Value))
                             {
+                                if(outIndexes!=null)
+                                {
+                                    outIndexes.Add(g.Index); // add index of string
+                                }
+
                                 GroupValues.Add(g.Value);//add value for translation if valid
                             }
                         }

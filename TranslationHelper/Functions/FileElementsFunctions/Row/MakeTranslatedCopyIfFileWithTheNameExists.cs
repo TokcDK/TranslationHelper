@@ -59,10 +59,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             try
             {
                 bool hasExtractedFromOrig = false;
-                var extractedFromOrig = orig.ExtractMulty();
                 string origName = orig;
-                if (extractedFromOrig.Length == 1 // only one extracted
-                    && !string.IsNullOrWhiteSpace(extractedFromOrig[0]) // not empty extracted value
+                var extractedFromOrig = orig.ExtractMulty(true);
+                if (//extractedFromOrig.Length == 1 // only one extracted
+                    //&& 
+                    !string.IsNullOrWhiteSpace(extractedFromOrig[0]) // not empty extracted value
                     && extractedFromOrig[0] != origName.Trim()) // not just trimmed extracted value
                 {
                     origName = extractedFromOrig[0];
@@ -79,10 +80,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 string transName = trans;
                 if (hasExtractedFromOrig)
                 {
-                    var extractedFromTrans = trans.ExtractMulty();
-
-                    if (extractedFromTrans.Length == 1 // only one extracted
-                        && !string.IsNullOrWhiteSpace(extractedFromTrans[0]) // not empty extracted value
+                    var extractedFromTrans = trans.ExtractMulty(true);
+                    if (//extractedFromTrans.Length == 1 // only one extracted
+                        //&& 
+                        !string.IsNullOrWhiteSpace(extractedFromTrans[0]) // not empty extracted value
                         && extractedFromTrans[0] != transName.Trim()) // not just trimmed extracted value
                     {
                         transName = extractedFromTrans[0];

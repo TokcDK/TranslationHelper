@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using TranslationHelper.Extensions;
@@ -43,8 +44,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 
         protected enum VariantCase
         {
-            Lower = 0,
+            /// <summary>
+            /// all chars to lower case
+            /// </summary>
+            lower = 0,
+            /// <summary>
+            /// 1st char to upper case
+            /// </summary>
             Upper = 1,
+            /// <summary>
+            /// all chars to upper case
+            /// </summary>
             UPPER = 2
         }
 
@@ -55,16 +65,40 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 
         protected override bool Apply()
         {
-            var dsOrigCell = SelectedRow[0] as string;
-            var dsTransCell = SelectedRow[1] + string.Empty;
-            if (!string.IsNullOrWhiteSpace(dsTransCell)// not empty translation
-                && dsTransCell != dsOrigCell//not equal to original
-                && (Variant != VariantCase.Upper || !dsTransCell.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
+            var orig = SelectedRow[0] as string;
+            var trans = SelectedRow[1] + string.Empty;
+
+            var indexes = new List<int>();
+            var extractedFromTrans = trans.ExtractMulty(outIndexes: indexes);
+            if (extractedFromTrans.Length == indexes.Count)
+            {
+                var result = trans;
+                for (int i = extractedFromTrans.Length - 1; i >= 0; i--)
+                {
+                    string transName = ChangeRegistryCaseForTheCell(extractedFromTrans[i], Variant);
+                    if (!string.IsNullOrWhiteSpace(transName) // not empty extracted value
+                        && extractedFromTrans[i].Trim() != transName) // not just trimmed extracted value
+                    {
+                        result = result.Remove(indexes[i], extractedFromTrans[i].Length).Insert(indexes[i], transName);
+                    }
+                }
+
+                if (result != trans)
+                {
+                    SelectedRow[1] = result;
+                    return true;
+                }
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(trans)// not empty translation
+                && trans != orig//not equal to original
+                && (Variant != VariantCase.Upper || !trans.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
                 )
             {
-                if (_isAnimations && Variant == VariantCase.Upper && dsTransCell.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
+                if (_isAnimations && Variant == VariantCase.Upper && trans.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
                 {
-                    string[] parts = dsTransCell.Split('/');
+                    string[] parts = trans.Split('/');
                     for (int i = 0; i < parts.Length; i++)
                     {
                         parts[i] = ChangeRegistryCaseForTheCell(parts[i], Variant);
@@ -73,7 +107,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                 }
                 else
                 {
-                    SelectedRow[1] = ChangeRegistryCaseForTheCell(dsTransCell, Variant);
+                    SelectedRow[1] = ChangeRegistryCaseForTheCell(trans, Variant);
                 }
             }
 
@@ -90,7 +124,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         {
             switch (variant)
             {
-                case VariantCase.Lower:
+                case VariantCase.lower:
                     //lowercase
 #pragma warning disable CA1308 // Нормализуйте строки до прописных букв
                     return dsTransCell.ToLowerInvariant();
