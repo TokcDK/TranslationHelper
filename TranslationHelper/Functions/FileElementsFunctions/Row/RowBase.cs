@@ -165,6 +165,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     GetTableData();
 
+                    // parse table instead of selected cells when all cells in the table are selected
+                    if( SelectedRowsCount == SelectedTable.Rows.Count)
+                    {
+                        return Table();
+                    }
+
                     _isInternalSelectedRowExecution = true;
 
                     if (!IsAll && !IsTable)

@@ -602,7 +602,7 @@ namespace TranslationHelper
                 //Считывание значения ячейки в текстовое поле 1, вариант 2, для DataSet, ds.Tables[0]
                 //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
                 if (THSourceRichTextBox.Enabled
-                    && THFileElementsDataGridView.CurrentCell != null
+                    //&& THFileElementsDataGridView.CurrentCell != null
                     && THFileElementsDataGridView.Rows.Count > 0
                     && rowIndex > -1
                     && columnIndex > -1)
@@ -1108,7 +1108,7 @@ namespace TranslationHelper
                 while (i < Properties.Settings.Default.DBAutoSaveTimeout && Properties.Settings.Default.EnableDBAutosave)
                 {
                     Thread.Sleep(1000);
-                    if (Properties.Settings.Default.IsTranslationHelperWasClosed || this == null || IsDisposed || Data == null || Path.Length == 0)
+                    if (Properties.Settings.Default.IsTranslationHelperWasClosed || this == null || IsDisposed/* || Data == null || Path.Length == 0*/)
                     {
                         AutosaveActivated = false;
                         return;
