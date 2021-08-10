@@ -210,7 +210,7 @@ namespace TranslationHelper.Formats.RPGMMV
         //private string cId = string.Empty;
         //private string OldcId = "none";
         bool IsWithMergedMessages;
-        private void ParseJToken(JToken jsonToken, string JsonName/*, string propertyname = ""*/)
+        private void ParseJToken(JToken jsonToken, string jsonName/*, string propertyname = ""*/)
         {
             if (jsonToken == null)
             {
@@ -242,7 +242,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 {
                     if (IsWithMergedMessages)
                     {
-                        AddMergedMessage(jsonToken, JsonName);
+                        AddMergedMessage(jsonToken, jsonName);
                     }
 
                     int commentIndex = tokenvalue.IndexOf("//");
@@ -250,7 +250,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     if (IsValidString(tokenvalueNoComment))
                     {
                         bool HasCurCode = CurrentEventCode > -1;
-                        AddRowData(JsonName, tokenvalue, "JsonPath: "
+                        AddRowData(jsonName, tokenvalue, "JsonPath: "
                             + Environment.NewLine
                             + jsonToken.Path
                             + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
@@ -260,11 +260,11 @@ namespace TranslationHelper.Formats.RPGMMV
                     }
                 }
             }
-            else if (jsonToken is JObject JsonObject)
+            else if (jsonToken is JObject jsonObject)
             {
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 JToken lastProperty = null;
-                foreach (var property in JsonObject.Properties())
+                foreach (var property in jsonObject.Properties())
                 {
                     lastProperty = property;
                     propertyName = property.Name;
@@ -276,19 +276,19 @@ namespace TranslationHelper.Formats.RPGMMV
                         {
                             CurrentEventCode = (int)property.Value;
                         }
-                        if (skipit)
+                        if (skipIt)
                         {
                             if (IsExcludedCode(CurrentEventCode))
                             {
                                 if (!IsCode && propertyName == "parameters")//asdf
                                 {
-                                    skipit = false;
+                                    skipIt = false;
                                     continue;
                                 }
                             }
                             else
                             {
-                                skipit = false;
+                                skipIt = false;
                             }
                         }
                         else
@@ -298,37 +298,37 @@ namespace TranslationHelper.Formats.RPGMMV
                                 //string propertyValue = property.Value + string.Empty;
                                 if (IsExcludedCode(CurrentEventCode))
                                 {
-                                    skipit = true;
+                                    skipIt = true;
                                     continue;
                                 }
                             }
                         }
                     }
-                    ParseJToken(property.Value, JsonName/*, property.Name*/);
+                    ParseJToken(property.Value, jsonName/*, property.Name*/);
                 }
 
                 // добавление объединенных сообщений для события 401, если новых строк больше нет
-                if (CurrentEventCode == 401 && MessageMerged.Length > 0 )
+                if (CurrentEventCode == 401 && MessageMerged.Length > 0)
                 {
-                    if (jsonToken.Next == null 
+                    if (jsonToken.Next == null
                         || !(jsonToken.Next is JObject obj)
                         || !(obj.First is JProperty prop)
                         || prop.Name != "code"
                         || (int)prop.Value != CurrentEventCode
                         )
                     {
-                        AddMergedMessage(lastProperty, JsonName, true, false);
+                        AddMergedMessage(lastProperty, jsonName, true, false);
                     }
                 }
 
                 ResetCurrentCode();
             }
-            else if (jsonToken is JArray JsonArray)
+            else if (jsonToken is JArray jsonArray)
             {
-                int arrayCount = JsonArray.Count;
+                int arrayCount = jsonArray.Count;
                 for (int i = 0; i < arrayCount; i++)
                 {
-                    ParseJToken(JsonArray[i], JsonName);
+                    ParseJToken(jsonArray[i], jsonName);
                 }
 
                 //заменил записью выше
@@ -345,6 +345,48 @@ namespace TranslationHelper.Formats.RPGMMV
             else
             {
                 //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
+            }
+        }
+
+        private void ParseJTokenNew(JToken jsonToken, string jsonName)
+        {
+            if (jsonToken == null)
+            {
+                return;
+            }
+
+            if (jsonToken is JValue)
+            {
+                if (jsonToken.Type != JTokenType.String)
+                {
+                    return;
+                }
+            }
+            else if (jsonToken is JObject jsonObject)
+            {
+                foreach (var property in jsonObject.Properties())
+                {
+                    bool IsCode = IsInteger(property.Value.Type) && property.Name == "code";
+                    if (IsCode)
+                    {
+                        CurrentEventCode = (int)property.Value;
+
+                        if (IsMessageCode(CurrentEventCode))
+                        {
+                            ParseJTokenNew(jsonObject.Last, jsonName);
+                        }
+                    }
+
+                    ParseJTokenNew(property.Value, jsonName);
+                }
+            }
+            else if (jsonToken is JArray jsonArray)
+            {
+                int arrayCount = jsonArray.Count;
+                for (int i = 0; i < arrayCount; i++)
+                {
+                    ParseJTokenNew(jsonArray[i], jsonName);
+                }
             }
         }
 
@@ -421,6 +463,7 @@ namespace TranslationHelper.Formats.RPGMMV
             return string.Empty;
         }
 
+        //obsolete
         //curcode must be set and reseted correctly
         ///// <summary>
         ///// get jobject with code jproperty
@@ -537,7 +580,7 @@ namespace TranslationHelper.Formats.RPGMMV
             //TempListInfo.Add(Info);//много быстрее
         }
 
-        bool skipit;
+        bool skipIt;
 
         internal override bool Save()
         {
@@ -573,7 +616,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     //сброс значений для CommonEvents
                     //curcode = string.Empty; // commented, see ResetCurrentCode()
                     propertyName = string.Empty;
-                    skipit = false;
+                    skipIt = false;
 
                     //только в CommonEvents была сборка строк в сообщение
                     //SplitTableCellValuesAndTheirLinesToDictionary(Jsonname, false, false);
@@ -652,35 +695,35 @@ namespace TranslationHelper.Formats.RPGMMV
         }
 
         int StartingRow;//оптимизация. начальная строка, когда идет поиск по файлу, чтобы не искало каждый раз сначала при нахождении перевода будет переприсваиваться начальная строка на последнюю
-        private void ParseJTokenWrite(JToken JsonToken, string JsonName/*, string propertyname = ""*/)
+        private void ParseJTokenWrite(JToken jsonToken, string jsonName/*, string propertyname = ""*/)
         {
-            if (JsonToken == null)
+            if (jsonToken == null)
             {
                 return;
             }
 
-            if (JsonToken is JValue)
+            if (jsonToken is JValue)
             {
                 //LogToFile("JValue: " + propertyname + "=" + token.ToString());
-                if (JsonToken.Type != JTokenType.String)
+                if (jsonToken.Type != JTokenType.String)
                 {
                     return;
                 }
 
-                string tokenvalue = JsonToken + string.Empty;
-                if (tokenvalue.Length == 0 || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue))
+                string tokenValue = jsonToken + string.Empty;
+                if (tokenValue.Length == 0 || FunctionsRomajiKana.LocalePercentIsNotValid(tokenValue))
                 {
                     return;
                 }
 
-                string parameter0value = tokenvalue;
+                string parameter0Value = tokenValue;
 
                 //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
 
-                int rcount = ProjectData.THFilesElementsDataset.Tables[JsonName].Rows.Count;
+                int rcount = ProjectData.THFilesElementsDataset.Tables[jsonName].Rows.Count;
                 for (int r = StartingRow; r < rcount; r++)
                 {
-                    var row = ProjectData.THFilesElementsDataset.Tables[JsonName].Rows[r];
+                    var row = ProjectData.THFilesElementsDataset.Tables[jsonName].Rows[r];
                     if ((row[1] + string.Empty).Length == 0)
                     {
                     }
@@ -705,7 +748,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                 transA[0] = row[1] + string.Empty;
                                 //LogToFile("(transA.Length == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString());
                             }
-                            string transmerged = string.Empty;
+                            string transMerged = string.Empty;
                             if (transA.Length == origALength)//если количество строк в оригинале и переводе равно
                             {
                                 //ничего не делать
@@ -716,37 +759,37 @@ namespace TranslationHelper.Formats.RPGMMV
                                 {
                                     foreach (string ts in transA)
                                     {
-                                        transmerged += ts; // объединить все строки в одну
+                                        transMerged += ts; // объединить все строки в одну
                                     }
                                 }
 
-                                transA = FunctionsString.SplitStringByEqualParts(transmerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
+                                transA = FunctionsString.SplitStringByEqualParts(transMerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
                             }
 
                             //Подстраховочная проверка для некоторых значений из нескольких строк, полное сравнение перед построчной
-                            if (tokenvalue == row[0] + string.Empty)
+                            if (tokenValue == row[0] + string.Empty)
                             {
-                                (JsonToken as JValue).Value = (row[1] + string.Empty).Replace("\r", string.Empty);//убирает \r, т.к. в json присутствует только \n
+                                (jsonToken as JValue).Value = (row[1] + string.Empty).Replace("\r", string.Empty);//убирает \r, т.к. в json присутствует только \n
                                 StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
                                 break;
                             }
 
-                            bool TranslationWasSet = false; //это чтобы выйти потом из прохода по таблице и перейти к след. элементу json, если перевод был присвоен
+                            bool translationWasSet = false; //это чтобы выйти потом из прохода по таблице и перейти к след. элементу json, если перевод был присвоен
                             for (int i2 = 0; i2 < origALength; i2++)
                             {
-                                if (parameter0value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
+                                if (parameter0Value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
                                 {
                                     //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
 
-                                    (JsonToken as JValue).Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
+                                    (jsonToken as JValue).Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
 
                                     StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
                                                     //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
-                                    TranslationWasSet = true;
+                                    translationWasSet = true;
                                     break;
                                 }
                             }
-                            if (TranslationWasSet) //выход из цикла прохода по всей таблице, если значение найдено для одной из строк оригинала, и переход к следующему элементу json
+                            if (translationWasSet) //выход из цикла прохода по всей таблице, если значение найдено для одной из строк оригинала, и переход к следующему элементу json
                             {
                                 StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
                                 break;
@@ -754,9 +797,9 @@ namespace TranslationHelper.Formats.RPGMMV
                         }
                         else
                         {
-                            if (tokenvalue == row[0] + string.Empty)
+                            if (tokenValue == row[0] + string.Empty)
                             {
-                                (JsonToken as JValue).Value = row[1] + string.Empty;
+                                (jsonToken as JValue).Value = row[1] + string.Empty;
                                 StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
                                 break;
                             }
@@ -764,10 +807,10 @@ namespace TranslationHelper.Formats.RPGMMV
                     }
                 }
             }
-            else if (JsonToken is JObject JsonObject)
+            else if (jsonToken is JObject jsonObject)
             {
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
-                foreach (var property in JsonObject.Properties())
+                foreach (var property in jsonObject.Properties())
                 {
                     propertyName = property.Name;
                     if (IsWithMergedMessages)//asdfg skip code 108,408,356
@@ -778,19 +821,19 @@ namespace TranslationHelper.Formats.RPGMMV
                             //cCode = "Code" + curcode;
                             //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
-                        if (skipit)
+                        if (skipIt)
                         {
                             if (IsExcludedCode(CurrentEventCode))
                             {
                                 if (property.Name == "parameters")//asdf
                                 {
-                                    skipit = false;
+                                    skipIt = false;
                                     continue;
                                 }
                             }
                             else
                             {
-                                skipit = false;
+                                skipIt = false;
                             }
                         }
                         else
@@ -799,23 +842,23 @@ namespace TranslationHelper.Formats.RPGMMV
                             {
                                 if (IsExcludedCode((int)property.Value))
                                 {
-                                    skipit = true;
+                                    skipIt = true;
                                     continue;
                                 }
                             }
                         }
                     }
-                    ParseJTokenWrite(property.Value, JsonName/*, property.Name*/);
+                    ParseJTokenWrite(property.Value, jsonName/*, property.Name*/);
                 }
 
                 ResetCurrentCode();
             }
-            else if (JsonToken is JArray JsonArray)
+            else if (jsonToken is JArray jsonArray)
             {
-                int arrayCount = JsonArray.Count;
+                int arrayCount = jsonArray.Count;
                 for (int i = 0; i < arrayCount; i++)
                 {
-                    ParseJTokenWrite(JsonArray[i], JsonName);
+                    ParseJTokenWrite(jsonArray[i], jsonName);
                 }
             }
             else
@@ -825,22 +868,22 @@ namespace TranslationHelper.Formats.RPGMMV
         }
 
         HashSet<JObject> addedjobjects;
-        private void ParseJTokenWriteWithPreSplitlines(JToken JsonToken, string JsonName/*, string propertyname = ""*/)
+        private void ParseJTokenWriteWithPreSplitlines(JToken jsonToken, string jsonName/*, string propertyname = ""*/)
         {
-            if (JsonToken == null)
+            if (jsonToken == null)
             {
                 return;
             }
 
-            if (JsonToken is JValue)
+            if (jsonToken is JValue)
             {
                 //LogToFile("JValue: " + propertyname + "=" + token.ToString());
-                if (JsonToken.Type != JTokenType.String)
+                if (jsonToken.Type != JTokenType.String)
                 {
                     return;
                 }
 
-                string tokenvalue = JsonToken + string.Empty;
+                string tokenvalue = jsonToken + string.Empty;
 
                 if (tokenvalue.Length == 0 || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue))
                 {
@@ -848,15 +891,17 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
 
                 //предполагается, что ячейки из таблицы были разбиты на строки и добавлены в словарь
-                if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/ TablesLinesDict.ContainsKey(tokenvalue) && TablesLinesDict[tokenvalue].Length > 0)
+                if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/
+                    TablesLinesDict.ContainsKey(tokenvalue)
+                    && TablesLinesDict[tokenvalue].Length > 0)
                 {
                     try
                     {
                         int tokenvalueLinesCount;
-                        if (JsonToken.Parent != null 
-                            && JsonToken.Parent.Parent != null 
-                            && JsonToken.Parent.Parent.Parent != null 
-                            && (JsonToken.Parent.Parent.Parent is JObject currentJObject) 
+                        if (jsonToken.Parent != null
+                            && jsonToken.Parent.Parent != null
+                            && jsonToken.Parent.Parent.Parent != null
+                            && (jsonToken.Parent.Parent.Parent is JObject currentJObject)
                             && TablesLinesDict[tokenvalue].GetLinesCount() > (tokenvalueLinesCount = tokenvalue.GetLinesCount()))
                         {
                             int ind = 0;
@@ -875,7 +920,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                 {
                                     if (NotWrited)
                                     {
-                                        (JsonToken as JValue).Value = string.Join(Environment.NewLine, stringToWrite);
+                                        (jsonToken as JValue).Value = string.Join(Environment.NewLine, stringToWrite);
                                         NotWrited = false;
                                     }
 
@@ -893,7 +938,7 @@ namespace TranslationHelper.Formats.RPGMMV
                         }
                         else
                         {
-                            (JsonToken as JValue).Value = TablesLinesDict[tokenvalue];
+                            (jsonToken as JValue).Value = TablesLinesDict[tokenvalue];
                         }
                     }
                     catch
@@ -906,7 +951,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     return;
                 }
             }
-            else if (JsonToken is JObject JsonObject)
+            else if (jsonToken is JObject JsonObject)
             {
                 //skip new added json object
                 if (addedjobjects.Contains(JsonObject))
@@ -920,53 +965,53 @@ namespace TranslationHelper.Formats.RPGMMV
                     propertyName = property.Name;
                     if (IsWithMergedMessages)//asdfg skip code 108,408,356
                     {
-                        var IsCode = IsInteger(property.Value.Type) && propertyName == "code";
-                        if (IsCode)
+                        var isCode = IsInteger(property.Value.Type) && propertyName == "code";
+                        if (isCode)
                         {
                             CurrentEventCode = (int)property.Value;
                             //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
-                        if (skipit)
+                        if (skipIt)
                         {
                             if (IsExcludedCode(CurrentEventCode))
                             {
-                                if (!IsCode && propertyName == "parameters")//asdf
+                                if (!isCode && propertyName == "parameters")//asdf
                                 {
-                                    skipit = false;
+                                    skipIt = false;
                                     continue;
                                 }
                             }
                             else
                             {
-                                skipit = false;
+                                skipIt = false;
                             }
                         }
                         else
                         {
-                            if (IsCode)
+                            if (isCode)
                             {
                                 //string propertyValue = property.Value + string.Empty;
                                 if (IsExcludedCode(CurrentEventCode))
                                 {
-                                    skipit = true;
+                                    skipIt = true;
                                     continue;
                                 }
                             }
                         }
                     }
-                    ParseJTokenWriteWithPreSplitlines(property.Value, JsonName/*, property.Name*/);
+                    ParseJTokenWriteWithPreSplitlines(property.Value, jsonName/*, property.Name*/);
                 }
 
                 ResetCurrentCode();
             }
-            else if (JsonToken is JArray JsonArray)
+            else if (jsonToken is JArray jsonArray)
             {
-                for (int i = 0; i < JsonArray.Count/*(здесь должно быть без предварительного зпоминания количества, т.к. массив меняется)*/
+                for (int i = 0; i < jsonArray.Count/*(здесь должно быть без предварительного зпоминания количества, т.к. массив меняется)*/
                     ; i++)
                 {
                     try
                     {
-                        ParseJTokenWriteWithPreSplitlines(JsonArray[i], JsonName);
+                        ParseJTokenWriteWithPreSplitlines(jsonArray[i], jsonName);
                     }
                     catch
                     {
