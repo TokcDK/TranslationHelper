@@ -283,6 +283,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
+        /// <summary>
+        /// init selected table's data
+        /// </summary>
+        /// <param name="tableIndex"></param>
         private void GetTableData(int tableIndex = -1)
         {
             if (SelectedTableIndex == -1)

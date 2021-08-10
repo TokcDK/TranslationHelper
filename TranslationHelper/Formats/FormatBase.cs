@@ -455,10 +455,6 @@ namespace TranslationHelper.Formats
         internal class ParseFileData
         {
             /// <summary>
-            /// Project work data
-            /// </summary>
-            protected
-            /// <summary>
             /// tablename/filename
             /// </summary>
             internal string tablename;
