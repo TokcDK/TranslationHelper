@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
@@ -233,7 +234,7 @@ namespace TranslationHelper.Formats.RPGMMV
                             return;
                         }
 
-                        string tokenvalue = jsonToken.ToString();
+                        string tokenValue = jsonToken + "";
 
                         if (IsWithMergedMessages && IsMessageCode(CurrentEventCode))
                         {
@@ -242,7 +243,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                 MessageMerged.Append('\n');//add \n between lines in merged message
                             }
                             //LogToFile("code 401 adding value to merge=" + tokenvalue + ", currentEventCode=" + currentEventCode);
-                            MessageMerged.Append(tokenvalue);
+                            MessageMerged.Append(tokenValue);
                             AddToStats();
                         }
                         else
@@ -252,7 +253,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                 AddMergedMessage(jsonToken, jsonName);
                             }
 
-                            if (!IsValidString(tokenvalue))
+                            if (!IsValidString(value, tokenValue))
                             {
                                 AddToStats(false);
                                 return;
@@ -261,7 +262,7 @@ namespace TranslationHelper.Formats.RPGMMV
                             AddToStats();
 
                             bool HasCurCode = CurrentEventCode > -1;
-                            AddRowData(jsonName, tokenvalue, "JsonPath: "
+                            AddRowData(jsonName, tokenValue, "JsonPath: "
                                 + Environment.NewLine
                                 + jsonToken.Path
                                 + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
@@ -763,7 +764,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
                         string tokenValue = jsonToken + string.Empty;
 
-                        if (!IsValidString(tokenValue))
+                        if (!IsValidString(value, tokenValue))
                         {
                             return;
                         }
@@ -932,6 +933,14 @@ namespace TranslationHelper.Formats.RPGMMV
             }
         }
 
+        bool IsValidString(JToken token, string value)
+        {
+            return IsValidString(value) 
+                && !Regex.IsMatch(token.Path, @"events\[[0-9]+\]\.name") // skip event names
+                && !Regex.IsMatch(token.Path, @"\[[0-9]+\]\.image") // skip image names
+                && !Regex.IsMatch(token.Path, @"[Bb]gm\.name"); // skip bgm
+        }
+
         protected override bool IsValidString(string inputString)
         {
             int commentIndex = inputString.IndexOf("//");
@@ -957,17 +966,17 @@ namespace TranslationHelper.Formats.RPGMMV
                             return;
                         }
 
-                        string tokenvalue = value + string.Empty;
+                        string tokenValue = value + string.Empty;
 
-                        if (tokenvalue.Length == 0 || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue))
+                        if (!IsValidString(value, tokenValue))
                         {
                             return;
                         }
 
                         //предполагается, что ячейки из таблицы были разбиты на строки и добавлены в словарь
                         if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/
-                            !TablesLinesDict.ContainsKey(tokenvalue)
-                            || TablesLinesDict[tokenvalue].Length == 0)
+                            !TablesLinesDict.ContainsKey(tokenValue)
+                            || TablesLinesDict[tokenValue].Length == 0)
                         {
                             return;
                         }
@@ -979,9 +988,9 @@ namespace TranslationHelper.Formats.RPGMMV
                                 || jsonToken.Parent.Parent == null
                                 || jsonToken.Parent.Parent.Parent == null
                                 || !(jsonToken.Parent.Parent.Parent is JObject currentJObject)
-                                || TablesLinesDict[tokenvalue].GetLinesCount() == (tokenvalueLinesCount = tokenvalue.GetLinesCount()))
+                                || TablesLinesDict[tokenValue].GetLinesCount() == (tokenvalueLinesCount = tokenValue.GetLinesCount()))
                             {
-                                value.Value = TablesLinesDict[tokenvalue];
+                                value.Value = TablesLinesDict[tokenValue];
                             }
                             else
                             {
@@ -990,7 +999,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                 bool NotWrited = true;
                                 bool IsTheJObjetAdded = false;
 
-                                foreach (var line in TablesLinesDict[tokenvalue].SplitToLines())
+                                foreach (var line in TablesLinesDict[tokenValue].SplitToLines())
                                 {
                                     if (ind < tokenvalueLinesCount)
                                     {
