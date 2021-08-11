@@ -489,67 +489,17 @@ namespace TranslationHelper
 
                         if (info)//search in info box
                         {
-                            if ((ProjectData.THFilesElementsDatasetInfo.Tables[t].Rows[r][0] + string.Empty).Contains(strQuery))
-                            {
-                                if (!found)
-                                {
-                                    found = true;
-                                    oDsResultsCoordinates.Rows.Clear();
-                                    this.Height = 368;
-                                }
-                                DS.Tables[0].ImportRow(Row);
-                                oDsResultsCoordinates.Rows.Add(t, r);
-                            }
+                            var infoValue = (ProjectData.THFilesElementsDatasetInfo.Tables[t].Rows[r][0] + string.Empty);
 
-                        }
-                        else if (SearchFindLinesWithPossibleIssuesCheckBox.Checked)//search rows with possible issues
-                        {
-                            if (IsTheRowHasPossibleIssues(Row))
-                            {
-                                if (!found)
-                                {
-                                    found = true;
-                                    oDsResultsCoordinates.Rows.Clear();
-                                    this.Height = 368;
-                                }
-                                DS.Tables[0].ImportRow(Row);
-                                oDsResultsCoordinates.Rows.Add(t, r);
-                            }
-                        }
-                        else
-                        {
                             //regex search
                             if (SearchModeRegexRadioButton.Checked)//regex
                             {
                                 try
                                 {
-                                    if (THSearchMatchCaseCheckBox.Checked)
+                                    if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery)) 
+                                        || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery, RegexOptions.IgnoreCase)))
                                     {
-                                        if (Regex.IsMatch(SelectedCellValue, strQuery))
-                                        {
-                                            if (!found)
-                                            {
-                                                found = true;
-                                                oDsResultsCoordinates.Rows.Clear();
-                                                this.Height = 368;
-                                            }
-                                            DS.Tables[0].ImportRow(Row);
-                                            oDsResultsCoordinates.Rows.Add(t, r);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (Regex.IsMatch(SelectedCellValue, strQuery, RegexOptions.IgnoreCase))
-                                        {
-                                            if (!found)
-                                            {
-                                                found = true;
-                                                oDsResultsCoordinates.Rows.Clear();
-                                                this.Height = 368;
-                                            }
-                                            DS.Tables[0].ImportRow(Row);
-                                            oDsResultsCoordinates.Rows.Add(t, r);
-                                        }
+                                        ImportRowToFound(ref found, DS, Row, t, r);
                                     }
                                 }
                                 catch (ArgumentException ex)
@@ -568,39 +518,61 @@ namespace TranslationHelper
                             {
                                 try
                                 {
-                                    if (THSearchMatchCaseCheckBox.Checked)
+                                    if ((THSearchMatchCaseCheckBox.Checked && infoValue.Contains(strQuery)) 
+                                        || (!THSearchMatchCaseCheckBox.Checked && infoValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant())))
                                     {
-                                        if (SelectedCellValue.Contains(strQuery))
-                                        {
-                                            if (!found)
-                                            {
-                                                found = true;
-                                                oDsResultsCoordinates.Rows.Clear();
-                                                this.Height = 368;
-                                            }
-                                            DS.Tables[0].ImportRow(Row);
-                                            oDsResultsCoordinates.Rows.Add(t, r);
-                                        }
+                                        ImportRowToFound(ref found, DS, Row, t, r);
                                     }
-                                    else
+                                }
+                                catch { }
+                            }
+
+                        }
+                        else if (SearchFindLinesWithPossibleIssuesCheckBox.Checked)//search rows with possible issues
+                        {
+                            if (IsTheRowHasPossibleIssues(Row))
+                            {
+                                ImportRowToFound(ref found, DS, Row, t, r);
+                            }
+                        }
+                        else
+                        {
+                            //regex search
+                            if (SearchModeRegexRadioButton.Checked)//regex
+                            {
+                                try
+                                {
+                                    if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(SelectedCellValue, strQuery))
+                                        || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(SelectedCellValue, strQuery, RegexOptions.IgnoreCase))
+                                        )
                                     {
-                                        if (SelectedCellValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant()))
-                                        {
-                                            if (!found)
-                                            {
-                                                found = true;
-                                                oDsResultsCoordinates.Rows.Clear();
-                                                this.Height = 368;
-                                            }
-                                            DS.Tables[0].ImportRow(Row);
-                                            oDsResultsCoordinates.Rows.Add(t, r);
-                                        }
+                                        ImportRowToFound(ref found, DS, Row, t, r);
                                     }
+                                }
+                                catch (ArgumentException ex)
+                                {
+                                    //при ошибках регекса выходить
+                                    lblSearchMsg.Visible = true;
+                                    lblSearchMsg.Text = T._("Invalid regex") + ">" + ex.Message;
+                                    return null;
                                 }
                                 catch
                                 {
-
+                                    return null;
                                 }
+                            }
+                            else//common text search
+                            {
+                                try
+                                {
+                                    if ((THSearchMatchCaseCheckBox.Checked && SelectedCellValue.Contains(strQuery))
+                                        || (!THSearchMatchCaseCheckBox.Checked && SelectedCellValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant()))
+                                        )
+                                    {
+                                        ImportRowToFound(ref found, DS, Row, t, r);
+                                    }
+                                }
+                                catch { }
 
                             }
 
@@ -609,6 +581,26 @@ namespace TranslationHelper
                 }
             }
             return DS.Tables[0];
+        }
+
+        /// <summary>
+        /// Add found row to results
+        /// </summary>
+        /// <param name="found"></param>
+        /// <param name="ds"></param>
+        /// <param name="row"></param>
+        /// <param name="t"></param>
+        /// <param name="r"></param>
+        private void ImportRowToFound(ref bool found, DataSet ds, DataRow row, int t, int r)
+        {
+            if (!found)
+            {
+                found = true;
+                oDsResultsCoordinates.Rows.Clear();
+                this.Height = 368;
+            }
+            ds.Tables[0].ImportRow(row);
+            oDsResultsCoordinates.Rows.Add(t, r);
         }
 
         DataTable Actors;
