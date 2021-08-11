@@ -293,9 +293,9 @@ namespace TranslationHelper.Formats.RPGMMV
                             continue;
                         }
                         else
-                        if (IsCodeWithStringInParameters(CurrentEventCode) && jsonObject.Last is JProperty prop) // in message codes need only last object value
+                        if (IsCodeWithStringInParameters(CurrentEventCode) && jsonObject.Last is JProperty lastObjectsProperty) // in message codes need only last property's "parameters" value
                         {
-                            ParseJToken(prop.Value, jsonName);
+                            ParseJToken(lastObjectsProperty.Value, jsonName);
                             continue;
                         }
 
@@ -374,11 +374,11 @@ namespace TranslationHelper.Formats.RPGMMV
 
         private bool IsCodeWithStringInParameters(int currentEventCode)
         {
-            return IsMessageCode(CurrentEventCode)
-                || CurrentEventCode == 102
-                || CurrentEventCode == 402
-                || CurrentEventCode == 118
-                || CurrentEventCode == 119;
+            return IsMessageCode(currentEventCode)
+                || currentEventCode == 102
+                || currentEventCode == 402
+                || currentEventCode == 118
+                || currentEventCode == 119;
         }
 
         /// <summary>
