@@ -2104,6 +2104,8 @@ namespace TranslationHelper
             //ListBoxItemBackgroundBrush1Complete.Dispose();
             //ListBoxItemBackgroundBrush2.Dispose();
             //ListBoxItemBackgroundBrush2Complete.Dispose();
+
+            FunctionsSave.WriteRPGMakerMVStats();
         }
 
         private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)

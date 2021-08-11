@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
@@ -14,10 +15,10 @@ namespace TranslationHelper.Functions
 {
     class FunctionsSave
     {
-        
+
         public FunctionsSave()
         {
-            
+
         }
 
         internal async Task PrepareToWrite()
@@ -171,6 +172,47 @@ namespace TranslationHelper.Functions
 
             ProjectData.Main.SaveInAction = false;
             FunctionsSounds.PlayAsterisk();
+        }
+
+        /// <summary>
+        /// Write RPGMakerMV event codes stats
+        /// </summary>
+        public static void WriteRPGMakerMVStats()
+        {
+            if (ProjectData.RpgMVAddedCodesStat.Count > 0 || ProjectData.RpgMVSkippedCodesStat.Count > 0)
+            {
+                foreach (var dict in new Dictionary<string, Dictionary<int, int>>()
+                    {
+                        {"RPGMakerMV Added codes stats", ProjectData.RpgMVAddedCodesStat },
+                        {"RPGMakerMV Skipped codes stats", ProjectData.RpgMVSkippedCodesStat }
+                    }
+                )
+                {
+                    if (ProjectData.Main.Settings.THConfigINI.SectionExistsAndNotEmpty(dict.Key))
+                    {
+                        foreach (var pair in ProjectData.Main.Settings.THConfigINI.GetSectionKeyValuePairs(dict.Key))
+                        {
+                            var key = int.Parse(pair.Key);
+                            var value = int.Parse(pair.Value);
+                            if (!dict.Value.ContainsKey(key))
+                            {
+                                dict.Value.Add(key, value);
+                            }
+                            else
+                            {
+                                dict.Value[key] = dict.Value[key] + value;
+                            }
+                        }
+                    }
+
+                    foreach (var pair in dict.Value)
+                    {
+                        ProjectData.Main.Settings.THConfigINI.SetKey(dict.Key, pair.Key + "", pair.Value + "");
+                    }
+                }
+
+                ProjectData.Main.Settings.THConfigINI.WriteFile();
+            }
         }
     }
 }

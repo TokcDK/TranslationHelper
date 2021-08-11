@@ -12,7 +12,7 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <summary>
         /// list of event codes
         /// </summary>
-        protected readonly Dictionary<int, string> EventCodes = new Dictionary<int, string>()
+        protected readonly Dictionary<int, string> EventCodes = new Dictionary<int, string>(118)
         {
             { 0, "End Show Choices" },
             { 41, "Image name?" },
@@ -122,7 +122,7 @@ namespace TranslationHelper.Formats.RPGMMV
             { 355, "Script" },
             { 356, "Plugin" },
             { 401, "Show Text" },
-            { 402, "When [**]" },
+            { 402, "When [**] Choice" },
             { 403, "When Cancel" },
             { 408, "Comment" },
             { 411, "Else" },
@@ -138,7 +138,7 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <summary>
         /// codes which must be skipped
         /// </summary>
-        protected static readonly Dictionary<int, string> ExcludedCodes = new Dictionary<int, string>()
+        protected static readonly Dictionary<int, string> ExcludedCodes = new Dictionary<int, string>(19)
         {
             { 41, "Image name?" }, // file name
             { 231, "Show Picture" }, // file name

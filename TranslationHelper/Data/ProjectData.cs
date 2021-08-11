@@ -141,5 +141,15 @@ namespace TranslationHelper.Data
 
         internal static Dictionary<char, int> ENQuotesToJPLearnDataFoundPrev;
         internal static Dictionary<char, int> ENQuotesToJPLearnDataFoundNext;
+
+        /// <summary>
+        /// [for json open\save improve] skipped rpg maker mv json event codes
+        /// </summary>
+        internal static Dictionary<int, int> RpgMVSkippedCodesStat = new Dictionary<int, int>();
+
+        /// <summary>
+        /// [for json open\save improve] added rpg maker mv json event codes
+        /// </summary>
+        internal static Dictionary<int, int> RpgMVAddedCodesStat = new Dictionary<int, int>();
     }
 }

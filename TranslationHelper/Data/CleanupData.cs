@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime;
+using TranslationHelper.Functions;
 
 namespace TranslationHelper.Data
 {
@@ -15,6 +16,8 @@ namespace TranslationHelper.Data
         {
             try
             {
+                FunctionsSave.WriteRPGMakerMVStats();
+
                 //Close other forms
                 if (ProjectData.Main.search != null)
                 {

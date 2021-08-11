@@ -89,6 +89,10 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 //treeView1.ExpandAll();
             }
+            catch (JsonReaderException ex)
+            {
+                new FunctionsLogs().LogToFile("Error occured while json read (json is empty or corrupted): \r\n" + ex);
+            }
             catch (Exception ex)
             {
                 new FunctionsLogs().LogToFile("Error occured while json parse: \r\n" + ex);
@@ -237,6 +241,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     }
                     //LogToFile("code 401 adding value to merge=" + tokenvalue + ", curcode=" + curcode);
                     MessageMerged.Append(tokenvalue);
+                    AddToStats();
                 }
                 else
                 {
@@ -249,14 +254,20 @@ namespace TranslationHelper.Formats.RPGMMV
                     var tokenvalueNoComment = commentIndex > -1 ? tokenvalue.Substring(0, commentIndex) : tokenvalue;
                     if (IsValidString(tokenvalueNoComment))
                     {
+                        AddToStats();
+
                         bool HasCurCode = CurrentEventCode > -1;
                         AddRowData(jsonName, tokenvalue, "JsonPath: "
                             + Environment.NewLine
                             + jsonToken.Path
                             + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
-                            IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
+                            (IsWithMergedMessages && HasCurCode) ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
                             + (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                             , true, false);
+                    }
+                    else
+                    {
+                        AddToStats(false);
                     }
                 }
             }
@@ -275,34 +286,47 @@ namespace TranslationHelper.Formats.RPGMMV
                         if (IsCode)
                         {
                             CurrentEventCode = (int)property.Value;
+
                         }
-                        if (skipIt)
+
+                        if (IsCodeWithStringInParameters(CurrentEventCode)) // in message codes need only last object value
                         {
-                            if (IsExcludedCode(CurrentEventCode))
-                            {
-                                if (!IsCode && propertyName == "parameters")//asdf
-                                {
-                                    skipIt = false;
-                                    continue;
-                                }
-                            }
-                            else
-                            {
-                                skipIt = false;
-                            }
+                            ParseJTokenNew(jsonObject.Last, jsonName);
                         }
-                        else
+                        else if (IsExcludedCode(CurrentEventCode)) // code always located in the objects and dont need do as code below
                         {
-                            if (IsCode)
-                            {
-                                //string propertyValue = property.Value + string.Empty;
-                                if (IsExcludedCode(CurrentEventCode))
-                                {
-                                    skipIt = true;
-                                    continue;
-                                }
-                            }
+                            AddToStats(false);
+                            continue;
                         }
+
+                        // replaced by IsExcludedCode above
+                        //if (skipIt)
+                        //{
+                        //    if (IsExcludedCode(CurrentEventCode))
+                        //    {
+                        //        if (!IsCode && propertyName == "parameters")//asdf
+                        //        {
+                        //            skipIt = false;
+                        //            continue;
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        skipIt = false;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (IsCode)
+                        //    {
+                        //        //string propertyValue = property.Value + string.Empty;
+                        //        if (IsExcludedCode(CurrentEventCode))
+                        //        {
+                        //            skipIt = true;
+                        //            continue;
+                        //        }
+                        //    }
+                        //}
                     }
                     ParseJToken(property.Value, jsonName/*, property.Name*/);
                 }
@@ -345,6 +369,35 @@ namespace TranslationHelper.Formats.RPGMMV
             else
             {
                 //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
+            }
+        }
+
+        private bool IsCodeWithStringInParameters(int currentEventCode)
+        {
+            return IsMessageCode(CurrentEventCode) 
+                || CurrentEventCode == 102
+                || CurrentEventCode == 402 
+                || CurrentEventCode == 118 
+                || CurrentEventCode == 119;
+        }
+
+        /// <summary>
+        /// for statistics and json open\save improvement purpose.
+        /// </summary>
+        /// <param name="add">for added strings else for skipped</param>
+        private void AddToStats(bool add = true)
+        {
+            var dict = add ? ProjectData.RpgMVAddedCodesStat : ProjectData.RpgMVSkippedCodesStat;
+            if (CurrentEventCode > -1)
+            {
+                if (!dict.ContainsKey(CurrentEventCode))
+                {
+                    dict.Add(CurrentEventCode, 1);
+                }
+                else
+                {
+                    dict[CurrentEventCode]++;
+                }
             }
         }
 
@@ -405,7 +458,7 @@ namespace TranslationHelper.Formats.RPGMMV
         /// </summary>
         private void ResetCurrentCode()
         {
-            if (CurrentEventCode > -1)
+            if (CurrentEventCode != -1)
             {
                 CurrentEventCode = -1;
             }
@@ -421,27 +474,26 @@ namespace TranslationHelper.Formats.RPGMMV
         private void AddMergedMessage(JToken JsonToken, string JsonName, bool CheckPreviousToken = true, bool IsValue = true)
         {
             string mergedstring;
-            if (string.IsNullOrWhiteSpace(mergedstring = MessageMerged.ToString())/* || token.Path.Contains("switches") || token.Path.Contains("variables")*/)
+            if (string.IsNullOrWhiteSpace(mergedstring = MessageMerged.ToString()))
             {
+                return;
             }
-            else
+
+            MessageMerged.Clear();
+
+            if (mergedstring.ForJPLangHaveMostOfRomajiOtherChars())
             {
-                if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ mergedstring.ForJPLangHaveMostOfRomajiOtherChars())
-                {
-                }
-                else
-                {
-                    bool HasCurCode = CurrentEventCode > -1;
-                    AddData(JsonName, mergedstring, "JsonPath: "
-                        + Environment.NewLine
-                        + JsonToken.Path
-                        + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
-                        IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
-                        + (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
-                        );
-                }
-                MessageMerged.Clear();
+                return;
             }
+
+            bool HasCurCode = CurrentEventCode > -1;
+            AddData(JsonName, mergedstring, "JsonPath: "
+                + Environment.NewLine
+                + JsonToken.Path
+                + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
+                (IsWithMergedMessages && HasCurCode) ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
+                + (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                );
         }
 
         /// <summary>
@@ -550,7 +602,8 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <returns></returns>
         private static bool IsExcludedCode(int curcode)
         {
-            return ExcludedCodes.ContainsKey(curcode); /*curcode.Length == 3 && (curcode == 108 || curcode == 408 || curcode == 356)*/;
+            // temporary commented for check which codes will be added
+            return false; //ExcludedCodes.ContainsKey(curcode); /*curcode.Length == 3 && (curcode == 108 || curcode == 408 || curcode == 356)*/;
         }
 
         /// <summary>
@@ -649,11 +702,8 @@ namespace TranslationHelper.Formats.RPGMMV
             {
                 return false;
             }
-            finally
-            {
-            }
-            return true;
 
+            return true;
         }
 
         ///// <summary>
@@ -821,32 +871,44 @@ namespace TranslationHelper.Formats.RPGMMV
                             //cCode = "Code" + curcode;
                             //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
-                        if (skipIt)
+
+                        if (IsCodeWithStringInParameters(CurrentEventCode)) // in message codes need only last object value
                         {
-                            if (IsExcludedCode(CurrentEventCode))
-                            {
-                                if (property.Name == "parameters")//asdf
-                                {
-                                    skipIt = false;
-                                    continue;
-                                }
-                            }
-                            else
-                            {
-                                skipIt = false;
-                            }
+                            ParseJTokenNew(jsonObject.Last, jsonName);
                         }
-                        else
+                        else if (IsExcludedCode(CurrentEventCode)) // code always located in the objects and dont need do as code below
                         {
-                            if (IsInteger(property.Value.Type) && propertyName == "code")
-                            {
-                                if (IsExcludedCode((int)property.Value))
-                                {
-                                    skipIt = true;
-                                    continue;
-                                }
-                            }
+                            AddToStats(false);
+                            continue;
                         }
+
+                        // replaced by IsExcludedCode above
+                        //if (skipIt)
+                        //{
+                        //    if (IsExcludedCode(CurrentEventCode))
+                        //    {
+                        //        if (property.Name == "parameters")//asdf
+                        //        {
+                        //            skipIt = false;
+                        //            continue;
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        skipIt = false;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (IsInteger(property.Value.Type) && propertyName == "code")
+                        //    {
+                        //        if (IsExcludedCode((int)property.Value))
+                        //        {
+                        //            skipIt = true;
+                        //            continue;
+                        //        }
+                        //    }
+                        //}
                     }
                     ParseJTokenWrite(property.Value, jsonName/*, property.Name*/);
                 }
@@ -951,16 +1013,16 @@ namespace TranslationHelper.Formats.RPGMMV
                     return;
                 }
             }
-            else if (jsonToken is JObject JsonObject)
+            else if (jsonToken is JObject jsonObject)
             {
                 //skip new added json object
-                if (addedjobjects.Contains(JsonObject))
+                if (addedjobjects.Contains(jsonObject))
                 {
                     return;
                 }
 
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
-                foreach (var property in JsonObject.Properties())
+                foreach (var property in jsonObject.Properties())
                 {
                     propertyName = property.Name;
                     if (IsWithMergedMessages)//asdfg skip code 108,408,356
@@ -971,33 +1033,45 @@ namespace TranslationHelper.Formats.RPGMMV
                             CurrentEventCode = (int)property.Value;
                             //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                         }
-                        if (skipIt)
+
+                        if (IsCodeWithStringInParameters(CurrentEventCode)) // in message codes need only last object value
                         {
-                            if (IsExcludedCode(CurrentEventCode))
-                            {
-                                if (!isCode && propertyName == "parameters")//asdf
-                                {
-                                    skipIt = false;
-                                    continue;
-                                }
-                            }
-                            else
-                            {
-                                skipIt = false;
-                            }
+                            ParseJTokenNew(jsonObject.Last, jsonName);
                         }
-                        else
+                        else if (IsExcludedCode(CurrentEventCode)) // code always located in the objects and dont need do as code below
                         {
-                            if (isCode)
-                            {
-                                //string propertyValue = property.Value + string.Empty;
-                                if (IsExcludedCode(CurrentEventCode))
-                                {
-                                    skipIt = true;
-                                    continue;
-                                }
-                            }
+                            AddToStats(false);
+                            continue;
                         }
+
+                        // replaced by IsExcludedCode above
+                        //if (skipIt)
+                        //{
+                        //    if (IsExcludedCode(CurrentEventCode))
+                        //    {
+                        //        if (!isCode && propertyName == "parameters")//asdf
+                        //        {
+                        //            skipIt = false;
+                        //            continue;
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        skipIt = false;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (isCode)
+                        //    {
+                        //        //string propertyValue = property.Value + string.Empty;
+                        //        if (IsExcludedCode(CurrentEventCode))
+                        //        {
+                        //            skipIt = true;
+                        //            continue;
+                        //        }
+                        //    }
+                        //}
                     }
                     ParseJTokenWriteWithPreSplitlines(property.Value, jsonName/*, property.Name*/);
                 }
