@@ -286,16 +286,16 @@ namespace TranslationHelper.Formats.RPGMMV
                         if (IsCode)
                         {
                             CurrentEventCode = (int)property.Value;
-
                         }
-
-                        if (IsCodeWithStringInParameters(CurrentEventCode)) // in message codes need only last object value
-                        {
-                            ParseJTokenNew(jsonObject.Last, jsonName);
-                        }
-                        else if (IsExcludedCode(CurrentEventCode)) // code always located in the objects and dont need do as code below
+                        if (IsExcludedCode(CurrentEventCode)) // code always located in the objects and dont need do as code below
                         {
                             AddToStats(false);
+                            continue;
+                        }
+                        else
+                        if (IsCodeWithStringInParameters(CurrentEventCode) && jsonObject.Last is JProperty prop) // in message codes need only last object value
+                        {
+                            ParseJToken(prop.Value, jsonName);
                             continue;
                         }
 
@@ -331,14 +331,14 @@ namespace TranslationHelper.Formats.RPGMMV
                     ParseJToken(property.Value, jsonName/*, property.Name*/);
                 }
 
-                // добавление объединенных сообщений для события 401, если новых строк больше нет
-                if (CurrentEventCode == 401 && MessageMerged.Length > 0)
+                // добавление объединенных сообщений для события текстового сообщения 401 ил 405, если новых строк больше нет
+                if (IsMessageCode(CurrentEventCode) && MessageMerged.Length > 0)
                 {
-                    if (jsonToken.Next == null
-                        || !(jsonToken.Next is JObject obj)
-                        || !(obj.First is JProperty prop)
-                        || prop.Name != "code"
-                        || (int)prop.Value != CurrentEventCode
+                    if (jsonToken.Next == null // next JProperty is not exists
+                        || !(jsonToken.Next is JObject obj) // or next property is not a JObject
+                        || !(obj.First is JProperty prop) // or next JObject's first element is not JProperty
+                        || prop.Name != "code" // or first JProperty has not "code" name
+                        || (int)prop.Value != CurrentEventCode // or the JProperty's code not equal current
                         )
                     {
                         AddMergedMessage(lastProperty, jsonName, true, false);
@@ -374,10 +374,10 @@ namespace TranslationHelper.Formats.RPGMMV
 
         private bool IsCodeWithStringInParameters(int currentEventCode)
         {
-            return IsMessageCode(CurrentEventCode) 
+            return IsMessageCode(CurrentEventCode)
                 || CurrentEventCode == 102
-                || CurrentEventCode == 402 
-                || CurrentEventCode == 118 
+                || CurrentEventCode == 402
+                || CurrentEventCode == 118
                 || CurrentEventCode == 119;
         }
 

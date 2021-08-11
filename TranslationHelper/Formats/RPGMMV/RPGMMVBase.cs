@@ -124,6 +124,7 @@ namespace TranslationHelper.Formats.RPGMMV
             { 401, "Show Text" },
             { 402, "When [**] Choice" },
             { 403, "When Cancel" },
+            { 405, "Show Text" },
             { 408, "Comment" },
             { 411, "Else" },
             { 412, "End Conditional Branch" },
