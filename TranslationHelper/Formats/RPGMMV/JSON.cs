@@ -602,8 +602,7 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <returns></returns>
         private static bool IsExcludedCode(int curcode)
         {
-            // temporary commented for check which codes will be added
-            return false; //ExcludedCodes.ContainsKey(curcode); /*curcode.Length == 3 && (curcode == 108 || curcode == 408 || curcode == 356)*/;
+            return ExcludedCodes.ContainsKey(curcode); /*curcode.Length == 3 && (curcode == 108 || curcode == 408 || curcode == 356)*/;
         }
 
         /// <summary>
