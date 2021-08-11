@@ -935,10 +935,11 @@ namespace TranslationHelper.Formats.RPGMMV
 
         bool IsValidString(JToken token, string value)
         {
+            string path;
             return IsValidString(value) 
-                && !Regex.IsMatch(token.Path, @"events\[[0-9]+\]\.name") // skip event names
-                && !Regex.IsMatch(token.Path, @"\[[0-9]+\]\.image") // skip image names
-                && !Regex.IsMatch(token.Path, @"[Bb]gm\.name"); // skip bgm
+                && !((path = token.Path).Contains("].name") && Regex.IsMatch(path, @"events\[[0-9]+\]\.name")) // skip event names
+                && !(path.Contains("].image") && Regex.IsMatch(path, @"\[[0-9]+\]\.image")) // skip image names
+                && !(path.Contains("gm.name") && Regex.IsMatch(token.Path, @"[Bb]gm\.name")); // skip bgm
         }
 
         protected override bool IsValidString(string inputString)
