@@ -267,7 +267,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                 + jsonToken.Path
                                 + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
                                 IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
-                                + (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                                //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                                 , true, false);
                         }
 
@@ -331,12 +331,7 @@ namespace TranslationHelper.Formats.RPGMMV
                         // добавление объединенных сообщений для события текстового сообщения 401 ил 405, если новых строк больше нет
                         if (IsMessageCode(CurrentEventCode) && MessageMerged.Length > 0)
                         {
-                            if (jsonToken.Next == null // next JProperty is not exists
-                                || !(jsonToken.Next is JObject obj) // or next property is not a JObject
-                                || !(obj.First is JProperty prop) // or next JObject's first element is not JProperty
-                                || prop.Name != "code" // or first JProperty has not "code" name
-                                || (int)prop.Value != CurrentEventCode // or the JProperty's code not equal current
-                                )
+                            if (IsNextTokenNotWithSameCode(jsonToken))
                             {
                                 AddMergedMessage(lastProperty, jsonName, true, false);
                             }
@@ -371,6 +366,21 @@ namespace TranslationHelper.Formats.RPGMMV
                 default:
                     break;
             }
+        }
+
+        /// <summary>
+        /// Checks if next token is exists and it with same event code
+        /// </summary>
+        /// <param name="jsonToken"></param>
+        /// <returns></returns>
+        private bool IsNextTokenNotWithSameCode(JToken jsonToken)
+        {
+            return jsonToken.Next == null // next JProperty is not exists
+                                || !(jsonToken.Next is JObject obj) // or next property is not a JObject
+                                || !(obj.First is JProperty prop) // or next JObject's first element is not JProperty
+                                || prop.Name != "code" // or first JProperty has not "code" name
+                                || (int)prop.Value != CurrentEventCode // or the JProperty's code not equal current
+                                ;
         }
 
         private bool IsCodeWithStringInParameters(int currentEventCode)
@@ -482,7 +492,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
             MessageMerged.Clear();
 
-            if (mergedstring.ForJPLangHaveMostOfRomajiOtherChars())
+            if (!IsValidString(mergedstring))
             {
                 return;
             }
@@ -493,7 +503,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 + jsonToken.Path
                 + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
                 (IsWithMergedMessages && HasCurCode) ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
-                + (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                 );
         }
 
