@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
@@ -44,16 +43,16 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         protected static bool IsPluginsJS;//for some specific to plugins.js operations
 
-        protected static bool IsValidToken(JToken token)
+        protected static bool IsValidToken(JValue value)
         {
-            return token.Type == JTokenType.String
-                && (!IsPluginsJS || token.Path != "Modelname")
+            return value.Type == JTokenType.String
+                && (!IsPluginsJS || value.Path != "Modelname")
                 //&& (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game
-                && !string.IsNullOrWhiteSpace(token.ToString())
-                && !(THSettings.SourceLanguageIsJapanese() && token.ToString().HaveMostOfRomajiOtherChars());
+                && !string.IsNullOrWhiteSpace(value + "")
+                && !(THSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars());
         }
 
-        protected bool PluginsJSnameFound;
+        protected bool PluginsJsNameFound;
         protected void GetStringsFromJToken(JToken token, string Jsonname)
         {
             if (token == null)
@@ -61,52 +60,69 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 return;
             }
 
-
-            if (token is JValue)
+            switch (token)
             {
-                var TokenValue = token + "";
-
-                if ((TokenValue.StartsWith("{") && TokenValue.EndsWith("}")) || (TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")))
-                {
-                    //parse subtoken
-                    GetStringsFromJToken(JToken.Parse(TokenValue), Jsonname);
-                }
-                else
-                {
-                    if (!IsValidToken(token))
-                        return;
-
-                    AddRowData(Jsonname, TokenValue,
-                        token.Path
-                        + ((IsPluginsJS && token.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase))
-                        ? Environment.NewLine + T._("Warning") + ". " + T._("Parameter: translation of some parameters can break the game.")
-                        : string.Empty)
-                        , true);
-                }
-            }
-            else if (token is JObject obj)
-            {
-                //LogToFile("JObject Properties: \r\n" + obj.Properties());
-                foreach (var property in obj.Properties())
-                {
-                    if (!PluginsJSnameFound && IsPluginsJS && property.Name == "name")
+                case JValue value:
                     {
-                        PluginsJSnameFound = true;
-                        continue;
+                        var TokenValue = value + "";
+
+                        if (TokenValue.StartsWith("{") && TokenValue.EndsWith("}") || TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]"))
+                        {
+                            //parse subtoken
+                            GetStringsFromJToken(JToken.Parse(TokenValue), Jsonname);
+                        }
+                        else
+                        {
+                            if (!IsValidToken(value))
+                                return;
+
+                            AddRowData(Jsonname, TokenValue,
+                                value.Path
+                                + (IsPluginsJS && value.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase)
+                                ? Environment.NewLine + T._("Warning") + ". " + T._("Parameter: translation of some parameters can break the game.")
+                                : string.Empty)
+                                , true);
+                        }
+
+                        break;
                     }
-                    GetStringsFromJToken(property.Value, Jsonname);
-                }
-            }
-            else if (token is JArray array)
-            {
-                var arrayCount = array.Count;
-                for (int i = 0; i < arrayCount; i++)
-                {
-                    GetStringsFromJToken(array[i], Jsonname);
-                }
-            }
-            else
-            {
+
+                case JObject obj:
+                    {
+                        //LogToFile("JObject Properties: \r\n" + obj.Properties());
+                        foreach (var property in obj.Properties())
+                        {
+                            if (!PluginsJsNameFound && IsPluginsJS && property.Name == "name")
+                            {
+                                PluginsJsNameFound = true; // switch off check of parse plugin's json data
+
+                                if (obj.Last is JProperty lastObjectsProperty)
+                                {
+                                    GetStringsFromJToken(lastObjectsProperty.Value, Jsonname); // parse only parameters
+                                    break; // skip rest of properties because last was parsed
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                            GetStringsFromJToken(property.Value, Jsonname);
+                        }
+
+                        PluginsJsNameFound = false; // switch on check of parse plugin's json data
+                        break;
+                    }
+
+                case JArray array:
+                    {
+                        var arrayCount = array.Count;
+                        for (int i = 0; i < arrayCount; i++)
+                        {
+                            GetStringsFromJToken(array[i], Jsonname);
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -118,40 +134,71 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 return;
             }
 
-            if (token is JValue)
+            switch (token)
             {
-                if (!IsValidToken(token))
-                    return;
-
-                var row = ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows[rowindex];
-                if (Equals(token.ToString(), row[0]) && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
-                {
-                    (token as JValue).Value = row[1] as string;
-                }
-                rowindex++;
-            }
-            else if (token is JObject obj)
-            {
-                //LogToFile("JObject Properties: \r\n" + obj.Properties());
-                foreach (var property in obj.Properties())
-                {
-                    if (!PluginsJSnameFound && Jsonname == "plugins.js" && property.Name == "name")
+                case JValue value:
                     {
-                        PluginsJSnameFound = true;
-                        continue;
+                        var TokenValue = value + "";
+                        if (TokenValue.StartsWith("{") && TokenValue.EndsWith("}") || TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")) // if value is json value
+                        {
+                            //parse subtoken
+                            var root = JToken.Parse(TokenValue);
+                            WriteStringsToJTokenWithPreSplitlines(root, Jsonname);
+                            value.Value = root.ToString(Formatting.None);
+                        }
+                        else
+                        {
+                            if (!IsValidToken(value))
+                                return;
+
+                            var row = ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows[rowindex];
+                            if (Equals(value.ToString(), row[0]) && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
+                            {
+                                value.Value = row[1] as string;
+                            }
+                            rowindex++;
+                        }
+                        break;
                     }
-                    WriteStringsToJToken(property.Value, Jsonname);
-                }
-            }
-            else if (token is JArray array)
-            {
-                for (int i = 0; i < array.Count; i++)
-                {
-                    WriteStringsToJToken(array[i], Jsonname);
-                }
-            }
-            else
-            {
+
+                case JObject obj:
+                    {
+                        //LogToFile("JObject Properties: \r\n" + obj.Properties());
+                        foreach (var property in obj.Properties())
+                        {
+                            if (!PluginsJsNameFound && IsPluginsJS && property.Name == "name")
+                            {
+                                PluginsJsNameFound = true; // switch off check of parse plugin's json data
+
+                                if (obj.Last is JProperty lastObjectsProperty)
+                                {
+                                    GetStringsFromJToken(lastObjectsProperty.Value, Jsonname); // parse only parameters
+                                    break; // skip rest of properties because last was parsed
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                            WriteStringsToJToken(property.Value, Jsonname);
+                        }
+
+                        PluginsJsNameFound = false; // switch on check of parse plugin's json data
+                        break;
+                    }
+
+                case JArray array:
+                    {
+                        for (int i = 0; i < array.Count; i++)
+                        {
+                            WriteStringsToJToken(array[i], Jsonname);
+                        }
+
+                        break;
+                    }
+
+                default:
+                    break;
             }
         }
 
@@ -162,52 +209,63 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 return;
             }
 
-            if (token is JValue)
+            switch (token)
             {
-                var TokenValue = token + "";
-
-                if ((TokenValue.StartsWith("{") && TokenValue.EndsWith("}")) || (TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")))
-                {
-                    //parse subtoken
-                    var root = JToken.Parse(TokenValue);
-                    WriteStringsToJTokenWithPreSplitlines(root, Jsonname);
-                    (token as JValue).Value = root.ToString(Formatting.None);
-                }
-                else
-                {
-                    if (!IsValidToken(token))
-                        return;
-
-                    if (TablesLinesDict.ContainsKey(TokenValue)
-                        && !string.IsNullOrEmpty(TablesLinesDict[TokenValue])
-                        && TablesLinesDict[TokenValue] != TokenValue)
+                case JValue value:
                     {
-                        (token as JValue).Value = TablesLinesDict[TokenValue];
+                        var TokenValue = value + "";
+
+                        if (TokenValue.StartsWith("{") && TokenValue.EndsWith("}") || TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]")) // if value is json value
+                        {
+                            //parse subtoken
+                            var root = JToken.Parse(TokenValue);
+                            WriteStringsToJTokenWithPreSplitlines(root, Jsonname);
+                            value.Value = root.ToString(Formatting.None);
+                        }
+                        else
+                        {
+                            if (!IsValidToken(value))
+                                return;
+
+                            if (TablesLinesDict.ContainsKey(TokenValue)
+                                && !string.IsNullOrEmpty(TablesLinesDict[TokenValue])
+                                && TablesLinesDict[TokenValue] != TokenValue)
+                            {
+                                value.Value = TablesLinesDict[TokenValue];
+                            }
+                        }
+
+                        break;
                     }
-                }
-            }
-            else if (token is JObject obj)
-            {
-                //LogToFile("JObject Properties: \r\n" + obj.Properties());
-                foreach (var property in obj.Properties())
-                {
-                    if (!PluginsJSnameFound && Jsonname == "plugins.js" && property.Name == "name")
+
+                case JObject obj:
                     {
-                        PluginsJSnameFound = true;
-                        continue;
+                        //LogToFile("JObject Properties: \r\n" + obj.Properties());
+                        foreach (var property in obj.Properties())
+                        {
+                            if (!PluginsJsNameFound && Jsonname == "plugins.js" && property.Name == "name")
+                            {
+                                PluginsJsNameFound = true;
+                                continue;
+                            }
+                            WriteStringsToJTokenWithPreSplitlines(property.Value, Jsonname);
+                        }
+
+                        break;
                     }
-                    WriteStringsToJTokenWithPreSplitlines(property.Value, Jsonname);
-                }
-            }
-            else if (token is JArray array)
-            {
-                for (int i = 0; i < array.Count; i++)
-                {
-                    WriteStringsToJTokenWithPreSplitlines(array[i], Jsonname);
-                }
-            }
-            else
-            {
+
+                case JArray array:
+                    {
+                        for (int i = 0; i < array.Count; i++)
+                        {
+                            WriteStringsToJTokenWithPreSplitlines(array[i], Jsonname);
+                        }
+
+                        break;
+                    }
+
+                default:
+                    break;
             }
         }
 

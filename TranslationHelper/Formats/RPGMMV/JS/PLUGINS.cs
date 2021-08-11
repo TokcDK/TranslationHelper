@@ -50,7 +50,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             JToken root;
                             root = JToken.Parse(line);
 
-                            PluginsJSnameFound = false;
+                            PluginsJsNameFound = false;
 
                             GetStringsFromJToken(root, tablename);
                         }
@@ -113,7 +113,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             JToken root;
                             root = JToken.Parse(line);
 
-                            PluginsJSnameFound = false;
+                            PluginsJsNameFound = false;
 
                             SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
                             if (TablesLinesDict != null/* && TablesLinesDict.Count > 0*/)

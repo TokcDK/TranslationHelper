@@ -27,29 +27,29 @@ namespace TranslationHelper.Formats.RPGMMV
             return ".json";
         }
 
-        private bool ReadJson(string Jsonname, string sPath)
+        private bool ReadJson(string jsonName, string sPath)
         {
-            //LogToFile("Jsonname = " + Jsonname);
+            //LogToFile("jsonName = " + jsonName);
             try
             {
-                AddTables(Jsonname);
+                AddTables(jsonName);
 
                 //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
                 JToken root;
                 //MessageBox.Show(ProjectData.SelectedDir);
-                //using (var reader = new StreamReader(ProjectData.SelectedDir+"\\"+ Jsonname+".json"))
+                //using (var reader = new StreamReader(ProjectData.SelectedDir+"\\"+ jsonName+".json"))
                 using (StreamReader reader = new StreamReader(sPath))
                 {
                     using (JsonTextReader jsonReader = new JsonTextReader(reader))
                     {
                         root = JToken.Load(jsonReader);
 
-                        //ReadJson(root, Jsonname);
+                        //ReadJson(root, jsonName);
                     }
                 }
 
-                //ds.Tables.Add(Jsonname); // create table with json name
-                //ds.Tables[Jsonname].Columns.Add("Original"); //create Original column
+                //ds.Tables.Add(jsonName); // create table with json name
+                //ds.Tables[jsonName].Columns.Add("Original"); //create Original column
 
 
                 //treeView1.BeginUpdate();
@@ -63,20 +63,20 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 //TempList = new List<string>();
                 //TempListInfo = new List<string>();
-                IsWithMergedMessages = IsContainsLinedMessages(Jsonname);//отказалось, что сообщения есть не только в CommonEvents, но и в maps,troops и возможно других файлах
+                IsWithMergedMessages = IsContainsLinedMessages(jsonName);//оказалось, что сообщения есть не только в CommonEvents, но и в maps,troops и возможно других файлах
 
                 MessageMerged = new StringBuilder();
 
-                ParseJToken(root, Jsonname);
-                //ProceedJTokenAny(root, Jsonname);
+                ParseJToken(root, jsonName);
+                //ProceedJTokenAny(root, jsonName);
 
                 MessageMerged = null;
                 //занесение в список
                 //int TempListCount = TempList.Count;
                 //for (int i = 0; i < TempListCount; i++)
                 //{
-                //    THFilesElementsDataset.Tables[Jsonname].Rows.Add(TempList[i]);
-                //    THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(TempListInfo[i]);
+                //    THFilesElementsDataset.Tables[jsonName].Rows.Add(TempList[i]);
+                //    THFilesElementsDatasetInfo.Tables[jsonName].Rows.Add(TempListInfo[i]);
                 //}
 
                 //TempList = null;
@@ -84,32 +84,32 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 //timer.Stop();
                 //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
-                //FileWriter.WriteData(Path.Combine(Application.StartupPath, "Timers 4 Table.log"), Jsonname + ": " + difference + Environment.NewLine);
+                //FileWriter.WriteData(Path.Combine(Application.StartupPath, "Timers 4 Table.log"), jsonName + ": " + difference + Environment.NewLine);
                 //MessageBox.Show(difference.ToString());
 
                 //treeView1.ExpandAll();
             }
             catch (JsonReaderException ex)
             {
-                new FunctionsLogs().LogToFile("Error occured while json read (json is empty or corrupted): \r\n" + ex);
+                ProjectData.AppLog.LogToFile("Error occured while json read (json is empty or corrupted): \r\n" + ex);
             }
             catch (Exception ex)
             {
-                new FunctionsLogs().LogToFile("Error occured while json parse: \r\n" + ex);
+                ProjectData.AppLog.LogToFile("Error occured while json parse: \r\n" + ex);
                 //LogToFile(string.Empty, true);
             }
             finally
             {
                 //LogToFile(string.Empty, true);
                 //MessageBox.Show("sss");
-                //ds.Tables[Jsonname].Columns.Add("Translation");
-                //ds.Tables[Jsonname].Columns["Original"].ReadOnly = true;
+                //ds.Tables[jsonName].Columns.Add("Translation");
+                //ds.Tables[jsonName].Columns["Original"].ReadOnly = true;
                 //DGV.DataSource = ds.Tables[0];
                 //treeView1.EndUpdate();
             }
             //LogToFile(string.Empty, true);
 
-            return CheckTablesContent(Jsonname);
+            return CheckTablesContent(jsonName);
         }
 
         //bool MessageParsing = false;
@@ -221,154 +221,154 @@ namespace TranslationHelper.Formats.RPGMMV
                 return;
             }
 
-            if (jsonToken is JValue)
+            switch (jsonToken)
             {
-                //научить запоминать параметры шифрования файлов, если научу их дешифровать
-                //"hasEncryptedImages":true,"hasEncryptedAudio":true,"encryptionKey":"d41d8cd98f00b204e9800998ecf8427e"}
-
-                if (jsonToken.Type != JTokenType.String)
-                {
-                    return;
-                }
-
-                string tokenvalue = jsonToken.ToString();
-
-                if (IsWithMergedMessages && IsMessageCode(CurrentEventCode))
-                {
-                    if (MessageMerged.ToString().Length > 0)
+                case JValue value:
                     {
-                        MessageMerged.Append('\n');//add \n between lines in merged message
-                    }
-                    //LogToFile("code 401 adding value to merge=" + tokenvalue + ", curcode=" + curcode);
-                    MessageMerged.Append(tokenvalue);
-                    AddToStats();
-                }
-                else
-                {
-                    if (IsWithMergedMessages)
-                    {
-                        AddMergedMessage(jsonToken, jsonName);
-                    }
+                        //научить запоминать параметры шифрования файлов, если научу их дешифровать
+                        //"hasEncryptedImages":true,"hasEncryptedAudio":true,"encryptionKey":"d41d8cd98f00b204e9800998ecf8427e"}
 
-                    int commentIndex = tokenvalue.IndexOf("//");
-                    var tokenvalueNoComment = commentIndex > -1 ? tokenvalue.Substring(0, commentIndex) : tokenvalue;
-                    if (IsValidString(tokenvalueNoComment))
-                    {
-                        AddToStats();
-
-                        bool HasCurCode = CurrentEventCode > -1;
-                        AddRowData(jsonName, tokenvalue, "JsonPath: "
-                            + Environment.NewLine
-                            + jsonToken.Path
-                            + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
-                            (IsWithMergedMessages && HasCurCode) ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
-                            + (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
-                            , true, false);
-                    }
-                    else
-                    {
-                        AddToStats(false);
-                    }
-                }
-            }
-            else if (jsonToken is JObject jsonObject)
-            {
-                //LogToFile("JObject Properties: \r\n" + obj.Properties());
-                JToken lastProperty = null;
-                foreach (var property in jsonObject.Properties())
-                {
-                    lastProperty = property;
-                    propertyName = property.Name;
-
-                    if (IsWithMergedMessages)//asdfg skip code 108,408,356
-                    {
-                        bool IsCode = IsInteger(property.Value.Type) && propertyName == "code";
-                        if (IsCode)
+                        if (value.Type != JTokenType.String)
                         {
-                            CurrentEventCode = (int)property.Value;
+                            return;
                         }
-                        if (IsExcludedCode(CurrentEventCode)) // code always located in the objects and dont need do as code below
+
+                        string tokenvalue = jsonToken.ToString();
+
+                        if (IsWithMergedMessages && IsMessageCode(CurrentEventCode))
                         {
-                            AddToStats(false);
-                            continue;
+                            if (MessageMerged.ToString().Length > 0)
+                            {
+                                MessageMerged.Append('\n');//add \n between lines in merged message
+                            }
+                            //LogToFile("code 401 adding value to merge=" + tokenvalue + ", currentEventCode=" + currentEventCode);
+                            MessageMerged.Append(tokenvalue);
+                            AddToStats();
                         }
                         else
-                        if (IsCodeWithStringInParameters(CurrentEventCode) && jsonObject.Last is JProperty lastObjectsProperty) // in message codes need only last property's "parameters" value
                         {
-                            ParseJToken(lastObjectsProperty.Value, jsonName);
-                            continue;
+                            if (IsWithMergedMessages)
+                            {
+                                AddMergedMessage(jsonToken, jsonName);
+                            }
+
+                            if (!IsValidString(tokenvalue))
+                            {
+                                AddToStats(false);
+                                return;
+                            }
+
+                            AddToStats();
+
+                            bool HasCurCode = CurrentEventCode > -1;
+                            AddRowData(jsonName, tokenvalue, "JsonPath: "
+                                + Environment.NewLine
+                                + jsonToken.Path
+                                + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
+                                IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
+                                + (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                                , true, false);
                         }
 
-                        // replaced by IsExcludedCode above
-                        //if (skipIt)
-                        //{
-                        //    if (IsExcludedCode(CurrentEventCode))
-                        //    {
-                        //        if (!IsCode && propertyName == "parameters")//asdf
-                        //        {
-                        //            skipIt = false;
-                        //            continue;
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        skipIt = false;
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    if (IsCode)
-                        //    {
-                        //        //string propertyValue = property.Value + string.Empty;
-                        //        if (IsExcludedCode(CurrentEventCode))
-                        //        {
-                        //            skipIt = true;
-                        //            continue;
-                        //        }
-                        //    }
-                        //}
+                        break;
                     }
-                    ParseJToken(property.Value, jsonName/*, property.Name*/);
-                }
 
-                // добавление объединенных сообщений для события текстового сообщения 401 ил 405, если новых строк больше нет
-                if (IsMessageCode(CurrentEventCode) && MessageMerged.Length > 0)
-                {
-                    if (jsonToken.Next == null // next JProperty is not exists
-                        || !(jsonToken.Next is JObject obj) // or next property is not a JObject
-                        || !(obj.First is JProperty prop) // or next JObject's first element is not JProperty
-                        || prop.Name != "code" // or first JProperty has not "code" name
-                        || (int)prop.Value != CurrentEventCode // or the JProperty's code not equal current
-                        )
+                case JObject jsonObject:
                     {
-                        AddMergedMessage(lastProperty, jsonName, true, false);
+                        //LogToFile("JObject Properties: \r\n" + obj.Properties());
+                        JToken lastProperty = null;
+                        foreach (var property in jsonObject.Properties())
+                        {
+                            lastProperty = property;
+                            propertyName = property.Name;
+
+                            if (IsWithMergedMessages)//asdfg skip code 108,408,356
+                            {
+                                bool IsCode = IsInteger(property.Value.Type) && propertyName == "code";
+                                if (IsCode)
+                                {
+                                    CurrentEventCode = (int)property.Value;
+                                }
+
+                                if (IsExcludedOrParsed(jsonObject, CurrentEventCode, jsonName))
+                                {
+                                    break; // skip all rest properties parse
+                                }
+
+                                // replaced by IsExcludedCode above
+                                //if (skipIt)
+                                //{
+                                //    if (IsExcludedCode(CurrentEventCode))
+                                //    {
+                                //        if (!IsCode && propertyName == "parameters")//asdf
+                                //        {
+                                //            skipIt = false;
+                                //            continue;
+                                //        }
+                                //    }
+                                //    else
+                                //    {
+                                //        skipIt = false;
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    if (IsCode)
+                                //    {
+                                //        //string propertyValue = property.Value + string.Empty;
+                                //        if (IsExcludedCode(CurrentEventCode))
+                                //        {
+                                //            skipIt = true;
+                                //            continue;
+                                //        }
+                                //    }
+                                //}
+                            }
+                            ParseJToken(property.Value, jsonName/*, property.Name*/);
+                        }
+
+                        // добавление объединенных сообщений для события текстового сообщения 401 ил 405, если новых строк больше нет
+                        if (IsMessageCode(CurrentEventCode) && MessageMerged.Length > 0)
+                        {
+                            if (jsonToken.Next == null // next JProperty is not exists
+                                || !(jsonToken.Next is JObject obj) // or next property is not a JObject
+                                || !(obj.First is JProperty prop) // or next JObject's first element is not JProperty
+                                || prop.Name != "code" // or first JProperty has not "code" name
+                                || (int)prop.Value != CurrentEventCode // or the JProperty's code not equal current
+                                )
+                            {
+                                AddMergedMessage(lastProperty, jsonName, true, false);
+                            }
+                        }
+
+                        ResetCurrentCode();
+                        break;
                     }
-                }
 
-                ResetCurrentCode();
-            }
-            else if (jsonToken is JArray jsonArray)
-            {
-                int arrayCount = jsonArray.Count;
-                for (int i = 0; i < arrayCount; i++)
-                {
-                    ParseJToken(jsonArray[i], jsonName);
-                }
+                case JArray jsonArray:
+                    {
+                        int arrayCount = jsonArray.Count;
+                        for (int i = 0; i < arrayCount; i++)
+                        {
+                            ParseJToken(jsonArray[i], jsonName);
+                        }
 
-                //заменил записью выше
-                //если последний массив properties был пустой, то добавить записанное сообщение
-                //if (IsWithMergedMessages
-                //    && propertyName == "parameters"
-                //    && arrayCount == 0 /**/
-                //    &&
-                //    MessageMerged.Length > 0) //добавить объединенное сообщение, если оно не пустое
-                //{
-                //    AddMergedMessage(jsonToken, JsonName, true, false);
-                //}
-            }
-            else
-            {
-                //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
+                        break;
+
+                        //заменил записью выше
+                        //если последний массив properties был пустой, то добавить записанное сообщение
+                        //if (IsWithMergedMessages
+                        //    && propertyName == "parameters"
+                        //    && arrayCount == 0 /**/
+                        //    &&
+                        //    MessageMerged.Length > 0) //добавить объединенное сообщение, если оно не пустое
+                        //{
+                        //    AddMergedMessage(jsonToken, JsonName, true, false);
+                        //}
+                    }
+
+                default:
+                    break;
             }
         }
 
@@ -467,11 +467,11 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <summary>
         /// Save merged message
         /// </summary>
-        /// <param name="JsonToken">Token where get code</param>
-        /// <param name="JsonName">Json name</param>
-        /// <param name="CheckPreviousToken">Check previous token when get code info</param>
-        /// <param name="IsValue">True when the method called from JValue section</param>
-        private void AddMergedMessage(JToken JsonToken, string JsonName, bool CheckPreviousToken = true, bool IsValue = true)
+        /// <param name="jsonToken">Token where get code</param>
+        /// <param name="jsonName">Json name</param>
+        /// <param name="checkPreviousToken">Check previous token when get code info</param>
+        /// <param name="isValue">True when the method called from JValue section</param>
+        private void AddMergedMessage(JToken jsonToken, string jsonName, bool checkPreviousToken = true, bool isValue = true)
         {
             string mergedstring;
             if (string.IsNullOrWhiteSpace(mergedstring = MessageMerged.ToString()))
@@ -487,9 +487,9 @@ namespace TranslationHelper.Formats.RPGMMV
             }
 
             bool HasCurCode = CurrentEventCode > -1;
-            AddData(JsonName, mergedstring, "JsonPath: "
+            AddData(jsonName, mergedstring, "JsonPath: "
                 + Environment.NewLine
-                + JsonToken.Path
+                + jsonToken.Path
                 + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
                 (IsWithMergedMessages && HasCurCode) ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
                 + (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
@@ -499,16 +499,16 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <summary>
         /// returns event name if found
         /// </summary>
-        /// <param name="curcode"></param>
+        /// <param name="currentEventCode"></param>
         /// <returns></returns>
-        private string GetCodeName(int curcode)
+        private string GetCodeName(int currentEventCode)
         {
-            if (EventCodes.ContainsKey(curcode))
+            if (EventCodes.ContainsKey(currentEventCode))
             {
-                var EventName = EventCodes[curcode];
-                if (EventName.Length > 0)
+                var eventName = EventCodes[currentEventCode];
+                if (eventName.Length > 0)
                 {
-                    return "\r\nEvent=\"" + EventName + "\"";
+                    return "\r\nEvent=\"" + eventName + "\"";
                 }
             }
 
@@ -516,7 +516,7 @@ namespace TranslationHelper.Formats.RPGMMV
         }
 
         //obsolete
-        //curcode must be set and reseted correctly
+        //currentEventCode must be set and reseted correctly
         ///// <summary>
         ///// get jobject with code jproperty
         ///// </summary>
@@ -598,37 +598,37 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <summary>
         /// String for this codes must not be appeared
         /// </summary>
-        /// <param name="curcode"></param>
+        /// <param name="currentEventCode"></param>
         /// <returns></returns>
-        private static bool IsExcludedCode(int curcode)
+        private static bool IsExcludedCode(int currentEventCode)
         {
-            return ExcludedCodes.ContainsKey(curcode); /*curcode.Length == 3 && (curcode == 108 || curcode == 408 || curcode == 356)*/;
+            return ExcludedCodes.ContainsKey(currentEventCode); /*currentEventCode.Length == 3 && (currentEventCode == 108 || currentEventCode == 408 || currentEventCode == 356)*/;
         }
 
         /// <summary>
         /// Multiline message
         /// </summary>
-        /// <param name="curcode"></param>
+        /// <param name="currentEventCode"></param>
         /// <returns></returns>
-        private static bool IsMessageCode(int curcode)
+        private static bool IsMessageCode(int currentEventCode)
         {
-            return (curcode == 401 || curcode == 405);
+            return (currentEventCode == 401 || currentEventCode == 405);
         }
 
         //List<string> TempList;
         //List<string> TempListInfo;
 
-        private void AddData(string Jsonname, string Value, string Info)
+        private void AddData(string jsonName, string value, string info)
         {
-            AddRowData(Jsonname, Value, Info, true);
+            AddRowData(jsonName, value, info, true);
             //if (hashes.Contains(Value))
             //    return;
 
-            //ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows.Add(Value);
+            //ProjectData.THFilesElementsDataset.Tables[jsonName].Rows.Add(Value);
             //TempList.Add(Value);//много быстрее
             //hashes.Add(Value);
 
-            //ProjectData.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add(Info);
+            //ProjectData.THFilesElementsDatasetInfo.Tables[jsonName].Rows.Add(Info);
             //TempListInfo.Add(Info);//много быстрее
         }
 
@@ -639,14 +639,14 @@ namespace TranslationHelper.Formats.RPGMMV
             return WriteJson(Path.GetFileNameWithoutExtension(ProjectData.FilePath), ProjectData.FilePath);
         }
 
-        private bool WriteJson(string Jsonname, string sPath)
+        private bool WriteJson(string jsonName, string sPath)
         {
-            if (ProjectData.THFilesElementsDataset.Tables.Contains(Jsonname) && FunctionsTable.IsTableRowsAllEmpty(ProjectData.THFilesElementsDataset.Tables[Jsonname]))
+            if (ProjectData.THFilesElementsDataset.Tables.Contains(jsonName) && FunctionsTable.IsTableRowsAllEmpty(ProjectData.THFilesElementsDataset.Tables[jsonName]))
             {
                 return false;
             }
 
-            ProjectData.Main.ProgressInfo(true, T._("Writing") + ": " + Jsonname + ".json");
+            ProjectData.Main.ProgressInfo(true, T._("Writing") + ": " + jsonName + ".json");
             try
             {
                 //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
@@ -657,41 +657,41 @@ namespace TranslationHelper.Formats.RPGMMV
                     {
                         root = JToken.Load(jsonReader);
 
-                        //ReadJson(root, Jsonname);
+                        //ReadJson(root, jsonName);
                     }
                 }
 
                 StartingRow = 0;//сброс начальной строки поиска в табице
-                IsWithMergedMessages = IsContainsLinedMessages(Jsonname);//разбитые на строки сообщения есть и в других файлах, вроде maps,troops, может еще где
+                IsWithMergedMessages = IsContainsLinedMessages(jsonName);//разбитые на строки сообщения есть и в других файлах, вроде maps,troops, может еще где
                 if (IsWithMergedMessages)
                 {
                     //сброс значений для CommonEvents
-                    //curcode = string.Empty; // commented, see ResetCurrentCode()
+                    //currentEventCode = string.Empty; // commented, see ResetCurrentCode()
                     propertyName = string.Empty;
                     skipIt = false;
 
                     //только в CommonEvents была сборка строк в сообщение
-                    //SplitTableCellValuesAndTheirLinesToDictionary(Jsonname, false, false);
+                    //SplitTableCellValuesAndTheirLinesToDictionary(jsonName, false, false);
                 }
                 else
                 {
-                    //SplitTableCellValuesToDictionaryLines(Jsonname);
+                    //SplitTableCellValuesToDictionaryLines(jsonName);
                 }
-                SplitTableCellValuesAndTheirLinesToDictionary(Jsonname, false, false);
+                SplitTableCellValuesAndTheirLinesToDictionary(jsonName, false, false);
 
-                addedjobjects = new HashSet<JObject>();
+                AddedJObjects = new HashSet<JObject>();
                 if (TablesLinesDict != null && TablesLinesDict.Count > 0)
                 {
-                    //GetTranslatableRows(Jsonname);
-                    ParseJTokenWriteWithPreSplitlines(root, Jsonname);
+                    //GetTranslatableRows(jsonName);
+                    ParseJTokenWriteWithPreSplitlines(root, jsonName);
                 }
                 else
                 {
-                    if (!ProjectData.THFilesElementsDataset.Tables.Contains(Jsonname))
+                    if (!ProjectData.THFilesElementsDataset.Tables.Contains(jsonName))
                     {
                         return false;
                     }
-                    ParseJTokenWrite(root, Jsonname);
+                    ParseJTokenWrite(root, jsonName);
                 }
 
                 File.WriteAllText(sPath, CorrectJsonFormatToRPGMMV(root));
@@ -713,11 +713,11 @@ namespace TranslationHelper.Formats.RPGMMV
         ///// IsTranslatableRow[original] will be true if original have translation
         ///// tried to add check if row have translation but here also issue because no displayed rows will be translated
         ///// </summary>
-        ///// <param name="Jsonname"></param>
-        //private void GetTranslatableRows(string Jsonname)
+        ///// <param name="jsonName"></param>
+        //private void GetTranslatableRows(string jsonName)
         //{
         //    //IsTranslatableRow = new Dictionary<string, bool>();
-        //    //foreach (System.Data.DataRow row in ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows)
+        //    //foreach (System.Data.DataRow row in ProjectData.THFilesElementsDataset.Tables[jsonName].Rows)
         //    //{
         //    //    IsTranslatableRow.Add(row[0] as string,
         //    //        !(row[1] == null || string.IsNullOrEmpty(row[1] + "") || Equals(row[1], row[0]))
@@ -725,11 +725,11 @@ namespace TranslationHelper.Formats.RPGMMV
         //    //}
         //}
 
-        private static bool IsContainsLinedMessages(string Jsonname)
+        private static bool IsContainsLinedMessages(string jsonName)
         {
             return true;
-            //return Jsonname == "CommonEvents";
-            //return Jsonname == "CommonEvents" || Jsonname.StartsWith("Map") || Jsonname == "Troops";
+            //return jsonName == "CommonEvents";
+            //return jsonName == "CommonEvents" || jsonName.StartsWith("Map") || jsonName == "Troops";
         }
 
         /// <summary>
@@ -751,184 +751,195 @@ namespace TranslationHelper.Formats.RPGMMV
                 return;
             }
 
-            if (jsonToken is JValue)
+            switch (jsonToken)
             {
-                //LogToFile("JValue: " + propertyname + "=" + token.ToString());
-                if (jsonToken.Type != JTokenType.String)
-                {
-                    return;
-                }
-
-                string tokenValue = jsonToken + string.Empty;
-                if (tokenValue.Length == 0 || FunctionsRomajiKana.LocalePercentIsNotValid(tokenValue))
-                {
-                    return;
-                }
-
-                string parameter0Value = tokenValue;
-
-                //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
-
-                int rcount = ProjectData.THFilesElementsDataset.Tables[jsonName].Rows.Count;
-                for (int r = StartingRow; r < rcount; r++)
-                {
-                    var row = ProjectData.THFilesElementsDataset.Tables[jsonName].Rows[r];
-                    if ((row[1] + string.Empty).Length == 0)
+                case JValue value:
                     {
-                    }
-                    else
-                    {
-                        string[] origA = FunctionsString.GetAllNonEmptyLinesToArray(row[0] + string.Empty);//Все строки, кроме пустых, чтобы потом исключить из проверки
-                        int origALength = origA.Length;
-                        if (origALength == 0)
+                        //LogToFile("JValue: " + propertyname + "=" + token.ToString());
+                        if (value.Type != JTokenType.String)
                         {
-                            origA = new string[1];
-                            origA[0] = row[0] + string.Empty;
-                            //LogToFile("(origALength == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][0].ToString());
+                            return;
                         }
 
-                        if (origALength > 0)
-                        {
-                            string[] transA = FunctionsString.GetAllNonEmptyLinesToArray(row[1] + string.Empty);
+                        string tokenValue = jsonToken + string.Empty;
 
-                            if (transA.Length == 0)
+                        if (!IsValidString(tokenValue))
+                        {
+                            return;
+                        }
+
+                        string parameter0Value = tokenValue;
+
+                        //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
+
+                        int rcount = ProjectData.THFilesElementsDataset.Tables[jsonName].Rows.Count;
+                        for (int r = StartingRow; r < rcount; r++)
+                        {
+                            var row = ProjectData.THFilesElementsDataset.Tables[jsonName].Rows[r];
+                            if ((row[1] + string.Empty).Length == 0)
                             {
-                                transA = new string[1];
-                                transA[0] = row[1] + string.Empty;
-                                //LogToFile("(transA.Length == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[Jsonname].Rows[i1][1].ToString());
+                                continue;
                             }
-                            string transMerged = string.Empty;
-                            if (transA.Length == origALength)//если количество строк в оригинале и переводе равно
+
+                            string[] origA = FunctionsString.GetAllNonEmptyLinesToArray(row[0] + string.Empty);//Все строки, кроме пустых, чтобы потом исключить из проверки
+                            int origALength = origA.Length;
+                            if (origALength == 0)
                             {
-                                //ничего не делать
+                                origA = new string[1];
+                                origA[0] = row[0] + string.Empty;
+                                //LogToFile("(origALength == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[jsonName].Rows[i1][0].ToString());
                             }
-                            else // если перевод вдруг был переведен так, что не равен количеством строк оригиналу, тогда поделить его на равные строки
+
+                            if (origALength > 0)
                             {
-                                //if (transA.Length > 0) // но перед этим, если перевод больше одной строки
+                                string[] transA = FunctionsString.GetAllNonEmptyLinesToArray(row[1] + string.Empty);
+
+                                if (transA.Length == 0)
                                 {
-                                    foreach (string ts in transA)
+                                    transA = new string[1];
+                                    transA[0] = row[1] + string.Empty;
+                                    //LogToFile("(transA.Length == 0 : Set size to 1 and value0=" + THFilesElementsDataset.Tables[jsonName].Rows[i1][1].ToString());
+                                }
+                                string transMerged = string.Empty;
+                                if (transA.Length == origALength)//если количество строк в оригинале и переводе равно
+                                {
+                                    //ничего не делать
+                                }
+                                else // если перевод вдруг был переведен так, что не равен количеством строк оригиналу, тогда поделить его на равные строки
+                                {
+                                    //if (transA.Length > 0) // но перед этим, если перевод больше одной строки
                                     {
-                                        transMerged += ts; // объединить все строки в одну
+                                        foreach (string ts in transA)
+                                        {
+                                            transMerged += ts; // объединить все строки в одну
+                                        }
                                     }
+
+                                    transA = FunctionsString.SplitStringByEqualParts(transMerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
                                 }
 
-                                transA = FunctionsString.SplitStringByEqualParts(transMerged, origALength); // и создать новый массив строк перевода поделенный на равные строки по кол.ву строк оригинала.
-                            }
-
-                            //Подстраховочная проверка для некоторых значений из нескольких строк, полное сравнение перед построчной
-                            if (tokenValue == row[0] + string.Empty)
-                            {
-                                (jsonToken as JValue).Value = (row[1] + string.Empty).Replace("\r", string.Empty);//убирает \r, т.к. в json присутствует только \n
-                                StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
-                                break;
-                            }
-
-                            bool translationWasSet = false; //это чтобы выйти потом из прохода по таблице и перейти к след. элементу json, если перевод был присвоен
-                            for (int i2 = 0; i2 < origALength; i2++)
-                            {
-                                if (parameter0Value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
+                                //Подстраховочная проверка для некоторых значений из нескольких строк, полное сравнение перед построчной
+                                if (tokenValue == row[0] + string.Empty)
                                 {
-                                    //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
-
-                                    (jsonToken as JValue).Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
-
+                                    (jsonToken as JValue).Value = (row[1] + string.Empty).Replace("\r", string.Empty);//убирает \r, т.к. в json присутствует только \n
                                     StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
-                                                    //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
-                                    translationWasSet = true;
+                                    break;
+                                }
+
+                                bool translationWasSet = false; //это чтобы выйти потом из прохода по таблице и перейти к след. элементу json, если перевод был присвоен
+                                for (int i2 = 0; i2 < origALength; i2++)
+                                {
+                                    if (parameter0Value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
+                                    {
+                                        //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
+
+                                        value.Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
+
+                                        StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
+                                                        //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
+                                        translationWasSet = true;
+                                        break;
+                                    }
+                                }
+                                if (translationWasSet) //выход из цикла прохода по всей таблице, если значение найдено для одной из строк оригинала, и переход к следующему элементу json
+                                {
+                                    StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
                                     break;
                                 }
                             }
-                            if (translationWasSet) //выход из цикла прохода по всей таблице, если значение найдено для одной из строк оригинала, и переход к следующему элементу json
+                            else
                             {
-                                StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
-                                break;
+                                if (tokenValue == row[0] + string.Empty)
+                                {
+                                    value.Value = row[1] + string.Empty;
+                                    StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
+                                    break;
+                                }
                             }
                         }
-                        else
-                        {
-                            if (tokenValue == row[0] + string.Empty)
-                            {
-                                (jsonToken as JValue).Value = row[1] + string.Empty;
-                                StartingRow = r;//запоминание строки, чтобы не пробегало всё с нуля
-                                break;
-                            }
-                        }
+
+                        break;
                     }
-                }
-            }
-            else if (jsonToken is JObject jsonObject)
-            {
-                //LogToFile("JObject Properties: \r\n" + obj.Properties());
-                foreach (var property in jsonObject.Properties())
-                {
-                    propertyName = property.Name;
-                    if (IsWithMergedMessages)//asdfg skip code 108,408,356
+
+                case JObject jsonObject:
                     {
-                        if (IsInteger(property.Value.Type) && propertyName == "code")
+                        //LogToFile("JObject Properties: \r\n" + obj.Properties());
+                        foreach (var property in jsonObject.Properties())
                         {
-                            CurrentEventCode = (int)property.Value;
-                            //cCode = "Code" + curcode;
-                            //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
+                            propertyName = property.Name;
+                            if (IsWithMergedMessages)//asdfg skip code 108,408,356
+                            {
+                                if (IsInteger(property.Value.Type) && propertyName == "code")
+                                {
+                                    CurrentEventCode = (int)property.Value;
+                                    //cCode = "Code" + currentEventCode;
+                                    //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
+                                }
+
+                                if (IsExcludedOrParsed(jsonObject, CurrentEventCode, jsonName))
+                                {
+                                    break;
+                                }
+
+                                // replaced by IsExcludedCode above
+                                //if (skipIt)
+                                //{
+                                //    if (IsExcludedCode(CurrentEventCode))
+                                //    {
+                                //        if (property.Name == "parameters")//asdf
+                                //        {
+                                //            skipIt = false;
+                                //            continue;
+                                //        }
+                                //    }
+                                //    else
+                                //    {
+                                //        skipIt = false;
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    if (IsInteger(property.Value.Type) && propertyName == "code")
+                                //    {
+                                //        if (IsExcludedCode((int)property.Value))
+                                //        {
+                                //            skipIt = true;
+                                //            continue;
+                                //        }
+                                //    }
+                                //}
+                            }
+                            ParseJTokenWrite(property.Value, jsonName/*, property.Name*/);
                         }
 
-                        if (IsCodeWithStringInParameters(CurrentEventCode)) // in message codes need only last object value
-                        {
-                            ParseJTokenNew(jsonObject.Last, jsonName);
-                        }
-                        else if (IsExcludedCode(CurrentEventCode)) // code always located in the objects and dont need do as code below
-                        {
-                            AddToStats(false);
-                            continue;
-                        }
-
-                        // replaced by IsExcludedCode above
-                        //if (skipIt)
-                        //{
-                        //    if (IsExcludedCode(CurrentEventCode))
-                        //    {
-                        //        if (property.Name == "parameters")//asdf
-                        //        {
-                        //            skipIt = false;
-                        //            continue;
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        skipIt = false;
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    if (IsInteger(property.Value.Type) && propertyName == "code")
-                        //    {
-                        //        if (IsExcludedCode((int)property.Value))
-                        //        {
-                        //            skipIt = true;
-                        //            continue;
-                        //        }
-                        //    }
-                        //}
+                        ResetCurrentCode();
+                        break;
                     }
-                    ParseJTokenWrite(property.Value, jsonName/*, property.Name*/);
-                }
 
-                ResetCurrentCode();
-            }
-            else if (jsonToken is JArray jsonArray)
-            {
-                int arrayCount = jsonArray.Count;
-                for (int i = 0; i < arrayCount; i++)
-                {
-                    ParseJTokenWrite(jsonArray[i], jsonName);
-                }
-            }
-            else
-            {
-                //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
+                case JArray jsonArray:
+                    {
+                        int arrayCount = jsonArray.Count;
+                        for (int i = 0; i < arrayCount; i++)
+                        {
+                            ParseJTokenWrite(jsonArray[i], jsonName);
+                        }
+
+                        break;
+                    }
+
+                default:
+                    break;
             }
         }
 
-        HashSet<JObject> addedjobjects;
+        protected override bool IsValidString(string inputString)
+        {
+            int commentIndex = inputString.IndexOf("//");
+            var tokenvalueNoComment = commentIndex > -1 ? inputString.Substring(0, commentIndex) : inputString;
+            return base.IsValidString(tokenvalueNoComment);
+        }
+
+        HashSet<JObject> AddedJObjects;
         private void ParseJTokenWriteWithPreSplitlines(JToken jsonToken, string jsonName/*, string propertyname = ""*/)
         {
             if (jsonToken == null)
@@ -936,165 +947,184 @@ namespace TranslationHelper.Formats.RPGMMV
                 return;
             }
 
-            if (jsonToken is JValue)
+            switch (jsonToken)
             {
-                //LogToFile("JValue: " + propertyname + "=" + token.ToString());
-                if (jsonToken.Type != JTokenType.String)
-                {
-                    return;
-                }
-
-                string tokenvalue = jsonToken + string.Empty;
-
-                if (tokenvalue.Length == 0 || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue))
-                {
-                    return;
-                }
-
-                //предполагается, что ячейки из таблицы были разбиты на строки и добавлены в словарь
-                if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/
-                    TablesLinesDict.ContainsKey(tokenvalue)
-                    && TablesLinesDict[tokenvalue].Length > 0)
-                {
-                    try
+                case JValue value:
                     {
-                        int tokenvalueLinesCount;
-                        if (jsonToken.Parent != null
-                            && jsonToken.Parent.Parent != null
-                            && jsonToken.Parent.Parent.Parent != null
-                            && (jsonToken.Parent.Parent.Parent is JObject currentJObject)
-                            && TablesLinesDict[tokenvalue].GetLinesCount() > (tokenvalueLinesCount = tokenvalue.GetLinesCount()))
+                        //LogToFile("JValue: " + propertyname + "=" + token.ToString());
+                        if (value.Type != JTokenType.String)
                         {
-                            int ind = 0;
-                            List<string> stringToWrite = new List<string>();
-                            bool NotWrited = true;
-                            bool IsTheJObjetAdded = false;
+                            return;
+                        }
 
-                            foreach (var line in TablesLinesDict[tokenvalue].SplitToLines())
+                        string tokenvalue = value + string.Empty;
+
+                        if (tokenvalue.Length == 0 || FunctionsRomajiKana.LocalePercentIsNotValid(tokenvalue))
+                        {
+                            return;
+                        }
+
+                        //предполагается, что ячейки из таблицы были разбиты на строки и добавлены в словарь
+                        if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/
+                            !TablesLinesDict.ContainsKey(tokenvalue)
+                            || TablesLinesDict[tokenvalue].Length == 0)
+                        {
+                            return;
+                        }
+
+                        try
+                        {
+                            int tokenvalueLinesCount;
+                            if (jsonToken.Parent == null
+                                || jsonToken.Parent.Parent == null
+                                || jsonToken.Parent.Parent.Parent == null
+                                || !(jsonToken.Parent.Parent.Parent is JObject currentJObject)
+                                || TablesLinesDict[tokenvalue].GetLinesCount() == (tokenvalueLinesCount = tokenvalue.GetLinesCount()))
                             {
-                                if (ind < tokenvalueLinesCount)
-                                {
-                                    stringToWrite.Add(line);
-                                    ind++;
-                                }
-                                else
-                                {
-                                    if (NotWrited)
-                                    {
-                                        (jsonToken as JValue).Value = string.Join(Environment.NewLine, stringToWrite);
-                                        NotWrited = false;
-                                    }
-
-                                    var newJObject = GetNewJObject(currentJObject, line);
-                                    currentJObject.AddAfterSelf(newJObject);
-                                    if (!IsTheJObjetAdded && !addedjobjects.Contains(newJObject))
-                                    {
-                                        IsTheJObjetAdded = true;
-                                        addedjobjects.Add(newJObject);
-                                    }
-                                    currentJObject = newJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
-                                }
+                                value.Value = TablesLinesDict[tokenvalue];
                             }
+                            else
+                            {
+                                int ind = 0;
+                                List<string> stringToWrite = new List<string>();
+                                bool NotWrited = true;
+                                bool IsTheJObjetAdded = false;
 
+                                foreach (var line in TablesLinesDict[tokenvalue].SplitToLines())
+                                {
+                                    if (ind < tokenvalueLinesCount)
+                                    {
+                                        stringToWrite.Add(line);
+                                        ind++;
+                                    }
+                                    else
+                                    {
+                                        if (NotWrited)
+                                        {
+                                            value.Value = string.Join(Environment.NewLine, stringToWrite);
+                                            NotWrited = false;
+                                        }
+
+                                        var newJObject = GetNewJObject(currentJObject, line);
+                                        currentJObject.AddAfterSelf(newJObject);
+                                        if (!IsTheJObjetAdded && !AddedJObjects.Contains(newJObject))
+                                        {
+                                            IsTheJObjetAdded = true;
+                                            AddedJObjects.Add(newJObject);
+                                        }
+                                        currentJObject = newJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
+                                    }
+                                }
+
+                            }
                         }
-                        else
+                        catch
                         {
-                            (jsonToken as JValue).Value = TablesLinesDict[tokenvalue];
-                        }
-                    }
-                    catch
-                    {
 
+                        }
+
+                        break;
                     }
-                }
-                else
-                {
-                    return;
-                }
+
+                case JObject jsonObject:
+                    {
+                        //skip new added json object
+                        if (AddedJObjects.Contains(jsonObject))
+                        {
+                            return;
+                        }
+
+                        //LogToFile("JObject Properties: \r\n" + obj.Properties());
+                        foreach (var property in jsonObject.Properties())
+                        {
+                            propertyName = property.Name;
+                            if (IsWithMergedMessages)//asdfg skip code 108,408,356
+                            {
+                                var isCode = IsInteger(property.Value.Type) && propertyName == "code";
+                                if (isCode)
+                                {
+                                    CurrentEventCode = (int)property.Value;
+                                    //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
+                                }
+
+                                if (IsExcludedOrParsed(jsonObject, CurrentEventCode, jsonName))
+                                {
+                                    break;
+                                }
+
+                                // replaced by IsExcludedCode above
+                                //if (skipIt)
+                                //{
+                                //    if (IsExcludedCode(CurrentEventCode))
+                                //    {
+                                //        if (!isCode && propertyName == "parameters")//asdf
+                                //        {
+                                //            skipIt = false;
+                                //            continue;
+                                //        }
+                                //    }
+                                //    else
+                                //    {
+                                //        skipIt = false;
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    if (isCode)
+                                //    {
+                                //        //string propertyValue = property.Value + string.Empty;
+                                //        if (IsExcludedCode(CurrentEventCode))
+                                //        {
+                                //            skipIt = true;
+                                //            continue;
+                                //        }
+                                //    }
+                                //}
+                            }
+                            ParseJTokenWriteWithPreSplitlines(property.Value, jsonName/*, property.Name*/);
+                        }
+
+                        ResetCurrentCode();
+                        break;
+                    }
+
+                case JArray jsonArray:
+                    {
+                        for (int i = 0; i < jsonArray.Count/*(здесь должно быть без предварительного зпоминания количества, т.к. массив меняется)*/
+                            ; i++)
+                        {
+                            try
+                            {
+                                ParseJTokenWriteWithPreSplitlines(jsonArray[i], jsonName);
+                            }
+                            catch
+                            {
+                            }
+                        }
+
+                        break;
+                    }
+
+                default:
+                    break;
             }
-            else if (jsonToken is JObject jsonObject)
+        }
+
+        private bool IsExcludedOrParsed(JObject jsonObject, int currentEventCode, string jsonName)
+        {
+            if (IsExcludedCode(currentEventCode)) // code always located in the objects and dont need do as code below
             {
-                //skip new added json object
-                if (addedjobjects.Contains(jsonObject))
-                {
-                    return;
-                }
-
-                //LogToFile("JObject Properties: \r\n" + obj.Properties());
-                foreach (var property in jsonObject.Properties())
-                {
-                    propertyName = property.Name;
-                    if (IsWithMergedMessages)//asdfg skip code 108,408,356
-                    {
-                        var isCode = IsInteger(property.Value.Type) && propertyName == "code";
-                        if (isCode)
-                        {
-                            CurrentEventCode = (int)property.Value;
-                            //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
-                        }
-
-                        if (IsCodeWithStringInParameters(CurrentEventCode)) // in message codes need only last object value
-                        {
-                            ParseJTokenNew(jsonObject.Last, jsonName);
-                        }
-                        else if (IsExcludedCode(CurrentEventCode)) // code always located in the objects and dont need do as code below
-                        {
-                            AddToStats(false);
-                            continue;
-                        }
-
-                        // replaced by IsExcludedCode above
-                        //if (skipIt)
-                        //{
-                        //    if (IsExcludedCode(CurrentEventCode))
-                        //    {
-                        //        if (!isCode && propertyName == "parameters")//asdf
-                        //        {
-                        //            skipIt = false;
-                        //            continue;
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        skipIt = false;
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    if (isCode)
-                        //    {
-                        //        //string propertyValue = property.Value + string.Empty;
-                        //        if (IsExcludedCode(CurrentEventCode))
-                        //        {
-                        //            skipIt = true;
-                        //            continue;
-                        //        }
-                        //    }
-                        //}
-                    }
-                    ParseJTokenWriteWithPreSplitlines(property.Value, jsonName/*, property.Name*/);
-                }
-
-                ResetCurrentCode();
-            }
-            else if (jsonToken is JArray jsonArray)
-            {
-                for (int i = 0; i < jsonArray.Count/*(здесь должно быть без предварительного зпоминания количества, т.к. массив меняется)*/
-                    ; i++)
-                {
-                    try
-                    {
-                        ParseJTokenWriteWithPreSplitlines(jsonArray[i], jsonName);
-                    }
-                    catch
-                    {
-                    }
-                }
+                AddToStats(false);
+                return true;
             }
             else
+            if (IsCodeWithStringInParameters(currentEventCode) && jsonObject.Last is JProperty lastObjectsProperty) // in message codes need only last property's "parameters" value
             {
-                //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
+                ParseJToken(lastObjectsProperty.Value, jsonName);
+                return true;
             }
+
+            return false;
         }
 
         /// <summary>

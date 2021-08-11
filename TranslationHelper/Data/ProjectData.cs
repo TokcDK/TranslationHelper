@@ -100,6 +100,7 @@ namespace TranslationHelper.Data
         /// main table/row index coordinats data for same translation for identical and for write functions
         /// </summary>
         internal static Dictionary<string, Dictionary<string, List<int>>> OriginalsTableRowCoordinats { get; set; }
+
         public static string SelectedGameDir;
         public static string SelectedDir;
         public static string ProjectWorkDir;
@@ -151,5 +152,10 @@ namespace TranslationHelper.Data
         /// [for json open\save improve] added rpg maker mv json event codes
         /// </summary>
         internal static Dictionary<int, int> RpgMVAddedCodesStat = new Dictionary<int, int>();
+
+        /// <summary>
+        /// Application log
+        /// </summary>
+        internal static FunctionsLogs AppLog = new FunctionsLogs();
     }
 }

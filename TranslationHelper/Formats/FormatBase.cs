@@ -13,7 +13,6 @@ namespace TranslationHelper.Formats
 {
     abstract class FormatBase
     {
-
         protected Dictionary<string, string> TablesLinesDict;
 
         protected FormatBase()
@@ -59,7 +58,7 @@ namespace TranslationHelper.Formats
 
         internal virtual bool Save() { return ParseStringFile(); }
 
-        protected bool IsValidString(string inputString)
+        protected virtual bool IsValidString(string inputString)
         {
             //preclean string
             inputString = ProjectData.CurrentProject.CleanStringForCheck(inputString);
