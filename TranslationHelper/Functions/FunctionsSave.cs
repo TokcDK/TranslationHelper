@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -181,6 +182,9 @@ namespace TranslationHelper.Functions
         {
             if (ProjectData.RpgMVAddedCodesStat.Count > 0 || ProjectData.RpgMVSkippedCodesStat.Count > 0)
             {
+                ProjectData.RpgMVAddedCodesStat = ProjectData.RpgMVAddedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
+                ProjectData.RpgMVSkippedCodesStat = ProjectData.RpgMVSkippedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
+
                 foreach (var dict in new Dictionary<string, Dictionary<int, int>>()
                     {
                         {"RPGMakerMV Added codes stats", ProjectData.RpgMVAddedCodesStat },
