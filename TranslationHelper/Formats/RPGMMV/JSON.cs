@@ -314,6 +314,8 @@ namespace TranslationHelper.Formats.RPGMMV
                                         //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                                         , CheckAddHashes: true, CheckInput: true);
 
+                                    AddToStats();
+
                                     //TranslateMessages(messageparts, fullmessage);
                                     break;
                                 }
