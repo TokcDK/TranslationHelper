@@ -2,20 +2,35 @@
 
 namespace TranslationHelper.Extensions
 {
-    static class ExtensionsDictionary
+    static class ExtensionsList
     {
         /// <summary>
-        /// Add Key-Value if Key not exists
+        /// Add <paramref name="value"/> if not exists in <paramref name="hashset"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="Dict"></param>
+        /// <param name="hashset"></param>
         /// <param name="Key"></param>
-        /// <param name="Value"></param>
-        internal static void AddTry<T>(this Dictionary<T, T> Dict, T Key, T Value)
+        /// <param name="value"></param>
+        internal static void AddTry<T>(this HashSet<T> hashset,T value)
         {
-            if (Key != null && !Dict.ContainsKey(Key) && (Value != null || (Value is string v && !string.IsNullOrEmpty(v))) && !Equals(Key, Value))
+            if (!hashset.Contains(value))
             {
-                Dict.Add(Key, Value);
+                hashset.Add(value);
+            }
+        }
+
+        /// <summary>
+        /// Add <paramref name="key"/>y-<paramref name="value"/> if <paramref name="key"/> not exists in <paramref name="dictionary"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dictionary"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        internal static void AddTry<T>(this Dictionary<T, T> dictionary, T key, T value)
+        {
+            if (!dictionary.ContainsKey(key))
+            {
+                dictionary.Add(key, value);
             }
         }
     }

@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
@@ -67,6 +68,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 IsWithMergedMessages = IsContainsLinedMessages(jsonName);//оказалось, что сообщения есть не только в CommonEvents, но и в maps,troops и возможно других файлах
 
                 MessageMerged = new StringBuilder();
+                AddedJObjects = new HashSet<JObject>();
 
                 ParseJToken(root, jsonName);
                 //ProceedJTokenAny(root, jsonName);
@@ -276,6 +278,11 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 case JObject jsonObject:
                     {
+                        if (AddedJObjects.Contains(jsonObject))
+                        {
+                            return;
+                        }
+
                         //LogToFile("JObject Properties: \r\n" + obj.Properties());
                         JToken lastProperty = null;
                         foreach (var property in jsonObject.Properties())
@@ -291,6 +298,24 @@ namespace TranslationHelper.Formats.RPGMMV
                                     CurrentEventCode = (int)property.Value;
                                 }
 
+                                if (IsMessageCode(CurrentEventCode)) // идея при записи брать сразу всё сообщение, брать перевод для него и переводить, потом пропускать объекты с частями переведенного сообщения
+                                {
+                                    var messageparts = GetNextTokensWithSameCode(jsonObject);
+                                    var fullmessage = GetMessageLinesFrom(messageparts);
+
+                                    bool HasCurCode = true; // message code parse
+                                    AddRowData(tablename: jsonName, RowData: fullmessage, RowInfo: "JsonPath: "
+                                        + Environment.NewLine
+                                        + jsonToken.Path
+                                        + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
+                                        IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
+                                        //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                                        , CheckAddHashes: true, CheckInput: true);
+
+                                    //TranslateMessages(messageparts, fullmessage);
+                                    break;
+                                }
+                                else
                                 if (IsExcludedOrParsed(jsonObject, CurrentEventCode, jsonName))
                                 {
                                     break; // skip all rest properties parse
@@ -366,6 +391,99 @@ namespace TranslationHelper.Formats.RPGMMV
                 default:
                     break;
             }
+        }
+
+        /// <summary>
+        /// Translate originalMergedMessage
+        /// </summary>
+        /// <param name="originalMessageJTokensList"></param>
+        /// <param name="originalMergedMessage"></param>
+        private void TranslateMessages(List<JToken> originalMessageJTokensList, string originalMergedMessage)
+        {
+            if (!IsValidString(originalMergedMessage))
+            {
+                return;
+            }
+
+            if (!ProjectData.TablesLinesDict.ContainsKey(originalMergedMessage))
+            {
+                return;
+            }
+
+            var translated = ProjectData.TablesLinesDict[originalMergedMessage].SplitToLines().ToArray();
+
+            var origLength = originalMessageJTokensList.Count;
+            JToken last = null;
+            for (int i = 0; i < translated.Length; i++)
+            {
+                if (i < origLength)
+                {
+                    JObject obj = originalMessageJTokensList[i] as JObject;
+                    JProperty prop = obj.Last as JProperty;
+                    JArray array = prop.Value as JArray;
+                    array[0] = translated[i];
+
+                    AddedJObjects.AddTry(obj);
+                    last = obj;
+                }
+                else
+                {
+                    var newJObject = GetNewJObject(last as JObject, translated[i]);
+                    last.AddAfterSelf(newJObject);
+                    AddedJObjects.AddTry(newJObject);
+
+                    last = last.Next;
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// get all string lines of message from input <paramref name="messagePartsList"/>
+        /// </summary>
+        /// <param name="messagePartsList"></param>
+        /// <returns></returns>
+        private static string GetMessageLinesFrom(List<JToken> messagePartsList)
+        {
+            List<string> lines = new List<string>();
+            foreach (JToken token in messagePartsList)
+            {
+                JProperty prop = (token as JObject).Last as JProperty;
+                JArray array = prop.Value as JArray;
+                foreach (string value in array)
+                {
+                    lines.Add(value);
+                }
+            }
+
+            return string.Join("\n", lines);
+        }
+
+        /// <summary>
+        /// Add all next JTokens with same message code to list
+        /// </summary>
+        /// <param name="jsonToken"></param>
+        /// <returns></returns>
+        private List<JToken> GetNextTokensWithSameCode(JToken jsonToken)
+        {
+            List<JToken> list = new List<JToken>
+            {
+                jsonToken
+            };
+
+            var next = jsonToken.Next;
+            while (next is JObject obj
+                && obj.First is JProperty prop
+                && prop.Name == "code"
+                && (int)prop.Value == CurrentEventCode
+                )
+            {
+                AddedJObjects.AddTry(obj);
+                list.Add(next);
+                next = next.Next;
+            }
+
+            return list;
         }
 
         /// <summary>
@@ -946,7 +1064,7 @@ namespace TranslationHelper.Formats.RPGMMV
         bool IsValidString(JToken token, string value)
         {
             string path;
-            return IsValidString(value) 
+            return IsValidString(value)
                 && !((path = token.Path).Contains("].name") && Regex.IsMatch(path, @"events\[[0-9]+\]\.name")) // skip event names
                 && !(path.Contains("].image") && Regex.IsMatch(path, @"\[[0-9]+\]\.image")) // skip image names
                 && !(path.Contains("gm.name") && Regex.IsMatch(token.Path, @"[Bb]gm\.name")); // skip bgm
@@ -959,7 +1077,10 @@ namespace TranslationHelper.Formats.RPGMMV
             return base.IsValidString(tokenvalueNoComment);
         }
 
-        HashSet<JObject> AddedJObjects;
+        /// <summary>
+        /// already parsed objects of message code 401 or 405 which was parsed
+        /// </summary>
+        HashSet<JObject> AddedJObjects = new HashSet<JObject>();
         private void ParseJTokenWriteWithPreSplitlines(JToken jsonToken, string jsonName/*, string propertyname = ""*/)
         {
             if (jsonToken == null)
@@ -1067,6 +1188,24 @@ namespace TranslationHelper.Formats.RPGMMV
                                     //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                                 }
 
+                                if (IsMessageCode(CurrentEventCode)) // идея при записи брать сразу всё сообщение, брать перевод для него и переводить, потом пропускать объекты с частями переведенного сообщения
+                                {
+                                    var messageparts = GetNextTokensWithSameCode(jsonObject);
+                                    var fullmessage = GetMessageLinesFrom(messageparts);
+
+                                    //bool HasCurCode = true; // message code parse
+                                    //AddRowData(tablename: jsonName, RowData: fullmessage, RowInfo: "JsonPath: "
+                                    //    + Environment.NewLine
+                                    //    + jsonToken.Path
+                                    //    + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
+                                    //    IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
+                                    //    //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                                    //    , CheckAddHashes: true, CheckInput: false);
+
+                                    TranslateMessages(messageparts, fullmessage);
+                                    break;
+                                }
+                                else
                                 if (IsExcludedOrParsed(jsonObject, CurrentEventCode, jsonName))
                                 {
                                     break;
@@ -1155,42 +1294,46 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <returns></returns>
         private static JObject GetNewJObject(JContainer jContainer, string line)
         {
-            JObject ret = new JObject();
+            JObject newJObject = new JObject();
             foreach (var jProperty in (jContainer as JObject).Properties())
             {
-                if (jProperty.Name == "parameters")
+                switch (jProperty.Name)
                 {
-                    if (jProperty.Value is JValue)
-                    {
-                        ret.Add(new JProperty(jProperty.Name, new JValue(line)));
-                    }
-                    else if (jProperty.Value is JObject)
-                    {
-                        ret.Add(new JProperty(jProperty.Name, new JObject("{" + line + "}")));
-                    }
-                    else if (jProperty.Value is JArray)
-                    {
-                        ret.Add(new JProperty(jProperty.Name, new JArray(new object[] { line })));
-                    }
-                }
-                else
-                {
-                    if (jProperty.Value is JValue jValue)
-                    {
-                        ret.Add(new JProperty(jProperty.Name, new JValue(jValue)));
-                    }
-                    else if (jProperty.Value is JObject jObject)
-                    {
-                        ret.Add(new JProperty(jProperty.Name, new JObject(jObject)));
-                    }
-                    else if (jProperty.Value is JArray jArray)
-                    {
-                        ret.Add(new JProperty(jProperty.Name, new JArray(jArray)));
-                    }
+                    case "parameters":
+                        if (jProperty.Value is JValue)
+                        {
+                            newJObject.Add(new JProperty(jProperty.Name, new JValue(line)));
+                        }
+                        else if (jProperty.Value is JObject)
+                        {
+                            newJObject.Add(new JProperty(jProperty.Name, new JObject("{" + line + "}")));
+                        }
+                        else if (jProperty.Value is JArray)
+                        {
+                            newJObject.Add(new JProperty(jProperty.Name, new JArray(new object[] { line })));
+                        }
+                        break;
+                    default:
+                        {
+                            if (jProperty.Value is JValue jValue)
+                            {
+                                newJObject.Add(new JProperty(jProperty.Name, new JValue(jValue)));
+                            }
+                            else if (jProperty.Value is JObject jObject)
+                            {
+                                newJObject.Add(new JProperty(jProperty.Name, new JObject(jObject)));
+                            }
+                            else if (jProperty.Value is JArray jArray)
+                            {
+                                newJObject.Add(new JProperty(jProperty.Name, new JArray(jArray)));
+                            }
+
+                            break;
+                        }
                 }
             }
 
-            return ret;
+            return newJObject;
         }
     }
 }
