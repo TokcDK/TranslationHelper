@@ -238,22 +238,24 @@ namespace TranslationHelper.Formats.RPGMMV
 
                         string tokenValue = jsonToken + "";
 
-                        if (IsWithMergedMessages && IsMessageCode(CurrentEventCode))
+                        // commented because replaced by other way to parse merged messages
+                        //if (IsWithMergedMessages && IsMessageCode(CurrentEventCode))
+                        //{
+                        //    if (MessageMerged.ToString().Length > 0)
+                        //    {
+                        //        MessageMerged.Append('\n');//add \n between lines in merged message
+                        //    }
+                        //    //LogToFile("code 401 adding value to merge=" + tokenvalue + ", currentEventCode=" + currentEventCode);
+                        //    MessageMerged.Append(tokenValue);
+                        //    AddToStats();
+                        //}
+                        //else
                         {
-                            if (MessageMerged.ToString().Length > 0)
-                            {
-                                MessageMerged.Append('\n');//add \n between lines in merged message
-                            }
-                            //LogToFile("code 401 adding value to merge=" + tokenvalue + ", currentEventCode=" + currentEventCode);
-                            MessageMerged.Append(tokenValue);
-                            AddToStats();
-                        }
-                        else
-                        {
-                            if (IsWithMergedMessages)
-                            {
-                                AddMergedMessage(jsonToken, jsonName);
-                            }
+                            // commented because replaced by other way to parse merged messages
+                            //if (IsWithMergedMessages)
+                            //{
+                            //    AddMergedMessage(jsonToken, jsonName);
+                            //}
 
                             if (!IsValidString(value, tokenValue))
                             {
@@ -284,10 +286,10 @@ namespace TranslationHelper.Formats.RPGMMV
                         }
 
                         //LogToFile("JObject Properties: \r\n" + obj.Properties());
-                        JToken lastProperty = null;
+                        //JToken lastProperty = null; // commented because replaced by other way to parse merged messages
                         foreach (var property in jsonObject.Properties())
                         {
-                            lastProperty = property;
+                            //lastProperty = property; // commented because replaced by other way to parse merged messages
                             propertyName = property.Name;
 
                             if (IsWithMergedMessages)//asdfg skip code 108,408,356
@@ -353,14 +355,15 @@ namespace TranslationHelper.Formats.RPGMMV
                             ParseJToken(property.Value, jsonName/*, property.Name*/);
                         }
 
+                        // commented because replaced by other way to parse merged messages
                         // добавление объединенных сообщений для события текстового сообщения 401 ил 405, если новых строк больше нет
-                        if (IsMessageCode(CurrentEventCode) && MessageMerged.Length > 0)
-                        {
-                            if (IsNextTokenNotWithSameCode(jsonToken))
-                            {
-                                AddMergedMessage(lastProperty, jsonName, true, false);
-                            }
-                        }
+                        //if (IsMessageCode(CurrentEventCode) && MessageMerged.Length > 0)
+                        //{
+                        //    if (IsNextTokenNotWithSameCode(jsonToken))
+                        //    {
+                        //        AddMergedMessage(lastProperty, jsonName, true, false);
+                        //    }
+                        //}
 
                         ResetCurrentCode();
                         break;
@@ -1108,61 +1111,13 @@ namespace TranslationHelper.Formats.RPGMMV
                         //предполагается, что ячейки из таблицы были разбиты на строки и добавлены в словарь
                         if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/
                             !TablesLinesDict.ContainsKey(tokenValue)
-                            || TablesLinesDict[tokenValue].Length == 0)
+                            || TablesLinesDict[tokenValue].Length == 0
+                            )
                         {
                             return;
                         }
 
-                        try
-                        {
-                            int tokenvalueLinesCount;
-                            if (jsonToken.Parent == null
-                                || jsonToken.Parent.Parent == null
-                                || jsonToken.Parent.Parent.Parent == null
-                                || !(jsonToken.Parent.Parent.Parent is JObject currentJObject)
-                                || TablesLinesDict[tokenValue].GetLinesCount() == (tokenvalueLinesCount = tokenValue.GetLinesCount()))
-                            {
-                                value.Value = TablesLinesDict[tokenValue];
-                            }
-                            else
-                            {
-                                int ind = 0;
-                                List<string> stringToWrite = new List<string>();
-                                bool NotWrited = true;
-                                bool IsTheJObjetAdded = false;
-
-                                foreach (var line in TablesLinesDict[tokenValue].SplitToLines())
-                                {
-                                    if (ind < tokenvalueLinesCount)
-                                    {
-                                        stringToWrite.Add(line);
-                                        ind++;
-                                    }
-                                    else
-                                    {
-                                        if (NotWrited)
-                                        {
-                                            value.Value = string.Join(Environment.NewLine, stringToWrite);
-                                            NotWrited = false;
-                                        }
-
-                                        var newJObject = GetNewJObject(currentJObject, line);
-                                        currentJObject.AddAfterSelf(newJObject);
-                                        if (!IsTheJObjetAdded && !AddedJObjects.Contains(newJObject))
-                                        {
-                                            IsTheJObjetAdded = true;
-                                            AddedJObjects.Add(newJObject);
-                                        }
-                                        currentJObject = newJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
-                                    }
-                                }
-
-                            }
-                        }
-                        catch
-                        {
-
-                        }
+                        WriteTranslation(jsonToken, value, tokenValue);
 
                         break;
                     }
@@ -1266,6 +1221,61 @@ namespace TranslationHelper.Formats.RPGMMV
 
                 default:
                     break;
+            }
+        }
+
+        private void WriteTranslation(JToken jsonToken, JValue value, string tokenValue)
+        {
+            try
+            {
+                int tokenvalueLinesCount;
+                if (TablesLinesDict[tokenValue].GetLinesCount() == (tokenvalueLinesCount = tokenValue.GetLinesCount())
+                    || jsonToken.Parent == null
+                    || jsonToken.Parent.Parent == null
+                    || jsonToken.Parent.Parent.Parent == null
+                    || !(jsonToken.Parent.Parent.Parent is JObject currentJObject)
+
+                    )
+                {
+                    value.Value = TablesLinesDict[tokenValue];
+                }
+                else
+                {
+                    int ind = 0;
+                    List<string> stringToWrite = new List<string>();
+                    bool NotWrited = true;
+                    bool IsTheJObjetAdded = false;
+
+                    foreach (var line in TablesLinesDict[tokenValue].SplitToLines())
+                    {
+                        if (ind < tokenvalueLinesCount)
+                        {
+                            stringToWrite.Add(line);
+                            ind++;
+                        }
+                        else
+                        {
+                            if (NotWrited)
+                            {
+                                value.Value = string.Join(Environment.NewLine, stringToWrite);
+                                NotWrited = false;
+                            }
+
+                            var newJObject = GetNewJObject(currentJObject, line);
+                            currentJObject.AddAfterSelf(newJObject);
+                            if (!IsTheJObjetAdded && !AddedJObjects.Contains(newJObject))
+                            {
+                                IsTheJObjetAdded = true;
+                                AddedJObjects.Add(newJObject);
+                            }
+                            currentJObject = newJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
             }
         }
 

@@ -58,6 +58,12 @@ namespace TranslationHelper.Formats
 
         internal virtual bool Save() { return ParseStringFile(); }
 
+        /// <summary>
+        /// Check string if it is valid for add to work table.
+        /// Usually it is not empty string. For japanese language it is also string contain most of japanese chars
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
         protected virtual bool IsValidString(string inputString)
         {
             //preclean string
