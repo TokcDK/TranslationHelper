@@ -64,7 +64,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         /// <param name="inputString"></param>
         /// <returns></returns>
-        protected virtual bool IsValidString(string inputString)
+        internal virtual bool IsValidString(string inputString)
         {
             //preclean string
             inputString = ProjectData.CurrentProject.CleanStringForCheck(inputString);
@@ -121,10 +121,20 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
+        /// Means use for table name name of file without extension
+        /// </summary>
+        protected virtual bool UseTableNameWithoutExtension => false;
+
+        /// <summary>
         /// table name
         /// </summary>
         protected virtual string TableName()
         {
+            if (UseTableNameWithoutExtension)
+            {
+                ParseData.tablename = Path.GetFileNameWithoutExtension(ParseData.tablename);
+            }
+
             return ParseData.tablename;
         }
 
@@ -542,7 +552,7 @@ namespace TranslationHelper.Formats
         /// <param name="RowInfo">info about the string</param>
         /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <returns></returns>
-        protected bool AddRowData(string RowData, string RowInfo = "", bool CheckAddHashes = false, bool CheckInput = true)
+        internal bool AddRowData(string RowData, string RowInfo = "", bool CheckAddHashes = false, bool CheckInput = true)
         {
             return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput);
         }
@@ -553,7 +563,7 @@ namespace TranslationHelper.Formats
         /// <param name="RowInfo">info about the string</param>
         /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <returns></returns>
-        protected bool AddRowData(string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true)
+        internal bool AddRowData(string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true)
         {
             return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput, false);
         }
@@ -567,7 +577,7 @@ namespace TranslationHelper.Formats
         /// <param name="CheckInput">cheack original string if valid</param>
         /// <param name="AddToDictionary"></param>
         /// <returns></returns>
-        protected bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
+        internal bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
         {
             return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckAddHashes, CheckInput, AddToDictionary);
         }
@@ -581,7 +591,7 @@ namespace TranslationHelper.Formats
         /// <param name="CheckInput">cheack original string if valid</param>
         /// <param name="AddToDictionary"></param>
         /// <returns></returns>
-        protected bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
+        internal bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
         {
             var original = AddRowDataPreAddOriginalStringMod(RowData[0]);
 

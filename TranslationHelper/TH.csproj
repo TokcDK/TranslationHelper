@@ -167,6 +167,7 @@
     <Compile Include="Formats\Raijin7\Rajiin7Base.cs" />
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
     <Compile Include="Formats\RPGMMV\GAMEFONTCSS.cs" />
+    <Compile Include="Formats\RPGMMV\JsonParser\JsonParserBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\JSQuotedStringsBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\ZZZOtherJS.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\TMStatusMenuEx.cs" />
@@ -182,7 +183,9 @@
     <Compile Include="Formats\RPGMMV\JSON.cs" />
     <Compile Include="Formats\RPGMMV\JS\RecollectionMode.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSSharedDataRPGMMV.cs" />
+    <Compile Include="Formats\RPGMMV\OldJsonParser.cs" />
     <Compile Include="Formats\RPGMMV\RPGMMVBase.cs" />
+    <Compile Include="Formats\RPGMMV\JsonParser\RPGMVZJsonParser.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMKTRANSPATCH.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransOther.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransPatchBase.cs" />
