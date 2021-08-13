@@ -508,8 +508,8 @@ namespace TranslationHelper.Formats.RPGMMV
 
         private bool IsCodeWithStringInParameters(int currentEventCode)
         {
-            return IsMessageCode(currentEventCode)
-                || currentEventCode == 102
+            return //IsMessageCode(currentEventCode) || 
+                currentEventCode == 102
                 || currentEventCode == 402
                 || currentEventCode == 118
                 || currentEventCode == 119;
