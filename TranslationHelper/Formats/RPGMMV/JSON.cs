@@ -300,26 +300,6 @@ namespace TranslationHelper.Formats.RPGMMV
                                     CurrentEventCode = (int)property.Value;
                                 }
 
-                                if (IsMessageCode(CurrentEventCode)) // идея при записи брать сразу всё сообщение, брать перевод для него и переводить, потом пропускать объекты с частями переведенного сообщения
-                                {
-                                    var messageparts = GetNextTokensWithSameCode(jsonObject);
-                                    var fullmessage = GetMessageLinesFrom(messageparts);
-
-                                    bool HasCurCode = true; // message code parse
-                                    AddRowData(tablename: jsonName, RowData: fullmessage, RowInfo: "JsonPath: "
-                                        + Environment.NewLine
-                                        + jsonToken.Path
-                                        + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
-                                        IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
-                                        //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
-                                        , CheckAddHashes: true, CheckInput: true);
-
-                                    AddToStats();
-
-                                    //TranslateMessages(messageparts, fullmessage);
-                                    break;
-                                }
-                                else
                                 if (IsExcludedOrParsed(jsonObject, CurrentEventCode, jsonName))
                                 {
                                     break; // skip all rest properties parse
@@ -1145,24 +1125,6 @@ namespace TranslationHelper.Formats.RPGMMV
                                     //MessageBox.Show("propertyname="+ propertyname+",value="+ token.ToString());
                                 }
 
-                                if (IsMessageCode(CurrentEventCode)) // идея при записи брать сразу всё сообщение, брать перевод для него и переводить, потом пропускать объекты с частями переведенного сообщения
-                                {
-                                    var messageparts = GetNextTokensWithSameCode(jsonObject);
-                                    var fullmessage = GetMessageLinesFrom(messageparts);
-
-                                    //bool HasCurCode = true; // message code parse
-                                    //AddRowData(tablename: jsonName, RowData: fullmessage, RowInfo: "JsonPath: "
-                                    //    + Environment.NewLine
-                                    //    + jsonToken.Path
-                                    //    + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
-                                    //    IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
-                                    //    //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
-                                    //    , CheckAddHashes: true, CheckInput: false);
-
-                                    TranslateMessages(messageparts, fullmessage);
-                                    break;
-                                }
-                                else
                                 if (IsExcludedOrParsed(jsonObject, CurrentEventCode, jsonName))
                                 {
                                     break;
@@ -1287,6 +1249,32 @@ namespace TranslationHelper.Formats.RPGMMV
             {
                 AddToStats(false);
                 return true;
+            }
+            else                                
+            if (IsMessageCode(CurrentEventCode)) // идея при записи брать сразу всё сообщение, брать перевод для него и переводить, потом пропускать объекты с частями переведенного сообщения
+            {
+                var messageparts = GetNextTokensWithSameCode(jsonObject);
+                var fullmessage = GetMessageLinesFrom(messageparts);
+
+                if (ProjectData.OpenFileMode)
+                {
+                    bool HasCurCode = true; // message code parse
+                    AddRowData(tablename: jsonName, RowData: fullmessage, RowInfo: "JsonPath: "
+                        + Environment.NewLine
+                        + jsonObject.Path
+                        + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
+                        IsWithMergedMessages && HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
+                        //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                        , CheckAddHashes: true, CheckInput: true);
+
+                    AddToStats();
+                }
+                else
+                {
+                    TranslateMessages(messageparts, fullmessage);
+                }
+
+                //TranslateMessages(messageparts, fullmessage);
             }
             else
             if (IsCodeWithStringInParameters(currentEventCode) && jsonObject.Last is JProperty lastObjectsProperty) // in message codes need only last property's "parameters" value
