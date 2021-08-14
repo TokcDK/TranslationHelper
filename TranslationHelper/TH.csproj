@@ -173,11 +173,6 @@
     <Compile Include="Formats\RPGMMV\JS\IUseJSLocationInfo.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\JSQuotedStringsBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\ZZZOtherJS.cs" />
-    <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\TMStatusMenuEx.cs" />
-    <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\SupponShopStock.cs" />
-    <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\NupuRnd.cs" />
-    <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\NupuSaveLoad.cs" />
-    <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\NupuCommonEv.cs" />
     <Compile Include="Formats\RPGMMV\JS\ConfigEx.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSSvar\JSSVarBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\pk_CommonMenuEvents.cs" />

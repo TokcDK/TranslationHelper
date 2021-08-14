@@ -455,7 +455,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <summary>
         /// list of event codes
         /// </summary>
-        readonly Dictionary<int, string> EventCodes = new Dictionary<int, string>(118)
+        readonly Dictionary<int, string> EventCodes = new Dictionary<int, string>(120)
         {
             { 0, "End Show Choices" },
             { 41, "Image name?" },
