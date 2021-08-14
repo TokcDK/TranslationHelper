@@ -207,7 +207,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
             }
         }
 
-        internal override string JSName => "GraphicalDesignMode.js";
+        public override string JSName => "GraphicalDesignMode.js";
 
         protected override string SvarIdentifier => "{lines: ['";
     }

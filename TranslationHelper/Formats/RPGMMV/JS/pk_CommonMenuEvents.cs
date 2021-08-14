@@ -8,7 +8,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
         }
 
-        internal override string JSName => "pk_CommonMenuEvents.js";
+        public override string JSName => "pk_CommonMenuEvents.js";
 
         internal override bool Open()
         {

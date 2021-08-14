@@ -8,6 +8,6 @@
 //        {
 //        }
 
-//        internal override string JSName => "NupuCommonEv.js";
+//        public override string JSName => "NupuCommonEv.js";
 //    }
 //}

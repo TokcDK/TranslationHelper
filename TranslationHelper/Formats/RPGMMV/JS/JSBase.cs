@@ -10,8 +10,13 @@ using TranslationHelper.Formats.RPGMMV.JsonParser;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
-    abstract class JSBase : RPGMMVBase, IUseJsonParser
+    abstract class JSBase : RPGMMVBase, IUseJSLocationInfo, IUseJsonParser
     {
+        protected JSBase()
+        {
+            JsonParser = new JSJsonParser();
+        }
+
         internal override bool UseTableNameWithoutExtension => false;
 
         internal override string Ext()
@@ -42,9 +47,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return Inherited.GetListOfinheritedSubClasses<JSBase>();
         }
 
-        internal abstract string JSName { get; }
+        public abstract string JSName { get; }
 
-        internal virtual string JSSubfolder => "plugins";
+        public virtual string JSSubfolder => "plugins";
 
         JsonParserBase JParser;
 
@@ -65,11 +70,6 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         }
 
         protected bool PluginsJsNameFound;
-
-        protected JSBase()
-        {
-            JsonParser = new JSJsonParser();
-        }
 
         //protected void GetStringsFromJToken(JToken token, string Jsonname)
         //{

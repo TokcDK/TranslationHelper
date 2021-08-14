@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Text;
-using TranslationHelper.Data;
+﻿using TranslationHelper.Formats.RPGMMV.JsonParser;
 
 namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
 {
@@ -10,7 +8,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
         {
         }
 
-        internal override string JSName => "RecollectionMode.js";
+        public override string JSName => "RecollectionMode.js";
 
         public bool IsComment { get; private set; }
 

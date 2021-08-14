@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.IO;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.RPGMMV.JsonParser;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
@@ -185,7 +186,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    return true;
         //}
 
-        internal override string JSName => "plugins.js";
-        internal override string JSSubfolder => string.Empty;
+        public override string JSName => "plugins.js";
+        public override string JSSubfolder => string.Empty;
     }
 }

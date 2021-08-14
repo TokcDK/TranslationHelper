@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
         }
 
-        internal override string JSName => "ConfigEx.js";
+        public override string JSName => "ConfigEx.js";
 
         internal override bool Open()
         {

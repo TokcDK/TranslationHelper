@@ -1,6 +1,4 @@
-﻿using TranslationHelper.Data;
-
-namespace TranslationHelper.Formats.RPGMMV.JS
+﻿namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class ZZZOtherJS : JSQuotedStringsBase
     {
@@ -8,6 +6,6 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
         }
 
-        internal override string JSName => "TEMPLATE";
+        public override string JSName => "TEMPLATE";
     }
 }

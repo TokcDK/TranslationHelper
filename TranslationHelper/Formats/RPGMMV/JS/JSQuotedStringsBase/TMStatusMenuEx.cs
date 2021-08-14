@@ -8,6 +8,6 @@
 //        {
 //        }
 
-//        internal override string JSName => "TMStatusMenuEx.js";
+//        public override string JSName => "TMStatusMenuEx.js";
 //    }
 //}

@@ -114,9 +114,9 @@ namespace TranslationHelper.Projects.RPGMMV
                 //Proceeed js-files
                 foreach (var jsType in ListOfJS)
                 {
-                    var JS = (JSBase)Activator.CreateInstance(jsType);
+                    var js = (IUseJSLocationInfo)Activator.CreateInstance(jsType); // create instance of class using JSLocationInfo
 
-                    ProjectData.FilePath = Path.Combine(ProjectData.SelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
+                    ProjectData.FilePath = Path.Combine(ProjectData.SelectedDir, "www", "js", js.JSSubfolder, js.JSName);
 
                     if (!File.Exists(ProjectData.FilePath))
                     {
@@ -125,15 +125,16 @@ namespace TranslationHelper.Projects.RPGMMV
 
                     try
                     {
-                        ProjectData.Main.ProgressInfo(true, ParseFileMessage + JS.JSName);
+                        ProjectData.Main.ProgressInfo(true, ParseFileMessage + js.JSName);
 
-                        HardcodedJS.Add(JS.JSName);//add js to exclude from parsing of other js
+                        HardcodedJS.Add(js.JSName);//add js to exclude from parsing of other js
 
-                        if (Write && JS.Save())
+                        var jsFormat = (FormatBase)Activator.CreateInstance(jsType); // create format instance for open or save
+                        if (Write && jsFormat.Save())
                         {
                             IsAnyFileCompleted = true;
                         }
-                        else if (JS.Open())
+                        else if (jsFormat.Open())
                         {
                             IsAnyFileCompleted = true;
                         }

@@ -8,6 +8,6 @@
 //        {
 //        }
 
-//        internal override string JSName => "NupuRnd.js";
+//        public override string JSName => "NupuRnd.js";
 //    }
 //}

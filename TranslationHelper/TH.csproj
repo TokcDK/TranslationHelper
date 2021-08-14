@@ -170,6 +170,7 @@
     <Compile Include="Formats\RPGMMV\JsonParser\IUseJsonParser.cs" />
     <Compile Include="Formats\RPGMMV\JsonParser\JSJsonParser.cs" />
     <Compile Include="Formats\RPGMMV\JsonParser\JsonParserBase.cs" />
+    <Compile Include="Formats\RPGMMV\JS\IUseJSLocationInfo.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\JSQuotedStringsBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\ZZZOtherJS.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\TMStatusMenuEx.cs" />

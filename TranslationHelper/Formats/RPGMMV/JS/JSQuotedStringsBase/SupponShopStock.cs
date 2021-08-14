@@ -8,6 +8,6 @@
 //        {
 //        }
 
-//        internal override string JSName => "SupponShopStock.js";
+//        public override string JSName => "SupponShopStock.js";
 //    }
 //}
