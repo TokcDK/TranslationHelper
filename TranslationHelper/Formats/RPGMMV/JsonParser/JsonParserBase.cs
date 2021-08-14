@@ -66,10 +66,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         internal bool ParseString(string jsonString)
         {
             Format = ProjectData.CurrentProject.CurrentFormat;
+            JsonRoot = JToken.Parse(jsonString);
 
             try
             {
-                Parse(JToken.Parse(jsonString));
+                Parse(JsonRoot);
             }
             catch
             {
