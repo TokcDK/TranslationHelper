@@ -69,7 +69,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return true;
         }
 
-        protected bool PluginsJsNameFound;
+        //protected bool PluginsJsNameFound;
 
         //protected void GetStringsFromJToken(JToken token, string Jsonname)
         //{

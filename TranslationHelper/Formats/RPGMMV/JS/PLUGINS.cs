@@ -37,6 +37,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 {
                     if (ParseData.line.EndsWith(","))
                     {
+                        IsJsonNotLast = true;
                         ParseData.line = ParseData.line.Remove(ParseData.line.Length - 1, 1);
                     }
                     else if (ProjectData.SaveFileMode)
@@ -46,7 +47,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
                     JsonParser.ParseString(ParseData.line);
 
-                    PluginsJsNameFound = false;
+                    //PluginsJsNameFound = false;
 
                     if (ProjectData.SaveFileMode)
                     {

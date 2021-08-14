@@ -601,8 +601,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             { 250, "Play SE" }, // file name
             { 251, "Stop SE" }, // file name
             { 261, "Play Movie" }, // file name
-            { 108, "Comment" }, // not to skip in some games
-            { 408, "Comment" }, // not to skip in some games
+            //{ 108, "Comment" }, // not to skip in some games
+            //{ 408, "Comment" }, // not to skip in some games
         };
     }
 }
