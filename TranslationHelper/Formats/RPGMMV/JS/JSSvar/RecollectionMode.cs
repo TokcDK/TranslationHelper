@@ -1,17 +1,15 @@
-﻿using TranslationHelper.Formats.RPGMMV.JsonParser;
+﻿//namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
+//{
+//    class RECOLLECTIONMODE : JSSVarBase
+//    {
+//        public RECOLLECTIONMODE()
+//        {
+//        }
 
-namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
-{
-    class RECOLLECTIONMODE : JSSVarBase
-    {
-        public RECOLLECTIONMODE()
-        {
-        }
+//        public override string JSName => "RecollectionMode.js";
 
-        public override string JSName => "RecollectionMode.js";
+//        public bool IsComment { get; private set; }
 
-        public bool IsComment { get; private set; }
-
-        protected override string SvarIdentifier => "var rngd_recollection_mode_settings = {";
-    }
-}
+//        protected override string SvarIdentifier => "var rngd_recollection_mode_settings = {";
+//    }
+//}
