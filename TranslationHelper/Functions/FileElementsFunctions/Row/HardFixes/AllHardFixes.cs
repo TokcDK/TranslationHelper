@@ -7,7 +7,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
     {
         public AllHardFixes()
         {
-            HardFixesList = new List<HardFixesBase>()
+            HardFixesList = new List<HardFixesBase>(8)
             {
                 new ProjectSpecificFixes(),
                 new FixEnjpQuoteOnStringStart2NdLine(),

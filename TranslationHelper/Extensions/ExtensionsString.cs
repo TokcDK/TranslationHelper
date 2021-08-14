@@ -709,14 +709,12 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static string TrimAllExceptLettersOrDigits(this string keyValue)
         {
-            var trimit = new List<char>();
-            var unique = new HashSet<char>();
+            var trimit = new HashSet<char>(keyValue.Length);
             foreach (var c in keyValue)
             {
-                if (!char.IsLetterOrDigit(c) && !unique.Contains(c))
+                if (!char.IsLetterOrDigit(c) && !trimit.Contains(c))
                 {
                     trimit.Add(c);
-                    unique.Add(c);
                 }
             }
 

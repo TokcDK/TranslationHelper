@@ -24,10 +24,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
         protected override List<Formats.FormatBase> Format()
         {
-            return new List<Formats.FormatBase> {
-                new TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2.KS(),
-                new TranslationHelper.Formats.KiriKiri.Games.TJS(),
-                new TranslationHelper.Formats.KiriKiri.Games.CSV.CSV()
+            return new List<Formats.FormatBase>(3) {
+                new Formats.KiriKiri.Games.FGroup1.VirginLode2.KS(),
+                new Formats.KiriKiri.Games.TJS(),
+                new Formats.KiriKiri.Games.CSV.CSV()
             };
         }
 

@@ -3057,7 +3057,7 @@ namespace TranslationHelper
         {
             if (THFilesList != null && THFilesList.Items.Count > 0 && THFilesList.SelectedIndex != -1)
             {
-                var names = new List<string>();
+                var names = new List<string>(THFilesList.SelectedItems.Count);
                 foreach (var item in THFilesList.SelectedItems)
                 {
                     names.Add(item.ToString());

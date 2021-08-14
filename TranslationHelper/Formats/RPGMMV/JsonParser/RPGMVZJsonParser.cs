@@ -252,7 +252,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <returns></returns>
         private static string GetMessageLinesFrom(List<JToken> messagePartsList)
         {
-            List<string> lines = new List<string>();
+            List<string> lines = new List<string>(messagePartsList.Count);
             foreach (JToken token in messagePartsList)
             {
                 JProperty prop = (token as JObject).Last as JProperty;
