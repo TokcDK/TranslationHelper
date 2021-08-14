@@ -4,7 +4,7 @@
 //{
 //    abstract class OtherFormatBase : FormatBase
 //    {
-//        protected OtherFormatBase() : base()
+//        protected OtherFormatBase()
 //        {
 //        }
 //    }

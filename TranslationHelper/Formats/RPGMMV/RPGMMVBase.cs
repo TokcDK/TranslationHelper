@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using TranslationHelper.Data;
+﻿using TranslationHelper.Formats.RPGMMV.JsonParser;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
     abstract class RPGMMVBase : FormatBase
     {
-        public RPGMMVBase() : base()
-        {
-        }
     }
 }

@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 {
     abstract class JSQuotedStringsBase : JSBase
     {
-        protected JSQuotedStringsBase() : base()
+        protected JSQuotedStringsBase()
         {
         }
 
@@ -14,7 +14,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return ParseStringFile();
         }
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (!IsEmptyOrComment())
             {

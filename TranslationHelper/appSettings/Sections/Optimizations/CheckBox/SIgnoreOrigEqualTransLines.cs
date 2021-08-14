@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SIgnoreOrigEqualTransLines : Optimizations
     {
-        public SIgnoreOrigEqualTransLines() : base()
+        public SIgnoreOrigEqualTransLines()
         {
         }
 

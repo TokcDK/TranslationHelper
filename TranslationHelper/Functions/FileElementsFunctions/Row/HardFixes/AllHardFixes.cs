@@ -5,7 +5,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class AllHardFixes : HardFixesBase
     {
-        public AllHardFixes() : base()
+        public AllHardFixes()
         {
             HardFixesList = new List<HardFixesBase>()
             {

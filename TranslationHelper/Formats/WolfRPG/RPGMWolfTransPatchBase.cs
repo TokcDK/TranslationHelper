@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.WolfRPG
 {
     abstract class RPGMWolfTransPatchBase : FormatBase
     {
-        protected RPGMWolfTransPatchBase() : base()
+        protected RPGMWolfTransPatchBase()
         {
         }
 
@@ -197,12 +197,12 @@ namespace TranslationHelper.Formats.WolfRPG
         /// check and parse lines
         /// </summary>
         /// <returns></returns>
-        protected int CheckAndParse()
+        protected ParseStringFileLineReturnState CheckAndParse()
         {
             //skip if not patch files
             if (!CheckSetPatchVersion())
             {
-                return -1;
+                return ParseStringFileLineReturnState.Break;
             }
 
             //skip if begin string not found
@@ -215,7 +215,7 @@ namespace TranslationHelper.Formats.WolfRPG
                 SaveModeAddLine("\n");
             }
 
-            return 0;
+            return ParseStringFileLineReturnState.Continue;
         }
 
         /// <summary>

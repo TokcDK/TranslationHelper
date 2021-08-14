@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SDontLoadStringIfRomajiPercentForTranslation : Optimizations
     {
-        public SDontLoadStringIfRomajiPercentForTranslation() : base()
+        public SDontLoadStringIfRomajiPercentForTranslation()
         {
         }
 

@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SWebTranslationLink : Tools
     {
-        public SWebTranslationLink() : base()
+        public SWebTranslationLink()
         {
         }
 

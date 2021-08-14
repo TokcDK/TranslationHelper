@@ -167,6 +167,8 @@
     <Compile Include="Formats\Raijin7\Rajiin7Base.cs" />
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
     <Compile Include="Formats\RPGMMV\GAMEFONTCSS.cs" />
+    <Compile Include="Formats\RPGMMV\JsonParser\IUseJsonParser.cs" />
+    <Compile Include="Formats\RPGMMV\JsonParser\JSJsonParser.cs" />
     <Compile Include="Formats\RPGMMV\JsonParser\JsonParserBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\JSQuotedStringsBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\ZZZOtherJS.cs" />
@@ -176,12 +178,13 @@
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\NupuSaveLoad.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\NupuCommonEv.cs" />
     <Compile Include="Formats\RPGMMV\JS\ConfigEx.cs" />
+    <Compile Include="Formats\RPGMMV\JS\JSSvar\JSSVarBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\pk_CommonMenuEvents.cs" />
-    <Compile Include="Formats\RPGMMV\JS\GraphicalDesignMode.cs" />
+    <Compile Include="Formats\RPGMMV\JS\JSSvar\GraphicalDesignMode.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\PLUGINS.cs" />
     <Compile Include="Formats\RPGMMV\JSON.cs" />
-    <Compile Include="Formats\RPGMMV\JS\RecollectionMode.cs" />
+    <Compile Include="Formats\RPGMMV\JS\JSSvar\RecollectionMode.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSSharedDataRPGMMV.cs" />
     <Compile Include="Formats\RPGMMV\OldJsonParser.cs" />
     <Compile Include="Formats\RPGMMV\RPGMMVBase.cs" />
@@ -351,7 +354,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Projects\zzzOtherProject\OtherProjectBase.cs" />
-    <Compile Include="Projects\ZZZZFormats\ZZZFormats.cs" />
+    <Compile Include="Projects\ZZZZFormats\ZZZZFormatByExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Old elements\THRPGMTransPatchFile.cs" />
     <Compile Include="Old elements\THLang.cs" />

@@ -10,7 +10,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
 {
     class TranslationBigBlock : TranslationBase
     {
-        public TranslationBigBlock() : base()
+        public TranslationBigBlock()
         {
         }
 

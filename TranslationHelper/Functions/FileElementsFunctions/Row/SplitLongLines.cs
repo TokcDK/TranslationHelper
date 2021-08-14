@@ -6,7 +6,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class SplitLongLines : RowBase
     {
-        public SplitLongLines() : base()
+        public SplitLongLines()
         {
         }
 

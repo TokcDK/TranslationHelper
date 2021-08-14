@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 {
     class TXT : FormatBase
     {
-        public TXT() : base()
+        public TXT()
         {
         }
 
@@ -35,7 +35,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         readonly StringBuilder sb = new StringBuilder();
         private string LastMSGType;
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (readmode)
             {

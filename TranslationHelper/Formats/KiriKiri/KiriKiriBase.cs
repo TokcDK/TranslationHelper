@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.KiriKiri
         /// overall kirikiri environment for all formats
         /// </summary>
         /// <param name="projectData"></param>
-        protected KiriKiriBase() : base()
+        protected KiriKiriBase()
         {
         }
 

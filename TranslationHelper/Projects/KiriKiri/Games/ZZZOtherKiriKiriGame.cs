@@ -6,7 +6,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 {
     class ZZZOtherKiriKiriGame : KiriKiriGameBase
     {
-        public ZZZOtherKiriKiriGame() : base()
+        public ZZZOtherKiriKiriGame()
         {
         }
 

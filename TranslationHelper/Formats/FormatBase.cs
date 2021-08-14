@@ -19,6 +19,11 @@ namespace TranslationHelper.Formats
         {
             TablesLinesDict = ProjectData.TablesLinesDict;
             hashes = ProjectData.hashes;
+
+            if (ProjectData.CurrentProject != null)
+            {
+                ProjectData.CurrentProject.CurrentFormat = this;
+            }
         }
 
         internal virtual bool Check()
@@ -123,7 +128,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Means use for table name name of file without extension
         /// </summary>
-        protected virtual bool UseTableNameWithoutExtension => false;
+        internal virtual bool UseTableNameWithoutExtension => false;
 
         /// <summary>
         /// table name
@@ -182,6 +187,13 @@ namespace TranslationHelper.Formats
             }
         }
 
+        internal enum ParseStringFileLineReturnState
+        {
+            Break = -1,
+            Continue = 0,
+            ReadToEnd = 1
+        }
+
         /// <summary>
         /// opening string file and parse lines
         /// </summary>
@@ -189,7 +201,7 @@ namespace TranslationHelper.Formats
         {
             while (ReadLine() != null)
             {
-                if (ParseStringFileLine() == -1)
+                if (ParseStringFileLine() == ParseStringFileLineReturnState.Break)
                 {
                     break;
                 }
@@ -201,9 +213,9 @@ namespace TranslationHelper.Formats
         /// -1=stop parse cyrcle, 0-continue cyrcle, 1 - read to end of the cyrcle
         /// </summary>
         /// <returns></returns>
-        protected virtual int ParseStringFileLine()
+        protected virtual ParseStringFileLineReturnState ParseStringFileLine()
         {
-            return -1;
+            return ParseStringFileLineReturnState.Break;
         }
 
         bool firstline = true;
@@ -581,6 +593,7 @@ namespace TranslationHelper.Formats
         {
             return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckAddHashes, CheckInput, AddToDictionary);
         }
+
         /// <summary>
         /// Add string to table with options
         /// </summary>

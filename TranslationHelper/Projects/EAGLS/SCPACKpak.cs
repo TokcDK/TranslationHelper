@@ -6,7 +6,7 @@ namespace TranslationHelper.Projects.EAGLS
 {
     class SCPACKpak : EAGLSBase
     {
-        public SCPACKpak() : base()
+        public SCPACKpak()
         {
         }
 

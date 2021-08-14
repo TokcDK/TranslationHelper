@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.Raijin7
 {
     class CSV : Rajiin7Base
     {
-        public CSV() : base()
+        public CSV()
         {
         }
 
@@ -41,18 +41,18 @@ namespace TranslationHelper.Formats.Raijin7
 
         int lineNumber;
         int variant;
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             //ParseData.TrimmedLine = ParseData.line;
 
-            var ret = 1;
+            var ret = ParseStringFileLineReturnState.ReadToEnd;
 
             if (variant > 0)
             {
                 //commented or empty
                 if (string.IsNullOrWhiteSpace(ParseData.line) || ParseData.line.TrimStart().StartsWith("//"))
                 {
-                    ret = 0;
+                    ret = ParseStringFileLineReturnState.Continue;
                 }
                 else if (variant == 1)
                 {

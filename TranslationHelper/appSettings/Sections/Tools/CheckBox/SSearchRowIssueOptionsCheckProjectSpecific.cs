@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SSearchRowIssueOptionsCheckProjectSpecific : Tools
     {
-        public SSearchRowIssueOptionsCheckProjectSpecific() : base()
+        public SSearchRowIssueOptionsCheckProjectSpecific()
         {
         }
 

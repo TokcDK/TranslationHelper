@@ -6,7 +6,7 @@ namespace TranslationHelper.Projects.KiriKiri
 {
     class TJSfile : ProjectBase
     {
-        public TJSfile() : base()
+        public TJSfile()
         {
         }
 

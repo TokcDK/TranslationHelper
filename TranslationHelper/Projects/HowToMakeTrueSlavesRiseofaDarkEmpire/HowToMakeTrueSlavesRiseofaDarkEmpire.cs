@@ -5,7 +5,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 {
     class HowToMakeTrueSlavesRiseofaDarkEmpire : ProjectBase
     {
-        public HowToMakeTrueSlavesRiseofaDarkEmpire() : base()
+        public HowToMakeTrueSlavesRiseofaDarkEmpire()
         {
         }
 

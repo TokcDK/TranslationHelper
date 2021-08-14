@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SEnableTranslationCache : Tools
     {
-        public SEnableTranslationCache() : base()
+        public SEnableTranslationCache()
         {
         }
 

@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
 {
     class CSV : KiriKiriBase
     {
-        public CSV() : base()
+        public CSV()
         {
         }
 
@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
             return ".csv";
         }
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             var values = Regex.Matches(ParseData.line, @"[^\t\r\n]+");
             var maxindex = values.Count - 1;

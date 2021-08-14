@@ -7,7 +7,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
 {
     class RJ297684GoblinsCave : PGroup1Base
     {
-        public RJ297684GoblinsCave() : base()
+        public RJ297684GoblinsCave()
         {
             exeCRC = "7c2bfd95";
         }

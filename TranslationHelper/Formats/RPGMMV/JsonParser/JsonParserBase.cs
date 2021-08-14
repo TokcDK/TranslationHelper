@@ -9,6 +9,21 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 {
     abstract class JsonParserBase
     {
+        protected JsonParserBase()
+        {
+            if (ProjectData.CurrentProject != null)
+            {
+                Format = ProjectData.CurrentProject.CurrentFormat;
+
+                if (!string.IsNullOrWhiteSpace(ProjectData.FilePath))
+                {
+                    JsonName = Format.UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(ProjectData.FilePath) : Path.GetFileName(ProjectData.FilePath);
+                }
+            }
+
+            Init();
+        }
+
         /// <summary>
         /// Path to json file
         /// </summary>
@@ -17,12 +32,12 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <summary>
         /// Using now format
         /// </summary>
-        protected FormatBase Format;
+        internal FormatBase Format;
 
         /// <summary>
         /// Name of json file
         /// </summary>
-        protected string JsonName;
+        internal string JsonName;
 
         /// <summary>
         /// Json tokens which must be skipped from parse
@@ -35,25 +50,49 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         protected bool UseSkipJsonTokens;
 
         /// <summary>
-        /// Parse selected <paramref name="json"/>
+        /// Parse selected <paramref name="json"/> and then write
         /// </summary>
         /// <param name="json"></param>
         internal bool ParseFile(FileInfo json)
         {
+            Format = ProjectData.CurrentProject.CurrentFormat;
             return Load(json);
         }
 
         /// <summary>
-        /// Parse selected <paramref name="json"/> using functions from the <paramref name="format"/>
+        /// Parse selected <paramref name="jsonString"/>
+        /// </summary>
+        /// <param name="jsonString"></param>
+        internal bool ParseString(string jsonString)
+        {
+            Format = ProjectData.CurrentProject.CurrentFormat;
+
+            try
+            {
+                Parse(JToken.Parse(jsonString));
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Parse selected <paramref name="json"/> using functions from the <paramref name="format"/> then write changes in default ProjectData.FilePath
         /// </summary>
         /// <param name="json"></param>
-        internal bool ParseUsingProject(FormatBase format)
+        internal bool ParseUsingFormat(FormatBase format)
         {
             Format = format;
             return Load(new FileInfo(ProjectData.FilePath));
         }
 
-        protected JToken JsonRoot;
+        /// <summary>
+        /// Root json token
+        /// </summary>
+        internal JToken JsonRoot;
 
         private bool Load(FileInfo json)
         {
@@ -62,14 +101,14 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 return false;
             }
 
-            Json = json;
-
-            JsonName = Path.GetFileNameWithoutExtension(json.FullName);
-
             try
             {
+
+                Json = json;
+
+                JsonName = Format.UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(json.FullName) : json.Name;
+
                 //Example from here, answer 1: https://stackoverflow.com/questions/39673815/how-to-recursively-populate-a-treeview-with-json-data
-                
                 using (StreamReader reader = new StreamReader(json.FullName))
                 {
                     using (JsonTextReader jsonReader = new JsonTextReader(reader))
@@ -94,6 +133,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             WriteJsonFileInSaveMode();
 
             return true;
+        }
+
+        protected virtual void Init()
+        {
         }
 
         private void WriteJsonFileInSaveMode()

@@ -2,7 +2,7 @@
 {
     class RpgMakerLikeTxt : ExportFormatsBase
     {
-        public RpgMakerLikeTxt() : base()
+        public RpgMakerLikeTxt()
         {
         }
 

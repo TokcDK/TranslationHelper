@@ -9,7 +9,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class SplitLongLinesSpec : RowBase
     {
-        public SplitLongLinesSpec() : base()
+        public SplitLongLinesSpec()
         {
         }
 

@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SDontLoadDuplicates : Optimizations
     {
-        public SDontLoadDuplicates() : base()
+        public SDontLoadDuplicates()
         {
         }
 

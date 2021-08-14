@@ -9,7 +9,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class LoadRowDataToCustomDb : RowBase
     {
-        public LoadRowDataToCustomDb() : base()
+        public LoadRowDataToCustomDb()
         {
         }
 

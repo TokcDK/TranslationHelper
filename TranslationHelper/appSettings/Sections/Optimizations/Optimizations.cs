@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     abstract class Optimizations : SettingsBase
     {
-        protected Optimizations() : base()
+        protected Optimizations()
         {
         }
 

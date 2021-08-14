@@ -8,7 +8,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 {
     class DungeonAndBride : KiriKiriGameBase
     {
-        public DungeonAndBride() : base()
+        public DungeonAndBride()
         {
         }
 

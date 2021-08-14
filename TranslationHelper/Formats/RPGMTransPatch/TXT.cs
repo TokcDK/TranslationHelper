@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.RPGMTrans
 {
     class TXT : RPGMTransPatchBase
     {
-        public TXT() : base()
+        public TXT()
         {
         }
 
@@ -25,7 +25,7 @@ namespace TranslationHelper.Formats.RPGMTrans
             return "RPGMTrans patch txt";
         }
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             return CheckAndParse();
         }

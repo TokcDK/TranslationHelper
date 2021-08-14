@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
     class KS : FormatBase
     {
-        public KS() : base()
+        public KS()
         {
             scriptMark = new Script();
         }
@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 
         bool IsScript = false;
         Script scriptMark;
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (ParseData.IsComment)
             {

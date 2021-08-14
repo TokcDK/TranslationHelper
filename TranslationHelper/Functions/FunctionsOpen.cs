@@ -20,10 +20,10 @@ namespace TranslationHelper.Functions
 {
     class FunctionsOpen
     {
-        
+
         public FunctionsOpen()
         {
-            
+
         }
 
         internal async void OpenProject()
@@ -191,9 +191,11 @@ namespace TranslationHelper.Functions
             //Try detect and open new type projects
             foreach (ProjectBase Project in ProjectData.ProjectsList)
             {
-                ProjectData.CurrentProject = Project;
                 if (TryDetectProject(Project))
                 {
+                    // reinit new instance of project before try to open
+                    ProjectData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project.GetType());
+
                     return TryOpenProject();
                 }
                 ProjectData.CurrentProject = null;
@@ -323,7 +325,7 @@ namespace TranslationHelper.Functions
                             ProjectData.Main.extractedpatchpath += Path.DirectorySeparatorChar + "patch";
                             //MessageBox.Show("extractedpatchpath=" + extractedpatchpath);
                             dir = new DirectoryInfo(Path.GetDirectoryName(ProjectData.Main.extractedpatchpath + Path.DirectorySeparatorChar)).FullName; //Два слеша здесь в конце исправляют проблему возврата информации о неверной папке
-                                                                                                                                                       //MessageBox.Show("patchdir1=" + patchdir);
+                                                                                                                                                        //MessageBox.Show("patchdir1=" + patchdir);
                         }
                         else if (Directory.Exists(ProjectData.Main.extractedpatchpath + Path.GetFileName(ProjectData.Main.extractedpatchpath) + Path.DirectorySeparatorChar + "patch"))
                         {

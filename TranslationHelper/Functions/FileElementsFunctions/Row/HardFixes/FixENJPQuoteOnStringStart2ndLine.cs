@@ -6,7 +6,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class FixEnjpQuoteOnStringStart2NdLine : HardFixesBase
     {
-        public FixEnjpQuoteOnStringStart2NdLine() : base()
+        public FixEnjpQuoteOnStringStart2NdLine()
         {
         }
 

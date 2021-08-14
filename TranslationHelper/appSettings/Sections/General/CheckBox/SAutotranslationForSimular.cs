@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SAutotranslationForSimular : General
     {
-        public SAutotranslationForSimular() : base()
+        public SAutotranslationForSimular()
         {
         }
 

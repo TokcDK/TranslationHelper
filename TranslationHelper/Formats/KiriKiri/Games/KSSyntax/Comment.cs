@@ -4,7 +4,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
     class Comment : KSSyntaxBase
     {
-        public Comment() : base()
+        public Comment()
         {
         }
 

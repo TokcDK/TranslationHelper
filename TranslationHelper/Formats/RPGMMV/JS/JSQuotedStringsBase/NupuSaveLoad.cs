@@ -4,7 +4,7 @@
 //{
 //    class NupuSaveLoad : JSQuotedStringsBase
 //    {
-//        public NupuSaveLoad() : base()
+//        public NupuSaveLoad()
 //        {
 //        }
 

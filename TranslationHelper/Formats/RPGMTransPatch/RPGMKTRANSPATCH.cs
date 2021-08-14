@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
 {
     class RPGMKTRANSPATCH : RPGMTransPatchBase
     {
-        public RPGMKTRANSPATCH() : base()
+        public RPGMKTRANSPATCH()
         {
         }
 

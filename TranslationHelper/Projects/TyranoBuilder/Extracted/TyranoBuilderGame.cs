@@ -7,7 +7,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
 {
     class TyranoBuilderGame : ProjectBase
     {
-        public TyranoBuilderGame() : base()
+        public TyranoBuilderGame()
         {
         }
 

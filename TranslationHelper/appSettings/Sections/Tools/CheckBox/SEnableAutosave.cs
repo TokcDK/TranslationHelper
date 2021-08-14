@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SEnableAutosave : Tools
     {
-        public SEnableAutosave() : base()
+        public SEnableAutosave()
         {
         }
 

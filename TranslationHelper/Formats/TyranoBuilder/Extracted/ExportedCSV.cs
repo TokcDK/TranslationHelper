@@ -4,7 +4,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
     class ExportedCSV : FormatBase
     {
-        public ExportedCSV() : base()
+        public ExportedCSV()
         {
         }
 
@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             return ".csv";
         }
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (!string.IsNullOrWhiteSpace(ParseData.line) && !ParseData.line.Contains("DO NOT EDIT"))//skip info lines
             {

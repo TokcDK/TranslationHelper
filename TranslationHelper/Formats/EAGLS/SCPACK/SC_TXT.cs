@@ -12,7 +12,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         //#　花　=w0003f
         private const string StringPatternNames = @"#([^\=\r\n]+)(\=w[0-9]{4}[a-z])?";//#さくら=w0629a
 
-        public SC_TXT() : base()
+        public SC_TXT()
         {
         }
 
@@ -81,7 +81,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         }
 
         //string lastMentionedCharacter = string.Empty;
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
 
 

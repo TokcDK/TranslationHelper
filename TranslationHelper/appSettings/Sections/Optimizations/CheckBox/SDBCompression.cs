@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SDBCompression : Optimizations
     {
-        public SDBCompression() : base()
+        public SDBCompression()
         {
         }
 

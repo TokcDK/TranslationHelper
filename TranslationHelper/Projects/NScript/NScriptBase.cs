@@ -6,7 +6,7 @@ namespace TranslationHelper.Projects.NScript
 {
     abstract class NScriptBase : ProjectBase
     {
-        protected NScriptBase() : base()
+        protected NScriptBase()
         {
             HideVarsBase = new Dictionary<string, string>
             {

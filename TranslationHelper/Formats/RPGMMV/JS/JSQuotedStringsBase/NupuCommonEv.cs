@@ -4,7 +4,7 @@
 //{
 //    class NupuCommonEv : JSQuotedStringsBase
 //    {
-//        public NupuCommonEv() : base()
+//        public NupuCommonEv()
 //        {
 //        }
 

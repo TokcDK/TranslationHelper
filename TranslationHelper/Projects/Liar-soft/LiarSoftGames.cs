@@ -7,7 +7,7 @@ namespace TranslationHelper.Projects.Liar_soft
 {
     class LiarSoftGames : ProjectBase
     {
-        public LiarSoftGames() : base()
+        public LiarSoftGames()
         {
         }
 

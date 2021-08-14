@@ -9,7 +9,7 @@ namespace TranslationHelper.Projects.EAGLS
 {
     abstract class EAGLSBase : ProjectBase
     {
-        protected EAGLSBase() : base()
+        protected EAGLSBase()
         {
         }
 

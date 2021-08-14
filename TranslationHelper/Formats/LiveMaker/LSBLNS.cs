@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.LiveMaker
 {
     class LSBLNS : LiveMakerBase
     {
-        public LSBLNS() : base()
+        public LSBLNS()
         {
         }
 
@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.LiveMaker
         }
 
         bool CaptureMessage = false;
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (CaptureMessage)
             {

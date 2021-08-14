@@ -7,7 +7,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class ConfigEx : JSBase
     {
-        public ConfigEx() : base()
+        public ConfigEx()
         {
         }
 

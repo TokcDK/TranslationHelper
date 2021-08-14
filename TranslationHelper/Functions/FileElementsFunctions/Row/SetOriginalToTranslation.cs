@@ -4,7 +4,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class SetOriginalToTranslation : RowBase
     {
-        public SetOriginalToTranslation() : base()
+        public SetOriginalToTranslation()
         {
         }
         protected override bool Apply()

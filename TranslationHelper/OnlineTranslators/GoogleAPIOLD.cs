@@ -16,7 +16,7 @@ namespace TranslationHelper
 {
     class GoogleAPIOLD : TranslatorsBase
     {
-        public GoogleAPIOLD() : base()
+        public GoogleAPIOLD()
         {
         }
 

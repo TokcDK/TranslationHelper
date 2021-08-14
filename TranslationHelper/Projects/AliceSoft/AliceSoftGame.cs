@@ -10,7 +10,7 @@ namespace TranslationHelper.Projects.AliceSoft
 {
     class AliceSoftGame : AliceSoftBase
     {
-        public AliceSoftGame() : base()
+        public AliceSoftGame()
         {
         }
 

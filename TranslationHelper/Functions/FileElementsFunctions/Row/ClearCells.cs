@@ -5,7 +5,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class ClearCells : RowBase
     {
-        public ClearCells() : base()
+        public ClearCells()
         {
         }
 

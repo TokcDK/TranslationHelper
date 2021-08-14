@@ -10,7 +10,7 @@ namespace TranslationHelper.Projects.KiriKiri
 {
     internal class KiriKiriGame : ProjectBase
     {
-        public KiriKiriGame() : base()
+        public KiriKiriGame()
         {
         }
 

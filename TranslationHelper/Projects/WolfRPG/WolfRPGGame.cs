@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.WolfRPG
 {
     class WolfRPGGame : WolfRPGBase
     {
-        public WolfRPGGame() : base()
+        public WolfRPGGame()
         {
         }
 

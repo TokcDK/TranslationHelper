@@ -6,7 +6,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
 {
     class VirginLode2 : PGroup1Base
     {
-        public VirginLode2() : base()
+        public VirginLode2()
         {
             exeCRC = "dacf4898da60741356cc5c254774e5cb";
         }

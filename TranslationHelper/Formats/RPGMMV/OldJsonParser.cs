@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.RPGMMV
 {
     class OldJsonParser : RPGMMVBase
     {
-        public OldJsonParser() : base()
+        public OldJsonParser()
         {
         }
 

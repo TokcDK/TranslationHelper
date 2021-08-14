@@ -8,7 +8,7 @@ namespace TranslationHelper.Projects.NScript
 {
     class NScriptGame : NScriptBase
     {
-        public NScriptGame() : base()
+        public NScriptGame()
         {
         }
 

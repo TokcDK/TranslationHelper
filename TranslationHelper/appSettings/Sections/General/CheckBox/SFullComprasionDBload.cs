@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SFullComprasionDBload : General
     {
-        public SFullComprasionDBload() : base()
+        public SFullComprasionDBload()
         {
         }
 

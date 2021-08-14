@@ -7,7 +7,7 @@ namespace TranslationHelper.INISettings
 {
     class SDBCompressionExt : Optimizations
     {
-        public SDBCompressionExt() : base()
+        public SDBCompressionExt()
         {
             if (ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Count == 0)
             {

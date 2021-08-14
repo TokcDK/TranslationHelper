@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SSearchRowIssueOptionsCheckActors : Tools
     {
-        public SSearchRowIssueOptionsCheckActors() : base()
+        public SSearchRowIssueOptionsCheckActors()
         {
         }
 

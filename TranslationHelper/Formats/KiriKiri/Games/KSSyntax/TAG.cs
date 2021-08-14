@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
     class TAG : KSSyntaxBase
     {
-        public TAG() : base()
+        public TAG()
         {
         }
 

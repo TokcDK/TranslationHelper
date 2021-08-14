@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.KiriKiri
 {
     class SCRIPT : FormatBase
     {
-        public SCRIPT() : base()
+        public SCRIPT()
         {
         }
 

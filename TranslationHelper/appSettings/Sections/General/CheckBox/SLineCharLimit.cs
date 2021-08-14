@@ -5,7 +5,7 @@ namespace TranslationHelper.INISettings
 {
     class SLineCharLimit : General
     {
-        public SLineCharLimit() : base()
+        public SLineCharLimit()
         {
         }
 

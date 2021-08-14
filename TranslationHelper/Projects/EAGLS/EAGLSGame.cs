@@ -5,7 +5,7 @@ namespace TranslationHelper.Projects.EAGLS
 {
     class EAGLSGame : EAGLSBase
     {
-        public EAGLSGame() : base()
+        public EAGLSGame()
         {
         }
 

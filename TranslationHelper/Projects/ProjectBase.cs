@@ -12,13 +12,17 @@ using TranslationHelper.Functions;
 namespace TranslationHelper.Projects
 {
     internal abstract class ProjectBase
-    {
-        
+    {      
 
         protected ProjectBase()
         {
             
         }
+
+        /// <summary>
+        /// Current parsing format
+        /// </summary>
+        public FormatBase CurrentFormat;
 
         /// <summary>
         /// set here som vars before open or kind of

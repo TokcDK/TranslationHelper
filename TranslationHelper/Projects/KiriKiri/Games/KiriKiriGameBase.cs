@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 {
     abstract class KiriKiriGameBase : ProjectBase
     {
-        protected KiriKiriGameBase() : base()
+        protected KiriKiriGameBase()
         {
             HideVarsBase = new Dictionary<string, string>()
             {

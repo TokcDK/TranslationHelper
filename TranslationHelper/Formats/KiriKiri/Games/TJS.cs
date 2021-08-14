@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 {
     class TJS : KiriKiriBase
     {
-        public TJS() : base()
+        public TJS()
         {
         }
 
@@ -20,7 +20,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             ProjectData.CurrentProject.ReadLineMod(ref ParseData.line);
         }
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (ParseData.IsComment)
             {

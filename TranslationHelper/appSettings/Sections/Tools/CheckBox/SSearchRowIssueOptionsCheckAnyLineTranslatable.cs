@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SSearchRowIssueOptionsCheckAnyLineTranslatable : Tools
     {
-        public SSearchRowIssueOptionsCheckAnyLineTranslatable() : base()
+        public SSearchRowIssueOptionsCheckAnyLineTranslatable()
         {
         }
 

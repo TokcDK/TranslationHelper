@@ -4,7 +4,7 @@
 //{
 //    class NupuRnd : JSQuotedStringsBase
 //    {
-//        public NupuRnd() : base()
+//        public NupuRnd()
 //        {
 //        }
 

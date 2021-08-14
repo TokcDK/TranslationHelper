@@ -4,7 +4,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class FixForRpgmAkerQuotationInSomeStrings : HardFixesBase
     {
-        public FixForRpgmAkerQuotationInSomeStrings() : base()
+        public FixForRpgmAkerQuotationInSomeStrings()
         {
         }
 

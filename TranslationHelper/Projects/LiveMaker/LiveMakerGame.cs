@@ -11,7 +11,7 @@ namespace TranslationHelper.Projects.LiveMaker
 {
     class LiveMakerGame : ProjectBase
     {
-        public LiveMakerGame() : base()
+        public LiveMakerGame()
         {
         }
 

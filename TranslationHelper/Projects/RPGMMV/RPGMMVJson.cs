@@ -6,7 +6,7 @@ namespace TranslationHelper.Projects.RPGMMV
 {
     class RPGMMVjson : ProjectBase
     {
-        public RPGMMVjson() : base()
+        public RPGMMVjson()
         {
         }
 

@@ -40,7 +40,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return Size >= MaxSize;
         }
 
-        public OnlineTranslate() : base()
+        public OnlineTranslate()
         {
             if (_buffer == null)
             {

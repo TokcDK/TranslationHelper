@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
 {
     class KS : FGroup2Base
     {
-        public KS() : base()
+        public KS()
         {
         }
 

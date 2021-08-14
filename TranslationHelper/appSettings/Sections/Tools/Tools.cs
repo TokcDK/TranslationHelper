@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     abstract class Tools : SettingsBase
     {
-        protected Tools() : base()
+        protected Tools()
         {
         }
 

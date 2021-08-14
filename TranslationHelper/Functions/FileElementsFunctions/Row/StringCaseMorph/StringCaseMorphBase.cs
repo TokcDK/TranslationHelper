@@ -8,7 +8,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 {
     abstract class StringCaseMorphBase : RowBase
     {
-        protected StringCaseMorphBase() : base()
+        protected StringCaseMorphBase()
         {
         }
 

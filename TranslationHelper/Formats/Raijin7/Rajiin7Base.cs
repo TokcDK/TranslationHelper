@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.Raijin7
 {
     abstract class Rajiin7Base : FormatBase
     {
-        protected Rajiin7Base() : base()
+        protected Rajiin7Base()
         {
         }
 

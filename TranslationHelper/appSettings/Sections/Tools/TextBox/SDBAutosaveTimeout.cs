@@ -5,7 +5,7 @@ namespace TranslationHelper.INISettings
 {
     class SDBAutosaveTimeout : Tools
     {
-        public SDBAutosaveTimeout() : base()
+        public SDBAutosaveTimeout()
         {
         }
 

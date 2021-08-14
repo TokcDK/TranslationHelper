@@ -1,11 +1,12 @@
 ﻿using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.RPGMMV.JsonParser;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
     class GAMEFONTCSS : RPGMMVBase
     {
-        public GAMEFONTCSS() : base()
+        public GAMEFONTCSS()
         {
         }
 
@@ -14,7 +15,7 @@ namespace TranslationHelper.Formats.RPGMMV
             return ParseStringFile();
         }
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (ParseData.IsComment)
             {
@@ -42,7 +43,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     {
                         ParseData.Ret = AddRowData(r.Result("$1"), T._("GameFont.\r\nFont must be installed in system or file placed in folder %GAME%\\www\\fonts\\ \r\n or use absolute path. \r\n Change font to smaller is more preferable than line split function\r\nexample: c:/windows/fonts/browa.ttf"), true, false);
 
-                        return -1;
+                        return ParseStringFileLineReturnState.Break;
                     }
                     else
                     {
@@ -65,7 +66,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
             SaveModeAddLine();
 
-            return 1;
+            return ParseStringFileLineReturnState.ReadToEnd;
         }
 
         internal override bool Save()

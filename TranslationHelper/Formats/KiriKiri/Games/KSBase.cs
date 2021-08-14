@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 {
     abstract class KSBase : KiriKiriBase
     {
-        protected KSBase() : base()
+        protected KSBase()
         {
         }
 
@@ -249,9 +249,9 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         }
 
         bool endsWithWait;
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
-            var ret = 0;
+            var ret = ParseStringFileLineReturnState.Continue;
 
             if (!IsScriptBegin() && !IsEmptyOrComment() && !ParsePatterns() &&
                 ((endsWithWait = ParseData.TrimmedLine.EndsWith(waitSymbol)) || EndsWithValidSymbol() || ContainsNoSpecSymbols() || ContainsCharsWhenTagsRemoved())

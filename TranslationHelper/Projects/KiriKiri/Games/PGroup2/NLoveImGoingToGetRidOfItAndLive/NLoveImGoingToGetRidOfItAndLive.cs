@@ -7,7 +7,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
 {
     class NLoveImGoingToGetRidOfItAndLive : PGroup2Base
     {
-        public NLoveImGoingToGetRidOfItAndLive() : base()
+        public NLoveImGoingToGetRidOfItAndLive()
         {
             exeCRC = "a83b58570eee4fabfd0e91f3fc67beab";
         }

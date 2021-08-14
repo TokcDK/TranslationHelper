@@ -4,7 +4,7 @@
 //{
 //    class TMStatusMenuEx : JSQuotedStringsBase
 //    {
-//        public TMStatusMenuEx() : base()
+//        public TMStatusMenuEx()
 //        {
 //        }
 

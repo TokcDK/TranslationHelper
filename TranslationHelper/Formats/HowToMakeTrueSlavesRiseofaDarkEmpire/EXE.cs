@@ -8,7 +8,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 {
     class EXE : FormatBase
     {
-        public EXE() : base()
+        public EXE()
         {
         }
 

@@ -4,7 +4,7 @@ namespace TranslationHelper.INISettings
 {
     class SSearchRowIssueOptionsCheckNonRomaji : Tools
     {
-        public SSearchRowIssueOptionsCheckNonRomaji() : base()
+        public SSearchRowIssueOptionsCheckNonRomaji()
         {
         }
 

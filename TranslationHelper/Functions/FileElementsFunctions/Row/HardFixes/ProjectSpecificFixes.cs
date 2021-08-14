@@ -4,7 +4,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class ProjectSpecificFixes : HardFixesBase
     {
-        public ProjectSpecificFixes() : base()
+        public ProjectSpecificFixes()
         {
         }
 

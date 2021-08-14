@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
 {
     class TXT : Rajiin7Base
     {
-        public TXT() : base()
+        public TXT()
         {
         }
 
@@ -19,16 +19,16 @@ namespace TranslationHelper.Formats.Raijin7.eve
             return ParseStringFile();
         }
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             //ParseData.TrimmedLine = ParseData.line;
 
-            var ret = 1;
+            var ret = ParseStringFileLineReturnState.ReadToEnd;
 
             //commented or empty
             if (string.IsNullOrWhiteSpace(ParseData.line) || ParseData.TrimmedLine.StartsWith("//"))
             {
-                ret = 0;
+                ret = ParseStringFileLineReturnState.Continue;
             }
             else if (ParseData.TrimmedLine.StartsWith("set_run_msg")
                 || ParseData.TrimmedLine.StartsWith("zin_old_msg")
@@ -88,7 +88,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
 
                 }
 
-                ret = -1;
+                ret = ParseStringFileLineReturnState.Break;
             }
 
             SaveModeAddLine();

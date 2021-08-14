@@ -10,7 +10,7 @@ namespace TranslationHelper.Formats.KiriKiri
 {
     class CSV : FormatBase
     {
-        public CSV() : base()
+        public CSV()
         {
         }
 

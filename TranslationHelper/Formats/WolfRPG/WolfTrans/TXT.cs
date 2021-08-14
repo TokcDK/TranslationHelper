@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 {
     class TXT : WolfRPGBase
     {
-        public TXT() : base()
+        public TXT()
         {
         }
 
@@ -26,7 +26,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
             return ParseStringFile();
         }
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             return CheckAndParse();
         }

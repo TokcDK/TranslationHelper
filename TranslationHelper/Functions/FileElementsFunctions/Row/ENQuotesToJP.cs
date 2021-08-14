@@ -6,7 +6,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class EnQuotesToJp : RowBase
     {
-        public EnQuotesToJp() : base()
+        public EnQuotesToJp()
         {
             if (ProjectData.ENQuotesToJPLearnDataFoundPrev == null)
             {

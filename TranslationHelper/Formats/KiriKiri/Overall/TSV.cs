@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.KiriKiri
 {
     class TSV : FormatBase
     {
-        public TSV() : base()
+        public TSV()
         {
         }
 

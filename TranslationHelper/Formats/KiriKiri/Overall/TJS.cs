@@ -8,7 +8,7 @@ namespace TranslationHelper.Formats.KiriKiri
 {
     class TJS : FormatBase
     {
-        public TJS() : base()
+        public TJS()
         {
         }
 

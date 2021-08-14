@@ -1,13 +1,16 @@
-﻿using System.IO;
+﻿//just usual quoted js
+#if false
+
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 
-namespace TranslationHelper.Formats.RPGMMV.JS
+namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
 {
-    class GraphicalDesignMode : JSBase
+    class GraphicalDesignMode : JSSVarBase
     {
-        public GraphicalDesignMode() : base()
+        public GraphicalDesignMode()
         {
         }
 
@@ -111,7 +114,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
             StringBuilder TranslatedResult = new StringBuilder();
             string line;
-            rowindex = 0;
+            //rowindex = 0;
 
             string tablename = Path.GetFileName(ProjectData.FilePath);
 
@@ -194,10 +197,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
             MatchCollection mc = Regex.Matches(line, @"'([^']+)'");
 
-            int i;
-            foreach (Match m in mc)
+            for (int i = mc.Count; i >= 0; i--)
             {
-                var v = m.Value.Trim('\'');
+                var v = mc[i];//.Value.Trim('\'');
                 if (TablesLinesDict.ContainsKey(v))
                 {
                     line = line.Remove(i = line.IndexOf(v), v.Length).Insert(i, TablesLinesDict[v]);
@@ -206,5 +208,8 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         }
 
         internal override string JSName => "GraphicalDesignMode.js";
+
+        protected override string SvarIdentifier => "{lines: ['";
     }
 }
+#endif

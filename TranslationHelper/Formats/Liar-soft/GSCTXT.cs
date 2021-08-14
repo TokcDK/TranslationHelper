@@ -7,7 +7,7 @@ namespace TranslationHelper.Formats.Liar_soft
 {
     class GSCTXT : FormatBase
     {
-        public GSCTXT() : base()
+        public GSCTXT()
         {
         }
 
@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.Liar_soft
             return ".txt";
         }
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (!ParseData.line.StartsWith("#"))
             {

@@ -9,7 +9,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class MakeTranslatedCopyIfFileWithTheNameExists : RowBase
     {
-        public MakeTranslatedCopyIfFileWithTheNameExists() : base()
+        public MakeTranslatedCopyIfFileWithTheNameExists()
         {
         }
 

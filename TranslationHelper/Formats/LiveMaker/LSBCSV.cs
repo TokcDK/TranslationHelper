@@ -7,7 +7,7 @@ namespace TranslationHelper.Formats.LiveMaker
 {
     class LSBCSV : LiveMakerBase
     {
-        public LSBCSV() : base()
+        public LSBCSV()
         {
         }
 
@@ -33,7 +33,7 @@ namespace TranslationHelper.Formats.LiveMaker
                 {
                     //skip last line because stringbuilder adding new line and lmlsb will fail if will be empty line on the end
                 }
-                else if (ParseStringFileLine() == -1)
+                else if (ParseStringFileLine() == ParseStringFileLineReturnState.Break)
                 {
                     break;
                 }
@@ -50,7 +50,7 @@ namespace TranslationHelper.Formats.LiveMaker
             }
         }
 
-        protected override int ParseStringFileLine()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (ParseData.TrimmedLine.StartsWith("pylm"))
             {

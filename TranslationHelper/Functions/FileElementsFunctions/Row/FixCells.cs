@@ -7,7 +7,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class FixCells : RowBase
     {
-        public FixCells() : base()
+        public FixCells()
         {
         }
 

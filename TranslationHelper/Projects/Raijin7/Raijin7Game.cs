@@ -8,7 +8,7 @@ namespace TranslationHelper.Projects
 {
     class Raijin7Game : ProjectBase
     {
-        public Raijin7Game() : base()
+        public Raijin7Game()
         {
             HideVarsBase = new Dictionary<string, string>
             {

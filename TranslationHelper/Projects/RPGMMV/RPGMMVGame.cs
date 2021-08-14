@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Formats;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Functions;
@@ -15,7 +16,7 @@ namespace TranslationHelper.Projects.RPGMMV
     class RPGMMVGame : ProjectBase
     {
         readonly List<JSBase> ListOfJS;
-        public RPGMMVGame() : base()
+        public RPGMMVGame()
         {
             ListOfJS = JSBase.GetListOfJS();
         }
@@ -126,11 +127,12 @@ namespace TranslationHelper.Projects.RPGMMV
 
                         HardcodedJS.Add(JS.JSName);//add js to exclude from parsing of other js
 
-                        if (Write && JS.Save())
+                        var format = (FormatBase)Activator.CreateInstance(JS.GetType()); // recreate instance for reinit
+                        if (Write && format.Save())
                         {
                             IsAnyFileCompleted = true;
                         }
-                        else if (JS.Open())
+                        else if (format.Open())
                         {
                             IsAnyFileCompleted = true;
                         }
