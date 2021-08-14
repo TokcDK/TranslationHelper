@@ -328,67 +328,64 @@ namespace TranslationHelper.Extensions
                         .Select(g => string.Join(" ", g.ToArray()))
                         .ToArray();
         }
-
         /// <summary>
-        /// https://stackoverflow.com/a/4398419
-        /// Wraps words of lines which is beyond limit
+        /// examples: https://stackoverflow.com/a/4398419
+        /// Wraps words of lines in <paramref name="text"/> which is beyond <paramref name="max"/> limit
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="max"></param>
+        /// <param name="text">inpyt text</param>
+        /// <param name="max">max chars limit in one sentence</param>
         /// <returns></returns>
         internal static string Wrap(this string text, int max)
         {
             string[] words = text.Split(' ');
-            //var parts = new Dictionary<int, string>();
-            var parts = new List<string>();//2) смена на List еще снизило время с 0.058 до 0.052 на 100000 итераций
-            string part = string.Empty;
-            //int partCounter;// = 0;
-            bool IsNewLine;
+            List<string> lines = new List<string>();
+            string line = string.Empty;
+            bool isNewLine;
+            int ll;
             foreach (var word in words)
             {
-                IsNewLine = false;
-                foreach (var subword in word.Split('\n'))
+                isNewLine = false;
+                foreach (var subword in word.Split('\n')) // добавлено для сохранения оригинальных переносов в тексте, где, например, сначала имя персонажа, а его речь идет со следующей строки или следующая строка начинаятся с символа табуляции
                 {
-                    if (!IsNewLine && part.Length + subword.Length + 1 <= max)
+                    if (!isNewLine && (ll = line.Length) + subword.Length + 1 <= max)
                     {
-                        if (string.IsNullOrEmpty(part))//1) это снизило время выполнения с 0.067 до 0.058 на 100000 итераций
+                        if (ll == 0)
                         {
-                            part += subword;
+                            line += subword;
                         }
                         else
                         {
-                            part += " " + subword;
+                            line += " " + subword;
                         }
-                        //part += string.IsNullOrEmpty(part) ? word : " " + word;
                     }
                     else
                     {
-                        //parts.Add(partCounter, part);
-                        if (IsNewLine)
+                        if (isNewLine) // add merged merged line in new lines
                         {
-                            parts.Add(part.Replace("\r", string.Empty));
+                            // убрать \r в конце, если есть
+                            if ((ll = line.Length) > 0 && line[--ll] == '\r')
+                            {
+                                lines.Add(line.Remove(ll));
+                            }
+                            else
+                            {
+                                lines.Add(line);
+                            }
                         }
                         else
                         {
-                            parts.Add(part);
+                            lines.Add(line);
                         }
 
-                        part = subword;
-                        //partCounter++;
+                        line = subword; // установить слово как начало новой строки
                     }
-                    IsNewLine = true;
+                    isNewLine = true; // обозначает, что если в слове был оригинальный символ новой строки, 
                 }
             }
-            //parts.Add(partCounter, part);
-            parts.Add(part);
-            //foreach (var item in parts)
-            //{
-            //    Console.WriteLine("Part {0} (length = {2}): {1}", item.Key, item.Value, item.Value.Length);
-            //}
-            //Console.ReadLine();
 
-            //return parts.Values.ToArray();
-            return string.Join(Environment.NewLine, parts);
+            lines.Add(line);
+
+            return string.Join(Environment.NewLine, lines);// merge lines with newline symbol and return
         }
 
         /// <summary>
