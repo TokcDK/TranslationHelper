@@ -28,6 +28,15 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         /// Get all inherited classes of an abstract class
         /// </summary>
         /// <returns></returns>
+        internal static List<System.Type> GetListOfJSTypes()
+        {
+            return Inherited.GetListOfInheritedTypes(typeof(JSBase));
+        }
+
+        /// <summary>
+        /// Get all inherited classes of an abstract class
+        /// </summary>
+        /// <returns></returns>
         internal static List<JSBase> GetListOfJS()
         {
             return Inherited.GetListOfinheritedSubClasses<JSBase>();
@@ -59,7 +68,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         protected JSBase()
         {
-           JsonParser = new JSJsonParser();
+            JsonParser = new JSJsonParser();
         }
 
         //protected void GetStringsFromJToken(JToken token, string Jsonname)

@@ -26,7 +26,7 @@ namespace TranslationHelper.Data
             SelectedFilePath = string.Empty;
             FilePath = string.Empty;
 
-            ProjectsList = ProjectBase.GetListOfProjects();
+            ProjectsList = ProjectBase.GetListOfProjectTypes();
         }
 
         /// <summary>
@@ -60,9 +60,9 @@ namespace TranslationHelper.Data
         internal static ProjectBase CurrentProject;
 
         /// <summary>
-        /// internal ProjectBase Project
+        /// List of project types
         /// </summary>
-        internal static List<ProjectBase> ProjectsList;
+        internal static List<Type> ProjectsList;
 
         /// <summary>
         /// usually 'S'elected file 'Path' in file browse dialog

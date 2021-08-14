@@ -15,10 +15,10 @@ namespace TranslationHelper.Projects.RPGMMV
 {
     class RPGMMVGame : ProjectBase
     {
-        readonly List<JSBase> ListOfJS;
+        readonly List<Type> ListOfJS;
         public RPGMMVGame()
         {
-            ListOfJS = JSBase.GetListOfJS();
+            ListOfJS = JSBase.GetListOfJSTypes();
         }
 
         internal override bool Check()
@@ -112,8 +112,10 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 var HardcodedJS = new HashSet<string>();
                 //Proceeed js-files
-                foreach (var JS in ListOfJS)
+                foreach (var jsType in ListOfJS)
                 {
+                    var JS = (JSBase)Activator.CreateInstance(jsType);
+
                     ProjectData.FilePath = Path.Combine(ProjectData.SelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
 
                     if (!File.Exists(ProjectData.FilePath))
@@ -127,12 +129,11 @@ namespace TranslationHelper.Projects.RPGMMV
 
                         HardcodedJS.Add(JS.JSName);//add js to exclude from parsing of other js
 
-                        var format = (FormatBase)Activator.CreateInstance(JS.GetType()); // recreate instance for reinit
-                        if (Write && format.Save())
+                        if (Write && JS.Save())
                         {
                             IsAnyFileCompleted = true;
                         }
-                        else if (format.Open())
+                        else if (JS.Open())
                         {
                             IsAnyFileCompleted = true;
                         }
@@ -340,9 +341,9 @@ namespace TranslationHelper.Projects.RPGMMV
         internal override bool BakRestore()
         {
             RestoreFromBakIfNeedData();
-            foreach (JSBase JS in ListOfJS)
+            foreach (var JS in ListOfJS)
             {
-                RestoreFromBakIfNeedJS(JS);
+                RestoreFromBakIfNeedJS((JSBase)Activator.CreateInstance(JS));
             }
 
             return BackupRestorePaths(BakPaths, false);

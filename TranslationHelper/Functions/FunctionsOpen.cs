@@ -189,12 +189,12 @@ namespace TranslationHelper.Functions
             //ShowProjectsList();
 
             //Try detect and open new type projects
-            foreach (ProjectBase Project in ProjectData.ProjectsList)
+            foreach (Type Project in ProjectData.ProjectsList) // iterate projectbase types
             {
-                if (TryDetectProject(Project))
+                ProjectData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project);// create instance of project
+                if (TryDetectProject(ProjectData.CurrentProject))
                 {
                     // reinit new instance of project before try to open
-                    ProjectData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project.GetType());
 
                     return TryOpenProject();
                 }

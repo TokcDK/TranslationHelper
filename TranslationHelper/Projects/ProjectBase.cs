@@ -404,6 +404,15 @@ namespace TranslationHelper.Projects
         }
 
         /// <summary>
+        /// Get all types of inherited classes of ProjectBase class
+        /// </summary>
+        /// <returns></returns>
+        internal static List<Type> GetListOfProjectTypes()
+        {
+            return GetListOfSubClasses.Inherited.GetListOfInheritedTypes(typeof(ProjectBase));
+        }
+
+        /// <summary>
         /// Get all inherited classes of an abstract class
         /// </summary>
         /// <returns></returns>

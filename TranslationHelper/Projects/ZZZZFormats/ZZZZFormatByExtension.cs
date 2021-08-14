@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Formats;
@@ -16,17 +17,18 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         private void GetValidOpenable()
         {
-            formats = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<FormatBase>();
+            formatsTypes = GetListOfSubClasses.Inherited.GetListOfInheritedTypes(typeof(FormatBase));
         }
 
-        List<FormatBase> formats;
+        List<Type> formatsTypes;
 
         internal override bool Check()
         {
             GetValidOpenable();
 
-            foreach (var format in formats)
+            foreach (var formatType in formatsTypes)
             {
+                var format = (FormatBase)Activator.CreateInstance(formatType);
                 if (format.Ext() == Path.GetExtension(ProjectData.SelectedFilePath) && format.ExtIdentifier())
                 {
                     CurrentFormat = format;
