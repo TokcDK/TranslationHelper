@@ -125,11 +125,13 @@ namespace TranslationHelper.Projects.RPGMMV
 
                     try
                     {
-                        ProjectData.Main.ProgressInfo(true, ParseFileMessage + js.JSName);
 
                         HardcodedJS.Add(js.JSName);//add js to exclude from parsing of other js
 
                         var jsFormat = (FormatBase)Activator.CreateInstance(jsType); // create format instance for open or save
+
+                        ProjectData.Main.ProgressInfo(true, ParseFileMessage + js.JSName);
+
                         if (Write && jsFormat.Save())
                         {
                             IsAnyFileCompleted = true;
