@@ -29,7 +29,7 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override bool Open()
         {
-            return PackUnpack() && OpenSaveFilesBase(ProjectData.ProjectWorkDir, new AINTXT(), "*.ain.txt");
+            return PackUnpack() && OpenSaveFilesBase(ProjectData.ProjectWorkDir, typeof(AINTXT), "*.ain.txt");
         }
 
         private bool PackUnpack()
@@ -125,7 +125,7 @@ namespace TranslationHelper.Projects.AliceSoft
             ProjectData.OpenFileMode = true;
             PackUnpack();//restore original txt before each writing because it will be writed with translated strings while 1st write and will be need to restore it
             ProjectData.SaveFileMode = true;
-            return OpenSaveFilesBase(ProjectData.ProjectWorkDir, new AINTXT(), "*.ain.txt") && PackUnpack();
+            return OpenSaveFilesBase(ProjectData.ProjectWorkDir, typeof(AINTXT), "*.ain.txt") && PackUnpack();
         }
     }
 }

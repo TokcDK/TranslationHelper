@@ -27,7 +27,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
 
             if (export.Exists && export.HasAnyFiles("*.csv"))
             {
-                return OpenSaveFilesBase(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "export"), new ExportedCSV(), "*.csv");
+                return OpenSaveFilesBase(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "export"), typeof(ExportedCSV), "*.csv");
                 //var result = MessageBox.Show(T._("Project has exported csv by TyranoBuilder translator") + ". " + T._("Proceed exported?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 //if (result == DialogResult.Yes)
                 //{
@@ -35,7 +35,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
             }
             else
             {
-                return OpenSaveFilesBase(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "data", "scenario"), new KS(), "*.ks");
+                return OpenSaveFilesBase(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "data", "scenario"), typeof(KS), "*.ks");
             }
         }
 
@@ -45,7 +45,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
 
             if (export.Exists && export.HasAnyFiles("*.csv"))
             {
-                return OpenSaveFilesBase(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "export"), new ExportedCSV(), "*.csv");
+                return OpenSaveFilesBase(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "export"), typeof(ExportedCSV), "*.csv");
                 //var result = MessageBox.Show(T._("Project has exported csv by TyranoBuilder translator") + ". " + T._("Proceed exported?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 //if (result == DialogResult.Yes)
                 //{
@@ -53,7 +53,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
             }
             else
             {
-                return OpenSaveFilesBase(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "data", "scenario"), new KS(), "*.ks");
+                return OpenSaveFilesBase(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "data", "scenario"), typeof(KS), "*.ks");
             }
         }
 

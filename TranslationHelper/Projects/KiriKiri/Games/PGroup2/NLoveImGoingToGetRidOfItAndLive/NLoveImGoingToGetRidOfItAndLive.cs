@@ -29,9 +29,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
             return false;
         }
 
-        protected override List<Formats.FormatBase> Format()
+        protected override List<System.Type> FormatType()
         {
-            return new List<Formats.FormatBase> { new TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS() };
+            return new List<System.Type> { typeof(Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS) };
         }
 
         protected override string[] Mask()

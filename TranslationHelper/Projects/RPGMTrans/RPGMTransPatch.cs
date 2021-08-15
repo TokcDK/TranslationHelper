@@ -30,12 +30,12 @@ namespace TranslationHelper.Projects
 
         internal override bool Open()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), new TXT(), "*.txt");
+            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(TXT), "*.txt");
         }
 
         internal override bool Save()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), new TXT(), "*.txt");
+            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(TXT), "*.txt");
         }
     }
 }

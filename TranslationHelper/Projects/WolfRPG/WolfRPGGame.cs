@@ -42,7 +42,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 , ProjectData.CurrentProject.ProjectFolderName()
                 , Path.GetFileName(ProjectData.SelectedGameDir));
             var patchdir = Path.Combine(OrigFolder, "patch");
-            return OpenSaveFilesBase(new DirectoryInfo(patchdir), new Formats.WolfRPG.WolfTrans.TXT(), "*.txt");
+            return OpenSaveFilesBase(new DirectoryInfo(patchdir), typeof(Formats.WolfRPG.WolfTrans.TXT), "*.txt");
         }
 
         protected bool ExtractWolfFiles()

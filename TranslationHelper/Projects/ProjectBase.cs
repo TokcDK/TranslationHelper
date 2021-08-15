@@ -12,11 +12,11 @@ using TranslationHelper.Functions;
 namespace TranslationHelper.Projects
 {
     internal abstract class ProjectBase
-    {      
+    {
 
         protected ProjectBase()
         {
-            
+
         }
 
         /// <summary>
@@ -130,18 +130,18 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(string DirForSearch, List<FormatBase> format, string[] masks = null, bool Newest = false)
+        protected bool OpenSaveFilesBase(string DirForSearch, List<Type> formatType, string[] masks = null, bool Newest = false)
         {
-            return OpenSaveFilesBase(new DirectoryInfo(DirForSearch), format, masks, Newest);
+            return OpenSaveFilesBase(new DirectoryInfo(DirForSearch), formatType, masks, Newest);
         }
 
         /// <summary>
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(string DirForSearch, FormatBase format, string mask = "*")
+        protected bool OpenSaveFilesBase(string DirForSearch, Type formatType, string mask = "*")
         {
-            return OpenSaveFilesBase(new DirectoryInfo(DirForSearch), format, mask);
+            return OpenSaveFilesBase(new DirectoryInfo(DirForSearch), formatType, mask);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace TranslationHelper.Projects
         /// <param name="masks"></param>
         /// <param name="Newest"></param>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, List<FormatBase> format, string[] masks = null, bool Newest = false)
+        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, List<Type> format, string[] masks = null, bool Newest = false)
         {
             if (masks == null || format == null || format.Count != masks.Length)
             {
@@ -175,12 +175,12 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, FormatBase format, string mask = "*", bool Newest = false, string[] exclusions = null)
+        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, Type formatType, string mask = "*", bool Newest = false, string[] exclusions = null)
         {
-            if (mask == "*")
-            {
-                mask += format.Ext();
-            }
+            //if (mask == "*")
+            //{
+            //    mask += format.Ext();
+            //}
 
             exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
 
@@ -193,6 +193,13 @@ namespace TranslationHelper.Projects
                         continue;
 
                     ProjectData.FilePath = file.FullName;
+
+                    var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
+                    if (file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
+                    {
+                        continue;
+                    }
+
                     ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
                     if (ProjectData.OpenFileMode ? format.Open() : format.Save())
                     {

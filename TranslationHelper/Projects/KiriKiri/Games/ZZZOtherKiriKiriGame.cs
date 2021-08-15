@@ -20,12 +20,12 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return Path.GetFileName(ProjectData.ProjectWorkDir) + "(" + ProjectData.SelectedFilePath + ")";
         }
 
-        protected override List<Formats.FormatBase> Format()
+        protected override List<System.Type> FormatType()
         {
-            return new List<Formats.FormatBase>
+            return new List<System.Type>
             {
-                new Formats.KiriKiri.Games.KS(),
-                new Formats.KiriKiri.Games.CSV.CSV()
+                typeof(Formats.KiriKiri.Games.KS),
+                typeof(Formats.KiriKiri.Games.CSV.CSV)
             };
         }
 

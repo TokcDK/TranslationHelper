@@ -64,7 +64,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             if (!Directory.Exists(openPath + ".skip") && !File.Exists(openPath + ".skip"))
             {
-                var txtFormat = new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT();
+                var txtFormat = typeof(Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT);
                 if (OpenSaveFilesBase(new DirectoryInfo(openPath), txtFormat, "*.txt"))
                 {
                     ret = true;

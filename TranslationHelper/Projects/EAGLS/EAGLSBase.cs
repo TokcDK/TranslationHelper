@@ -34,7 +34,7 @@ namespace TranslationHelper.Projects.EAGLS
             return ProjectFolderName();
         }
 
-        string scriptsFIlter = "sc_*.txt";
+        string scriptsMask = "sc_*.txt";
 
         /// <summary>
         /// unpack txt files from SCPACK or pack translated txt to them. pack by default
@@ -63,7 +63,7 @@ namespace TranslationHelper.Projects.EAGLS
                 File.WriteAllText(Path.Combine(ProjectData.ProjectWorkDir, mode + "1.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
 
                 var code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
-                if (!code || WorkTXTDir.IsNullOrEmptyDirectory(scriptsFIlter))
+                if (!code || WorkTXTDir.IsNullOrEmptyDirectory(scriptsMask))
                 {
                     Directory.Delete(workdir, true);
                     return false;
@@ -101,12 +101,12 @@ namespace TranslationHelper.Projects.EAGLS
 
         protected bool OpenFiles()
         {
-            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(), scriptsFIlter);
+            return OpenSaveFilesBase(WorkTXTDir, typeof(SC_TXT), scriptsMask);
         }
 
         protected bool SaveFiles()
         {
-            return OpenSaveFilesBase(WorkTXTDir, new SC_TXT(), scriptsFIlter);
+            return OpenSaveFilesBase(WorkTXTDir, typeof(SC_TXT), scriptsMask);
         }
 
         protected string SCPACKpak;

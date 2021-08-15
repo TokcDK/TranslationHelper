@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -46,7 +47,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         /// <param name="formats">must be one as minimum and set for each mask</param>
         /// <param name="masks">{ "*.ks" } by default</param>
         /// <returns>true if atleast one file was open</returns>
-        protected bool OpenSaveFiles(List<FormatBase> formats = null, string[] masks = null)
+        protected bool OpenSaveFiles(List<Type> formats = null, string[] masks = null)
         {
             var ret = false;
 
@@ -73,7 +74,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
             masks = masks ?? Mask();
 
-            formats = formats ?? Format();
+            formats = formats ?? FormatType();
 
             if (OpenSaveFilesBase(dir, formats, masks, true))
             {
@@ -99,11 +100,11 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return "KiriKiri";
         }
 
-        protected virtual List<FormatBase> Format()
+        protected virtual List<Type> FormatType()
         {
-            return new List<FormatBase>
+            return new List<Type>
                 {
-                   new  Formats.KiriKiri.Games.KS()
+                   typeof(Formats.KiriKiri.Games.KS)
                 };
         }
 

@@ -34,11 +34,11 @@ namespace TranslationHelper.Projects.LiveMaker
         {
             return ExtractRes() && OpenSaveFilesBase(Path.Combine(ProjectData.ProjectWorkDir, "Extracted"), Format(), Mask(), false);
         }
-        protected List<Formats.FormatBase> Format()
+        protected List<System.Type> Format()
         {
-            return new List<Formats.FormatBase> {
-                new LSBCSV(),
-                new LSBLNS()
+            return new List<System.Type> {
+                typeof(LSBCSV),
+                typeof(LSBLNS)
             };
         }
 

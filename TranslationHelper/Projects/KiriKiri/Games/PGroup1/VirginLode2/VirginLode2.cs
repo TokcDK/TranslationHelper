@@ -28,9 +28,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
             return false;
         }
 
-        protected override List<Formats.FormatBase> Format()
+        protected override List<System.Type> FormatType()
         {
-            return new List<Formats.FormatBase> { new TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2.KS() };
+            return new List<System.Type> { typeof(Formats.KiriKiri.Games.FGroup1.VirginLode2.KS) };
         }
 
         protected override string[] Mask()

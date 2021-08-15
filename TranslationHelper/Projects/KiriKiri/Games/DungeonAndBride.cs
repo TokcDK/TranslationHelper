@@ -22,12 +22,12 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return "Dungeon & Bride";
         }
 
-        protected override List<Formats.FormatBase> Format()
+        protected override List<System.Type> FormatType()
         {
-            return new List<Formats.FormatBase>(3) {
-                new Formats.KiriKiri.Games.FGroup1.VirginLode2.KS(),
-                new Formats.KiriKiri.Games.TJS(),
-                new Formats.KiriKiri.Games.CSV.CSV()
+            return new List<System.Type>(3) {
+                typeof(Formats.KiriKiri.Games.FGroup1.VirginLode2.KS),
+                typeof(Formats.KiriKiri.Games.TJS),
+                typeof(Formats.KiriKiri.Games.CSV.CSV)
             };
         }
 
