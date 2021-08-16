@@ -7,9 +7,9 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.EAGLS
 {
-    abstract class EAGLSBase : ProjectBase
+    abstract class EaglsBase : ProjectBase
     {
-        protected EAGLSBase()
+        protected EaglsBase()
         {
         }
 
@@ -17,11 +17,11 @@ namespace TranslationHelper.Projects.EAGLS
         {
             base.Init();
             ProjectName = ProjectName();
-            ProjectData.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), ProjectName);
-            WorkTXTDir = Path.Combine(ProjectData.ProjectWorkDir, "txt");
+            ProjectData.ProjectWorkDir = Path.Combine(ThSettings.WorkDirPath(), ProjectFolderName(), ProjectName);
+            WorkTxtDir = Path.Combine(ProjectData.ProjectWorkDir, "txt");
             ScriptDir = Path.Combine(ProjectData.SelectedGameDir, "Script");
-            SCPACKpak = Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "Script", "SCPACK.pak");
-            SCPACKidx = Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "Script", "SCPACK.idx");
+            ScpacKpak = Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "Script", "SCPACK.pak");
+            ScpacKidx = Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "Script", "SCPACK.idx");
         }
 
         internal override string ProjectFolderName()
@@ -34,7 +34,7 @@ namespace TranslationHelper.Projects.EAGLS
             return ProjectFolderName();
         }
 
-        string scriptsMask = "sc_*.txt";
+        string _scriptsMask = "sc_*.txt";
 
         /// <summary>
         /// unpack txt files from SCPACK or pack translated txt to them. pack by default
@@ -45,25 +45,25 @@ namespace TranslationHelper.Projects.EAGLS
         {
             try
             {
-                ProjectData.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), ProjectName);
+                ProjectData.ProjectWorkDir = Path.Combine(ThSettings.WorkDirPath(), ProjectFolderName(), ProjectName);
                 var workdir = ProjectData.ProjectWorkDir;
 
-                var pythonexe = THSettings.PythonExePath();
-                var scpacker = THSettings.SCPackerPYPath();
+                var pythonexe = ThSettings.PythonExePath();
+                var scpacker = ThSettings.ScPackerPyPath();
                 var scriptdir = ScriptDir;
 
-                WorkTXTDir = Path.Combine(ProjectData.ProjectWorkDir, "txt");
+                WorkTxtDir = Path.Combine(ProjectData.ProjectWorkDir, "txt");
                 var mode = (ProjectData.SaveFileMode ? string.Empty : "un") + "pack";
                 //var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t -o";
-                var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\"";
+                var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTxtDir + "\"";
 
-                Directory.CreateDirectory(WorkTXTDir);
+                Directory.CreateDirectory(WorkTxtDir);
 
                 //write command file
                 File.WriteAllText(Path.Combine(ProjectData.ProjectWorkDir, mode + "1.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
 
                 var code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
-                if (!code || WorkTXTDir.IsNullOrEmptyDirectory(scriptsMask))
+                if (!code || WorkTxtDir.IsNullOrEmptyDirectory(_scriptsMask))
                 {
                     Directory.Delete(workdir, true);
                     return false;
@@ -81,7 +81,7 @@ namespace TranslationHelper.Projects.EAGLS
                     //}
                 }
 
-                var errorslog = Path.Combine(THSettings.SCPackerPYPath(), "errors.log.txt");
+                var errorslog = Path.Combine(ThSettings.ScPackerPyPath(), "errors.log.txt");
                 if (File.Exists(errorslog) && new FileInfo(errorslog).Length > 0)
                 {
                     MessageBox.Show(T._("Errors was occcured while packing") + "." + T._("Will be opened log and work dir") + ".");
@@ -101,24 +101,24 @@ namespace TranslationHelper.Projects.EAGLS
 
         protected bool OpenFiles()
         {
-            return OpenSaveFilesBase(WorkTXTDir, typeof(SC_TXT), scriptsMask);
+            return OpenSaveFilesBase(WorkTxtDir, typeof(ScTxt), _scriptsMask);
         }
 
         protected bool SaveFiles()
         {
-            return OpenSaveFilesBase(WorkTXTDir, typeof(SC_TXT), scriptsMask);
+            return OpenSaveFilesBase(WorkTxtDir, typeof(ScTxt), _scriptsMask);
         }
 
-        protected string SCPACKpak;
-        protected string SCPACKidx;
-        protected string WorkTXTDir;
+        protected string ScpacKpak;
+        protected string ScpacKidx;
+        protected string WorkTxtDir;
         internal override bool BakCreate()
         {
             return BackupRestorePaths(new[]
             {
-                SCPACKpak,
-                SCPACKidx,
-                WorkTXTDir
+                ScpacKpak,
+                ScpacKidx,
+                WorkTxtDir
             }, true);
         }
 
@@ -126,9 +126,9 @@ namespace TranslationHelper.Projects.EAGLS
         {
             return BackupRestorePaths(new[]
             {
-                SCPACKpak,
-                SCPACKidx,
-                WorkTXTDir
+                ScpacKpak,
+                ScpacKidx,
+                WorkTxtDir
             }, false);
         }
     }

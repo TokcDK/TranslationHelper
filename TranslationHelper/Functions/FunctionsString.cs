@@ -12,25 +12,25 @@ namespace TranslationHelper.Functions
         /// replaces chars in selected string by replacement pairs from string[][2] array
         /// </summary>
         /// <param name="workString"></param>
-        /// <param name="ArrayPairs"></param>
+        /// <param name="arrayPairs"></param>
         /// <returns></returns>
-        internal static string CharsReplacementByPairsFromArray(string workString, string[][] ArrayPairs)
+        internal static string CharsReplacementByPairsFromArray(string workString, string[][] arrayPairs)
         {
-            int ArrayPairsLength = ArrayPairs.Length;
+            int arrayPairsLength = arrayPairs.Length;
 
-            if (ArrayPairsLength == 0)
+            if (arrayPairsLength == 0)
             {
                 return workString;
             }
 
-            for (int i = 0; i < ArrayPairsLength; i++)
+            for (int i = 0; i < arrayPairsLength; i++)
             {
-                if (ArrayPairs[i].Length != 2)
+                if (arrayPairs[i].Length != 2)
                 {
                     continue;
                 }
 
-                workString = workString.Replace(ArrayPairs[i][0], ArrayPairs[i][1]);
+                workString = workString.Replace(arrayPairs[i][0], arrayPairs[i][1]);
             }
 
             return workString;
@@ -110,30 +110,30 @@ namespace TranslationHelper.Functions
         /// <summary>
         /// true if count of symbol A in string A == count of symbol B in string B equals
         /// </summary>
-        /// <param name="AValue"></param>
-        /// <param name="BValue"></param>
-        /// <param name="SymbolA"></param>
-        /// <param name="SymbolB"></param>
+        /// <param name="aValue"></param>
+        /// <param name="bValue"></param>
+        /// <param name="symbolA"></param>
+        /// <param name="symbolB"></param>
         /// <returns></returns>
-        internal static bool GetCountOfTheSymbolInStringAandBIsEqual(string AValue, string BValue, string SymbolA, string SymbolB)
+        internal static bool GetCountOfTheSymbolInStringAandBIsEqual(string aValue, string bValue, string symbolA, string symbolB)
         {
-            return !(string.IsNullOrEmpty(AValue) || string.IsNullOrEmpty(BValue) || string.IsNullOrEmpty(SymbolA) || string.IsNullOrEmpty(SymbolB)) && AValue.Length - AValue.Replace(SymbolA, string.Empty).Length == BValue.Length - BValue.Replace(SymbolB, string.Empty).Length;
+            return !(string.IsNullOrEmpty(aValue) || string.IsNullOrEmpty(bValue) || string.IsNullOrEmpty(symbolA) || string.IsNullOrEmpty(symbolB)) && aValue.Length - aValue.Replace(symbolA, string.Empty).Length == bValue.Length - bValue.Replace(symbolB, string.Empty).Length;
         }
 
         /// <summary>
         /// Check if string A contains string B (if length of A > length of A with replaced B by "")<br></br><br></br>
         /// Speed check tests: https://cc.davelozinski.com/c-sharp/fastest-way-to-check-if-a-string-occurs-within-a-string
         /// </summary>
-        /// <param name="StringAWhereSearch"></param>
-        /// <param name="StringBToSearch"></param>
+        /// <param name="stringAWhereSearch"></param>
+        /// <param name="stringBToSearch"></param>
         /// <returns></returns>
-        internal static bool IsStringAContainsStringB(string StringAWhereSearch, string StringBToSearch)
+        internal static bool IsStringAContainsStringB(string stringAWhereSearch, string stringBToSearch)
         {
-            int StringAInWhichSearchLength = StringAWhereSearch.Length;
-            if (StringAInWhichSearchLength > 0 && StringBToSearch.Length > 0)//safe check for empty values
+            int stringAInWhichSearchLength = stringAWhereSearch.Length;
+            if (stringAInWhichSearchLength > 0 && stringBToSearch.Length > 0)//safe check for empty values
             {
                 //if string A contains string B then string A with replaced stringB by empty will be
-                return StringAInWhichSearchLength > StringAWhereSearch.Replace(StringBToSearch, string.Empty).Length;
+                return stringAInWhichSearchLength > stringAWhereSearch.Replace(stringBToSearch, string.Empty).Length;
             }
             return false;
 
@@ -142,30 +142,30 @@ namespace TranslationHelper.Functions
         /// <summary>
         /// Returns length of longest line in string
         /// </summary>
-        /// <param name="Line"></param>
+        /// <param name="line"></param>
         /// <returns></returns>
-        internal static int GetLongestLineLength(string Line)
+        internal static int GetLongestLineLength(string line)
         {
-            int ReturnLength = 0;
-            string[] sublines = Line.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
+            int returnLength = 0;
+            string[] sublines = line.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None);
             int sublinesLength = sublines.Length;
             if (sublinesLength > 1)
             {
-                for (int N = 0; N < sublinesLength; N++)
+                for (int n = 0; n < sublinesLength; n++)
                 {
-                    int sublinesNLength = sublines[N].LengthWithoutSpecSymbols();
+                    int sublinesNLength = sublines[n].LengthWithoutSpecSymbols();
 
-                    if (sublinesNLength > 0 && sublinesNLength > ReturnLength)
+                    if (sublinesNLength > 0 && sublinesNLength > returnLength)
                     {
-                        ReturnLength = sublinesNLength;
+                        returnLength = sublinesNLength;
                     }
                 }
             }
             else
             {
-                ReturnLength = Line.TrimEnd().Length;
+                returnLength = line.TrimEnd().Length;
             }
-            return ReturnLength;
+            return returnLength;
         }
 
         /// <summary>

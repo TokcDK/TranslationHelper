@@ -5,11 +5,11 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
 {
-    class RJ297684GoblinsCave : PGroup1Base
+    class Rj297684GoblinsCave : PGroup1Base
     {
-        public RJ297684GoblinsCave()
+        public Rj297684GoblinsCave()
         {
-            exeCRC = "7c2bfd95";
+            ExeCrc = "7c2bfd95";
         }
 
         internal override string Name()
@@ -19,12 +19,12 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
 
         internal override bool Check()
         {
-            return CheckKiriKiriBase() && exeCRC.Length > 0 && ProjectData.SelectedFilePath.GetCrc32() == exeCRC;
+            return CheckKiriKiriBase() && ExeCrc.Length > 0 && ProjectData.SelectedFilePath.GetCrc32() == ExeCrc;
         }
 
         protected override List<Type> FormatType()
         {
-            return new List<Type>() { typeof(Formats.KiriKiri.Games.FGroup1.RJ297684GoblinsCave.KS) };
+            return new List<Type>() { typeof(Formats.KiriKiri.Games.FGroup1.RJ297684GoblinsCave.Ks) };
         }
 
         protected override string[] Mask()

@@ -2,7 +2,7 @@
 
 namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
-    class Attribute : KSSyntaxBase
+    class Attribute : KsSyntaxBase
     {
         public Attribute()
         {

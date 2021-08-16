@@ -3,9 +3,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Projects.EAGLS
 {
-    class EAGLSGame : EAGLSBase
+    class EaglsGame : EaglsBase
     {
-        public EAGLSGame()
+        public EaglsGame()
         {
         }
 
@@ -23,10 +23,10 @@ namespace TranslationHelper.Projects.EAGLS
         internal override bool Open()
         {
             BakRestore();
-            return UnpackSCPACK();
+            return UnpackScpack();
         }
 
-        private bool UnpackSCPACK()
+        private bool UnpackScpack()
         {
             return PackUnpackFiles() && OpenFiles();
         }

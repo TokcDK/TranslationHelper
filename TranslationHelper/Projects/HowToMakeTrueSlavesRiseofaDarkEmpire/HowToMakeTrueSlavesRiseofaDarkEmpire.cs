@@ -14,7 +14,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
             return "How to make true slaves -Rise of a Dark Empire-";
         }
 
-        internal override string GetProjectDBFileName()
+        internal override string GetProjectDbFileName()
         {
             return Name();
         }
@@ -41,7 +41,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
         private bool OpenFiles()
         {
             OpenFilesSerial();
-            return ProjectData.THFilesElementsDataset.Tables.Count > 0;
+            return ProjectData.ThFilesElementsDataset.Tables.Count > 0;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             ProjectData.Main.ProgressInfo(true, Path.GetFileName(ProjectData.SelectedFilePath));
             ProjectData.FilePath = ProjectData.SelectedFilePath;
-            if (ProjectData.OpenFileMode ? new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE().Open() : new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE().Save())
+            if (ProjectData.OpenFileMode ? new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.Exe().Open() : new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.Exe().Save())
             {
                 ret = true;
             }
@@ -64,7 +64,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             if (!Directory.Exists(openPath + ".skip") && !File.Exists(openPath + ".skip"))
             {
-                var txtFormat = typeof(Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT);
+                var txtFormat = typeof(Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.Txt);
                 if (OpenSaveFilesBase(new DirectoryInfo(openPath), txtFormat, "*.txt"))
                 {
                     ret = true;
@@ -102,7 +102,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
             return true;
         }
 
-        readonly string[] BackupPaths = new string[3]
+        readonly string[] _backupPaths = new string[3]
         {
             @".\data\Script",
             @".\data\AdditionalScript",
@@ -111,12 +111,12 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         internal override bool BakCreate()
         {
-            return BackupRestorePaths(BackupPaths);
+            return BackupRestorePaths(_backupPaths);
         }
 
         internal override bool BakRestore()
         {
-            return BackupRestorePaths(BackupPaths, false);
+            return BackupRestorePaths(_backupPaths, false);
         }
     }
 }

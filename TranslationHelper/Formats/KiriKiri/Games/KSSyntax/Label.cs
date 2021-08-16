@@ -7,7 +7,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
-    class Label : KSSyntaxBase
+    class Label : KsSyntaxBase
     {
         public Label()
         {

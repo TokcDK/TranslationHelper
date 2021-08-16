@@ -3,34 +3,34 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
-    abstract class RPGMWolfTransPatchBase : FormatBase
+    abstract class RpgmWolfTransPatchBase : FormatBase
     {
-        protected RPGMWolfTransPatchBase()
+        protected RpgmWolfTransPatchBase()
         {
         }
 
         protected override void ParseStringFilePreOpenExtra()
         {
-            unused = false;
+            Unused = false;
         }
 
         /// <summary>
         /// true when patch version was checked
         /// </summary>
-        protected bool verchecked;
+        protected bool Verchecked;
         /// <summary>
         /// true if found unused string blocks for patch v2
         /// </summary>
-        protected bool unused;
+        protected bool Unused;
 
         /// <summary>
         /// is wolftrans patch
         /// </summary>
-        bool IsWolfTrans = false;
+        bool _isWolfTrans = false;
         /// <summary>
         /// is rpgmtrans v2 patch
         /// </summary>
-        bool IsRPGMTransVerson2 = false;
+        bool _isRpgmTransVerson2 = false;
 
         /// <summary>
         /// check if it is patch txt
@@ -38,27 +38,27 @@ namespace TranslationHelper.Formats.WolfRPG
         /// <returns></returns>
         protected bool CheckSetPatchVersion()
         {
-            if (!verchecked)
+            if (!Verchecked)
             {
-                if (ParseData.line == "> RPGMAKER TRANS PATCH FILE VERSION 3.2")
+                if (ParseData.Line == "> RPGMAKER TRANS PATCH FILE VERSION 3.2")
                 {
-                    IsWolfTrans = false;
-                    IsRPGMTransVerson2 = false;
+                    _isWolfTrans = false;
+                    _isRpgmTransVerson2 = false;
                 }
-                else if (ParseData.line == "# RPGMAKER TRANS PATCH FILE VERSION 2.0")
+                else if (ParseData.Line == "# RPGMAKER TRANS PATCH FILE VERSION 2.0")
                 {
-                    IsRPGMTransVerson2 = true;
+                    _isRpgmTransVerson2 = true;
                 }
-                else if (ParseData.line == "> WOLF TRANS PATCH FILE VERSION 1.0")
+                else if (ParseData.Line == "> WOLF TRANS PATCH FILE VERSION 1.0")
                 {
-                    IsWolfTrans = true;
+                    _isWolfTrans = true;
                 }
                 else
                 {
                     return false; //Not a patch file, break parsing
                 }
 
-                verchecked = true;
+                Verchecked = true;
             }
 
             return true;
@@ -67,11 +67,11 @@ namespace TranslationHelper.Formats.WolfRPG
         /// <summary>
         /// is wolftrans
         /// </summary>
-        bool W => IsWolfTrans;
+        bool W => _isWolfTrans;
         /// <summary>
         /// is rpgmtrans v2
         /// </summary>
-        bool P2 => !IsWolfTrans && IsRPGMTransVerson2;
+        bool P2 => !_isWolfTrans && _isRpgmTransVerson2;
 
         /// <summary>
         /// check if string block begin
@@ -79,22 +79,22 @@ namespace TranslationHelper.Formats.WolfRPG
         /// <returns></returns>
         protected bool IsBeginString()
         {
-            if (!unused)//означает, что перевод отсюда и далее не используется в игре и помечен RPGMakerTrans этой строкой
+            if (!Unused)//означает, что перевод отсюда и далее не используется в игре и помечен RPGMakerTrans этой строкой
             {
                 if (P2)
                 {
-                    if (ParseData.line == "# UNUSED TRANSLATABLES")
+                    if (ParseData.Line == "# UNUSED TRANSLATABLES")
                     {
-                        unused = true;
+                        Unused = true;
                     }
                 }
                 else
                 {
-                    unused = true;
+                    Unused = true;
                 }
             }
 
-            return ParseData.line.StartsWith(P2 ? "# TEXT STRING" : "> BEGIN STRING");
+            return ParseData.Line.StartsWith(P2 ? "# TEXT STRING" : "> BEGIN STRING");
         }
 
         /// <summary>
@@ -103,9 +103,9 @@ namespace TranslationHelper.Formats.WolfRPG
         /// <param name="advice"></param>
         protected void GetAdvice(out string advice)
         {
-            if (ParseData.line.StartsWith("# ADVICE")) //advice missing sometimes
+            if (ParseData.Line.StartsWith("# ADVICE")) //advice missing sometimes
             {
-                advice = ParseData.line;
+                advice = ParseData.Line;
                 ReadLine();
             }
             else
@@ -124,12 +124,12 @@ namespace TranslationHelper.Formats.WolfRPG
             if (P2)
             {
                 //add first original line (was set last to line in check of previous block)
-                originalLines.Add(ParseData.line);
+                originalLines.Add(ParseData.Line);
             }
 
             while (!ReadLine().StartsWith(P2 ? "# TRANSLATION" : "> CONTEXT"))
             {
-                originalLines.Add(ParseData.line);
+                originalLines.Add(ParseData.Line);
             }
 
             if (P2)
@@ -138,7 +138,7 @@ namespace TranslationHelper.Formats.WolfRPG
             }
         }
 
-        bool IsitemAttr = false;
+        bool _isitemAttr = false;
         /// <summary>
         /// read context lines
         /// </summary>
@@ -148,30 +148,30 @@ namespace TranslationHelper.Formats.WolfRPG
             contextLines = new List<string>();
             if (P2)
             {
-                IsitemAttr = false;
+                _isitemAttr = false;
             }
             else
             {
                 //add first context line (was set last to line in check of previous block)
-                contextLines.Add(ParseData.line);
+                contextLines.Add(ParseData.Line);
             }
 
             //add rest of context lines
             bool wolftransfail = false;
-            while (ReadLine().StartsWith(P2 ? "# CONTEXT" : "> CONTEXT") || (W && (wolftransfail = ParseData.line.EndsWith(" < UNTRANSLATED"))/*bug in wolftrans, sometime filenames placed in next line*/))
+            while (ReadLine().StartsWith(P2 ? "# CONTEXT" : "> CONTEXT") || (W && (wolftransfail = ParseData.Line.EndsWith(" < UNTRANSLATED"))/*bug in wolftrans, sometime filenames placed in next line*/))
             {
                 if (wolftransfail)
                 {
-                    contextLines[contextLines.Count - 1] = contextLines[contextLines.Count - 1] + ParseData.line;
+                    contextLines[contextLines.Count - 1] = contextLines[contextLines.Count - 1] + ParseData.Line;
                 }
                 else
                 {
-                    if (P2 && !IsitemAttr && ParseData.line.EndsWith("itemAttr/UsageMessage"))
+                    if (P2 && !_isitemAttr && ParseData.Line.EndsWith("itemAttr/UsageMessage"))
                     {
-                        IsitemAttr = true;
+                        _isitemAttr = true;
                     }
 
-                    contextLines.Add(ParseData.line);
+                    contextLines.Add(ParseData.Line);
                 }
             }
         }
@@ -185,11 +185,11 @@ namespace TranslationHelper.Formats.WolfRPG
             translationLines = new List<string>
             {
                 //add last set line in check of previous context block
-                ParseData.line
+                ParseData.Line
             };
             while (!ReadLine().StartsWith(P2 ? "# END STRING" : "> END STRING"))
             {
-                translationLines.Add(ParseData.line);
+                translationLines.Add(ParseData.Line);
             }
         }
 
@@ -268,7 +268,7 @@ namespace TranslationHelper.Formats.WolfRPG
 
             if (ProjectData.OpenFileMode)
             {
-                if (P2 && IsitemAttr)//skip itemAttr for p2
+                if (P2 && _isitemAttr)//skip itemAttr for p2
                 {
                     return;
                 }
@@ -302,7 +302,7 @@ namespace TranslationHelper.Formats.WolfRPG
 
                 SetContext(contextLines, !string.IsNullOrEmpty(translation));
 
-                ParseData.line =
+                ParseData.Line =
                     P2
                     ?
                                 "# TEXT STRING"

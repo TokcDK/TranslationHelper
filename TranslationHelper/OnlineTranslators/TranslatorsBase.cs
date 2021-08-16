@@ -16,11 +16,11 @@ namespace TranslationHelper.Translators
 {
     internal static class TranslatorsTools
     {
-        internal static string GetSourceLanguageID()
+        internal static string GetSourceLanguageId()
         {
             return Properties.Settings.Default.OnlineTranslationSourceLanguage.Split(' ')[1];
         }
-        internal static string GetTargetLanguageID()
+        internal static string GetTargetLanguageId()
         {
             return Properties.Settings.Default.OnlineTranslationTargetLanguage.Split(' ')[1];
         }
@@ -34,13 +34,13 @@ namespace TranslationHelper.Translators
         protected TranslatorsBase()
         {
             
-            if (webClient == null)
+            if (WebClient == null)
             {
                 if (ProjectData.OnlineTranslatorCookies == null)
                 {
                     ProjectData.OnlineTranslatorCookies = new System.Net.CookieContainer();
                 }
-                webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies);
+                WebClient = new WebClientEx(ProjectData.OnlineTranslatorCookies);
                 //webClient = new ScrapingBrowser
             }
             //webClient.UseDefaultCredentials = false;            
@@ -51,7 +51,7 @@ namespace TranslationHelper.Translators
         /// </summary>
         internal void ResetCache()
         {
-            sessionCache.Clear();
+            SessionCache.Clear();
         }
 
         //protected CookieContainer cookies = new CookieContainer();
@@ -63,11 +63,11 @@ namespace TranslationHelper.Translators
         }
 
         //protected ScrapingBrowser webClient;
-        protected WebClientEx webClient;
-        protected WebBrowser WB;
-        public virtual string Translate(string OriginalText)
+        protected WebClientEx WebClient;
+        protected WebBrowser Wb;
+        public virtual string Translate(string originalText)
         {
-            string ResultOfTranslation;
+            string resultOfTranslation;
             try
             {
                 string languageFrom = "ja";
@@ -87,25 +87,25 @@ namespace TranslationHelper.Translators
                     }).Last();
                 }
 
-                if (OriginalText.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
+                if (originalText.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                 {
-                    return OriginalText;
+                    return originalText;
                 }
                 else
                 {
-                    ResultOfTranslation = Translate(OriginalText, languageFrom, languageTo);
+                    resultOfTranslation = Translate(originalText, languageFrom, languageTo);
                 }
             }
             catch (Exception)
             {
                 return string.Empty;
             }
-            return ResultOfTranslation;
+            return resultOfTranslation;
         }
 
-        public virtual string[] Translate(string[] OriginalText)
+        public virtual string[] Translate(string[] originalText)
         {
-            string[] Result;
+            string[] result;
             try
             {
                 string languageFrom = "ja";
@@ -133,22 +133,22 @@ namespace TranslationHelper.Translators
                 //{
                 //    ResultOfTranslation = Translate(OriginalText, languageFrom, languageTo);
                 //}
-                Result = Translate(OriginalText, languageFrom, languageTo);
+                result = Translate(originalText, languageFrom, languageTo);
             }
             catch (Exception)
             {
                 return null;
             }
-            return Result;
+            return result;
         }
 
-        public abstract string Translate(string OriginalText, string LanguageFrom = "auto", string LanguageTo = "en");
+        public abstract string Translate(string originalText, string languageFrom = "auto", string languageTo = "en");
 
-        public abstract string[] Translate(string[] OriginalText, string LanguageFrom = "auto", string LanguageTo = "en");
+        public abstract string[] Translate(string[] originalText, string languageFrom = "auto", string languageTo = "en");
 
-        internal static readonly Dictionary<string, string> sessionCache = new Dictionary<string, string>(1);
+        internal static readonly Dictionary<string, string> SessionCache = new Dictionary<string, string>(1);
 
-        private static readonly List<string> _Languages = new List<string>();
+        private static readonly List<string> Languages = new List<string>();
 
         public static List<string> Languages
         {
@@ -302,14 +302,14 @@ namespace TranslationHelper.Translators
         {
             try
             {
-                webClient.Dispose();
-                webClient = null;
+                WebClient.Dispose();
+                WebClient = null;
             }
             catch { }
             try
             {
-                WB.Dispose();
-                WB = null;
+                Wb.Dispose();
+                Wb = null;
             }
             catch { }
         }
@@ -335,7 +335,7 @@ namespace TranslationHelper.Translators
 
     static class TranslatorsExtensions
     {
-        internal static string FixHTMLTags(this string input)
+        internal static string FixHtmlTags(this string input)
         {
             return input
                 //.Replace("<code> 0 </ code>", "<code>0</code>")
@@ -363,7 +363,7 @@ namespace TranslationHelper.Translators
         internal static string FixFormat(this string input)
         {
             return input
-                .FixHTMLTags()
+                .FixHtmlTags()
                 .Replace(" </br> ", Environment.NewLine)
                 ;
         }
@@ -384,7 +384,7 @@ namespace TranslationHelper.Translators
             //input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ###", "## $1 #># $2 #<# $1 ##");
 
             //\#\# (\d{1,5}) \#\>\# ([^(\#\>\# )]*) \#\#\#\#\#
-            return input.FixHTMLTags();
+            return input.FixHtmlTags();
         }
     }
 }

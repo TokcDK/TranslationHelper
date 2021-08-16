@@ -3,7 +3,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.DBSaveFormats
 {
-    interface IDBSave
+    interface IDbSave
     {
         /// <summary>
         /// Save load extension
@@ -19,9 +19,9 @@ namespace TranslationHelper.Functions.DBSaveFormats
         /// FileStream modification.
         /// May be need for formats with compression
         /// </summary>
-        /// <param name="DBInputFileStream"></param>
-        /// <param name="IsRead"></param>
+        /// <param name="dbInputFileStream"></param>
+        /// <param name="isRead"></param>
         /// <returns></returns>
-        Stream FileStreamMod(FileStream DBInputFileStream, bool IsRead = true);
+        Stream FileStreamMod(FileStream dbInputFileStream, bool isRead = true);
     }
 }

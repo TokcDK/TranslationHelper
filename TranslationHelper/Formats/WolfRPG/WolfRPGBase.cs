@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.Formats.WolfRPG
 {
-    abstract class WolfRPGBase : RPGMWolfTransPatchBase
+    abstract class WolfRpgBase : RpgmWolfTransPatchBase
     {
-        protected WolfRPGBase()
+        protected WolfRpgBase()
         {
         }
     }

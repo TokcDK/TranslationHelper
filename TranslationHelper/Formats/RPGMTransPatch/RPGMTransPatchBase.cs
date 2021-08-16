@@ -5,7 +5,7 @@ using TranslationHelper.Formats.WolfRPG;
 
 namespace TranslationHelper.Formats.RPGMTrans
 {
-    abstract class RPGMTransPatchBase : RPGMWolfTransPatchBase
+    abstract class RpgmTransPatchBase : RpgmWolfTransPatchBase
     {
         //protected StringBuilder buffer;
     }

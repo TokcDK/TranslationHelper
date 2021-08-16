@@ -131,7 +131,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return SelectedRowIndex;
         }
 
-        protected readonly FunctionsLogs _log = new FunctionsLogs();
+        protected readonly FunctionsLogs Log = new FunctionsLogs();
 
         /// <summary>
         /// selected rows count
@@ -201,7 +201,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         try
                         {
                             //add row index
-                            selectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(SelectedTableIndex, dgvRowIndex);
+                            selectedRowIndexses[ind] = FunctionsTable.GetDgvSelectedRowIndexInDatatable(SelectedTableIndex, dgvRowIndex);
                         }
                         catch
                         {
@@ -228,7 +228,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
                 catch (Exception ex)
                 {
-                    _log.LogToFile("an error occured in base row function. error=\r\n" + ex);
+                    Log.LogToFile("an error occured in base row function. error=\r\n" + ex);
                 }
             }
 
@@ -307,11 +307,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (SelectedTable == null)
             {
-                SelectedTable = ProjectData.THFilesElementsDataset.Tables[SelectedTableIndex];
+                SelectedTable = ProjectData.ThFilesElementsDataset.Tables[SelectedTableIndex];
             }
 
-            ColumnIndexOriginal = SelectedTable.Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
-            ColumnIndexTranslation = SelectedTable.Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Translation
+            ColumnIndexOriginal = SelectedTable.Columns[ThSettings.OriginalColumnName()].Ordinal;// Колонка Original
+            ColumnIndexTranslation = SelectedTable.Columns[ThSettings.TranslationColumnName()].Ordinal;// Колонка Translation
         }
 
         /// <summary>
@@ -437,7 +437,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             Init();
 
             int tindex = 0;
-            var tables = ProjectData.THFilesElementsDataset.Tables;
+            var tables = ProjectData.ThFilesElementsDataset.Tables;
             Tablescount = tables.Count;
             SetSelectedRowsCountForAll();
 
@@ -476,7 +476,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return;
             }
             SelectedRowsCount = 0;
-            foreach (DataTable t in ProjectData.THFilesElementsDataset.Tables)
+            foreach (DataTable t in ProjectData.ThFilesElementsDataset.Tables)
             {
                 SelectedRowsCount += t.Rows.Count;
             }

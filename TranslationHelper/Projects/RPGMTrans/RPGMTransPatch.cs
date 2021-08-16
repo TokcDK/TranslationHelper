@@ -4,9 +4,9 @@ using TranslationHelper.Formats.RPGMTrans;
 
 namespace TranslationHelper.Projects
 {
-    class RPGMTransPatch : ProjectBase
+    class RpgmTransPatch : ProjectBase
     {
-        public int RPGMTransPatchVersion { get; private set; }
+        public int RpgmTransPatchVersion { get; private set; }
 
         internal override bool Check()
         {
@@ -30,12 +30,12 @@ namespace TranslationHelper.Projects
 
         internal override bool Open()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(TXT), "*.txt");
+            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(Txt), "*.txt");
         }
 
         internal override bool Save()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(TXT), "*.txt");
+            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(Txt), "*.txt");
         }
     }
 }

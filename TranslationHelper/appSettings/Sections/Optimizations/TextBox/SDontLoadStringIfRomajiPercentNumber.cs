@@ -22,9 +22,9 @@ namespace TranslationHelper.INISettings
             set => TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber = value;
         }
 
-        internal override void Set(bool SetObject = false)
+        internal override void Set(bool setObject = false)
         {
-            if (!SetObject)
+            if (!setObject)
             {
                 SVar = CheckAndSet();
             }
@@ -54,7 +54,7 @@ namespace TranslationHelper.INISettings
             return SVar + string.Empty;
         }
 
-        internal override string ID()
+        internal override string Id()
         {
             return (SObject as System.Windows.Forms.TextBox).Name;
         }

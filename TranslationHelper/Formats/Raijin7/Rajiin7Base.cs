@@ -23,20 +23,20 @@ namespace TranslationHelper.Formats.Raijin7
 
         protected void SetValue(params int[] nums)
         {
-            var Values = ParseData.line.Split(',');
+            var values = ParseData.Line.Split(',');
 
             var set = false;
-            var numbers = nums[0] < 999 ? nums : Enumerable.Range(0, Values.Length);
+            var numbers = nums[0] < 999 ? nums : Enumerable.Range(0, values.Length);
             foreach (var num in numbers)
             {
                 var trans="";
                 if (ProjectData.OpenFileMode)
                 {
-                    AddRowData(Values[num], "", true);
+                    AddRowData(values[num], "", true);
                 }
-                else if (IsValid(Values[num], ref trans))
+                else if (IsValid(values[num], ref trans))
                 {
-                    Values[num] = FixInvalidSymbols(trans);
+                    values[num] = FixInvalidSymbols(trans);
                     set = true;
                     ParseData.Ret = true;
                 }
@@ -44,7 +44,7 @@ namespace TranslationHelper.Formats.Raijin7
 
             if (set)
             {
-                ParseData.line = string.Join(",", Values);
+                ParseData.Line = string.Join(",", values);
             }
         }
     }

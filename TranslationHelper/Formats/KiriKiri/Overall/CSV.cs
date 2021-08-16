@@ -8,18 +8,18 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    class CSV : FormatBase
+    class Csv : FormatBase
     {
-        public CSV()
+        public Csv()
         {
         }
 
         internal override bool Open()
         {
-            return KiriKiriCSVOpen();
+            return KiriKiriCsvOpen();
         }
 
-        public bool KiriKiriCSVOpen()
+        public bool KiriKiriCsvOpen()
         {
             FunctionsTable.SetTableAndColumns();
 
@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 //_ = THFilesElementsDatasetInfo.Tables[0].Columns.Add("Original");
                 //_ = THFilesElementsDataset.Tables[0].Columns.Add("Translation");
                 //THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
-                bool IsFirstLineWasNotRead = true;
+                bool isFirstLineWasNotRead = true;
                 int name = -1;
                 int detail = -1;
                 int type = -1;
@@ -51,7 +51,7 @@ namespace TranslationHelper.Formats.KiriKiri
                     else
                     {
                         columns = line.Split(new string[] { "	" }, StringSplitOptions.None);
-                        if (IsFirstLineWasNotRead)
+                        if (isFirstLineWasNotRead)
                         {
                             for (int i = 0; i < columns.Length; i++)
                             {
@@ -76,7 +76,7 @@ namespace TranslationHelper.Formats.KiriKiri
                                     comment = i;
                                 }
                             }
-                            IsFirstLineWasNotRead = false;
+                            isFirstLineWasNotRead = false;
                         }
                         else
                         {
@@ -87,8 +87,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[name]);
-                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("name");
+                                    _ = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(columns[name]);
+                                    _ = ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add("name");
                                 }
                             }
                             if (detail > -1)
@@ -98,8 +98,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[detail]);
-                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("detail");
+                                    _ = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(columns[detail]);
+                                    _ = ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add("detail");
                                 }
                             }
                             if (type > -1)
@@ -109,8 +109,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[type]);
-                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("type");
+                                    _ = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(columns[type]);
+                                    _ = ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add("type");
                                 }
                             }
                             if (field > -1)
@@ -120,8 +120,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[field]);
-                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("field");
+                                    _ = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(columns[field]);
+                                    _ = ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add("field");
                                 }
                             }
                             if (comment > -1)
@@ -133,12 +133,12 @@ namespace TranslationHelper.Formats.KiriKiri
                                 {
                                     try
                                     {
-                                        _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[comment]);
-                                        _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("comment");
+                                        _ = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(columns[comment]);
+                                        _ = ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add("comment");
                                     }
                                     catch
                                     {
-                                        MessageBox.Show("ProjectData.THFilesElementsDataset.Tables[fileName]=" + ProjectData.THFilesElementsDataset.Tables[fileName] + "\r\ncolumns[comment]=" + columns[comment]);
+                                        MessageBox.Show("ProjectData.THFilesElementsDataset.Tables[fileName]=" + ProjectData.ThFilesElementsDataset.Tables[fileName] + "\r\ncolumns[comment]=" + columns[comment]);
                                     }
                                 }
                             }

@@ -8,7 +8,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
     {
         public VirginLode2()
         {
-            exeCRC = "dacf4898da60741356cc5c254774e5cb";
+            ExeCrc = "dacf4898da60741356cc5c254774e5cb";
         }
 
         internal override string Name()
@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
         {
             if (CheckKiriKiriBase())
             {
-                if (exeCRC.Length > 0 && ProjectData.SelectedFilePath.GetMD5() == exeCRC)
+                if (ExeCrc.Length > 0 && ProjectData.SelectedFilePath.GetMd5() == ExeCrc)
                 {
                     return true;
                 }
@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
 
         protected override List<System.Type> FormatType()
         {
-            return new List<System.Type> { typeof(Formats.KiriKiri.Games.FGroup1.VirginLode2.KS) };
+            return new List<System.Type> { typeof(Formats.KiriKiri.Games.FGroup1.VirginLode2.Ks) };
         }
 
         protected override string[] Mask()

@@ -1,15 +1,15 @@
 ﻿namespace TranslationHelper.Formats.RPGMMV.JS
 {
-    interface IUseJSLocationInfo
+    interface IUseJsLocationInfo
     {
         /// <summary>
         /// Name of js file
         /// </summary>
-        string JSName { get; }
+        string JsName { get; }
 
         /// <summary>
         /// folder where the js file is located
         /// </summary>
-        string JSSubfolder { get; }
+        string JsSubfolder { get; }
     }
 }

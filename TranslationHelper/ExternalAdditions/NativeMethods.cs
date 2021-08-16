@@ -8,7 +8,7 @@ namespace TranslationHelper.ExternalAdditions
         //THCreateSymlink
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         internal static extern bool CreateSymbolicLink(
-        string lpSymlinkFileName, string lpTargetFileName, THCreateSymlink.SymbolicLink dwFlags);
+        string lpSymlinkFileName, string lpTargetFileName, ThCreateSymlink.SymbolicLink dwFlags);
 
         //ControlHelper
         [DllImport("gdi32.dll", CallingConvention = CallingConvention.StdCall)]
@@ -21,7 +21,7 @@ namespace TranslationHelper.ExternalAdditions
         //THSearch
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
 
         //IniFiles
         //[DllImport("kernel32", CharSet = CharSet.Unicode)] // Подключаем kernel32.dll и описываем его функцию WritePrivateProfilesString

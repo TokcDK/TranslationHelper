@@ -6,27 +6,27 @@ using TranslationHelper.Formats;
 
 namespace TranslationHelper.Projects.ZZZZFormats
 {
-    class ZZZZFormatByExtension : ProjectBase
+    class ZzzzFormatByExtension : ProjectBase
     {
         /// <summary>
         /// Project will be set be specified extension of found format
         /// </summary>
-        public ZZZZFormatByExtension()
+        public ZzzzFormatByExtension()
         {
         }
 
         private void GetValidOpenable()
         {
-            formatsTypes = GetListOfSubClasses.Inherited.GetListOfInheritedTypes(typeof(FormatBase));
+            _formatsTypes = GetListOfSubClasses.Inherited.GetListOfInheritedTypes(typeof(FormatBase));
         }
 
-        List<Type> formatsTypes;
+        List<Type> _formatsTypes;
 
         internal override bool Check()
         {
             GetValidOpenable();
 
-            foreach (var formatType in formatsTypes)
+            foreach (var formatType in _formatsTypes)
             {
                 var format = (FormatBase)Activator.CreateInstance(formatType);
                 if (format.Ext() == Path.GetExtension(ProjectData.SelectedFilePath) && format.ExtIdentifier())

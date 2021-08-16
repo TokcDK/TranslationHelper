@@ -7,18 +7,18 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.RJ263914
 {
-    class RJ263914OLD
+    class Rj263914Old
     {
         
-        public RJ263914OLD()
+        public Rj263914Old()
         {
             
         }
 
-        internal string ProceedRubyRPGGame(string GameDirectory, bool IsWrite = false)
+        internal string ProceedRubyRpgGame(string gameDirectory, bool isWrite = false)
         {
-            ProjectData.SelectedGameDir = GameDirectory;
-            string binDir = Path.Combine(GameDirectory, "data", "bin");
+            ProjectData.SelectedGameDir = gameDirectory;
+            string binDir = Path.Combine(gameDirectory, "data", "bin");
             string[][] folderNames = new string[14][] {
                 new string[2] { "enemes", "enemes" }
                 ,
@@ -57,15 +57,15 @@ namespace TranslationHelper.Projects.RJ263914
                 string targetDirPath = Path.Combine(binDir, folderNames[i][0]);
                 if (Directory.Exists(targetDirPath))
                 {
-                    RubyRPGGameFIlesFromTheDir(targetDirPath, folderNames[i][1], IsWrite);
+                    RubyRpgGameFIlesFromTheDir(targetDirPath, folderNames[i][1], isWrite);
                 }
             }
             return "RubyRPGGame";
         }
 
-        private void RubyRPGGameFIlesFromTheDir(string targetDirPath, string extension, bool IsWrite = false)
+        private void RubyRpgGameFIlesFromTheDir(string targetDirPath, string extension, bool isWrite = false)
         {
-            bool DropItIn1File = (
+            bool dropItIn1File = (
                     extension == "item"
                     ||
                     extension == "enemy"
@@ -96,31 +96,31 @@ namespace TranslationHelper.Projects.RJ263914
             {
                 string fileName = Path.GetFileName(filePath);
                 //string tableName = (extension == "onom" ? Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filePath))) + "_" + Path.GetFileName(Path.GetDirectoryName(filePath)) + "_" : string.Empty) + Path.GetFileName(filePath);
-                string tableName = DropItIn1File ? Path.GetFileName(targetDirPath) : fileName;
+                string tableName = dropItIn1File ? Path.GetFileName(targetDirPath) : fileName;
 
-                bool tableNotExists = ProjectData.THFilesElementsDataset.Tables[tableName] == null;
+                bool tableNotExists = ProjectData.ThFilesElementsDataset.Tables[tableName] == null;
                 if (tableNotExists)
                 {
-                    if (IsWrite)
+                    if (isWrite)
                     {
                         continue;
                     }
                     else
                     {
-                        ProjectData.THFilesElementsDataset.Tables.Add(tableName);
-                        ProjectData.THFilesElementsDataset.Tables[tableName].Columns.Add("Original");
+                        ProjectData.ThFilesElementsDataset.Tables.Add(tableName);
+                        ProjectData.ThFilesElementsDataset.Tables[tableName].Columns.Add("Original");
 
-                        ProjectData.THFilesElementsDataset.Tables[tableName].Columns.Add("Translation");
+                        ProjectData.ThFilesElementsDataset.Tables[tableName].Columns.Add("Translation");
                         ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(tableName)));
 
-                        ProjectData.THFilesElementsDatasetInfo.Tables.Add(tableName);
-                        ProjectData.THFilesElementsDatasetInfo.Tables[tableName].Columns.Add("Original");
+                        ProjectData.ThFilesElementsDatasetInfo.Tables.Add(tableName);
+                        ProjectData.ThFilesElementsDatasetInfo.Tables[tableName].Columns.Add("Original");
                     }
                 }
 
                 if (folderName == "enemes")
                 {
-                    Open_enemesDirFile(filePath, IsWrite);
+                    Open_enemesDirFile(filePath, isWrite);
                 }
                 else if (folderName == "enemy")
                 {
@@ -129,7 +129,7 @@ namespace TranslationHelper.Projects.RJ263914
                         rowIndex = 0;
                     }
                     //Open_SelectedLinesFromDirFile(filePath, fileName, new int[4] { 2, 3, 19, 20 }, fileName);
-                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[4] { 2, 3, 19, 20 }, fileName, IsWrite, rowIndex);
+                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[4] { 2, 3, 19, 20 }, fileName, isWrite, rowIndex);
                     processingFolderName = folderName;
                 }
                 else if (folderName == "item")
@@ -138,7 +138,7 @@ namespace TranslationHelper.Projects.RJ263914
                     {
                         rowIndex = 0;
                     }
-                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[2] { 1, 5 }, fileName, IsWrite, rowIndex);
+                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[2] { 1, 5 }, fileName, isWrite, rowIndex);
                     processingFolderName = folderName;
                 }
                 else if (folderName == "mappos")
@@ -147,7 +147,7 @@ namespace TranslationHelper.Projects.RJ263914
                     {
                         rowIndex = 0;
                     }
-                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[2] { 2, 6 }, fileName, IsWrite, rowIndex);
+                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[2] { 2, 6 }, fileName, isWrite, rowIndex);
                     processingFolderName = folderName;
                 }
                 else if (folderName == "map")
@@ -162,7 +162,7 @@ namespace TranslationHelper.Projects.RJ263914
                     }
                     rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[1] { 1 },
                         Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filePath))) + Path.DirectorySeparatorChar + Path.GetFileName(Path.GetDirectoryName(filePath)) + Path.DirectorySeparatorChar + fileName
-                        , IsWrite, rowIndex
+                        , isWrite, rowIndex
                         );
                     processingFolderName = folderName;
                 }
@@ -173,9 +173,9 @@ namespace TranslationHelper.Projects.RJ263914
                         rowIndex = 0;
                     }
                     string lineValue = File.ReadAllText(filePath);
-                    if (IsWrite)
+                    if (isWrite)
                     {
-                        var row = ProjectData.THFilesElementsDataset.Tables[tableName].Rows[rowIndex];
+                        var row = ProjectData.ThFilesElementsDataset.Tables[tableName].Rows[rowIndex];
                         if (lineValue == row[0] as string && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
                         {
                             File.SetAttributes(filePath, FileAttributes.Normal);
@@ -184,8 +184,8 @@ namespace TranslationHelper.Projects.RJ263914
                     }
                     else
                     {
-                        ProjectData.THFilesElementsDataset.Tables[tableName].Rows.Add(lineValue);
-                        ProjectData.THFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
+                        ProjectData.ThFilesElementsDataset.Tables[tableName].Rows.Add(lineValue);
+                        ProjectData.ThFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
                     }
                     processingFolderName = folderName;
                     rowIndex++;
@@ -196,12 +196,12 @@ namespace TranslationHelper.Projects.RJ263914
                     {
                         rowIndex = 0;
                     }
-                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[2] { 1, 4 }, fileName, IsWrite, rowIndex);
+                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[2] { 1, 4 }, fileName, isWrite, rowIndex);
                     processingFolderName = folderName;
                 }
                 else if (folderName == "recollect")
                 {
-                    Open_recollectDirFile(filePath, folderName, IsWrite);
+                    Open_recollectDirFile(filePath, folderName, isWrite);
                 }
                 else if (folderName == "skill")
                 {
@@ -209,7 +209,7 @@ namespace TranslationHelper.Projects.RJ263914
                     {
                         rowIndex = 0;
                     }
-                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[3] { 1, 18, 19 }, fileName, IsWrite, rowIndex);
+                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[3] { 1, 18, 19 }, fileName, isWrite, rowIndex);
                     processingFolderName = folderName;
                 }
                 else if (folderName == "state")
@@ -218,7 +218,7 @@ namespace TranslationHelper.Projects.RJ263914
                     {
                         rowIndex = 0;
                     }
-                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[5] { 1, 6, 7, 8, 9 }, fileName, IsWrite, rowIndex);
+                    rowIndex = Open_SelectedLinesFromDirFile(filePath, tableName, new int[5] { 1, 6, 7, 8, 9 }, fileName, isWrite, rowIndex);
                     processingFolderName = folderName;
                 }
                 else if (folderName == "submission")
@@ -228,9 +228,9 @@ namespace TranslationHelper.Projects.RJ263914
                         rowIndex = 0;
                     }
                     string lineValue = File.ReadAllText(filePath);
-                    if (IsWrite)
+                    if (isWrite)
                     {
-                        var row = ProjectData.THFilesElementsDataset.Tables[tableName].Rows[rowIndex];
+                        var row = ProjectData.ThFilesElementsDataset.Tables[tableName].Rows[rowIndex];
                         if (lineValue == row[0] as string && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
                         {
                             File.SetAttributes(filePath, FileAttributes.Normal);
@@ -239,8 +239,8 @@ namespace TranslationHelper.Projects.RJ263914
                     }
                     else
                     {
-                        ProjectData.THFilesElementsDataset.Tables[tableName].Rows.Add(lineValue);
-                        ProjectData.THFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
+                        ProjectData.ThFilesElementsDataset.Tables[tableName].Rows.Add(lineValue);
+                        ProjectData.ThFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
                     }
                     processingFolderName = folderName;
                     rowIndex++;
@@ -252,9 +252,9 @@ namespace TranslationHelper.Projects.RJ263914
                         rowIndex = 0;
                     }
                     string lineValue = File.ReadAllText(filePath);
-                    if (IsWrite)
+                    if (isWrite)
                     {
-                        var row = ProjectData.THFilesElementsDataset.Tables[tableName].Rows[rowIndex];
+                        var row = ProjectData.ThFilesElementsDataset.Tables[tableName].Rows[rowIndex];
                         if (lineValue == row[0] as string && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
                         {
                             File.SetAttributes(filePath, FileAttributes.Normal);
@@ -263,15 +263,15 @@ namespace TranslationHelper.Projects.RJ263914
                     }
                     else
                     {
-                        ProjectData.THFilesElementsDataset.Tables[tableName].Rows.Add(lineValue);
-                        ProjectData.THFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
+                        ProjectData.ThFilesElementsDataset.Tables[tableName].Rows.Add(lineValue);
+                        ProjectData.ThFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
                     }
                     processingFolderName = folderName;
                     rowIndex++;
                 }
                 else if (folderName == "tutorial")
                 {
-                    Open_tutorialDirFile(filePath, folderName, IsWrite);
+                    Open_tutorialDirFile(filePath, folderName, isWrite);
                 }
                 else if (folderName == "type")
                 {
@@ -282,9 +282,9 @@ namespace TranslationHelper.Projects.RJ263914
                     string[] lines = File.ReadAllLines(filePath);
                     if (lines.Length == 2 && !string.IsNullOrEmpty(lines[1]) && !lines[1].IsDigitsOnly())
                     {
-                        if (IsWrite)
+                        if (isWrite)
                         {
-                            var row = ProjectData.THFilesElementsDataset.Tables[tableName].Rows[rowIndex];
+                            var row = ProjectData.ThFilesElementsDataset.Tables[tableName].Rows[rowIndex];
                             if (lines[1] == row[0] as string && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
                             {
                                 lines[1] = (row[1] as string).Replace(", ", "、").Replace(",", "、");//замена на японскую запятую т.к. обычной запятой тут разделяются параметры
@@ -294,8 +294,8 @@ namespace TranslationHelper.Projects.RJ263914
                         }
                         else
                         {
-                            ProjectData.THFilesElementsDataset.Tables[tableName].Rows.Add(lines[1], lines[0]);
-                            ProjectData.THFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
+                            ProjectData.ThFilesElementsDataset.Tables[tableName].Rows.Add(lines[1], lines[0]);
+                            ProjectData.ThFilesElementsDatasetInfo.Tables[tableName].Rows.Add(fileName);
                         }
                         processingFolderName = folderName;
                         rowIndex++;
@@ -321,7 +321,7 @@ namespace TranslationHelper.Projects.RJ263914
             //}
         }
 
-        private void Open_tutorialDirFile(string filePath, string folderName, bool IsWrite = false)
+        private void Open_tutorialDirFile(string filePath, string folderName, bool isWrite = false)
         {
             StringBuilder sb = new StringBuilder();
             using (StreamReader sr = new StreamReader(filePath))
@@ -341,9 +341,9 @@ namespace TranslationHelper.Projects.RJ263914
                             //line = lineArray[4];
                             if (!string.IsNullOrEmpty(lineArray[4]) && !lineArray[4].IsDigitsOnly())
                             {
-                                if (IsWrite)
+                                if (isWrite)
                                 {
-                                    var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[rowIndex];
+                                    var row = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[rowIndex];
                                     if ((row[0] as string) == lineArray[4])
                                     {
                                         if (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[1], row[0]))
@@ -356,13 +356,13 @@ namespace TranslationHelper.Projects.RJ263914
                                 }
                                 else
                                 {
-                                    ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(lineArray[4]);
-                                    ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(folderName + Path.DirectorySeparatorChar + fileName);
+                                    ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(lineArray[4]);
+                                    ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add(folderName + Path.DirectorySeparatorChar + fileName);
                                 }
                             }
                         }
                     }
-                    if (IsWrite)
+                    if (isWrite)
                     {
                         sb.AppendLine(line);
                     }
@@ -370,14 +370,14 @@ namespace TranslationHelper.Projects.RJ263914
                 }
 
             }
-            if (IsWrite)
+            if (isWrite)
             {
                 File.SetAttributes(filePath, FileAttributes.Normal);
                 File.WriteAllText(filePath, sb.ToString());
             }
         }
 
-        private void Open_recollectDirFile(string filePath, string folderName, bool IsWrite = false)
+        private void Open_recollectDirFile(string filePath, string folderName, bool isWrite = false)
         {
             StringBuilder sb = new StringBuilder();
             using (StreamReader sr = new StreamReader(filePath))
@@ -395,9 +395,9 @@ namespace TranslationHelper.Projects.RJ263914
                         //line = line.Split(',')[1];
                         if (!string.IsNullOrEmpty(lines[1]) && !lines[1].IsDigitsOnly())
                         {
-                            if (IsWrite)
+                            if (isWrite)
                             {
-                                var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[rowIndex];
+                                var row = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[rowIndex];
                                 if ((row[0] as string) == lines[1])
                                 {
                                     if (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[1], row[0]))
@@ -410,12 +410,12 @@ namespace TranslationHelper.Projects.RJ263914
                             }
                             else
                             {
-                                ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(lines[1]);
-                                ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(folderName + Path.DirectorySeparatorChar + fileName);
+                                ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(lines[1]);
+                                ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add(folderName + Path.DirectorySeparatorChar + fileName);
                             }
                         }
                     }
-                    if (IsWrite)
+                    if (isWrite)
                     {
                         sb.AppendLine(line);
                     }
@@ -423,14 +423,14 @@ namespace TranslationHelper.Projects.RJ263914
                 }
 
             }
-            if (IsWrite)
+            if (isWrite)
             {
                 File.SetAttributes(filePath, FileAttributes.Normal);
                 File.WriteAllText(filePath, sb.ToString());
             }
         }
 
-        private int Open_SelectedLinesFromDirFile(string filePath, string tableName, int[] lineNumbers, string Info = "", bool IsWrite = false, int rowIndex = 0)
+        private int Open_SelectedLinesFromDirFile(string filePath, string tableName, int[] lineNumbers, string info = "", bool isWrite = false, int rowIndex = 0)
         {
             StringBuilder sb = new StringBuilder();
             using (StreamReader sr = new StreamReader(filePath))
@@ -444,9 +444,9 @@ namespace TranslationHelper.Projects.RJ263914
                     {
                         if (!string.IsNullOrEmpty(line) && !line.IsDigitsOnly() && line != "\\n")
                         {
-                            if (IsWrite)
+                            if (isWrite)
                             {
-                                var row = ProjectData.THFilesElementsDataset.Tables[tableName].Rows[rowIndex];
+                                var row = ProjectData.ThFilesElementsDataset.Tables[tableName].Rows[rowIndex];
                                 string tempString = (row[0] as string);
                                 if (tempString == line)
                                 {
@@ -460,19 +460,19 @@ namespace TranslationHelper.Projects.RJ263914
                             }
                             else
                             {
-                                ProjectData.THFilesElementsDataset.Tables[tableName].Rows.Add(line);
-                                ProjectData.THFilesElementsDatasetInfo.Tables[tableName].Rows.Add(Info);
+                                ProjectData.ThFilesElementsDataset.Tables[tableName].Rows.Add(line);
+                                ProjectData.ThFilesElementsDatasetInfo.Tables[tableName].Rows.Add(info);
                             }
                         }
                     }
-                    if (IsWrite)
+                    if (isWrite)
                     {
                         sb.AppendLine(line);
                     }
                     lineNum++;
                 }
             }
-            if (IsWrite)
+            if (isWrite)
             {
                 File.SetAttributes(filePath, FileAttributes.Normal);
                 File.WriteAllText(filePath, sb.ToString());
@@ -480,7 +480,7 @@ namespace TranslationHelper.Projects.RJ263914
             return rowIndex;
         }
 
-        private void Open_enemesDirFile(string enemesFile, bool IsWrite = false)
+        private void Open_enemesDirFile(string enemesFile, bool isWrite = false)
         {
             StringBuilder sb = new StringBuilder();
             using (StreamReader sr = new StreamReader(enemesFile))
@@ -500,9 +500,9 @@ namespace TranslationHelper.Projects.RJ263914
                         {
                             if (!string.IsNullOrEmpty(strings[i]) && !strings[i].IsDigitsOnly())
                             {
-                                if (IsWrite)
+                                if (isWrite)
                                 {
-                                    var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[rowIndex];
+                                    var row = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[rowIndex];
                                     if ((row[0] as string) == strings[i])
                                     {
                                         if (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[1], row[0]))
@@ -515,13 +515,13 @@ namespace TranslationHelper.Projects.RJ263914
                                 }
                                 else
                                 {
-                                    ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(strings[i]);
-                                    ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(fileName);
+                                    ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(strings[i]);
+                                    ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add(fileName);
                                 }
                             }
                         }
                     }
-                    if (IsWrite)
+                    if (isWrite)
                     {
                         sb.AppendLine(line);
                     }
@@ -529,7 +529,7 @@ namespace TranslationHelper.Projects.RJ263914
                 }
 
             }
-            if (IsWrite)
+            if (isWrite)
             {
                 File.SetAttributes(enemesFile, FileAttributes.Normal);
                 File.WriteAllText(enemesFile, sb.ToString());

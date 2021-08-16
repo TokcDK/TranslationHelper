@@ -7,15 +7,15 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.RPGMaker
 {
-    class RPGMGameOLD
+    class RpgmGameOld
     {
         
-        public RPGMGameOLD()
+        public RpgmGameOld()
         {
             
         }
 
-        internal bool TryToExtractToRPGMakerTransPatch(string sPath, string extractdir = "Work")
+        internal bool TryToExtractToRpgMakerTransPatch(string sPath, string extractdir = "Work")
         {
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
             string workdir = Path.Combine(Application.StartupPath, extractdir, "RPGMakerTrans");
@@ -29,7 +29,7 @@ namespace TranslationHelper.Projects.RPGMaker
 
             if (extractdir == "Work")
             {
-                ProjectData.Main.extractedpatchpath = outdir + "_patch";// Распаковывать в Work\ProjectDir\
+                ProjectData.Main.Extractedpatchpath = outdir + "_patch";// Распаковывать в Work\ProjectDir\
             }
 
             //if (!Directory.Exists(outdir))
@@ -49,7 +49,7 @@ namespace TranslationHelper.Projects.RPGMaker
                 else
                 {
                     //чистка и пересоздание папки
-                    RPGMTransOther.CleanInvalidRPGMakerTransPatchFolders(outdir);
+                    RpgmTransOther.CleanInvalidRpgMakerTransPatchFolders(outdir);
                     Directory.CreateDirectory(outdir);
 
                     //ret = CreateRPGMakerTransPatch(dir.FullName, outdir);
@@ -57,7 +57,7 @@ namespace TranslationHelper.Projects.RPGMaker
                 }
             }
 
-            return RPGMTransOther.CreateRPGMakerTransPatch(dir.FullName, outdir);
+            return RpgmTransOther.CreateRpgMakerTransPatch(dir.FullName, outdir);
         }
     }
 }

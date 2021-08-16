@@ -9,7 +9,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
     {
         public NLoveImGoingToGetRidOfItAndLive()
         {
-            exeCRC = "a83b58570eee4fabfd0e91f3fc67beab";
+            ExeCrc = "a83b58570eee4fabfd0e91f3fc67beab";
         }
 
         internal override string Name()
@@ -21,7 +21,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         {
             if (CheckKiriKiriBase())
             {
-                if (exeCRC.Length > 0 && ProjectData.SelectedFilePath.GetMD5() == exeCRC)
+                if (ExeCrc.Length > 0 && ProjectData.SelectedFilePath.GetMd5() == ExeCrc)
                 {
                     return true;
                 }
@@ -31,7 +31,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
 
         protected override List<System.Type> FormatType()
         {
-            return new List<System.Type> { typeof(Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS) };
+            return new List<System.Type> { typeof(Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.Ks) };
         }
 
         protected override string[] Mask()

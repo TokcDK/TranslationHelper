@@ -3,9 +3,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMTrans
 {
-    class TXT : RPGMTransPatchBase
+    class Txt : RpgmTransPatchBase
     {
-        public TXT()
+        public Txt()
         {
         }
 

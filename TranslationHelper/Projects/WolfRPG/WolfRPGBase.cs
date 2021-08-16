@@ -4,9 +4,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Projects.WolfRPG
 {
-    abstract class WolfRPGBase : ProjectBase
+    abstract class WolfRpgBase : ProjectBase
     {
-        protected WolfRPGBase()
+        protected WolfRpgBase()
         {
             HideVarsBase = new Dictionary<string, string>
             {
@@ -27,7 +27,7 @@ namespace TranslationHelper.Projects.WolfRPG
         {
             t = HardcodedFixes(o, t);
 
-            return RestoreVARS(t);
+            return RestoreVars(t);
         }
         //\\\\r\[[^\,]+\,[^\]]+\]
         internal override string HardcodedFixes(string original, string translation)

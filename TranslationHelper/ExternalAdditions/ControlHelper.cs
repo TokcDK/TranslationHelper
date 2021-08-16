@@ -8,13 +8,13 @@ namespace TranslationHelper
     public static class ControlHelper
     {
         #region Redraw Suspend/Resume
-        private const int WM_SETREDRAW = 0xB;
+        private const int WmSetredraw = 0xB;
 
         public static void SuspendDrawing(this Control target)
         {
             if (target != null)
             {
-                _ = NativeMethods.SendMessage(target.Handle, WM_SETREDRAW, 0, 0);
+                _ = NativeMethods.SendMessage(target.Handle, WmSetredraw, 0, 0);
             }
         }
 
@@ -23,7 +23,7 @@ namespace TranslationHelper
         {
             if (target != null)
             {
-                _ = NativeMethods.SendMessage(target.Handle, WM_SETREDRAW, 1, 0);
+                _ = NativeMethods.SendMessage(target.Handle, WmSetredraw, 1, 0);
 
                 if (redraw)
                 {

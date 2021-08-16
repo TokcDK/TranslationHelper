@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.Formats.EAGLS
 {
-    abstract class SCPACKBase : FormatBase
+    abstract class ScpackBase : FormatBase
     {
-        public SCPACKBase()
+        public ScpackBase()
         {
         }
     }

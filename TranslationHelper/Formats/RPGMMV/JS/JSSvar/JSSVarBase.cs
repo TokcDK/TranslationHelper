@@ -4,25 +4,25 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
 {
-    abstract class JSSVarBase : JSBase
+    abstract class JssVarBase : JsBase
     {
 
-        bool StartReadingSvar;
-        StringBuilder Svar = new StringBuilder();
+        bool _startReadingSvar;
+        StringBuilder _svar = new StringBuilder();
 
         protected abstract string SvarIdentifier { get; }
 
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
-            if (StartReadingSvar)
+            if (_startReadingSvar)
             {
-                if (ParseData.line.TrimStart().StartsWith("};"))
+                if (ParseData.Line.TrimStart().StartsWith("};"))
                 {
-                    Svar.Append('}');
+                    _svar.Append('}');
 
                     try
                     {
-                        JsonParser.ParseString(Svar.ToString());
+                        JsonParser.ParseString(_svar.ToString());
                     }
                     catch
                     {
@@ -31,7 +31,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                     try
                     {
                         //SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
-                        var parseSuccess = JsonParser.ParseString(Svar.ToString());
+                        var parseSuccess = JsonParser.ParseString(_svar.ToString());
 
                         if (!ParseData.Ret)
                         {
@@ -44,7 +44,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
 
                     ParseData.ResultForWrite.AppendLine(JsonParser.JsonRoot.ToString(Formatting.Indented) + ";");
 
-                    StartReadingSvar = false;
+                    _startReadingSvar = false;
 
                     if (ProjectData.SaveFileMode)
                     {
@@ -58,7 +58,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                 }
                 else
                 {
-                    Svar.AppendLine(ParseData.line);
+                    _svar.AppendLine(ParseData.Line);
                 }
             }
             else
@@ -66,7 +66,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                 //comments
                 if (ParseData.IsComment)
                 {
-                    if (ParseData.line.Contains("*/"))
+                    if (ParseData.Line.Contains("*/"))
                     {
                         ParseData.IsComment = false;
                     }
@@ -74,33 +74,33 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                 }
                 else
                 {
-                    if (ParseData.line.TrimStart().StartsWith("//"))
+                    if (ParseData.Line.TrimStart().StartsWith("//"))
                     {
                         //continue;
                     }
-                    else if (ParseData.line.TrimStart().StartsWith("/*"))
+                    else if (ParseData.Line.TrimStart().StartsWith("/*"))
                     {
-                        if (!ParseData.line.Contains("*/"))
+                        if (!ParseData.Line.Contains("*/"))
                         {
                             ParseData.IsComment = true;
                             //continue;
                         }
                     }//endcomments
-                    else if (ParseData.line.TrimStart().StartsWith(SvarIdentifier))
+                    else if (ParseData.Line.TrimStart().StartsWith(SvarIdentifier))
                     {
-                        StartReadingSvar = true;
+                        _startReadingSvar = true;
                         if (ProjectData.SaveFileMode)
                         {
                             // add line with identifier without "{" of json block
-                            ParseData.line = ParseData.line.Remove(ParseData.line.Length - 1, 1);
+                            ParseData.Line = ParseData.Line.Remove(ParseData.Line.Length - 1, 1);
                             SaveModeAddLine("\n");
                         }
-                        Svar.AppendLine("{");
+                        _svar.AppendLine("{");
                     }
                 }
             }
 
-            if (!StartReadingSvar)
+            if (!_startReadingSvar)
             {
                 SaveModeAddLine("\n");
             }

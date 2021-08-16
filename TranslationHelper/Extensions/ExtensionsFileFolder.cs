@@ -53,18 +53,18 @@ namespace TranslationHelper.Extensions
         /// <summary>
         /// true if contains any file
         /// </summary>
-        /// <param name="FolderPath"></param>
+        /// <param name="folderPath"></param>
         /// <param name="mask"></param>
         /// <param name="SearchFiles"></param>
         /// <param name="Recursive"></param>
         /// <returns></returns>
-        internal static bool ContainsFiles(this string FolderPath, string mask = "*.*", bool recursive = true)
+        internal static bool ContainsFiles(this string folderPath, string mask = "*.*", bool recursive = true)
         {
-            return !FolderPath.IsNullOrEmptyDirectory(mask, searchForFiles: true, searchForDirs: false, recursive: recursive);
+            return !folderPath.IsNullOrEmptyDirectory(mask, searchForFiles: true, searchForDirs: false, recursive: recursive);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5351:Не используйте взломанные алгоритмы шифрования", Justification = "<Ожидание>")]
-        internal static string GetMD5(this string filePath)
+        internal static string GetMd5(this string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -80,13 +80,13 @@ namespace TranslationHelper.Extensions
                         byte[] retVal = md5.ComputeHash(file);
                         file.Close();
 
-                        var BuildedMD5Value = new StringBuilder();
+                        var buildedMd5Value = new StringBuilder();
                         var retValLength = retVal.Length;
                         for (int i = 0; i < retValLength; i++)
                         {
-                            BuildedMD5Value.Append(retVal[i].ToString("x2"));
+                            buildedMd5Value.Append(retVal[i].ToString("x2"));
                         }
-                        return BuildedMD5Value.ToString();
+                        return buildedMd5Value.ToString();
                     }
                 }
             }

@@ -40,18 +40,18 @@ namespace TranslationHelper.Projects.NScript
                     File.Copy(ProjectData.FilePath, ProjectData.FilePath + ".orig");
                 }
 
-                ret = new Formats.NScriptGame.nscript.dat.NSCRIPT().Open();
+                ret = new Formats.NScriptGame.nscript.dat.Nscript().Open();
             }
             else
             {
-                ret = new Formats.NScriptGame.nscript.dat.NSCRIPT().Save();
+                ret = new Formats.NScriptGame.nscript.dat.Nscript().Save();
             }
 
             ProjectData.Main.ProgressInfo(false);
             return ret;
         }
 
-        private static bool ExtractNScriptDAT()
+        private static bool ExtractNScriptDat()
         {
             var ret = false;
 

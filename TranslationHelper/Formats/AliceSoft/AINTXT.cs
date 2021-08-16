@@ -3,9 +3,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.AliceSoft
 {
-    class AINTXT : AliceSoftBase
+    class Aintxt : AliceSoftBase
     {
-        public AINTXT()
+        public Aintxt()
         {
         }
 
@@ -14,11 +14,11 @@ namespace TranslationHelper.Formats.AliceSoft
             return ".txt";
         }
 
-        string lastgroupname = "";
-        readonly string ainstringpattern = @"^;?[sm]\[[0-9]{1,10}\] \= \""(.+)\""$";
+        string _lastgroupname = "";
+        readonly string _ainstringpattern = @"^;?[sm]\[[0-9]{1,10}\] \= \""(.+)\""$";
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
-            var m = Regex.Match(ParseData.line, ainstringpattern);
+            var m = Regex.Match(ParseData.Line, _ainstringpattern);
             if (m.Success)
             {
                 var orig = m.Result("$1");
@@ -27,7 +27,7 @@ namespace TranslationHelper.Formats.AliceSoft
                 {
                     if (ProjectData.OpenFileMode)
                     {
-                        AddRowData(orig, T._("Last group") + ": " + lastgroupname, true, false);
+                        AddRowData(orig, T._("Last group") + ": " + _lastgroupname, true, false);
                     }
                     else
                     {
@@ -35,12 +35,12 @@ namespace TranslationHelper.Formats.AliceSoft
                         if (SetTranslation(ref trans))
                         {
                             //set translation and replace in orig line
-                            var ind = ParseData.line.IndexOf(orig);
-                            ParseData.line = ParseData.line.Remove(ind, orig.Length).Insert(ind, FixInvalidSymbols(trans));
+                            var ind = ParseData.Line.IndexOf(orig);
+                            ParseData.Line = ParseData.Line.Remove(ind, orig.Length).Insert(ind, FixInvalidSymbols(trans));
 
-                            if (ParseData.line.StartsWith(";"))
+                            if (ParseData.Line.StartsWith(";"))
                             {
-                                ParseData.line = ParseData.line.Remove(0, 1);
+                                ParseData.Line = ParseData.Line.Remove(0, 1);
                             }
                             ParseData.Ret = true;
                         }
@@ -49,7 +49,7 @@ namespace TranslationHelper.Formats.AliceSoft
             }
             else
             {
-                lastgroupname = ParseData.line;
+                _lastgroupname = ParseData.Line;
             }
 
             SaveModeAddLine();

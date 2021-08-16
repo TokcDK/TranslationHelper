@@ -3,9 +3,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
-    abstract class JSQuotedStringsBase : JSBase
+    abstract class JsQuotedStringsBase : JsBase
     {
-        protected JSQuotedStringsBase()
+        protected JsQuotedStringsBase()
         {
         }
 
@@ -20,7 +20,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             {
                 foreach (var regexQuote in new[] { "'", @"\""" })
                 {
-                    var mc = Regex.Matches(ParseData.line, /*@"[\""']([^\""'\r\n]+)[\""']"*/
+                    var mc = Regex.Matches(ParseData.Line, /*@"[\""']([^\""'\r\n]+)[\""']"*/
                           @"" + regexQuote + @"([^" + regexQuote + @"\r\n\\]+(?:\\.[^" + regexQuote + @"\\]*)*)" + regexQuote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
                         );
                     for (int m = mc.Count - 1; m >= 0; m--)
@@ -29,12 +29,12 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
                         if (ProjectData.OpenFileMode)
                         {
-                            AddRowData(result, ParseData.line, true);
+                            AddRowData(result, ParseData.Line, true);
                         }
                         else if (IsValidString(result) && TablesLinesDict.ContainsKey(result))
                         {
                             var quote = regexQuote.Replace(@"\", "");
-                            ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, quote + TablesLinesDict[result] + quote);
+                            ParseData.Line = ParseData.Line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, quote + TablesLinesDict[result] + quote);
                             ParseData.Ret = true;
                         }
                     }
@@ -48,11 +48,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         private bool IsEmptyOrComment()
         {
-            if (!ParseData.IsComment && ParseData.line.Contains("/*"))
+            if (!ParseData.IsComment && ParseData.Line.Contains("/*"))
             {
                 ParseData.IsComment = true;
             }
-            if (ParseData.IsComment && ParseData.line.Contains("*/"))
+            if (ParseData.IsComment && ParseData.Line.Contains("*/"))
             {
                 ParseData.IsComment = false;
             }

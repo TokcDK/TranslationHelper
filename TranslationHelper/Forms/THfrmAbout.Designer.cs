@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper
 {
-    partial class THfrmAbout
+    partial class HfrmAbout
     {
         /// <summary>
         /// Required designer variable.
@@ -52,7 +52,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "THfrmAbout";
+            this.Name = "HfrmAbout";
             this.ShowInTaskbar = false;
             this.Text = "About";
             this.TopMost = true;

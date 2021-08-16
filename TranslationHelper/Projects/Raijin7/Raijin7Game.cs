@@ -56,9 +56,9 @@ namespace TranslationHelper.Projects
             var dirPath = Path.GetDirectoryName(ProjectData.SelectedFilePath);
             var ret = false;
 
-            if (OpenSaveFilesBase(Path.Combine(dirPath, "eve"), typeof(TXT), "*.txt"))
+            if (OpenSaveFilesBase(Path.Combine(dirPath, "eve"), typeof(Txt), "*.txt"))
                 ret = true;
-            if (OpenSaveFilesBase(Path.Combine(dirPath, "csv"), typeof(CSV), "*.csv"))
+            if (OpenSaveFilesBase(Path.Combine(dirPath, "csv"), typeof(Csv), "*.csv"))
                 ret = true;
 
             return ret;

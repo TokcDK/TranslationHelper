@@ -4,9 +4,9 @@ using TranslationHelper.Formats.KiriKiri;
 
 namespace TranslationHelper.Projects.KiriKiri
 {
-    class TJSfile : ProjectBase
+    class TjSfile : ProjectBase
     {
-        public TJSfile()
+        public TjSfile()
         {
         }
 
@@ -27,12 +27,12 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Open()
         {
-            return new TJS().Open();
+            return new Tjs().Open();
         }
 
         internal override bool Save()
         {
-            return new TJS().Save();
+            return new Tjs().Save();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace TranslationHelper
 {
-    static public class THCreateSymlink
+    static public class ThCreateSymlink
     {
         internal enum SymbolicLink
         {

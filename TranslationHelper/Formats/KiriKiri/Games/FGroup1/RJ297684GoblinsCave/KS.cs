@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.Formats.KiriKiri.Games.FGroup1.RJ297684GoblinsCave
 {
-    class KS : FGroup1Base
+    class Ks : FGroup1Base
     {
-        public KS()
+        public Ks()
         {
         }
     }

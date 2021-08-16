@@ -6,11 +6,11 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    public static class CSVOld
+    public static class CsvOld
     {
-        public static DataTable KiriKiriCSVOpen(string sPath, DataTable DT, DataTable DTInfo)
+        public static DataTable KiriKiriCsvOpen(string sPath, DataTable dt, DataTable dtInfo)
         {
-            if (DT == null || DTInfo == null)
+            if (dt == null || dtInfo == null)
                 return null;
 
             using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
@@ -23,7 +23,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 //_ = THFilesElementsDatasetInfo.Tables[0].Columns.Add("Original");
                 //_ = THFilesElementsDataset.Tables[0].Columns.Add("Translation");
                 //THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
-                bool IsFirstLineWasNotRead = true;
+                bool isFirstLineWasNotRead = true;
                 int name = -1;
                 int detail = -1;
                 int type = -1;
@@ -40,7 +40,7 @@ namespace TranslationHelper.Formats.KiriKiri
                     else
                     {
                         columns = line.Split(new string[] { "	" }, StringSplitOptions.None);
-                        if (IsFirstLineWasNotRead)
+                        if (isFirstLineWasNotRead)
                         {
                             for (int i = 0; i < columns.Length; i++)
                             {
@@ -65,7 +65,7 @@ namespace TranslationHelper.Formats.KiriKiri
                                     comment = i;
                                 }
                             }
-                            IsFirstLineWasNotRead = false;
+                            isFirstLineWasNotRead = false;
                         }
                         else
                         {
@@ -76,8 +76,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = DT.Rows.Add(columns[name]);
-                                    _ = DTInfo.Rows.Add("name");
+                                    _ = dt.Rows.Add(columns[name]);
+                                    _ = dtInfo.Rows.Add("name");
                                 }
                             }
                             if (detail > -1)
@@ -87,8 +87,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = DT.Rows.Add(columns[detail]);
-                                    _ = DTInfo.Rows.Add("detail");
+                                    _ = dt.Rows.Add(columns[detail]);
+                                    _ = dtInfo.Rows.Add("detail");
                                 }
                             }
                             if (type > -1)
@@ -98,8 +98,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = DT.Rows.Add(columns[type]);
-                                    _ = DTInfo.Rows.Add("type");
+                                    _ = dt.Rows.Add(columns[type]);
+                                    _ = dtInfo.Rows.Add("type");
                                 }
                             }
                             if (field > -1)
@@ -109,8 +109,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = DT.Rows.Add(columns[field]);
-                                    _ = DTInfo.Rows.Add("field");
+                                    _ = dt.Rows.Add(columns[field]);
+                                    _ = dtInfo.Rows.Add("field");
                                 }
                             }
                             if (comment > -1)
@@ -120,8 +120,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = DT.Rows.Add(columns[comment]);
-                                    _ = DTInfo.Rows.Add("comment");
+                                    _ = dt.Rows.Add(columns[comment]);
+                                    _ = dtInfo.Rows.Add("comment");
                                 }
                             }
                         }
@@ -129,7 +129,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 }
             }
 
-            return DT;
+            return dt;
         }
     }
 }

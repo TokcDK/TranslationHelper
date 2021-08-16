@@ -47,7 +47,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             /// <summary>
             /// all chars to lower case
             /// </summary>
-            lower = 0,
+            Lower = 0,
             /// <summary>
             /// 1st char to upper case
             /// </summary>
@@ -55,7 +55,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             /// <summary>
             /// all chars to upper case
             /// </summary>
-            UPPER = 2
+            Upper = 2
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         {
             switch (variant)
             {
-                case VariantCase.lower:
+                case VariantCase.Lower:
                     //lowercase
 #pragma warning disable CA1308 // Нормализуйте строки до прописных букв
                     return dsTransCell.ToLowerInvariant();

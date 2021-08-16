@@ -6,29 +6,29 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonParser
 {
-    class JSJsonParser : JsonParserBase
+    class JsJsonParser : JsonParserBase
     {
-        protected bool IsPluginsJS;//for some specific to plugins.js operations
-        private bool PluginsJsNameFound;
-        protected int rowindex = 0;
-        private bool UseHashSet;
+        protected bool IsPluginsJs;//for some specific to plugins.js operations
+        private bool _pluginsJsNameFound;
+        protected int Rowindex = 0;
+        private bool _useHashSet;
 
-        public JSJsonParser()
+        public JsJsonParser()
         {
         }
 
         protected override void Init()
         {
-            IsPluginsJS = string.Equals(JsonName, "Plugins.js", StringComparison.InvariantCultureIgnoreCase);
+            IsPluginsJs = string.Equals(JsonName, "Plugins.js", StringComparison.InvariantCultureIgnoreCase);
         }
 
         protected override void ParseValue(JValue jsonValue)
         {
-            var TokenValue = jsonValue + "";
+            var tokenValue = jsonValue + "";
 
-            if (TokenValue.StartsWith("{") && TokenValue.EndsWith("}") || TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]"))
+            if (tokenValue.StartsWith("{") && tokenValue.EndsWith("}") || tokenValue.StartsWith("[\"") && tokenValue.EndsWith("\"]"))
             {
-                var root = JToken.Parse(TokenValue);
+                var root = JToken.Parse(tokenValue);
 
                 //parse subtoken
                 Parse(root);
@@ -45,9 +45,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
                 if (ProjectData.OpenFileMode)
                 {
-                    Format.AddRowData(JsonName, TokenValue,
+                    Format.AddRowData(JsonName, tokenValue,
                         jsonValue.Path
-                        + (IsPluginsJS && jsonValue.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase)
+                        + (IsPluginsJs && jsonValue.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase)
                         ? Environment.NewLine + T._("Warning") + ". " + T._("Parameter: translation of some parameters can break the game.")
                         : string.Empty)
                         , true);
@@ -55,23 +55,23 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 else
                 {
 
-                    if(UseHashSet)
+                    if(_useHashSet)
                     {
-                        if (ProjectData.TablesLinesDict.ContainsKey(TokenValue)
-                            && !string.IsNullOrEmpty(ProjectData.TablesLinesDict[TokenValue])
-                            && ProjectData.TablesLinesDict[TokenValue] != TokenValue)
+                        if (ProjectData.TablesLinesDict.ContainsKey(tokenValue)
+                            && !string.IsNullOrEmpty(ProjectData.TablesLinesDict[tokenValue])
+                            && ProjectData.TablesLinesDict[tokenValue] != tokenValue)
                         {
-                            jsonValue.Value = ProjectData.TablesLinesDict[TokenValue];
+                            jsonValue.Value = ProjectData.TablesLinesDict[tokenValue];
                         }
                     }
                     else
                     {
-                        var row = ProjectData.THFilesElementsDataset.Tables[JsonName].Rows[rowindex];
+                        var row = ProjectData.ThFilesElementsDataset.Tables[JsonName].Rows[Rowindex];
                         if (Equals(jsonValue.ToString(), row[0]) && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
                         {
                             jsonValue.Value = row[1] as string;
                         }
-                        rowindex++;
+                        Rowindex++;
                     }
 
                 }
@@ -80,24 +80,24 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         protected bool IsValidToken(JValue value)
         {
             return value.Type == JTokenType.String
-                && (!IsPluginsJS || value.Path != "Modelname")
+                && (!IsPluginsJs || value.Path != "Modelname")
                 //&& (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game
                 && !string.IsNullOrWhiteSpace(value + "")
-                && !(THSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars());
+                && !(ThSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars());
         }
 
         protected override void ParseJsonObject(JObject jsonObject)
         {
             ParseJsonObjectProperties(jsonObject);
 
-            PluginsJsNameFound = false; // switch on check of parse plugin's json data
+            _pluginsJsNameFound = false; // switch on check of parse plugin's json data
         }
 
         protected override JsonObjectPropertyState ParseJsonObjectProperty(JProperty jsonProperty)
         {
-            if (!PluginsJsNameFound && IsPluginsJS && jsonProperty.Name == "name")
+            if (!_pluginsJsNameFound && IsPluginsJs && jsonProperty.Name == "name")
             {
-                PluginsJsNameFound = true; // switch off check of parse plugin's json data
+                _pluginsJsNameFound = true; // switch off check of parse plugin's json data
 
                 if (jsonProperty.Parent.Last is JProperty lastObjectsProperty)
                 {

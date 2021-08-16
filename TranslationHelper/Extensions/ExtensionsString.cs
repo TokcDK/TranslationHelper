@@ -37,45 +37,45 @@ namespace TranslationHelper.Extensions
             }
 
             var log = new FunctionsLogs();
-            var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
+            var groupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
             try
             {
-                foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
+                foreach (var patternReplacementPair in ProjectData.TranslationRegexRules)
                 {
                     try
                     {
-                        if (!Regex.IsMatch(line, PatternReplacementPair.Key))
+                        if (!Regex.IsMatch(line, patternReplacementPair.Key))
                         {
                             continue;
                         }
                     }
                     catch (System.ArgumentException ex)
                     {
-                        log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
-                        ProjectData.Main.ProgressInfo(true, "Invalid regex found. See "+ THSettings.ApplicationLogName());
+                        log.LogToFile("ExtractMulty: Invalid regex:" + patternReplacementPair.Key + "\r\nError:\r\n" + ex);
+                        ProjectData.Main.ProgressInfo(true, "Invalid regex found. See "+ ThSettings.ApplicationLogName());
                         continue;
                     }
 
-                    foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
+                    foreach (Group g in Regex.Match(line, patternReplacementPair.Key).Groups)
                     {
                         try
                         {
 
-                            if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(PatternReplacementPair.Key))//add pattern-replacement data
+                            if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey(patternReplacementPair.Key))//add pattern-replacement data
                             {
-                                bufferExtracted[lineCoordinates][lineNum].Add(PatternReplacementPair.Key, PatternReplacementPair.Value);
+                                bufferExtracted[lineCoordinates][lineNum].Add(patternReplacementPair.Key, patternReplacementPair.Value);
                             }
 
-                            if (PatternReplacementPair.Value.Contains("$" + g.Name))//if replacement contains the group name ($1,$2,$3...$99)
+                            if (patternReplacementPair.Value.Contains("$" + g.Name))//if replacement contains the group name ($1,$2,$3...$99)
                             {
 
                                 if (!bufferExtracted[lineCoordinates][lineNum].ContainsKey("$" + g.Name))
                                 {
                                     bufferExtracted[lineCoordinates][lineNum].Add("$" + g.Name, g.Value);//add group name with valueif it is not added and is in replacement
 
-                                    if (!GroupValues.Contains(g.Value))
+                                    if (!groupValues.Contains(g.Value))
                                     {
-                                        GroupValues.Add(g.Value);//add value for translation if valid
+                                        groupValues.Add(g.Value);//add value for translation if valid
                                     }
                                 }
                             }
@@ -95,9 +95,9 @@ namespace TranslationHelper.Extensions
                 return line.ExtractMulty(lineCoordinates, lineNum, bufferExtracted);
             }
 
-            if (GroupValues.Count > 0)
+            if (groupValues.Count > 0)
             {
-                return GroupValues.ToArray();
+                return groupValues.ToArray();
             }
             else
             {
@@ -114,10 +114,10 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static string[] ExtractMulty(this string line, bool onlyOne = false, List<int> outIndexes=null)
         {
-            var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
-            foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
+            var groupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
+            foreach (var patternReplacementPair in ProjectData.TranslationRegexRules)
             {
-                Match m = Regex.Match(line, PatternReplacementPair.Key);
+                Match m = Regex.Match(line, patternReplacementPair.Key);
                 if (!m.Success)
                 {
                     continue;
@@ -133,16 +133,16 @@ namespace TranslationHelper.Extensions
                     try
                     {
 
-                        if (PatternReplacementPair.Value.Contains("$" + g.Name))//if replacement contains the group name ($1,$2,$3...$99)
+                        if (patternReplacementPair.Value.Contains("$" + g.Name))//if replacement contains the group name ($1,$2,$3...$99)
                         {
-                            if (!GroupValues.Contains(g.Value))
+                            if (!groupValues.Contains(g.Value))
                             {
                                 if(outIndexes!=null)
                                 {
                                     outIndexes.Add(g.Index); // add index of string
                                 }
 
-                                GroupValues.Add(g.Value);//add value for translation if valid
+                                groupValues.Add(g.Value);//add value for translation if valid
                             }
                         }
                     }
@@ -155,9 +155,9 @@ namespace TranslationHelper.Extensions
                 break;
             }
 
-            if (GroupValues.Count > 0)
+            if (groupValues.Count > 0)
             {
-                return GroupValues.ToArray();
+                return groupValues.ToArray();
             }
             else
             {
@@ -165,32 +165,32 @@ namespace TranslationHelper.Extensions
             }
         }
 
-        internal static string SplitMultiLineIfBeyondOfLimit(this string Line, int Limit, int linesCountLimit = -1)
+        internal static string SplitMultiLineIfBeyondOfLimit(this string line, int limit, int linesCountLimit = -1)
         {
-            if (string.IsNullOrWhiteSpace(Line)/* || !Line.IsMultiline()*/)
+            if (string.IsNullOrWhiteSpace(line)/* || !Line.IsMultiline()*/)
             {
-                return Line;
+                return line;
             }
 
             //StringBuilder ReturnLine = new StringBuilder();
-            string[] sublines = Line.Split(new string[2] { Environment.NewLine, "\n" }, StringSplitOptions.None);
+            string[] sublines = line.Split(new string[2] { Environment.NewLine, "\n" }, StringSplitOptions.None);
             int sublinesLength = sublines.Length;
-            List<string> Lines = new List<string>();
+            List<string> lines = new List<string>();
             if (sublinesLength > 1)
             {
                 bool lastLineWasSplitted = false;
-                for (int N = 0; N < sublinesLength; N++)
+                for (int n = 0; n < sublinesLength; n++)
                 {
-                    string subline = sublines[N];
+                    string subline = sublines[n];
                     if (lastLineWasSplitted && subline.Length > 0)
                     {
                         //lastLineWasSplitted значит, что соединять только когда предыдущая была разделена, если нет, не нужно трогать порядок переноса из оригинала
                         //когда не первая строка, соединяем эту строку с последним элементом в Lines и удаляем последний элемент, обрабатываем такую новую строку
-                        int LasLineIndex = Lines.Count - 1;
-                        if (Lines[LasLineIndex].Length > 0)
+                        int lasLineIndex = lines.Count - 1;
+                        if (lines[lasLineIndex].Length > 0)
                         {
                             //когда последняя строка, к которой присоединится новая, кончается не на пробел или другой разделитель, добавить пробел перед добавляемой строкой
-                            if (char.IsLetterOrDigit(Convert.ToChar(Lines[LasLineIndex].Substring(Lines[LasLineIndex].Length - 1), CultureInfo.InvariantCulture)))
+                            if (char.IsLetterOrDigit(Convert.ToChar(lines[lasLineIndex].Substring(lines[lasLineIndex].Length - 1), CultureInfo.InvariantCulture)))
                             {
                                 string trimmedSubline = subline.TrimStart();
                                 //сделать перву букву добавляемой строки в нижнем регистре
@@ -201,16 +201,16 @@ namespace TranslationHelper.Extensions
 
                                 subline = " " + trimmedSubline;
                             }
-                            subline = Lines[LasLineIndex] + subline;
-                            Lines.RemoveAt(LasLineIndex);
+                            subline = lines[lasLineIndex] + subline;
+                            lines.RemoveAt(lasLineIndex);
                         }
                     }
                     int i = 0;
                     lastLineWasSplitted = false;
-                    foreach (var line in subline.GetSplittedLine(Limit).SplitToLines())
+                    foreach (var line in subline.GetSplittedLine(limit).SplitToLines())
                     {
                         i++;
-                        Lines.Add(line);
+                        lines.Add(line);
                     }
 
                     if (i > 1)
@@ -222,16 +222,16 @@ namespace TranslationHelper.Extensions
             }
             else
             {
-                return Line.GetSplittedLine(Limit);
+                return line.GetSplittedLine(limit);
             }
 
-            return string.Join(Environment.NewLine, Lines); //ReturnLine.ToString();
+            return string.Join(Environment.NewLine, lines); //ReturnLine.ToString();
         }
 
-        internal static string GetSplittedLine(this string Line, int Limit)
+        internal static string GetSplittedLine(this string line, int limit)
         {
-            string Trigger/* = string.Empty*/;
-            string newLine = (Trigger = Regex.Match(Line, @"(if|en)\([^\r\n]+\)$").Value).Length > 0 ? Line.Replace(Trigger, string.Empty) : Line;
+            string trigger/* = string.Empty*/;
+            string newLine = (trigger = Regex.Match(line, @"(if|en)\([^\r\n]+\)$").Value).Length > 0 ? line.Replace(trigger, string.Empty) : line;
 
 
 
@@ -241,7 +241,7 @@ namespace TranslationHelper.Extensions
 
             if (newLine.Length == 0 /*|| newLine.Length + SpecSymbols.Count <= Limit*/)
             {
-                return Line;
+                return line;
             }
             //return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
             //    , SplitLineIfBeyondOfLimit(Trigger.Length > 0 ? newLine : Line, Limit)
@@ -254,8 +254,8 @@ namespace TranslationHelper.Extensions
             //    ) + Trigger;
             //var newLineBefore = newLine;
             return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
-                , newLine.Wrap(Limit)
-                ) + Trigger;
+                , newLine.Wrap(limit)
+                ) + trigger;
 
             //MatchCollection newLineSymbols = Regex.Matches(newLine, Environment.NewLine);
             //var newLineSymbolsCount = newLineSymbols.Count;
@@ -420,9 +420,9 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="inputString"></param>
         /// <returns></returns>
-        internal static bool ForJPLangHaveMostOfRomajiOtherChars(this string inputString)
+        internal static bool ForJpLangHaveMostOfRomajiOtherChars(this string inputString)
         {
-            return THSettings.SourceLanguageIsJapanese() && inputString.HaveMostOfRomajiOtherChars();
+            return ThSettings.SourceLanguageIsJapanese() && inputString.HaveMostOfRomajiOtherChars();
         }
 
         /// <summary>
@@ -451,7 +451,7 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        internal static bool IsJPChar(this string s)
+        internal static bool IsJpChar(this string s)
         {
             if (
                 FunctionsRomajiKana.GetCharsInRange(s, 0x4E00, 0x9FBF).Any()//kanji
@@ -477,7 +477,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther(this string inputString)
         {
-            return THSettings.SourceLanguageIsJapanese() && inputString.HaveMostOfRomajiOtherChars();
+            return ThSettings.SourceLanguageIsJapanese() && inputString.HaveMostOfRomajiOtherChars();
         }
 
         /// <summary>
@@ -588,7 +588,7 @@ namespace TranslationHelper.Extensions
             }
 
             //Fix of last newline \n symbol was not returned 
-            bool EndsWithNewLine = input.EndsWith("\n");
+            bool endsWithNewLine = input.EndsWith("\n");
 
             using (var reader = new System.IO.StringReader(input))
             {
@@ -597,7 +597,7 @@ namespace TranslationHelper.Extensions
                 {
                     yield return line;
                 }
-                if (EndsWithNewLine)//if string endswith \n then last line will be null
+                if (endsWithNewLine)//if string endswith \n then last line will be null
                 {
                     yield return string.Empty;
                 }
@@ -625,14 +625,14 @@ namespace TranslationHelper.Extensions
         /// Get string lines to string array
         /// </summary>
         /// <param name="str"></param>
-        /// <param name="OnlyNonEmpty">Add only non empty</param>
+        /// <param name="onlyNonEmpty">Add only non empty</param>
         /// <returns></returns>
-        internal static string[] GetAllLinesToArray(this string str, bool OnlyNonEmpty = false)
+        internal static string[] GetAllLinesToArray(this string str, bool onlyNonEmpty = false)
         {
             List<string> lineslist = new List<string>();
             foreach (var line in str.SplitToLines())
             {
-                if (OnlyNonEmpty)
+                if (onlyNonEmpty)
                 {
                     if (line.Length > 0)
                     {
@@ -720,7 +720,7 @@ namespace TranslationHelper.Extensions
 
         internal static bool IsSoundsText(this string str)
         {
-            var regexed = Regex.Replace(str, THSettings.SoundsTextRegexPattern(), "");
+            var regexed = Regex.Replace(str, ThSettings.SoundsTextRegexPattern(), "");
             var trimmed = regexed.TrimAllExceptLettersOrDigits();
             return trimmed.Length == 0;
         }

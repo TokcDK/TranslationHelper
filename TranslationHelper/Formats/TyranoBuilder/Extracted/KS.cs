@@ -4,11 +4,11 @@ using TranslationHelper.Formats.KiriKiri.Games.KSSyntax;
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
-    class KS : FormatBase
+    class Ks : FormatBase
     {
-        public KS()
+        public Ks()
         {
-            scriptMark = new Script();
+            _scriptMark = new Script();
         }
 
         internal override string Ext()
@@ -16,8 +16,8 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             return ".ks";
         }
 
-        bool IsScript = false;
-        Script scriptMark;
+        bool _isScript = false;
+        Script _scriptMark;
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (ParseData.IsComment)
@@ -27,16 +27,16 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                     ParseData.IsComment = false;
                 }
             }
-            else if (IsScript)
+            else if (_isScript)
             {
-                if (Regex.IsMatch(ParseData.line, scriptMark.EndsWith))
+                if (Regex.IsMatch(ParseData.Line, _scriptMark.EndsWith))
                 {
-                    IsScript = false;
+                    _isScript = false;
                 }
             }
-            else if (Regex.IsMatch(ParseData.line, scriptMark.StartsWith))
+            else if (Regex.IsMatch(ParseData.Line, _scriptMark.StartsWith))
             {
-                IsScript = true;
+                _isScript = true;
             }
             else
             {
@@ -50,13 +50,13 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                 else if (ParseData.TrimmedLine.StartsWith("//") || ParseData.TrimmedLine.StartsWith(";")) //comment
                 {
                 }
-                else if (ParseData.line.StartsWith("[glink")
-                    || ParseData.line.StartsWith("[ptext")
-                    || ParseData.line.StartsWith("[mtext")
-                    || (ParseData.line.Contains("text=") && Regex.IsMatch(ParseData.line,@"^\t*\[[a-zA-Z] "))
+                else if (ParseData.Line.StartsWith("[glink")
+                    || ParseData.Line.StartsWith("[ptext")
+                    || ParseData.Line.StartsWith("[mtext")
+                    || (ParseData.Line.Contains("text=") && Regex.IsMatch(ParseData.Line,@"^\t*\[[a-zA-Z] "))
                     )
                 {
-                    var glinkStringData = Regex.Matches(ParseData.line, @"text\=\""([^\""\r\n\\]+(?:\\.[^\""\\]*)*)\""");//attributename="attributevalue"
+                    var glinkStringData = Regex.Matches(ParseData.Line, @"text\=\""([^\""\r\n\\]+(?:\\.[^\""\\]*)*)\""");//attributename="attributevalue"
 
                     if (glinkStringData.Count > 0)
                     {
@@ -67,13 +67,13 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                             {
                                 if (ProjectData.OpenFileMode)
                                 {
-                                    AddRowData(value, ParseData.line, true, false);
+                                    AddRowData(value, ParseData.Line, true, false);
                                 }
                                 else
                                 {
                                     if (ProjectData.TablesLinesDict.ContainsKey(value) && ProjectData.TablesLinesDict[value] != value)
                                     {
-                                        ParseData.line = ParseData.line
+                                        ParseData.Line = ParseData.Line
                                             .Remove(glinkStringData[i].Index, glinkStringData[i].Length)
                                             .Insert(glinkStringData[i].Index, "text=\"" + ProjectData.TablesLinesDict[value] + "\"");
                                         ParseData.Ret = true;
@@ -83,15 +83,15 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                         }
                     }
                 }
-                else if (!string.IsNullOrWhiteSpace(ParseData.line) && !ParseData.line.StartsWith("@") && !ParseData.line.StartsWith("*") /*&& ParseData.line.StartsWith("[link") || !ParseData.line.StartsWith("[")*/)
+                else if (!string.IsNullOrWhiteSpace(ParseData.Line) && !ParseData.Line.StartsWith("@") && !ParseData.Line.StartsWith("*") /*&& ParseData.line.StartsWith("[link") || !ParseData.line.StartsWith("[")*/)
                 {
-                    var mc = Regex.Matches(ParseData.line, @"(\[*([^\[\]\r\n]+(?:\\.[^\[\]]*)*)\]*)");
+                    var mc = Regex.Matches(ParseData.Line, @"(\[*([^\[\]\r\n]+(?:\\.[^\[\]]*)*)\]*)");
 
                     if (mc.Count > 0)
                     {
                         if(ProjectData.SaveFileMode)
                         {
-                            ParseData.line = "";
+                            ParseData.Line = "";
                         }
 
                         for (int i = 0; i < mc.Count; i++)
@@ -105,7 +105,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                                     continue;
                                 }
 
-                                AddRowData(value, ParseData.line, true, true);
+                                AddRowData(value, ParseData.Line, true, true);
                             }
                             else
                             {
@@ -114,7 +114,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                                     AddTranslation(ref value, value);
                                     ParseData.Ret = true;
                                 }
-                                ParseData.line += value;
+                                ParseData.Line += value;
                             }
                         }
                     }

@@ -25,7 +25,7 @@ namespace TranslationHelper.Formats.KiriKiri
             return ParseStringFile();
         }
 
-        protected Encoding encoding = Encoding.Unicode;
+        protected Encoding Encoding = Encoding.Unicode;
         /// <summary>
         /// encoding for read write file
         /// </summary>

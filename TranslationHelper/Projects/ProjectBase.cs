@@ -33,7 +33,7 @@ namespace TranslationHelper.Projects
             {
                 ProjectData.SelectedGameDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
                 ProjectData.SelectedDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
-                ProjectData.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName(), ProjectName());
+                ProjectData.ProjectWorkDir = Path.Combine(ThSettings.WorkDirPath(), this.ProjectFolderName(), ProjectName());
             }
         }
 
@@ -77,7 +77,7 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// executed before DB will be saved
         /// </summary>
-        internal virtual void PreSaveDB()
+        internal virtual void PreSaveDb()
         {
         }
 
@@ -109,7 +109,7 @@ namespace TranslationHelper.Projects
         /// Returns project's DB file name for save/load
         /// </summary>
         /// <returns></returns>
-        internal virtual string GetProjectDBFileName()
+        internal virtual string GetProjectDbFileName()
         {
             return string.Empty;
         }
@@ -130,29 +130,29 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(string DirForSearch, List<Type> formatType, string[] masks = null, bool Newest = false)
+        protected bool OpenSaveFilesBase(string dirForSearch, List<Type> formatType, string[] masks = null, bool newest = false)
         {
-            return OpenSaveFilesBase(new DirectoryInfo(DirForSearch), formatType, masks, Newest);
+            return OpenSaveFilesBase(new DirectoryInfo(dirForSearch), formatType, masks, newest);
         }
 
         /// <summary>
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(string DirForSearch, Type formatType, string mask = "*")
+        protected bool OpenSaveFilesBase(string dirForSearch, Type formatType, string mask = "*")
         {
-            return OpenSaveFilesBase(new DirectoryInfo(DirForSearch), formatType, mask);
+            return OpenSaveFilesBase(new DirectoryInfo(dirForSearch), formatType, mask);
         }
 
         /// <summary>
         /// open save project files for several file formats/masks
         /// </summary>
-        /// <param name="DirForSearch"></param>
+        /// <param name="dirForSearch"></param>
         /// <param name="format"></param>
         /// <param name="masks"></param>
-        /// <param name="Newest"></param>
+        /// <param name="newest"></param>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, List<Type> format, string[] masks = null, bool Newest = false)
+        protected bool OpenSaveFilesBase(DirectoryInfo dirForSearch, List<Type> format, string[] masks = null, bool newest = false)
         {
             if (masks == null || format == null || format.Count != masks.Length)
             {
@@ -162,7 +162,7 @@ namespace TranslationHelper.Projects
             var ret = false;
             for (int i = 0; i < masks.Length; i++)
             {
-                if (OpenSaveFilesBase(DirForSearch, format[i], masks[i], Newest))
+                if (OpenSaveFilesBase(dirForSearch, format[i], masks[i], newest))
                 {
                     ret = true;
                 }
@@ -175,7 +175,7 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, Type formatType, string mask = "*", bool Newest = false, string[] exclusions = null)
+        protected bool OpenSaveFilesBase(DirectoryInfo dirForSearch, Type formatType, string mask = "*", bool newest = false, string[] exclusions = null)
         {
             //if (mask == "*")
             //{
@@ -185,9 +185,9 @@ namespace TranslationHelper.Projects
             exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
 
             var ret = false;
-            if (DirForSearch.Exists)
+            if (dirForSearch.Exists)
             {
-                foreach (var file in Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
+                foreach (var file in newest ? GetNewestFilesList(dirForSearch, mask) : dirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
                 {
                     if (exclusions != null && file.FullName.IsStringAContainsAnyFromArray(exclusions))//skip exclusions
                         continue;
@@ -298,7 +298,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual string OnlineTranslationProjectSpecificPretranslationAction(string o, string t, int tind = -1, int rind = -1)
         {
-            return HideVARSBase(o, HideVarsBase);
+            return HideVarsBase(o, HideVarsBase);
         }
 
         /// <summary>
@@ -311,7 +311,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual string OnlineTranslationProjectSpecificPosttranslationAction(string o, string t, int tind = -1, int rind = -1)
         {
-            return RestoreVARS(t);
+            return RestoreVars(t);
         }
 
         /// <summary>
@@ -321,18 +321,18 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// list of found matches collections
         /// </summary>
-        internal List<MatchCollection> HideVARSMatchCollectionsList;
-        internal string HideVARSBase(string str, Dictionary<string, string> HideVARSPatterns = null)
+        internal List<MatchCollection> HideVarsMatchCollectionsList;
+        internal string HideVarsBase(string str, Dictionary<string, string> hideVarsPatterns = null)
         {
-            HideVARSPatterns = HideVARSPatterns ?? ProjectData.CurrentProject.HideVarsBase;
+            hideVarsPatterns = hideVarsPatterns ?? ProjectData.CurrentProject.HideVarsBase;
 
-            if (HideVARSPatterns == null || HideVARSPatterns.Count == 0)
+            if (hideVarsPatterns == null || hideVarsPatterns.Count == 0)
             {
                 return str;
             }
 
             var keyfound = false;
-            foreach (var key in HideVARSPatterns.Keys)
+            foreach (var key in hideVarsPatterns.Keys)
             {
                 if (str.Contains(key))
                 {
@@ -345,19 +345,19 @@ namespace TranslationHelper.Projects
                 return str;
             }
 
-            var mc = Regex.Matches(str, "(" + string.Join(")|(", HideVARSPatterns.Values) + ")");
+            var mc = Regex.Matches(str, "(" + string.Join(")|(", hideVarsPatterns.Values) + ")");
             if (mc.Count == 0)
             {
                 return str;
             }
 
-            if (HideVARSMatchCollectionsList == null)//init list
-                HideVARSMatchCollectionsList = new List<MatchCollection>();
+            if (HideVarsMatchCollectionsList == null)//init list
+                HideVarsMatchCollectionsList = new List<MatchCollection>();
 
-            if (mcArrNum != 0)//reset vars count
-                mcArrNum = 0;
+            if (_mcArrNum != 0)//reset vars count
+                _mcArrNum = 0;
 
-            HideVARSMatchCollectionsList.Add(mc);
+            HideVarsMatchCollectionsList.Add(mc);
 
             for (int m = mc.Count - 1; m >= 0; m--)
             {
@@ -374,10 +374,10 @@ namespace TranslationHelper.Projects
             return str;
         }
 
-        int mcArrNum;
-        internal string RestoreVARS(string str)
+        int _mcArrNum;
+        internal string RestoreVars(string str)
         {
-            if (HideVARSMatchCollectionsList == null || HideVARSMatchCollectionsList.Count == 0 || !str.Contains("VAR") || HideVARSMatchCollectionsList[mcArrNum].Count == 0)
+            if (HideVarsMatchCollectionsList == null || HideVarsMatchCollectionsList.Count == 0 || !str.Contains("VAR") || HideVarsMatchCollectionsList[_mcArrNum].Count == 0)
             {
                 return str;
             }
@@ -386,15 +386,15 @@ namespace TranslationHelper.Projects
             str = Regex.Replace(str, @"\{ ?VAR ?([0-9]{3}) ?\}", "{VAR$1}");
 
             int mi = 0;
-            foreach (Match m in HideVARSMatchCollectionsList[mcArrNum])
+            foreach (Match m in HideVarsMatchCollectionsList[_mcArrNum])
             {
                 str = str.Replace("{VAR" + mi.ToString("000") + "}", m.Value);
                 mi++;
             }
-            mcArrNum++;
-            if (mcArrNum == HideVARSMatchCollectionsList.Count)
+            _mcArrNum++;
+            if (_mcArrNum == HideVarsMatchCollectionsList.Count)
             {
-                HideVARSMatchCollectionsList.Clear();
+                HideVarsMatchCollectionsList.Clear();
             }
             return str;
         }
@@ -438,11 +438,11 @@ namespace TranslationHelper.Projects
             return str;
         }
 
-        internal void FillTHFilesElementsDictionary()
+        internal void FillThFilesElementsDictionary()
         {
             if (ProjectData.TablesLinesDict == null || ProjectData.TablesLinesDict.Count == 0)
             {
-                foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
+                foreach (DataTable table in ProjectData.ThFilesElementsDataset.Tables)
                 {
                     foreach (DataRow row in table.Rows)
                     {
@@ -468,7 +468,7 @@ namespace TranslationHelper.Projects
                 ProjectData.TablesLinesDict = new Dictionary<string, string>();
             }
 
-            foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
+            foreach (DataTable table in ProjectData.ThFilesElementsDataset.Tables)
             {
                 foreach (DataRow row in table.Rows)
                 {

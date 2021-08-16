@@ -11,15 +11,15 @@ using TranslationHelper.Formats.RPGMTrans;
 
 namespace TranslationHelper.Formats.RPGMTransPatch
 {
-    class RPGMKTRANSPATCH : RPGMTransPatchBase
+    class Rpgmktranspatch : RpgmTransPatchBase
     {
-        public RPGMKTRANSPATCH()
+        public Rpgmktranspatch()
         {
         }
 
         internal override bool Open() 
         {
-            return new TranslationHelper.Formats.RPGMTrans.TXT().Open(); 
+            return new TranslationHelper.Formats.RPGMTrans.Txt().Open(); 
         }
 
         internal override bool Save() 
@@ -30,17 +30,17 @@ namespace TranslationHelper.Formats.RPGMTransPatch
         private bool WritePatchV3()
         {
             var ret = false;
-            List<string> LinesToWrite = new List<string>
+            List<string> linesToWrite = new List<string>
             {
                 "> RPGMAKER TRANS PATCH FILE VERSION 3.2"//v3
             };
 
-            var TablesCount = ProjectData.THFilesElementsDataset.Tables.Count;
-            for (int t=0; t < TablesCount; t++)
+            var tablesCount = ProjectData.ThFilesElementsDataset.Tables.Count;
+            for (int t=0; t < tablesCount; t++)
             {
                 try
                 {
-                    var table = ProjectData.THFilesElementsDataset.Tables[t];
+                    var table = ProjectData.ThFilesElementsDataset.Tables[t];
                     var tableRowsCount = table.Rows.Count;
                     for (int r = 0; r < tableRowsCount; r++)
                     {
@@ -50,7 +50,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                         var translation = row[1] as string;
 
                         List<string> context = new List<string>();
-                        var infoRow = ProjectData.THFilesElementsDatasetInfo.Tables[t].Rows[r] + string.Empty;
+                        var infoRow = ProjectData.ThFilesElementsDatasetInfo.Tables[t].Rows[r] + string.Empty;
                         foreach (var line in infoRow.SplitToLines())
                         {
                             if (line.StartsWith("> CONTEXT"))
@@ -60,15 +60,15 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                         }
 
                         //String add block
-                        LinesToWrite.Add("> BEGIN STRING");
-                        LinesToWrite.Add(original);
-                        LinesToWrite.Add(string.Join(Environment.NewLine, context));
-                        LinesToWrite.Add(translation);
-                        LinesToWrite.Add("> END STRING");
+                        linesToWrite.Add("> BEGIN STRING");
+                        linesToWrite.Add(original);
+                        linesToWrite.Add(string.Join(Environment.NewLine, context));
+                        linesToWrite.Add(translation);
+                        linesToWrite.Add("> END STRING");
                     }
 
                     var path = Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(ProjectData.ProjectWorkDir) + "_patch", "patch", table.TableName);
-                    File.WriteAllLines(path, LinesToWrite);
+                    File.WriteAllLines(path, linesToWrite);
                     ret = true;
                 }
                 catch

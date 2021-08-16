@@ -12,15 +12,15 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
-    class RPGMMVOLD
+    class Rpgmmvold
     {
         
-        public RPGMMVOLD()
+        public Rpgmmvold()
         {
             
         }
 
-        internal bool OpenRPGMakerMVjson(string sPath)
+        internal bool OpenRpgMakerMVjson(string sPath)
         {
             //StreamReader _file = new StreamReader(sPath);
             //while (!_file.EndOfStream)
@@ -51,19 +51,19 @@ namespace TranslationHelper.Projects.RPGMMV
                 //Вроде прочитало в DGV
                 //источник: https://stackoverflow.com/questions/23763446/how-to-display-the-json-data-in-datagridview-in-c-sharp-windows-application-from
 
-                string Jsonname = Path.GetFileNameWithoutExtension(sPath); // get json file name
-                if (ProjectData.THFilesElementsDataset.Tables.Contains(Jsonname))
+                string jsonname = Path.GetFileNameWithoutExtension(sPath); // get json file name
+                if (ProjectData.ThFilesElementsDataset.Tables.Contains(jsonname))
                 {
                     //MessageBox.Show("true!");
                     return true;
                 }
-                ProjectData.Main.ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
+                ProjectData.Main.ProgressInfo(true, T._("opening file: ") + jsonname + ".json");
                 string jsondata = File.ReadAllText(sPath); // get json data
 
-                ProjectData.THFilesElementsDataset.Tables.Add(Jsonname); // create table with json name
-                ProjectData.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Original"); //create Original column
-                ProjectData.THFilesElementsDatasetInfo.Tables.Add(Jsonname); // create table with json name
-                ProjectData.THFilesElementsDatasetInfo.Tables[Jsonname].Columns.Add("Original"); //create Original column
+                ProjectData.ThFilesElementsDataset.Tables.Add(jsonname); // create table with json name
+                ProjectData.ThFilesElementsDataset.Tables[jsonname].Columns.Add("Original"); //create Original column
+                ProjectData.ThFilesElementsDatasetInfo.Tables.Add(jsonname); // create table with json name
+                ProjectData.ThFilesElementsDatasetInfo.Tables[jsonname].Columns.Add("Original"); //create Original column
                 //MessageBox.Show("Added table:"+Jsonname);
 
                 /*
@@ -84,7 +84,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 bool ret = true;
 
-                ret = ReadJson(Jsonname, sPath);
+                ret = ReadJson(jsonname, sPath);
 
                 /*
                 string jsonname = Jsonname.ToLower(); //set jsonname to lower registry
@@ -200,14 +200,14 @@ namespace TranslationHelper.Projects.RPGMMV
                 //THFileElementsDataGridView.DataSource = ds.Tables[0];
                 //THFileElementsDataGridView.Columns[0].ReadOnly = true;
 
-                if (ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows.Count > 0)
+                if (ProjectData.ThFilesElementsDataset.Tables[jsonname].Rows.Count > 0)
                 {
-                    ProjectData.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Translation");
+                    ProjectData.ThFilesElementsDataset.Tables[jsonname].Columns.Add("Translation");
                 }
                 else
                 {
-                    ProjectData.THFilesElementsDataset.Tables.Remove(Jsonname); // remove table if was no items added
-                    ProjectData.THFilesElementsDatasetInfo.Tables.Remove(Jsonname); // remove table if was no items added
+                    ProjectData.ThFilesElementsDataset.Tables.Remove(jsonname); // remove table if was no items added
+                    ProjectData.ThFilesElementsDatasetInfo.Tables.Remove(jsonname); // remove table if was no items added
                 }
 
                 return ret;
@@ -219,7 +219,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         }
 
-        private bool ReadJson(string Jsonname, string sPath)
+        private bool ReadJson(string jsonname, string sPath)
         {
             //LogToFile("Jsonname = " + Jsonname);
             try
@@ -253,8 +253,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 //TempList = new List<string>();
                 //TempListInfo = new List<string>();
-                IsCommonEvents = (Jsonname == "CommonEvents");
-                ProceedJToken(root, Jsonname);
+                _isCommonEvents = (jsonname == "CommonEvents");
+                ProceedJToken(root, jsonname);
 
                 //занесение в список
                 //int TempListCount = TempList.Count;
@@ -295,15 +295,15 @@ namespace TranslationHelper.Projects.RPGMMV
 
         //List<string> TempList;
         //List<string> TempListInfo;
-        private readonly StringBuilder textsb = new StringBuilder();
-        private string curcode = string.Empty;
+        private readonly StringBuilder _textsb = new StringBuilder();
+        private string _curcode = string.Empty;
         //string cType;
         //private string cCode = string.Empty;
-        private string cName = string.Empty;
+        private string _cName = string.Empty;
         //private string cId = string.Empty;
         //private string OldcId = "none";
-        bool IsCommonEvents;
-        private void ProceedJToken(JToken token, string Jsonname/*, string propertyname = ""*/)
+        bool _isCommonEvents;
+        private void ProceedJToken(JToken token, string jsonname/*, string propertyname = ""*/)
         {
             if (token == null)
             {
@@ -319,42 +319,42 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 string tokenvalue = token.ToString();
 
-                if (IsCommonEvents && (curcode == "401" || curcode == "405"))
+                if (_isCommonEvents && (_curcode == "401" || _curcode == "405"))
                 {
                     //if (token.Type == JTokenType.String)
                     //{
-                    if (textsb.ToString().Length > 0)
+                    if (_textsb.ToString().Length > 0)
                     {
-                        textsb.AppendLine();
+                        _textsb.AppendLine();
                     }
                     //LogToFile("code 401 adding valur to merge=" + tokenvalue + ", curcode=" + curcode);
-                    textsb.Append(tokenvalue);
+                    _textsb.Append(tokenvalue);
                     //}
                 }
                 else
                 {
-                    if (IsCommonEvents)
+                    if (_isCommonEvents)
                     {
-                        if (string.IsNullOrWhiteSpace(textsb.ToString())/* || token.Path.Contains("switches") || token.Path.Contains("variables")*/)
+                        if (string.IsNullOrWhiteSpace(_textsb.ToString())/* || token.Path.Contains("switches") || token.Path.Contains("variables")*/)
                         {
                         }
                         else
                         {
-                            string mergedstring = textsb.ToString();
-                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ mergedstring.ForJPLangHaveMostOfRomajiOtherChars())
+                            string mergedstring = _textsb.ToString();
+                            if (/*GetAlreadyAddedInTable(Jsonname, mergedstring) || token.Path.Contains(".json'].data[") ||*/ mergedstring.ForJpLangHaveMostOfRomajiOtherChars())
                             {
                             }
                             else
                             {
                                 //LogToFile("textsb is not empty. add. value=" + mergedstring + ", curcode=" + curcode);
 
-                                ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows.Add(mergedstring);
+                                ProjectData.ThFilesElementsDataset.Tables[jsonname].Rows.Add(mergedstring);
                                 //TempList.Add(mergedstring);//много быстрее
 
-                                ProjectData.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
+                                ProjectData.ThFilesElementsDatasetInfo.Tables[jsonname].Rows.Add("JsonPath: " + token.Path);
                                 //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                             }
-                            textsb.Clear();
+                            _textsb.Clear();
                         }
                     }
                     //if (token.Type == JTokenType.String)
@@ -365,9 +365,9 @@ namespace TranslationHelper.Projects.RPGMMV
                     else
                     {
 
-                        ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows.Add(tokenvalue);
+                        ProjectData.ThFilesElementsDataset.Tables[jsonname].Rows.Add(tokenvalue);
 
-                        ProjectData.THFilesElementsDatasetInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
+                        ProjectData.ThFilesElementsDatasetInfo.Tables[jsonname].Rows.Add("JsonPath: " + token.Path);
                         //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                     }
                     //}
@@ -378,43 +378,43 @@ namespace TranslationHelper.Projects.RPGMMV
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 foreach (var property in obj.Properties())
                 {
-                    cName = property.Name;
+                    _cName = property.Name;
 
-                    if (IsCommonEvents)//asdfg skip code 108,408,356
+                    if (_isCommonEvents)//asdfg skip code 108,408,356
                     {
-                        if (cName.Length == 4 && cName == "code")
+                        if (_cName.Length == 4 && _cName == "code")
                         {
-                            curcode = property.Value + string.Empty;
+                            _curcode = property.Value + string.Empty;
                         }
-                        if (skipit)
+                        if (_skipit)
                         {
-                            if (curcode == "108" || curcode == "408" || curcode == "356")
+                            if (_curcode == "108" || _curcode == "408" || _curcode == "356")
                             {
                                 if (property.Name == "parameters")//asdf
                                 {
-                                    skipit = false;
+                                    _skipit = false;
                                     continue;
                                 }
                             }
                             else
                             {
-                                skipit = false;
+                                _skipit = false;
                             }
                         }
                         else
                         {
-                            if (cName.Length == 4 && cName == "code")
+                            if (_cName.Length == 4 && _cName == "code")
                             {
                                 string propertyValue = property.Value + string.Empty;
                                 if (propertyValue.Length == 3 && (propertyValue == "108" || propertyValue == "408" || propertyValue == "356"))
                                 {
-                                    skipit = true;
+                                    _skipit = true;
                                     continue;
                                 }
                             }
                         }
                     }
-                    ProceedJToken(property.Value, Jsonname/*, property.Name*/);
+                    ProceedJToken(property.Value, jsonname/*, property.Name*/);
                 }
             }
             else if (token is JArray array)
@@ -422,7 +422,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 int arrayCount = array.Count;
                 for (int i = 0; i < arrayCount; i++)
                 {
-                    ProceedJToken(array[i], Jsonname);
+                    ProceedJToken(array[i], jsonname);
                 }
             }
             else
@@ -430,14 +430,14 @@ namespace TranslationHelper.Projects.RPGMMV
                 //Debug.WriteLine(string.Format("{0} not implemented", token.Type)); // JConstructor, JRaw
             }
         }
-        bool skipit;
+        bool _skipit;
 
-        internal bool WriteJson(string Jsonname, string sPath)
+        internal bool WriteJson(string jsonname, string sPath)
         {
-            ProjectData.Main.ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
+            ProjectData.Main.ProgressInfo(true, T._("Writing: ") + jsonname + ".json");
 
             //skip file if table with same name has translation cells in all lines empty
-            if (FunctionsTable.IsTableRowsAllEmpty(ProjectData.THFilesElementsDataset.Tables[Jsonname]))
+            if (FunctionsTable.IsTableRowsAllEmpty(ProjectData.ThFilesElementsDataset.Tables[jsonname]))
                 return true;
 
             try
@@ -454,16 +454,16 @@ namespace TranslationHelper.Projects.RPGMMV
                     }
                 }
 
-                startingrow = 0;//сброс начальной строки поиска в табице
-                IsCommonEvents = (Jsonname == "CommonEvents");
-                if (IsCommonEvents)
+                _startingrow = 0;//сброс начальной строки поиска в табице
+                _isCommonEvents = (jsonname == "CommonEvents");
+                if (_isCommonEvents)
                 {
                     //сброс значений для CommonEvents
-                    curcode = string.Empty;
-                    cName = string.Empty;
-                    skipit = false;
+                    _curcode = string.Empty;
+                    _cName = string.Empty;
+                    _skipit = false;
                 }
-                WProceedJToken(root, Jsonname);
+                WProceedJToken(root, jsonname);
 
                 Regex regex = new Regex(@"^\[null,(.+)\]$");//Корректировка формата записываемого json так, как в файлах RPGMaker MV
                 File.WriteAllText(sPath, regex.Replace(root.ToString(Formatting.None), "[\r\nnull,\r\n$1\r\n]"));
@@ -483,8 +483,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
         }
 
-        int startingrow;//оптимизация. начальная строка, когда идет поиск по файлу, чтобы не искало каждый раз сначала при нахождении перевода будет переприсваиваться начальная строка на последнюю
-        private void WProceedJToken(JToken token, string Jsonname/*, string propertyname = ""*/)
+        int _startingrow;//оптимизация. начальная строка, когда идет поиск по файлу, чтобы не искало каждый раз сначала при нахождении перевода будет переприсваиваться начальная строка на последнюю
+        private void WProceedJToken(JToken token, string jsonname/*, string propertyname = ""*/)
         {
             if (token == null)
             {
@@ -505,7 +505,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 }
                 else
                 {
-                    string parameter0value = tokenvalue;
+                    string parameter0Value = tokenvalue;
                     //if (parameter0value.Length == 0)
                     //{
                     //}
@@ -513,9 +513,9 @@ namespace TranslationHelper.Projects.RPGMMV
                     {
                         //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
 
-                        for (int i1 = startingrow; i1 < ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows.Count; i1++)
+                        for (int i1 = _startingrow; i1 < ProjectData.ThFilesElementsDataset.Tables[jsonname].Rows.Count; i1++)
                         {
-                            var row = ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows[i1];
+                            var row = ProjectData.ThFilesElementsDataset.Tables[jsonname].Rows[i1];
                             if ((row[1] + string.Empty).Length == 0)
                             {
                             }
@@ -578,7 +578,7 @@ namespace TranslationHelper.Projects.RPGMMV
                                     {
                                         //var t = token as JValue;
                                         (token as JValue).Value = (row[1] + string.Empty).Replace("\r", string.Empty);//убирает \r, т.к. в json присутствует только \n
-                                        startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                        _startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
                                         break;
                                     }
 
@@ -586,13 +586,13 @@ namespace TranslationHelper.Projects.RPGMMV
                                     for (int i2 = 0; i2 < origALength; i2++)
                                     {
                                         //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
-                                        if (parameter0value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
+                                        if (parameter0Value == origA[i2]/*.Replace("\r", string.Empty)*/) //Replace здесь убирает \r из за которой строки считались неравными
                                         {
                                             //LogToFile("parameter0value=" + parameter0value + ",orig[i2]=" + origA[i2].Replace("\r", string.Empty) + ", parameter0value == orig[i2] is " + (parameter0value == origA[i2].Replace("\r", string.Empty)));
                                             //var t = token as JValue;
                                             (token as JValue).Value = transA[i2]/*.Replace("\r", string.Empty)*/; //Replace убирает \r
 
-                                            startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                            _startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
                                                              //LogToFile("commoneventsdata[i].List[c].Parameters[0].String=" + commoneventsdata[i].List[c].Parameters[0].String + ",trans[i2]=" + transA[i2]);
                                             br = true;
                                             break;
@@ -600,7 +600,7 @@ namespace TranslationHelper.Projects.RPGMMV
                                     }
                                     if (br) //выход из цикла прохода по всей таблице, если значение найдено для одной из строк оригинала, и переход к следующему элементу json
                                     {
-                                        startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                        _startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
                                         break;
                                     }
                                 }
@@ -610,7 +610,7 @@ namespace TranslationHelper.Projects.RPGMMV
                                     {
                                         //var t = token as JValue;
                                         (token as JValue).Value = row[1] + string.Empty;
-                                        startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
+                                        _startingrow = i1;//запоминание строки, чтобы не пробегало всё с нуля
                                         break;
                                     }
                                 }
@@ -624,42 +624,42 @@ namespace TranslationHelper.Projects.RPGMMV
                 //LogToFile("JObject Properties: \r\n" + obj.Properties());
                 foreach (var property in obj.Properties())
                 {
-                    cName = property.Name;
-                    if (IsCommonEvents)//asdfg skip code 108,408,356
+                    _cName = property.Name;
+                    if (_isCommonEvents)//asdfg skip code 108,408,356
                     {
-                        if (cName.Length == 4 && cName == "code")
+                        if (_cName.Length == 4 && _cName == "code")
                         {
-                            curcode = property.Value + string.Empty;
+                            _curcode = property.Value + string.Empty;
                         }
-                        if (skipit)
+                        if (_skipit)
                         {
-                            if (curcode.Length == 3 && curcode == "108" || curcode == "408" || curcode == "356")
+                            if (_curcode.Length == 3 && _curcode == "108" || _curcode == "408" || _curcode == "356")
                             {
                                 if (property.Name == "parameters")//asdf
                                 {
-                                    skipit = false;
+                                    _skipit = false;
                                     continue;
                                 }
                             }
                             else
                             {
-                                skipit = false;
+                                _skipit = false;
                             }
                         }
                         else
                         {
-                            if (cName.Length == 4 && cName == "code")
+                            if (_cName.Length == 4 && _cName == "code")
                             {
                                 string propertyValue = property.Value + string.Empty;
                                 if (propertyValue.Length == 3 && (propertyValue == "108" || propertyValue == "408" || propertyValue == "356"))
                                 {
-                                    skipit = true;
+                                    _skipit = true;
                                     continue;
                                 }
                             }
                         }
                     }
-                    WProceedJToken(property.Value, Jsonname/*, property.Name*/);
+                    WProceedJToken(property.Value, jsonname/*, property.Name*/);
                 }
             }
             else if (token is JArray array)
@@ -667,7 +667,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 int arrayCount = array.Count;
                 for (int i = 0; i < arrayCount; i++)
                 {
-                    WProceedJToken(array[i], Jsonname);
+                    WProceedJToken(array[i], jsonname);
                 }
             }
             else

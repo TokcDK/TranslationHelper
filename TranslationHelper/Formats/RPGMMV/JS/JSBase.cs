@@ -10,11 +10,11 @@ using TranslationHelper.Formats.RPGMMV.JsonParser;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
-    abstract class JSBase : RPGMMVBase, IUseJSLocationInfo, IUseJsonParser
+    abstract class JsBase : RpgmmvBase, IUseJsLocationInfo, IUseJsonParser
     {
-        protected JSBase()
+        protected JsBase()
         {
-            JsonParser = new JSJsonParser();
+            JsonParser = new JsJsonParser();
         }
 
         internal override bool UseTableNameWithoutExtension => false;
@@ -33,38 +33,38 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         /// Get all inherited classes of an abstract class
         /// </summary>
         /// <returns></returns>
-        internal static List<System.Type> GetListOfJSTypes()
+        internal static List<System.Type> GetListOfJsTypes()
         {
-            return Inherited.GetListOfInheritedTypes(typeof(JSBase));
+            return Inherited.GetListOfInheritedTypes(typeof(JsBase));
         }
 
         /// <summary>
         /// Get all inherited classes of an abstract class
         /// </summary>
         /// <returns></returns>
-        internal static List<JSBase> GetListOfJS()
+        internal static List<JsBase> GetListOfJs()
         {
-            return Inherited.GetListOfinheritedSubClasses<JSBase>();
+            return Inherited.GetListOfinheritedSubClasses<JsBase>();
         }
 
-        public abstract string JSName { get; }
+        public abstract string JsName { get; }
 
-        public virtual string JSSubfolder => "plugins";
+        public virtual string JsSubfolder => "plugins";
 
-        JsonParserBase JParser;
+        JsonParserBase _jParser;
 
-        public JsonParserBase JsonParser { get => JParser; set => JParser = value; }
+        public JsonParserBase JsonParser { get => _jParser; set => _jParser = value; }
 
         protected bool IsValidToken(JValue value)
         {
             return value.Type == JTokenType.String
-                && JSTokenValid(value)
+                && JsTokenValid(value)
                 //&& (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game
                 && !string.IsNullOrWhiteSpace(value + "")
-                && !(THSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars());
+                && !(ThSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars());
         }
 
-        protected virtual bool JSTokenValid(JValue value)
+        protected virtual bool JsTokenValid(JValue value)
         {
             return true;
         }
@@ -461,27 +461,27 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    return true;
         //}
 
-        protected bool ParseJSSingleLinesWithRegex(string RegexPattern)
+        protected bool ParseJsSingleLinesWithRegex(string regexPattern)
         {
-            return ParseJSSingleLinesWithRegex(RegexPattern, false);
+            return ParseJsSingleLinesWithRegex(regexPattern, false);
         }
 
-        protected bool ParseJSSingleLinesWithRegex(string RegexPattern, bool Iswrite = false)
+        protected bool ParseJsSingleLinesWithRegex(string regexPattern, bool iswrite = false)
         {
-            return ParseJSSingleLinesWithRegex(RegexPattern, "", true, "$1", "", Iswrite);
+            return ParseJsSingleLinesWithRegex(regexPattern, "", true, "$1", "", iswrite);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="RegexPattern"></param>
-        /// <param name="LinePartForSearch"></param>
-        /// <param name="LinePartForSearchContains">true=contains,false=startswith</param>
-        /// <param name="RegexPartOfPatternToSave"></param>
-        /// <param name="SInfo"></param>
-        /// <param name="Iswrite"></param>
+        /// <param name="regexPattern"></param>
+        /// <param name="linePartForSearch"></param>
+        /// <param name="linePartForSearchContains">true=contains,false=startswith</param>
+        /// <param name="regexPartOfPatternToSave"></param>
+        /// <param name="sInfo"></param>
+        /// <param name="iswrite"></param>
         /// <returns></returns>
-        protected bool ParseJSSingleLinesWithRegex(string RegexPattern, string LinePartForSearch = "", bool LinePartForSearchContains = true, string RegexPartOfPatternToSave = "$1", string SInfo = "", bool Iswrite = false)
+        protected bool ParseJsSingleLinesWithRegex(string regexPattern, string linePartForSearch = "", bool linePartForSearchContains = true, string regexPartOfPatternToSave = "$1", string sInfo = "", bool iswrite = false)
         {
             if (ProjectData.FilePath.Length == 0 || !File.Exists(ProjectData.FilePath))
             {
@@ -492,13 +492,13 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
             string tablename = Path.GetFileName(ProjectData.FilePath);
 
-            bool UseDict = false;
-            if (Iswrite)
+            bool useDict = false;
+            if (iswrite)
             {
                 SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
                 if (TablesLinesDict != null && TablesLinesDict.Count > 0)
                 {
-                    UseDict = true;
+                    useDict = true;
                 }
             }
             else
@@ -506,71 +506,71 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 AddTables(tablename);
             }
 
-            StringBuilder ResultForWrite = new StringBuilder();
-            int RowIndex = 0;
-            bool IsComment = false;
+            StringBuilder resultForWrite = new StringBuilder();
+            int rowIndex = 0;
+            bool isComment = false;
             try
             {
-                bool SearchText = LinePartForSearch.Length > 0;
+                bool searchText = linePartForSearch.Length > 0;
                 using (StreamReader reader = new StreamReader(ProjectData.FilePath))
                 {
                     while (!reader.EndOfStream)
                     {
                         line = reader.ReadLine();
 
-                        if (IsComment)
+                        if (isComment)
                         {
                             if (line.Contains("*/"))
                             {
-                                IsComment = false;
+                                isComment = false;
                             }
                         }
                         else
                         {
                             if (line.Contains("/*"))
                             {
-                                IsComment = true;
+                                isComment = true;
                             }
 
                             if (!line.TrimStart().StartsWith("//")
                                 &&
                                 (
-                                (SearchText &&
-                                    (LinePartForSearchContains && line.Contains(LinePartForSearch))
+                                (searchText &&
+                                    (linePartForSearchContains && line.Contains(linePartForSearch))
                                     ||
-                                    (!LinePartForSearchContains && line.StartsWith(LinePartForSearch))
+                                    (!linePartForSearchContains && line.StartsWith(linePartForSearch))
                                 )
-                                || (!SearchText && Regex.IsMatch(line, RegexPattern))
+                                || (!searchText && Regex.IsMatch(line, regexPattern))
                                 )
                                 )
                             {
-                                string StringToAdd = Regex.Replace(line, RegexPattern, RegexPartOfPatternToSave);
-                                if (IsValidString(StringToAdd))
+                                string stringToAdd = Regex.Replace(line, regexPattern, regexPartOfPatternToSave);
+                                if (IsValidString(stringToAdd))
                                 {
-                                    if (Iswrite)
+                                    if (iswrite)
                                     {
-                                        if (UseDict)
+                                        if (useDict)
                                         {
-                                            if (TablesLinesDict.ContainsKey(StringToAdd) && !string.IsNullOrEmpty(TablesLinesDict[StringToAdd]) && TablesLinesDict[StringToAdd] != StringToAdd)
+                                            if (TablesLinesDict.ContainsKey(stringToAdd) && !string.IsNullOrEmpty(TablesLinesDict[stringToAdd]) && TablesLinesDict[stringToAdd] != stringToAdd)
                                             {
-                                                line = line.Replace(StringToAdd, TablesLinesDict[StringToAdd]);
+                                                line = line.Replace(stringToAdd, TablesLinesDict[stringToAdd]);
                                             }
                                         }
                                         else
                                         {
 
-                                            var row = ProjectData.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
-                                            if (row[0] as string == StringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
+                                            var row = ProjectData.ThFilesElementsDataset.Tables[tablename].Rows[rowIndex];
+                                            if (row[0] as string == stringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
                                             {
-                                                line = line.Replace(StringToAdd, row[1] as string);
+                                                line = line.Replace(stringToAdd, row[1] as string);
                                             }
 
-                                            RowIndex++;
+                                            rowIndex++;
                                         }
                                     }
                                     else
                                     {
-                                        AddRowData(tablename, StringToAdd, SInfo, true);
+                                        AddRowData(tablename, stringToAdd, sInfo, true);
                                         //ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
                                         //ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
                                     }
@@ -578,9 +578,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             }
                         }
 
-                        if (Iswrite)
+                        if (iswrite)
                         {
-                            ResultForWrite.AppendLine(line);
+                            resultForWrite.AppendLine(line);
                         }
                     }
                 }
@@ -590,11 +590,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 return false;
             }
 
-            if (Iswrite)
+            if (iswrite)
             {
                 try
                 {
-                    File.WriteAllText(ProjectData.FilePath, ResultForWrite.ToString());
+                    File.WriteAllText(ProjectData.FilePath, resultForWrite.ToString());
                 }
                 catch
                 {

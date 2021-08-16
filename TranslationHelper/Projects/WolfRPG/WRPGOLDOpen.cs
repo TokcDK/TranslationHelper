@@ -8,18 +8,18 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.WolfRPG
 {
-    class WRPGOLDOpen
+    class WrpgoldOpen
     {
         
-        public WRPGOLDOpen()
+        public WrpgoldOpen()
         {
             
         }
 
         internal string AnyTxt(string sPath)
         {
-            string FolderPath = Path.GetDirectoryName(sPath);
-            string FolderName = Path.GetFileName(FolderPath);
+            string folderPath = Path.GetDirectoryName(sPath);
+            string folderName = Path.GetFileName(folderPath);
 
             if (Path.GetFileName(sPath) == "GameDat.txt")
             {
@@ -27,22 +27,22 @@ namespace TranslationHelper.Projects.WolfRPG
                 {
                     if (sr.ReadLine() == "> WOLF TRANS PATCH FILE VERSION 1.0")
                     {
-                        return OpenWolfTransPatch(Path.GetDirectoryName(Path.GetDirectoryName(FolderPath)));
+                        return OpenWolfTransPatch(Path.GetDirectoryName(Path.GetDirectoryName(folderPath)));
                     }
                 }
             }
-            else if (FolderName == "TextE" || FolderName == "TextH" || FolderName == "TextP")
+            else if (folderName == "TextE" || folderName == "TextH" || folderName == "TextP")
             {
-                string parentFolder = Path.GetDirectoryName(FolderPath);
+                string parentFolder = Path.GetDirectoryName(folderPath);
 
-                string Folder = Path.Combine(parentFolder, "TextE");
-                ProceedTextEHPFolders(Folder);
+                string folder = Path.Combine(parentFolder, "TextE");
+                ProceedTextEhpFolders(folder);
 
-                Folder = Path.Combine(parentFolder, "TextH");
-                ProceedTextEHPFolders(Folder);
+                folder = Path.Combine(parentFolder, "TextH");
+                ProceedTextEhpFolders(folder);
 
-                Folder = Path.Combine(parentFolder, "TextP");
-                ProceedTextEHPFolders(Folder);
+                folder = Path.Combine(parentFolder, "TextP");
+                ProceedTextEhpFolders(folder);
 
                 ProjectData.SelectedDir = parentFolder;
 
@@ -51,7 +51,7 @@ namespace TranslationHelper.Projects.WolfRPG
             return string.Empty;
         }
 
-        private string OpenWolfTransPatch(string FolderPath)
+        private string OpenWolfTransPatch(string folderPath)
         {
             //foreach (var txtFile in Directory.GetFiles(FolderPath, "*.txt", SearchOption.AllDirectories))
             //{
@@ -68,99 +68,99 @@ namespace TranslationHelper.Projects.WolfRPG
             //    }
             //}
 
-            string _context = string.Empty;           //Комментарий
+            string context = string.Empty;           //Комментарий
             //string _advice = string.Empty;            //Предел длины строки
-            string _string;// = string.Empty;            //Переменная строки
-            string _original = string.Empty;           //Непереведенный текст
-            string _translation = string.Empty;             //Переведенный текст
+            string @string;// = string.Empty;            //Переменная строки
+            string original = string.Empty;           //Непереведенный текст
+            string translation = string.Empty;             //Переведенный текст
             //int _status = 0;             //Статус
 
             int errorsCount = 0;
             //Читаем все файлы
-            foreach (var txtFile in Directory.EnumerateFiles(FolderPath, "*.txt", SearchOption.AllDirectories))
+            foreach (var txtFile in Directory.EnumerateFiles(folderPath, "*.txt", SearchOption.AllDirectories))
             {
                 try
                 {
                     string fname = Path.GetFileName(txtFile);
                     ProjectData.Main.ProgressInfo(true, T._("opening file: ") + fname + ".txt");
-                    using (StreamReader _file = new StreamReader(txtFile))
+                    using (StreamReader file = new StreamReader(txtFile))
                     {
-                        ProjectData.THFilesElementsDataset.Tables.Add(fname);
-                        ProjectData.THFilesElementsDataset.Tables[fname].Columns.Add("Original");
-                        ProjectData.THFilesElementsDataset.Tables[fname].Columns.Add("Translation");
+                        ProjectData.ThFilesElementsDataset.Tables.Add(fname);
+                        ProjectData.ThFilesElementsDataset.Tables[fname].Columns.Add("Original");
+                        ProjectData.ThFilesElementsDataset.Tables[fname].Columns.Add("Translation");
                         //THFilesElementsDataset.Tables[fname].Columns.Add("Context");
                         //THFilesElementsDataset.Tables[fname].Columns.Add("Advice");
                         //THFilesElementsDataset.Tables[fname].Columns.Add("Status");
 
-                        ProjectData.THFilesElementsDatasetInfo.Tables.Add(fname);
-                        ProjectData.THFilesElementsDatasetInfo.Tables[fname].Columns.Add("Original");
+                        ProjectData.ThFilesElementsDatasetInfo.Tables.Add(fname);
+                        ProjectData.ThFilesElementsDatasetInfo.Tables[fname].Columns.Add("Original");
 
-                        while (!_file.EndOfStream)   //Читаем до конца
+                        while (!file.EndOfStream)   //Читаем до конца
                         {
-                            _string = _file.ReadLine();                       //Чтение
+                            @string = file.ReadLine();                       //Чтение
 
-                            if (_string.StartsWith("> BEGIN STRING"))
+                            if (@string.StartsWith("> BEGIN STRING"))
                             {
-                                _string = _file.ReadLine();
+                                @string = file.ReadLine();
 
                                 int untranslines = 0; //счетчик количества проходов по строкам текста для перевода, для записи переносов, если строк больше одной                            
-                                while (!_string.StartsWith("> CONTEXT"))  //Ждем начало следующего блока
+                                while (!@string.StartsWith("> CONTEXT"))  //Ждем начало следующего блока
                                 {
                                     if (untranslines > 0)
                                     {
-                                        _original += Environment.NewLine;
+                                        original += Environment.NewLine;
                                     }
-                                    _original += _string;            //Пишем весь текст
-                                    _string = _file.ReadLine();
+                                    original += @string;            //Пишем весь текст
+                                    @string = file.ReadLine();
                                     untranslines++;
                                 }
 
                                 int contextlines = 0;
-                                while (_string.StartsWith("> CONTEXT") || _string.EndsWith("< UNTRANSLATED"))
+                                while (@string.StartsWith("> CONTEXT") || @string.EndsWith("< UNTRANSLATED"))
                                 {
-                                    if (!_string.StartsWith("> CONTEXT") && _string.EndsWith("< UNTRANSLATED"))
+                                    if (!@string.StartsWith("> CONTEXT") && @string.EndsWith("< UNTRANSLATED"))
                                     {
-                                        _context += _string.Replace(" < UNTRANSLATED", string.Empty);
+                                        context += @string.Replace(" < UNTRANSLATED", string.Empty);
                                     }
                                     else
                                     {
                                         if (contextlines > 0)
                                         {
-                                            _context += Environment.NewLine;
+                                            context += Environment.NewLine;
                                         }
 
-                                        _context += _string.Replace("> CONTEXT ", string.Empty).Replace(" < UNTRANSLATED", string.Empty);// +"\r\n";//Убрал символ переноса, так как он остается при сохранении //Сохраняем коментарий
+                                        context += @string.Replace("> CONTEXT ", string.Empty).Replace(" < UNTRANSLATED", string.Empty);// +"\r\n";//Убрал символ переноса, так как он остается при сохранении //Сохраняем коментарий
 
                                     }
 
-                                    _string = _file.ReadLine();
+                                    @string = file.ReadLine();
                                     contextlines++;
                                 }
 
                                 int translines = 0; //счетчик количества проходов по строкам текста для перевода, для записи переносов, если строк больше одной
-                                while (!_string.StartsWith("> END"))      //Ждем конец блока
+                                while (!@string.StartsWith("> END"))      //Ждем конец блока
                                 {
                                     if (translines > 0)
                                     {
-                                        _translation += Environment.NewLine;
+                                        translation += Environment.NewLine;
                                     }
-                                    _translation += _string;
-                                    _string = _file.ReadLine();
+                                    translation += @string;
+                                    @string = file.ReadLine();
                                     translines++;
                                 }
 
-                                if (_original == Environment.NewLine)
+                                if (original == Environment.NewLine)
                                 {
                                 }
                                 else
                                 {
-                                    ProjectData.THFilesElementsDataset.Tables[fname].Rows.Add(_original, _translation/*, _context, _advice, _status*/);
-                                    ProjectData.THFilesElementsDatasetInfo.Tables[fname].Rows.Add(_context/* + Environment.NewLine + "Advice:" + Environment.NewLine + _advice*/);
+                                    ProjectData.ThFilesElementsDataset.Tables[fname].Rows.Add(original, translation/*, _context, _advice, _status*/);
+                                    ProjectData.ThFilesElementsDatasetInfo.Tables[fname].Rows.Add(context/* + Environment.NewLine + "Advice:" + Environment.NewLine + _advice*/);
                                 }
 
-                                _context = string.Empty;  //Чистим
-                                _original = string.Empty;  //Чистим
-                                _translation = string.Empty;    //Чистим
+                                context = string.Empty;  //Чистим
+                                original = string.Empty;  //Чистим
+                                translation = string.Empty;    //Чистим
                             }
                         }
                     }
@@ -173,59 +173,59 @@ namespace TranslationHelper.Projects.WolfRPG
 
             if (errorsCount > 0)
             {
-                if (ProjectData.THFilesElementsDataset.Tables.Count == 0)
+                if (ProjectData.ThFilesElementsDataset.Tables.Count == 0)
                 {
                     return string.Empty;
                 }
             }
 
-            foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
+            foreach (DataTable table in ProjectData.ThFilesElementsDataset.Tables)
             {
                 ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(table.TableName)));
             }
 
-            ProjectData.SelectedDir = FolderPath;
+            ProjectData.SelectedDir = folderPath;
             return "WOLF TRANS PATCH";
         }
 
-        private void ProceedTextEHPFolders(string Folder)
+        private void ProceedTextEhpFolders(string folder)
         {
-            string FolderName = Path.GetFileName(Folder);
-            foreach (var txtFile in Directory.EnumerateFiles(Folder, "*.txt"))
+            string folderName = Path.GetFileName(folder);
+            foreach (var txtFile in Directory.EnumerateFiles(folder, "*.txt"))
             {
                 string txtFilename = Path.GetFileName(txtFile);
-                if (FolderName == "TextE" && txtFilename.Length > 0 && !Regex.IsMatch(txtFilename.Substring(0, 1), @"[0-9]"))
+                if (folderName == "TextE" && txtFilename.Length > 0 && !Regex.IsMatch(txtFilename.Substring(0, 1), @"[0-9]"))
                 {
                     continue;
                 }
 
-                ProjectData.THFilesElementsDataset.Tables.Add(txtFilename);
-                ProjectData.THFilesElementsDatasetInfo.Tables.Add(txtFilename);
-                ProjectData.THFilesElementsDataset.Tables[txtFilename].Columns.Add("Original");
-                ProjectData.THFilesElementsDatasetInfo.Tables[txtFilename].Columns.Add("Original");
+                ProjectData.ThFilesElementsDataset.Tables.Add(txtFilename);
+                ProjectData.ThFilesElementsDatasetInfo.Tables.Add(txtFilename);
+                ProjectData.ThFilesElementsDataset.Tables[txtFilename].Columns.Add("Original");
+                ProjectData.ThFilesElementsDatasetInfo.Tables[txtFilename].Columns.Add("Original");
 
-                OpenWolfRPGMakerTextEHP(txtFile);
+                OpenWolfRpgMakerTextEhp(txtFile);
 
-                if (ProjectData.THFilesElementsDatasetInfo.Tables[txtFilename] == null || ProjectData.THFilesElementsDatasetInfo.Tables[txtFilename].Rows.Count == 0)
+                if (ProjectData.ThFilesElementsDatasetInfo.Tables[txtFilename] == null || ProjectData.ThFilesElementsDatasetInfo.Tables[txtFilename].Rows.Count == 0)
                 {
-                    ProjectData.THFilesElementsDataset.Tables.Remove(txtFilename);
-                    ProjectData.THFilesElementsDatasetInfo.Tables.Remove(txtFilename);
+                    ProjectData.ThFilesElementsDataset.Tables.Remove(txtFilename);
+                    ProjectData.ThFilesElementsDatasetInfo.Tables.Remove(txtFilename);
                 }
                 else
                 {
-                    ProjectData.THFilesElementsDataset.Tables[txtFilename].Columns.Add("Translation");
+                    ProjectData.ThFilesElementsDataset.Tables[txtFilename].Columns.Add("Translation");
                     ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(txtFilename)));
                 }
             }
         }
 
-        private void OpenWolfRPGMakerTextEHP(string sPath)
+        private void OpenWolfRpgMakerTextEhp(string sPath)
         {
-            string FolderPath = Path.GetDirectoryName(sPath);
-            string FolderName = Path.GetFileName(FolderPath);
-            string FileName = Path.GetFileName(sPath);
+            string folderPath = Path.GetDirectoryName(sPath);
+            string folderName = Path.GetFileName(folderPath);
+            string fileName = Path.GetFileName(sPath);
 
-            if (FolderName == "TextE" || FolderName == "TextH")
+            if (folderName == "TextE" || folderName == "TextH")
             {
                 //THFilesElementsDataset.Tables[0].Columns.Add("Translation");
                 using (StreamReader sr = new StreamReader(sPath, Encoding.GetEncoding(932)))
@@ -251,8 +251,8 @@ namespace TranslationHelper.Projects.WolfRPG
                             }
                             else
                             {
-                                ProjectData.THFilesElementsDataset.Tables[FileName].Rows.Add(sb.ToString());
-                                ProjectData.THFilesElementsDatasetInfo.Tables[FileName].Rows.Add(FolderName);
+                                ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(sb.ToString());
+                                ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add(folderName);
                                 recordstarted = false;
                                 sb.Clear();
                                 cnt = 0;
@@ -270,20 +270,20 @@ namespace TranslationHelper.Projects.WolfRPG
                     }
                 }
             }
-            else if (FolderName == "TextP")
+            else if (folderName == "TextP")
             {
-                ProjectData.THFilesElementsDataset.Tables[FileName].Rows.Add(File.ReadAllText(sPath, Encoding.GetEncoding(932)));
-                ProjectData.THFilesElementsDatasetInfo.Tables[FileName].Rows.Add(FolderName);
+                ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(File.ReadAllText(sPath, Encoding.GetEncoding(932)));
+                ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add(folderName);
             }
         }
 
-        internal void ProceedWriteWolfRPGtxt()
+        internal void ProceedWriteWolfRpGtxt()
         {
-            for (int t = 0; t < ProjectData.THFilesElementsDataset.Tables.Count; t++)
+            for (int t = 0; t < ProjectData.ThFilesElementsDataset.Tables.Count; t++)
             {
-                string FilePath = Path.Combine(ProjectData.SelectedDir, ProjectData.THFilesElementsDatasetInfo.Tables[t].Rows[0][0].ToString(), ProjectData.THFilesElementsDataset.Tables[t].TableName);
+                string filePath = Path.Combine(ProjectData.SelectedDir, ProjectData.ThFilesElementsDatasetInfo.Tables[t].Rows[0][0].ToString(), ProjectData.ThFilesElementsDataset.Tables[t].TableName);
 
-                WriteWolfRPGMakerTextEHP(FilePath);
+                WriteWolfRpgMakerTextEhp(filePath);
                 //for (int r=0;r< THFilesElementsDataset.Tables[t].Rows.Count; r++)
                 //{
 
@@ -291,13 +291,13 @@ namespace TranslationHelper.Projects.WolfRPG
             }
         }
 
-        private void WriteWolfRPGMakerTextEHP(string sPath)
+        private void WriteWolfRpgMakerTextEhp(string sPath)
         {
-            string FolderPath = Path.GetDirectoryName(sPath);
-            string FolderName = Path.GetFileName(FolderPath);
-            string FileName = Path.GetFileName(sPath);
+            string folderPath = Path.GetDirectoryName(sPath);
+            string folderName = Path.GetFileName(folderPath);
+            string fileName = Path.GetFileName(sPath);
 
-            if (FolderName == "TextE" || FolderName == "TextH")
+            if (folderName == "TextE" || folderName == "TextH")
             {
                 StringBuilder sb = new StringBuilder();
                 //THFilesElementsDataset.Tables[0].Columns.Add("Translation");
@@ -322,8 +322,8 @@ namespace TranslationHelper.Projects.WolfRPG
                         }
                         else
                         {
-                            string original = ProjectData.THFilesElementsDataset.Tables[FileName].Rows[r][0].ToString();
-                            string translation = ProjectData.THFilesElementsDataset.Tables[FileName].Rows[r][1] + string.Empty;
+                            string original = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[r][0].ToString();
+                            string translation = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[r][1] + string.Empty;
                             sb.AppendLine(translation.Length > 0 ? translation : original);
                             r++;
                             //пропустить то же количество строк
@@ -336,18 +336,18 @@ namespace TranslationHelper.Projects.WolfRPG
 
                 File.WriteAllText(sPath, sb.ToString(), Encoding.GetEncoding(932));
             }
-            else if (FolderName == "TextP")
+            else if (folderName == "TextP")
             {
-                File.WriteAllText(sPath, ProjectData.THFilesElementsDataset.Tables[FileName].Rows[0][1] + string.Empty, Encoding.GetEncoding(932));
+                File.WriteAllText(sPath, ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[0][1] + string.Empty, Encoding.GetEncoding(932));
             }
         }
 
-        internal void WriteWOLFTRANSPATCH()
+        internal void WriteWolftranspatch()
         {
             foreach (var file in Directory.EnumerateFiles(ProjectData.SelectedDir, "*.txt", SearchOption.AllDirectories))
             {
                 string fileName = Path.GetFileName(file);
-                if (ProjectData.THFilesElementsDataset.Tables[fileName] == null)
+                if (ProjectData.ThFilesElementsDataset.Tables[fileName] == null)
                 {
                     continue;
                 }
@@ -356,44 +356,44 @@ namespace TranslationHelper.Projects.WolfRPG
                 {
                     StringBuilder buffer = new StringBuilder();
 
-                    int originalcolumnindex = ProjectData.THFilesElementsDataset.Tables[fileName].Columns["Original"].Ordinal;
-                    int translationcolumnindex = ProjectData.THFilesElementsDataset.Tables[fileName].Columns["Translation"].Ordinal;
+                    int originalcolumnindex = ProjectData.ThFilesElementsDataset.Tables[fileName].Columns["Original"].Ordinal;
+                    int translationcolumnindex = ProjectData.ThFilesElementsDataset.Tables[fileName].Columns["Translation"].Ordinal;
                     //int contextcolumnindex = THFilesElementsDatasetInfo.Tables[fileName].Columns["Context"].Ordinal;
 
                     ProjectData.Main.ProgressInfo(true, T._("saving file: ") + fileName);
 
                     buffer.AppendLine("> WOLF TRANS PATCH FILE VERSION 1.0");// + Environment.NewLine);
                                                                              //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
-                    for (int r = 0; r < ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Count; r++)
+                    for (int r = 0; r < ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Count; r++)
                     {
-                        string ORIGINAL = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[r][originalcolumnindex] as string;
+                        string original = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[r][originalcolumnindex] as string;
                         buffer.AppendLine("> BEGIN STRING");// + Environment.NewLine);
                                                             //buffer += THRPGMTransPatchFiles[i].blocks[y].Original + Environment.NewLine;
-                        buffer.AppendLine(ORIGINAL);// + Environment.NewLine);
-                        string[] CONTEXT = (ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows[r][0] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
+                        buffer.AppendLine(original);// + Environment.NewLine);
+                        string[] context = (ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows[r][0] + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/);
                         //string str1 = string.Empty;
-                        string TRANSLATION = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[r][translationcolumnindex] + string.Empty;
-                        for (int g = 0; g < CONTEXT.Length; g++)
+                        string translation = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[r][translationcolumnindex] + string.Empty;
+                        for (int g = 0; g < context.Length; g++)
                         {
                             /*CONTEXT[g] = CONTEXT[g].Replace("\r", string.Empty);*///очистка от знака переноса, возникающего после разбития на строки по \n
-                            if (CONTEXT.Length > 1)
+                            if (context.Length > 1)
                             {
-                                buffer.AppendLine("> CONTEXT " + CONTEXT[g]);// + Environment.NewLine);
+                                buffer.AppendLine("> CONTEXT " + context[g]);// + Environment.NewLine);
                             }
                             else
                             {   //if (String.IsNullOrEmpty(THRPGMTransPatchFiles[i].blocks[y].Translation)) //if (ArrayTransFilses[i].blocks[y].Trans == Environment.NewLine)
-                                if (TRANSLATION.Length == 0 || TRANSLATION == ORIGINAL) //if (ArrayTransFilses[i].blocks[y].Trans == Environment.NewLine)
+                                if (translation.Length == 0 || translation == original) //if (ArrayTransFilses[i].blocks[y].Trans == Environment.NewLine)
                                 {
-                                    buffer.AppendLine("> CONTEXT " + CONTEXT[g] + " < UNTRANSLATED");// + Environment.NewLine);
+                                    buffer.AppendLine("> CONTEXT " + context[g] + " < UNTRANSLATED");// + Environment.NewLine);
                                 }
                                 else
                                 {
-                                    buffer.AppendLine("> CONTEXT " + CONTEXT[g]);// + Environment.NewLine);
+                                    buffer.AppendLine("> CONTEXT " + context[g]);// + Environment.NewLine);
                                 }
                             }
                         }
 
-                        buffer.AppendLine(TRANSLATION);// + Environment.NewLine);
+                        buffer.AppendLine(translation);// + Environment.NewLine);
                         buffer.AppendLine("> END STRING" + Environment.NewLine);// + Environment.NewLine);
                     }
 
@@ -404,9 +404,9 @@ namespace TranslationHelper.Projects.WolfRPG
                     {
                         buffer.Remove(buffer.Length - 2, 2);//удаление лишнего символа \r\n с конца строки
 
-                        string _path = file;
+                        string path = file;
 
-                        File.WriteAllText(_path, buffer.ToString());
+                        File.WriteAllText(path, buffer.ToString());
                         //buffer = string.Empty;
                     }
                     buffer.Clear();

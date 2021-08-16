@@ -5,14 +5,14 @@ using TranslationHelper.Functions;
 
 namespace TranslationHelper.Formats.EAGLS.SCPACK
 {
-    class SC_TXT : SCPACKBase
+    class ScTxt : ScpackBase
     {
         private const string StringPattern = "&[0-9]{1,6}\"([^\"\r\n]+)\"";//&17523"「はい……」"
         //#さくら=w0261a
         //#　花　=w0003f
         private const string StringPatternNames = @"#([^\=\r\n]+)(\=w[0-9]{4}[a-z])?";//#さくら=w0629a
 
-        public SC_TXT()
+        public ScTxt()
         {
         }
 
@@ -42,7 +42,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
 
         protected override void ParseStringFileLines()
         {
-            var file = ParseData.reader.ReadToEnd();
+            var file = ParseData.Reader.ReadToEnd();
             foreach (var pattern in Patterns())
             {
                 var mc = Regex.Matches(file, pattern.Value);
@@ -147,7 +147,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
             //    ParseName();
             //}
 
-            SaveModeAddLine(ParseData.line.StartsWith("$") ? "\n" : "\r\n", false);//line starting with $ ends with \n
+            SaveModeAddLine(ParseData.Line.StartsWith("$") ? "\n" : "\r\n", false);//line starting with $ ends with \n
 
             return 0;
         }
@@ -178,14 +178,14 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                 .Replace(":", "：")//scpack script have same symbol for scripts, changed to jp
                 .Replace(";", "；")
                 .Replace("&", "＆")//scpack script have same symbol for scripts, changed to jp
-                .CleanForShiftJIS2004()
+                .CleanForShiftJis2004()
                 ;
             //str = ENJPCharsReplacement(str);//convert en chars to jp
             str = str.Replace("％ＨＮ％", ":NameSuffix");//restore hero name var
             return str;
         }
 
-        readonly string[][] ENtoJPReplacementPairs = new string[][] {
+        readonly string[][] _eNtoJpReplacementPairs = new string[][] {
                new string[2]{ "a", "ａ" },
                new string[2]{ "A", "Ａ" },
                new string[2]{ "b", "ｂ" },
@@ -323,9 +323,9 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                //new string[2]{ " ", "_" }
     };
 
-        private string ENJPCharsReplacement(string workString)
+        private string EnjpCharsReplacement(string workString)
         {
-            return FunctionsString.CharsReplacementByPairsFromArray(workString, ENtoJPReplacementPairs);
+            return FunctionsString.CharsReplacementByPairsFromArray(workString, _eNtoJpReplacementPairs);
         }
 
         //old

@@ -7,7 +7,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
-    abstract class KSSyntaxBase
+    abstract class KsSyntaxBase
     {
         /// <summary>
         /// determine regex of start identifier for the block
@@ -23,7 +23,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
         /// determine list of blocks which included in this and will be searching inside
         /// </summary>
         /// <returns></returns>
-        internal virtual List<KSSyntaxBase> Include()
+        internal virtual List<KsSyntaxBase> Include()
         {
             return null;
         }

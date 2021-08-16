@@ -11,18 +11,18 @@ namespace TranslationHelper.Functions
         /// set all added db file formats
         /// </summary>
         /// <returns></returns>
-        internal static List<IDBSave> GetDBSaveFormats()
+        internal static List<IDbSave> GetDbSaveFormats()
         {
-            return GetListOfSubClasses.Inherited.GetListOfInterfaceImplimentations<IDBSave>();
+            return GetListOfSubClasses.Inherited.GetListOfInterfaceImplimentations<IDbSave>();
         }
 
         /// <summary>
         /// gets current selected format of database file
         /// </summary>
         /// <returns></returns>
-        internal static IDBSave GetCurrentDBFormat()
+        internal static IDbSave GetCurrentDbFormat()
         {
-            return FunctionsDBFile.GetCurrentDBFormat();
+            return FunctionsDbFile.GetCurrentDbFormat();
         }
     }
 }

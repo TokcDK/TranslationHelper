@@ -20,9 +20,9 @@ namespace TranslationHelper.INISettings
             set => TranslationHelper.Properties.Settings.Default.WebTranslationLink = value;
         }
 
-        internal override void Set(bool SetObject = false)
+        internal override void Set(bool setObject = false)
         {
-            if (!SetObject)
+            if (!setObject)
             {
                 SVar = (SObject as System.Windows.Forms.TextBox).Text;
             }
@@ -38,7 +38,7 @@ namespace TranslationHelper.INISettings
             return SVar;
         }
 
-        internal override string ID()
+        internal override string Id()
         {
             return (SObject as System.Windows.Forms.TextBox).Name;
         }

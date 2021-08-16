@@ -6,9 +6,9 @@ using TranslationHelper.Formats.RPGMMV.JsonParser;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
-    class PLUGINS : JSBase
+    class Plugins : JsBase
     {
-        public PLUGINS()
+        public Plugins()
         {
         }
 
@@ -19,7 +19,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         //protected static bool IsPluginsJS = false; //for some specific to plugins.js operations
 
-        protected override bool JSTokenValid(JValue value)
+        protected override bool JsTokenValid(JValue value)
         {
             return value.Path != "Modelname";
         }
@@ -35,23 +35,23 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             {
                 try
                 {
-                    if (ParseData.line.EndsWith(","))
+                    if (ParseData.Line.EndsWith(","))
                     {
-                        IsJsonNotLast = true;
-                        ParseData.line = ParseData.line.Remove(ParseData.line.Length - 1, 1);
+                        _isJsonNotLast = true;
+                        ParseData.Line = ParseData.Line.Remove(ParseData.Line.Length - 1, 1);
                     }
                     else if (ProjectData.SaveFileMode)
                     {
-                        IsJsonNotLast = false;
+                        _isJsonNotLast = false;
                     }
 
-                    JsonParser.ParseString(ParseData.line);
+                    JsonParser.ParseString(ParseData.Line);
 
                     //PluginsJsNameFound = false;
 
                     if (ProjectData.SaveFileMode)
                     {
-                        ParseData.line = JsonParser.JsonRoot.ToString(Formatting.None) + (IsJsonNotLast ? "," : string.Empty);
+                        ParseData.Line = JsonParser.JsonRoot.ToString(Formatting.None) + (_isJsonNotLast ? "," : string.Empty);
                         ParseData.Ret = true;
                     }
                 }
@@ -59,7 +59,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 {
                 }
 
-                IsJsonNotLast = !IsJsonNotLast;
+                _isJsonNotLast = !_isJsonNotLast;
             }
 
             SaveModeAddLine("\n");
@@ -113,7 +113,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //}
 
         //StringBuilder TranslatedResult;
-        private bool IsJsonNotLast;
+        private bool _isJsonNotLast;
 
         //private bool ParseJSArrayOfJsonsWrite()
         //{
@@ -187,7 +187,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    return true;
         //}
 
-        public override string JSName => "plugins.js";
-        public override string JSSubfolder => string.Empty;
+        public override string JsName => "plugins.js";
+        public override string JsSubfolder => string.Empty;
     }
 }

@@ -43,34 +43,34 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Open()
         {
-            if (ExtractXP3files(ProjectData.SelectedFilePath))
+            if (ExtractXp3Files(ProjectData.SelectedFilePath))
             {
-                var KiriKiriFiles = new List<string>();
-                string DirName = Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath));
-                string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
+                var kiriKiriFiles = new List<string>();
+                string dirName = Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath));
+                string kiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", dirName);
 
-                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.scn", SearchOption.AllDirectories))
+                foreach (FileInfo file in (new DirectoryInfo(kiriKiriWorkFolder)).EnumerateFiles("*.scn", SearchOption.AllDirectories))
                 {
-                    KiriKiriFiles.Add(file.FullName);
+                    kiriKiriFiles.Add(file.FullName);
                 }
-                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.ks", SearchOption.AllDirectories))
+                foreach (FileInfo file in (new DirectoryInfo(kiriKiriWorkFolder)).EnumerateFiles("*.ks", SearchOption.AllDirectories))
                 {
-                    KiriKiriFiles.Add(file.FullName);
+                    kiriKiriFiles.Add(file.FullName);
                 }
-                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.csv", SearchOption.AllDirectories))
+                foreach (FileInfo file in (new DirectoryInfo(kiriKiriWorkFolder)).EnumerateFiles("*.csv", SearchOption.AllDirectories))
                 {
-                    KiriKiriFiles.Add(file.FullName);
+                    kiriKiriFiles.Add(file.FullName);
                 }
-                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.tsv", SearchOption.AllDirectories))
+                foreach (FileInfo file in (new DirectoryInfo(kiriKiriWorkFolder)).EnumerateFiles("*.tsv", SearchOption.AllDirectories))
                 {
-                    KiriKiriFiles.Add(file.FullName);
+                    kiriKiriFiles.Add(file.FullName);
                 }
-                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.tjs", SearchOption.AllDirectories))
+                foreach (FileInfo file in (new DirectoryInfo(kiriKiriWorkFolder)).EnumerateFiles("*.tjs", SearchOption.AllDirectories))
                 {
-                    KiriKiriFiles.Add(file.FullName);
+                    kiriKiriFiles.Add(file.FullName);
                 }
 
-                if (KiriKiriGameOpen(KiriKiriFiles))
+                if (KiriKiriGameOpen(kiriKiriFiles))
                 {
                     return true;
                 }
@@ -100,15 +100,15 @@ namespace TranslationHelper.Projects.KiriKiri
 
                     if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
                     {
-                        ret = new SCRIPT().Open();
+                        ret = new Script().Open();
                     }
                     else if (filename.EndsWith(".csv"))
                     {
-                        ret = new CSV().Open();
+                        ret = new Csv().Open();
                     }
                     else if (filename.EndsWith(".tsv"))
                     {
-                        ret = new TSV().Open();
+                        ret = new Tsv().Open();
                     }
 
                     //if (DT == null || DT.Rows.Count == 0)
@@ -133,23 +133,23 @@ namespace TranslationHelper.Projects.KiriKiri
             return false;
         }
 
-        public static bool ExtractXP3files(string sPath)
+        public static bool ExtractXp3Files(string sPath)
         {
             bool ret = false;
 
             try
             {
-                string KiriKiriEXEpath = Path.Combine(Application.StartupPath, "Res", "kirikiriunpacker", "kikiriki.exe");
-                string DirName = Path.GetFileName(Path.GetDirectoryName(sPath));
-                string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
+                string kiriKiriExEpath = Path.Combine(Application.StartupPath, "Res", "kirikiriunpacker", "kikiriki.exe");
+                string dirName = Path.GetFileName(Path.GetDirectoryName(sPath));
+                string kiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", dirName);
                 DirectoryInfo directory = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\");
-                string xp3name = "data";
-                string xp3path = Path.Combine(directory.FullName, xp3name + ".xp3");
-                string KiriKiriEXEargs = "-i \"" + xp3path + "\" -o \"" + KiriKiriWorkFolder + "\"";
+                string xp3Name = "data";
+                string xp3Path = Path.Combine(directory.FullName, xp3Name + ".xp3");
+                string kiriKiriExEargs = "-i \"" + xp3Path + "\" -o \"" + kiriKiriWorkFolder + "\"";
 
-                if (Directory.Exists(KiriKiriWorkFolder))
+                if (Directory.Exists(kiriKiriWorkFolder))
                 {
-                    if ((new DirectoryInfo(KiriKiriWorkFolder + Path.DirectorySeparatorChar)).GetFiles("*", SearchOption.AllDirectories).Length > 0)
+                    if ((new DirectoryInfo(kiriKiriWorkFolder + Path.DirectorySeparatorChar)).GetFiles("*", SearchOption.AllDirectories).Length > 0)
                     {
                         DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (result == DialogResult.Yes)
@@ -159,10 +159,10 @@ namespace TranslationHelper.Projects.KiriKiri
                         else
                         {
                             //Удаление и пересоздание папки
-                            Directory.Delete(KiriKiriWorkFolder, true);
-                            Directory.CreateDirectory(KiriKiriWorkFolder);
+                            Directory.Delete(kiriKiriWorkFolder, true);
+                            Directory.CreateDirectory(kiriKiriWorkFolder);
 
-                            ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
+                            ret = FunctionsProcess.RunProcess(kiriKiriExEpath, kiriKiriExEargs);
                             //if (RunProcess(KiriKiriEXEpath, KiriKiriEXEargs))
                             //{
                             //    xp3name = "patch";
@@ -173,13 +173,13 @@ namespace TranslationHelper.Projects.KiriKiri
                     }
                     else
                     {
-                        ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
+                        ret = FunctionsProcess.RunProcess(kiriKiriExEpath, kiriKiriExEargs);
                     }
                 }
                 else
                 {
-                    Directory.CreateDirectory(KiriKiriWorkFolder);
-                    ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
+                    Directory.CreateDirectory(kiriKiriWorkFolder);
+                    ret = FunctionsProcess.RunProcess(kiriKiriExEpath, kiriKiriExEargs);
                 }
             }
             catch

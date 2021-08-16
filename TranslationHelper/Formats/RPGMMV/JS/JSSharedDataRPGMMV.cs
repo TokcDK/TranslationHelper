@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper.Formats.RPGMMV.JS
 {
-    class JSSharedData
+    class JsSharedData
     {
     }
 }

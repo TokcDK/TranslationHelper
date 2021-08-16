@@ -24,25 +24,25 @@ namespace TranslationHelper
         }
 
         //private static readonly ICatalog _Catalog = new Catalog("Example", "./locale");
-        private static readonly ICatalog _Catalog = GetGlobal();
+        private static readonly ICatalog Catalog = GetGlobal();
 
-        public static string _(string text) => _Catalog.GetString(text);
+        public static string _(string text) => Catalog.GetString(text);
 
-        public static string _(string text, params object[] args) => _Catalog.GetString(text, args);
+        public static string _(string text, params object[] args) => Catalog.GetString(text, args);
 
-#pragma warning disable IDE1006 // Стили именования
-        public static string _n(string text, string pluralText, long n) => _Catalog.GetPluralString(text, pluralText, n);
+#pragma warning disable IDE1006 // РЎС‚РёР»Рё РёРјРµРЅРѕРІР°РЅРёСЏ
+        public static string _n(string text, string pluralText, long n) => Catalog.GetPluralString(text, pluralText, n);
 
 
-        public static string _n(string text, string pluralText, long n, params object[] args) => _Catalog.GetPluralString(text, pluralText, n, args);
+        public static string _n(string text, string pluralText, long n, params object[] args) => Catalog.GetPluralString(text, pluralText, n, args);
 
-        public static string _p(string context, string text) => _Catalog.GetParticularString(context, text);
+        public static string _p(string context, string text) => Catalog.GetParticularString(context, text);
 
-        public static string _p(string context, string text, params object[] args) => _Catalog.GetParticularString(context, text, args);
+        public static string _p(string context, string text, params object[] args) => Catalog.GetParticularString(context, text, args);
 
-        public static string _pn(string context, string text, string pluralText, long n) => _Catalog.GetParticularPluralString(context, text, pluralText, n);
+        public static string _pn(string context, string text, string pluralText, long n) => Catalog.GetParticularPluralString(context, text, pluralText, n);
 
-        public static string _pn(string context, string text, string pluralText, long n, params object[] args) => _Catalog.GetParticularPluralString(context, text, pluralText, n, args);
-#pragma warning restore IDE1006 // Стили именования
+        public static string _pn(string context, string text, string pluralText, long n, params object[] args) => Catalog.GetParticularPluralString(context, text, pluralText, n, args);
+#pragma warning restore IDE1006 // РЎС‚РёР»Рё РёРјРµРЅРѕРІР°РЅРёСЏ
     }
 }

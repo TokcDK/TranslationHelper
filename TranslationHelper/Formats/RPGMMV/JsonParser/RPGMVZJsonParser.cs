@@ -9,7 +9,7 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonParser
 {
-    class RPGMVZJsonParser : JsonParserBase
+    class RpgmvzJsonParser : JsonParserBase
     {
         protected override void ParseValue(JValue jsonValue)
         {
@@ -30,12 +30,12 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             {
                 AddToStats();
 
-                bool HasCurCode = CurrentEventCode > -1;
+                bool hasCurCode = _currentEventCode > -1;
                 Format.AddRowData(JsonName, tokenValue, "JsonPath: "
                     + Environment.NewLine
                     + jsonValue.Path
-                    + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
-                    HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
+                    + (hasCurCode ? Environment.NewLine + "Code=" + _currentEventCode + GetCodeName(_currentEventCode) :
+                    hasCurCode ? Environment.NewLine + "Code=" + _currentEventCode + GetCodeName(_currentEventCode) : string.Empty)
                     //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
                     , true, false);
             }
@@ -79,8 +79,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 {
                     int ind = 0;
                     List<string> stringToWrite = new List<string>();
-                    bool NotWrited = true;
-                    bool IsTheJObjetAdded = false;
+                    bool notWrited = true;
+                    bool isTheJObjetAdded = false;
 
                     foreach (var line in ProjectData.TablesLinesDict[tokenValue].SplitToLines())
                     {
@@ -91,18 +91,18 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                         }
                         else
                         {
-                            if (NotWrited)
+                            if (notWrited)
                             {
                                 value.Value = string.Join(Environment.NewLine, stringToWrite);
-                                NotWrited = false;
+                                notWrited = false;
                             }
 
                             var newJObject = GetNewJObject(currentJObject, line);
                             currentJObject.AddAfterSelf(newJObject);
-                            if (!IsTheJObjetAdded && !AddedJObjects.Contains(newJObject))
+                            if (!isTheJObjetAdded && !_addedJObjects.Contains(newJObject))
                             {
-                                IsTheJObjetAdded = true;
-                                AddedJObjects.Add(newJObject);
+                                isTheJObjetAdded = true;
+                                _addedJObjects.Add(newJObject);
                             }
                             currentJObject = newJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
                         }
@@ -120,7 +120,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// </summary>
         /// <param name="root"></param>
         /// <returns></returns>
-        private string CorrectJsonFormatToRPGMMV()
+        private string CorrectJsonFormatToRpgmmv()
         {
             return JsonRoot.ToString(Formatting.Indented);
             //return Regex.Replace(root.ToString(Formatting.None), @"^\[null,(.+)\]$", "[\r\nnull,\r\n$1\r\n]");//regex нужен только для Formatting.None
@@ -135,11 +135,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 && !(path.Contains("gm.name") && Regex.IsMatch(token.Path, @"[Bb]gm\.name")); // skip bgm
         }
 
-        HashSet<JObject> AddedJObjects = new HashSet<JObject>();
+        HashSet<JObject> _addedJObjects = new HashSet<JObject>();
 
         protected override void ParseJsonObject(JObject jsonObject)
         {
-            if (AddedJObjects.Contains(jsonObject))
+            if (_addedJObjects.Contains(jsonObject))
             {
                 return;
             }
@@ -154,21 +154,21 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// </summary>
         private void ResetCurrentCode()
         {
-            if (CurrentEventCode != -1)
+            if (_currentEventCode != -1)
             {
-                CurrentEventCode = -1;
+                _currentEventCode = -1;
             }
         }
 
         protected override JsonObjectPropertyState ParseJsonObjectProperty(JProperty jsonProperty)
         {
-            bool IsCode = IsInteger(jsonProperty.Value.Type) && jsonProperty.Name == "code";
-            if (IsCode)
+            bool isCode = IsInteger(jsonProperty.Value.Type) && jsonProperty.Name == "code";
+            if (isCode)
             {
-                CurrentEventCode = (int)jsonProperty.Value;
+                _currentEventCode = (int)jsonProperty.Value;
             }
 
-            if (IsExcludedOrParsed(jsonProperty.Parent as JObject, CurrentEventCode, JsonName))
+            if (IsExcludedOrParsed(jsonProperty.Parent as JObject, _currentEventCode, JsonName))
             {
                 return JsonObjectPropertyState.Break; // skip all rest properties parse
             }
@@ -176,7 +176,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             return base.ParseJsonObjectProperty(jsonProperty);
         }
 
-        private bool IsExcludedOrParsed(JObject jsonObject, int currentEventCode, string JsonName)
+        private bool IsExcludedOrParsed(JObject jsonObject, int currentEventCode, string jsonName)
         {
             if (IsExcludedCode(currentEventCode)) // code always located in the objects and dont need do as code below
             {
@@ -184,21 +184,21 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 return true;
             }
             else
-            if (IsMessageCode(CurrentEventCode)) // идея при записи брать сразу всё сообщение, брать перевод для него и переводить, потом пропускать объекты с частями переведенного сообщения
+            if (IsMessageCode(_currentEventCode)) // идея при записи брать сразу всё сообщение, брать перевод для него и переводить, потом пропускать объекты с частями переведенного сообщения
             {
                 var messageparts = GetNextTokensWithSameCode(jsonObject);
                 var fullmessage = GetMessageLinesFrom(messageparts);
 
                 if (ProjectData.OpenFileMode)
                 {
-                    bool HasCurCode = true; // message code parse
-                    Format.AddRowData(tablename: JsonName, RowData: fullmessage, RowInfo: "JsonPath: "
+                    bool hasCurCode = true; // message code parse
+                    Format.AddRowData(tablename: jsonName, rowData: fullmessage, rowInfo: "JsonPath: "
                         + Environment.NewLine
                         + jsonObject.Path
-                        + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
-                        HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
+                        + (hasCurCode ? Environment.NewLine + "Code=" + _currentEventCode + GetCodeName(_currentEventCode) :
+                        hasCurCode ? Environment.NewLine + "Code=" + _currentEventCode + GetCodeName(_currentEventCode) : string.Empty)
                         //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
-                        , CheckAddHashes: true, CheckInput: true);
+                        , checkAddHashes: true, checkInput: true);
 
                     AddToStats();
                 }
@@ -282,10 +282,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             while (next is JObject obj
                 && obj.First is JProperty prop
                 && prop.Name == "code"
-                && (int)prop.Value == CurrentEventCode
+                && (int)prop.Value == _currentEventCode
                 )
             {
-                AddedJObjects.AddTry(obj);
+                _addedJObjects.AddTry(obj);
                 list.Add(next);
                 next = next.Next;
             }
@@ -323,14 +323,14 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                     JArray array = prop.Value as JArray;
                     array[0] = translated[i];
 
-                    AddedJObjects.AddTry(obj);
+                    _addedJObjects.AddTry(obj);
                     last = obj;
                 }
                 else
                 {
                     var newJObject = GetNewJObject(last as JObject, translated[i]);
                     last.AddAfterSelf(newJObject);
-                    AddedJObjects.AddTry(newJObject);
+                    _addedJObjects.AddTry(newJObject);
 
                     last = last.Next;
                 }
@@ -395,9 +395,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <returns></returns>
         private string GetCodeName(int currentEventCode)
         {
-            if (EventCodes.ContainsKey(currentEventCode))
+            if (_eventCodes.ContainsKey(currentEventCode))
             {
-                var eventName = EventCodes[currentEventCode];
+                var eventName = _eventCodes[currentEventCode];
                 if (eventName.Length > 0)
                 {
                     return "\r\nEvent=\"" + eventName + "\"";
@@ -430,7 +430,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <summary>
         /// Event code if exists
         /// </summary>
-        private int CurrentEventCode = -1;
+        private int _currentEventCode = -1;
 
         /// <summary>
         /// for statistics and json open\save improvement purpose.
@@ -438,16 +438,16 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <param name="add">for added strings else for skipped</param>
         private void AddToStats(bool add = true)
         {
-            var dict = add ? ProjectData.RpgMVAddedCodesStat : ProjectData.RpgMVSkippedCodesStat;
-            if (CurrentEventCode > -1)
+            var dict = add ? ProjectData.RpgMvAddedCodesStat : ProjectData.RpgMvSkippedCodesStat;
+            if (_currentEventCode > -1)
             {
-                if (!dict.ContainsKey(CurrentEventCode))
+                if (!dict.ContainsKey(_currentEventCode))
                 {
-                    dict.Add(CurrentEventCode, 1);
+                    dict.Add(_currentEventCode, 1);
                 }
                 else
                 {
-                    dict[CurrentEventCode]++;
+                    dict[_currentEventCode]++;
                 }
             }
         }
@@ -455,7 +455,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <summary>
         /// list of event codes
         /// </summary>
-        readonly Dictionary<int, string> EventCodes = new Dictionary<int, string>(120)
+        readonly Dictionary<int, string> _eventCodes = new Dictionary<int, string>(120)
         {
             { 0, "End Show Choices" },
             { 41, "Image name?" },

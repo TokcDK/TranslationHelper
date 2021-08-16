@@ -4,9 +4,9 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 {
-    class TXT : WolfRPGBase
+    class Txt : WolfRpgBase
     {
-        public TXT()
+        public Txt()
         {
         }
 

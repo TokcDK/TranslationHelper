@@ -5,7 +5,7 @@ using TranslationHelper.Properties;
 
 namespace TranslationHelper.Data
 {
-    internal class THSettings
+    internal class ThSettings
     {
         /// <summary>
         /// startup path of the application
@@ -28,30 +28,30 @@ namespace TranslationHelper.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DBDirName()
+        internal static string DbDirName()
         {
             return "DB";
         }
 
-        internal static string DBDirPath()
+        internal static string DbDirPath()
         {
-            return Path.Combine(ApplicationStartupPath(), DBDirName());
+            return Path.Combine(ApplicationStartupPath(), DbDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RPGMakerTransDirName()
+        internal static string RpgMakerTransDirName()
         {
             return "rpgmakertrans";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RPGMakerTransDirPath()
+        internal static string RpgMakerTransDirPath()
         {
-            return Path.Combine(ResDirPath(), RPGMakerTransDirName());
+            return Path.Combine(ResDirPath(), RpgMakerTransDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RPGMakerTransEXEName()
+        internal static string RpgMakerTransExeName()
         {
             return "rpgmt.exe";
         }
@@ -81,7 +81,7 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string PyLiveMakerLMARExtractionToolEXEName()
+        internal static string PyLiveMakerLmarExtractionToolExeName()
         {
             return "lmar.exe";
         }
@@ -91,9 +91,9 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string PyLiveMakerLMARExtractionToolsPath()
+        internal static string PyLiveMakerLmarExtractionToolsPath()
         {
-            return Path.Combine(PyLiveMakerExtractionToolsPath(), PyLiveMakerLMARExtractionToolEXEName());
+            return Path.Combine(PyLiveMakerExtractionToolsPath(), PyLiveMakerLmarExtractionToolExeName());
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string PyLiveMakerLMLSBExtractionToolEXEName()
+        internal static string PyLiveMakerLmlsbExtractionToolExeName()
         {
             return "lmlsb.exe";
         }
@@ -111,9 +111,9 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string PyLiveMakerLMLSBExtractionToolPath()
+        internal static string PyLiveMakerLmlsbExtractionToolPath()
         {
-            return Path.Combine(PyLiveMakerExtractionToolsPath(), PyLiveMakerLMLSBExtractionToolEXEName());
+            return Path.Combine(PyLiveMakerExtractionToolsPath(), PyLiveMakerLmlsbExtractionToolExeName());
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string PyLiveMakerLMPATCHExtractionToolEXEName()
+        internal static string PyLiveMakerLmpatchExtractionToolExeName()
         {
             return "lmpatch.exe";
         }
@@ -131,15 +131,15 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string PyLiveMakerLMPATCHExtractionToolPath()
+        internal static string PyLiveMakerLmpatchExtractionToolPath()
         {
-            return Path.Combine(PyLiveMakerExtractionToolsPath(), PyLiveMakerLMPATCHExtractionToolEXEName());
+            return Path.Combine(PyLiveMakerExtractionToolsPath(), PyLiveMakerLmpatchExtractionToolExeName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RPGMakerTransEXEPath()
+        internal static string RpgMakerTransExePath()
         {
-            return Path.Combine(RPGMakerTransDirPath(), RPGMakerTransEXEName());
+            return Path.Combine(RpgMakerTransDirPath(), RpgMakerTransExeName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -206,7 +206,7 @@ namespace TranslationHelper.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RPGMakerMVSkipjsRulesFileName()
+        internal static string RpgMakerMvSkipjsRulesFileName()
         {
             return "rpgmvskipjs.txt";
         }
@@ -216,13 +216,13 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RPGMakerMVSkipjsRulesFilePath()
+        internal static string RpgMakerMvSkipjsRulesFilePath()
         {
-            return Path.Combine(THSettings.RulesDirPath(), RPGMakerMVSkipjsRulesFileName());
+            return Path.Combine(ThSettings.RulesDirPath(), RpgMakerMvSkipjsRulesFileName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RPGMakerMVProjectSkipjsRulesFileName()
+        internal static string RpgMakerMvProjectSkipjsRulesFileName()
         {
             return "skipjs.txt";
         }
@@ -232,9 +232,9 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RPGMakerMVProjectSkipjsRulesFilePath()
+        internal static string RpgMakerMvProjectSkipjsRulesFilePath()
         {
-            return Path.Combine(ProjectData.SelectedGameDir, "www", "js", RPGMakerMVProjectSkipjsRulesFileName());
+            return Path.Combine(ProjectData.SelectedGameDir, "www", "js", RpgMakerMvProjectSkipjsRulesFileName());
         }
 
         /// <summary>
@@ -242,12 +242,12 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string[] RPGMakerMVSkipjsRulesFilesList()
+        internal static string[] RpgMakerMvSkipjsRulesFilesList()
         {
             return new[]
                 {
-                    THSettings.RPGMakerMVSkipjsRulesFilePath(),//overall file
-                    THSettings.RPGMakerMVProjectSkipjsRulesFilePath()//game specific file
+                    ThSettings.RpgMakerMvSkipjsRulesFilePath(),//overall file
+                    ThSettings.RpgMakerMvProjectSkipjsRulesFilePath()//game specific file
                 };
         }
 
@@ -330,15 +330,15 @@ namespace TranslationHelper.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string NSDECexeName()
+        internal static string NsdeCexeName()
         {
             return "NSDEC.exe";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string NSDECexePath()
+        internal static string NsdeCexePath()
         {
-            return Path.Combine(NScriptDirPath(), NSDECexeName());
+            return Path.Combine(NScriptDirPath(), NsdeCexeName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -383,51 +383,51 @@ namespace TranslationHelper.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string SCPackerPath()
+        internal static string ScPackerPath()
         {
             return Path.Combine(ResDirPath(), "scpacker");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string SCPackerPath2()
+        internal static string ScPackerPath2()
         {
             return @".\" + ResDirName() + @"\scpacker";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string SCPackerPYPath()
+        internal static string ScPackerPyPath()
         {
             return Path.Combine(ResDirPath(), "scpacker", "scpacker.py");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string SCPackerPYPath2()
+        internal static string ScPackerPyPath2()
         {
-            return SCPackerPath2() + @"\scpacker.py";
+            return ScPackerPath2() + @"\scpacker.py";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DXADecodeWFolderName()
+        internal static string DxaDecodeWFolderName()
         {
             return "dxadecodew";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string THTranslationCacheFileName()
+        internal static string ThTranslationCacheFileName()
         {
             return "THTranslationCache.cmx";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string THTranslationCacheFilePath()
+        internal static string ThTranslationCacheFilePath()
         {
-            return Path.Combine(DBDirPath(), THTranslationCacheFileName());
+            return Path.Combine(DbDirPath(), ThTranslationCacheFileName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string WolfRPGExtractorExePath()
+        internal static string WolfRpgExtractorExePath()
         {
-            return WolfRPGExtractorsList()[1];
+            return WolfRpgExtractorsList()[1];
         }
 
         /// <summary>
@@ -435,55 +435,55 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static Dictionary<int, string> WolfRPGExtractorsList()
+        internal static Dictionary<int, string> WolfRpgExtractorsList()
         {
             return new Dictionary<int, string>
             {
-                { 1, DXExtractExePath()},
-                { 2, DXADecodeWExePath()},
+                { 1, DxExtractExePath()},
+                { 2, DxaDecodeWExePath()},
             };
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DXExtractDirName()
+        internal static string DxExtractDirName()
         {
             return "DXExtract";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DXExtractDirPath()
+        internal static string DxExtractDirPath()
         {
-            return Path.Combine(ResDirPath(), DXExtractDirName());
+            return Path.Combine(ResDirPath(), DxExtractDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DXExtractExeName()
+        internal static string DxExtractExeName()
         {
             return "DXExtract.exe";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DXExtractExePath()
+        internal static string DxExtractExePath()
         {
-            return Path.Combine(DXExtractDirPath(), DXExtractExeName());
+            return Path.Combine(DxExtractDirPath(), DxExtractExeName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DXADecodeWDirPath()
+        internal static string DxaDecodeWDirPath()
         {
-            return Path.Combine(ResDirPath(), DXADecodeWFolderName());
+            return Path.Combine(ResDirPath(), DxaDecodeWFolderName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DXADecodeWExePath()
+        internal static string DxaDecodeWExePath()
         {
-            return Path.Combine(DXADecodeWDirPath(), "DXADecode.exe");
+            return Path.Combine(DxaDecodeWDirPath(), "DXADecode.exe");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DXAEncodeWExePath()
+        internal static string DxaEncodeWExePath()
         {
-            return Path.Combine(DXADecodeWDirPath(), "DXAEncode.exe");
+            return Path.Combine(DxaDecodeWDirPath(), "DXAEncode.exe");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -511,7 +511,7 @@ namespace TranslationHelper.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string THLogPath()
+        internal static string ThLogPath()
         {
             return Path.Combine(ApplicationStartupPath(), Settings.Default.ApplicationProductName + ".log");
         }
@@ -553,39 +553,39 @@ namespace TranslationHelper.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string LocaleEmulatorEXE()
+        internal static string LocaleEmulatorExe()
         {
             return Path.Combine(ResDirPath(), "localeemulator", "LEProc.exe");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DBAutoSavesDirName()
+        internal static string DbAutoSavesDirName()
         {
             return "Auto";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RGSSDecrypterDirName()
+        internal static string RgssDecrypterDirName()
         {
             return "rgssdecryptor";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RGSSDecrypterDirPath()
+        internal static string RgssDecrypterDirPath()
         {
-            return Path.Combine(ResDirPath(), RGSSDecrypterDirName());
+            return Path.Combine(ResDirPath(), RgssDecrypterDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RGSSDecrypterEXEName()
+        internal static string RgssDecrypterExeName()
         {
             return "RgssDecrypter.exe";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string RGSSDecrypterEXEPath()
+        internal static string RgssDecrypterExePath()
         {
-            return Path.Combine(RGSSDecrypterDirPath(), RGSSDecrypterEXEName());
+            return Path.Combine(RgssDecrypterDirPath(), RgssDecrypterExeName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -613,15 +613,15 @@ namespace TranslationHelper.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string CustomDBName()
+        internal static string CustomDbName()
         {
             return "Custom.cmx";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string CustomDBPath()
+        internal static string CustomDbPath()
         {
-            return Path.Combine(DBDirPath(), CustomDBName());
+            return Path.Combine(DbDirPath(), CustomDbName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

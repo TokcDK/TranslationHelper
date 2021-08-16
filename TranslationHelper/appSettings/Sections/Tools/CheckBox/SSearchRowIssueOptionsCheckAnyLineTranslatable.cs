@@ -21,9 +21,9 @@ namespace TranslationHelper.INISettings
             set => TranslationHelper.Properties.Settings.Default.SearchRowIssueOptionsCheckAnyLineTranslatable = value;
         }
 
-        internal override void Set(bool SetObject = false)
+        internal override void Set(bool setObject = false)
         {
-            if (!SetObject)
+            if (!setObject)
             {
                 SVar = (SObject as System.Windows.Forms.CheckBox).Checked;
             }
@@ -39,7 +39,7 @@ namespace TranslationHelper.INISettings
             return SVar + string.Empty;
         }
 
-        internal override string ID()
+        internal override string Id()
         {
             return (SObject as System.Windows.Forms.CheckBox).Name;
         }

@@ -3,9 +3,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.INISettings
 {
-    class SDBAutosaveTimeout : Tools
+    class SdbAutosaveTimeout : Tools
     {
-        public SDBAutosaveTimeout()
+        public SdbAutosaveTimeout()
         {
         }
 
@@ -22,9 +22,9 @@ namespace TranslationHelper.INISettings
             set => TranslationHelper.Properties.Settings.Default.DBAutoSaveTimeout = value;
         }
 
-        internal override void Set(bool SetObject = false)
+        internal override void Set(bool setObject = false)
         {
-            if (!SetObject)
+            if (!setObject)
             {
                 SVar = CheckAndSetValue();
             }
@@ -54,7 +54,7 @@ namespace TranslationHelper.INISettings
             return SVar + string.Empty;
         }
 
-        internal override string ID()
+        internal override string Id()
         {
             return (SObject as System.Windows.Forms.TextBox).Name;
         }

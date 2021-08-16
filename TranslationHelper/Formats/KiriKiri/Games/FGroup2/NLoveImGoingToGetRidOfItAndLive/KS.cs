@@ -7,9 +7,9 @@ using TranslationHelper.Formats.KiriKiri.Games.FGroup2;
 
 namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive
 {
-    class KS : FGroup2Base
+    class Ks : FGroup2Base
     {
-        public KS()
+        public Ks()
         {
         }
 

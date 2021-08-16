@@ -10,12 +10,12 @@ using TranslationHelper.INISettings;
 //посмотреть также это: https://upread.ru/art.php?id=356
 namespace TranslationHelper
 {
-    public partial class THfrmSettings : Form
+    public partial class HfrmSettings : Form
     {
         //Defaults
-        internal INIFileMan.INIFile THConfigINI = new INIFileMan.INIFile(Application.ProductName + ".ini");
+        internal INIFileMan.INIFile ThConfigIni = new INIFileMan.INIFile(Application.ProductName + ".ini");
         
-        internal THfrmSettings()
+        internal HfrmSettings()
         {
             InitializeComponent();
 
@@ -23,7 +23,7 @@ namespace TranslationHelper
 
             SetTooltips();
 
-            SetUIStrings();
+            SetUiStrings();
 
             //var r = new AppSettings().AutotranslationForSimular;
 
@@ -32,7 +32,7 @@ namespace TranslationHelper
             //GetSettings();
         }
 
-        private void SetUIStrings()
+        private void SetUiStrings()
         {
             //translation
             THOptionFullComprasionDBloadCheckBox.Text = T._("Full recursive scan while translation DB loading (slower)");
@@ -51,12 +51,12 @@ namespace TranslationHelper
             this.Text = T._("Settings");
         }
 
-        ToolTip THToolTip;
+        ToolTip _thToolTip;
         private void SetTooltips()
         {
             //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
             //THMainResetTableButton
-            THToolTip = new ToolTip
+            _thToolTip = new ToolTip
             {
 
                 // Set up the delays for the ToolTip.
@@ -71,17 +71,17 @@ namespace TranslationHelper
 
             //Settings
             //General
-            THToolTip.SetToolTip(THOptionFullComprasionDBloadCheckBox, T._("In time of DB loading will be checked all DB lines for each line of table for translation."));
+            _thToolTip.SetToolTip(THOptionFullComprasionDBloadCheckBox, T._("In time of DB loading will be checked all DB lines for each line of table for translation."));
             //Optimization
-            THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBox, T._("String will not be loaded for translation if this string contains romaji characters in text more of specified percent."));
+            _thToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBox, T._("String will not be loaded for translation if this string contains romaji characters in text more of specified percent."));
 
             //THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForOpen, "Is true while opening. Always true for RPGMaker MV files or jsons for strings filtering purposes.");
             //THToolTip.SetToolTip(THOptionDontLoadStringIfRomajiPercentCheckBoxForTranslation, T._("Is true while online translating. Will be used both with other chars like .!/? and other same"));
-            THToolTip.SetToolTip(THOptionDBCompressionCheckBox, T._("Format for DB files: standard not compressed xml and compressed xml for both other"));
+            _thToolTip.SetToolTip(THOptionDBCompressionCheckBox, T._("Format for DB files: standard not compressed xml and compressed xml for both other"));
             //Tools
-            THToolTip.SetToolTip(THOptionAutotranslationForSimularCheckBox, T._("Automatically will be translated all almost identical cells with same original."));
-            THToolTip.SetToolTip(THOptionEnableTranslationCacheCheckBox, T._("Will save online translation result in cache db to use it in next time for same values instead of attemp to connect to service."));
-            THToolTip.SetToolTip(THSettingsWebTranslationLinkTextBox, T._("Web site which wil be opened by pressing F12 key with added selected table cells values. Can be any here Google, Yandex, DeepL or other."));
+            _thToolTip.SetToolTip(THOptionAutotranslationForSimularCheckBox, T._("Automatically will be translated all almost identical cells with same original."));
+            _thToolTip.SetToolTip(THOptionEnableTranslationCacheCheckBox, T._("Will save online translation result in cache db to use it in next time for same values instead of attemp to connect to service."));
+            _thToolTip.SetToolTip(THSettingsWebTranslationLinkTextBox, T._("Web site which wil be opened by pressing F12 key with added selected table cells values. Can be any here Google, Yandex, DeepL or other."));
             //support links
             //THToolTip.SetToolTip(linkLabel1, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
             //THToolTip.SetToolTip(linkLabel2, "Report bugs,\n offer features\\ideas\n or just support development if you like it.\n Any support is essential.");
@@ -119,9 +119,9 @@ namespace TranslationHelper
 
             foreach (var setting in SettingsList.Keys)
             {
-                if (THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
+                if (ThConfigIni.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
                 {
-                    ProjectData.BufferValueString = THConfigINI.GetKey(SettingsList[setting].Section, SettingsList[setting].Key);
+                    ProjectData.BufferValueString = ThConfigIni.GetKey(SettingsList[setting].Section, SettingsList[setting].Key);
                 }
                 else
                 {
@@ -146,25 +146,25 @@ namespace TranslationHelper
 
             foreach(string line in cbxWebTranslatorsSelector.Items)
             {
-                LinkLabel L = new LinkLabel
+                LinkLabel l = new LinkLabel
                 {
-                    Text = cleanline(line),
+                    Text = Cleanline(line),
                     Margin = new Padding(0),
                     Padding = new Padding(0),
                     AutoSize=true
 
                 };
 
-                L.LinkClicked += (s, e) =>
+                l.LinkClicked += (s, e) =>
                 {
                     THSettingsWebTranslationLinkTextBox.Text = line;
                 };
 
-                flpQuickTranslatorSelection.Controls.Add(L);
+                flpQuickTranslatorSelection.Controls.Add(l);
             }
         }
 
-        static string cleanline(string line)
+        static string Cleanline(string line)
         {
             if (line.ToUpperInvariant().StartsWith("HTTPS://"))
             {
@@ -306,11 +306,11 @@ namespace TranslationHelper
             //AutotranslationForIdenticalINI = THOptionAutotranslationForSimularCheckBox.Checked;
         }
 
-        private void SetValue(string ID)
+        private void SetValue(string id)
         {
-            if (SettingsList.ContainsKey(ID))
+            if (SettingsList.ContainsKey(id))
             {
-                SettingsList[ID].Set();
+                SettingsList[id].Set();
             }
         }
 
@@ -323,7 +323,7 @@ namespace TranslationHelper
 
         private void THSettings_FormClosed(object sender, FormClosedEventArgs e)
         {
-            THToolTip.Dispose();
+            _thToolTip.Dispose();
         }
 
         private void FullComparasionDBload_CheckedChanged(object sender, EventArgs e)
@@ -360,21 +360,21 @@ namespace TranslationHelper
 
         private void THSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveSettingsToINI();
+            SaveSettingsToIni();
         }
 
-        private void SaveSettingsToINI()
+        private void SaveSettingsToIni()
         {
             foreach (var setting in SettingsList.Keys)
             {
                 bool keyExists;
-                if (((keyExists = THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
-                    && THConfigINI.GetKey(SettingsList[setting].Section, SettingsList[setting].Key) != SettingsList[setting].Get()) || !keyExists)
+                if (((keyExists = ThConfigIni.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
+                    && ThConfigIni.GetKey(SettingsList[setting].Section, SettingsList[setting].Key) != SettingsList[setting].Get()) || !keyExists)
                 {
-                    THConfigINI.SetKey(SettingsList[setting].Section, SettingsList[setting].Key, SettingsList[setting].Get(), false);
+                    ThConfigIni.SetKey(SettingsList[setting].Section, SettingsList[setting].Key, SettingsList[setting].Get(), false);
                 }
             }
-            THConfigINI.WriteFile();
+            ThConfigIni.WriteFile();
         }
 
         private void SettingsAutosaveTimeoutValueTextBox_TextChanged(object sender, EventArgs e)

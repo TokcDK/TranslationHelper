@@ -16,9 +16,9 @@ namespace TranslationHelper.Data
         {
             Main = hfrmMain;
 
-            THFilesElementsDataset = new DataSet();
-            THFilesElementsDatasetInfo = new DataSet();
-            THFilesElementsALLDataTable = new DataSet();
+            ThFilesElementsDataset = new DataSet();
+            ThFilesElementsDatasetInfo = new DataSet();
+            ThFilesElementsAllDataTable = new DataSet();
             OriginalsTableRowCoordinats = new Dictionary<string, Dictionary<string, List<int>>>();
             //THFilesElementsDictionary = new Dictionary<string, string>();
             //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
@@ -74,28 +74,28 @@ namespace TranslationHelper.Data
         /// </summary>
         internal static FunctionsOnlineCache OnlineTranslationCache;
 
-        static string filepath;
+        static string _filepath;
         //current processing file for open/save
         internal static string FilePath
         {
-            get { return string.IsNullOrWhiteSpace(filepath) ? SelectedFilePath : filepath; }
-            set { filepath = value; }
+            get { return string.IsNullOrWhiteSpace(_filepath) ? SelectedFilePath : _filepath; }
+            set { _filepath = value; }
         }
 
         /// <summary>
         /// main work table data
         /// </summary>
-        internal static DataSet THFilesElementsDataset { get; set; }
+        internal static DataSet ThFilesElementsDataset { get; set; }
 
         /// <summary>
         /// main work table infos
         /// </summary>
-        internal static DataSet THFilesElementsDatasetInfo { get; set; }
+        internal static DataSet ThFilesElementsDatasetInfo { get; set; }
 
         /// <summary>
         /// main work table data for all (wip)
         /// </summary>
-        internal static DataSet THFilesElementsALLDataTable { get; set; }
+        internal static DataSet ThFilesElementsAllDataTable { get; set; }
 
         /// <summary>
         /// main table/row index coordinats data for same translation for identical and for write functions
@@ -114,7 +114,7 @@ namespace TranslationHelper.Data
         /// <summary>
         /// filtering records duplicates while adding to main work data table
         /// </summary>
-        internal static HashSet<string> hashes = new HashSet<string>();
+        internal static HashSet<string> Hashes = new HashSet<string>();
 
         /// <summary>
         /// для целей записи, скидывание сюда данных таблицы
@@ -141,18 +141,18 @@ namespace TranslationHelper.Data
         /// </summary>
         internal static System.Net.CookieContainer OnlineTranslatorCookies;
 
-        internal static Dictionary<char, int> ENQuotesToJPLearnDataFoundPrev;
-        internal static Dictionary<char, int> ENQuotesToJPLearnDataFoundNext;
+        internal static Dictionary<char, int> EnQuotesToJpLearnDataFoundPrev;
+        internal static Dictionary<char, int> EnQuotesToJpLearnDataFoundNext;
 
         /// <summary>
         /// [for json open\save improve] skipped rpg maker mv json event codes
         /// </summary>
-        internal static Dictionary<int, int> RpgMVSkippedCodesStat = new Dictionary<int, int>();
+        internal static Dictionary<int, int> RpgMvSkippedCodesStat = new Dictionary<int, int>();
 
         /// <summary>
         /// [for json open\save improve] added rpg maker mv json event codes
         /// </summary>
-        internal static Dictionary<int, int> RpgMVAddedCodesStat = new Dictionary<int, int>();
+        internal static Dictionary<int, int> RpgMvAddedCodesStat = new Dictionary<int, int>();
 
         /// <summary>
         /// Application log

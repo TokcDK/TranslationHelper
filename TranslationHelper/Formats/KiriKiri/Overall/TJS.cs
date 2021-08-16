@@ -6,9 +6,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    class TJS : FormatBase
+    class Tjs : FormatBase
     {
-        public TJS()
+        public Tjs()
         {
         }
 
@@ -26,8 +26,8 @@ namespace TranslationHelper.Formats.KiriKiri
                     string line;
                     //string original = string.Empty;
                     string filename = Path.GetFileNameWithoutExtension(ProjectData.SelectedFilePath);
-                    _ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
-                    _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Original");
+                    _ = ProjectData.ThFilesElementsDataset.Tables.Add(filename);
+                    _ = ProjectData.ThFilesElementsDataset.Tables[0].Columns.Add("Original");
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
@@ -39,7 +39,7 @@ namespace TranslationHelper.Formats.KiriKiri
                         {
                             if (line.EndsWith("[k]"))
                             {
-                                ProjectData.THFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
+                                ProjectData.ThFilesElementsDataset.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
 
                                 //int i = 0;
                                 //while (line.EndsWith("[k]"))

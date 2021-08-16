@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper
 {
-    partial class THfrmSettings
+    partial class HfrmSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -471,7 +471,7 @@
             this.ClientSize = new System.Drawing.Size(532, 405);
             this.Controls.Add(this.THSettingsTabControl);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "THfrmSettings";
+            this.Name = "HfrmSettings";
             this.Text = "Settings";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.THSettings_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.THSettings_FormClosed);

@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper
 {
-    partial class THfrmSearch
+    partial class HfrmSearch
     {
         /// <summary>
         /// Required designer variable.
@@ -587,7 +587,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(596, 368);
-            this.Name = "THfrmSearch";
+            this.Name = "HfrmSearch";
             this.Text = "Find and Replace";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.THSearch_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.THSearch_FormClosed);
