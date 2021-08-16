@@ -5,14 +5,14 @@ using TranslationHelper.Functions.DBSaveFormats;
 
 namespace TranslationHelper.INISettings
 {
-    class SdbCompressionExt : Optimizations
+    class SDBCompressionExt : Optimizations
     {
-        public SdbCompressionExt()
+        public SDBCompressionExt()
         {
             if (ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Count == 0)
             {
-                _formats = FunctionsInterfaces.GetDbSaveFormats();
-                foreach (var ext in _formats)
+                formats = FunctionsInterfaces.GetDBSaveFormats();
+                foreach (var ext in formats)
                 {
                     ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add(ext.Description);
                 }
@@ -23,16 +23,16 @@ namespace TranslationHelper.INISettings
             }
         }
 
-        List<IDbSave> _formats;
-        readonly IDbSave _defaultformat = new Xml();
+        List<IDBSave> formats;
+        readonly IDBSave defaultformat = new XML();
 
         internal override string Key => "DBCompressionExt";
 
-        internal override string Default => _defaultformat.Description;
+        internal override string Default => defaultformat.Description;
 
-        internal override void Set(bool setObject = false)
+        internal override void Set(bool SetObject = false)
         {
-            if (!setObject)
+            if (!SetObject)
             {
                 Properties.Settings.Default.DBCompressionExt = ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.SelectedItem.ToString();
             }
@@ -45,11 +45,11 @@ namespace TranslationHelper.INISettings
 
         private bool IsExistsInFormats(string bufferValueString)
         {
-            if(_formats == null)
+            if(formats == null)
             {
-                _formats = FunctionsInterfaces.GetDbSaveFormats();
+                formats = FunctionsInterfaces.GetDBSaveFormats();
             }
-            foreach (var format in _formats)
+            foreach (var format in formats)
             {
                 if (bufferValueString == format.Description)
                 {
@@ -64,7 +64,7 @@ namespace TranslationHelper.INISettings
             return Properties.Settings.Default.DBCompressionExt;
         }
 
-        internal override string Id()
+        internal override string ID()
         {
             return ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.Name;
         }

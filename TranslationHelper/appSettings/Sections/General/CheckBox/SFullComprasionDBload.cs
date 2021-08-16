@@ -21,9 +21,9 @@ namespace TranslationHelper.INISettings
             set => TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled = value;
         }
 
-        internal override void Set(bool setObject = false)
+        internal override void Set(bool SetObject = false)
         {
-            if (!setObject)
+            if (!SetObject)
             {
                 SVar = ProjectData.Main.Settings.THOptionDBCompressionCheckBox.Checked;
             }
@@ -39,7 +39,7 @@ namespace TranslationHelper.INISettings
             return SVar + string.Empty;
         }
 
-        internal override string Id()
+        internal override string ID()
         {
             return (SObject as System.Windows.Forms.CheckBox).Name;
         }

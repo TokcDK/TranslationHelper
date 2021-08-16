@@ -12,7 +12,7 @@ namespace TranslationHelper.Functions
 {
     class FunctionsOnlineCache
     {
-        internal Dictionary<string, string> Cache = new Dictionary<string, string>();
+        internal Dictionary<string, string> cache = new Dictionary<string, string>();
 
         internal string GetValueFromCacheOrReturnEmpty(string keyValue)
         {
@@ -27,12 +27,12 @@ namespace TranslationHelper.Functions
             {
                 return ProjectData.AllDBmerged[keyValue];
             }
-            else if (Cache != null 
-                && Cache.Count > 0 
-                && Cache.ContainsKey(keyValue) 
-                && !string.IsNullOrWhiteSpace(Cache[keyValue]))
+            else if (cache != null 
+                && cache.Count > 0 
+                && cache.ContainsKey(keyValue) 
+                && !string.IsNullOrWhiteSpace(cache[keyValue]))
             {
-                return Cache[keyValue];
+                return cache[keyValue];
             }
             else
             {
@@ -49,44 +49,44 @@ namespace TranslationHelper.Functions
                 }
                 else if (
                     trimmed.Length > 0
-                    && Cache != null
-                    && Cache.Count > 0
-                    && Cache.ContainsKey(trimmed)
-                    && !string.IsNullOrWhiteSpace(Cache[trimmed]))
+                    && cache != null
+                    && cache.Count > 0
+                    && cache.ContainsKey(trimmed)
+                    && !string.IsNullOrWhiteSpace(cache[trimmed]))
                 {
                     var ind = keyValue.IndexOf(trimmed);
-                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, Cache[trimmed]);
+                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, cache[trimmed]);
                 }
 
                 return string.Empty;
             }
         }
 
-        bool _cacheisbusy;
+        bool cacheisbusy;
         public void Write()
         {
-            if (Cache == null || Cache.Count < 1)
+            if (cache == null || cache.Count < 1)
             {
                 return;
             }
 
-            if (_cacheisbusy)
+            if (cacheisbusy)
             {
                 return;
             }
-            _cacheisbusy = true;
+            cacheisbusy = true;
 
             XElement el = new XElement("TranslationCache",
-                Cache.Select(keyValue =>
+                cache.Select(KeyValue =>
                 new XElement("Value",
-                    new XElement("Original", keyValue.Key),
-                    new XElement("Translation", keyValue.Value)
+                    new XElement("Original", KeyValue.Key),
+                    new XElement("Translation", KeyValue.Value)
                     )
                 ));
             //el.Save("cache.xml");
-            FunctionsDbFile.WriteXElementToXmlFile(el, Properties.Settings.Default.THTranslationCachePath);
+            FunctionsDBFile.WriteXElementToXMLFile(el, Properties.Settings.Default.THTranslationCachePath);
 
-            _cacheisbusy = false;
+            cacheisbusy = false;
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace TranslationHelper.Functions
 
         public void Read()
         {
-            string xml = FunctionsDbFile.ReadXmlToString(Properties.Settings.Default.THTranslationCachePath);
+            string xml = FunctionsDBFile.ReadXMLToString(Properties.Settings.Default.THTranslationCachePath);
             if (xml.Length == 0)
                 return;
 
@@ -144,24 +144,24 @@ namespace TranslationHelper.Functions
             foreach (var el in rootElement.Elements())
             {
                 string key = el.Element("Original").Value;
-                if (!Cache.ContainsKey(key))
+                if (!cache.ContainsKey(key))
                 {
-                    Cache.Add(key, el.Element("Translation").Value);
+                    cache.Add(key, el.Element("Translation").Value);
                 }
             }
         }
 
-        public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/string original, string translation)
+        public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/string Original, string Translation)
         {
             if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed)
             {
-                if (string.IsNullOrWhiteSpace(translation) || string.CompareOrdinal(original, translation) == 0 || original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || ProjectData.OnlineTranslationCache.Cache.ContainsKey(original) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
+                if (string.IsNullOrWhiteSpace(Translation) || string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || ProjectData.OnlineTranslationCache.cache.ContainsKey(Original) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
                 {
                 }
                 else
                 {
                     //THTranslationCache.Tables[0].Rows.Add(Original, Translation);
-                    ProjectData.OnlineTranslationCache.Cache.Add(original, translation);
+                    ProjectData.OnlineTranslationCache.cache.Add(Original, Translation);
                 }
             }
         }

@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace TranslationHelper
 {
-    public partial class HfrmAbout : Form
+    public partial class THfrmAbout : Form
     {
-        public HfrmAbout()
+        public THfrmAbout()
         {
             InitializeComponent();
 

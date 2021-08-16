@@ -4,15 +4,15 @@ using System.IO.Compression;
 
 namespace TranslationHelper.Functions.DBSaveFormats
 {
-    class Cmx : IDbSave
+    class CMX : IDBSave
     {
-        string IDbSave.Ext => "cmx";
+        string IDBSave.Ext => "cmx";
 
-        string IDbSave.Description => "GZip compressed xml";
+        string IDBSave.Description => "GZip compressed xml";
 
-        Stream IDbSave.FileStreamMod(FileStream dbInputFileStream, bool isRead)
+        Stream IDBSave.FileStreamMod(FileStream DBInputFileStream, bool IsRead)
         {
-            return new GZipStream(dbInputFileStream, isRead ? CompressionMode.Decompress : CompressionMode.Compress);
+            return new GZipStream(DBInputFileStream, IsRead ? CompressionMode.Decompress : CompressionMode.Compress);
         }
     }
 }

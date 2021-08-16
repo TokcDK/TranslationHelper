@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.Formats.RPGMaker.Functions
 {
-    public static class RpgmFunctions
+    public static class RPGMFunctions
     {
-        public static string GetRpgMakerArc(string inputDir)
+        public static string GetRPGMakerArc(string inputDir)
         {
             string path = Path.Combine(inputDir, "Game.rgss3a");
             if (File.Exists(path))
@@ -14,13 +14,13 @@ namespace TranslationHelper.Formats.RPGMaker.Functions
             return string.Empty;
         }
 
-        public static string RpgmTransPatchVersion
+        public static string RPGMTransPatchVersion
         {
             get => Properties.Settings.Default.RPGMTransPatchVersion;
             set => Properties.Settings.Default.RPGMTransPatchVersion = value;
         }
 
-        public static string ThSelectedSourceType
+        public static string THSelectedSourceType
         {
             get => Properties.Settings.Default.THSelectedSourceType;
             set => Properties.Settings.Default.THSelectedSourceType = value;

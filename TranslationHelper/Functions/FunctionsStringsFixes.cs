@@ -41,7 +41,7 @@ namespace TranslationHelper.Functions
 
                 /////////////////////////////////
                 //Fix 2 Quotation
-                translation = FixForRpgmAkerQuotationInSomeStrings(original, translation);
+                translation = FixForRPGMAkerQuotationInSomeStrings(original, translation);
 
                 /////////////////////////////////
                 /* 
@@ -60,7 +60,7 @@ namespace TranslationHelper.Functions
     　No matter how much attention I pay, curse grants are rare
     　Expresses beyond my consciousness" 
      */
-                translation = FixForRpgmAkerQuotationInSomeStrings2(original, translation);
+                translation = FixForRPGMAkerQuotationInSomeStrings2(original, translation);
 
                 translation = FixForEndingQuoteInconsistence(original, translation);
 
@@ -100,7 +100,7 @@ namespace TranslationHelper.Functions
 
         internal static string RemoveIeroglifs(string translation)
         {
-            if (FunctionsRomajiKana.HasNojPcharacters(translation))
+            if (FunctionsRomajiKana.HasNOJPcharacters(translation))
             {
                 return translation;
             }
@@ -120,16 +120,16 @@ namespace TranslationHelper.Functions
 
         internal static string LuaLiaFix(string original, string translation)
         {
-            bool lia;
-            if (original.StartsWith("ルア") && ((lia = translation.StartsWith("Lia")) || translation.StartsWith("Lila")))
+            bool Lia;
+            if (original.StartsWith("ルア") && ((Lia = translation.StartsWith("Lia")) || translation.StartsWith("Lila")))
             {
-                translation = "Lua" + translation.Remove(0, lia ? 3 : 4);
+                translation = "Lua" + translation.Remove(0, Lia ? 3 : 4);
             }
 
             return translation;
         }
 
-        internal static string FixForRpgmAkerQuotationInSomeStrings2(string original, string translation)
+        internal static string FixForRPGMAkerQuotationInSomeStrings2(string original, string translation)
         {            /////////////////////////////////
             /* 
 『先日、あなたが施した解呪の作用のようですね。
@@ -207,17 +207,17 @@ namespace TranslationHelper.Functions
             return translation;
         }
 
-        internal static string FixENJPQuoteOnStringStart2ndLine(string originalValue, string translationValue)
+        internal static string FixENJPQuoteOnStringStart2ndLine(string OriginalValue, string TranslationValue)
         {
             try
             {
-                if (originalValue.IsMultiline())
+                if (OriginalValue.IsMultiline())
                 {
                     string origSecondLine = string.Empty;
                     int origSecondlineIndex = 0;
                     try
                     {
-                        foreach (var line in originalValue.SplitToLines())
+                        foreach (var line in OriginalValue.SplitToLines())
                         {
                             if (origSecondlineIndex == 0)
                             {
@@ -234,7 +234,7 @@ namespace TranslationHelper.Functions
                     }
                     catch
                     {
-                        return translationValue;
+                        return TranslationValue;
                     }
 
                     bool quote1 = false;
@@ -247,16 +247,16 @@ namespace TranslationHelper.Functions
                         //    return TranslationValue;
                         //}
 
-                        if (translationValue.IsMultiline())
+                        if (TranslationValue.IsMultiline())
                         {
                             string quoteString;
-                            bool startsWithJpQuote1 = false;
-                            bool startsWithJpQuote2 = false;
+                            bool StartsWithJpQuote1 = false;
+                            bool StartsWithJpQuote2 = false;
                             string secondline = string.Empty;
                             int secondlineIndex = 0;
                             try
                             {
-                                foreach (var line in translationValue.SplitToLines())
+                                foreach (var line in TranslationValue.SplitToLines())
                                 {
                                     if (secondlineIndex == 0)
                                     {
@@ -273,56 +273,56 @@ namespace TranslationHelper.Functions
                             }
                             catch
                             {
-                                return translationValue;
+                                return TranslationValue;
                             }
 
-                            string startQuoteStringEn = string.Empty;
-                            string endQuoteStringEn = string.Empty;
+                            string StartQuoteStringEN = string.Empty;
+                            string EndQuoteStringEN = string.Empty;
 
                             if (secondline.StartsWith("''"))
                             {
-                                startQuoteStringEn = "''";
+                                StartQuoteStringEN = "''";
                             }
                             else if (secondline.StartsWith("'"))
                             {
-                                startQuoteStringEn = "'";
+                                StartQuoteStringEN = "'";
                             }
                             else if (secondline.StartsWith("“"))
                             {
-                                startQuoteStringEn = "“";
+                                StartQuoteStringEN = "“";
                             }
                             else if (secondline.StartsWith("\""))
                             {
-                                startQuoteStringEn = "\"";
+                                StartQuoteStringEN = "\"";
                             }
                             else if (secondline.StartsWith("「"))
                             {
-                                startsWithJpQuote1 = true;
+                                StartsWithJpQuote1 = true;
                             }
                             else if (secondline.StartsWith("『"))
                             {
-                                startsWithJpQuote2 = true;
+                                StartsWithJpQuote2 = true;
                             }
 
-                            if (translationValue.EndsWith("''"))
+                            if (TranslationValue.EndsWith("''"))
                             {
-                                endQuoteStringEn = "''";
+                                EndQuoteStringEN = "''";
                             }
-                            else if (translationValue.EndsWith("'"))
+                            else if (TranslationValue.EndsWith("'"))
                             {
-                                endQuoteStringEn = "'";
+                                EndQuoteStringEN = "'";
                             }
-                            else if (translationValue.EndsWith("“"))
+                            else if (TranslationValue.EndsWith("“"))
                             {
-                                endQuoteStringEn = "“";
+                                EndQuoteStringEN = "“";
                             }
-                            else if (translationValue.EndsWith("\""))
+                            else if (TranslationValue.EndsWith("\""))
                             {
-                                endQuoteStringEn = "\"";
+                                EndQuoteStringEN = "\"";
                             }
 
 
-                            if (startQuoteStringEn.Length > 0 || endQuoteStringEn.Length > 0)
+                            if (StartQuoteStringEN.Length > 0 || EndQuoteStringEN.Length > 0)
                             {
                                 //if (StartsWithJpQuote1 || StartsWithJpQuote2)
                                 //{
@@ -339,18 +339,18 @@ namespace TranslationHelper.Functions
                                 }
                                 else
                                 {
-                                    return translationValue;
+                                    return TranslationValue;
                                 }
 
-                                int endQuoteStringEnLength = endQuoteStringEn.Length;
-                                endsWith = endQuoteStringEnLength > 0;
+                                int EndQuoteStringENLength = EndQuoteStringEN.Length;
+                                endsWith = EndQuoteStringENLength > 0;
 
                                 string resultString = string.Empty;
                                 int ind = 0;
 
-                                if (startQuoteStringEn.Length > 0 || (!startsWithJpQuote1 && !startsWithJpQuote2))
+                                if (StartQuoteStringEN.Length > 0 || (!StartsWithJpQuote1 && !StartsWithJpQuote2))
                                 {
-                                    foreach (string line in translationValue.SplitToLines())
+                                    foreach (string line in TranslationValue.SplitToLines())
                                     {
                                         //new line for multiline
                                         if (ind > 0)
@@ -365,12 +365,12 @@ namespace TranslationHelper.Functions
                                         else
                                         {
                                             int lineLength = line.Length;
-                                            int startQuoteStringEnLength = startQuoteStringEn.Length;
-                                            if (lineLength > 1 && startQuoteStringEnLength > 0 && line.StartsWith(startQuoteStringEn))
+                                            int StartQuoteStringENLength = StartQuoteStringEN.Length;
+                                            if (lineLength > 1 && StartQuoteStringENLength > 0 && line.StartsWith(StartQuoteStringEN))
                                             {
-                                                resultString += quoteString + line.Remove(0, startQuoteStringEnLength);
+                                                resultString += quoteString + line.Remove(0, StartQuoteStringENLength);
                                             }
-                                            else if (lineLength == 0 || (lineLength == 1 && startQuoteStringEnLength > 0 && line == startQuoteStringEn))
+                                            else if (lineLength == 0 || (lineLength == 1 && StartQuoteStringENLength > 0 && line == StartQuoteStringEN))
                                             {
                                                 resultString += quoteString;
                                             }
@@ -388,14 +388,14 @@ namespace TranslationHelper.Functions
                                 }
                                 else
                                 {
-                                    resultString = translationValue;
+                                    resultString = TranslationValue;
                                 }
 
-                                string endQuoteString = (quote1 ? "」" : "』");
+                                string EndQuoteString = (quote1 ? "」" : "』");
                                 resultString = resultString.TrimEnd();
-                                if (originalValue.EndsWith(endQuoteString) && !resultString.EndsWith(endQuoteString))
+                                if (OriginalValue.EndsWith(EndQuoteString) && !resultString.EndsWith(EndQuoteString))
                                 {
-                                    resultString = (endsWith ? resultString.Remove(resultString.Length - endQuoteStringEnLength, endQuoteStringEnLength) : resultString) + endQuoteString;
+                                    resultString = (endsWith ? resultString.Remove(resultString.Length - EndQuoteStringENLength, EndQuoteStringENLength) : resultString) + EndQuoteString;
                                 }
 
                                 return resultString;
@@ -409,7 +409,7 @@ namespace TranslationHelper.Functions
 
             }
 
-            return translationValue;
+            return TranslationValue;
         }
 
         internal static string FixENJPQuoteOnStringStart1stLine(string origValue, string transValue)
@@ -419,30 +419,30 @@ namespace TranslationHelper.Functions
             if (transValue.Length > 0 && !quotes.Contains(transValue.Substring(0, 1)))
                 return transValue;
 
-            bool oStartsJp;
-            bool oEndsJp;
-            bool tStartsEn;
-            bool tStartsJp;
-            bool tEndsEn;
-            bool tEndsJp;
+            bool oStartsJP;
+            bool oEndsJP;
+            bool tStartsEN;
+            bool tStartsJP;
+            bool tEndsEN;
+            bool tEndsJP;
 
             for (int i = 0; i < quotes.Length; i++)
             {
-                oStartsJp = origValue.StartsWith("「");
-                oEndsJp = origValue.EndsWith("」");
-                tStartsEn = transValue.StartsWith(quotes[i]);
-                tStartsJp = transValue.StartsWith("「");
-                tEndsEn = transValue.EndsWith(quotes[i]);
-                tEndsJp = transValue.EndsWith("」");
-                if (transValue.Length > (quotes[i].Length * 2) && oStartsJp && !tStartsEn && !tStartsJp && oEndsJp && tEndsEn && !tEndsJp)
+                oStartsJP = origValue.StartsWith("「");
+                oEndsJP = origValue.EndsWith("」");
+                tStartsEN = transValue.StartsWith(quotes[i]);
+                tStartsJP = transValue.StartsWith("「");
+                tEndsEN = transValue.EndsWith(quotes[i]);
+                tEndsJP = transValue.EndsWith("」");
+                if (transValue.Length > (quotes[i].Length * 2) && oStartsJP && !tStartsEN && !tStartsJP && oEndsJP && tEndsEN && !tEndsJP)
                 {
                     return "「" + transValue.Substring(quotes[i].Length, transValue.Length - quotes[i].Length) + "」";
                 }
-                else if (transValue.Length > quotes[i].Length && oEndsJp && tEndsEn && !tEndsJp)
+                else if (transValue.Length > quotes[i].Length && oEndsJP && tEndsEN && !tEndsJP)
                 {
                     return transValue.Substring(0, transValue.Length - quotes[i].Length) + "」";
                 }
-                else if (transValue.Length > quotes[i].Length && oStartsJp && tStartsEn && !tStartsJp)
+                else if (transValue.Length > quotes[i].Length && oStartsJP && tStartsEN && !tStartsJP)
                 {
                     return "「" + transValue.Substring(quotes[i].Length);
                 }
@@ -451,26 +451,26 @@ namespace TranslationHelper.Functions
             return transValue;
         }
 
-        internal static string FixForRpgmAkerQuotationInSomeStrings(string origValue, string transValue)
+        internal static string FixForRPGMAkerQuotationInSomeStrings(string origValue, string transValue)
         {
-            string newtransValue = transValue;
+            string NewtransValue = transValue;
 
             //в оригинале " на начале и конце, а в переводе есть также " в середине, что может быть воспринято игрой как ошибка
             //также фикс, когда в оригинале кавычки в начале и конце, а в переводе нет в начале или конце
-            bool cvalueStartsWith = newtransValue.StartsWith("\"");
-            bool cvalueEndsWith = newtransValue.EndsWith("\"");
+            bool cvalueStartsWith = NewtransValue.StartsWith("\"");
+            bool cvalueEndsWith = NewtransValue.EndsWith("\"");
             if (
                  //если оригинал начинается и кончается на ", а в переводе " отсутствует на начале или конце
                  (origValue.StartsWith("\"") && origValue.EndsWith("\"") && (!cvalueStartsWith || !cvalueEndsWith))
                  ||
                  //если перевод начинается и кончается на " и также " есть в где-то середине и количество кавычек не равно
-                 (cvalueStartsWith && cvalueEndsWith && newtransValue.Length > 2
-                 && FunctionsString.IsStringAContainsStringB(newtransValue.Remove(newtransValue.Length - 1, 1).Remove(0, 1), "\"")
+                 (cvalueStartsWith && cvalueEndsWith && NewtransValue.Length > 2
+                 && FunctionsString.IsStringAContainsStringB(NewtransValue.Remove(NewtransValue.Length - 1, 1).Remove(0, 1), "\"")
                  //это, чтобы только когда количество кавычек не равно количеству в оригинале
-                 && FunctionsString.GetCountOfTheSymbolInStringAandBIsEqual(origValue, newtransValue, "\"", "\"")))
+                 && FunctionsString.GetCountOfTheSymbolInStringAandBIsEqual(origValue, NewtransValue, "\"", "\"")))
             {
-                newtransValue = "\"" +
-                    newtransValue
+                NewtransValue = "\"" +
+                    NewtransValue
                     .Replace("\"", string.Empty)
                     + "\""
                     ;
@@ -479,20 +479,20 @@ namespace TranslationHelper.Functions
             {
                 //rpgmaker mv string will broke script if starts\ends with "'" and contains another "'" in middle
                 //в оригинале  ' на начале и конце, а в переводе есть также ' в середине, что может быть воспринято игрой как ошибка, по крайней мере в MV
-                cvalueStartsWith = newtransValue.StartsWith("'");
-                cvalueEndsWith = newtransValue.EndsWith("'");
+                cvalueStartsWith = NewtransValue.StartsWith("'");
+                cvalueEndsWith = NewtransValue.EndsWith("'");
                 if (
                 //если оригинал начинается и кончается на ', а в переводе ' отсутствует на начале или конце
                 (origValue.StartsWith("'") && origValue.EndsWith("'") && (!cvalueStartsWith || !cvalueEndsWith))
                 ||
                 //если перевод начинается и кончается на ' и также ' есть в где-то середине
-                (cvalueStartsWith && cvalueEndsWith && newtransValue.Length > 2
+                (cvalueStartsWith && cvalueEndsWith && NewtransValue.Length > 2
                  //&& FunctionsString.IsStringAContainsStringB(NewtransValue.Remove(NewtransValue.Length - 1, 1).Remove(0, 1), "'")
                  //это, чтобы только когда количество ' не равно количеству в оригинале
-                 && !FunctionsString.GetCountOfTheSymbolInStringAandBIsEqual(origValue, newtransValue, "'", "'")))
+                 && !FunctionsString.GetCountOfTheSymbolInStringAandBIsEqual(origValue, NewtransValue, "'", "'")))
                 {
-                    newtransValue = "'" +
-                        newtransValue
+                    NewtransValue = "'" +
+                        NewtransValue
                         .Replace("do n't", "dont")
                         .Replace("don't", "dont")
                         .Replace("n’t", "not")
@@ -506,7 +506,7 @@ namespace TranslationHelper.Functions
                 }
             }
 
-            return newtransValue;
+            return NewtransValue;
         }
 
         /// <summary>
@@ -532,13 +532,13 @@ namespace TranslationHelper.Functions
             //рабочие переменные
             int max = mc3.Count;//максимум итераций цикла
             int mc2Correction = mc3.Count > mc2.Count ? mc3.Count - mc2.Count : 0;//когда mc2 нашло меньше, чем mc3
-            int positionCorrectionMc3 = 0;//переменная для коррекции номера позиции в стоке, т.к. \\N выдирается и позиция меняется на 3
+            int PositionCorrectionMC3 = 0;//переменная для коррекции номера позиции в стоке, т.к. \\N выдирается и позиция меняется на 3
             int minimalIndex = 9999999; //минимальный индекс, для правильного контроля коррекции позиции
             string newValue = translation;//значение, которое будет редактироваться и возвращено
             for (int i = max - 1; i >= 0; i--)//цикл задается в обратную сторону, т.к. так проще контроллировать смещение позиции
             {
-                int mc2I = i - mc2Correction;//задание индекса в коллекции для mc2, т.к. их может быть меньше
-                if (mc2I == -1)//если mc2 закончится, выйти из цикла
+                int mc2i = i - mc2Correction;//задание индекса в коллекции для mc2, т.к. их может быть меньше
+                if (mc2i == -1)//если mc2 закончится, выйти из цикла
                 {
                     break;
                 }
@@ -546,15 +546,15 @@ namespace TranslationHelper.Functions
                 //если индекс позиции больше последнего минимального, подкорректировать на 3, когда совпадение раньше, коррекция не требуется
                 if (mc3[i].Index > minimalIndex)
                 {
-                    positionCorrectionMc3 += 3;
+                    PositionCorrectionMC3 += 3;
                 }
                 else
                 {
-                    positionCorrectionMc3 = 0;
+                    PositionCorrectionMC3 = 0;
                 }
 
-                int mc3PosIndex = mc3[i].Index - positionCorrectionMc3;//новый индекс с учетом коррекции
-                int mc2PosIndex = mc2[mc2I].Index;
+                int mc3PosIndex = mc3[i].Index - PositionCorrectionMC3;//новый индекс с учетом коррекции
+                int mc2PosIndex = mc2[mc2i].Index;
                 if (mc2PosIndex < 0)//если позиция для mc2 меньше нуля, установить её в ноль и проверить, если там нужное значение, иначе выйти из цикла
                 {
                     mc2PosIndex = 0;

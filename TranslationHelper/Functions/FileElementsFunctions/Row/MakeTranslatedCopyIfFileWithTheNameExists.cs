@@ -112,7 +112,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var targetPath = Path.Combine(Path.GetDirectoryName(path), transName + Path.GetExtension(path)); // target translated path
                     if (!File.Exists(targetPath))
                     {
-                        ThCreateSymlink.File(path, targetPath);
+                        THCreateSymlink.File(path, targetPath);
                         //File.Copy(path, targetPath);
 
                         //info about translated copy
@@ -123,7 +123,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (Exception ex)
             {
-                Log.LogToFile(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + SelectedRow[0] + "\r\ntranslation=" + SelectedRow[1]);
+                _log.LogToFile(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + SelectedRow[0] + "\r\ntranslation=" + SelectedRow[1]);
             }
             return false;
         }

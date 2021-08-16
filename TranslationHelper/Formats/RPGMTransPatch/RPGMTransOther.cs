@@ -7,12 +7,12 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.RPGMTrans
 {
-    public static class RpgmTransOther
+    public static class RPGMTransOther
     {
-        public static bool CreateRpgMakerTransPatch(string inputdir, string outdir)
+        public static bool CreateRPGMakerTransPatch(string inputdir, string outdir)
         {
             bool ret;
-            var rpgmakertranscli = ThSettings.RpgMakerTransExePath();
+            var rpgmakertranscli = THSettings.RPGMakerTransEXEPath();
             //string projectname = Path.GetFileName(outdir);
 
             //параметры
@@ -39,16 +39,16 @@ namespace TranslationHelper.Formats.RPGMTrans
             var args = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
 
             FunctionsProcess.RunProgram(rpgmakertranscli, args);
-            ret = GetIsRpgMakerTransPatchCreatedAndValid(outdir);
+            ret = GetIsRPGMakerTransPatchCreatedAndValid(outdir);
 
             if (!ret)
             {
-                CleanInvalidRpgMakerTransPatchFolders(outdir);
+                CleanInvalidRPGMakerTransPatchFolders(outdir);
 
                 //попытка с параметром -b - Use UTF-8 BOM in Patch files
                 FunctionsProcess.RunProgram(rpgmakertranscli, args + " -b");
 
-                ret = GetIsRpgMakerTransPatchCreatedAndValid(outdir);
+                ret = GetIsRPGMakerTransPatchCreatedAndValid(outdir);
 
                 if (!ret)
                 {
@@ -56,7 +56,7 @@ namespace TranslationHelper.Formats.RPGMTrans
 
                     Directory.CreateDirectory(tempDIr);
 
-                    string rgss = RpgmFunctions.GetRpgMakerArc(inputdir);
+                    string rgss = RPGMFunctions.GetRPGMakerArc(inputdir);
                     if (rgss.Length == 0)
                     {
                         return false;
@@ -109,26 +109,26 @@ namespace TranslationHelper.Formats.RPGMTrans
                             args = "\"" + inputdir + "\" -p \"" + outdir + "_patch\"" + " -o \"" + outdir + "_translated\"";
                             FunctionsProcess.RunProgram(rpgmakertranscli, args);
 
-                            ret = GetIsRpgMakerTransPatchCreatedAndValid(outdir);
+                            ret = GetIsRPGMakerTransPatchCreatedAndValid(outdir);
 
                             if (ret)
                             {
                             }
                             else
                             {
-                                CleanInvalidRpgMakerTransPatchFolders(outdir);
+                                CleanInvalidRPGMakerTransPatchFolders(outdir);
 
                                 //попытка с параметром -b - Use UTF-8 BOM in Patch files
                                 FunctionsProcess.RunProgram(rpgmakertranscli, args + " -b");
 
-                                ret = GetIsRpgMakerTransPatchCreatedAndValid(outdir);
+                                ret = GetIsRPGMakerTransPatchCreatedAndValid(outdir);
 
                                 if (ret)
                                 {
                                 }
                                 else
                                 {
-                                    CleanInvalidRpgMakerTransPatchFolders(outdir);
+                                    CleanInvalidRPGMakerTransPatchFolders(outdir);
                                     return false;
                                 }
 
@@ -142,7 +142,7 @@ namespace TranslationHelper.Formats.RPGMTrans
                         {
                             Directory.Delete(tempDIr, true);
                         }
-                        CleanInvalidRpgMakerTransPatchFolders(outdir);
+                        CleanInvalidRPGMakerTransPatchFolders(outdir);
                         return false;
                     }
                 }
@@ -151,7 +151,7 @@ namespace TranslationHelper.Formats.RPGMTrans
             return ret;
         }
 
-        public static void CleanInvalidRpgMakerTransPatchFolders(string outdir)
+        public static void CleanInvalidRPGMakerTransPatchFolders(string outdir)
         {
             //чистка папок 
             if (Directory.Exists(outdir))
@@ -168,7 +168,7 @@ namespace TranslationHelper.Formats.RPGMTrans
             }
         }
 
-        public static bool GetIsRpgMakerTransPatchCreatedAndValid(string outdir)
+        public static bool GetIsRPGMakerTransPatchCreatedAndValid(string outdir)
         {
             return File.Exists(Path.Combine(outdir + "_patch", "RPGMKTRANSPATCH"))
                 && File.Exists(Path.Combine(outdir + "_translated", "rpgmktranslated"))

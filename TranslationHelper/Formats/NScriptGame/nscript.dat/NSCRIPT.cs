@@ -8,9 +8,9 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 {
-    internal class Nscript : FormatBase
+    internal class NSCRIPT : FormatBase
     {
-        public Nscript()
+        public NSCRIPT()
         {
         }
 
@@ -32,7 +32,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
             foreach (var line in nscripttxt.SplitToLines())
             {
-                ParseData.Line = line;
+                ParseData.line = line;
                 ParseStringFileLineReturnState parseLineResult;
                 if ((parseLineResult = ParseStringFileLine()) == ParseStringFileLineReturnState.Break)
                 {
@@ -52,13 +52,13 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             if (IsComment())
             {
                 if (ProjectData.SaveFileMode)
-                    ParseData.ResultForWrite.Append(ParseData.Line + '\n');
+                    ParseData.ResultForWrite.Append(ParseData.line + '\n');
                 return 0;
             }
 
             if (!ParsePatterns())
             {
-                var array = ParseData.Line.Split(':');
+                var array = ParseData.line.Split(':');
                 var lines = new List<string>(array.Length);
                 for (int i = 0; i < array.Length; i++)
                 {
@@ -87,12 +87,12 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                 }
                 if (ProjectData.SaveFileMode && lines.Count > 0)
                 {
-                    ParseData.Line = string.Join(":", lines);
+                    ParseData.line = string.Join(":", lines);
                 }
             }
 
             if (ProjectData.SaveFileMode)
-                ParseData.ResultForWrite.Append(ParseData.Line + '\n');
+                ParseData.ResultForWrite.Append(ParseData.line + '\n');
             return ParseStringFileLineReturnState.ReadToEnd;
         }
 
@@ -147,9 +147,9 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             };
         }
 
-        private static string CleanedLine(string line)
+        private static string CleanedLine(string Line)
         {
-            string cleaned = line.Split(';')[0];//remove comment
+            string cleaned = Line.Split(';')[0];//remove comment
 
             string pattern = @"(#[A-F0-9]{6})|([\%\$][a-z0-9]+)";
             if (cleaned.Contains("#") && Regex.IsMatch(cleaned, pattern))
@@ -165,7 +165,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         private bool IsComment()
         {
-            return ParseData.Line.TrimStart().StartsWith(";");
+            return ParseData.line.TrimStart().StartsWith(";");
         }
 
         internal override bool Save()
@@ -179,14 +179,14 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             {
                 if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0)
                 {
-                    var enc = System.Text.Encoding.GetEncoding(932);
+                    var Enc = System.Text.Encoding.GetEncoding(932);
                     var nscripttxtTranslated = ParseData.ResultForWrite.ToString();
                     if (filePath.Length == 0)
                     {
                         filePath = ProjectData.FilePath;
                     }
-                    File.WriteAllText(filePath + ".SaveTest.txt", nscripttxtTranslated, enc);
-                    var nscriptdatTranslated = enc.GetBytes(nscripttxtTranslated).XorUnxor();
+                    File.WriteAllText(filePath + ".SaveTest.txt", nscripttxtTranslated, Enc);
+                    var nscriptdatTranslated = Enc.GetBytes(nscripttxtTranslated).XorUnxor();
                     var nscriptdatTranslatedFile = new FileInfo(filePath)
                     {
                         Attributes = FileAttributes.Normal
@@ -197,7 +197,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     {
                         //copy onscripter
                         if (!Directory.Exists(Path.Combine(ProjectData.SelectedGameDir, "onscripter")))
-                            Path.Combine(ThSettings.ResDirPath(), "onscripter").CopyAll(Path.Combine(ProjectData.SelectedGameDir, "onscripter"));
+                            Path.Combine(THSettings.ResDirPath(), "onscripter").CopyAll(Path.Combine(ProjectData.SelectedGameDir, "onscripter"));
 
                         //write run.bat
                         //onscripter -r "gamedir" --dll "dllpath" -f fontpath --window

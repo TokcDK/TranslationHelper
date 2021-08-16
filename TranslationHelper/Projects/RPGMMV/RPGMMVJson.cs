@@ -4,9 +4,9 @@ using TranslationHelper.Formats.RPGMMV;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
-    class RpgmmVjson : ProjectBase
+    class RPGMMVjson : ProjectBase
     {
-        public RpgmmVjson()
+        public RPGMMVjson()
         {
         }
 
@@ -38,23 +38,23 @@ namespace TranslationHelper.Projects.RPGMMV
             return ParseProjectFiles();
         }
 
-        string _parseFileMessage;
+        string ParseFileMessage;
         /// <summary>
         /// Parsing the Project files
         /// </summary>
-        /// <param name="write">Use Save() instead of Open()</param>
+        /// <param name="Write">Use Save() instead of Open()</param>
         /// <returns></returns>
-        private bool ParseProjectFiles(bool write = false)
+        private bool ParseProjectFiles(bool Write = false)
         {
-            if (!write)
+            if (!Write)
             {
                 BakRestore();
             }
 
-            _parseFileMessage = write ? T._("write file: ") : T._("opening file: ");
+            ParseFileMessage = Write ? T._("write file: ") : T._("opening file: ");
             try
             {
-                if (ParseRpgMakerMVjson(ProjectData.SelectedFilePath, write))
+                if (ParseRPGMakerMVjson(ProjectData.SelectedFilePath, Write))
                 {
                     return true;
                 }
@@ -67,22 +67,22 @@ namespace TranslationHelper.Projects.RPGMMV
             return false;
         }
 
-        private bool ParseRpgMakerMVjson(string filePath, bool write = false)
+        private bool ParseRPGMakerMVjson(string FilePath, bool Write = false)
         {
             try
             {
-                string jsonname = Path.GetFileNameWithoutExtension(filePath); // get json file name
+                string Jsonname = Path.GetFileNameWithoutExtension(FilePath); // get json file name
 
-                ProjectData.Main.ProgressInfo(true, _parseFileMessage + jsonname + ".json");
+                ProjectData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
 
                 //string jsondata = File.ReadAllText(FilePath); // get json data
 
                 bool ret = true;
 
-                ProjectData.FilePath = filePath;
+                ProjectData.FilePath = FilePath;
                 //ret = ReadJson(Jsonname, sPath);
 
-                ret = write ? new Json().Save() : new Json().Open();
+                ret = Write ? new JSON().Save() : new JSON().Open();
 
                 return ret;
             }

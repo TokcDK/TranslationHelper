@@ -11,9 +11,9 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 {
-    class Txt : FormatBase
+    class TXT : FormatBase
     {
-        public Txt()
+        public TXT()
         {
         }
 
@@ -31,26 +31,26 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             return Encoding.GetEncoding(932);
         }
 
-        bool _readmode;
-        readonly StringBuilder _sb = new StringBuilder();
-        private string _lastMsgType;
+        bool readmode;
+        readonly StringBuilder sb = new StringBuilder();
+        private string LastMSGType;
 
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
-            if (_readmode)
+            if (readmode)
             {
-                bool startswithsharp = ParseData.Line.StartsWith("#");
-                bool startswithOther = StartsWithOther(ParseData.Line);
+                bool startswithsharp = ParseData.line.StartsWith("#");
+                bool startswithOther = StartsWithOther(ParseData.line);
                 if (startswithsharp || startswithOther /*string.IsNullOrEmpty(line)*/)
                 {
-                    var str = _sb.ToString().TrimEnd();
+                    var str = sb.ToString().TrimEnd();
                     if (ProjectData.OpenFileMode)
                     {
                         AddRowData(str, string.Empty, true);
                     }
                     else
                     {
-                        var extraEmptyLinesForWrite = (str.Length > 0 ? _sb.ToString().Replace(str, string.Empty) : _sb.ToString());//только пустота на конце, пустоту надо записать в новый файл для корректности
+                        var extraEmptyLinesForWrite = (str.Length > 0 ? sb.ToString().Replace(str, string.Empty) : sb.ToString());//только пустота на конце, пустоту надо записать в новый файл для корректности
 
                         if (IsValidString(str) && TablesLinesDict.ContainsKey(str))
                         {
@@ -69,26 +69,26 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         }
                         else
                         {
-                            ParseData.ResultForWrite.AppendLine(_sb.ToString() + Environment.NewLine);
+                            ParseData.ResultForWrite.AppendLine(sb.ToString() + Environment.NewLine);
                         }
                     }
 
-                    _readmode = false;
-                    _sb.Clear();
+                    readmode = false;
+                    sb.Clear();
 
                     if (startswithsharp)
                     {
-                        if (IsMessage(ParseData.Line))
+                        if (IsMessage(ParseData.line))
                         {
                             ParseMessage();
                             return 0;
                         }
-                        else if (IsVoicedMessage(ParseData.Line))
+                        else if (IsVoicedMessage(ParseData.line))
                         {
                             ParseVoicedMessage();
                             return 0;
                         }
-                        else if (IsChoiceVariants(ParseData.Line))
+                        else if (IsChoiceVariants(ParseData.line))
                         {
                             ParseChoices();
                             return 0;
@@ -97,11 +97,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 }
                 else
                 {
-                    if (_sb.Length > 0)
+                    if (sb.Length > 0)
                     {
-                        _sb.Append(Environment.NewLine);
+                        sb.Append(Environment.NewLine);
                     }
-                    _sb.Append(ParseData.Line);
+                    sb.Append(ParseData.line);
                 }
 
                 SaveModeAddLine();
@@ -110,22 +110,22 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
             else
             {
-                if (IsCommentary(ParseData.Line))//commented or empty
+                if (IsCommentary(ParseData.line))//commented or empty
                 {
                     SaveModeAddLine();
                     return 0;
                 }
-                else if (IsMessage(ParseData.Line))
+                else if (IsMessage(ParseData.line))
                 {
                     ParseMessage();
                     return 0;
                 }
-                else if (IsVoicedMessage(ParseData.Line))
+                else if (IsVoicedMessage(ParseData.line))
                 {
                     ParseVoicedMessage();
                     return 0;
                 }
-                else if (IsChoiceVariants(ParseData.Line))
+                else if (IsChoiceVariants(ParseData.line))
                 {
                     ParseChoices();
                     return 0;
@@ -139,24 +139,24 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         private void ParseMessage()
         {
-            _lastMsgType = ParseData.Line;
+            LastMSGType = ParseData.line;
             SaveModeAddLine();
-            _readmode = true;
+            readmode = true;
         }
 
         private void ParseVoicedMessage()
         {
-            _lastMsgType = ParseData.Line;
+            LastMSGType = ParseData.line;
             if (ProjectData.SaveFileMode)
             {
                 SaveModeAddLine();//add mark
-                ParseData.ResultForWrite.AppendLine(ParseData.Line = ParseData.Reader.ReadLine());//add voice file name line
+                ParseData.ResultForWrite.AppendLine(ParseData.line = ParseData.reader.ReadLine());//add voice file name line
             }
             else
             {
-                ParseData.Line = ParseData.Reader.ReadLine();//read next line with voice name, nex readline will skip it
+                ParseData.line = ParseData.reader.ReadLine();//read next line with voice name, nex readline will skip it
             }
-            _readmode = true;
+            readmode = true;
         }
 
         private void ParseChoices()
@@ -164,11 +164,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             SaveModeAddLine();
 
             //get choices count
-            int selectioncnt = int.Parse(ParseData.Line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+            int selectioncnt = int.Parse(ParseData.line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
             //add all choices
             for (int i = 0; i < selectioncnt; i++)
             {
-                var str = ParseData.Reader.ReadLine();
+                var str = ParseData.reader.ReadLine();
                 var extracted = Regex.Replace(str, ChoiceTextExtractionRegex(), "$1");
                 if (ProjectData.OpenFileMode)
                 {
@@ -194,7 +194,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         {
             newLine = PreReduceTranslation(newLine);
             newLine = ApplyRequiredCharReplacements(newLine);
-            newLine = SplitMessageLinesToBlocksBy4Lines(newLine);
+            newLine = SplitMessageLinesToBlocksBy4lines(newLine);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         /// </summary>
         /// <param name="newLine"></param>
         /// <returns></returns>
-        private string SplitMessageLinesToBlocksBy4Lines(string newLine)
+        private string SplitMessageLinesToBlocksBy4lines(string newLine)
         {
             int newLinesCount = newLine.GetLinesCount();
             int linesCount = 0;
@@ -210,12 +210,12 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             string retLine = string.Empty;
 
             //blocks #MSGVOICE after 1st must be changed to no voice #MSG to not repeat speech for each block
-            _lastMsgType = _lastMsgType.Replace("#MSGVOICE,", "#MSG,");
+            LastMSGType = LastMSGType.Replace("#MSGVOICE,", "#MSG,");
 
             foreach (var subline in newLine.SplitToLines())
             {
                 string cleanedSubline = PostTransFormLineCleaning(subline);
-                cleanedSubline = EnjpCharsReplacementFirstLetter(cleanedSubline);
+                cleanedSubline = ENJPCharsReplacementFirstLetter(cleanedSubline);
                 //cleanedSubline = CheckFirstCharIsLatinAndTransform(cleanedSubline);
                 linesCount++;
                 if (linesCount == linesCountMax)
@@ -224,7 +224,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     retLine += /*(startsWithJPQuote1 ? "」" : (startsWithJPQuote2? "』" : string.Empty))
                                                 + */Environment.NewLine
                         + Environment.NewLine
-                        + _lastMsgType
+                        + LastMSGType
                         + Environment.NewLine
                         /*+ (startsWithJPQuote1 ? "「" : (startsWithJPQuote2 ? "『" : string.Empty))*/;
                 }
@@ -238,7 +238,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             return retLine;
         }
 
-        bool OpenTxt()
+        bool openTxt()
         {
             if (ProjectData.FilePath.Length == 0)
             {
@@ -247,8 +247,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             string fileName = Path.GetFileNameWithoutExtension(ProjectData.FilePath);
 
-            ProjectData.ThFilesElementsDataset.Tables.Add(fileName).Columns.Add("Original");
-            ProjectData.ThFilesElementsDatasetInfo.Tables.Add(fileName).Columns.Add("Original");
+            ProjectData.THFilesElementsDataset.Tables.Add(fileName).Columns.Add("Original");
+            ProjectData.THFilesElementsDatasetInfo.Tables.Add(fileName).Columns.Add("Original");
 
             using (StreamReader sr = new StreamReader(GetOriginalWhenExists(), Encoding.GetEncoding(932)))
             {
@@ -267,8 +267,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         {
                             if (!string.IsNullOrWhiteSpace(sb.ToString()))
                             {
-                                ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(sb.ToString().TrimEnd());
-                                ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add(string.Empty);
+                                ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(sb.ToString().TrimEnd());
+                                ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(string.Empty);
                             }
 
                             readmode = false;
@@ -292,8 +292,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
                                     for (int i = 0; i < selectioncnt; i++)
                                     {
-                                        ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1"));
-                                        ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add("Choice variant " + i);
+                                        ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1"));
+                                        ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("Choice variant " + i);
                                     }
                                     continue;
                                 }
@@ -332,8 +332,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
                             for (int i = 0; i < selectioncnt; i++)
                             {
-                                ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1"));
-                                ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add("Choice variant " + i);
+                                ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1"));
+                                ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("Choice variant " + i);
                             }
                             continue;
                         }
@@ -341,15 +341,15 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 }
             }
 
-            if (ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Count > 0)
+            if (ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Count > 0)
             {
-                ProjectData.ThFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
+                ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
                 return true;
             }
             else
             {
-                ProjectData.ThFilesElementsDataset.Tables.Remove(fileName);
-                ProjectData.ThFilesElementsDatasetInfo.Tables.Remove(fileName);
+                ProjectData.THFilesElementsDataset.Tables.Remove(fileName);
+                ProjectData.THFilesElementsDatasetInfo.Tables.Remove(fileName);
                 return false;
             }
         }
@@ -384,9 +384,9 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             StringBuilder sbWrite = new StringBuilder();
 
-            int tableRowIndex = 0;
-            bool writeIt = false;
-            string lastMsgType = string.Empty;
+            int TableRowIndex = 0;
+            bool WriteIt = false;
+            string LastMSGType = string.Empty;
             using (StreamReader sr = new StreamReader(GetOriginalWhenExists(), Encoding.GetEncoding(932)))
             {
                 string line;
@@ -404,13 +404,13 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         {
                             if (!string.IsNullOrWhiteSpace(sb.ToString()))
                             {
-                                string trimmedSb = sb.ToString().TrimEnd();//строка с обрезаной пустотой на конце
-                                string extraEmptyLinesForWrite = sb.ToString().Replace(trimmedSb, string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
+                                string trimmedSB = sb.ToString().TrimEnd();//строка с обрезаной пустотой на конце
+                                string extraEmptyLinesForWrite = sb.ToString().Replace(trimmedSB, string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
 
-                                var row = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[tableRowIndex];
-                                if (!string.IsNullOrEmpty(row[1] + string.Empty) && (row[0] as string) == trimmedSb && !Equals(row[0], row[1]))
+                                var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
+                                if (!string.IsNullOrEmpty(row[1] + string.Empty) && (row[0] as string) == trimmedSB && !Equals(row[0], row[1]))
                                 {
-                                    string newLine = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[tableRowIndex][1] + string.Empty;
+                                    string newLine = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex][1] + string.Empty;
                                     //bool startsWithJPQuote1 = newLine.Contains("「");
                                     //bool startsWithJPQuote2 = newLine.Contains("『");
 
@@ -426,11 +426,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     int linesCountMax = 5;
                                     string retLine = string.Empty;
                                     //newLine = TransformString(newLine);
-                                    lastMsgType = lastMsgType.Replace("#MSGVOICE,", "#MSG,");
+                                    LastMSGType = LastMSGType.Replace("#MSGVOICE,", "#MSG,");
                                     foreach (var subline in newLine.SplitToLines())
                                     {
                                         string cleanedSubline = PostTransFormLineCleaning(subline);
-                                        cleanedSubline = EnjpCharsReplacementFirstLetter(cleanedSubline);
+                                        cleanedSubline = ENJPCharsReplacementFirstLetter(cleanedSubline);
                                         //cleanedSubline = CheckFirstCharIsLatinAndTransform(cleanedSubline);
                                         linesCount++;
                                         if (linesCount == linesCountMax)
@@ -439,7 +439,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                             retLine += /*(startsWithJPQuote1 ? "」" : (startsWithJPQuote2? "』" : string.Empty))
                                                 + */Environment.NewLine
                                                 + Environment.NewLine
-                                                + lastMsgType
+                                                + LastMSGType
                                                 + Environment.NewLine
                                                 /*+ (startsWithJPQuote1 ? "「" : (startsWithJPQuote2 ? "『" : string.Empty))*/;
                                         }
@@ -457,12 +457,12 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 {
                                     sbWrite.AppendLine(sb.ToString() + Environment.NewLine);
                                 }
-                                tableRowIndex++;
+                                TableRowIndex++;
                             }
                             readmode = false;
                             sb.Clear();
-                            writeIt = true;
-                            lastMsgType = string.Empty;
+                            WriteIt = true;
+                            LastMSGType = string.Empty;
                         }
                         else
                         {
@@ -477,14 +477,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         {
                             if (IsMessage(line))
                             {
-                                lastMsgType = line;
+                                LastMSGType = line;
                                 sbWrite.AppendLine(line);
                                 readmode = true;
                                 continue;
                             }
                             else if (IsVoicedMessage(line))
                             {
-                                lastMsgType = line;
+                                LastMSGType = line;
                                 sbWrite.AppendLine(line);
                                 sbWrite.AppendLine(sr.ReadLine());
                                 readmode = true;
@@ -498,7 +498,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 for (int i = 0; i < selectioncnt; i++)
                                 {
                                     selectionsLine = Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
-                                    var row = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[tableRowIndex];
+                                    var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
                                     if ((row[0] as string) == selectionsLine[0] && !string.IsNullOrEmpty(row[1] + string.Empty))
                                     {
                                         sbWrite.AppendLine(TransformString(row[1] + string.Empty) + selectionsLine[1]);
@@ -507,10 +507,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     {
                                         sbWrite.AppendLine(selectionsLine[0]);
                                     }
-                                    tableRowIndex++;
+                                    TableRowIndex++;
                                 }
                                 //sbWrite.AppendLine(Environment.NewLine);
-                                writeIt = true;
+                                WriteIt = true;
                                 continue;
                             }
                         }
@@ -531,14 +531,14 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                         }
                         else if (IsMessage(line))
                         {
-                            lastMsgType = line;
+                            LastMSGType = line;
                             sbWrite.AppendLine(line);
                             readmode = true;
                             continue;
                         }
                         else if (IsVoicedMessage(line))
                         {
-                            lastMsgType = line;
+                            LastMSGType = line;
                             sbWrite.AppendLine(line);
                             sbWrite.AppendLine(sr.ReadLine());
                             readmode = true;
@@ -552,7 +552,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             for (int i = 0; i < selectioncnt; i++)
                             {
                                 selectionsLine = Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
-                                var row = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows[tableRowIndex];
+                                var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
                                 if ((row[0] as string) == selectionsLine[0] && !string.IsNullOrEmpty(row[1] + string.Empty))
                                 {
                                     sbWrite.AppendLine(TransformString(row[1] + string.Empty) + selectionsLine[1]);
@@ -561,10 +561,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 {
                                     sbWrite.AppendLine(selectionsLine[0]);
                                 }
-                                tableRowIndex++;
+                                TableRowIndex++;
                             }
                             //sbWrite.AppendLine(Environment.NewLine);
-                            writeIt = true;
+                            WriteIt = true;
                             continue;
                         }
                     }
@@ -573,7 +573,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 }
             }
 
-            if (writeIt && sbWrite.ToString().Length > 0 && !FunctionsFileFolder.FileInUse(ProjectData.FilePath))
+            if (WriteIt && sbWrite.ToString().Length > 0 && !FunctionsFileFolder.FileInUse(ProjectData.FilePath))
             {
                 if (!File.Exists(ProjectData.FilePath + ".orig"))
                 {
@@ -636,10 +636,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 return cleanedSubline;
             }
 
-            var firstletter = cleanedSubline.Substring(0, 1);
-            if (firstletter.IsDigitsOnly() || firstletter == "!" || firstletter == "?")
+            var Firstletter = cleanedSubline.Substring(0, 1);
+            if (Firstletter.IsDigitsOnly() || Firstletter == "!" || Firstletter == "?")
             {
-                return TransformFirstChar(firstletter) + (cleanedSubline.Length > 1 ? cleanedSubline.Substring(1) : string.Empty);
+                return TransformFirstChar(Firstletter) + (cleanedSubline.Length > 1 ? cleanedSubline.Substring(1) : string.Empty);
             }
 
             return cleanedSubline;
@@ -738,7 +738,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 ;
         }
 
-        readonly Dictionary<string, string> _eNtoJpReplacementPairsOneLetterDict = new Dictionary<string, string>
+        readonly Dictionary<string, string> ENtoJPReplacementPairsOneLetterDict = new Dictionary<string, string>
             {
                 { "a", "ａ" },
                 { "A", "Ａ" },
@@ -907,7 +907,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         //           new string[2]{ " ", "_" }
         //};
 
-        readonly string[][] _eNtoJpReplacementPairs = new string[][] {
+        readonly string[][] ENtoJPReplacementPairs = new string[][] {
                new string[2]{ "a", "ａ" },
                new string[2]{ "A", "Ａ" },
                new string[2]{ "b", "ｂ" },
@@ -1048,17 +1048,17 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         private string TransformString(string workString)
         {
             workString = WordsReplacement(workString);
-            workString = EnjpCharsReplacement(workString);
+            workString = ENJPCharsReplacement(workString);
 
             return workString;
         }
 
-        private string EnjpCharsReplacement(string workString)
+        private string ENJPCharsReplacement(string workString)
         {
-            return FunctionsString.CharsReplacementByPairsFromArray(workString, _eNtoJpReplacementPairs);
+            return FunctionsString.CharsReplacementByPairsFromArray(workString, ENtoJPReplacementPairs);
         }
 
-        private string EnjpCharsReplacementFirstLetter(string workString)
+        private string ENJPCharsReplacementFirstLetter(string workString)
         {
             if (string.IsNullOrEmpty(workString))
             {
@@ -1079,9 +1079,9 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             string firstLetter = workString.Substring(0, 1);
 
-            if (_eNtoJpReplacementPairsOneLetterDict.ContainsKey(firstLetter))
+            if (ENtoJPReplacementPairsOneLetterDict.ContainsKey(firstLetter))
             {
-                firstLetter = _eNtoJpReplacementPairsOneLetterDict[firstLetter];
+                firstLetter = ENtoJPReplacementPairsOneLetterDict[firstLetter];
             }
 
             return firstLetter + (workString.Length > 1 ? workString.Substring(1) : string.Empty);
@@ -1089,7 +1089,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             //return FunctionsString.CharsReplacementByPairsFromArray(workString.Substring(0, 1), ENtoJPReplacementPairsOneLetter) + (workString.Length > 1 ? workString.Substring(1) : string.Empty);
         }
 
-        readonly string[][] _enjpWordsReplacementPairs = new string[][] {
+        readonly string[][] ENJPWordsReplacementPairs = new string[][] {
                new string[2]{ "one hundred", "100" },
                new string[2]{ "ninety-nine", "99" },
                new string[2]{ "ninety-eight", "98" },
@@ -1200,10 +1200,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         private string WordsReplacement(string input)
         {
             string ret = input;
-            int charsLength = _enjpWordsReplacementPairs.Length;
+            int charsLength = ENJPWordsReplacementPairs.Length;
             for (int i = 0; i < charsLength; i++)
             {
-                ret = ret.Replace(_enjpWordsReplacementPairs[i][0], _enjpWordsReplacementPairs[i][1], StringComparison.OrdinalIgnoreCase);
+                ret = ret.Replace(ENJPWordsReplacementPairs[i][0], ENJPWordsReplacementPairs[i][1], StringComparison.OrdinalIgnoreCase);
             }
 
             return ret;

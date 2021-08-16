@@ -19,12 +19,12 @@ namespace TranslationHelper.INISettings
         /// <returns></returns>
         internal static Dictionary<string, SettingsBase> GetSettingsList(List<SettingsBase> listOfSubclasses)
         {
-            var settingsList = new Dictionary<string, SettingsBase>();
-            foreach (var subclass in listOfSubclasses)
+            var SettingsList = new Dictionary<string, SettingsBase>();
+            foreach (var Subclass in listOfSubclasses)
             {
-                settingsList.Add(subclass.Id(), subclass);
+                SettingsList.Add(Subclass.ID(), Subclass);
             }
-            return settingsList;
+            return SettingsList;
         }
     }
 
@@ -45,10 +45,10 @@ namespace TranslationHelper.INISettings
         internal virtual bool DefaultBool { get => false; }
         internal virtual int DefaultInt { get => 0; }
 
-        internal abstract void Set(bool setObject = false);
+        internal abstract void Set(bool SetObject = false);
         internal abstract string Get();
 
-        internal abstract string Id();
+        internal abstract string ID();
 
         //protected INIFile THConfigINI = new INIFile(Application.ProductName+".ini");
     }

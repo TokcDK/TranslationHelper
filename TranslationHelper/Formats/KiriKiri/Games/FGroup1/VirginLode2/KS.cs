@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.Formats.KiriKiri.Games.FGroup1.VirginLode2
 {
-    class Ks : FGroup1Base
+    class KS : FGroup1Base
     {
-        public Ks()
+        public KS()
         {
         }
     }

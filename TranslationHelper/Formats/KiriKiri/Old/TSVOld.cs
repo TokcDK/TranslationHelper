@@ -5,11 +5,11 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    public static class TsvOld
+    public static class TSVOld
     {
-        public static DataTable KiriKiriTsvOpen(string sPath, DataTable dt, DataTable dtInfo)
+        public static DataTable KiriKiriTSVOpen(string sPath, DataTable DT, DataTable DTInfo)
         {
-            if (dt == null || dtInfo == null)
+            if (DT == null || DTInfo == null)
                 return null;
 
             using (StreamReader file = new StreamReader(sPath, Encoding.GetEncoding(932)))
@@ -23,23 +23,23 @@ namespace TranslationHelper.Formats.KiriKiri
                     }
                     else
                     {
-                        string[] nameValues = line.Split('	');
+                        string[] NameValues = line.Split('	');
 
-                        if (nameValues.Length == 2)
+                        if (NameValues.Length == 2)
                         {
-                            string[] values = nameValues[1].Split(',');
+                            string[] Values = NameValues[1].Split(',');
 
-                            int valuesLength = values.Length;
-                            for (int l = 0; l < valuesLength; l++)
+                            int ValuesLength = Values.Length;
+                            for (int l = 0; l < ValuesLength; l++)
                             {
-                                string subline = values[l];
+                                string subline = Values[l];
                                 if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || subline.IsDigitsOnly())
                                 {
                                 }
                                 else
                                 {
-                                    _ = dt.Rows.Add(subline);
-                                    _ = dtInfo.Rows.Add(nameValues[0]);
+                                    _ = DT.Rows.Add(subline);
+                                    _ = DTInfo.Rows.Add(NameValues[0]);
                                 }
                             }
                         }
@@ -47,7 +47,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 }
             }
 
-            return dt;
+            return DT;
         }
     }
 }

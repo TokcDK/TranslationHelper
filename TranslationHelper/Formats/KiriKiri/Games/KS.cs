@@ -3,9 +3,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri.Games
 {
-    class Ks : KsBase
+    class KS : KSBase
     {
-        public Ks()
+        public KS()
         {
         }
 

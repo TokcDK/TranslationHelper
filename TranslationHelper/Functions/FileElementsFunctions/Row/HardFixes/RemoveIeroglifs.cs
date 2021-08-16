@@ -15,7 +15,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         protected override bool Apply()
         {
             var translation = SelectedRow[ColumnIndexTranslation] + "";
-            if (FunctionsRomajiKana.HasNojPcharacters(translation))
+            if (FunctionsRomajiKana.HasNOJPcharacters(translation))
             {
                 return false;
             }

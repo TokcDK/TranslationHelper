@@ -8,15 +8,15 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.DBSaveFormats
 {
-    class Xml : IDbSave
+    class XML : IDBSave
     {
-        string IDbSave.Ext => "xml";
+        string IDBSave.Ext => "xml";
 
-        string IDbSave.Description => "Uncompressed xml";
+        string IDBSave.Description => "Uncompressed xml";
 
-        Stream IDbSave.FileStreamMod(FileStream dbInputFileStream, bool isRead)
+        Stream IDBSave.FileStreamMod(FileStream DBInputFileStream, bool IsRead)
         {
-            return dbInputFileStream;
+            return DBInputFileStream;
         }
     }
 }

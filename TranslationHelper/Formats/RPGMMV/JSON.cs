@@ -2,11 +2,11 @@
 
 namespace TranslationHelper.Formats.RPGMMV
 {
-    class Json : RpgmmvBase, IUseJsonParser
+    class JSON : RPGMMVBase, IUseJsonParser
     {
-        public Json()
+        public JSON()
         {
-            JsonParser = new RpgmvzJsonParser();
+            JsonParser = new RPGMVZJsonParser();
         }
 
         internal override string Ext()
@@ -16,20 +16,20 @@ namespace TranslationHelper.Formats.RPGMMV
 
         internal override bool UseTableNameWithoutExtension => true;
 
-        public JsonParserBase JsonParser { get => _jParser; set => _jParser = value; }
+        public JsonParserBase JsonParser { get => JParser; set => JParser = value; }
 
-        JsonParserBase _jParser;
+        JsonParserBase JParser;
 
-        bool _jsonIsParsed;
+        bool JsonIsParsed;
 
         protected override void ParseStringFileOpen()
         {
-            _jsonIsParsed = JsonParser.ParseUsingFormat(this);
+            JsonIsParsed = JsonParser.ParseUsingFormat(this);
         }
 
         protected override bool WriteFileData(string filePath = "")
         {
-            return _jsonIsParsed;
+            return JsonIsParsed;
         }
 
         internal override bool IsValidString(string inputString)

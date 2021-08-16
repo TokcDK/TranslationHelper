@@ -59,8 +59,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         }
                         catch (System.ArgumentException ex)
                         {
-                           Log.LogToFile("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
-                            ProjectData.Main.ProgressInfo(true, "Invalid regex found. See " + ThSettings.ApplicationLogName());
+                           _log.LogToFile("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
+                            ProjectData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
                             continue;
                         }
 

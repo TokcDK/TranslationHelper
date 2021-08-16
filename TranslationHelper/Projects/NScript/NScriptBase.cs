@@ -32,7 +32,7 @@ namespace TranslationHelper.Projects.NScript
                 }
             }
 
-            return HideVarsBase(o, HideVarsBase);
+            return HideVARSBase(o, HideVarsBase);
         }
     }
 }

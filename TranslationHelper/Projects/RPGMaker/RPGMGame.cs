@@ -11,9 +11,9 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects
 {
-    class RpgmGame : ProjectBase
+    class RPGMGame : ProjectBase
     {
-        public int RpgmTransPatchVersion { get; private set; }
+        public int RPGMTransPatchVersion { get; private set; }
 
         internal override bool Check()
         {
@@ -55,15 +55,15 @@ namespace TranslationHelper.Projects
 
         internal override bool TablesLinesDictAddEqual => true;
 
-        string _extractedpatchpath;
+        string extractedpatchpath;
 
         internal override bool Open()
         {
-            _extractedpatchpath = string.Empty;
+            extractedpatchpath = string.Empty;
 
             if (Patching())
             {
-                if (RpgmTransPatchPrepare())
+                if (RPGMTransPatchPrepare())
                 {
                     return true;
                 }
@@ -72,18 +72,18 @@ namespace TranslationHelper.Projects
             return false;
         }
 
-        string _patchdir;
-        private bool RpgmTransPatchPrepare()
+        string patchdir;
+        private bool RPGMTransPatchPrepare()
         {
-            _patchdir = Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(ProjectData.SelectedGameDir) + "_patch");
+            patchdir = Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(ProjectData.SelectedGameDir) + "_patch");
 
-            return OpenSaveFilesBase(_patchdir, typeof(Txt), "*.txt");
+            return OpenSaveFilesBase(patchdir, typeof(TXT), "*.txt");
         }
 
         private bool Patching()
         {
-            var gameDirPath = new DirectoryInfo(ProjectData.SelectedGameDir);
-            var workdir = new DirectoryInfo(Path.Combine(ThSettings.WorkDirPath(), ProjectFolderName(), gameDirPath.Name));
+            var GameDirPath = new DirectoryInfo(ProjectData.SelectedGameDir);
+            var workdir = new DirectoryInfo(Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), GameDirPath.Name));
             ProjectData.ProjectWorkDir = workdir.FullName;
             var patchdirPath = Path.Combine(workdir.FullName, workdir.Name + "_patch");
 
@@ -106,7 +106,7 @@ namespace TranslationHelper.Projects
                 }
             }
 
-            var ret = CreateUpdatePatch(gameDirPath.FullName, workdir);
+            var ret = CreateUpdatePatch(GameDirPath.FullName, workdir);
             ProjectData.Main.ProgressInfo(false);
             return ret;
         }
@@ -127,7 +127,7 @@ namespace TranslationHelper.Projects
         private bool CreateUpdatePatch(string gamedirPath, DirectoryInfo workdir)
         {
             bool ret;
-            var rpgmakertranscli = ThSettings.RpgMakerTransExePath();
+            var rpgmakertranscli = THSettings.RPGMakerTransEXEPath();
             //string projectname = Path.GetFileName(outdir);
 
             //rpg maker trans cli options
@@ -211,8 +211,8 @@ namespace TranslationHelper.Projects
                     new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
                     ProjectData.Main.ProgressInfo(true, T._("Last try"));
                     //Maybe rgss3 file was not extracted and need to extract it manually
-                    string gameRgss3Path = RpgmFunctions.GetRpgMakerArc(gamedirPath);
-                    if (gameRgss3Path.Length == 0)
+                    string GameRgss3Path = RPGMFunctions.GetRPGMakerArc(gamedirPath);
+                    if (GameRgss3Path.Length == 0)
                     {
                         return false;
                     }
@@ -221,9 +221,9 @@ namespace TranslationHelper.Projects
 
                     tempExtractDir.Create();
 
-                    var rgssdecrypter = ThSettings.RgssDecrypterExePath();
+                    var rgssdecrypter = THSettings.RGSSDecrypterEXEPath();
 
-                    var rgssdecrypterargs = "\"--output=" + tempExtractDir + "\" \"" + gameRgss3Path + "\"";
+                    var rgssdecrypterargs = "\"--output=" + tempExtractDir + "\" \"" + GameRgss3Path + "\"";
 
                     ProjectData.Main.ProgressInfo(true, T._("Extracting") + " " + "Game.rgss3");
                     FunctionsProcess.RunProgram(rgssdecrypter, rgssdecrypterargs);
@@ -266,7 +266,7 @@ namespace TranslationHelper.Projects
                         tempExtractDir.Attributes = FileAttributes.Normal;
                         tempExtractDir.Delete(true);
 
-                        File.Move(gameRgss3Path, gameRgss3Path + ".orig");
+                        File.Move(GameRgss3Path, GameRgss3Path + ".orig");
 
                         args = "\"" + gamedirPath + "\" -p \"" + patchdir + "\"" + " -o \"" + translateddir + "\"";
                         //FunctionsProcess.RunProgram(rpgmakertranscli, args);
@@ -353,15 +353,15 @@ namespace TranslationHelper.Projects
 
         internal override bool Save()
         {
-            OpenSaveFilesBase(_patchdir, typeof(Txt), "*.txt");//not need to check return value here
+            OpenSaveFilesBase(patchdir, typeof(TXT), "*.txt");//not need to check return value here
 
             return Patching();
             //return OpenSaveFilesBase(patchdir, new TXT(), "*.txt") && Patching();
         }
 
-        internal override void PreSaveDb()
+        internal override void PreSaveDB()
         {
-            OpenSaveFilesBase(_patchdir, typeof(Txt), "*.txt");
+            OpenSaveFilesBase(patchdir, typeof(TXT), "*.txt");
         }
 
         internal override void AfterTranslationWriteActions()

@@ -14,19 +14,19 @@ namespace TranslationHelper.Main.Functions
             }
             else
             {
-                var exeInfo = FileVersionInfo.GetVersionInfo(exepath);
-                return exeInfo.FileDescription;
+                var ExeInfo = FileVersionInfo.GetVersionInfo(exepath);
+                return ExeInfo.FileDescription;
             }
         }
 
         /// <summary>
         /// same as RunProcess(). Run selected programm.
         /// </summary>
-        /// <param name="programPath"></param>
-        /// <param name="arguments"></param>
-        /// <param name="workDir"></param>
+        /// <param name="ProgramPath"></param>
+        /// <param name="Arguments"></param>
+        /// <param name="WorkDir"></param>
         /// <returns></returns>
-        public static bool RunProgram(string programPath, string arguments = "", string workDir = "", bool createNoWindow = false, bool useShellExecute = true)
+        public static bool RunProgram(string ProgramPath, string Arguments = "", string WorkDir = "", bool CreateNoWindow = false, bool UseShellExecute = true)
         {
             //bool ret = false;
             //using (Process Program = new Process())
@@ -38,35 +38,35 @@ namespace TranslationHelper.Main.Functions
             //    Program.WaitForExit();
             //}
 
-            return RunProcess(programPath, arguments, workDir, createNoWindow, useShellExecute);
+            return RunProcess(ProgramPath, Arguments, WorkDir, CreateNoWindow, UseShellExecute);
         }
 
         /// <summary>
         /// Run selected programm
         /// </summary>
-        /// <param name="programPath"></param>
-        /// <param name="arguments"></param>
-        /// <param name="workDir"></param>
+        /// <param name="ProgramPath"></param>
+        /// <param name="Arguments"></param>
+        /// <param name="WorkDir"></param>
         /// <returns></returns>
-        public static bool RunProcess(string programPath, string arguments = "", string workDir = "", bool createNoWindow = false, bool useShellExecute = true)
+        public static bool RunProcess(string ProgramPath, string Arguments = "", string WorkDir = "", bool CreateNoWindow = false, bool UseShellExecute = true)
         {
             bool ret = false;
-            if (File.Exists(programPath))
+            if (File.Exists(ProgramPath))
             {
-                using (Process program = new Process())
+                using (Process Program = new Process())
                 {
-                    program.StartInfo.ErrorDialog = true;
-                    program.EnableRaisingEvents = true;
-                    program.StartInfo.CreateNoWindow = createNoWindow;
-                    program.StartInfo.UseShellExecute = useShellExecute;
+                    Program.StartInfo.ErrorDialog = true;
+                    Program.EnableRaisingEvents = true;
+                    Program.StartInfo.CreateNoWindow = CreateNoWindow;
+                    Program.StartInfo.UseShellExecute = UseShellExecute;
 
                     //MessageBox.Show("outdir=" + outdir);
-                    program.StartInfo.FileName = programPath;
-                    if (arguments.Length > 0)
+                    Program.StartInfo.FileName = ProgramPath;
+                    if (Arguments.Length > 0)
                     {
-                        program.StartInfo.Arguments = arguments;
+                        Program.StartInfo.Arguments = Arguments;
                     }
-                    program.StartInfo.WorkingDirectory = workDir.Length == 0 ? Path.GetDirectoryName(programPath) : workDir;
+                    Program.StartInfo.WorkingDirectory = WorkDir.Length == 0 ? Path.GetDirectoryName(ProgramPath) : WorkDir;
 
                     //http://www.cyberforum.ru/windows-forms/thread31052.html
                     // свернуть
@@ -79,8 +79,8 @@ namespace TranslationHelper.Main.Functions
                     //    LinksForm.WindowState = FormWindowState.Minimized;
                     //}
 
-                    ret = program.Start();
-                    program.WaitForExit();
+                    ret = Program.Start();
+                    Program.WaitForExit();
 
                     // Показать
                     //WindowState = FormWindowState.Normal;
@@ -119,12 +119,12 @@ namespace TranslationHelper.Main.Functions
         /// <param name="programexe"></param>
         /// <param name="arguments"></param>
         /// <param name="workdir"></param>
-        /// <param name="createNoWindow"></param>
-        /// <param name="useShellExecute"></param>
+        /// <param name="CreateNoWindow"></param>
+        /// <param name="UseShellExecute"></param>
         /// <returns></returns>
-        internal static bool RunCmd(string programexe, string arguments, string workdir, bool createNoWindow = false, bool useShellExecute = true)
+        internal static bool RunCmd(string programexe, string arguments, string workdir, bool CreateNoWindow = false, bool UseShellExecute = true)
         {
-            return RunBat(programexe, arguments, workdir, createNoWindow, useShellExecute);
+            return RunBat(programexe, arguments, workdir, CreateNoWindow, UseShellExecute);
         }
 
         /// <summary>
@@ -133,12 +133,12 @@ namespace TranslationHelper.Main.Functions
         /// <param name="programexe"></param>
         /// <param name="arguments"></param>
         /// <param name="workdir"></param>
-        /// <param name="createNoWindow"></param>
-        /// <param name="useShellExecute"></param>
+        /// <param name="CreateNoWindow"></param>
+        /// <param name="UseShellExecute"></param>
         /// <returns></returns>
-        internal static bool RunBat(string cmdline, string workdir, bool createNoWindow = false, bool useShellExecute = true)
+        internal static bool RunBat(string cmdline, string workdir, bool CreateNoWindow = false, bool UseShellExecute = true)
         {
-            return RunProcess("cmd.exe", "\\C " + cmdline, workdir, createNoWindow, useShellExecute);
+            return RunProcess("cmd.exe", "\\C " + cmdline, workdir, CreateNoWindow, UseShellExecute);
         }
 
         /// <summary>
@@ -147,13 +147,13 @@ namespace TranslationHelper.Main.Functions
         /// <param name="programexe"></param>
         /// <param name="arguments"></param>
         /// <param name="workdir"></param>
-        /// <param name="createNoWindow"></param>
-        /// <param name="useShellExecute"></param>
+        /// <param name="CreateNoWindow"></param>
+        /// <param name="UseShellExecute"></param>
         /// <returns></returns>
-        internal static bool RunBat(string programexe, string arguments, string workdir, bool createNoWindow = false, bool useShellExecute = true)
+        internal static bool RunBat(string programexe, string arguments, string workdir, bool CreateNoWindow = false, bool UseShellExecute = true)
         {
             arguments = "\\C \"\"" + programexe + "\"\" " + arguments;
-            return RunProcess("cmd.exe", arguments, workdir, createNoWindow, useShellExecute);
+            return RunProcess("cmd.exe", arguments, workdir, CreateNoWindow, UseShellExecute);
         }
     }
 }

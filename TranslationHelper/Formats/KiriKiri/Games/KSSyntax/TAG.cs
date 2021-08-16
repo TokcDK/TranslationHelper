@@ -3,9 +3,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
-    class Tag : KsSyntaxBase
+    class TAG : KSSyntaxBase
     {
-        public Tag()
+        public TAG()
         {
         }
 
@@ -13,9 +13,9 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 
         internal override string EndsWith => @"\]";
 
-        internal override List<KsSyntaxBase> Include()
+        internal override List<KSSyntaxBase> Include()
         {
-            return new List<KsSyntaxBase>
+            return new List<KSSyntaxBase>
             {
                 new Attribute()
             };

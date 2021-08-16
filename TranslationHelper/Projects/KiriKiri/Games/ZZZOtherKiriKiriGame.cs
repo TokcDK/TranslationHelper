@@ -4,9 +4,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Projects.KiriKiri.Games
 {
-    class ZzzOtherKiriKiriGame : KiriKiriGameBase
+    class ZZZOtherKiriKiriGame : KiriKiriGameBase
     {
-        public ZzzOtherKiriKiriGame()
+        public ZZZOtherKiriKiriGame()
         {
         }
 
@@ -24,8 +24,8 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         {
             return new List<System.Type>
             {
-                typeof(Formats.KiriKiri.Games.Ks),
-                typeof(Formats.KiriKiri.Games.CSV.Csv)
+                typeof(Formats.KiriKiri.Games.KS),
+                typeof(Formats.KiriKiri.Games.CSV.CSV)
             };
         }
 

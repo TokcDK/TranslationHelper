@@ -11,20 +11,20 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions
 {
-    class FunctionsLoadTranslationDb
+    class FunctionsLoadTranslationDB
     {
         
 
-        public FunctionsLoadTranslationDb()
+        public FunctionsLoadTranslationDB()
         {
             
         }
 
-        internal void ThLoadDbCompare(DataSet thTempDs)
+        internal void THLoadDBCompare(DataSet THTempDS)
         {
-            if (!Properties.Settings.Default.IsFullComprasionDBloadEnabled && FunctionsTable.IsDataSetsElementsCountIdentical(ProjectData.ThFilesElementsDataset, thTempDs))
+            if (!Properties.Settings.Default.IsFullComprasionDBloadEnabled && FunctionsTable.IsDataSetsElementsCountIdentical(ProjectData.THFilesElementsDataset, THTempDS))
             {
-                CompareLiteIfIdentical(thTempDs);
+                CompareLiteIfIdentical(THTempDS);
                 return;
             }
 
@@ -37,7 +37,7 @@ namespace TranslationHelper.Functions
             //Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath); // write lastsavedpath
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = ProjectData.ThFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+            int otranscol = ProjectData.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
             {
                 return;
@@ -46,7 +46,7 @@ namespace TranslationHelper.Functions
             //LogToFile("ocol=" + ocol);
             //оптимизация. Не искать колонку перевода, если она по стандарту первая
 
-            int ttranscol = thTempDs.Tables[0].Columns["Translation"].Ordinal;
+            int ttranscol = THTempDS.Tables[0].Columns["Translation"].Ordinal;
             if (ttranscol == 0 || ttranscol == -1)
             {
                 return;
@@ -56,7 +56,7 @@ namespace TranslationHelper.Functions
             int ttablestartindex = 0;
             int trowstartindex = 0;
 
-            int tcount = ProjectData.ThFilesElementsDataset.Tables.Count;
+            int tcount = ProjectData.THFilesElementsDataset.Tables.Count;
             string infomessage = T._("Load") + " " + T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
@@ -69,48 +69,48 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                 }
 
-                using (var table = ProjectData.ThFilesElementsDataset.Tables[t])
+                using (var Table = ProjectData.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
-                    if (FunctionsTable.IsTableRowsCompleted(table))
+                    if (FunctionsTable.IsTableRowsCompleted(Table))
                         continue;
 
-                    string tableprogressinfo = infomessage + table.TableName + ">" + t + "/" + tcount;
+                    string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
                     ProjectData.Main.ProgressInfo(true, tableprogressinfo);
 
-                    int rcount = table.Rows.Count;
+                    int rcount = Table.Rows.Count;
                     //проход по всем строкам таблицы рабочего dataset
                     for (int r = 0; r < rcount; r++)
                     {
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
-                        var row = table.Rows[r];
-                        var cellTranslation = row[otranscol];
-                        if (cellTranslation == null || string.IsNullOrEmpty(cellTranslation as string))
+                        var Row = Table.Rows[r];
+                        var CellTranslation = Row[otranscol];
+                        if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
                         {
-                            bool translationWasSet = false;
+                            bool TranslationWasSet = false;
 
-                            var dbTablesCount = thTempDs.Tables.Count;
+                            var DBTablesCount = THTempDS.Tables.Count;
                             //проход по всем таблицам dataset с переводом
-                            for (int t1 = ttablestartindex; t1 < dbTablesCount; t1++)
+                            for (int t1 = ttablestartindex; t1 < DBTablesCount; t1++)
                             {
-                                using (var dbTable = thTempDs.Tables[t1])
+                                using (var DBTable = THTempDS.Tables[t1])
                                 {
-                                    if (dbTable.Columns.Count > 1)
+                                    if (DBTable.Columns.Count > 1)
                                     {
-                                        var dbTableRowsCount = thTempDs.Tables[t1].Rows.Count;
+                                        var DBTableRowsCount = THTempDS.Tables[t1].Rows.Count;
                                         //проход по всем строкам таблицы dataset с переводом
-                                        for (int r1 = trowstartindex; r1 < dbTableRowsCount; r1++)
+                                        for (int r1 = trowstartindex; r1 < DBTableRowsCount; r1++)
                                         {
-                                            var dbRow = dbTable.Rows[r1];
-                                            var dbCellTranslation = dbRow[ttranscol];
-                                            if (dbCellTranslation != null && !string.IsNullOrEmpty(dbCellTranslation as string))
+                                            var DBRow = DBTable.Rows[r1];
+                                            var DBCellTranslation = DBRow[ttranscol];
+                                            if (DBCellTranslation != null && !string.IsNullOrEmpty(DBCellTranslation as string))
                                             {
                                                 try
                                                 {
-                                                    if (Equals(row[0], dbRow[0]))
+                                                    if (Equals(Row[0], DBRow[0]))
                                                     {
-                                                        ProjectData.ThFilesElementsDataset.Tables[t].Rows[r][otranscol] = dbCellTranslation;
-                                                        translationWasSet = true;
+                                                        ProjectData.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = DBCellTranslation;
+                                                        TranslationWasSet = true;
 
                                                         trowstartindex = Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
                                                         break;
@@ -121,7 +121,7 @@ namespace TranslationHelper.Functions
                                                 }
                                             }
                                         }
-                                        if (translationWasSet)//если перевод был присвоен, выйти из цикла таблицы с переводом
+                                        if (TranslationWasSet)//если перевод был присвоен, выйти из цикла таблицы с переводом
                                         {
                                             ttablestartindex = Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : t1;//запоминание последнего индекса таблицы, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
                                             break;
@@ -142,9 +142,9 @@ namespace TranslationHelper.Functions
             ProjectData.Main.ProgressInfo(false);
         }
 
-        private void CompareLiteIfIdentical(DataSet tHTempDs)
+        private void CompareLiteIfIdentical(DataSet tHTempDS)
         {
-            int tcount = ProjectData.ThFilesElementsDataset.Tables.Count;
+            int tcount = ProjectData.THFilesElementsDataset.Tables.Count;
             string infomessage = T._("Load") + " " + T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
@@ -157,29 +157,29 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                 }
 
-                using (var dt = ProjectData.ThFilesElementsDataset.Tables[t])
+                using (var DT = ProjectData.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
-                    if (FunctionsTable.IsTableRowsCompleted(dt))
+                    if (FunctionsTable.IsTableRowsCompleted(DT))
                         continue;
 
-                    string tableprogressinfo = infomessage + dt.TableName + ">" + t + "/" + tcount;
+                    string tableprogressinfo = infomessage + DT.TableName + ">" + t + "/" + tcount;
                     ProjectData.Main.ProgressInfo(true, tableprogressinfo);
 
-                    int rcount = dt.Rows.Count;
+                    int rcount = DT.Rows.Count;
                     //проход по всем строкам таблицы рабочего dataset
                     for (int r = 0; r < rcount; r++)
                     {
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
 
-                        var translationRow = dt.Rows[r];
-                        var translationCell = translationRow[1];
-                        if (translationCell == null || string.IsNullOrEmpty(translationCell as string))
+                        var TranslationRow = DT.Rows[r];
+                        var TranslationCell = TranslationRow[1];
+                        if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell as string))
                         {
-                            var dbRow = tHTempDs.Tables[t].Rows[r];
-                            if (Equals(translationRow[0], dbRow[0]))
+                            var DBRow = tHTempDS.Tables[t].Rows[r];
+                            if (Equals(TranslationRow[0], DBRow[0]))
                             {
-                                ProjectData.ThFilesElementsDataset.Tables[t].Rows[r][1] = dbRow[1];
+                                ProjectData.THFilesElementsDataset.Tables[t].Rows[r][1] = DBRow[1];
                             }
                         }
                     }
@@ -193,20 +193,20 @@ namespace TranslationHelper.Functions
         /// </summary>
         /// <param name="db"></param>
         /// <param name="forced"></param>
-        internal void ThLoadDbCompareFromDictionary(Dictionary<string, string> db, bool forced=false)
+        internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db, bool forced=false)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = ProjectData.ThFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+            int otranscol = ProjectData.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
             {
                 return;
             }
 
             //int RecordsCounter = 1;
-            int tcount = ProjectData.ThFilesElementsDataset.Tables.Count;
+            int tcount = ProjectData.THFilesElementsDataset.Tables.Count;
             string infomessage = T._("Load") + " " + T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
@@ -221,35 +221,35 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                 }
 
-                using (var table = ProjectData.ThFilesElementsDataset.Tables[t])
+                using (var Table = ProjectData.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
-                    if (!forced && FunctionsTable.IsTableRowsCompleted(table))
+                    if (!forced && FunctionsTable.IsTableRowsCompleted(Table))
                         continue;
 
-                    string tableprogressinfo = infomessage + table.TableName + ">" + t + "/" + tcount;
+                    string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
                     ProjectData.Main.ProgressInfo(true, tableprogressinfo);
 
-                    int rcount = table.Rows.Count;
+                    int rcount = Table.Rows.Count;
                     //проход по всем строкам таблицы рабочего dataset
                     for (int r = 0; r < rcount; r++)
                     {
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
-                        var row = table.Rows[r];
-                        var cellTranslation = row[otranscol];
-                        if (forced || cellTranslation == null || string.IsNullOrEmpty(cellTranslation as string))
+                        var Row = Table.Rows[r];
+                        var CellTranslation = Row[otranscol];
+                        if (forced || CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
                         {
-                            var origCellValue = row[0] as string;
+                            var origCellValue = Row[0] as string;
                             if (db.ContainsKey(origCellValue) && db[origCellValue].Length > 0)
                             {
                                 //ProjectData.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
-                                row[otranscol] = db[origCellValue];
+                                Row[otranscol] = db[origCellValue];
                             }
                             else if (Properties.Settings.Default.DBTryToCheckLinesOfEachMultilineValue)
                             {
                                 if (origCellValue.IsMultiline())
                                 {
-                                    bool isAllLinesTranslated = true;
+                                    bool IsAllLinesTranslated = true;
                                     List<string> mergedlines = new List<string>();
                                     foreach (var line in origCellValue.SplitToLines())
                                     {
@@ -263,12 +263,12 @@ namespace TranslationHelper.Functions
                                         }
                                         else
                                         {
-                                            isAllLinesTranslated = false;
+                                            IsAllLinesTranslated = false;
                                         }
                                     }
-                                    if (isAllLinesTranslated && mergedlines.Count > 0)
+                                    if (IsAllLinesTranslated && mergedlines.Count > 0)
                                     {
-                                        row[otranscol] = string.Join(Environment.NewLine, mergedlines);
+                                        Row[otranscol] = string.Join(Environment.NewLine, mergedlines);
                                     }
                                 }
                             }
@@ -281,7 +281,7 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource == null && ProjectData.Main.THFilesList.SelectedIndex == -1));
                     if (b)
                     {
-                        ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.ThFilesElementsDataset.Tables[t]));
+                        ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[t]));
                         ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Update()));
                         ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                     }
@@ -301,20 +301,20 @@ namespace TranslationHelper.Functions
         /// </summary>
         /// <param name="db"></param>
         /// <param name="forced"></param>
-        internal void ThLoadDbCompareFromDictionaryParallellTables(Dictionary<string, string> db, bool forced=false)
+        internal void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string, string> db, bool forced=false)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = ProjectData.ThFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+            int otranscol = ProjectData.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
             {
                 return;
             }
 
             //int RecordsCounter = 1;
-            int tcount = ProjectData.ThFilesElementsDataset.Tables.Count;
+            int tcount = ProjectData.THFilesElementsDataset.Tables.Count;
             string infomessage = T._("Load") + " " + T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
 
@@ -331,35 +331,35 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                 }
 
-                using (var table = ProjectData.ThFilesElementsDataset.Tables[t])
+                using (var Table = ProjectData.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
-                    if (!forced && FunctionsTable.IsTableRowsCompleted(table))
+                    if (!forced && FunctionsTable.IsTableRowsCompleted(Table))
                         return;
 
-                    string tableprogressinfo = infomessage + table.TableName + ">" + t + "/" + tcount;
+                    string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
                     ProjectData.Main.ProgressInfo(true, tableprogressinfo);
 
-                    int rcount = table.Rows.Count;
+                    int rcount = Table.Rows.Count;
                     //проход по всем строкам таблицы рабочего dataset
                     for (int r = 0; r < rcount; r++)
                     {
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
-                        var row = table.Rows[r];
-                        var cellTranslation = row[otranscol];
-                        if (forced || cellTranslation == null || string.IsNullOrEmpty(cellTranslation as string))
+                        var Row = Table.Rows[r];
+                        var CellTranslation = Row[otranscol];
+                        if (forced || CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
                         {
-                            var origCellValue = row[0] as string;
+                            var origCellValue = Row[0] as string;
                             if (db.ContainsKey(origCellValue) && db[origCellValue].Length > 0)
                             {
                                 //ProjectData.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
-                                row[otranscol] = db[origCellValue];
+                                Row[otranscol] = db[origCellValue];
                             }
                             else if (Properties.Settings.Default.DBTryToCheckLinesOfEachMultilineValue)
                             {
                                 if (origCellValue.IsMultiline())
                                 {
-                                    bool isAllLinesTranslated = true;
+                                    bool IsAllLinesTranslated = true;
                                     List<string> mergedlines = new List<string>();
                                     foreach (var line in origCellValue.SplitToLines())
                                     {
@@ -373,12 +373,12 @@ namespace TranslationHelper.Functions
                                         }
                                         else
                                         {
-                                            isAllLinesTranslated = false;
+                                            IsAllLinesTranslated = false;
                                         }
                                     }
-                                    if (isAllLinesTranslated && mergedlines.Count > 0)
+                                    if (IsAllLinesTranslated && mergedlines.Count > 0)
                                     {
-                                        row[otranscol] = string.Join(Environment.NewLine, mergedlines);
+                                        Row[otranscol] = string.Join(Environment.NewLine, mergedlines);
                                     }
                                 }
                             }
@@ -391,7 +391,7 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource == null && ProjectData.Main.THFilesList.SelectedIndex == -1));
                     if (b)
                     {
-                        ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.ThFilesElementsDataset.Tables[t]));
+                        ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[t]));
                         ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Update()));
                         ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                     }
@@ -411,20 +411,20 @@ namespace TranslationHelper.Functions
         /// </summary>
         /// <param name="db"></param>
         /// <param name="forced"></param>
-        internal void ThLoadDbCompareFromDictionaryParallellTables(Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> db, bool forced = false)
+        internal void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> db, bool forced = false)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = ProjectData.ThFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+            int otranscol = ProjectData.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
             {
                 return;
             }
 
             //int RecordsCounter = 1;
-            int tcount = ProjectData.ThFilesElementsDataset.Tables.Count;
+            int tcount = ProjectData.THFilesElementsDataset.Tables.Count;
             string infomessage = T._("Load") + " " + T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
 
@@ -441,38 +441,38 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                 }
 
-                using (var table = ProjectData.ThFilesElementsDataset.Tables[t])
+                using (var Table = ProjectData.THFilesElementsDataset.Tables[t])
                 {
-                    var rowIndexShift = 0;
+                    var RowIndexShift = 0;
 
                     //skip table if there is no untranslated lines
-                    if (!forced && FunctionsTable.IsTableRowsCompleted(table))
+                    if (!forced && FunctionsTable.IsTableRowsCompleted(Table))
                         return;
 
-                    string tableprogressinfo = infomessage + table.TableName + ">" + t + "/" + tcount;
+                    string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
                     ProjectData.Main.ProgressInfo(true, tableprogressinfo);
 
-                    int rcount = table.Rows.Count;
+                    int rcount = Table.Rows.Count;
                     //проход по всем строкам таблицы рабочего dataset
                     for (int r = 0; r < rcount; r++)
                     {
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
-                        var row = table.Rows[r];
-                        var cellTranslation = row[otranscol];
-                        if (forced || cellTranslation == null || string.IsNullOrEmpty(cellTranslation as string))
+                        var Row = Table.Rows[r];
+                        var CellTranslation = Row[otranscol];
+                        if (forced || CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
                         {
-                            var origCellValue = row[0] as string;
+                            var origCellValue = Row[0] as string;
                             var found = false;
                             if (db.ContainsKey(origCellValue))
                             {
                                 var dbo = db[origCellValue];
-                                if (dbo.ContainsKey(table.TableName))
+                                if (dbo.ContainsKey(Table.TableName))
                                 {
-                                    var rowIndexWithShift = r + rowIndexShift;
-                                    var dbt = dbo[table.TableName];
+                                    var RowIndexWithShift = r + RowIndexShift;
+                                    var dbt = dbo[Table.TableName];
                                     if (dbt.ContainsKey(r) /*&& !string.IsNullOrEmpty(db[origCellValue][Table.TableName][RowIndexWithShift])*/)
                                     {
-                                        row[otranscol] = dbt[rowIndexWithShift];
+                                        Row[otranscol] = dbt[RowIndexWithShift];
                                         found = true;
                                     }
                                     else
@@ -504,7 +504,7 @@ namespace TranslationHelper.Functions
                                         //}
                                         foreach (var tr in dbt.Values)
                                         {
-                                            row[otranscol] = tr;
+                                            Row[otranscol] = tr;
                                             found = true;
                                             break;
                                         }
@@ -516,7 +516,7 @@ namespace TranslationHelper.Functions
                                     {
                                         foreach (var tr in tn.Values)
                                         {
-                                            row[otranscol] = tr;
+                                            Row[otranscol] = tr;
                                             found = true;
                                             break;
                                         }
@@ -529,7 +529,7 @@ namespace TranslationHelper.Functions
                             {
                                 if (origCellValue.IsMultiline())
                                 {
-                                    bool isAllLinesTranslated = true;
+                                    bool IsAllLinesTranslated = true;
                                     List<string> mergedlines = new List<string>();
                                     foreach (var line in origCellValue.SplitToLines())
                                     {
@@ -551,12 +551,12 @@ namespace TranslationHelper.Functions
                                         }
                                         else
                                         {
-                                            isAllLinesTranslated = false;
+                                            IsAllLinesTranslated = false;
                                         }
                                     }
-                                    if (isAllLinesTranslated && mergedlines.Count > 0)
+                                    if (IsAllLinesTranslated && mergedlines.Count > 0)
                                     {
-                                        row[otranscol] = string.Join(Environment.NewLine, mergedlines);
+                                        Row[otranscol] = string.Join(Environment.NewLine, mergedlines);
                                     }
                                 }
                             }
@@ -569,7 +569,7 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource == null && ProjectData.Main.THFilesList.SelectedIndex == -1));
                     if (b)
                     {
-                        ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.ThFilesElementsDataset.Tables[t]));
+                        ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[t]));
                         ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Update()));
                         ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                     }
@@ -584,20 +584,20 @@ namespace TranslationHelper.Functions
             System.Media.SystemSounds.Beep.Play();
         }
 
-        internal void ThLoadDbCompareFromDictionaryParallelRows(Dictionary<string, string> db)
+        internal void THLoadDBCompareFromDictionaryParallelRows(Dictionary<string, string> db)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = ProjectData.ThFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+            int otranscol = ProjectData.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
             {
                 return;
             }
 
             //int RecordsCounter = 1;
-            int tcount = ProjectData.ThFilesElementsDataset.Tables.Count;
+            int tcount = ProjectData.THFilesElementsDataset.Tables.Count;
             string infomessage = T._("Load") + " " + T._("translation") + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
@@ -612,30 +612,30 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                 }
                 //skip table if there is no untranslated lines
-                if (!FunctionsTable.IsTableRowsCompleted(ProjectData.ThFilesElementsDataset.Tables[t]))
+                if (!FunctionsTable.IsTableRowsCompleted(ProjectData.THFilesElementsDataset.Tables[t]))
                 {
-                    string tableprogressinfo = infomessage + ProjectData.ThFilesElementsDataset.Tables[t].TableName + ">" + t + "/" + tcount;
+                    string tableprogressinfo = infomessage + ProjectData.THFilesElementsDataset.Tables[t].TableName + ">" + t + "/" + tcount;
                     ProjectData.Main.ProgressInfo(true, tableprogressinfo);
 
-                    int rcount = ProjectData.ThFilesElementsDataset.Tables[t].Rows.Count;
+                    int rcount = ProjectData.THFilesElementsDataset.Tables[t].Rows.Count;
                     //проход по всем строкам таблицы рабочего dataset
                     Parallel.For(0, rcount, r =>
                     {
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
-                        var row = ProjectData.ThFilesElementsDataset.Tables[t].Rows[r];
-                        var cellTranslation = row[otranscol];
-                        if (cellTranslation == null || string.IsNullOrEmpty(cellTranslation as string))
+                        var Row = ProjectData.THFilesElementsDataset.Tables[t].Rows[r];
+                        var CellTranslation = Row[otranscol];
+                        if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
                         {
-                            var origCellValue = row[0] as string;
+                            var origCellValue = Row[0] as string;
                             string dbvalue;
                             if (db.ContainsKey(origCellValue) && (dbvalue = db[origCellValue]).Length > 0)
                             {
                                 //ссылка о проблемах
                                 //https://stackoverflow.com/questions/29541767/index-out-of-range-exception-in-using-parallelfor-loop
-                                lock (row)
+                                lock (Row)
                                 {
                                     //ProjectData.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = dbvalue;
-                                    row[otranscol] = dbvalue;
+                                    Row[otranscol] = dbvalue;
                                 }
                             }
                         }
@@ -655,12 +655,12 @@ namespace TranslationHelper.Functions
         /// loading dict db but preget table-row data from main tables
         /// </summary>
         /// <param name="db"></param>
-        internal void ThLoadDbCompareFromDictionary2(Dictionary<string, string> db)
+        internal void THLoadDBCompareFromDictionary2(Dictionary<string, string> db)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
 
-            Dictionary<string, string> tableData = ProjectData.ThFilesElementsDataset.GetTableRowsDataToDictionary();
+            Dictionary<string, string> tableData = ProjectData.THFilesElementsDataset.GetTableRowsDataToDictionary();
 
             //проход по всем таблицам рабочего dataset
             string infomessage = T._("Load") + " " + T._("translation") + ":";
@@ -672,9 +672,9 @@ namespace TranslationHelper.Functions
                 //ProjectData.Main.ProgressInfo(true, infomessage + cur +"/"+ tableDataKeysCount);
                 if (db.ContainsKey(original))
                 {
-                    foreach (var tableRowPair in tableData[original].Split('|'))
+                    foreach (var TableRowPair in tableData[original].Split('|'))
                     {
-                        ProjectData.ThFilesElementsDataset.Tables[int.Parse(tableRowPair.Split('!')[0], CultureInfo.InvariantCulture)].Rows[int.Parse(tableRowPair.Split('!')[1], CultureInfo.InvariantCulture)][1] = db[original];
+                        ProjectData.THFilesElementsDataset.Tables[int.Parse(TableRowPair.Split('!')[0], CultureInfo.InvariantCulture)].Rows[int.Parse(TableRowPair.Split('!')[1], CultureInfo.InvariantCulture)][1] = db[original];
                     }
                 }
                 //cur++;
@@ -692,24 +692,24 @@ namespace TranslationHelper.Functions
 
         internal async static void LoadTranslationIfNeed()
         {
-            var dbPath = Path.Combine(FunctionsDbFile.GetProjectDbFolder(), FunctionsDbFile.GetDbFileName() + FunctionsDbFile.GetDbCompressionExt());
-            if (!File.Exists(dbPath))
+            var DBPath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
+            if (!File.Exists(DBPath))
             {
-                FunctionsDbFile.SearchByAllDbFormatExtensions(ref dbPath);
+                FunctionsDBFile.SearchByAllDBFormatExtensions(ref DBPath);
             }
-            if (File.Exists(dbPath))
+            if (File.Exists(DBPath))
             {
-                var loadFoundDbQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (loadFoundDbQuestion == DialogResult.Yes)
+                var LoadFoundDBQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (LoadFoundDBQuestion == DialogResult.Yes)
                 {
-                    await Task.Run(()=>ProjectData.Main.LoadTranslationFromDb(dbPath, false, true)).ConfigureAwait(false);
+                    await Task.Run(()=>ProjectData.Main.LoadTranslationFromDB(DBPath, false, true)).ConfigureAwait(false);
                 }
                 else
                 {
-                    var loadTranslationsFromAllDbQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    if (loadTranslationsFromAllDbQuestion == DialogResult.Yes)
+                    var LoadTranslationsFromAllDBQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (LoadTranslationsFromAllDBQuestion == DialogResult.Yes)
                     {
-                        await Task.Run(() => ProjectData.Main.LoadTranslationFromDb(string.Empty, true)).ConfigureAwait(false);
+                        await Task.Run(() => ProjectData.Main.LoadTranslationFromDB(string.Empty, true)).ConfigureAwait(false);
                     }
                 }
             }

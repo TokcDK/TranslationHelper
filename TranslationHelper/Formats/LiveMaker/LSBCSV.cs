@@ -5,9 +5,9 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.LiveMaker
 {
-    class Lsbcsv : LiveMakerBase
+    class LSBCSV : LiveMakerBase
     {
-        public Lsbcsv()
+        public LSBCSV()
         {
         }
 
@@ -27,7 +27,7 @@ namespace TranslationHelper.Formats.LiveMaker
             var lcnt = 0;
             foreach (var line in ParseData.LinesArray)//iterate all lines
             {
-                ParseData.Line = line;
+                ParseData.line = line;
                 lcnt++;
                 if(string.IsNullOrWhiteSpace(line) && lcnt == ParseData.LinesArray.Length-1)
                 {
@@ -54,7 +54,7 @@ namespace TranslationHelper.Formats.LiveMaker
         {
             if (ParseData.TrimmedLine.StartsWith("pylm"))
             {
-                var dataarray = ParseData.Line.Split(',');
+                var dataarray = ParseData.line.Split(',');
                 //while (dataarray.Length < 5)
                 //{
                 //    ParseData.line = ParseData.line + "\n" + ParseData.reader.ReadLine();
@@ -79,7 +79,7 @@ namespace TranslationHelper.Formats.LiveMaker
                     {
                         AddTranslation(ref translation, original);
                         dataarray[4] = translation;
-                        ParseData.Line = string.Join(",", dataarray);
+                        ParseData.line = string.Join(",", dataarray);
                     }
                 }
             }

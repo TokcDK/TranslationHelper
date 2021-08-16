@@ -2,7 +2,7 @@
 
 namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
-    class Script : KsSyntaxBase
+    class Script : KSSyntaxBase
     {
         public Script()
         {

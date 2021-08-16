@@ -6,9 +6,9 @@ using TranslationHelper.Formats.EAGLS.SCPACK;
 
 namespace TranslationHelper.Projects.EAGLS
 {
-    class Sc : ProjectBase
+    class sc_ : ProjectBase
     {
-        public Sc()
+        public sc_()
         {
         }
 
@@ -25,7 +25,7 @@ namespace TranslationHelper.Projects.EAGLS
         internal override bool Open()
         {
             ProjectData.FilePath = ProjectData.SelectedFilePath;
-            return new ScTxt().Open();
+            return new SC_TXT().Open();
         }
 
         internal override string Name()

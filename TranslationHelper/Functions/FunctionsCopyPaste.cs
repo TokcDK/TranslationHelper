@@ -8,10 +8,10 @@ namespace TranslationHelper.Main.Functions
 {
     class FunctionsCopyPaste
     {
-        public static void CopyToClipboard(DataGridView thFileElementsDataGridView)
+        public static void CopyToClipboard(DataGridView THFileElementsDataGridView)
         {
             //Copy to clipboard
-            DataObject dataObj = thFileElementsDataGridView.GetClipboardContent();
+            DataObject dataObj = THFileElementsDataGridView.GetClipboardContent();
             if (dataObj == null)
             {
             }
@@ -27,11 +27,11 @@ namespace TranslationHelper.Main.Functions
         /// Модифицированная функция учитывает количество строк в ячейке оригинала
         /// и вставляет столько же строк из буфера в ячейку перевода
         /// </summary>
-        public static void PasteClipboardValue(DataGridView thFileElementsDataGridView)
+        public static void PasteClipboardValue(DataGridView THFileElementsDataGridView)
         {
             //LogToFile("PasteClipboardValue Enter");
             //Show Error if no cell is selected
-            if (thFileElementsDataGridView.SelectedCells.Count == 0)
+            if (THFileElementsDataGridView.SelectedCells.Count == 0)
             {
                 MessageBox.Show(T._("Select cell first"), T._("Paste"),
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -39,18 +39,18 @@ namespace TranslationHelper.Main.Functions
             }
 
             //LogToFile("PasteClipboardValue Enter 1");
-            int origcolindex = thFileElementsDataGridView.Columns["Original"].Index;
+            int origcolindex = THFileElementsDataGridView.Columns["Original"].Index;
             //int transcolindex = THFileElementsDataGridView.Columns["Translation"].Index;
 
             //Get the starting Cell
-            DataGridViewCell startCell = GetStartCell(thFileElementsDataGridView);
+            DataGridViewCell startCell = GetStartCell(THFileElementsDataGridView);
             //Get the clipboard value in a dictionary
             Dictionary<int, Dictionary<int, string>> cbValue =
                     ClipBoardValues(Clipboard.GetText());
 
             int origcellmaxlines;
             int origcellcurlines = 0;
-            bool origMaxEqualCurrent = false;
+            bool OrigMaxEqualCurrent = false;
             int iRowIndex = startCell.RowIndex;
             StringBuilder cellvalue = new StringBuilder();
             DataGridViewCell cell = null;
@@ -62,14 +62,14 @@ namespace TranslationHelper.Main.Functions
                 {
                     //LogToFile("PasteClipboardValue iColIndex=" + iColIndex);
                     //Check if the index is within the limit
-                    if (iColIndex <= thFileElementsDataGridView.Columns.Count - 1
-                    && iRowIndex <= thFileElementsDataGridView.Rows.Count - 1)
+                    if (iColIndex <= THFileElementsDataGridView.Columns.Count - 1
+                    && iRowIndex <= THFileElementsDataGridView.Rows.Count - 1)
                     {
-                        cell = thFileElementsDataGridView[iColIndex, iRowIndex];
-                        origcellmaxlines = (thFileElementsDataGridView[origcolindex, iRowIndex].Value + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/).Length;
+                        cell = THFileElementsDataGridView[iColIndex, iRowIndex];
+                        origcellmaxlines = (THFileElementsDataGridView[origcolindex, iRowIndex].Value + string.Empty).Split(new string[1] { Environment.NewLine }, StringSplitOptions.None/*'\n'*/).Length;
 
                         origcellcurlines++;
-                        origMaxEqualCurrent = origcellcurlines == origcellmaxlines;
+                        OrigMaxEqualCurrent = origcellcurlines == origcellmaxlines;
 
                         if (cell.ReadOnly)
                         {
@@ -83,7 +83,7 @@ namespace TranslationHelper.Main.Functions
                                 // Закомментировал как здесь: https://code.google.com/p/seminary-software-engineering/source/browse/trunk/SystemForResultsEvaluaton/SystemForResultsEvaluaton/Core.cs?spec=svn21&r=21
                                 //if ((chkPasteToSelectedCells.Checked && cell.Selected) ||
                                 //   (!chkPasteToSelectedCells.Checked))
-                                if (cbValue.Count > 1 && origMaxEqualCurrent)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
+                                if (cbValue.Count > 1 && OrigMaxEqualCurrent)//модифицировано, чтобы при вставке нескольких строк значений выделенные ячейки убирался символ возврата каретки, если в буффере несколько значений
                                 {
                                     //LogToFile("PasteClipboardValue cbValue.Count > 1 && OrigMaxEqualCurrent");
                                     //получались двойные значения при использовании с функцией автоподстановки для похожих
@@ -107,7 +107,7 @@ namespace TranslationHelper.Main.Functions
                     iColIndex++;
                 }
                 //LogToFile("PasteClipboardValue check if OrigMaxEqualCurrent is true and it is " + OrigMaxEqualCurrent);
-                if (origMaxEqualCurrent)
+                if (OrigMaxEqualCurrent)
                 {
                     if (cell != null)
                     {

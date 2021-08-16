@@ -41,7 +41,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply()
         {
-            if(!ThSettings.SourceLanguageIsJapanese())
+            if(!THSettings.SourceLanguageIsJapanese())
             {
                 return false;
             }

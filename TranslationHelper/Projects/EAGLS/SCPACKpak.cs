@@ -4,16 +4,16 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Projects.EAGLS
 {
-    class ScpacKpak : EaglsBase
+    class SCPACKpak : EAGLSBase
     {
-        public ScpacKpak()
+        public SCPACKpak()
         {
         }
 
-        bool _spak;
+        bool ISpak;
         internal override bool Check()
         {
-            return (_spak = Path.GetFileName(ProjectData.SelectedFilePath) == "SCPACK.pak") && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "SCPACK.idx")) || (Path.GetFileName(ProjectData.SelectedFilePath) == "SCPACK.idx") && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "SCPACK.pak"));
+            return (ISpak = Path.GetFileName(ProjectData.SelectedFilePath) == "SCPACK.pak") && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "SCPACK.idx")) || (Path.GetFileName(ProjectData.SelectedFilePath) == "SCPACK.idx") && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "SCPACK.pak"));
         }
 
         internal override string Filters()
@@ -23,12 +23,12 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override bool Open()
         {
-            return UnpackScpack();
+            return UnpackSCPACK();
         }
 
-        private bool UnpackScpack()
+        private bool UnpackSCPACK()
         {
-            ProjectName = "SCPACK" + (_spak ? "pak" : "idx") + "_" + ProjectData.SelectedFilePath.GetCrc32();
+            ProjectName = "SCPACK" + (ISpak ? "pak" : "idx") + "_" + ProjectData.SelectedFilePath.GetCrc32();
             ScriptDir = ProjectData.SelectedGameDir;
             return PackUnpackFiles() && OpenFiles();
         }

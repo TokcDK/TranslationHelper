@@ -6,9 +6,9 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 {
-    class Exe : FormatBase
+    class EXE : FormatBase
     {
-        public Exe()
+        public EXE()
         {
         }
 
@@ -19,10 +19,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         internal override bool Open()
         {
-            return OpenSaveExe();
+            return OpenSaveEXE();
         }
 
-        private bool OpenSaveExe()
+        private bool OpenSaveEXE()
         {
             if (string.IsNullOrWhiteSpace(ProjectData.FilePath) || !File.Exists(ProjectData.FilePath) || Path.GetExtension(ProjectData.FilePath) != ".exe")
             {
@@ -34,11 +34,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             long startpos = 1720080;
             long endpos = 6803572;
 
-            List<byte> newExeBytesForWrite = null;//new file content
+            List<byte> NewEXEBytesForWrite = null;//new file content
             var translatedbytesControlPosition = 0;
             if (ProjectData.SaveFileMode)
             {
-                newExeBytesForWrite = new List<byte>();//init only for translation
+                NewEXEBytesForWrite = new List<byte>();//init only for translation
             }
 
             var filetranslated = false;
@@ -53,7 +53,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 //var ffbytesAfterMode = false; ;
                 var candidate = new List<byte>();
                 var readstring = true;
-                var baseStreamLength = br.BaseStream.Length;
+                var BaseStreamLength = br.BaseStream.Length;
                 var ffbytesBeforeForSave = new List<byte>();
                 var strtranslated = false;
 
@@ -66,7 +66,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     //add bytes before start position
                     while (br.BaseStream.Position < startpos)
                     {
-                        newExeBytesForWrite.Add(br.ReadByte());
+                        NewEXEBytesForWrite.Add(br.ReadByte());
                         translatedbytesControlPosition++;
                     }
                 }
@@ -180,7 +180,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 {
                                     foreach (var b in candidate)
                                     {
-                                        newExeBytesForWrite.Add(b);
+                                        NewEXEBytesForWrite.Add(b);
                                         translatedbytesControlPosition++;
                                         if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
                                         {
@@ -201,7 +201,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     var strBytes = Encoding.GetEncoding(932).GetBytes(str);
                                     foreach (var b in strBytes)//add main string bytes
                                     {
-                                        newExeBytesForWrite.Add(b);
+                                        NewEXEBytesForWrite.Add(b);
                                         translatedbytesControlPosition++;
                                         if (translatedbytesControlPosition == translatonControlPos)//remove all bytes which over of maxbytes limit
                                         {
@@ -235,7 +235,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 {
                                     foreach (var b in zeroffbytesAfter)// add zero and FF bytes after
                                     {
-                                        newExeBytesForWrite.Add(b);
+                                        NewEXEBytesForWrite.Add(b);
                                         translatedbytesControlPosition++;
                                         if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
                                         {
@@ -251,7 +251,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
                                     while(translatedbytesControlPosition < lastwritepos)
                                     {
-                                        newExeBytesForWrite.Add(lastbyte);
+                                        NewEXEBytesForWrite.Add(lastbyte);
                                         translatedbytesControlPosition++;
                                     }
                                 }
@@ -260,12 +260,12 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                             {
                                 foreach (var b in candidate)//add main string bytes form candidate itself
                                 {
-                                    newExeBytesForWrite.Add(b);
+                                    NewEXEBytesForWrite.Add(b);
                                     translatedbytesControlPosition++;
                                 }
                                 foreach (var b in zeroffbytesAfter)// add zero FF bytes
                                 {
-                                    newExeBytesForWrite.Add(b);
+                                    NewEXEBytesForWrite.Add(b);
                                     translatedbytesControlPosition++;
                                 }
                             }
@@ -298,7 +298,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 if (ProjectData.SaveFileMode)
                                 {
                                     //add currentbyte to translation because it was already read but cyrcle will over
-                                    newExeBytesForWrite.Add(currentbyte);
+                                    NewEXEBytesForWrite.Add(currentbyte);
                                     translatedbytesControlPosition++;
                                 }
 
@@ -320,9 +320,9 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 if (ProjectData.SaveFileMode)
                 {
                     //add rest bytes of the stream
-                    while (baseStreamLength > br.BaseStream.Position)
+                    while (BaseStreamLength > br.BaseStream.Position)
                     {
-                        newExeBytesForWrite.Add(br.ReadByte());
+                        NewEXEBytesForWrite.Add(br.ReadByte());
                         translatedbytesControlPosition++;
                     }
                 }
@@ -330,13 +330,13 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             if (ProjectData.OpenFileMode)
             {
-                return CheckTablesContent(ParseData.Tablename);
+                return CheckTablesContent(ParseData.tablename);
             }
             else
             {
                 if (filetranslated)
                 {
-                    File.WriteAllBytes(ProjectData.FilePath, newExeBytesForWrite.ToArray());
+                    File.WriteAllBytes(ProjectData.FilePath, NewEXEBytesForWrite.ToArray());
                 }
 
                 return true;
@@ -354,7 +354,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             foreach (var c in str)
             {
                 ind++;
-                if (c != '・' && c.ToString().IsJpChar())
+                if (c != '・' && c.ToString().IsJPChar())
                 {
                     return str.Substring(ind);
                 }
@@ -369,7 +369,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         internal override bool Save()
         {
-            return OpenSaveExe();
+            return OpenSaveEXE();
         }
     }
 }

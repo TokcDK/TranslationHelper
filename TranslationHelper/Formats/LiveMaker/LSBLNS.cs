@@ -3,9 +3,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.LiveMaker
 {
-    class Lsblns : LiveMakerBase
+    class LSBLNS : LiveMakerBase
     {
-        public Lsblns()
+        public LSBLNS()
         {
         }
 
@@ -14,30 +14,30 @@ namespace TranslationHelper.Formats.LiveMaker
             return ".lns";
         }
 
-        bool _captureMessage = false;
+        bool CaptureMessage = false;
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
-            if (_captureMessage)
+            if (CaptureMessage)
             {
-                if (ParseData.Line.StartsWith("{MESOFF"))
+                if (ParseData.line.StartsWith("{MESOFF"))
                 {
-                    _captureMessage = false;
+                    CaptureMessage = false;
                 }
                 else
                 {
                     if (
-                        !ParseData.Line.StartsWith("{PLAYSND")//exclude not messages
-                        && !ParseData.Line.StartsWith("{WAITPLAY")//exclude not messages
-                        && !ParseData.Line.StartsWith("{CHANGECG")//exclude not messages
-                        && !ParseData.Line.StartsWith("{DELETECG")//exclude not messages
-                        && !ParseData.Line.StartsWith("{CREATECG")//exclude not messages
-                        && !ParseData.Line.StartsWith("<EVENT")//exclude not messages
-                        && IsValidString(CleanedFromTags(ParseData.Line))
+                        !ParseData.line.StartsWith("{PLAYSND")//exclude not messages
+                        && !ParseData.line.StartsWith("{WAITPLAY")//exclude not messages
+                        && !ParseData.line.StartsWith("{CHANGECG")//exclude not messages
+                        && !ParseData.line.StartsWith("{DELETECG")//exclude not messages
+                        && !ParseData.line.StartsWith("{CREATECG")//exclude not messages
+                        && !ParseData.line.StartsWith("<EVENT")//exclude not messages
+                        && IsValidString(CleanedFromTags(ParseData.line))
                         )
                     {
                         if (ProjectData.OpenFileMode)
                         {
-                            AddRowData(ParseData.Line, "", true, false);
+                            AddRowData(ParseData.line, "", true, false);
                         }
                         else
                         {
@@ -47,12 +47,12 @@ namespace TranslationHelper.Formats.LiveMaker
 
                 }
             }
-            else if (ParseData.Line.StartsWith("{MESON"))
+            else if (ParseData.line.StartsWith("{MESON"))
             {
-                _captureMessage = true;
+                CaptureMessage = true;
             }
 
-            SaveModeAddLine(ParseData.Line.Length > 0 ? "\r" : "\r\n");//not empty line in lns ends with \r
+            SaveModeAddLine(ParseData.line.Length > 0 ? "\r" : "\r\n");//not empty line in lns ends with \r
 
             return 0;
         }

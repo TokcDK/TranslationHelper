@@ -40,7 +40,7 @@ namespace TranslationHelper.SimpleHelpers
 {
     public class FileEncoding
     {
-        const int DefaultBufferSize = 128 * 1024;
+        const int DEFAULT_BUFFER_SIZE = 128 * 1024;
 
         /// <summary>
         /// Tries to detect the file encoding.
@@ -50,7 +50,7 @@ namespace TranslationHelper.SimpleHelpers
         /// <returns></returns>
         public static Encoding DetectFileEncoding(string inputFilename, Encoding defaultIfNotDetected = null)
         {
-            using (var stream = new System.IO.FileStream(inputFilename, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite | System.IO.FileShare.Delete, DefaultBufferSize))
+            using (var stream = new System.IO.FileStream(inputFilename, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite | System.IO.FileShare.Delete, DEFAULT_BUFFER_SIZE))
             {
                 return DetectFileEncoding(stream) ?? defaultIfNotDetected;
             }
@@ -202,7 +202,7 @@ namespace TranslationHelper.SimpleHelpers
         }
 
         //from simple helpers changed required older ude.csharp to newer ude.netstandart 1.2
-        readonly Ude.CharsetDetector _ude = new Ude.CharsetDetector();
+        readonly Ude.CharsetDetector ude = new Ude.CharsetDetector();
         bool _started;
 
 
@@ -227,7 +227,7 @@ namespace TranslationHelper.SimpleHelpers
         /// </summary>
         public bool HasByteOrderMark { get; set; }
 
-        readonly Dictionary<string, int> _encodingFrequency = new Dictionary<string, int>(StringComparer.Ordinal);
+        readonly Dictionary<string, int> encodingFrequency = new Dictionary<string, int>(StringComparer.Ordinal);
 
         /// <summary>
         /// Resets this instance.
@@ -237,8 +237,8 @@ namespace TranslationHelper.SimpleHelpers
             _started = false;
             Done = false;
             HasByteOrderMark = false;
-            _encodingFrequency.Clear();
-            _ude.Reset();
+            encodingFrequency.Clear();
+            ude.Reset();
             EncodingName = null;
         }
 
@@ -309,11 +309,11 @@ namespace TranslationHelper.SimpleHelpers
             }
 
             // execute charset detector                
-            _ude.Feed(inputData, start, count);
-            _ude.DataEnd();
-            if (_ude.IsDone() && !string.IsNullOrEmpty(_ude.Charset))
+            ude.Feed(inputData, start, count);
+            ude.DataEnd();
+            if (ude.IsDone() && !string.IsNullOrEmpty(ude.Charset))
             {
-                IncrementFrequency(_ude.Charset);
+                IncrementFrequency(ude.Charset);
                 Done = true;
                 return EncodingName;
             }
@@ -347,10 +347,10 @@ namespace TranslationHelper.SimpleHelpers
         public Encoding Complete()
         {
             Done = true;
-            _ude.DataEnd();
-            if (_ude.IsDone() && !string.IsNullOrEmpty(_ude.Charset))
+            ude.DataEnd();
+            if (ude.IsDone() && !string.IsNullOrEmpty(ude.Charset))
             {
-                EncodingName = _ude.Charset;
+                EncodingName = ude.Charset;
             }
             // vote for best encoding
             EncodingName = GetCurrentEncoding();
@@ -362,16 +362,16 @@ namespace TranslationHelper.SimpleHelpers
 
         private void IncrementFrequency(string charset)
         {
-            _encodingFrequency.TryGetValue(charset, out int currentCount);
-            _encodingFrequency[charset] = ++currentCount;
+            encodingFrequency.TryGetValue(charset, out int currentCount);
+            encodingFrequency[charset] = ++currentCount;
         }
 
         private string GetCurrentEncoding()
         {
-            if (_encodingFrequency.Count == 0)
+            if (encodingFrequency.Count == 0)
                 return null;
             // ASCII should be the last option, since other encodings often has ASCII included...
-            return _encodingFrequency
+            return encodingFrequency
                     .OrderByDescending(i => i.Value * (i.Key != "ASCII" ? 1 : 0))
                     .FirstOrDefault().Key;
         }

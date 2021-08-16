@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
-    class ExportedCsv : FormatBase
+    class ExportedCSV : FormatBase
     {
-        public ExportedCsv()
+        public ExportedCSV()
         {
         }
 
@@ -15,9 +15,9 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
-            if (!string.IsNullOrWhiteSpace(ParseData.Line) && !ParseData.Line.Contains("DO NOT EDIT"))//skip info lines
+            if (!string.IsNullOrWhiteSpace(ParseData.line) && !ParseData.line.Contains("DO NOT EDIT"))//skip info lines
             {
-                var data = ParseData.Line.Split('\t');
+                var data = ParseData.line.Split('\t');
                 if (ProjectData.OpenFileMode)
                 {
                     AddRowData(data[0], "", true, false);
@@ -26,7 +26,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                 {
                     AddTranslation(ref data[1], data[0]);
                     data[1] = data[1].Replace("\t"," ");//replace tabspace with common space because tab is splitter
-                    ParseData.Line = string.Join("\t", data);
+                    ParseData.line = string.Join("\t", data);
                 }
             }
 

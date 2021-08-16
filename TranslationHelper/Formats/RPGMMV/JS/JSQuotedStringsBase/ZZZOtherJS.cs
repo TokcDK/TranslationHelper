@@ -1,11 +1,11 @@
 ﻿namespace TranslationHelper.Formats.RPGMMV.JS
 {
-    class ZzzOtherJs : JsQuotedStringsBase
+    class ZZZOtherJS : JSQuotedStringsBase
     {
-        public ZzzOtherJs()
+        public ZZZOtherJS()
         {
         }
 
-        public override string JsName => "TEMPLATE";
+        public override string JSName => "TEMPLATE";
     }
 }

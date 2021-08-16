@@ -25,9 +25,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         protected override List<System.Type> FormatType()
         {
             return new List<System.Type>(3) {
-                typeof(Formats.KiriKiri.Games.FGroup1.VirginLode2.Ks),
-                typeof(Formats.KiriKiri.Games.Tjs),
-                typeof(Formats.KiriKiri.Games.CSV.Csv)
+                typeof(Formats.KiriKiri.Games.FGroup1.VirginLode2.KS),
+                typeof(Formats.KiriKiri.Games.TJS),
+                typeof(Formats.KiriKiri.Games.CSV.CSV)
             };
         }
 
@@ -38,10 +38,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
         internal override void ReadLineMod(ref string line)
         {
-            ReplaceLatinInlineTagsToJpLatin(ref line);
+            ReplaceLatinInlineTagsToJPLatin(ref line);
         }
 
-        private void ReplaceLatinInlineTagsToJpLatin(ref string line)
+        private void ReplaceLatinInlineTagsToJPLatin(ref string line)
         {
             if (string.IsNullOrWhiteSpace(line) || string.IsNullOrWhiteSpace(ProjectData.FilePath) || line.IndexOf('"') == -1)
             {

@@ -14,9 +14,9 @@ using TranslationHelper.Translators;
 
 namespace TranslationHelper
 {
-    class GoogleApiold : TranslatorsBase
+    class GoogleAPIOLD : TranslatorsBase
     {
-        public GoogleApiold()
+        public GoogleAPIOLD()
         {
         }
 
@@ -101,23 +101,23 @@ namespace TranslationHelper
         //    return value;
         //}
 
-        public override string Translate(string originalText, string languageFrom = "auto", string languageTo = "en")
+        public override string Translate(string OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
             if (ErrorsWebCntOverall > 5)
             {
                 return null;
             }
 
-            string resultOfTranslation;
-            if (originalText.Length == 0)
+            string ResultOfTranslation;
+            if (OriginalText.Length == 0)
             {
-                resultOfTranslation = string.Empty;
+                ResultOfTranslation = string.Empty;
             }
             else
             {
-                if (SessionCache.ContainsKey(originalText))
+                if (sessionCache.ContainsKey(OriginalText))
                 {
-                    resultOfTranslation = SessionCache[originalText];
+                    ResultOfTranslation = sessionCache[OriginalText];
                 }
                 else
                 {
@@ -131,7 +131,7 @@ namespace TranslationHelper
                     //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "DNTT", RegexOptions.None);
                     //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
                     //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "<code>0</code>", RegexOptions.None);
-                    string str = Regex.Replace(originalText, "\\r\\n|\\r|\\n", " </br> ", RegexOptions.None);
+                    string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", " </br> ", RegexOptions.None);
                     //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nSTR:\r\n" + str);
                     //string str = OriginalText.Replace(Environment.NewLine, "BBC");
                     //string str = OriginalText.Replace(Environment.NewLine, "%0A");
@@ -142,18 +142,18 @@ namespace TranslationHelper
                     //string arg = UrlEncodeForTranslation(str);
                     //string arg = str;
 
-                    string address = GetUrlAddress(languageFrom, languageTo, arg);
+                    string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
-                    if (WebClient == null)
-                        WebClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
+                    if (webClient == null)
+                        webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
                     //webClient = new ScrapySharp.Network.ScrapingBrowser();
 
                     //using (WebClient webClient = new WebClient())
                     //{
                     //}
-                    WebClient.Encoding = Encoding.UTF8;
+                    webClient.Encoding = Encoding.UTF8;
                     //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
-                    WebClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.ChromeIronWin7);
+                    webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
                     //webClient.UserAgent = ScrapySharp.Network.FakeUserAgents.Chrome;
                     try
                     {
@@ -164,7 +164,7 @@ namespace TranslationHelper
 
                         //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
 
-                        string text = WebClient.DownloadString(new Uri(address));
+                        string text = webClient.DownloadString(new Uri(address));
 
                         HtmlDocument htmlDocument = WBhtmlDocument();
                         htmlDocument.Write(text);
@@ -172,7 +172,7 @@ namespace TranslationHelper
                         {
                             string text2 = GetTranslationHtmlElement(htmlDocument).FixFormat();
 
-                            SessionCache[originalText] = text2;
+                            sessionCache[OriginalText] = text2;
 
                             return text2;
 
@@ -220,13 +220,13 @@ namespace TranslationHelper
                     //{
                     //    webClient.Dispose();
                     //}
-                    resultOfTranslation = string.Empty;
+                    ResultOfTranslation = string.Empty;
                 }
             }
-            return resultOfTranslation;
+            return ResultOfTranslation;
         }
 
-        public override string[] Translate(string[] originalText, string languageFrom = "auto", string languageTo = "en")
+        public override string[] Translate(string[] originalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
             if (ErrorsWebCntOverall > 9 || originalText == null)
             {
@@ -246,9 +246,9 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    if (SessionCache.ContainsKey(originalText[i]))
+                    if (sessionCache.ContainsKey(originalText[i]))
                     {
-                        array[i] = SessionCache[originalText[i]];
+                        array[i] = sessionCache[originalText[i]];
                     }
 
                     bool oneOrLast = i == originalTextArrayLength - 1;
@@ -262,7 +262,7 @@ namespace TranslationHelper
                                 //"#># ",
                                 //"<br>",
                                 //Environment.NewLine,
-                                Regex.Replace(Regex.Replace(originalText[i], "\\r\\n|\\r|\\n", Dntt, RegexOptions.None), @"<br>", "QBRQ", RegexOptions.None),
+                                Regex.Replace(Regex.Replace(originalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None), @"<br>", "QBRQ", RegexOptions.None),
                                 //" #<#",
                                 //Conversions.ToString(i),
                                 //"##\r\n"
@@ -277,19 +277,19 @@ namespace TranslationHelper
             }
             //FileWriter.WriteData("c:\\THLog.log", "\r\nstringBuilder.ToString():\r\n" + stringBuilder.ToString());
             var arg = HttpUtility.UrlEncode(stringBuilder.ToString(), Encoding.UTF8);
-            var address = GetUrlAddress(languageFrom, languageTo, arg);
+            var address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
-            if (WebClient == null)
+            if (webClient == null)
             {
-                WebClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
+                webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
                 //webClient = new ScrapySharp.Network.ScrapingBrowser();
             }
             //using (WebClient webClient = new WebClient())
             //{
             //}
-            WebClient.Encoding = Encoding.UTF8;
+            webClient.Encoding = Encoding.UTF8;
             //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
-            WebClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.ChromeIronWin7);
+            webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
             //webClient.UserAgent= ScrapySharp.Network.FakeUserAgents.Chrome;
             var uri = new Uri(address);
             try
@@ -305,7 +305,7 @@ namespace TranslationHelper
 
                 try
                 {
-                    text = WebClient.DownloadString(uri);
+                    text = webClient.DownloadString(uri);
                 }
                 catch (WebException)
                 {
@@ -319,7 +319,7 @@ namespace TranslationHelper
                         try
                         {
                             //another try
-                            text = WebClient.DownloadString(uri);
+                            text = webClient.DownloadString(uri);
                             ErrorsWebCntOverall = 0;
                             ErrorsWebCnt = 0;
                         }
@@ -411,9 +411,9 @@ namespace TranslationHelper
             return null;
         }
 
-        private string GetUrlAddress(string languageFrom, string languageTo, string arg)
+        private string GetUrlAddress(string LanguageFrom, string LanguageTo, string arg)
         {
-            return string.Format(CultureInfo.InvariantCulture, "https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&tk={3}&q={2}", languageFrom, languageTo, arg, Tk(arg));
+            return string.Format(CultureInfo.InvariantCulture, "https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&tk={3}&q={2}", LanguageFrom, LanguageTo, arg, Tk(arg));
 
             //string address = string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, arg);
             //string address = string.Format("https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&q={2}", LanguageFrom, LanguageTo, str);
@@ -443,11 +443,11 @@ namespace TranslationHelper
 
         private HtmlDocument WBhtmlDocument()
         {
-            if (Wb == null)
+            if (WB == null)
             {
-                Wb = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty };
+                WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty };
             }
-            return Wb.Document.OpenNew(true);
+            return WB.Document.OpenNew(true);
 
             //using (WebBrowser WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty })//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
             //{
@@ -462,7 +462,7 @@ namespace TranslationHelper
                          //.Replace("<br> ", "<br>").Replace("<br>", string.Empty)
                          .Replace(" </br> ", "</br>")
                          .Replace("DNTT", Environment.NewLine)
-                         .Split(Splitter, StringSplitOptions.None);
+                         .Split(splitter, StringSplitOptions.None);
 
             //возвращение <br>, если такие были изначально
             array = array.Select(x => x.Replace("NBRN", "</br>")).ToArray();
@@ -471,7 +471,7 @@ namespace TranslationHelper
             return array;//.Take(array.Length - 1).ToArray(); // commented skip last element because there will not be empty line anymore
         }
 
-        private const string Dntt = "DNTT";
+        private const string DNTT = "DNTT";
         //private const string DNTT = "<code>0</code>";
 
         //private const string SEPARATOR = "\r\n#DONOTTRANSLATE#\r\n";
@@ -484,11 +484,11 @@ namespace TranslationHelper
 
         //## 27 #># Same sex with this woman _ <# 27 ## 
         //\#\# \d{1,3} \#\# ?(.*) ?\#\# \d{1,3} \#\# ?
-        private static readonly string[] Splitter = new string[] { "</br>" };
+        private static readonly string[] splitter = new string[] { "</br>" };
 
         // TKK Approach stolen from Translation Aggregator r190, all credits to Sinflower
-        private long _m = 427761;
-        private long _s = 1179739010;
+        private long m = 427761;
+        private long s = 1179739010;
         //private int _translationsPerRequest = 1;
         //private int _translationCount = 0;
         //private static readonly string HttpsServicePointTranslateTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl={1}&dt=t&dt=at&tk={2}&q={3}";
@@ -513,51 +513,51 @@ namespace TranslationHelper
 
         private string Tk(string r)
         {
-            List<long> s = new List<long>();
+            List<long> S = new List<long>();
 
             for (var v = 0; v < r.Length; v++)
             {
-                long a = r[v];
-                if (128 > a)
-                    s.Add(a);
+                long A = r[v];
+                if (128 > A)
+                    S.Add(A);
                 else
                 {
-                    if (2048 > a)
-                        s.Add(a >> 6 | 192);
-                    else if (55296 == (64512 & a) && v + 1 < r.Length && 56320 == (64512 & r[v + 1]))
+                    if (2048 > A)
+                        S.Add(A >> 6 | 192);
+                    else if (55296 == (64512 & A) && v + 1 < r.Length && 56320 == (64512 & r[v + 1]))
                     {
-                        a = 65536 + ((1023 & a) << 10) + (1023 & r[++v]);
-                        s.Add(a >> 18 | 240);
-                        s.Add(a >> 12 & 63 | 128);
+                        A = 65536 + ((1023 & A) << 10) + (1023 & r[++v]);
+                        S.Add(A >> 18 | 240);
+                        S.Add(A >> 12 & 63 | 128);
                     }
                     else
                     {
-                        s.Add(a >> 12 | 224);
-                        s.Add(a >> 6 & 63 | 128);
+                        S.Add(A >> 12 | 224);
+                        S.Add(A >> 6 & 63 | 128);
                     }
 
-                    s.Add(63 & a | 128);
+                    S.Add(63 & A | 128);
                 }
             }
 
-            const string f = "+-a^+6";
-            const string d = "+-3^+b+-f";
-            long p = _m;
+            const string F = "+-a^+6";
+            const string D = "+-3^+b+-f";
+            long p = m;
 
-            for (var b = 0; b < s.Count; b++)
+            for (var b = 0; b < S.Count; b++)
             {
-                p += s[b];
-                p = Vi(p, f);
+                p += S[b];
+                p = Vi(p, F);
             }
 
-            p = Vi(p, d);
-            p ^= _s;
+            p = Vi(p, D);
+            p ^= s;
             if (0 > p)
                 p = (2147483647 & p) + 2147483648;
 
             p %= (long)1e6;
 
-            return p.ToString(CultureInfo.InvariantCulture) + "." + (p ^ _m).ToString(CultureInfo.InvariantCulture);
+            return p.ToString(CultureInfo.InvariantCulture) + "." + (p ^ m).ToString(CultureInfo.InvariantCulture);
         }
     }
 }

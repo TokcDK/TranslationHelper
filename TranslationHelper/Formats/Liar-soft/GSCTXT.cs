@@ -5,9 +5,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.Liar_soft
 {
-    class Gsctxt : FormatBase
+    class GSCTXT : FormatBase
     {
-        public Gsctxt()
+        public GSCTXT()
         {
         }
 
@@ -18,18 +18,18 @@ namespace TranslationHelper.Formats.Liar_soft
 
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
-            if (!ParseData.Line.StartsWith("#"))
+            if (!ParseData.line.StartsWith("#"))
             {
                 SaveModeAddLine();
                 return 0;
             }
 
             var message = new StringBuilder();
-            message.Append(ParseData.Line);//add 1st line
-            while ((ParseData.Line=ParseData.Reader.ReadLine())!=">" && ParseData.Line != null)
+            message.Append(ParseData.line);//add 1st line
+            while ((ParseData.line=ParseData.reader.ReadLine())!=">" && ParseData.line != null)
             {
                 message.AppendLine();
-                message.Append(ParseData.Line);
+                message.Append(ParseData.line);
             }
 
             var str = message.ToString().Remove(0, 1);//remove 1st # symbol
@@ -57,7 +57,7 @@ namespace TranslationHelper.Formats.Liar_soft
         {
             if (ProjectData.OpenFileMode)
             {
-                return CheckTablesContent(ParseData.Tablename);
+                return CheckTablesContent(ParseData.tablename);
             }
             else
             {

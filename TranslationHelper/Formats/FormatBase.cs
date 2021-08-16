@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats
         protected FormatBase()
         {
             TablesLinesDict = ProjectData.TablesLinesDict;
-            Hashes = ProjectData.Hashes;
+            hashes = ProjectData.hashes;
 
             if (ProjectData.CurrentProject != null)
             {
@@ -74,7 +74,7 @@ namespace TranslationHelper.Formats
             //preclean string
             inputString = ProjectData.CurrentProject.CleanStringForCheck(inputString);
 
-            return !string.IsNullOrWhiteSpace(inputString) && !inputString.ForJpLangHaveMostOfRomajiOtherChars();
+            return !string.IsNullOrWhiteSpace(inputString) && !inputString.ForJPLangHaveMostOfRomajiOtherChars();
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual void ParseStringFileOpen()
         {
-            using (ParseData.Reader = new StreamReader(ProjectData.FilePath, ParseStringFileEncoding()))
+            using (ParseData.reader = new StreamReader(ProjectData.FilePath, ParseStringFileEncoding()))
             {
                 ParseStringFileLines();
             }
@@ -137,10 +137,10 @@ namespace TranslationHelper.Formats
         {
             if (UseTableNameWithoutExtension)
             {
-                ParseData.Tablename = Path.GetFileNameWithoutExtension(ParseData.Tablename);
+                ParseData.tablename = Path.GetFileNameWithoutExtension(ParseData.tablename);
             }
 
-            return ParseData.Tablename;
+            return ParseData.tablename;
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual void ParseStringFilePreOpenExtra()
         {
-            _firstline = true;
+            firstline = true;
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace TranslationHelper.Formats
         {
             if (ProjectData.OpenFileMode)
             {
-                return CheckTablesContent(ParseData.Tablename);
+                return CheckTablesContent(ParseData.tablename);
             }
             else
             {
@@ -218,49 +218,49 @@ namespace TranslationHelper.Formats
             return ParseStringFileLineReturnState.Break;
         }
 
-        bool _firstline = true;
+        bool firstline = true;
 
         /// <summary>
         /// add line for wtite in save mode
         /// </summary>
         /// <param name="newline"></param>
-        /// <param name="lastEmptyLine">last line must be empty</param>
-        protected virtual void SaveModeAddLine(bool lastEmptyLine)
+        /// <param name="LastEmptyLine">last line must be empty</param>
+        protected virtual void SaveModeAddLine(bool LastEmptyLine)
         {
-            SaveModeAddLine("\r\n", lastEmptyLine);
+            SaveModeAddLine("\r\n", LastEmptyLine);
         }
 
         /// <summary>
         /// last newline symbol for paste after required line, not before it
         /// </summary>
-        string _lastNewline = "\r\n";
+        string lastNewline = "\r\n";
         /// <summary>
         /// add line for wtite in save mode
         /// </summary>
         /// <param name="newline"></param>
-        /// <param name="lastEmptyLine">last line must be empty</param>
-        protected virtual void SaveModeAddLine(string newline = "\r\n", bool lastEmptyLine = false)
+        /// <param name="LastEmptyLine">last line must be empty</param>
+        protected virtual void SaveModeAddLine(string newline = "\r\n", bool LastEmptyLine = false)
         {
             if (ProjectData.SaveFileMode)
             {
-                if (lastEmptyLine)
+                if (LastEmptyLine)
                 {
-                    ParseData.ResultForWrite.Append(ParseData.Line + newline);
+                    ParseData.ResultForWrite.Append(ParseData.line + newline);
                 }
                 else
                 {
-                    if (_firstline)
+                    if (firstline)
                     {
-                        _firstline = false;
+                        firstline = false;
                     }
                     else
                     {
-                        ParseData.ResultForWrite.Append(_lastNewline);
+                        ParseData.ResultForWrite.Append(lastNewline);
                     }
 
-                    _lastNewline = newline;//set newline symbol to paste after current line
+                    lastNewline = newline;//set newline symbol to paste after current line
 
-                    ParseData.ResultForWrite.Append(ParseData.Line);
+                    ParseData.ResultForWrite.Append(ParseData.line);
                 }
             }
         }
@@ -273,11 +273,11 @@ namespace TranslationHelper.Formats
         /// <param name="original">if not set then will be used ParseData.line</param>
         protected virtual void AddTranslation(string original = null)
         {
-            original = original ?? ParseData.Line;
+            original = original ?? ParseData.line;
             if (ProjectData.TablesLinesDict.ContainsKey(original))
             {
                 ParseData.Ret = true;
-                ParseData.Line = TranslationMod(ProjectData.TablesLinesDict[original]);
+                ParseData.line = TranslationMod(ProjectData.TablesLinesDict[original]);
             }
         }
 
@@ -290,7 +290,7 @@ namespace TranslationHelper.Formats
         /// <param name="original">if not set then will be used ParseData.line</param>
         protected virtual void AddTranslation(ref string translation, string original = null)
         {
-            original = original ?? ParseData.Line;
+            original = original ?? ParseData.line;
             if (ProjectData.TablesLinesDict.ContainsKey(original))
             {
                 ParseData.Ret = true;
@@ -315,11 +315,11 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual string ReadLine()
         {
-            ParseData.Line = ParseData.Reader.ReadLine();
+            ParseData.line = ParseData.reader.ReadLine();
             ReadLineMod();
             //ParseData.TrimmedLine = ParseData.line;
 
-            return ParseData.Line;
+            return ParseData.line;
         }
 
         /// <summary>
@@ -375,18 +375,18 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected bool ParsePattern(KeyValuePair<string, string> pattern, bool useInlineSearch = true)
         {
-            if ((!useInlineSearch || ParseData.Line.IndexOf(pattern.Key) != -1) && Regex.IsMatch(ParseData.Line, pattern.Value, RegexOptions.Compiled))
+            if ((!useInlineSearch || ParseData.line.IndexOf(pattern.Key) != -1) && Regex.IsMatch(ParseData.line, pattern.Value, RegexOptions.Compiled))
             {
-                var mc = Regex.Matches(ParseData.Line, pattern.Value, RegexOptions.Compiled);
+                var mc = Regex.Matches(ParseData.line, pattern.Value, RegexOptions.Compiled);
                 if (mc.Count > 0)
                 {
-                    var isSet = false;
+                    var IsSet = false;
                     if (ProjectData.OpenFileMode)
                     {
                         foreach (Match m in mc)
                         {
                             var str = m.Result("$1");
-                            isSet = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, true, true);
+                            IsSet = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, true, true);
                         }
                     }
                     else
@@ -397,13 +397,13 @@ namespace TranslationHelper.Formats
                             var trans = str;
                             if (IsValidString(str) && SetTranslation(ref trans) && trans != str)
                             {
-                                ParseData.Line = ParseData.Line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
+                                ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
                                 ParseData.Ret = true;
-                                isSet = true;
+                                IsSet = true;
                             }
                         }
                     }
-                    return isSet;
+                    return IsSet;
                 }
             }
             return false;
@@ -484,7 +484,7 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// tablename/filename
             /// </summary>
-            internal string Tablename;
+            internal string tablename;
             /// <summary>
             /// result of parsing
             /// </summary>
@@ -492,12 +492,12 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// line value
             /// </summary>
-            internal string Line;
-            string _trimmed = string.Empty;
+            internal string line;
+            string trimmed = string.Empty;
             /// <summary>
             /// trimmed line value
             /// </summary>
-            internal string TrimmedLine { get => Line.Trim(); }
+            internal string TrimmedLine { get => line.Trim(); }
             /// <summary>
             /// Usually here adding file's content for write
             /// </summary>
@@ -509,7 +509,7 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// Streamreader of the processing file
             /// </summary>
-            internal StreamReader Reader;
+            internal StreamReader reader;
             /// <summary>
             /// array of all lines of opened file. For causes when it is using
             /// </summary>
@@ -518,7 +518,7 @@ namespace TranslationHelper.Formats
             public ParseFileData()
             {
 
-                Tablename = Path.GetFileName(ProjectData.FilePath);
+                tablename = Path.GetFileName(ProjectData.FilePath);
                 if (ProjectData.SaveFileMode)
                 {
                     ResultForWrite = new StringBuilder();
@@ -535,90 +535,90 @@ namespace TranslationHelper.Formats
         }
         protected void AddTables(string tablename, string[] extraColumns = null)
         {
-            if (!ProjectData.ThFilesElementsDataset.Tables.Contains(tablename))
+            if (!ProjectData.THFilesElementsDataset.Tables.Contains(tablename))
             {
-                ProjectData.ThFilesElementsDataset.Tables.Add(tablename);
-                ProjectData.ThFilesElementsDataset.Tables[tablename].Columns.Add("Original");
-                ProjectData.ThFilesElementsDataset.Tables[tablename].Columns.Add("Translation");
+                ProjectData.THFilesElementsDataset.Tables.Add(tablename);
+                ProjectData.THFilesElementsDataset.Tables[tablename].Columns.Add("Original");
+                ProjectData.THFilesElementsDataset.Tables[tablename].Columns.Add("Translation");
 
                 if (extraColumns != null && extraColumns.Length > 0)
                 {
                     foreach (var columnName in extraColumns)
                     {
-                        ProjectData.ThFilesElementsDataset.Tables[tablename].Columns.Add(columnName);
+                        ProjectData.THFilesElementsDataset.Tables[tablename].Columns.Add(columnName);
                     }
                 }
             }
-            if (!ProjectData.ThFilesElementsDatasetInfo.Tables.Contains(tablename))
+            if (!ProjectData.THFilesElementsDatasetInfo.Tables.Contains(tablename))
             {
-                ProjectData.ThFilesElementsDatasetInfo.Tables.Add(tablename);
-                ProjectData.ThFilesElementsDatasetInfo.Tables[tablename].Columns.Add("Info");
+                ProjectData.THFilesElementsDatasetInfo.Tables.Add(tablename);
+                ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Columns.Add("Info");
             }
         }
 
-        protected HashSet<string> Hashes;
+        protected HashSet<string> hashes;
         /// <summary>
         /// Add string to table with options
         /// </summary>
-        /// <param name="rowData">original string</param>
-        /// <param name="rowInfo">info about the string</param>
-        /// <param name="checkAddHashes">add strings to hashes and skip same strings</param>
+        /// <param name="RowData">original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <returns></returns>
-        internal bool AddRowData(string rowData, string rowInfo = "", bool checkAddHashes = false, bool checkInput = true)
+        internal bool AddRowData(string RowData, string RowInfo = "", bool CheckAddHashes = false, bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(ProjectData.FilePath), rowData, rowInfo, checkAddHashes, checkInput);
+            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput);
         }
         /// <summary>
         /// Add string to table with options
         /// </summary>
-        /// <param name="rowData">original string</param>
-        /// <param name="rowInfo">info about the string</param>
-        /// <param name="checkAddHashes">add strings to hashes and skip same strings</param>
+        /// <param name="RowData">original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <returns></returns>
-        internal bool AddRowData(string[] rowData, string rowInfo, bool checkAddHashes = false, bool checkInput = true)
+        internal bool AddRowData(string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(ProjectData.FilePath), rowData, rowInfo, checkAddHashes, checkInput, false);
+            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput, false);
         }
         /// <summary>
         /// Add string to table with options
         /// </summary>
         /// <param name="tablename">file/table name</param>
-        /// <param name="rowData">original string</param>
-        /// <param name="rowInfo">info about the string</param>
-        /// <param name="checkAddHashes">add strings to hashes and skip same strings</param>
-        /// <param name="checkInput">cheack original string if valid</param>
-        /// <param name="addToDictionary"></param>
+        /// <param name="RowData">original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
+        /// <param name="CheckInput">cheack original string if valid</param>
+        /// <param name="AddToDictionary"></param>
         /// <returns></returns>
-        internal bool AddRowData(string tablename, string rowData, string rowInfo, bool checkAddHashes = false, bool checkInput = true, bool addToDictionary = false)
+        internal bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
         {
-            return AddRowData(tablename, new string[] { rowData }, rowInfo, checkAddHashes, checkInput, addToDictionary);
+            return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckAddHashes, CheckInput, AddToDictionary);
         }
 
         /// <summary>
         /// Add string to table with options
         /// </summary>
         /// <param name="tablename">file/table name</param>
-        /// <param name="rowData">original string</param>
-        /// <param name="rowInfo">info about the string</param>
-        /// <param name="checkAddHashes">add strings to hashes and skip same strings</param>
-        /// <param name="checkInput">cheack original string if valid</param>
-        /// <param name="addToDictionary"></param>
+        /// <param name="RowData">original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
+        /// <param name="CheckInput">cheack original string if valid</param>
+        /// <param name="AddToDictionary"></param>
         /// <returns></returns>
-        internal bool AddRowData(string tablename, string[] rowData, string rowInfo, bool checkAddHashes = false, bool checkInput = true, bool addToDictionary = false)
+        internal bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
         {
-            var original = AddRowDataPreAddOriginalStringMod(rowData[0]);
+            var original = AddRowDataPreAddOriginalStringMod(RowData[0]);
 
-            if (checkInput && !IsValidString(original))
+            if (CheckInput && !IsValidString(original))
             {
                 return false;
             }
 
-            if (Properties.Settings.Default.DontLoadDuplicates && checkAddHashes && Hashes != null && Hashes.Contains(rowData[0]))
+            if (Properties.Settings.Default.DontLoadDuplicates && CheckAddHashes && hashes != null && hashes.Contains(RowData[0]))
             {
                 return false;
             }
 
-            if (addToDictionary)
+            if (AddToDictionary)
             {
                 throw new NotImplementedException("Dictionary not implemented");
                 //if (!ProjectData.THFilesElementsDictionary.ContainsKey(original))
@@ -629,12 +629,12 @@ namespace TranslationHelper.Formats
             }
             else
             {
-                ProjectData.ThFilesElementsDataset.Tables[tablename].Rows.Add(rowData);
-                ProjectData.ThFilesElementsDatasetInfo.Tables[tablename].Rows.Add(rowInfo);
+                ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
+                ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
 
-                if (Properties.Settings.Default.DontLoadDuplicates && checkAddHashes && Hashes != null)
+                if (Properties.Settings.Default.DontLoadDuplicates && CheckAddHashes && hashes != null)
                 {
-                    Hashes.Add(original);
+                    hashes.Add(original);
                 }
                 else if (!Properties.Settings.Default.DontLoadDuplicates)
                 {
@@ -643,18 +643,18 @@ namespace TranslationHelper.Formats
                     {
                         ProjectData.OriginalsTableRowCoordinats.Add(original, new Dictionary<string, List<int>>());
                         ProjectData.OriginalsTableRowCoordinats[original].Add(tablename, new List<int>());
-                        ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(ProjectData.ThFilesElementsDataset.Tables[tablename].Rows.Count);
+                        ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
                     }
                     else
                     {
                         if (!ProjectData.OriginalsTableRowCoordinats[original].ContainsKey(tablename))
                         {
                             ProjectData.OriginalsTableRowCoordinats[original].Add(tablename, new List<int>());
-                            ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(ProjectData.ThFilesElementsDataset.Tables[tablename].Rows.Count);
+                            ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
                         }
                         else
                         {
-                            ProjectData.OriginalsTableRowCoordinats[rowData[0]][tablename].Add(ProjectData.ThFilesElementsDataset.Tables[tablename].Rows.Count);
+                            ProjectData.OriginalsTableRowCoordinats[RowData[0]][tablename].Add(ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
                         }
                     }
                 }
@@ -689,7 +689,7 @@ namespace TranslationHelper.Formats
                     var control = value;
                     if (ProjectData.OriginalsTableRowCoordinats[value][tname].Contains(SaveRowIndex))
                     {
-                        value = ProjectData.ThFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
+                        value = ProjectData.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
                         value = FixInvalidSymbols(value);
                         SaveRowIndex++;
 
@@ -705,7 +705,7 @@ namespace TranslationHelper.Formats
                     {
                         foreach (var rind in ProjectData.OriginalsTableRowCoordinats[value][tname])
                         {
-                            value = ProjectData.ThFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                            value = ProjectData.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
                             value = FixInvalidSymbols(value);
                             SaveRowIndex++;
 
@@ -726,7 +726,7 @@ namespace TranslationHelper.Formats
                     {
                         foreach (var rind in tn)
                         {
-                            value = ProjectData.ThFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
+                            value = ProjectData.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
                             value = FixInvalidSymbols(value);
                             SaveRowIndex++;
 
@@ -759,27 +759,27 @@ namespace TranslationHelper.Formats
             return ret;
         }
 
-        protected bool CheckTablesContent(string tablename, bool isDictionary = false)
+        protected bool CheckTablesContent(string tablename, bool IsDictionary = false)
         {
-            if (isDictionary /*&& ProjectData.THFilesElementsDictionary != null && ProjectData.THFilesElementsDictionary.Count > 0 && ProjectData.THFilesElementsDataset.Tables[tablename] != null && ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count == 0*/)
+            if (IsDictionary /*&& ProjectData.THFilesElementsDictionary != null && ProjectData.THFilesElementsDictionary.Count > 0 && ProjectData.THFilesElementsDataset.Tables[tablename] != null && ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count == 0*/)
             {
                 throw new NotImplementedException("Dictionary not implemented");
                 //return ProjectData.THFilesElementsDataset.Tables[tablename].FillWithDictionary(ProjectData.THFilesElementsDictionary);
             }
-            else if (ProjectData.ThFilesElementsDataset.Tables[tablename].Rows.Count > 0)
+            else if (ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count > 0)
             {
                 return true;
             }
             else
             {
-                if (ProjectData.ThFilesElementsDataset.Tables.Contains(tablename))
+                if (ProjectData.THFilesElementsDataset.Tables.Contains(tablename))
                 {
-                    ProjectData.ThFilesElementsDataset.Tables.Remove(tablename); // remove table if was no items added
+                    ProjectData.THFilesElementsDataset.Tables.Remove(tablename); // remove table if was no items added
                 }
 
-                if (ProjectData.ThFilesElementsDatasetInfo.Tables.Contains(tablename))
+                if (ProjectData.THFilesElementsDatasetInfo.Tables.Contains(tablename))
                 {
-                    ProjectData.ThFilesElementsDatasetInfo.Tables.Remove(tablename); // remove table if was no items added
+                    ProjectData.THFilesElementsDatasetInfo.Tables.Remove(tablename); // remove table if was no items added
                 }
 
                 return false;
@@ -790,10 +790,10 @@ namespace TranslationHelper.Formats
         /// add all original\translation pairs of datatable rows in Dictionary<br/>
         /// also split multiline values and add all of their lines in Dictionary
         /// </summary>
-        /// <param name="tableName"></param>
-        internal void SplitTableCellValuesToDictionaryLines(string tableName)
+        /// <param name="TableName"></param>
+        internal void SplitTableCellValuesToDictionaryLines(string TableName)
         {
-            if (!ProjectData.ThFilesElementsDataset.Tables.Contains(tableName))
+            if (!ProjectData.THFilesElementsDataset.Tables.Contains(TableName))
                 return;
 
             if (TablesLinesDict == null)
@@ -806,31 +806,31 @@ namespace TranslationHelper.Formats
                 TablesLinesDict.Clear();
             }
 
-            foreach (DataRow row in ProjectData.ThFilesElementsDataset.Tables[tableName].Rows)
+            foreach (DataRow Row in ProjectData.THFilesElementsDataset.Tables[TableName].Rows)
             {
-                string original;
-                string translation;
-                if (TablesLinesDict.ContainsKey(original = row[0] + string.Empty) || (translation = row[1] + string.Empty).Length == 0 || translation == original)
+                string Original;
+                string Translation;
+                if (TablesLinesDict.ContainsKey(Original = Row[0] + string.Empty) || (Translation = Row[1] + string.Empty).Length == 0 || Translation == Original)
                 {
                     continue;
                 }
 
-                TablesLinesDict.Add(original, translation);
+                TablesLinesDict.Add(Original, Translation);
             }
         }
 
-        bool _tablesLinesDictFilled;
+        bool TablesLinesDictFilled;
         /// <summary>
         /// add all original\translation pairs of datatable rows in Dictionary<br/>
         /// also split multiline values and add all of their lines in Dictionary
         /// </summary>
-        /// <param name="tableName"></param>
-        /// <param name="makeLinesCountEqual">if true, line count will be made equal in translation before add original else it will be made only for multiline and rigth after line by line check</param>
-        internal void SplitTableCellValuesAndTheirLinesToDictionary(string tableName, bool makeLinesCountEqual = true, bool onlyOneTable = true)
+        /// <param name="TableName"></param>
+        /// <param name="MakeLinesCountEqual">if true, line count will be made equal in translation before add original else it will be made only for multiline and rigth after line by line check</param>
+        internal void SplitTableCellValuesAndTheirLinesToDictionary(string TableName, bool MakeLinesCountEqual = true, bool OnlyOneTable = true)
         {
-            if (onlyOneTable)
+            if (OnlyOneTable)
             {
-                if (!ProjectData.ThFilesElementsDataset.Tables.Contains(tableName))
+                if (!ProjectData.THFilesElementsDataset.Tables.Contains(TableName))
                     return;
 
                 if (TablesLinesDict.Count > 0)
@@ -840,129 +840,129 @@ namespace TranslationHelper.Formats
             }
             else
             {
-                if (_tablesLinesDictFilled /*|| TablesLinesDict != null && TablesLinesDict.Count > 0*/)
+                if (TablesLinesDictFilled /*|| TablesLinesDict != null && TablesLinesDict.Count > 0*/)
                 {
                     return;
                 }
             }
 
 
-            foreach (DataTable table in ProjectData.ThFilesElementsDataset.Tables)
+            foreach (DataTable Table in ProjectData.THFilesElementsDataset.Tables)
             {
-                if (onlyOneTable && table.TableName != tableName)
+                if (OnlyOneTable && Table.TableName != TableName)
                 {
                     continue;
                 }
 
-                foreach (DataRow row in table.Rows)
+                foreach (DataRow Row in Table.Rows)
                 {
-                    string original = (row[0] + string.Empty);
-                    int originalLinesCount = original.GetLinesCount();
-                    if (originalLinesCount == 1 && TablesLinesDict.ContainsKey(original))
+                    string Original = (Row[0] + string.Empty);
+                    int OriginalLinesCount = Original.GetLinesCount();
+                    if (OriginalLinesCount == 1 && TablesLinesDict.ContainsKey(Original))
                     {
                         continue;
                     }
 
-                    string translation = (row[1] + string.Empty);
-                    if (translation.Length == 0)
+                    string Translation = (Row[1] + string.Empty);
+                    if (Translation.Length == 0)
                     {
                         continue;
                     }
 
-                    int translationLinesCount = translation.GetLinesCount();
-                    bool linesCountisEqual = originalLinesCount == translationLinesCount;
-                    if (!linesCountisEqual && makeLinesCountEqual)
+                    int TranslationLinesCount = Translation.GetLinesCount();
+                    bool LinesCountisEqual = OriginalLinesCount == TranslationLinesCount;
+                    if (!LinesCountisEqual && MakeLinesCountEqual)
                     {
-                        if (originalLinesCount > translation.Length)
+                        if (OriginalLinesCount > Translation.Length)
                         {
                             continue;//skip lines where translation is incosistent to original
                         }
 
-                        translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(translation, originalLinesCount));
+                        Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
                     }
 
                     //Сначала добавить полный вариант
-                    if (!TablesLinesDict.ContainsKey(original) /*&& ((!ProjectData.CurrentProject.TablesLinesDictAddEqual && Translation != Original) || ProjectData.CurrentProject.TablesLinesDictAddEqual)*/)
+                    if (!TablesLinesDict.ContainsKey(Original) /*&& ((!ProjectData.CurrentProject.TablesLinesDictAddEqual && Translation != Original) || ProjectData.CurrentProject.TablesLinesDictAddEqual)*/)
                     {
-                        TablesLinesDict.Add(original, translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
-                        if (originalLinesCount == 1)
+                        TablesLinesDict.Add(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                        if (OriginalLinesCount == 1)
                         {
                             continue;//когда одна строка не тратить время на её разбор
                         }
                     }
-                    else if (translation != original && original == TablesLinesDict[original])
+                    else if (Translation != Original && Original == TablesLinesDict[Original])
                     {
-                        TablesLinesDict[original] = translation;
-                        if (originalLinesCount == 1)
+                        TablesLinesDict[Original] = Translation;
+                        if (OriginalLinesCount == 1)
                         {
                             continue;//когда одна строка не тратить время на её разбор
                         }
                     }
 
-                    if (!makeLinesCountEqual && originalLinesCount > translationLinesCount)
+                    if (!MakeLinesCountEqual && OriginalLinesCount > TranslationLinesCount)
                     {
-                        if (originalLinesCount > translation.Length)
+                        if (OriginalLinesCount > Translation.Length)
                         {
                             continue;//skip lines where translation is incosistent to original
                         }
 
-                        translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(translation, originalLinesCount));
+                        Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
                     }
 
                     //string[] OriginalLines = FunctionsString.SplitStringToArray(Original);
-                    string[] translationLines = translation.GetAllLinesToArray();
-                    string[] originalLines = original.GetAllLinesToArray();
+                    string[] TranslationLines = Translation.GetAllLinesToArray();
+                    string[] OriginalLines = Original.GetAllLinesToArray();
                     List<string> extralines = new List<string>();
-                    for (int lineNumber = 0; lineNumber < translationLinesCount; lineNumber++)
+                    for (int lineNumber = 0; lineNumber < TranslationLinesCount; lineNumber++)
                     {
                         try
                         {
-                            if (linesCountisEqual) //когда количество строк равно, просто добавлять валидные строки в словарь
+                            if (LinesCountisEqual) //когда количество строк равно, просто добавлять валидные строки в словарь
                             {
-                                if (!TablesLinesDict.ContainsKey(originalLines[lineNumber]) && translationLines[lineNumber].Length > 0 && originalLines[lineNumber] != translationLines[lineNumber])
+                                if (!TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
                                 {
-                                    TablesLinesDict.Add(originalLines[lineNumber], translationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                    TablesLinesDict.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                 }
                             }
                             else
                             {
-                                if (lineNumber < originalLinesCount - 1) // пока номер строки меньше номера последней строки в оригинале
+                                if (lineNumber < OriginalLinesCount - 1) // пока номер строки меньше номера последней строки в оригинале
                                 {
-                                    if (!TablesLinesDict.ContainsKey(originalLines[lineNumber]) && translationLines[lineNumber].Length > 0 && originalLines[lineNumber] != translationLines[lineNumber])
+                                    if (!TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
                                     {
-                                        TablesLinesDict.Add(originalLines[lineNumber], translationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                        TablesLinesDict.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                     }
                                 }
                                 else // номер строки равен номеру последней строки оригинала
                                 {
-                                    if (lineNumber == translationLinesCount - 1) //если номер строки равен номеру последней строки в переводе
+                                    if (lineNumber == TranslationLinesCount - 1) //если номер строки равен номеру последней строки в переводе
                                     {
                                         if (extralines.Count > 0) // если список экстра строк не пустой
                                         {
-                                            extralines.Add(translationLines[lineNumber]); // добавить последнюю строку в переводе
+                                            extralines.Add(TranslationLines[lineNumber]); // добавить последнюю строку в переводе
                                             string result = string.Join(Environment.NewLine, extralines); // объединить экстра строки в одну
 
 
-                                            if (!TablesLinesDict.ContainsKey(originalLines[originalLinesCount - 1]) //если словарь не содержит последнюю строку оригинала
+                                            if (!TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) //если словарь не содержит последнюю строку оригинала
                                                 && result.Trim().Length > 0 // объединенные строки без пробельных символов и символов новой строки - не пустые 
-                                                && originalLines[originalLinesCount - 1] != result) // оригинал не равен переводу
+                                                && OriginalLines[OriginalLinesCount - 1] != result) // оригинал не равен переводу
                                             {
                                                 //добавить оригинал с переводом содержащим больше строк, чем в оригинале
-                                                TablesLinesDict.Add(originalLines[originalLinesCount - 1], result/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                                TablesLinesDict.Add(OriginalLines[OriginalLinesCount - 1], result/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                             }
                                         }
                                         else
                                         {
                                             // при пустом списке экстра строк добавить в словарь оригинал с переводом, если валидный
-                                            if (!TablesLinesDict.ContainsKey(originalLines[originalLinesCount - 1]) && translationLines[lineNumber].Length > 0 && originalLines[originalLinesCount - 1] != translationLines[lineNumber])
+                                            if (!TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[OriginalLinesCount - 1] != TranslationLines[lineNumber])
                                             {
-                                                TablesLinesDict.Add(originalLines[originalLinesCount - 1], translationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                                TablesLinesDict.Add(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                             }
                                         }
                                     }
                                     else // пока номер текущей строки меньше номера последней строки в переводе, добавлять экстра строки в один список
                                     {
-                                        extralines.Add(translationLines[lineNumber]);
+                                        extralines.Add(TranslationLines[lineNumber]);
                                     }
                                 }
                             }
@@ -982,7 +982,7 @@ namespace TranslationHelper.Formats
                     //}
                 }
             }
-            _tablesLinesDictFilled = true;
+            TablesLinesDictFilled = true;
         }
     }
 }

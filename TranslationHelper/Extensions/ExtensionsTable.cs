@@ -18,9 +18,9 @@ namespace TranslationHelper.Extensions
                 return false;
 
             bool ret = false;
-            foreach (var keyValue in inputDictionary)
+            foreach (var KeyValue in inputDictionary)
             {
-                inputDataTable.Rows.Add(keyValue.Key, keyValue.Value);
+                inputDataTable.Rows.Add(KeyValue.Key, KeyValue.Value);
                 ret = true;
             }
             return ret;
@@ -29,18 +29,18 @@ namespace TranslationHelper.Extensions
         /// <summary>
         /// Will return count of selected rows in datagridview
         /// </summary>
-        /// <param name="dgv"></param>
+        /// <param name="DGV"></param>
         /// <returns></returns>
-        internal static int GetCountOfRowsWithSelectedCellsCount(this DataGridView dgv)
+        internal static int GetCountOfRowsWithSelectedCellsCount(this DataGridView DGV)
         {
             int cnt;
-            if (dgv.SelectedRows.Count == (cnt = dgv.Rows.Count))
+            if (DGV.SelectedRows.Count == (cnt = DGV.Rows.Count))
             {
                 return cnt;
             }
 
             //https://stackoverflow.com/questions/47357051/c-datagridview-how-to-get-selected-count-with-cells-and-rows
-            return dgv.SelectedCells.Cast<DataGridViewCell>()
+            return DGV.SelectedCells.Cast<DataGridViewCell>()
                                        .Select(c => c.RowIndex).Distinct().Count();
         }
     }

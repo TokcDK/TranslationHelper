@@ -22,9 +22,9 @@ namespace TranslationHelper.INISettings
             set => TranslationHelper.Properties.Settings.Default.THOptionLineCharLimit = value;
         }
 
-        internal override void Set(bool setObject = false)
+        internal override void Set(bool SetObject = false)
         {
-            if (!setObject)
+            if (!SetObject)
             {
                 SVar = CheckAndSetValue();
             }
@@ -54,7 +54,7 @@ namespace TranslationHelper.INISettings
             return SVar + string.Empty;
         }
 
-        internal override string Id()
+        internal override string ID()
         {
             return (SObject as System.Windows.Forms.TextBox).Name;
         }

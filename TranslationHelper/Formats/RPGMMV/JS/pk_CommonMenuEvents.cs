@@ -2,22 +2,22 @@
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
-    class PkCommonMenuEvents : JsBase
+    class pk_CommonMenuEvents : JSBase
     {
-        public PkCommonMenuEvents()
+        public pk_CommonMenuEvents()
         {
         }
 
-        public override string JsName => "pk_CommonMenuEvents.js";
+        public override string JSName => "pk_CommonMenuEvents.js";
 
         internal override bool Open()
         {
-            return ParseJsSingleLinesWithRegex(@".*var eventName[0-9]{1,2} \= ""([^""]+)"";.*");
+            return ParseJSSingleLinesWithRegex(@".*var eventName[0-9]{1,2} \= ""([^""]+)"";.*");
         }
 
         internal override bool Save()
         {
-            return ParseJsSingleLinesWithRegex(@".*var eventName[0-9]{1,2} \= ""([^""]+)"";.*", true);
+            return ParseJSSingleLinesWithRegex(@".*var eventName[0-9]{1,2} \= ""([^""]+)"";.*", true);
         }
     }
 }

@@ -42,26 +42,26 @@ namespace TranslationHelper.Functions
             }
             else
             {
-                if (RpgmFunctions.ThSelectedSourceType == new HowToMakeTrueSlavesRiseofaDarkEmpire().Name())
+                if (RPGMFunctions.THSelectedSourceType == new HowToMakeTrueSlavesRiseofaDarkEmpire().Name())
                 {
                     await Task.Run(() => new HowToMakeTrueSlavesRiseofaDarkEmpire().Save()).ConfigureAwait(true);
                 }
-                else if (RpgmFunctions.ThSelectedSourceType == "RubyRPGGame")
+                else if (RPGMFunctions.THSelectedSourceType == "RubyRPGGame")
                 {
-                    new Rj263914Old().ProceedRubyRpgGame(ProjectData.SelectedGameDir, true);
+                    new RJ263914OLD().ProceedRubyRPGGame(ProjectData.SelectedGameDir, true);
                     //MessageBox.Show("Finished");
                 }
-                else if (RpgmFunctions.ThSelectedSourceType == "Wolf RPG txt")
+                else if (RPGMFunctions.THSelectedSourceType == "Wolf RPG txt")
                 {
-                    new WrpgoldOpen().ProceedWriteWolfRpGtxt();
+                    new WRPGOLDOpen().ProceedWriteWolfRPGtxt();
                     //MessageBox.Show("Finished");
                 }
-                else if (RpgmFunctions.ThSelectedSourceType == "WOLF TRANS PATCH")
+                else if (RPGMFunctions.THSelectedSourceType == "WOLF TRANS PATCH")
                 {
-                    new WrpgoldOpen().WriteWolftranspatch();
+                    new WRPGOLDOpen().WriteWOLFTRANSPATCH();
                     //MessageBox.Show("Finished");
                 }
-                else if (RpgmFunctions.ThSelectedSourceType == "RPGMakerTransPatch" || RpgmFunctions.ThSelectedSourceType == "RPG Maker game with RPGMTransPatch")
+                else if (RPGMFunctions.THSelectedSourceType == "RPGMakerTransPatch" || RPGMFunctions.THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
                 {
                     //THActionProgressBar.Visible = true;
                     //THInfolabel.Visible = true;
@@ -75,7 +75,7 @@ namespace TranslationHelper.Functions
                     //save.Start();
 
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => new RpgmTransOld().SaveRpgmTransPatchFiles(ProjectData.SelectedDir, RpgmFunctions.RpgmTransPatchVersion)).ConfigureAwait(true);
+                    await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(ProjectData.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
 
                     //MessageBox.Show("ProjectData.SelectedDir=" + ProjectData.SelectedDir);
                     //SaveRPGMTransPatchFiles(ProjectData.SelectedDir, THRPGMTransPatchver);
@@ -84,7 +84,7 @@ namespace TranslationHelper.Functions
 
                     //THActionProgressBar.Visible = false;
 
-                    if (RpgmFunctions.ThSelectedSourceType == "RPG Maker game with RPGMTransPatch")
+                    if (RPGMFunctions.THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
                     {
                         string rpgmakertranscli = Application.StartupPath + @"\Res\rpgmakertrans\rpgmt.exe";
 
@@ -120,12 +120,12 @@ namespace TranslationHelper.Functions
 
                     ProjectData.Main.SaveInAction = false;
                 }
-                else if (RpgmFunctions.ThSelectedSourceType == "RPG Maker MV json")
+                else if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV json")
                 {
                     ///*THMsg*/MessageBox.Show(ProjectData.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                    await Task.Run(() => new Rpgmmvold().WriteJson(ProjectData.Main.THFilesList.Items[0] + string.Empty, ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.Items[0] + ".json")).ConfigureAwait(true);
+                    await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.Items[0] + string.Empty, ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.Items[0] + ".json")).ConfigureAwait(true);
                 }
-                else if (RpgmFunctions.ThSelectedSourceType == "RPG Maker MV")
+                else if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
                 {
                     for (int f = 0; f < ProjectData.Main.THFilesList.Items.Count; f++)
                     {
@@ -133,9 +133,9 @@ namespace TranslationHelper.Functions
                         //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
 
                         bool changed = false;
-                        for (int r = 0; r < ProjectData.ThFilesElementsDataset.Tables[f].Rows.Count; r++)
+                        for (int r = 0; r < ProjectData.THFilesElementsDataset.Tables[f].Rows.Count; r++)
                         {
-                            if ((ProjectData.ThFilesElementsDataset.Tables[f].Rows[r]["Translation"] + string.Empty).Length == 0)
+                            if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r]["Translation"] + string.Empty).Length == 0)
                             {
                             }
                             else
@@ -150,23 +150,23 @@ namespace TranslationHelper.Functions
 
                             ///*THMsg*/MessageBox.Show("start writing");
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => new Rpgmmvold().WriteJson(ProjectData.Main.THFilesList.Items[f] + string.Empty, ProjectData.SelectedDir + "\\www\\data\\" + ProjectData.Main.THFilesList.Items[f] + ".json")).ConfigureAwait(true);
+                            await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.Items[f] + string.Empty, ProjectData.SelectedDir + "\\www\\data\\" + ProjectData.Main.THFilesList.Items[f] + ".json")).ConfigureAwait(true);
                             //WriteJson(THFilesListBox.Items[f].ToString(), ProjectData.SelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                         }
                     }
                     /*THMsg*/
                     //MessageBox.Show(T._("finished") + "!");
                 }
-                else if (RpgmFunctions.ThSelectedSourceType == "KiriKiri scenario")
+                else if (RPGMFunctions.THSelectedSourceType == "KiriKiri scenario")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                     //await Task.Run(() => KiriKiriScenarioWrite(ProjectData.SelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
-                    await Task.Run(() => new KiriKiriOld().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.Items[0] + ".scn")).ConfigureAwait(true);
+                    await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.Items[0] + ".scn")).ConfigureAwait(true);
                 }
-                else if (RpgmFunctions.ThSelectedSourceType == "KiriKiri script")
+                else if (RPGMFunctions.THSelectedSourceType == "KiriKiri script")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => new KiriKiriOld().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.Items[0] + ".ks")).ConfigureAwait(true);
+                    await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.Items[0] + ".ks")).ConfigureAwait(true);
                 }
             }
 
@@ -178,23 +178,23 @@ namespace TranslationHelper.Functions
         /// <summary>
         /// Write RPGMakerMV event codes stats
         /// </summary>
-        public static void WriteRpgMakerMvStats()
+        public static void WriteRPGMakerMVStats()
         {
-            if (ProjectData.RpgMvAddedCodesStat.Count > 0 || ProjectData.RpgMvSkippedCodesStat.Count > 0)
+            if (ProjectData.RpgMVAddedCodesStat.Count > 0 || ProjectData.RpgMVSkippedCodesStat.Count > 0)
             {
-                ProjectData.RpgMvAddedCodesStat = ProjectData.RpgMvAddedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
-                ProjectData.RpgMvSkippedCodesStat = ProjectData.RpgMvSkippedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
+                ProjectData.RpgMVAddedCodesStat = ProjectData.RpgMVAddedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
+                ProjectData.RpgMVSkippedCodesStat = ProjectData.RpgMVSkippedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
 
                 foreach (var dict in new Dictionary<string, Dictionary<int, int>>()
                     {
-                        {"RPGMakerMV Added codes stats", ProjectData.RpgMvAddedCodesStat },
-                        {"RPGMakerMV Skipped codes stats", ProjectData.RpgMvSkippedCodesStat }
+                        {"RPGMakerMV Added codes stats", ProjectData.RpgMVAddedCodesStat },
+                        {"RPGMakerMV Skipped codes stats", ProjectData.RpgMVSkippedCodesStat }
                     }
                 )
                 {
-                    if (ProjectData.Main.Settings.ThConfigIni.SectionExistsAndNotEmpty(dict.Key))
+                    if (ProjectData.Main.Settings.THConfigINI.SectionExistsAndNotEmpty(dict.Key))
                     {
-                        foreach (var pair in ProjectData.Main.Settings.ThConfigIni.GetSectionKeyValuePairs(dict.Key))
+                        foreach (var pair in ProjectData.Main.Settings.THConfigINI.GetSectionKeyValuePairs(dict.Key))
                         {
                             var key = int.Parse(pair.Key);
                             var value = int.Parse(pair.Value);
@@ -211,11 +211,11 @@ namespace TranslationHelper.Functions
 
                     foreach (var pair in dict.Value)
                     {
-                        ProjectData.Main.Settings.ThConfigIni.SetKey(dict.Key, pair.Key + "", pair.Value + "");
+                        ProjectData.Main.Settings.THConfigINI.SetKey(dict.Key, pair.Key + "", pair.Value + "");
                     }
                 }
 
-                ProjectData.Main.Settings.ThConfigIni.WriteFile();
+                ProjectData.Main.Settings.THConfigINI.WriteFile();
             }
         }
     }

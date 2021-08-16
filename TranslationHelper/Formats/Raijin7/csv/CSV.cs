@@ -3,9 +3,9 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.Raijin7
 {
-    class Csv : Rajiin7Base
+    class CSV : Rajiin7Base
     {
-        public Csv()
+        public CSV()
         {
         }
 
@@ -20,51 +20,51 @@ namespace TranslationHelper.Formats.Raijin7
         }
         protected override void ParseStringFilePreOpenExtra()
         {
-            _lineNumber = 0;
-            if (ParseData.Tablename.StartsWith("fship")
-                || ParseData.Tablename.StartsWith("pnet")
-                || ParseData.Tablename.StartsWith("pson")
-                || ParseData.Tablename.StartsWith("wapon")
+            lineNumber = 0;
+            if (ParseData.tablename.StartsWith("fship")
+                || ParseData.tablename.StartsWith("pnet")
+                || ParseData.tablename.StartsWith("pson")
+                || ParseData.tablename.StartsWith("wapon")
                 )
             {
-                _variant = 1;
+                variant = 1;
             }
-            else if (ParseData.Tablename.StartsWith("item"))
+            else if (ParseData.tablename.StartsWith("item"))
             {
-                _variant = 2;
+                variant = 2;
             }
-            else if (ParseData.Tablename.StartsWith("spec_rate"))
+            else if (ParseData.tablename.StartsWith("spec_rate"))
             {
-                _variant = 3;
+                variant = 3;
             }
         }
 
-        int _lineNumber;
-        int _variant;
+        int lineNumber;
+        int variant;
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             //ParseData.TrimmedLine = ParseData.line;
 
             var ret = ParseStringFileLineReturnState.ReadToEnd;
 
-            if (_variant > 0)
+            if (variant > 0)
             {
                 //commented or empty
-                if (string.IsNullOrWhiteSpace(ParseData.Line) || ParseData.Line.TrimStart().StartsWith("//"))
+                if (string.IsNullOrWhiteSpace(ParseData.line) || ParseData.line.TrimStart().StartsWith("//"))
                 {
                     ret = ParseStringFileLineReturnState.Continue;
                 }
-                else if (_variant == 1)
+                else if (variant == 1)
                 {
                     SetValue(1);
                 }
-                else if (_variant == 2)
+                else if (variant == 2)
                 {
                     SetValue(0,1);
                 }
-                else if (_variant == 3)
+                else if (variant == 3)
                 {
-                    if (_lineNumber > 0)
+                    if (lineNumber > 0)
                     {
                         SetValue(0);
                     }
@@ -73,7 +73,7 @@ namespace TranslationHelper.Formats.Raijin7
                         SetValue(999);
                     }
                 }
-                _lineNumber++;
+                lineNumber++;
             }
 
             SaveModeAddLine();

@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        internal static string CleanForShiftJis2004(this string s)
+        internal static string CleanForShiftJIS2004(this string s)
         {
             return s
                 .Replace("\"", string.Empty)//crashing scpack game

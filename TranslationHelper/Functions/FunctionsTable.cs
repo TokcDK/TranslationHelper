@@ -16,7 +16,7 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="selectedRowsCount"></param>
         /// <returns></returns>
-        internal static int[] GetDgvRowIndexsesInDataSetTable()
+        internal static int[] GetDGVRowIndexsesInDataSetTable()
         {
             //int[] selindexes = new int[ProjectData.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
 
@@ -24,7 +24,7 @@ namespace TranslationHelper.Main.Functions
             ProjectData.Main.Invoke((Action)(()=>tableIndex=ProjectData.Main.THFilesList.SelectedIndex));
 
 
-            int[] selindexes = GetRowIndexesOfSelectedDgvCells(ProjectData.Main.THFileElementsDataGridView.SelectedCells);
+            int[] selindexes = GetRowIndexesOfSelectedDGVCells(ProjectData.Main.THFileElementsDataGridView.SelectedCells);
             var selindexesLength = selindexes.Length;
             for (int i = 0; i < selindexesLength; i++)
             {
@@ -37,7 +37,7 @@ namespace TranslationHelper.Main.Functions
                 //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                 //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                 //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                selindexes[i] = GetDgvSelectedRowIndexInDatatable(tableIndex, selindexes[i]);
+                selindexes[i] = GetDGVSelectedRowIndexInDatatable(tableIndex, selindexes[i]);
 
                 //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
             }
@@ -47,7 +47,7 @@ namespace TranslationHelper.Main.Functions
             return selindexes;
         }
 
-        internal static int[] GetRowIndexesOfSelectedDgvCells(DataGridViewSelectedCellCollection selectedCells)
+        internal static int[] GetRowIndexesOfSelectedDGVCells(DataGridViewSelectedCellCollection selectedCells)
         {
             var rowindexes = new List<int>();
             foreach (DataGridViewCell cell in selectedCells)
@@ -67,13 +67,13 @@ namespace TranslationHelper.Main.Functions
         /// <param name="projectData"></param>
         internal static void ShowFirstRowWithEmptyTranslation()
         {
-            int count = ProjectData.ThFilesElementsDataset.Tables.Count;
-            for (int t = 0; t < count; t++)
+            int TCount = ProjectData.THFilesElementsDataset.Tables.Count;
+            for (int t = 0; t < TCount; t++)
             {
-                var table = ProjectData.ThFilesElementsDataset.Tables[t];
+                var table = ProjectData.THFilesElementsDataset.Tables[t];
 
-                int rCount = table.Rows.Count;
-                for (int r = 0; r < rCount; r++)
+                int RCount = table.Rows.Count;
+                for (int r = 0; r < RCount; r++)
                 {
                     var cell = table.Rows[r][1];
                     if (cell == null || string.IsNullOrEmpty(cell as string))
@@ -94,22 +94,22 @@ namespace TranslationHelper.Main.Functions
         /// <param name="rowIndex"></param>
         internal static void ShowSelectedRow(int tableIndex, string columnName, int rowIndex)
         {
-            if (tableIndex == -1 || tableIndex > ProjectData.ThFilesElementsDataset.Tables.Count - 1 || string.IsNullOrEmpty(columnName) || !ProjectData.ThFilesElementsDataset.Tables[tableIndex].Columns.Contains(columnName))
+            if (tableIndex == -1 || tableIndex > ProjectData.THFilesElementsDataset.Tables.Count - 1 || string.IsNullOrEmpty(columnName) || !ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns.Contains(columnName))
             {
                 return;
             }
 
-            int rCount = 0;//for debug purposes
+            int RCount = 0;//for debug purposes
             try
             {
-                rCount = ProjectData.ThFilesElementsDataset.Tables[tableIndex].Rows.Count;
-                if (tableIndex == ProjectData.Main.THFilesList.SelectedIndex && rCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
+                RCount = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
+                if (tableIndex == ProjectData.Main.THFilesList.SelectedIndex && RCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
                 {
                     ProjectData.Main.THFilesList.SelectedIndex = tableIndex;
-                    ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.ThFilesElementsDataset.Tables[tableIndex];
+                    ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[tableIndex];
 
                 }
 
@@ -123,7 +123,7 @@ namespace TranslationHelper.Main.Functions
             }
             catch (Exception ex)
             {
-                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + rCount;
+                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + RCount;
                 FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName), error + Environment.NewLine + Environment.NewLine);
                 MessageBox.Show(error);
             }
@@ -138,22 +138,22 @@ namespace TranslationHelper.Main.Functions
         /// <param name="rowIndex"></param>
         internal static void ShowSelectedRow(int tableIndex, int columnIndex, int rowIndex)
         {
-            if (tableIndex == -1 || tableIndex > ProjectData.ThFilesElementsDataset.Tables.Count - 1 || columnIndex == -1 || columnIndex > ProjectData.ThFilesElementsDataset.Tables[tableIndex].Columns.Count - 1)
+            if (tableIndex == -1 || tableIndex > ProjectData.THFilesElementsDataset.Tables.Count - 1 || columnIndex == -1 || columnIndex > ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns.Count - 1)
             {
                 return;
             }
 
-            int rCount = 0;//for debug purposes
+            int RCount = 0;//for debug purposes
             try
             {
-                rCount = ProjectData.ThFilesElementsDataset.Tables[tableIndex].Rows.Count;
-                if (tableIndex == ProjectData.Main.THFilesList.SelectedIndex && rCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
+                RCount = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
+                if (tableIndex == ProjectData.Main.THFilesList.SelectedIndex && RCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
                 {
                     ProjectData.Main.THFilesList.SelectedIndex = tableIndex;
-                    ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.ThFilesElementsDataset.Tables[tableIndex];
+                    ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[tableIndex];
 
                 }
 
@@ -165,7 +165,7 @@ namespace TranslationHelper.Main.Functions
             }
             catch (Exception ex)
             {
-                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + rCount;
+                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + RCount;
                 FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName), error + Environment.NewLine + Environment.NewLine);
                 MessageBox.Show(error);
             }
@@ -184,26 +184,26 @@ namespace TranslationHelper.Main.Functions
 
             string fileName = Path.GetFileName(ProjectData.FilePath);
 
-            if (add && !ProjectData.ThFilesElementsDataset.Tables.Contains(fileName))
+            if (add && !ProjectData.THFilesElementsDataset.Tables.Contains(fileName))
             {
-                _ = ProjectData.ThFilesElementsDataset.Tables.Add(fileName);
-                _ = ProjectData.ThFilesElementsDataset.Tables[fileName].Columns.Add("Original");
-                _ = ProjectData.ThFilesElementsDatasetInfo.Tables.Add(fileName);
-                _ = ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Columns.Add("Original");
+                _ = ProjectData.THFilesElementsDataset.Tables.Add(fileName);
+                _ = ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add("Original");
+                _ = ProjectData.THFilesElementsDatasetInfo.Tables.Add(fileName);
+                _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Columns.Add("Original");
 
                 return true;
             }
             else
             {
-                if (ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Count == 0)
+                if (ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Count == 0)
                 {
-                    ProjectData.ThFilesElementsDataset.Tables.Remove(fileName);
-                    ProjectData.ThFilesElementsDatasetInfo.Tables.Remove(fileName);
+                    ProjectData.THFilesElementsDataset.Tables.Remove(fileName);
+                    ProjectData.THFilesElementsDatasetInfo.Tables.Remove(fileName);
                     return false;
                 }
                 else
                 {
-                    _ = ProjectData.ThFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
+                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
                     return true;
                 }
             }
@@ -212,21 +212,21 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// True if Translation cell of any row has value
         /// </summary>
-        /// <param name="ds"></param>
+        /// <param name="DS"></param>
         /// <returns></returns>
-        public static bool TheDataSetIsNotEmpty(DataSet ds)
+        public static bool TheDataSetIsNotEmpty(DataSet DS)
         {
-            if (ds == null)
+            if (DS == null)
             {
                 return false;
             }
 
             try
             {
-                int dsTablesCount = ds.Tables.Count;
-                for (int t = 0; t < dsTablesCount; t++)
+                int DSTablesCount = DS.Tables.Count;
+                for (int t = 0; t < DSTablesCount; t++)
                 {
-                    var table = ds.Tables[t];
+                    var table = DS.Tables[t];
                     int rowscount = table.Rows.Count;
                     for (int r = 0; r < rowscount; r++)
                     {
@@ -249,23 +249,23 @@ namespace TranslationHelper.Main.Functions
             return false;
         }
 
-        public static string TranslationCacheFind(DataSet ds, string input)
+        public static string TranslationCacheFind(DataSet DS, string Input)
         {
             if (Properties.Settings.Default.EnableTranslationCache)
             {
-                if (!string.IsNullOrEmpty(input) && ds != null)
+                if (!string.IsNullOrEmpty(Input) && DS != null)
                 {
-                    using (var table = ds.Tables[0])
+                    using (var Table = DS.Tables[0])
                     {
-                        if (FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(table, input))
+                        if (FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(Table, Input))
                         {
-                            var rowsCount = table.Rows.Count;
-                            for (int i = 0; i < rowsCount; i++)
+                            var RowsCount = Table.Rows.Count;
+                            for (int i = 0; i < RowsCount; i++)
                             {
                                 //MessageBox.Show("Input=" + Input+"\r\nCache="+ THTranslationCache.Tables["TranslationCache"].Rows[i][0].ToString());
-                                if (Equals(input, table.Rows[i][0]))
+                                if (Equals(Input, Table.Rows[i][0]))
                                 {
-                                    return table.Rows[i][1] as string;
+                                    return Table.Rows[i][1] as string;
                                 }
                             }
                         }
@@ -295,12 +295,12 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        private static bool GetAlreadyAddedInTableAndTableHasRowsColumns_Slower(DataTable dt, string value)
+        private static bool GetAlreadyAddedInTableAndTableHasRowsColumns_Slower(DataTable DT, string value)
         {
-            int dtRowsCount = dt.Rows.Count;
-            for (int i = 0; i < dtRowsCount; i++)
+            int DTRowsCount = DT.Rows.Count;
+            for (int i = 0; i < DTRowsCount; i++)
             {
-                if (Equals(dt.Rows[i][0], value))
+                if (Equals(DT.Rows[i][0], value))
                 {
                     return true;
                 }
@@ -390,33 +390,33 @@ namespace TranslationHelper.Main.Functions
         }
 
         //DataSet THTranslationCache = new DataSet();
-        public static void TranslationCacheInit(DataSet ds)
+        public static void TranslationCacheInit(DataSet DS)
         {
-            if (ds == null)
+            if (DS == null)
             {
                 return;
             }
 
-            ds.Reset();
+            DS.Reset();
             if (File.Exists(Properties.Settings.Default.THTranslationCachePath))
             {
-                FunctionsDbFile.ReadDbFile(ds, Properties.Settings.Default.THTranslationCachePath);
+                FunctionsDBFile.ReadDBFile(DS, Properties.Settings.Default.THTranslationCachePath);
             }
             else
             {
-                ds.Tables.Add("TranslationCache");
-                ds.Tables["TranslationCache"].Columns.Add("Original");
-                ds.Tables["TranslationCache"].Columns.Add("Translation");
+                DS.Tables.Add("TranslationCache");
+                DS.Tables["TranslationCache"].Columns.Add("Original");
+                DS.Tables["TranslationCache"].Columns.Add("Translation");
             }
             //MessageBox.Show("TranslationCache Rows.Count=" + THTranslationCache.Tables["TranslationCache"].Rows.Count+ "TranslationCache Columns.Count=" + THTranslationCache.Tables["TranslationCache"].Columns.Count);
         }
 
-        public static void ThTranslationCacheAdd(DataSet ds, string original, string translation)
+        public static void THTranslationCacheAdd(DataSet DS, string original, string translation)
         {
-            if (ds != null)
+            if (DS != null)
             {
                 //LogToFile("original=" + original+ ",translation=" + translation,true);
-                ds.Tables[0].Rows.Add(original, translation);
+                DS.Tables[0].Rows.Add(original, translation);
             }
         }
 
@@ -425,12 +425,12 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="TargetDataSet"></param>
         /// <param name="InputDataGridView"></param>
-        /// <param name="tableIndex"></param>
+        /// <param name="TableIndex"></param>
         /// <param name="rowIndex"></param>
         /// <returns></returns>
-        public static int GetDgvSelectedRowIndexInDatatable(int tableIndex, int rowIndex)
+        public static int GetDGVSelectedRowIndexInDatatable(int TableIndex, int rowIndex)
         {
-            var table = ProjectData.ThFilesElementsDataset.Tables[tableIndex];
+            var table = ProjectData.THFilesElementsDataset.Tables[TableIndex];
             if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
             {
                 return rowIndex;
@@ -447,34 +447,34 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="projectData"></param>
         /// <param name="tableindex"></param>
-        /// <param name="isVisible">set to true if need to search in visible rows</param>
+        /// <param name="IsVisible">set to true if need to search in visible rows</param>
         /// <returns></returns>
-        internal static HashSet<int> GetDgvRowsIndexesHashesInDt(int tableindex, bool isVisible = false)
+        internal static HashSet<int> GetDGVRowsIndexesHashesInDT(int tableindex, bool IsVisible = false)
         {
-            DataGridView dgv = null;
-            ProjectData.Main.Invoke((Action)(() => dgv = ProjectData.Main.THFileElementsDataGridView));
+            DataGridView DGV = null;
+            ProjectData.Main.Invoke((Action)(() => DGV = ProjectData.Main.THFileElementsDataGridView));
 
             var selected = new HashSet<int>();
-            if (isVisible)
+            if (IsVisible)
             {
-                foreach (DataGridViewRow row in dgv.Rows)
+                foreach (DataGridViewRow row in DGV.Rows)
                 {
                     if (!row.Visible)
                     {
                         continue;
                     }
 
-                    selected.Add(GetDgvSelectedRowIndexInDatatable(tableindex, row.Index));
+                    selected.Add(GetDGVSelectedRowIndexInDatatable(tableindex, row.Index));
                 }
             }
             else
             {
-                for (int i = 0; i < dgv.SelectedCells.Count; i++)
+                for (int i = 0; i < DGV.SelectedCells.Count; i++)
                 {
-                    var rowindex = dgv.SelectedCells[i].RowIndex;
+                    var rowindex = DGV.SelectedCells[i].RowIndex;
                     if (!selected.Contains(rowindex))
                     {
-                        selected.Add(GetDgvSelectedRowIndexInDatatable(tableindex, rowindex));
+                        selected.Add(GetDGVSelectedRowIndexInDatatable(tableindex, rowindex));
                     }
                 }
             }
@@ -485,54 +485,54 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Returns Dataset with tables with only non empty rows
         /// </summary>
-        /// <param name="ds"></param>
+        /// <param name="DS"></param>
         /// <returns></returns>
-        public static DataSet FillTempDb(DataSet ds)
+        public static DataSet FillTempDB(DataSet DS)
         {
-            DataSet retds = new DataSet();
-            int tablesCount = ds.Tables.Count;
-            for (int t = 0; t < tablesCount; t++)
+            DataSet RETDS = new DataSet();
+            int TablesCount = DS.Tables.Count;
+            for (int t = 0; t < TablesCount; t++)
             {
-                var table = ds.Tables[t];
-                string tname = table.TableName;
-                retds.Tables.Add(tname);
-                retds.Tables[tname].Columns.Add("Original");
-                retds.Tables[tname].Columns.Add("Translation");
-                int rowsCount = table.Rows.Count;
-                for (int r = 0; r < rowsCount; r++)
+                var Table = DS.Tables[t];
+                string tname = Table.TableName;
+                RETDS.Tables.Add(tname);
+                RETDS.Tables[tname].Columns.Add("Original");
+                RETDS.Tables[tname].Columns.Add("Translation");
+                int RowsCount = Table.Rows.Count;
+                for (int r = 0; r < RowsCount; r++)
                 {
-                    var row = table.Rows[r];
-                    var cellTranslation = row[1];
-                    if (cellTranslation == null || string.IsNullOrEmpty(cellTranslation as string))
+                    var Row = Table.Rows[r];
+                    var CellTranslation = Row[1];
+                    if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
                     {
                     }
                     else
                     {
-                        retds.Tables[tname].ImportRow(row);
+                        RETDS.Tables[tname].ImportRow(Row);
                     }
                 }
-                if (retds.Tables[tname].Rows.Count == 0)
+                if (RETDS.Tables[tname].Rows.Count == 0)
                 {
-                    retds.Tables.Remove(tname);
+                    RETDS.Tables.Remove(tname);
                 }
             }
 
-            return retds;
+            return RETDS;
         }
 
         /// <summary>
         /// true if 2 datasets tables and table rows count is identical
         /// </summary>
-        /// <param name="ds1"></param>
-        /// <param name="ds2"></param>
+        /// <param name="DS1"></param>
+        /// <param name="DS2"></param>
         /// <returns></returns>
-        public static bool IsDataSetsElementsCountIdentical(DataSet ds1, DataSet ds2)
+        public static bool IsDataSetsElementsCountIdentical(DataSet DS1, DataSet DS2)
         {
-            if (ds1.Tables.Count == ds2.Tables.Count)
+            if (DS1.Tables.Count == DS2.Tables.Count)
             {
-                for (int t = 0; t < ds1.Tables.Count; t++)
+                for (int t = 0; t < DS1.Tables.Count; t++)
                 {
-                    if (ds1.Tables[t].Rows.Count != ds2.Tables[t].Rows.Count)
+                    if (DS1.Tables[t].Rows.Count != DS2.Tables[t].Rows.Count)
                     {
                         return false;
                     }
@@ -548,19 +548,19 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Returns true if translation cells in all rows have values
         /// </summary>
-        /// <param name="dt"></param>
+        /// <param name="DT"></param>
         /// <param name="column"></param>
         /// <returns></returns>
-        public static bool IsTableRowsCompleted(DataTable dt, string column = "Translation")
+        public static bool IsTableRowsCompleted(DataTable DT, string column = "Translation")
         {
-            if (dt == null)
+            if (DT == null)
             {
                 return false;
             }
-            int dtRowsCount = dt.Rows.Count;
-            for (int r = 0; r < dtRowsCount; r++)
+            int DTRowsCount = DT.Rows.Count;
+            for (int r = 0; r < DTRowsCount; r++)
             {
-                var cell = dt.Rows[r]?[column];
+                var cell = DT.Rows[r]?[column];
 
                 if (cell == null || string.IsNullOrEmpty(cell as string))
                 {
@@ -573,19 +573,19 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Returns true if translation cells in all Datatable rows is empty
         /// </summary>
-        /// <param name="dt"></param>
+        /// <param name="DT"></param>
         /// <param name="column"></param>
         /// <returns></returns>
-        public static bool IsTableRowsAllEmpty(DataTable dt, string column = "Translation")
+        public static bool IsTableRowsAllEmpty(DataTable DT, string column = "Translation")
         {
-            if (dt == null)
+            if (DT == null)
             {
                 return true;
             }
-            int dtRowsCount = dt.Rows.Count;
-            for (int r = 0; r < dtRowsCount; r++)
+            int DTRowsCount = DT.Rows.Count;
+            for (int r = 0; r < DTRowsCount; r++)
             {
-                var cell = dt.Rows[r][column];
+                var cell = DT.Rows[r][column];
 
                 if (cell != null && !string.IsNullOrEmpty(cell as string))
                 {
@@ -598,68 +598,68 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Get rows count from all Dataset tables
         /// </summary>
-        /// <param name="ds"></param>
+        /// <param name="DS"></param>
         /// <returns></returns>
-        public static int GetDatasetRowsCount(DataSet ds)
+        public static int GetDatasetRowsCount(DataSet DS)
         {
-            if (ds == null)
+            if (DS == null)
             {
                 return 0;
             }
 
-            int rowsCount = 0;
+            int RowsCount = 0;
 
-            int dtTablesCount = ds.Tables.Count;
-            for (int t = 0; t < dtTablesCount; t++)
+            int DTTablesCount = DS.Tables.Count;
+            for (int t = 0; t < DTTablesCount; t++)
             {
-                rowsCount += ds.Tables[t].Rows.Count;
+                RowsCount += DS.Tables[t].Rows.Count;
             }
 
-            return rowsCount;
+            return RowsCount;
         }
 
         /// <summary>
         /// Get count of non empty rows in the Dataset tables
         /// </summary>
-        /// <param name="ds"></param>
+        /// <param name="DS"></param>
         /// <param name="column"></param>
         /// <returns></returns>
-        public static int GetDatasetNonEmptyRowsCount(DataSet ds, string column = "Translation")
+        public static int GetDatasetNonEmptyRowsCount(DataSet DS, string column = "Translation")
         {
-            if (ds == null)
+            if (DS == null)
             {
                 return 0;
             }
 
-            int nonEmptyRowsCount = 0;
+            int NonEmptyRowsCount = 0;
 
-            int dtTablesCount = ds.Tables.Count;
-            for (int t = 0; t < dtTablesCount; t++)
+            int DTTablesCount = DS.Tables.Count;
+            for (int t = 0; t < DTTablesCount; t++)
             {
-                nonEmptyRowsCount += GetTableNonEmptyRowsCount(ds.Tables[t], column);
+                NonEmptyRowsCount += GetTableNonEmptyRowsCount(DS.Tables[t], column);
             }
 
-            return nonEmptyRowsCount;
+            return NonEmptyRowsCount;
         }
 
         /// <summary>
         /// Get count of non empty rows in the Table
         /// </summary>
-        /// <param name="dt"></param>
+        /// <param name="DT"></param>
         /// <param name="column"></param>
         /// <returns></returns>
-        public static int GetTableNonEmptyRowsCount(DataTable dt, string column = "Translation")
+        public static int GetTableNonEmptyRowsCount(DataTable DT, string column = "Translation")
         {
-            if (dt == null)
+            if (DT == null)
             {
                 return 0;
             }
 
-            int nonEmptyRowsCount = 0;
-            int dtRowsCount = dt.Rows.Count;
-            for (int r = 0; r < dtRowsCount; r++)
+            int NonEmptyRowsCount = 0;
+            int DTRowsCount = DT.Rows.Count;
+            for (int r = 0; r < DTRowsCount; r++)
             {
-                var cell = dt.Rows[r][column];
+                var cell = DT.Rows[r][column];
 
                 if (cell == null || string.IsNullOrEmpty(cell as string))
                 {
@@ -667,11 +667,11 @@ namespace TranslationHelper.Main.Functions
                 }
                 else
                 {
-                    nonEmptyRowsCount++;
+                    NonEmptyRowsCount++;
                 }
             }
 
-            return nonEmptyRowsCount;
+            return NonEmptyRowsCount;
         }
 
         internal static string FixDataTableFilterStringValue(string stringValue)

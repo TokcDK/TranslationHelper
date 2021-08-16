@@ -13,18 +13,18 @@ namespace TranslationHelper.Main.Functions
         /// <param name="target"></param>
         /// <param name="langlocale"></param>
         /// <returns></returns>
-        public static bool LocalePercentIsNotValid(string target, string langlocale = "romaji", bool load = true, int percent = -1)
+        public static bool LocalePercentIsNotValid(string target, string langlocale = "romaji", bool load = true, int Percent = -1)
         {
             try
             {
                 if (!string.IsNullOrEmpty(target))
                 {
-                    if (percent < 0)
+                    if (Percent < 0)
                     {
-                        percent = Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber;
+                        Percent = Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber;
                     }
 
-                    if (percent >= 100 || percent < 0)
+                    if (Percent >= 100 || Percent < 0)
                     {
                         return false;
                     }
@@ -36,17 +36,17 @@ namespace TranslationHelper.Main.Functions
                             return false;
                         }
 
-                        return (GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all")) > percent;
+                        return (GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all")) > Percent;
                     }
                     else if (langlocale == "other")
                     {
-                        return (GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all")) > percent;
+                        return (GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all")) > Percent;
                     }
                     else
                     {
-                        percent = 100 - percent;//recalculate value for correct comprasion
+                        Percent = 100 - Percent;//recalculate value for correct comprasion
 
-                        return (GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all")) < percent;
+                        return (GetLocaleLangCount(target, langlocale) * 100 / GetLocaleLangCount(target, "all")) < Percent;
                     }
                 }
             }
@@ -57,7 +57,7 @@ namespace TranslationHelper.Main.Functions
             return false;
         }
 
-        public static bool HasNojPcharacters(string str)
+        public static bool HasNOJPcharacters(string str)
         {
             return GetLocaleLangCount(str, "kanji") < 1 && GetLocaleLangCount(str, "katakana") < 1 && GetLocaleLangCount(str, "hiragana") < 1;
         }
@@ -65,7 +65,7 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Замена японских(и не только) цифр на стандартные
         /// </summary>
-        public static string ThFixDigits(string input)
+        public static string THFixDigits(string input)
         {
             if (string.IsNullOrEmpty(input))
             {

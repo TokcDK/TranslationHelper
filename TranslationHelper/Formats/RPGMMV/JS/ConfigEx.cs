@@ -5,20 +5,20 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
-    class ConfigEx : JsBase
+    class ConfigEx : JSBase
     {
         public ConfigEx()
         {
         }
 
-        public override string JsName => "ConfigEx.js";
+        public override string JSName => "ConfigEx.js";
 
         internal override bool Open()
         {
-            return ParseConfigExJs();
+            return ParseConfigExJS();
         }
 
-        private bool ParseConfigExJs(bool iswrite = false)
+        private bool ParseConfigExJS(bool Iswrite = false)
         {
             if (ProjectData.FilePath.Length == 0 || !File.Exists(ProjectData.FilePath))
             {
@@ -29,13 +29,13 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
             string tablename = Path.GetFileName(ProjectData.FilePath);
 
-            bool useDict = false;
-            if (iswrite)
+            bool UseDict = false;
+            if (Iswrite)
             {
                 SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
                 if (TablesLinesDict != null && TablesLinesDict.Count > 0)
                 {
-                    useDict = true;
+                    UseDict = true;
                 }
             }
             else
@@ -43,9 +43,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 AddTables(tablename);
             }
 
-            StringBuilder resultForWrite = new StringBuilder();
-            int rowIndex = 0;
-            bool isComment = false;
+            StringBuilder ResultForWrite = new StringBuilder();
+            int RowIndex = 0;
+            bool IsComment = false;
             try
             {
                 using (StreamReader reader = new StreamReader(ProjectData.FilePath))
@@ -54,50 +54,50 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                     {
                         line = reader.ReadLine();
 
-                        if (isComment)
+                        if (IsComment)
                         {
                             if (line.Contains("*/"))
                             {
-                                isComment = false;
+                                IsComment = false;
                             }
                         }
                         else
                         {
                             if (line.Contains("/*"))
                             {
-                                isComment = true;
+                                IsComment = true;
                             }
 
                             if (!line.TrimStart().StartsWith("//") && line.Contains("addCommand('"))
                             {
-                                string stringToAdd = Regex.Replace(line, @".*addCommand\(\'([^']*)\'\, \'.*\'\)\;.*", "$1");
-                                if (!string.IsNullOrWhiteSpace(stringToAdd))
+                                string StringToAdd = Regex.Replace(line, @".*addCommand\(\'([^']*)\'\, \'.*\'\)\;.*", "$1");
+                                if (!string.IsNullOrWhiteSpace(StringToAdd))
                                 {
-                                    if (iswrite)
+                                    if (Iswrite)
                                     {
-                                        if (useDict)
+                                        if (UseDict)
                                         {
-                                            if (TablesLinesDict.ContainsKey(stringToAdd) && !string.IsNullOrEmpty(TablesLinesDict[stringToAdd]) && TablesLinesDict[stringToAdd] != stringToAdd)
+                                            if (TablesLinesDict.ContainsKey(StringToAdd) && !string.IsNullOrEmpty(TablesLinesDict[StringToAdd]) && TablesLinesDict[StringToAdd] != StringToAdd)
                                             {
-                                                line = line.Replace(stringToAdd, TablesLinesDict[stringToAdd]);
+                                                line = line.Replace(StringToAdd, TablesLinesDict[StringToAdd]);
                                             }
                                         }
                                         else
                                         {
 
-                                            var row = ProjectData.ThFilesElementsDataset.Tables[tablename].Rows[rowIndex];
-                                            if (row[0] as string == stringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
+                                            var row = ProjectData.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
+                                            if (row[0] as string == StringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
                                             {
-                                                line = line.Replace(stringToAdd, row[1] as string);
+                                                line = line.Replace(StringToAdd, row[1] as string);
                                             }
 
-                                            rowIndex++;
+                                            RowIndex++;
                                         }
                                     }
                                     else
                                     {
-                                        string stringForInfo = Regex.Replace(line, @"\.addCommand\('[^']+', '([^']+)'\);", "$2");
-                                        AddRowData(tablename, stringToAdd, "addCommand\\" + stringForInfo, true);
+                                        string StringForInfo = Regex.Replace(line, @"\.addCommand\('[^']+', '([^']+)'\);", "$2");
+                                        AddRowData(tablename, StringToAdd, "addCommand\\" + StringForInfo, true);
                                         //ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
                                         //ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
                                     }
@@ -105,9 +105,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             }
                         }
 
-                        if (iswrite)
+                        if (Iswrite)
                         {
-                            resultForWrite.AppendLine(line);
+                            ResultForWrite.AppendLine(line);
                         }
                     }
                 }
@@ -117,11 +117,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 return false;
             }
 
-            if (iswrite)
+            if (Iswrite)
             {
                 try
                 {
-                    File.WriteAllText(ProjectData.FilePath, resultForWrite.ToString());
+                    File.WriteAllText(ProjectData.FilePath, ResultForWrite.ToString());
                 }
                 catch
                 {
@@ -137,7 +137,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         internal override bool Save()
         {
-            return ParseConfigExJs(true);
+            return ParseConfigExJS(true);
         }
     }
 }

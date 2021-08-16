@@ -4,21 +4,21 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    public static class Xp3
+    public static class XP3
     {
-        public static bool ExtractXp3Files2(string sPath)
+        public static bool ExtractXP3files2(string sPath)
         {
             bool ret = false;
 
-            string kiriKiriExEpath = Path.Combine(Application.StartupPath, "Res", "kirikiriunpacker", "kikiriki.exe");
-            string dirName = Path.GetFileName(Path.GetDirectoryName(sPath));
-            string kiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", dirName);
+            string KiriKiriEXEpath = Path.Combine(Application.StartupPath, "Res", "kirikiriunpacker", "kikiriki.exe");
+            string DirName = Path.GetFileName(Path.GetDirectoryName(sPath));
+            string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
             DirectoryInfo directory = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\");
-            string xp3Name = "data";
-            string xp3Path = Path.Combine(directory.FullName, xp3Name + ".xp3");
-            string kiriKiriExEargs = "-i \"" + xp3Path + "\" -o \"" + kiriKiriWorkFolder + "\"";
+            string xp3name = "data";
+            string xp3path = Path.Combine(directory.FullName, xp3name + ".xp3");
+            string KiriKiriEXEargs = "-i \"" + xp3path + "\" -o \"" + KiriKiriWorkFolder + "\"";
 
-            if (File.Exists(Path.Combine(dirName, "Data.xp3")))
+            if (File.Exists(Path.Combine(DirName, "Data.xp3")))
             {
 
             }
@@ -28,23 +28,23 @@ namespace TranslationHelper.Formats.KiriKiri
         }
 
 
-        public static bool ExtractXp3Files(string sPath)
+        public static bool ExtractXP3files(string sPath)
         {
             bool ret = false;
 
             try
             {
-                string kiriKiriExEpath = Path.Combine(Application.StartupPath, "Res", "kirikiriunpacker", "kikiriki.exe");
-                string dirName = Path.GetFileName(Path.GetDirectoryName(sPath));
-                string kiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", dirName);
+                string KiriKiriEXEpath = Path.Combine(Application.StartupPath, "Res", "kirikiriunpacker", "kikiriki.exe");
+                string DirName = Path.GetFileName(Path.GetDirectoryName(sPath));
+                string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
                 DirectoryInfo directory = new DirectoryInfo(Path.GetDirectoryName(sPath) + "\\");
-                string xp3Name = "data";
-                string xp3Path = Path.Combine(directory.FullName, xp3Name + ".xp3");
-                string kiriKiriExEargs = "-i \"" + xp3Path + "\" -o \"" + kiriKiriWorkFolder + "\"";
+                string xp3name = "data";
+                string xp3path = Path.Combine(directory.FullName, xp3name + ".xp3");
+                string KiriKiriEXEargs = "-i \"" + xp3path + "\" -o \"" + KiriKiriWorkFolder + "\"";
 
-                if (Directory.Exists(kiriKiriWorkFolder))
+                if (Directory.Exists(KiriKiriWorkFolder))
                 {
-                    if ((new DirectoryInfo(kiriKiriWorkFolder + Path.DirectorySeparatorChar)).GetFiles("*", SearchOption.AllDirectories).Length > 0)
+                    if ((new DirectoryInfo(KiriKiriWorkFolder + Path.DirectorySeparatorChar)).GetFiles("*", SearchOption.AllDirectories).Length > 0)
                     {
                         DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (result == DialogResult.Yes)
@@ -54,10 +54,10 @@ namespace TranslationHelper.Formats.KiriKiri
                         else
                         {
                             //Удаление и пересоздание папки
-                            Directory.Delete(kiriKiriWorkFolder, true);
-                            Directory.CreateDirectory(kiriKiriWorkFolder);
+                            Directory.Delete(KiriKiriWorkFolder, true);
+                            Directory.CreateDirectory(KiriKiriWorkFolder);
 
-                            ret = FunctionsProcess.RunProcess(kiriKiriExEpath, kiriKiriExEargs);
+                            ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
                             //if (RunProcess(KiriKiriEXEpath, KiriKiriEXEargs))
                             //{
                             //    xp3name = "patch";
@@ -68,13 +68,13 @@ namespace TranslationHelper.Formats.KiriKiri
                     }
                     else
                     {
-                        ret = FunctionsProcess.RunProcess(kiriKiriExEpath, kiriKiriExEargs);
+                        ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
                     }
                 }
                 else
                 {
-                    Directory.CreateDirectory(kiriKiriWorkFolder);
-                    ret = FunctionsProcess.RunProcess(kiriKiriExEpath, kiriKiriExEargs);
+                    Directory.CreateDirectory(KiriKiriWorkFolder);
+                    ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
                 }
             }
             catch

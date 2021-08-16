@@ -6,36 +6,36 @@
         /// <summary>
         /// Show Coordinates of cursor in textbox
         /// </summary>
-        /// <param name="textBox"></param>
+        /// <param name="TextBox"></param>
         /// <returns></returns>
-        public static System.Drawing.Point CurrentCharacterPosition(this System.Windows.Forms.RichTextBox textBox)
+        public static System.Drawing.Point CurrentCharacterPosition(this System.Windows.Forms.RichTextBox TextBox)
         {
-            if (textBox == null)
+            if (TextBox == null)
             {
                 return new System.Drawing.Point(0, 0);
             }
 
-            int s = textBox.SelectionStart;
-            int y = textBox.GetLineFromCharIndex(s);
-            int x = s - textBox.GetFirstCharIndexFromLine(y);
+            int s = TextBox.SelectionStart;
+            int y = TextBox.GetLineFromCharIndex(s);
+            int x = s - TextBox.GetFirstCharIndexFromLine(y);
 
             return new System.Drawing.Point(x, y);
         }
 
-        public static int CurrentSelectedTextLength(this System.Windows.Forms.RichTextBox textBox)
+        public static int CurrentSelectedTextLength(this System.Windows.Forms.RichTextBox TextBox)
         {
-            if (textBox == null)
+            if (TextBox == null)
             {
                 return 0;
             }
 
-            if (textBox.SelectionLength > 0)
+            if (TextBox.SelectionLength > 0)
             {
-                return textBox.SelectionLength;
+                return TextBox.SelectionLength;
             }
             else
             {
-                return textBox.Text.Length;
+                return TextBox.Text.Length;
             }
         }
     }

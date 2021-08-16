@@ -5,7 +5,7 @@
         /// <summary>
         /// play the sound when DB completely saved
         /// </summary>
-        internal static void SaveDbComplete()
+        internal static void SaveDBComplete()
         {
             PlayBeep();
         }
@@ -13,7 +13,7 @@
         /// <summary>
         /// play the sound when DB completely loaded
         /// </summary>
-        internal static void LoadDbCompleted()
+        internal static void LoadDBCompleted()
         {
             PlayBeep();
         }

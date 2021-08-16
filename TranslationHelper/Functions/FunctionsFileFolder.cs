@@ -51,23 +51,23 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// add index to end of path if file is exists
         /// </summary>
-        /// <param name="filePath"></param>
+        /// <param name="FilePath"></param>
         /// <returns></returns>
-        internal static string NewFilePathPlusIndex(string filePath)
+        internal static string NewFilePathPlusIndex(string FilePath)
         {
             int index = 0;
-            string newFilePath = filePath;
+            string newFilePath = FilePath;
             while (File.Exists(newFilePath))
             {
                 index++;
-                newFilePath = filePath + index;
+                newFilePath = FilePath + index;
             }
             return newFilePath;
         }
 
-        internal static bool IsInDirExistsAnyFile(string folderPath, string mask = "*", bool recursive = true)
+        internal static bool IsInDirExistsAnyFile(string FolderPath, string mask = "*", bool recursive = true)
         {
-            return folderPath.ContainsFiles(mask, recursive: recursive);
+            return FolderPath.ContainsFiles(mask, recursive: recursive);
         }
 
         internal static bool GetAnyFileWithTheNameExist(string[] array, string name)

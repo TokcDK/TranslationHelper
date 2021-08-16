@@ -27,20 +27,20 @@ namespace TranslationHelper.Projects.Liar_soft
 
         internal override bool Open()
         {
-            return OpenSaveXfl();
+            return OpenSaveXFL();
         }
 
         internal override bool Save()
         {
-            return OpenSaveXfl();
+            return OpenSaveXFL();
         }
 
-        bool OpenSaveXfl()
+        bool OpenSaveXFL()
         {
             //set vars
             var scrxfl = Path.Combine(ProjectData.SelectedGameDir, "scr.xfl");
             var archive = XflArchive.FromFile(scrxfl);
-            ProjectData.ProjectWorkDir = Path.Combine(ThSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(ProjectData.SelectedGameDir));
+            ProjectData.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(ProjectData.SelectedGameDir));
             var dir = ProjectData.ProjectWorkDir;
 
             archive.ExtractToDirectory(dir);//extract all gsc to work dir
@@ -53,7 +53,7 @@ namespace TranslationHelper.Projects.Liar_soft
             }
 
             //open or save txt/gsc
-            var ret = OpenSaveFilesBase(dir, typeof(Gsctxt), "*.txt");
+            var ret = OpenSaveFilesBase(dir, typeof(GSCTXT), "*.txt");
 
             if(ProjectData.SaveFileMode && ret)
             {

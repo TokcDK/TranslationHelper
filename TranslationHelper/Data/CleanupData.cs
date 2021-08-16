@@ -12,21 +12,21 @@ namespace TranslationHelper.Data
             
         }
 
-        internal void ThCleanupThings()
+        internal void THCleanupThings()
         {
             try
             {
-                FunctionsSave.WriteRpgMakerMvStats();
+                FunctionsSave.WriteRPGMakerMVStats();
 
                 //Close other forms
-                if (ProjectData.Main.Search != null)
+                if (ProjectData.Main.search != null)
                 {
-                    if (!ProjectData.Main.Search.IsDisposed)
+                    if (!ProjectData.Main.search.IsDisposed)
                     {
-                        ProjectData.Main.Search.Close();
-                        ProjectData.Main.Search.Dispose();
+                        ProjectData.Main.search.Close();
+                        ProjectData.Main.search.Dispose();
                     }
-                    ProjectData.Main.Search = null;
+                    ProjectData.Main.search = null;
                 }
                 //if (ProjectData.Main.Settings != null)
                 //{
@@ -52,11 +52,11 @@ namespace TranslationHelper.Data
 
                 //Clean data
                 ProjectData.Main.THFilesList.Items.Clear();
-                ProjectData.ThFilesElementsDataset.Reset();
-                ProjectData.ThFilesElementsDatasetInfo.Reset();
-                ProjectData.ThFilesElementsAllDataTable.Reset();
+                ProjectData.THFilesElementsDataset.Reset();
+                ProjectData.THFilesElementsDatasetInfo.Reset();
+                ProjectData.THFilesElementsALLDataTable.Reset();
                 ProjectData.Main.THFileElementsDataGridView.Columns.Clear();
-                ProjectData.Hashes.Clear();
+                ProjectData.hashes.Clear();
                 ProjectData.AllDBmerged = null;
                 //THFileElementsDataGridView.Rows.Clear();
                 ProjectData.FilePath = string.Empty;
@@ -87,7 +87,7 @@ namespace TranslationHelper.Data
                 ProjectData.Main.loadTrasnlationAsToolStripMenuItem.Enabled = false;
                 ProjectData.Main.loadTrasnlationAsForcedToolStripMenuItem.Enabled = false;
                 ProjectData.Main.saveTranslationAsToolStripMenuItem.Enabled = false;
-                ProjectData.Main.SavemenusNoTenabled = true;
+                ProjectData.Main.savemenusNOTenabled = true;
                 ProjectData.Main.THSourceRichTextBox.Enabled = false;
                 ProjectData.Main.THTargetRichTextBox.Enabled = false;
                 ProjectData.Main.openInWebToolStripMenuItem.Enabled = false;
@@ -133,10 +133,10 @@ namespace TranslationHelper.Data
                 ProjectData.Main.TargetTextBoxColumnPositionLabelData.Text = string.Empty;
 
                 //remove project category
-                var categoryName = T._("Project");
+                var CategoryName = T._("Project");
                 foreach(var menu in ProjectData.Main.CMSFilesList.Items)
                 {
-                    if(menu is System.Windows.Forms.ToolStripMenuItem t && t.Text== categoryName)
+                    if(menu is System.Windows.Forms.ToolStripMenuItem t && t.Text== CategoryName)
                     {
                         ProjectData.Main.CMSFilesList.Items.Remove(t);
                         break;

@@ -7,18 +7,18 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    class Tsv : FormatBase
+    class TSV : FormatBase
     {
-        public Tsv()
+        public TSV()
         {
         }
 
         internal override bool Open()
         {
-            return KiriKiriTsvOpen();
+            return KiriKiriTSVOpen();
         }
 
-        public bool KiriKiriTsvOpen()
+        public bool KiriKiriTSVOpen()
         {
             FunctionsTable.SetTableAndColumns();
 
@@ -34,23 +34,23 @@ namespace TranslationHelper.Formats.KiriKiri
                     }
                     else
                     {
-                        string[] nameValues = line.Split('	');
+                        string[] NameValues = line.Split('	');
 
-                        if (nameValues.Length == 2)
+                        if (NameValues.Length == 2)
                         {
-                            string[] values = nameValues[1].Split(',');
+                            string[] Values = NameValues[1].Split(',');
 
-                            int valuesLength = values.Length;
-                            for (int l = 0; l < valuesLength; l++)
+                            int ValuesLength = Values.Length;
+                            for (int l = 0; l < ValuesLength; l++)
                             {
-                                string subline = values[l];
+                                string subline = Values[l];
                                 if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || subline.IsDigitsOnly())
                                 {
                                 }
                                 else
                                 {
-                                    _ = ProjectData.ThFilesElementsDataset.Tables[fileName].Rows.Add(subline);
-                                    _ = ProjectData.ThFilesElementsDatasetInfo.Tables[fileName].Rows.Add(nameValues[0]);
+                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(subline);
+                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(NameValues[0]);
                                 }
                             }
                         }
