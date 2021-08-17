@@ -1656,7 +1656,6 @@ namespace TranslationHelper
             {
                 FunctionsAutoOperations.THAutoSetSameTranslationForSimular(InputTableIndex, InputRowIndex, InputCellIndex, forcevalue);
 
-                //LogToFile(string.Empty,true);
                 cellchanged = false;
             }
         }
@@ -1671,18 +1670,12 @@ namespace TranslationHelper
                 if (e.Button == MouseButtons.Right)
                 {
                     DataGridViewRow clickedRow = (sender as DataGridView).Rows[e.RowIndex];
-                    if (clickedRow.Cells[e.ColumnIndex].Selected || clickedRow.Selected)//вот это модифицировано
-                    {
-                    }
-                    else
+                    if (!clickedRow.Cells[e.ColumnIndex].Selected && !clickedRow.Selected)//вот это модифицировано
                     {
                         THFileElementsDataGridView.CurrentCell = clickedRow.Cells[e.ColumnIndex];
                     }
 
-                    if (clickedRow.Cells[e.ColumnIndex].IsInEditMode)//не вызывать меню, когда ячейка в режиме редактирования
-                    {
-                    }
-                    else
+                    if (!clickedRow.Cells[e.ColumnIndex].IsInEditMode)//не вызывать меню, когда ячейка в режиме редактирования
                     {
                         var mousePosition = THFileElementsDataGridView.PointToClient(Cursor.Position);
 
