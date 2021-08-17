@@ -31,6 +31,11 @@ namespace TranslationHelper.Data
         }
 
         /// <summary>
+        /// Application's loaded config ini
+        /// </summary>
+        internal static INIFileMan.INIFile ConfigIni { get=> Main.Settings.THConfigINI; set=> Main.Settings.THConfigINI=value; }
+
+        /// <summary>
         /// true - when file open, false - when file writing
         /// </summary>
         internal static bool OpenFileMode = true;

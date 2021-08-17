@@ -73,6 +73,8 @@ namespace TranslationHelper
                 File.Delete(THSettings.THLogPath());
             }
 
+            FunctionsOpen.UpdateRecentFiles();
+
             //Test Проверка ключа Git для планируемой функции использования Git
             //string GitPath = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows", "InstallPath", null).ToString();
         }
@@ -285,7 +287,7 @@ namespace TranslationHelper
         internal volatile bool IsOpeningInProcess;
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new FunctionsOpen().OpenProject();
+            FunctionsOpen.OpenProject();
         }
 
         private void SetDoublebuffered(bool value)

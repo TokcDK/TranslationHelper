@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -20,145 +21,77 @@ namespace TranslationHelper.Functions
 {
     class FunctionsOpen
     {
-
-        public FunctionsOpen()
-        {
-
-        }
-
-        internal async void OpenProject()
+        internal static async void OpenProject(string filePath = null)
         {
             if (ProjectData.Main.IsOpeningInProcess)//Do nothing if user will try to use Open menu before previous will be finished
             {
+                return;
             }
-            else
+
+            ProjectData.Main.IsOpeningInProcess = true;
+            if (filePath == null || !File.Exists(filePath))
             {
-                ProjectData.Main.IsOpeningInProcess = true;
-                var IsProjectFileSelected = false;
-                //об сообщении Освобождаемый объект никогда не освобождается и почему using здесь
-                //https://stackoverflow.com/questions/2926869/do-you-need-to-dispose-of-objects-and-set-them-to-null
                 using (var THFOpen = new OpenFileDialog())
                 {
                     THFOpen.InitialDirectory = ProjectData.Main.Settings.THConfigINI.GetKey("Paths", "LastPath");
                     THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json;*.scn;*.ks|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
 
-                    if (THFOpen.ShowDialog() == DialogResult.OK)
+                    if (THFOpen.ShowDialog() != DialogResult.OK || THFOpen.FileName == null)
                     {
-                        if (THFOpen.FileName != null)
-                        {
-                            new CleanupData().THCleanupThings();
-
-                            ProjectData.SelectedFilePath = THFOpen.FileName;
-                            IsProjectFileSelected = true;
-                        }
+                        return;
                     }
+
+                    filePath = THFOpen.FileName;
                 }
-
-                if (!IsProjectFileSelected)
-                {
-                    ProjectData.Main.IsOpeningInProcess = false;
-                    return;
-                }
-
-                {
-                    //THActionProgressBar.Visible = true;
-                    //ProjectData.Main.ProgressInfo(true, T._("opening.."));
-
-                    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    //Thread open = new Thread(new ParameterizedThreadStart((obj) => GetSourceType(THFOpen.FileName)));
-                    //open.Start();
-
-                    //bool newOpen = false;
-
-                    //if (newOpen)
-                    //{
-                    //    if (await Task.Run(() => TryToDetectSourceAndOpen()).ConfigureAwait(true))
-                    //    {
-                    //        AfterOpenActions();
-
-                    //        return;
-                    //    }
-                    //    else
-                    //    {
-                    //        /*THMsg*/
-                    //        MessageBox.Show(T._("Problem with source opening. Try to report to devs about it."));
-
-                    //        return;
-                    //    }
-                    //}
-
-                    //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => RPGMFunctions.THSelectedSourceType = GetSourceType(ProjectData.SelectedFilePath)).ConfigureAwait(true);
-
-                    //THSelectedSourceType = GetSourceType(THFOpen.FileName);
-
-                    //THActionProgressBar.Visible = false;
-                    ProjectData.Main.ProgressInfo(false, string.Empty);
-
-                    if (RPGMFunctions.THSelectedSourceType.Length == 0)
-                    {
-                        ProjectData.Main.frmMainPanel.Visible = false;
-
-                        /*THMsg*/
-                        FunctionsSounds.OpenProjectFailed();
-                        MessageBox.Show(T._("Failed to open project"));
-                    }
-                    else
-                    {
-                        //if (THSelectedSourceType == "RPG Maker MV")
-                        //{
-                        //    THMakeRPGMakerMVWorkProjectDir(THFOpen.FileName);
-                        //}
-
-                        //Попытка добавить открытие сразу всех таблиц в одной
-                        //if (setAsDatasourceAllToolStripMenuItem.Visible)
-                        //{
-                        //    for (int c = 0; c < THFilesElementsDataset.Tables[0].Columns.Count; c++)
-                        //    {
-                        //        THFilesElementsALLDataTable.Columns.Add(THFilesElementsDataset.Tables[0].Columns[c].ColumnName);//asdfgh
-                        //    }
-
-                        //    for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
-                        //    {
-                        //        for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
-                        //        {
-                        //            THFilesElementsALLDataTable.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r].ItemArray);
-                        //        }
-                        //    }
-                        //}
-
-                        AfterOpenActions();
-                    }
-                }
-
-                ProjectData.Main.IsOpeningInProcess = false;
             }
+
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+            {
+                ProjectData.Main.IsOpeningInProcess = false;
+                return;
+            }
+
+            new CleanupData().THCleanupThings();
+
+            ProjectData.SelectedFilePath = filePath;
+
+            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+            await Task.Run(() => RPGMFunctions.THSelectedSourceType = GetSourceType(ProjectData.SelectedFilePath)).ConfigureAwait(true);
+
+            ProjectData.Main.ProgressInfo(false, string.Empty);
+
+            if (RPGMFunctions.THSelectedSourceType.Length == 0)
+            {
+                ProjectData.Main.frmMainPanel.Visible = false;
+
+                /*THMsg*/
+                FunctionsSounds.OpenProjectFailed();
+                MessageBox.Show(T._("Failed to open project"));
+            }
+            else
+            {
+                //Попытка добавить открытие сразу всех таблиц в одной
+                //if (setAsDatasourceAllToolStripMenuItem.Visible)
+                //{
+                //    for (int c = 0; c < THFilesElementsDataset.Tables[0].Columns.Count; c++)
+                //    {
+                //        THFilesElementsALLDataTable.Columns.Add(THFilesElementsDataset.Tables[0].Columns[c].ColumnName);//asdfgh
+                //    }
+
+                //    for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
+                //    {
+                //        for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                //        {
+                //            THFilesElementsALLDataTable.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r].ItemArray);
+                //        }
+                //    }
+                //}
+
+                AfterOpenActions();
+            }
+
+            ProjectData.Main.IsOpeningInProcess = false;
         }
-
-        //private bool TryToDetectSourceAndOpen()
-        //{
-        //    foreach (var Project in ProjectData.ProjectsList)
-        //    {
-        //        if (Project.OpenDetect())
-        //        {
-        //            if (Project.Open())
-        //            {
-        //                if (ProjectData.THFilesElementsDataset.Tables.Count > 0)
-        //                {
-        //                    ProjectData.Project = Project;
-        //                    RPGMFunctions.THSelectedSourceType = Project.ProjectTitle();
-        //                    foreach (DataTable file in ProjectData.THFilesElementsDataset.Tables)
-        //                    {
-        //                        ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(file.TableName)));
-        //                    }
-        //                    return true;
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return false;
-        //}
 
         private static string GetCorrectedGameDIr(string tHSelectedGameDir)
         {
@@ -177,7 +110,7 @@ namespace TranslationHelper.Functions
         }
 
         internal DirectoryInfo mvdatadir;
-        private string GetSourceType(string sPath)
+        private static string GetSourceType(string sPath)
         {
             ProjectData.SelectedFilePath = sPath;
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
@@ -185,8 +118,6 @@ namespace TranslationHelper.Functions
             ProjectData.SelectedGameDir = dir.FullName;
 
             ProjectData.Main.frmMainPanel.Invoke((Action)(() => ProjectData.Main.frmMainPanel.Visible = true));
-
-            //ShowProjectsList();
 
             //Try detect and open new type projects
             foreach (Type Project in ProjectData.ProjectsList) // iterate projectbase types
@@ -202,18 +133,8 @@ namespace TranslationHelper.Functions
             }
 
             //Old projects
-            return ""; //TryDetectOpenOldProjects(sPath);
+            return ""; //TryDetectOpenOldProjects(sPath); // disabled because obsolete code
         }
-
-        //private void ShowProjectsList()
-        //{
-        //    StringBuilder titles = new StringBuilder();
-        //    foreach (ProjectBase Project in ProjectData.ProjectsList)
-        //    {
-        //        titles.AppendLine(Project.ProjectTitle());
-        //    }
-        //    MessageBox.Show(titles.ToString());
-        //}
 
         private string TryDetectOpenOldProjects(string sPath)
         {
@@ -387,7 +308,7 @@ namespace TranslationHelper.Functions
         /// Try to open project and return project name if open is success
         /// </summary>
         /// <returns></returns>
-        private string TryOpenProject()
+        private static string TryOpenProject()
         {
             ProjectData.CurrentProject.Init();
             ProjectData.CurrentProject.BakRestore();
@@ -406,7 +327,7 @@ namespace TranslationHelper.Functions
         /// </summary>
         /// <param name="Project"></param>
         /// <returns></returns>
-        private bool TryDetectProject(ProjectBase Project)
+        private static bool TryDetectProject(ProjectBase Project)
         {
             if (Project.Check())
             {
@@ -416,7 +337,7 @@ namespace TranslationHelper.Functions
             return false;
         }
 
-        internal void AfterOpenActions()
+        internal static void AfterOpenActions()
         {
             if (!ProjectData.Main.THWorkSpaceSplitContainer.Visible)
             {
@@ -442,6 +363,8 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.THFilesList.Items.Add(table.TableName);
                 }
             }
+
+            UpdateRecentFiles();
 
             ProjectData.SelectedGameDir = GetCorrectedGameDIr(ProjectData.SelectedGameDir);
 
@@ -498,7 +421,98 @@ namespace TranslationHelper.Functions
             FunctionsLoadTranslationDB.LoadTranslationIfNeed();
         }
 
-        private void AfterOpenCleaning()
+        /// <summary>
+        /// Add last successfully opened project to recent files list
+        /// </summary>
+        internal static void UpdateRecentFiles()
+        {
+            string[] items;
+            if (!ProjectData.ConfigIni.SectionExistsAndNotEmpty("RecentFiles"))
+            {
+                items = new[] { ProjectData.SelectedFilePath };
+
+                // save values in ini
+                ProjectData.ConfigIni.SetArrayToSectionValues("RecentFiles", items);
+
+                AddRecentMenuItems(items);
+
+                return;
+            }
+
+            var values = ProjectData.ConfigIni.GetSectionValues("RecentFiles").ToList();
+
+            bool changed = values.Count > 0;
+
+            // max 20 items
+            while (values.Count >= 20)
+            {
+                changed = true;
+                values.RemoveAt(values.Count - 1); // remove last when more of limit
+            }
+
+            if (values.Contains(ProjectData.SelectedFilePath) && values.IndexOf(ProjectData.SelectedFilePath) > 0)
+            {
+                changed = true;
+                values.Remove(ProjectData.SelectedFilePath);
+            }
+
+            if (!changed)
+            {
+                return;
+            }
+
+            // newest opened always first
+            if(!string.IsNullOrWhiteSpace(ProjectData.SelectedFilePath))
+            {
+                values.Insert(0, ProjectData.SelectedFilePath);
+            }
+
+            items = values.ToArray();
+
+            // save values in ini
+            ProjectData.ConfigIni.SetArrayToSectionValues("RecentFiles", items);
+
+            AddRecentMenuItems(items);
+        }
+
+        private static void AddRecentMenuItems(string[] items)
+        {
+            var recentMenuName = T._("Recent");
+
+            foreach (ToolStripItem menuCategory in ProjectData.Main.fileToolStripMenuItem.DropDownItems)
+            {
+                if(menuCategory.Text== recentMenuName)
+                {
+                    ProjectData.Main.fileToolStripMenuItem.DropDownItems.Remove(menuCategory);
+                    break;
+                }
+            }
+
+            //ProjectData.Main.fileToolStripMenuItem.DropDownItems
+            var category = new System.Windows.Forms.ToolStripMenuItem
+            {
+                Text = recentMenuName
+            };
+
+            foreach (var item in items)
+            {
+                var ItemMenu = new System.Windows.Forms.ToolStripMenuItem
+                {
+                    Text = item
+                };
+                category.DropDownItems.Add(ItemMenu);
+                ItemMenu.Click += RecentFilesOpen_Click;
+            }
+
+            ProjectData.Main.Invoke((Action)(() => ProjectData.Main.fileToolStripMenuItem.DropDownItems.Add(category)));
+        }
+
+        private static void RecentFilesOpen_Click(object sender, EventArgs e)
+        {
+            OpenProject((sender as ToolStripMenuItem).Text);
+        }
+
+        private static void AfterOpenCleaning()
         {
             ProjectData.TablesLinesDict?.Clear();
             ProjectData.ENQuotesToJPLearnDataFoundNext?.Clear();
