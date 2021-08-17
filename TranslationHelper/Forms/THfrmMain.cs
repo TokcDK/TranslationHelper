@@ -3119,6 +3119,11 @@ namespace TranslationHelper
             new TrimEndSpace().Selected();
         }
 
+        private void fixInstancesOfNameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new FixInstancesOfName().All();
+        }
+
         //Материалы
         //по оптимизации кода
         //https://cc.davelozinski.com/c-sharp/fastest-way-to-compare-strings

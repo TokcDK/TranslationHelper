@@ -110,6 +110,7 @@
     <Compile Include="Data\THSettings.cs" />
     <Compile Include="Extensions\ExtensionsBytes.cs" />
     <Compile Include="Extensions\ExtensionsDataRow.cs" />
+    <Compile Include="Extensions\ExtensionsDataSet.cs" />
     <Compile Include="Extensions\ExtensionsDictionary.cs" />
     <Compile Include="Extensions\ExtensionsFileFolder.cs" />
     <Compile Include="Extensions\ExtensionsString.cs" />
@@ -232,6 +233,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\StringCaseMorphBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToLowerCaseAll.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUpperCaseAll.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\FixInstancesOfName.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUpperCaseFirst.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\TrimEndSpace.cs" />
     <Compile Include="Functions\FunctionsInterfaces.cs" />

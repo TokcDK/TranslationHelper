@@ -159,6 +159,7 @@
             this.hardFixesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showCharCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToCustomDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.trimEndToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.THEditElementsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THSourceRichTextBox = new System.Windows.Forms.RichTextBox();
             this.THTargetRichTextBox = new System.Windows.Forms.RichTextBox();
@@ -180,7 +181,7 @@
             this.tlpFrmMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpWorkInfo = new System.Windows.Forms.TableLayoutPanel();
             this.tlpTextLenPosInfo = new System.Windows.Forms.TableLayoutPanel();
-            this.trimEndToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.fixInstancesOfNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -452,7 +453,8 @@
             this.fixMessagesForSelectedToolStripMenuItem,
             this.extraHardFixesToolStripMenuItem,
             this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem,
-            this.trimEndToolStripMenuItem});
+            this.trimEndToolStripMenuItem,
+            this.fixInstancesOfNameToolStripMenuItem});
             this.editToolStripMenuItem.Enabled = false;
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -857,14 +859,14 @@
             // tableToolStripMenuItem2
             // 
             this.tableToolStripMenuItem2.Name = "tableToolStripMenuItem2";
-            this.tableToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.tableToolStripMenuItem2.Size = new System.Drawing.Size(103, 22);
             this.tableToolStripMenuItem2.Text = "Table";
             this.tableToolStripMenuItem2.Click += new System.EventHandler(this.TableToolStripMenuItem2_Click);
             // 
             // allToolStripMenuItem3
             // 
             this.allToolStripMenuItem3.Name = "allToolStripMenuItem3";
-            this.allToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.allToolStripMenuItem3.Size = new System.Drawing.Size(103, 22);
             this.allToolStripMenuItem3.Text = "All";
             this.allToolStripMenuItem3.Click += new System.EventHandler(this.AllToolStripMenuItem3_Click);
             // 
@@ -1201,7 +1203,7 @@
             this.addToCustomDBToolStripMenuItem,
             this.trimEndToolStripMenuItem1});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 444);
+            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 422);
             // 
             // OpenInWebContextToolStripMenuItem
             // 
@@ -1411,6 +1413,13 @@
             this.addToCustomDBToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.addToCustomDBToolStripMenuItem.Text = "Add To Custom DB";
             this.addToCustomDBToolStripMenuItem.Click += new System.EventHandler(this.AddToCustomDBToolStripMenuItem_Click);
+            // 
+            // trimEndToolStripMenuItem1
+            // 
+            this.trimEndToolStripMenuItem1.Name = "trimEndToolStripMenuItem1";
+            this.trimEndToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
+            this.trimEndToolStripMenuItem1.Text = "TrimEnd";
+            this.trimEndToolStripMenuItem1.Click += new System.EventHandler(this.TrimEndToolStripMenuItem1_Click);
             // 
             // THEditElementsSplitContainer
             // 
@@ -1703,12 +1712,12 @@
             this.tlpTextLenPosInfo.Size = new System.Drawing.Size(257, 20);
             this.tlpTextLenPosInfo.TabIndex = 8;
             // 
-            // trimEndToolStripMenuItem1
+            // fixInstancesOfNameToolStripMenuItem
             // 
-            this.trimEndToolStripMenuItem1.Name = "trimEndToolStripMenuItem1";
-            this.trimEndToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
-            this.trimEndToolStripMenuItem1.Text = "TrimEnd";
-            this.trimEndToolStripMenuItem1.Click += new System.EventHandler(this.TrimEndToolStripMenuItem1_Click);
+            this.fixInstancesOfNameToolStripMenuItem.Name = "fixInstancesOfNameToolStripMenuItem";
+            this.fixInstancesOfNameToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.fixInstancesOfNameToolStripMenuItem.Text = "FixInstancesOfName";
+            this.fixInstancesOfNameToolStripMenuItem.Click += new System.EventHandler(this.fixInstancesOfNameToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -1915,6 +1924,7 @@
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem trimEndToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem fixInstancesOfNameToolStripMenuItem;
     }
 }
 

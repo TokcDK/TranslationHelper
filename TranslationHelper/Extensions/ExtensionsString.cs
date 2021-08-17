@@ -52,7 +52,7 @@ namespace TranslationHelper.Extensions
                     catch (System.ArgumentException ex)
                     {
                         log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
-                        ProjectData.Main.ProgressInfo(true, "Invalid regex found. See "+ THSettings.ApplicationLogName());
+                        ProjectData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
                         continue;
                     }
 
@@ -112,9 +112,9 @@ namespace TranslationHelper.Extensions
         /// <param name="lineCoordinates"></param>
         /// <param name="lineNum"></param>
         /// <returns></returns>
-        internal static string[] ExtractMulty(this string line, bool onlyOne = false, List<int> outIndexes=null)
+        internal static string[] ExtractMulty(this string line, bool onlyOne = false, List<int> outIndexes = null)
         {
-            var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
+            var GroupValues = (onlyOne ? new List<string>(1) : new List<string>());//list of values for captured groups which containing in PatternReplacementPair.Value
             foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
             {
                 Match m = Regex.Match(line, PatternReplacementPair.Key);
@@ -123,7 +123,7 @@ namespace TranslationHelper.Extensions
                     continue;
                 }
 
-                if(onlyOne && m.Groups.Count > 1)
+                if (onlyOne && m.Groups.Count > 1)
                 {
                     continue;
                 }
@@ -137,7 +137,7 @@ namespace TranslationHelper.Extensions
                         {
                             if (!GroupValues.Contains(g.Value))
                             {
-                                if(outIndexes!=null)
+                                if (outIndexes != null)
                                 {
                                     outIndexes.Add(g.Index); // add index of string
                                 }

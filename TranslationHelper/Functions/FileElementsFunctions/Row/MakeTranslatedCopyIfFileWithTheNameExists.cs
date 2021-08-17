@@ -60,7 +60,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 bool hasExtractedFromOrig = false;
                 string origName = orig;
-                var extractedFromOrig = orig.ExtractMulty(true);
+                var extractedFromOrig = orig.ExtractMulty(onlyOne: true);
                 if (//extractedFromOrig.Length == 1 // only one extracted
                     //&& 
                     !string.IsNullOrWhiteSpace(extractedFromOrig[0]) // not empty extracted value
@@ -80,7 +80,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 string transName = trans;
                 if (hasExtractedFromOrig)
                 {
-                    var extractedFromTrans = trans.ExtractMulty(true);
+                    var extractedFromTrans = trans.ExtractMulty(onlyOne: true);
                     if (//extractedFromTrans.Length == 1 // only one extracted
                         //&& 
                         !string.IsNullOrWhiteSpace(extractedFromTrans[0]) // not empty extracted value
