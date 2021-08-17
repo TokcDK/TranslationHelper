@@ -30,7 +30,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// Main app data
         /// </summary>
-        
+
 
         /// <summary>
         /// return value for Table/All functions. Depends on return of Apply
@@ -49,7 +49,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected RowBase()
         {
-            
+
         }
 
 
@@ -72,7 +72,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     GetTableData(tableIndex);
 
-                    if (!IsAll && !IsTable)
+                    if (IsSelectedRows)
                     {
                         SelectedRowsCount = 1;
                     }
@@ -80,7 +80,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     if (Dgv == null)
                     {
 #if DEBUG
-                            ProjectData.Main.THFileElementsDataGridView.Invoke((Action)(() => Dgv = ProjectData.Main.THFileElementsDataGridView));
+                        ProjectData.Main.THFileElementsDataGridView.Invoke((Action)(() => Dgv = ProjectData.Main.THFileElementsDataGridView));
 #else
                             DGV = ProjectData.Main.THFileElementsDataGridView;
 #endif
@@ -90,7 +90,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 SelectedRow = row;
                 SelectedRowIndex = GetRowIndex(rowIndex);
 
-                if (!_isInternalSelectedRowExecution && !IsAll && !IsTable)
+                if (!_isInternalSelectedRowExecution && IsSelectedRows)
                 {
                     ActionsPreRowsApply();
                 }
@@ -101,7 +101,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
             }
 
-            if (!_isInternalSelectedRowExecution && !IsAll && !IsTable)
+            if (!_isInternalSelectedRowExecution && IsSelectedRows)
             {
                 ActionsPostRowsApply();
             }
@@ -131,7 +131,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return SelectedRowIndex;
         }
 
+        /// <summary>
+        /// Application log
+        /// </summary>
         protected readonly FunctionsLogs _log = new FunctionsLogs();
+
+        /// <summary>
+        /// True when !IsAll && !IsTables && !IsTable
+        /// </summary>
+        bool IsSelectedRows { get => !IsAll && !IsTables && !IsTable; }
 
         /// <summary>
         /// selected rows count
@@ -154,7 +162,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 #endif
             }
 
-            if (!IsAll && !IsTable)
+            if (IsSelectedRows)
             {
                 SelectedRowsCount = Dgv.GetCountOfRowsWithSelectedCellsCount();
             }
@@ -166,14 +174,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     GetTableData();
 
                     // parse table instead of selected cells when all cells in the table are selected
-                    if( SelectedRowsCount == SelectedTable.Rows.Count)
+                    if (SelectedRowsCount == SelectedTable.Rows.Count)
                     {
                         return Table();
                     }
 
                     _isInternalSelectedRowExecution = true;
 
-                    if (!IsAll && !IsTable)
+                    if (IsSelectedRows)
                     {
                         ActionsPreRowsApply(); // need here also as in All because must be executed even if only selected rows was selected
                     }
@@ -211,7 +219,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         ind++; //raise added index
                     }
 
-                    if (!IsAll && !IsTable)
+                    if (IsSelectedRows)
                     {
                         Array.Sort(selectedRowIndexses);//sort indexes
                     }
@@ -221,7 +229,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         Selected(SelectedTable.Rows[rowIndex], SelectedTableIndex, rowIndex);
                     }
 
-                    if (!IsAll && !IsTable)
+                    if (IsSelectedRows)
                     {
                         ActionsPostRowsApply(); // need here also as in All because must be executed even if only selected rows was selected
                     }
@@ -328,15 +336,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected bool IsTable;
         protected int ColumnIndexOriginal;
         protected int ColumnIndexTranslation = 1;
+
         /// <summary>
         /// proceed selected table
         /// </summary>
+        /// <param name="dataTable"></param>
         /// <returns></returns>
-        internal bool Table()
+        internal bool Table(DataTable dataTable)
         {
+            SelectedTable = dataTable;
+
             Init();
 
-            if (!IsAll)
+            if (!IsAll && !IsTables)
             {
                 IsTable = true;
 
@@ -350,49 +362,94 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return false;
             }
 
-            if (IsValidTable(SelectedTable))
+            if (!IsValidTable(SelectedTable))
             {
-                if (!IsAll)
-                {
-                    ActionsPreTablesApply(); // need here also as in All because must be executed even if only one table was selected
-                }
-
-                ActionsPreTableApply();
-
-                if (!IsAll)
-                {
-                    ActionsPreRowsApply(); // need here also as in All because must be executed even if only one table was selected
-                }
-
-                _isInternalSelectedRowExecution = true;
-
-                var rowsCount = SelectedTable.Rows.Count;
-                if (!IsAll && IsTable /*|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is*/)
-                {
-                    SelectedRowsCount = rowsCount;
-                }
-
-                for (int i = 0; i < rowsCount; i++)
-                {
-                    Selected(SelectedTable.Rows[i], SelectedTableIndex, i);
-                }
-
-                if (!IsAll && IsTable)
-                {
-                    ActionsPostRowsApply(); // need here also as in All because must be executed even if only one table was selected
-                }
-
-                ActionsPostTableApply();
-
-                if (!IsAll && IsTable) 
-                {
-                    ActionsPostTablesApply(); // need here also as in All because must be executed even if only one table was selected
-                }
+                return false;
             }
 
-            if (!IsAll)
+            if (!IsAll && !IsTables)
+            {
+                ActionsPreTablesApply(); // need here also as in All because must be executed even if only one table was selected
+            }
+
+            ActionsPreTableApply();
+
+            if (!IsAll && !IsTables)
+            {
+                ActionsPreRowsApply(); // need here also as in All because must be executed even if only one table was selected
+            }
+
+            _isInternalSelectedRowExecution = true;
+
+            var rowsCount = SelectedTable.Rows.Count;
+            if (!IsAll && !IsTables && IsTable /*|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is*/)
+            {
+                SelectedRowsCount = rowsCount;
+            }
+
+            for (int i = 0; i < rowsCount; i++)
+            {
+                Selected(SelectedTable.Rows[i], SelectedTableIndex, i);
+            }
+
+            if (!IsAll && !IsTables && IsTable)
+            {
+                ActionsPostRowsApply(); // need here also as in All because must be executed even if only one table was selected
+            }
+
+            ActionsPostTableApply();
+
+            if (!IsAll && !IsTables && IsTable)
+            {
+                ActionsPostTablesApply(); // need here also as in All because must be executed even if only one table was selected
+            }
+
+            if (!IsAll && !IsTables)
             {
                 CompleteSound();
+            }
+
+            return Ret;
+        }
+
+        /// <summary>
+        /// proceed selected tables
+        /// </summary>
+        /// <returns></returns>
+        internal bool Table()
+        {
+            Init();
+
+            int[] tableindexes = null;
+#if DEBUG
+            ProjectData.THFilesList.Invoke((Action)(() => tableindexes = ProjectData.THFilesList.CopySelectedIndexes()));
+#else
+            tableindexes = ProjectData.THFilesList.CopySelectedIndexes();
+#endif
+            DataTable[] tables=null;
+#if DEBUG
+            ProjectData.Main.Invoke((Action)(() => tables = ProjectData.THFilesElementsDataset.GetTablesByIndexes(tableindexes)));
+#else
+            tables = ProjectData.THFilesElementsDataset.GetTablesByIndexes(tableindexes);
+#endif
+            Tablescount = tables.Length;
+            IsTables = Tablescount > 1;
+
+            if (!IsAll && IsTables)
+            {
+                SetSelectedRowsCountForTables(tables);
+
+                ActionsPreTablesApply();
+            }
+
+            foreach (var table in tables)
+            {
+                Table(table);
+            }
+
+            if (!IsAll && IsTables)
+            {
+                ActionsPostTablesApply();
             }
 
             return Ret;
@@ -407,6 +464,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             return true;
         }
+
+        /// <summary>
+        /// True when selected more of one table
+        /// </summary>
+        bool IsTables;
 
         /// <summary>
         /// Proceed all tables. Multithreaded.
@@ -442,7 +504,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             SetSelectedRowsCountForAll();
 
             ActionsPreTablesApply();
-            ActionsPreRowsApply();
 
             foreach (DataTable table in tables)
             {
@@ -452,13 +513,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     Table();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    _log.LogToFile("An error occured while rowbase all tables table parse. Error:" + ex);
                 }
                 tindex++;
             }
 
-            ActionsPostRowsApply();
             ActionsPostTablesApply();
 
             CompleteSound();
@@ -476,9 +537,25 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return;
             }
             SelectedRowsCount = 0;
-            foreach (DataTable t in ProjectData.THFilesElementsDataset.Tables)
+            foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
             {
-                SelectedRowsCount += t.Rows.Count;
+                SelectedRowsCount += table.Rows.Count;
+            }
+        }
+
+        /// <summary>
+        /// get rows count from all tables
+        /// </summary>
+        private void SetSelectedRowsCountForTables(DataTable[] dataTables)
+        {
+            if (!IsTables)
+            {
+                return;
+            }
+            SelectedRowsCount = 0;
+            foreach (DataTable table in dataTables)
+            {
+                SelectedRowsCount += table.Rows.Count;
             }
         }
 

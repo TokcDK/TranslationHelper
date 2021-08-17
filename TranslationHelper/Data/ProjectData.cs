@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Windows.Forms;
 using TranslationHelper.Functions;
 using TranslationHelper.Projects;
 
@@ -158,5 +159,10 @@ namespace TranslationHelper.Data
         /// Application log
         /// </summary>
         internal static FunctionsLogs AppLog = new FunctionsLogs();
+
+        /// <summary>
+        /// Files list
+        /// </summary>
+        internal static ListBox THFilesList { get => Main.THFilesList; }
     }
 }

@@ -113,6 +113,7 @@
     <Compile Include="Extensions\ExtensionsDataSet.cs" />
     <Compile Include="Extensions\ExtensionsDictionary.cs" />
     <Compile Include="Extensions\ExtensionsFileFolder.cs" />
+    <Compile Include="Extensions\ExtensionsListBox.cs" />
     <Compile Include="Extensions\ExtensionsString.cs" />
     <Compile Include="Extensions\ExtensionsTable.cs" />
     <Compile Include="Extensions\ExtensionsElements.cs" />

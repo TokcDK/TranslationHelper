@@ -3039,26 +3039,7 @@ namespace TranslationHelper
 
         private void CopyNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(GetFilesListSelectedName());
-        }
-
-        /// <summary>
-        /// Get name from selected item in file list listbox
-        /// </summary>
-        /// <returns></returns>
-        internal string GetFilesListSelectedName()
-        {
-            if (THFilesList != null && THFilesList.Items.Count > 0 && THFilesList.SelectedIndex != -1)
-            {
-                var names = new List<string>(THFilesList.SelectedItems.Count);
-                foreach (var item in THFilesList.SelectedItems)
-                {
-                    names.Add(item.ToString());
-                }
-                return string.Join(Environment.NewLine, names);
-            }
-
-            return "";
+            Clipboard.SetText(THFilesList.CopySelectedNames());
         }
 
         private void MakeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)

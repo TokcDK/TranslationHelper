@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Extensions
 {
@@ -21,6 +22,19 @@ namespace TranslationHelper.Extensions
             }
 
             return resultRowsCount;
+        }
+
+        public static DataTable[] GetTablesByIndexes(this DataSet dataSet, int[] selectedTablesIndexes)
+        {
+            var tables = new DataTable[selectedTablesIndexes.Length];
+            int i =0;
+            foreach (var index in selectedTablesIndexes)
+            {
+                tables[i] = ProjectData.THFilesElementsDataset.Tables[index];
+                i++;
+            }
+
+            return tables;
         }
     }
 }
