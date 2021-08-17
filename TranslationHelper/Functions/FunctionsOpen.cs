@@ -491,8 +491,10 @@ namespace TranslationHelper.Functions
                     Text = recentMenuName
                 };
             }
-
-            category.DropDownItems.Clear();
+            else
+            {
+                category.DropDownItems.Clear();
+            }
 
             foreach (var item in items)
             {
