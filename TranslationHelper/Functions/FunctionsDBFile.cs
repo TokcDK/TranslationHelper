@@ -14,7 +14,6 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.DBSaveFormats;
-using TranslationHelper.INISettings;
 using TranslationHelper.Projects.RPGMMV;
 
 namespace TranslationHelper.Main.Functions
@@ -38,11 +37,11 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// read xml file
         /// </summary>
-        /// <param name="DS"></param>
-        /// <param name="fileName"></param>
-        public static void ReadDBFile(DataSet DS, string fileName)
+        /// <param name="dataSet"></param>
+        /// <param name="dbFilePath"></param>
+        public static void ReadDBFile(DataSet dataSet, string dbFilePath, bool useOriginaldbFilePath = false)
         {
-            ReadWriteDBFile(DS, fileName);
+            ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, useOriginaldbFilePath: useOriginaldbFilePath);
         }
 
         // <summary>
@@ -86,24 +85,24 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// write xml file
         /// </summary>
-        /// <param name="DS"></param>
-        /// <param name="fileName"></param>
-        public static void WriteDBFile(DataSet DS, string fileName)
+        /// <param name="dataSet"></param>
+        /// <param name="dbFilePath"></param>
+        public static void WriteDBFile(DataSet dataSet, string dbFilePath, bool useOriginaldbFilePath = false)
         {
-            ReadWriteDBFile(DS, fileName, false);
+            ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, read: false, useOriginaldbFilePath: useOriginaldbFilePath);
         }
 
         /// <summary>
         /// read or write db file
         /// </summary>
-        /// <param name="DS"></param>
-        /// <param name="fileName"></param>
+        /// <param name="dataSet"></param>
+        /// <param name="dbFilePath"></param>
         /// <param name="read"></param>
-        internal static void ReadWriteDBFile(DataSet DS, string fileName, bool read = true)
+        internal static void ReadWriteDBFile(DataSet dataSet, string dbFilePath, bool read = true, bool useOriginaldbFilePath = false)
         {
             var DBFormat = FunctionsInterfaces.GetCurrentDBFormat();
-            fileName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "." + DBFormat.Ext);
-            using (var fs = new FileStream(fileName, read ? FileMode.Open : FileMode.Create))
+            dbFilePath = useOriginaldbFilePath ? dbFilePath : Path.Combine(Path.GetDirectoryName(dbFilePath), Path.GetFileNameWithoutExtension(dbFilePath) + "." + DBFormat.Ext);
+            using (var fs = new FileStream(dbFilePath, read ? FileMode.Open : FileMode.Create))
             {
                 Stream s;
                 //string fileExtension = Path.GetExtension(fileName);
@@ -111,11 +110,11 @@ namespace TranslationHelper.Main.Functions
 
                 if (read)
                 {
-                    DS.ReadXml(s);
+                    dataSet.ReadXml(s);
                 }
                 else
                 {
-                    DS.WriteXml(s);
+                    dataSet.WriteXml(s);
                 }
 
                 s.Close();
@@ -558,7 +557,7 @@ namespace TranslationHelper.Main.Functions
                     {
                         ProjectData.Main.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(DBfile.Value.Name));
 
-                        ReadDBFile(DBDataSet, DBfile.Value.FullName);
+                        ReadDBFile(dataSet: DBDataSet, dbFilePath: DBfile.Value.FullName, useOriginaldbFilePath: true);
                         DBDataSet.ToDictionary(ProjectData.AllDBmerged, true, true);
                     }
                 }
