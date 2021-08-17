@@ -38,6 +38,7 @@ namespace TranslationHelper.Functions
 
                     if (THFOpen.ShowDialog() != DialogResult.OK || THFOpen.FileName == null)
                     {
+                        ProjectData.Main.IsOpeningInProcess = false;
                         return;
                     }
 
@@ -427,50 +428,40 @@ namespace TranslationHelper.Functions
         internal static void UpdateRecentFiles()
         {
             string[] items;
+            bool changed = false;
             if (!ProjectData.ConfigIni.SectionExistsAndNotEmpty("RecentFiles"))
             {
+                changed = true;
                 items = new[] { ProjectData.SelectedFilePath };
+            }
+            else
+            {
+                var values = ProjectData.ConfigIni.GetSectionValues("RecentFiles").ToList();
 
+                // max 20 items
+                while (values.Count >= 20)
+                {
+                    changed = true;
+                    values.RemoveAt(values.Count - 1); // remove last when more of limit
+                }
+
+                // check if last value is on first place else update
+                if (values.Contains(ProjectData.SelectedFilePath) && values.IndexOf(ProjectData.SelectedFilePath) > 0)
+                {
+                    changed = true;
+                    values.Remove(ProjectData.SelectedFilePath);
+                    values.Insert(0, ProjectData.SelectedFilePath);
+                }
+
+                items = values.ToArray();
+            }
+
+
+            if (changed) // write only when changed
+            {
                 // save values in ini
                 ProjectData.ConfigIni.SetArrayToSectionValues("RecentFiles", items);
-
-                AddRecentMenuItems(items);
-
-                return;
             }
-
-            var values = ProjectData.ConfigIni.GetSectionValues("RecentFiles").ToList();
-
-            bool changed = values.Count > 0;
-
-            // max 20 items
-            while (values.Count >= 20)
-            {
-                changed = true;
-                values.RemoveAt(values.Count - 1); // remove last when more of limit
-            }
-
-            if (values.Contains(ProjectData.SelectedFilePath) && values.IndexOf(ProjectData.SelectedFilePath) > 0)
-            {
-                changed = true;
-                values.Remove(ProjectData.SelectedFilePath);
-            }
-
-            if (!changed)
-            {
-                return;
-            }
-
-            // newest opened always first
-            if(!string.IsNullOrWhiteSpace(ProjectData.SelectedFilePath))
-            {
-                values.Insert(0, ProjectData.SelectedFilePath);
-            }
-
-            items = values.ToArray();
-
-            // save values in ini
-            ProjectData.ConfigIni.SetArrayToSectionValues("RecentFiles", items);
 
             AddRecentMenuItems(items);
         }
@@ -479,20 +470,29 @@ namespace TranslationHelper.Functions
         {
             var recentMenuName = T._("Recent");
 
-            foreach (ToolStripItem menuCategory in ProjectData.Main.fileToolStripMenuItem.DropDownItems)
+            // search old menu
+            ToolStripMenuItem category = null;
+            bool foundOld = false;
+            foreach (ToolStripMenuItem menuCategory in ProjectData.Main.fileToolStripMenuItem.DropDownItems)
             {
-                if(menuCategory.Text== recentMenuName)
+                if (menuCategory.Text == recentMenuName)
                 {
-                    ProjectData.Main.fileToolStripMenuItem.DropDownItems.Remove(menuCategory);
+                    foundOld = true;
+                    category = menuCategory;
                     break;
                 }
             }
 
             //ProjectData.Main.fileToolStripMenuItem.DropDownItems
-            var category = new System.Windows.Forms.ToolStripMenuItem
+            if (!foundOld)
             {
-                Text = recentMenuName
-            };
+                category = new System.Windows.Forms.ToolStripMenuItem
+                {
+                    Text = recentMenuName
+                };
+            }
+
+            category.DropDownItems.Clear();
 
             foreach (var item in items)
             {
@@ -504,7 +504,10 @@ namespace TranslationHelper.Functions
                 ItemMenu.Click += RecentFilesOpen_Click;
             }
 
-            ProjectData.Main.Invoke((Action)(() => ProjectData.Main.fileToolStripMenuItem.DropDownItems.Add(category)));
+            if (!foundOld)
+            {
+                ProjectData.Main.Invoke((Action)(() => ProjectData.Main.fileToolStripMenuItem.DropDownItems.Add(category)));
+            }
         }
 
         private static void RecentFilesOpen_Click(object sender, EventArgs e)
