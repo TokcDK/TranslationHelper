@@ -21,7 +21,7 @@ namespace TranslationHelper.Main.Functions
             //int[] selindexes = new int[ProjectData.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
 
             var tableIndex = 0;
-            ProjectData.Main.Invoke((Action)(()=>tableIndex=ProjectData.Main.THFilesList.GetSelectedIndex()));
+            ProjectData.Main.Invoke((Action)(() => tableIndex = ProjectData.Main.THFilesList.GetSelectedIndex()));
 
 
             int[] selindexes = GetRowIndexesOfSelectedDGVCells(ProjectData.Main.THFileElementsDataGridView.SelectedCells);
@@ -110,7 +110,6 @@ namespace TranslationHelper.Main.Functions
                 {
                     ProjectData.Main.THFilesList.SetSelectedIndex(tableIndex);
                     ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[tableIndex];
-
                 }
 
                 ProjectData.Main.THFileElementsDataGridView.CurrentCell = ProjectData.Main.THFileElementsDataGridView[columnName, rowIndex];
@@ -430,16 +429,23 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         public static int GetDGVSelectedRowIndexInDatatable(int TableIndex, int rowIndex)
         {
-            var table = ProjectData.THFilesElementsDataset.Tables[TableIndex];
-            if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
+            try
             {
-                return rowIndex;
-            }
+                var table = ProjectData.THFilesElementsDataset.Tables[TableIndex];
+                if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
+                {
+                    return rowIndex;
+                }
 
-            return table.Rows
-                .IndexOf(
-                ((DataRowView)ProjectData.Main.THFileElementsDataGridView.Rows[rowIndex].DataBoundItem).Row
-                        );
+                return table.Rows
+                    .IndexOf(
+                    ((DataRowView)ProjectData.Main.THFileElementsDataGridView.Rows[rowIndex].DataBoundItem).Row
+                            );
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
         /// <summary>

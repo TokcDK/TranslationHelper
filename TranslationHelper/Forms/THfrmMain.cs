@@ -318,122 +318,120 @@ namespace TranslationHelper
         private bool THFilesListBox_MouseClickBusy;
         internal void ActionsOnTHFIlesListElementSelected()
         {
-            if (THFilesListBox_MouseClickBusy && THFilesList.GetSelectedIndex() > -1) //THFilesList.GetSelectedIndex() > -1 - фикс исключения сразу после загрузки таблицы, когда индекс выбранной таблицы равен -1 
+            if (THFilesListBox_MouseClickBusy || THFilesList.GetSelectedIndex() == -1) //THFilesList.GetSelectedIndex() == -1 return - фикс исключения сразу после загрузки таблицы, когда индекс выбранной таблицы равен -1 
             {
-                //return;
+                return;
             }
-            else
+
+            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            //int index = THFilesListBox.SelectedIndex;
+            //Thread actions = new Thread(new ParameterizedThreadStart((obj) => THFilesListBoxMouseClickEventActions(index)));
+            //actions.Start();
+
+            THFilesListBox_MouseClickBusy = true;
+
+            //Пример с присваиванием Dataset. Они вроде быстро открываются, в отличие от List. Проверка не подтвердила ускорения, всё также
+            //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
+
+            //THFileElementsDataGridView.DataSource = null;
+            //THFileElementsDataGridView.RowCount = 100;
+
+            //Пробовал также отсюда через BindingList
+            //https://stackoverflow.com/questions/44433428/how-to-use-virtual-mode-for-large-data-in-datagridview
+            //не помогает
+            //var dataPopulateList = new BindingList<Block>(THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks);
+            //THFileElementsDataGridView.DataSource = dataPopulateList;
+
+            //Еще источник с рекомендацией ниже, но тоже от нее не заметил эффекта
+            //https://stackoverflow.com/questions/3580237/best-way-to-fill-datagridview-with-large-amount-of-data
+            //THFileElementsDataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
+            //or even better .DisableResizing.
+            //Most time consumption enum is DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders
+            //THFileElementsDataGridView.RowHeadersVisible = false; // set it to false if not needed
+
+            //https://www.codeproject.com/Questions/784355/How-to-solve-performance-issue-in-Datagridview-Min
+            // Поменял List на BindingList и вроде чуть быстрее стало загружаться
+            try
             {
-                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                //int index = THFilesListBox.SelectedIndex;
-                //Thread actions = new Thread(new ParameterizedThreadStart((obj) => THFilesListBoxMouseClickEventActions(index)));
-                //actions.Start();
+                //ProgressInfo(true);
 
-                THFilesListBox_MouseClickBusy = true;
-
-                //Пример с присваиванием Dataset. Они вроде быстро открываются, в отличие от List. Проверка не подтвердила ускорения, всё также
-                //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
-
-                //THFileElementsDataGridView.DataSource = null;
-                //THFileElementsDataGridView.RowCount = 100;
-
-                //Пробовал также отсюда через BindingList
-                //https://stackoverflow.com/questions/44433428/how-to-use-virtual-mode-for-large-data-in-datagridview
-                //не помогает
-                //var dataPopulateList = new BindingList<Block>(THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks);
-                //THFileElementsDataGridView.DataSource = dataPopulateList;
-
-                //Еще источник с рекомендацией ниже, но тоже от нее не заметил эффекта
-                //https://stackoverflow.com/questions/3580237/best-way-to-fill-datagridview-with-large-amount-of-data
-                //THFileElementsDataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
-                //or even better .DisableResizing.
-                //Most time consumption enum is DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders
-                //THFileElementsDataGridView.RowHeadersVisible = false; // set it to false if not needed
-
-                //https://www.codeproject.com/Questions/784355/How-to-solve-performance-issue-in-Datagridview-Min
-                // Поменял List на BindingList и вроде чуть быстрее стало загружаться
-                try
-                {
-                    //ProgressInfo(true);
-
-                    /*
-                    if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
-                    {
-                    }
-                    else if (THSelectedSourceType.Contains("RPG Maker MV"))
-                    {
-                        THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];
-
-                        //https://10tec.com/articles/why-datagridview-slow.aspx
-                        //ds.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("Text LIKE '%{0}%'", "FIltering string");
-                        
-                    }
-                    */
-
-                    //THFiltersDataGridView.Columns.Clear();
-
-                    //сунул под try так как один раз здесь была ошибка о выходе за диапахон
-
-
-                    //https://www.youtube.com/watch?v=wZ4BkPyZllY
-                    //Thread t = new Thread(new ThreadStart(StartLoadingForm));
-                    //t.Start();
-                    //Thread.Sleep(100);
-
-                    //this.Cursor = Cursors.WaitCursor; // Поменять курсор на часики
-
-                    //измерение времени выполнения
-                    //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
-                    //System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
-                    //swatch.Start();
-
-                    //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
-                    //THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
-                    //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
-
-                    //THsplitContainerFilesElements.Panel2.Visible = false;//сделать невидимым родительский элемент на время
-
-                    //Советы, после которых отображение ячеек стало во много раз быстрее, 
-                    //https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/best-practices-for-scaling-the-windows-forms-datagridview-control
-                    //Конкретно, поменял режим отображения строк(Rows) c AllCells на DisplayerCells, что ускорило отображение 3400к. строк в таблице в 100 раз, с 9с. до 0.09с. !
-
-                    //THBS.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;
-                    //THFileElementsDataGridView.DataSource = THBS;
-
-                    //THFileElementsDataGridView.RowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
-
-                    //THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
-                    //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
-                    //if (THFilesListBox.SelectedIndex >= 0)//предотвращает исключение "Невозможно найти таблицу -1"
-                    //{
-                    //    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
-                    //}
-
-                    if (THFilesList.GetSelectedIndex() > -1)
-                    {
-                        Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
-
-                        BindToDataTableGridView(ProjectData.THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
-                    }
-
-                    ShowNonEmptyRowsCount();//Show how many rows have translation
-
-                    HideAllColumnsExceptOriginalAndTranslation();
-
-                    SetFilterDGV(); //Init Filters datagridview
-
-                    SetOnTHFileElementsDataGridViewWasLoaded(); //Additional actions when elements of file was loaded in datagridview
-
-                    CheckFilterDGV(); //Apply filters if they is not empty
-
-                    UpdateTextboxes();
-                }
-                catch (Exception)
+                /*
+                if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
                 {
                 }
+                else if (THSelectedSourceType.Contains("RPG Maker MV"))
+                {
+                    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];
 
-                THFilesListBox_MouseClickBusy = false;
+                    //https://10tec.com/articles/why-datagridview-slow.aspx
+                    //ds.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("Text LIKE '%{0}%'", "FIltering string");
+
+                }
+                */
+
+                //THFiltersDataGridView.Columns.Clear();
+
+                //сунул под try так как один раз здесь была ошибка о выходе за диапахон
+
+
+                //https://www.youtube.com/watch?v=wZ4BkPyZllY
+                //Thread t = new Thread(new ThreadStart(StartLoadingForm));
+                //t.Start();
+                //Thread.Sleep(100);
+
+                //this.Cursor = Cursors.WaitCursor; // Поменять курсор на часики
+
+                //измерение времени выполнения
+                //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
+                //System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
+                //swatch.Start();
+
+                //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
+                //THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
+                //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
+
+                //THsplitContainerFilesElements.Panel2.Visible = false;//сделать невидимым родительский элемент на время
+
+                //Советы, после которых отображение ячеек стало во много раз быстрее, 
+                //https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/best-practices-for-scaling-the-windows-forms-datagridview-control
+                //Конкретно, поменял режим отображения строк(Rows) c AllCells на DisplayerCells, что ускорило отображение 3400к. строк в таблице в 100 раз, с 9с. до 0.09с. !
+
+                //THBS.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;
+                //THFileElementsDataGridView.DataSource = THBS;
+
+                //THFileElementsDataGridView.RowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+                //THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
+                //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+                //if (THFilesListBox.SelectedIndex >= 0)//предотвращает исключение "Невозможно найти таблицу -1"
+                //{
+                //    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
+                //}
+
+                if (THFilesList.GetSelectedIndex() > -1)
+                {
+                    Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
+
+                    BindToDataTableGridView(ProjectData.THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
+                }
+
+                ShowNonEmptyRowsCount();//Show how many rows have translation
+
+                HideAllColumnsExceptOriginalAndTranslation();
+
+                SetFilterDGV(); //Init Filters datagridview
+
+                SetOnTHFileElementsDataGridViewWasLoaded(); //Additional actions when elements of file was loaded in datagridview
+
+                CheckFilterDGV(); //Apply filters if they is not empty
+
+                UpdateTextboxes();
             }
+            catch (Exception)
+            {
+            }
+
+            THFilesListBox_MouseClickBusy = false;
         }
 
         private void HideAllColumnsExceptOriginalAndTranslation()
@@ -567,6 +565,7 @@ namespace TranslationHelper
                 //добавил это для возможного фикса. возможно это этот dgv
                 //https://fooobar.com/questions/1404812/datagridview-scrollbar-throwing-argumentoutofrange-exception
                 THFiltersDataGridView.PerformLayout();
+                //почернения прокрутки вроде больше не видел, но ошибка с аргументом вне диапазона была снова
             }
         }
 
@@ -603,86 +602,87 @@ namespace TranslationHelper
 
                 //Считывание значения ячейки в текстовое поле 1, вариант 2, для DataSet, ds.Tables[0]
                 //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
-                if (THSourceRichTextBox.Enabled
+                if (!THSourceRichTextBox.Enabled
                     //&& THFileElementsDataGridView.CurrentCell != null
-                    && THFileElementsDataGridView.Rows.Count > 0
-                    && rowIndex > -1
-                    && columnIndex > -1)
+                    || THFileElementsDataGridView.Rows.Count == 0
+                    || rowIndex == -1
+                    || columnIndex == -1)
+                {
+                    return;
+                }
+
+                THTargetRichTextBox.Clear();
+
+                if (string.IsNullOrEmpty(THFileElementsDataGridView.Rows[THFileElementsDataGridView.CurrentCell.RowIndex].Cells["Original"].Value + string.Empty))
+                {
+                    THSourceRichTextBox.Clear();
+                }
+                else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
+                {
+                    //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
+                    THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[rowIndex].Cells["Original"].Value + string.Empty);
+                    //https://github.com/caguiclajmg/WanaKanaSharp
+                    //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
+                    //{
+                    //    GetWords(THSourceTextBox.Text);
+                    //   var hepburnConverter = new HepburnConverter();
+                    //   WanaKana.ToRomaji(hepburnConverter, THSourceTextBox.Text); // hiragana
+                    //}
+                    //также по японо ыфуригане
+                    //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
+                }
+                string TranslationCellValue;
+                if (string.IsNullOrEmpty(TranslationCellValue = THFileElementsDataGridView.Rows[rowIndex].Cells["Translation"].Value + string.Empty))
                 {
                     THTargetRichTextBox.Clear();
-
-                    if (string.IsNullOrEmpty(THFileElementsDataGridView.Rows[THFileElementsDataGridView.CurrentCell.RowIndex].Cells["Original"].Value + string.Empty))
-                    {
-                        THSourceRichTextBox.Clear();
-                    }
-                    else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
-                    {
-                        //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
-                        THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[rowIndex].Cells["Original"].Value + string.Empty);
-                        //https://github.com/caguiclajmg/WanaKanaSharp
-                        //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
-                        //{
-                        //    GetWords(THSourceTextBox.Text);
-                        //   var hepburnConverter = new HepburnConverter();
-                        //   WanaKana.ToRomaji(hepburnConverter, THSourceTextBox.Text); // hiragana
-                        //}
-                        //также по японо ыфуригане
-                        //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
-                    }
-                    string TranslationCellValue;
-                    if (string.IsNullOrEmpty(TranslationCellValue = THFileElementsDataGridView.Rows[rowIndex].Cells["Translation"].Value + string.Empty))
-                    {
-                        THTargetRichTextBox.Clear();
-                    }
-                    else//проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
-                    {
-                        //запоминание последнего значения ячейки перед считыванием в THTargetRichTextBox,
-                        //для предотвращения записи значения обратно в ячейку, если она была изменена до изменения текстбокса
-                        ProjectData.TargetTextBoxPreValue = TranslationCellValue;
-
-                        //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
-                        THTargetRichTextBox.Text = ProjectData.TargetTextBoxPreValue;
-
-                        FormatTextBox();
-
-                        //THTargetRichTextBox.Select(Properties.Settings.Default.THOptionLineCharLimit+1, THTargetRichTextBox.Text.Length);
-                        //THTargetRichTextBox.SelectionColor = Color.Red;
-
-                        TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength(TranslationCellValue.ToString(CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture);
-                        TargetTextBoxLinePositionLabelData.Text = string.Empty;
-                    }
-
-                    THInfoTextBox.Text = string.Empty;
-
-                    string SelectedCellValue;
-                    if ((SelectedCellValue = THFileElementsDataGridView.Rows[rowIndex].Cells[columnIndex].Value + string.Empty).Length == 0)
-                    {
-                    }
-                    else
-                    {
-                        //gem furigana
-                        //https://github.com/helephant/Gem
-                        //var furigana = new Furigana(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-                        //THInfoTextBox.Text += furigana.Reading + "\r\n";
-                        //THInfoTextBox.Text += furigana.Expression + "\r\n";
-                        //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
-                        //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
-
-                        if (ProjectData.THFilesElementsDatasetInfo != null && ProjectData.THFilesElementsDatasetInfo.Tables.Count > tableIndex && ProjectData.THFilesElementsDatasetInfo.Tables[tableIndex].Rows.Count > rowIndex)
-                        {
-                            THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + ProjectData.THFilesElementsDatasetInfo.Tables[tableIndex].Rows[rowIndex][0];
-                        }
-
-                        THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(SelectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(SelectedCellValue);
-
-                        if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
-                        {
-                            THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
-                        }
-                        THInfoTextBox.Text += Environment.NewLine + Environment.NewLine;
-                        THInfoTextBox.Text += FunctionsRomajiKana.GetLangsOfString(SelectedCellValue, "all"); //Show all detected languages count info
-                    }
                 }
+                else//проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
+                {
+                    //запоминание последнего значения ячейки перед считыванием в THTargetRichTextBox,
+                    //для предотвращения записи значения обратно в ячейку, если она была изменена до изменения текстбокса
+                    ProjectData.TargetTextBoxPreValue = TranslationCellValue;
+
+                    //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
+                    THTargetRichTextBox.Text = ProjectData.TargetTextBoxPreValue;
+
+                    FormatTextBox();
+
+                    //THTargetRichTextBox.Select(Properties.Settings.Default.THOptionLineCharLimit+1, THTargetRichTextBox.Text.Length);
+                    //THTargetRichTextBox.SelectionColor = Color.Red;
+
+                    TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength(TranslationCellValue.ToString(CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture);
+                    TargetTextBoxLinePositionLabelData.Text = string.Empty;
+                }
+
+                THInfoTextBox.Text = string.Empty;
+
+                string SelectedCellValue;
+                if ((SelectedCellValue = THFileElementsDataGridView.Rows[rowIndex].Cells[columnIndex].Value + string.Empty).Length == 0)
+                {
+                    return;
+                }
+
+                //gem furigana
+                //https://github.com/helephant/Gem
+                //var furigana = new Furigana(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                //THInfoTextBox.Text += furigana.Reading + "\r\n";
+                //THInfoTextBox.Text += furigana.Expression + "\r\n";
+                //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
+                //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
+
+                if (ProjectData.THFilesElementsDatasetInfo != null && ProjectData.THFilesElementsDatasetInfo.Tables.Count > tableIndex && ProjectData.THFilesElementsDatasetInfo.Tables[tableIndex].Rows.Count > rowIndex)
+                {
+                    THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + ProjectData.THFilesElementsDatasetInfo.Tables[tableIndex].Rows[rowIndex][0];
+                }
+
+                THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(SelectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(SelectedCellValue);
+
+                if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
+                {
+                    THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
+                }
+                THInfoTextBox.Text += Environment.NewLine + Environment.NewLine;
+                THInfoTextBox.Text += FunctionsRomajiKana.GetLangsOfString(SelectedCellValue, "all"); //Show all detected languages count info
                 //--------Считывание значения ячейки в текстовое поле 1
             }
             catch
