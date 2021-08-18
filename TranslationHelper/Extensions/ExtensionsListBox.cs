@@ -55,7 +55,43 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static string GetItemName(this ListControl listControl, int itemIndex)
         {
-            return ((listControl as ListBox).Items[itemIndex] as FilesListData).FIleName;
+            return (listControl as ListBox).Items[itemIndex] + "";
+            //return ((listControl as ListBox).Items[itemIndex] as FilesListData).FIleName;
+        }
+
+        /// <summary>
+        /// Get items count of <paramref name="listControl"/>
+        /// </summary>
+        /// <param name="listControl"></param>
+        /// <returns></returns>
+        internal static int GetItemsCount(this ListControl listControl)
+        {
+            return (listControl as ListBox).Items.Count;
+        }
+
+        /// <summary>
+        /// Add new <paramref name="item"/> to the <paramref name="listControl"/>
+        /// </summary>
+        /// <param name="listControl"></param>
+        /// <param name="item"></param>
+        internal static void AddItem(this ListControl listControl, object item)
+        {
+            (listControl as ListBox).Items.Add(item);
+        }
+
+        internal static int GetSelectedIndex(this ListControl listControl)
+        {
+            return (listControl as ListBox).SelectedIndex;
+        }
+
+        internal static void SetSelectedIndex(this ListControl listControl, int itemIndex)
+        {
+            (listControl as ListBox).SelectedIndex = itemIndex;
+        }
+
+        internal static void SetDrawMode(this ListControl listControl, DrawMode drawMode)
+        {
+            (listControl as ListBox).DrawMode = drawMode;
         }
     }
 }

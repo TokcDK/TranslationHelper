@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.WolfRPG
@@ -46,7 +47,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
                 ProjectData.SelectedDir = parentFolder;
 
-                return ProjectData.Main.THFilesList.Items.Count > 0 ? "Wolf RPG txt" : string.Empty;
+                return ProjectData.Main.THFilesList.GetItemsCount() > 0 ? "Wolf RPG txt" : string.Empty;
             }
             return string.Empty;
         }
@@ -181,7 +182,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
             foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
             {
-                ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(table.TableName)));
+                ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(table.TableName)));
             }
 
             ProjectData.SelectedDir = FolderPath;
@@ -214,7 +215,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 else
                 {
                     ProjectData.THFilesElementsDataset.Tables[txtFilename].Columns.Add("Translation");
-                    ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(txtFilename)));
+                    ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(txtFilename)));
                 }
             }
         }

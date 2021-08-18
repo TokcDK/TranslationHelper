@@ -119,7 +119,7 @@ namespace TranslationHelper.Main.Functions
                     cellvalue.Clear();
 
                     //сильно тормозит процесс, отключил
-                    //Main.THAutoSetSameTranslationForSimular(Main.THFilesList.SelectedIndex, iRowIndex, origcolindex);
+                    //Main.THAutoSetSameTranslationForSimular(Main.THFilesList.GetSelectedIndex(), iRowIndex, origcolindex);
 
                     origcellcurlines = 0;
                     //LogToFile("PasteClipboardValue next row, iRowIndex=" + iRowIndex);

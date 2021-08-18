@@ -118,7 +118,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     //}
                     //else
                     //{
-                    //    THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
+                    //    THFilesList.Invoke((Action)(() => THFilesList.AddItem(filename)));
                     //    _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add("Translation");
                     //}
                 }

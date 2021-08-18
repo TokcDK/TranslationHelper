@@ -21,7 +21,7 @@ namespace TranslationHelper.Main.Functions
             //int[] selindexes = new int[ProjectData.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
 
             var tableIndex = 0;
-            ProjectData.Main.Invoke((Action)(()=>tableIndex=ProjectData.Main.THFilesList.SelectedIndex));
+            ProjectData.Main.Invoke((Action)(()=>tableIndex=ProjectData.Main.THFilesList.GetSelectedIndex()));
 
 
             int[] selindexes = GetRowIndexesOfSelectedDGVCells(ProjectData.Main.THFileElementsDataGridView.SelectedCells);
@@ -103,12 +103,12 @@ namespace TranslationHelper.Main.Functions
             try
             {
                 RCount = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
-                if (tableIndex == ProjectData.Main.THFilesList.SelectedIndex && RCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
+                if (tableIndex == ProjectData.Main.THFilesList.GetSelectedIndex() && RCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
                 {
-                    ProjectData.Main.THFilesList.SelectedIndex = tableIndex;
+                    ProjectData.Main.THFilesList.SetSelectedIndex(tableIndex);
                     ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[tableIndex];
 
                 }
@@ -147,12 +147,12 @@ namespace TranslationHelper.Main.Functions
             try
             {
                 RCount = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
-                if (tableIndex == ProjectData.Main.THFilesList.SelectedIndex && RCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
+                if (tableIndex == ProjectData.Main.THFilesList.GetSelectedIndex() && RCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
                 {
-                    ProjectData.Main.THFilesList.SelectedIndex = tableIndex;
+                    ProjectData.Main.THFilesList.SetSelectedIndex(tableIndex);
                     ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[tableIndex];
 
                 }

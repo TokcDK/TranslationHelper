@@ -111,7 +111,7 @@ namespace TranslationHelper.Projects.RJ263914
                         ProjectData.THFilesElementsDataset.Tables[tableName].Columns.Add("Original");
 
                         ProjectData.THFilesElementsDataset.Tables[tableName].Columns.Add("Translation");
-                        ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(tableName)));
+                        ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(tableName)));
 
                         ProjectData.THFilesElementsDatasetInfo.Tables.Add(tableName);
                         ProjectData.THFilesElementsDatasetInfo.Tables[tableName].Columns.Add("Original");

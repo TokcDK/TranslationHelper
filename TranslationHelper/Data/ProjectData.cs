@@ -166,6 +166,11 @@ namespace TranslationHelper.Data
         internal static FunctionsLogs AppLog = new FunctionsLogs();
 
         /// <summary>
+        /// Fileslist control object
+        /// </summary>
+        internal static object FilesList;
+
+        /// <summary>
         /// Files list
         /// </summary>
         internal static ListBox THFilesList { get => Main.THFilesList; }

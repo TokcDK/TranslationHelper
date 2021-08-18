@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
@@ -164,7 +165,7 @@ namespace TranslationHelper.Functions
                 {
                     //for (int i = 0; i < ProjectData.THFilesElementsDataset.Tables.Count; i++)
                     //{
-                    //    ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(ProjectData.THFilesElementsDataset.Tables[i].TableName)));//add all dataset tables names to the ListBox
+                    //    ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(ProjectData.THFilesElementsDataset.Tables[i].TableName)));//add all dataset tables names to the ListBox
 
                     //}
                     return "RPG Maker MV json";
@@ -207,7 +208,7 @@ namespace TranslationHelper.Functions
                         for (int i = 0; i < ProjectData.THFilesElementsDataset.Tables.Count; i++)
                         {
                             //THFilesListBox.Items.Add(THFilesElementsDataset.Tables[i].TableName);
-                            ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(ProjectData.THFilesElementsDataset.Tables[i].TableName)));
+                            ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(ProjectData.THFilesElementsDataset.Tables[i].TableName)));
                         }
 
                         return "RPG Maker MV";
@@ -284,7 +285,7 @@ namespace TranslationHelper.Functions
                                 //MessageBox.Show("ListFiles=" + ListFiles[i]);
                                 //THFilesListBox.Items.Add(THRPGMTransPatchFiles[i].Name);
                                 //THFilesListBox.Items.Add(DS.Tables[i].TableName);//asdf
-                                ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(ProjectData.THFilesElementsDataset.Tables[i].TableName)));
+                                ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(ProjectData.THFilesElementsDataset.Tables[i].TableName)));
                                 //THFilesDataGridView.Rows.Add();
                                 //THFilesDataGridView.Rows[i].Cells[0].Value = THRPGMTransPatchFiles[i].Name /*Path.GetFileNameWithoutExtension(ListFiles[i])*/;
                                 //dGFiles.Rows.Add();
@@ -345,7 +346,7 @@ namespace TranslationHelper.Functions
                 ProjectData.Main.THWorkSpaceSplitContainer.Visible = true;
             }
 
-            if (ProjectData.Main.THFilesList.Items.Count == 0 && ProjectData.THFilesElementsDataset.Tables.Count > 0)
+            if (ProjectData.Main.THFilesList.GetItemsCount() == 0 && ProjectData.THFilesElementsDataset.Tables.Count > 0)
             {
                 //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
                 //foreach (DataColumn col in ProjectData.THFilesElementsDataset.Tables[0].Columns)
@@ -361,7 +362,7 @@ namespace TranslationHelper.Functions
                 //}
                 foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
                 {
-                    ProjectData.Main.THFilesList.Items.Add(table.TableName);
+                    ProjectData.Main.THFilesList.AddItem(table.TableName);
                 }
             }
 

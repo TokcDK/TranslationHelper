@@ -239,6 +239,8 @@
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUpperCaseFirst.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\TrimEndSpace.cs" />
     <Compile Include="Functions\FilesListControl\FilesListControlBase.cs" />
+    <Compile Include="Functions\FilesListControl\FilesListControlItem\FilesListControlItemBase.cs" />
+    <Compile Include="Functions\FilesListControl\FilesListControlItem\FilesListControlListBoxItem.cs" />
     <Compile Include="Functions\FilesListControl\FilesListControlListBox.cs" />
     <Compile Include="Functions\FunctionsInterfaces.cs" />
     <Compile Include="Functions\FunctionsLoadTranslationDB.cs" />

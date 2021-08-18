@@ -62,7 +62,7 @@ namespace TranslationHelper.Functions
             for (int t = 0; t < tcount; t++)
             {
                 //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
-                if (ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.SelectedIndex == t)
+                if (ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.GetSelectedIndex() == t)
                 {
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = null));
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Update()));
@@ -150,7 +150,7 @@ namespace TranslationHelper.Functions
             for (int t = 0; t < tcount; t++)
             {
                 //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
-                if (ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.SelectedIndex == t)
+                if (ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.GetSelectedIndex() == t)
                 {
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = null));
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Update()));
@@ -213,7 +213,7 @@ namespace TranslationHelper.Functions
             {
                 //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
                 bool b = false;
-                ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.SelectedIndex == t));
+                ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.GetSelectedIndex() == t));
                 if (b)
                 {
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = null));
@@ -278,7 +278,7 @@ namespace TranslationHelper.Functions
 
                 if (b)
                 {
-                    ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource == null && ProjectData.Main.THFilesList.SelectedIndex == -1));
+                    ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource == null && ProjectData.Main.THFilesList.GetSelectedIndex() == -1));
                     if (b)
                     {
                         ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[t]));
@@ -323,7 +323,7 @@ namespace TranslationHelper.Functions
             {
                 //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
                 bool b = false;
-                ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.SelectedIndex == t));
+                ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.GetSelectedIndex() == t));
                 if (b)
                 {
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = null));
@@ -388,7 +388,7 @@ namespace TranslationHelper.Functions
 
                 if (b)
                 {
-                    ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource == null && ProjectData.Main.THFilesList.SelectedIndex == -1));
+                    ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource == null && ProjectData.Main.THFilesList.GetSelectedIndex() == -1));
                     if (b)
                     {
                         ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[t]));
@@ -433,7 +433,7 @@ namespace TranslationHelper.Functions
             {
                 //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
                 bool b = false;
-                ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.SelectedIndex == t));
+                ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.GetSelectedIndex() == t));
                 if (b)
                 {
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = null));
@@ -566,7 +566,7 @@ namespace TranslationHelper.Functions
 
                 if (b)
                 {
-                    ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource == null && ProjectData.Main.THFilesList.SelectedIndex == -1));
+                    ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource == null && ProjectData.Main.THFilesList.GetSelectedIndex() == -1));
                     if (b)
                     {
                         ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[t]));
@@ -604,7 +604,7 @@ namespace TranslationHelper.Functions
             {
                 //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
                 bool b = false;
-                ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.SelectedIndex == t));
+                ProjectData.Main.Invoke((Action)(() => b = ProjectData.Main.THFileElementsDataGridView.DataSource != null && ProjectData.Main.THFilesList.GetSelectedIndex() == t));
                 if (b)
                 {
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = null));

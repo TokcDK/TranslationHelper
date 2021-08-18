@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire;
@@ -123,11 +124,11 @@ namespace TranslationHelper.Functions
                 else if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV json")
                 {
                     ///*THMsg*/MessageBox.Show(ProjectData.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                    await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.Items[0] + string.Empty, ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.Items[0] + ".json")).ConfigureAwait(true);
+                    await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.GetItemName(0), ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".json")).ConfigureAwait(true);
                 }
                 else if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
                 {
-                    for (int f = 0; f < ProjectData.Main.THFilesList.Items.Count; f++)
+                    for (int f = 0; f < ProjectData.Main.THFilesList.GetItemsCount(); f++)
                     {
                         //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
                         //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
@@ -150,7 +151,7 @@ namespace TranslationHelper.Functions
 
                             ///*THMsg*/MessageBox.Show("start writing");
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.Items[f] + string.Empty, ProjectData.SelectedDir + "\\www\\data\\" + ProjectData.Main.THFilesList.Items[f] + ".json")).ConfigureAwait(true);
+                            await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.GetItemName(f), ProjectData.SelectedDir + "\\www\\data\\" + ProjectData.Main.THFilesList.GetItemName(f) + ".json")).ConfigureAwait(true);
                             //WriteJson(THFilesListBox.Items[f].ToString(), ProjectData.SelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                         }
                     }
@@ -160,13 +161,13 @@ namespace TranslationHelper.Functions
                 else if (RPGMFunctions.THSelectedSourceType == "KiriKiri scenario")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    //await Task.Run(() => KiriKiriScenarioWrite(ProjectData.SelectedDir + "\\" + THFilesList.Items[0] + ".scn"));
-                    await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.Items[0] + ".scn")).ConfigureAwait(true);
+                    //await Task.Run(() => KiriKiriScenarioWrite(ProjectData.SelectedDir + "\\" + THFilesList.GetItemName(0) + ".scn"));
+                    await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".scn")).ConfigureAwait(true);
                 }
                 else if (RPGMFunctions.THSelectedSourceType == "KiriKiri script")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.Items[0] + ".ks")).ConfigureAwait(true);
+                    await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".ks")).ConfigureAwait(true);
                 }
             }
 

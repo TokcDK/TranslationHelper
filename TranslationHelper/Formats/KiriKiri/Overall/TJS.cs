@@ -76,7 +76,7 @@ namespace TranslationHelper.Formats.KiriKiri
                     //if (ProjectData.THFilesElementsDataset.Tables[0].Rows.Count > 0)
                     //{
                     //    _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
-                    //    THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
+                    //    THFilesList.Invoke((Action)(() => THFilesList.AddItem(filename)));
                     //}
                     //else
                     //{

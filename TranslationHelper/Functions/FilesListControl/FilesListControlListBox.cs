@@ -8,7 +8,7 @@ namespace TranslationHelper.Functions.FilesListControl
 {
     class FilesListControlListBox : FilesListControlBase
     {
-        ListBox _listBox = ProjectData.FilesList as ListBox;
+        readonly ListBox _listBox = ProjectData.FilesList as ListBox;
 
         public override string ItemName(int index)
         {
@@ -25,6 +25,12 @@ namespace TranslationHelper.Functions.FilesListControl
         private readonly SolidBrush ListBoxItemBackgroundBrush2 = new SolidBrush(Color.FromArgb(235, 240, 235));
         private readonly SolidBrush ListBoxItemBackgroundBrush2Complete = new SolidBrush(Color.FromArgb(225, 255, 225));
 
+        public FilesListControlListBox()
+        {
+            // register events
+            _listBox.DrawItem += THFilesList_DrawItem;
+        }
+
         //custom method to draw the items, don't forget to set DrawMode of the ListBox to OwnerDrawFixed
         public void THFilesList_DrawItem(object sender, DrawItemEventArgs e)
         {
@@ -34,10 +40,10 @@ namespace TranslationHelper.Functions.FilesListControl
             e.DrawBackground();
 
             int index = e.Index;
-            if (index >= 0 && index < ProjectData.THFilesList.Items.Count)
+            if (index >= 0 && index < ProjectData.THFilesList.GetItemsCount())
             {
                 bool selected = ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
-                string text = ProjectData.THFilesList.GetItemName(index);
+                string text = _listBox.GetItemName(index);
                 Graphics g = e.Graphics;
 
                 //background:

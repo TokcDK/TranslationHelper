@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.DBSaveFormats;
@@ -184,22 +185,22 @@ namespace TranslationHelper.Main.Functions
             }
             else if (RPGMFunctions.THSelectedSourceType.Contains(new RPGMMVGame().Name()))
             {
-                if (ProjectData.Main.THFilesList.Items.Count == 1 && ProjectData.Main.THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(ProjectData.Main.THFilesList.Items[0].ToString()))
+                if (ProjectData.Main.THFilesList.GetItemsCount() == 1 && ProjectData.Main.THFilesList.GetItemName(0) != null && !string.IsNullOrWhiteSpace(ProjectData.Main.THFilesList.GetItemName(0).ToString()))
                 {
                     if (fName == "data")
                     {
-                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(ProjectData.SelectedDir))) + "_" + Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.Items[0].ToString());
+                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(ProjectData.SelectedDir))) + "_" + Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.GetItemName(0).ToString());
                     }
                     else
                     {
-                        fName = Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.Items[0].ToString());
+                        fName = Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.GetItemName(0).ToString());
                     }
                 }
             }
-            else if (ProjectData.Main.THFilesList.Items.Count == 1 && ProjectData.Main.THFilesList.Items[0] != null && !string.IsNullOrWhiteSpace(ProjectData.Main.THFilesList.Items[0].ToString()))
+            else if (ProjectData.Main.THFilesList.GetItemsCount() == 1 && ProjectData.Main.THFilesList.GetItemName(0) != null && !string.IsNullOrWhiteSpace(ProjectData.Main.THFilesList.GetItemName(0).ToString()))
             {
                 //dbfilename as name of single file in files list
-                fName = Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.Items[0].ToString());
+                fName = Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.GetItemName(0).ToString());
             }
             //else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
             //{

@@ -48,7 +48,7 @@ namespace TranslationHelper.Projects.KiriKiri
             else
             {
                 _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
-                ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(filename)));
+                ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(filename)));
                 if (extension == ".ks")
                 {
                     return "KiriKiri script";
@@ -147,7 +147,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     }
                     else
                     {
-                        ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(filename)));
+                        ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(filename)));
                         _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add("Translation");
                     }
                 }
@@ -420,7 +420,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     if (ProjectData.THFilesElementsDataset.Tables[0].Rows.Count > 0)
                     {
                         _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
-                        ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.Items.Add(filename)));
+                        ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(filename)));
                     }
                     else
                     {

@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 //_ = THFilesElementsDatasetInfo.Tables.Add(filename);
                 //_ = THFilesElementsDatasetInfo.Tables[0].Columns.Add("Original");
                 //_ = THFilesElementsDataset.Tables[0].Columns.Add("Translation");
-                //THFilesList.Invoke((Action)(() => THFilesList.Items.Add(filename)));
+                //THFilesList.Invoke((Action)(() => THFilesList.AddItem(filename)));
                 bool IsFirstLineWasNotRead = true;
                 int name = -1;
                 int detail = -1;

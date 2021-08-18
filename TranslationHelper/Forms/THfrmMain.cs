@@ -62,7 +62,7 @@ namespace TranslationHelper
             SetUIStrings();
 
             //https://stackoverflow.com/questions/91747/background-color-of-a-listbox-item-winforms
-            THFilesList.DrawMode = DrawMode.OwnerDrawFixed;
+            THFilesList.SetDrawMode(DrawMode.OwnerDrawFixed);
 
             THTranslationCachePath = THSettings.THTranslationCacheFilePath();
 
@@ -318,7 +318,7 @@ namespace TranslationHelper
         private bool THFilesListBox_MouseClickBusy;
         internal void ActionsOnTHFIlesListElementSelected()
         {
-            if (THFilesListBox_MouseClickBusy && THFilesList.SelectedIndex > -1) //THFilesList.SelectedIndex > -1 - фикс исключения сразу после загрузки таблицы, когда индекс выбранной таблицы равен -1 
+            if (THFilesListBox_MouseClickBusy && THFilesList.GetSelectedIndex() > -1) //THFilesList.GetSelectedIndex() > -1 - фикс исключения сразу после загрузки таблицы, когда индекс выбранной таблицы равен -1 
             {
                 //return;
             }
@@ -409,9 +409,9 @@ namespace TranslationHelper
                     //    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
                     //}
 
-                    if (THFilesList.SelectedIndex > -1)
+                    if (THFilesList.GetSelectedIndex() > -1)
                     {
-                        Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.SelectedIndex;
+                        Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
 
                         BindToDataTableGridView(ProjectData.THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
                     }
@@ -454,7 +454,7 @@ namespace TranslationHelper
 
         public void BindToDataTableGridView(DataTable DT)
         {
-            if (THFilesList != null && THFilesList.SelectedIndex > -1 && DT != null)//вторая попытка исправить исключение при выборе элемента списка
+            if (THFilesList != null && THFilesList.GetSelectedIndex() > -1 && DT != null)//вторая попытка исправить исключение при выборе элемента списка
             {
                 try
                 {
@@ -462,7 +462,7 @@ namespace TranslationHelper
                     {
                         //отображение содержимого всех таблиц в одной
                         //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
-                        //int ThisInd = THFilesList.SelectedIndex;
+                        //int ThisInd = THFilesList.GetSelectedIndex();
                         //using (DataTable dtnew = ProjectData.THFilesElementsDataset.Tables[0].Copy())
                         //{
                         //    for (var i = 1; i < ProjectData.THFilesElementsDataset.Tables.Count; i++)
@@ -589,7 +589,7 @@ namespace TranslationHelper
                     return;
                 }
 
-                var tableIndex = Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.SelectedIndex;
+                var tableIndex = Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
                 var columnIndex = Properties.Settings.Default.DGVSelectedColumnIndex = THFileElementsDataGridView.CurrentCell.ColumnIndex;
                 var rowIndex = Properties.Settings.Default.DGVSelectedRowIndex = THFileElementsDataGridView.CurrentCell.RowIndex;
                 var realrowIndex = Properties.Settings.Default.DGVSelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(tableIndex, rowIndex);
@@ -917,7 +917,7 @@ namespace TranslationHelper
                 //MessageBox.Show(string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value));
                 //https://10tec.com/articles/why-datagridview-slow.aspx
                 //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value);
-                ProjectData.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.RowFilter = OverallFilter;
+                ProjectData.THFilesElementsDataset.Tables[THFilesList.GetSelectedIndex()].DefaultView.RowFilter = OverallFilter;
             }
             catch
             {
@@ -955,12 +955,12 @@ namespace TranslationHelper
 
         private void PaintDigitInFrontOfRow(object sender, DataGridViewRowPostPaintEventArgs e)
         {
-            if (!Properties.Settings.Default.ProjectIsOpened || THFilesList.SelectedIndex == -1)
+            if (!Properties.Settings.Default.ProjectIsOpened || THFilesList.GetSelectedIndex() == -1)
                 return;
 
             var grid = sender as DataGridView;
 
-            int rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.SelectedIndex, e.RowIndex);//здесь получаю реальный индекс из Datatable
+            int rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), e.RowIndex);//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
             using (StringFormat centerFormat = new StringFormat()
@@ -1338,8 +1338,8 @@ namespace TranslationHelper
                     savemenusNOTenabled = false;
                 }
 
-                int tableind = THFilesList.SelectedIndex;
-                int rind = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.SelectedIndex, e.RowIndex);
+                int tableind = THFilesList.GetSelectedIndex();
+                int rind = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), e.RowIndex);
                 int cind = THFileElementsDataGridView.Columns["Original"].Index;
 
                 if (rind > -1 && rind < ProjectData.THFilesElementsDataset.Tables[tableind].Rows.Count && (ProjectData.THFilesElementsDataset.Tables[tableind].Rows[rind][1] + string.Empty).Length > 0)
@@ -1379,7 +1379,7 @@ namespace TranslationHelper
 
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
             //    int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
-            //    int tableindex = THFilesList.SelectedIndex;
+            //    int tableindex = THFilesList.GetSelectedIndex();
             //    int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable();
 
             //    ///*THMsg*/MessageBox.Show("selindexes[0]=" + selindexes[0] + "\r\ncind=" + cind + "\r\ntableindex=" + tableindex + "\r\nselected=" + selindexes.Length + ", lastselectedrowvalue=" + THFilesElementsDataset.Tables[tableindex].Rows[selindexes[0]][cind]);
@@ -1426,8 +1426,8 @@ namespace TranslationHelper
             //        return;
             //    }
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
-            //    int cind = ProjectData.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].Columns["Original"].Ordinal;//-поле untrans
-            //    int tableindex = THFilesList.SelectedIndex;
+            //    int cind = ProjectData.THFilesElementsDataset.Tables[THFilesList.GetSelectedIndex()].Columns["Original"].Ordinal;//-поле untrans
+            //    int tableindex = THFilesList.GetSelectedIndex();
             //    int[] selindexes = new int[1];
 
             //    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
@@ -1624,14 +1624,14 @@ namespace TranslationHelper
             {
                 try
                 {
-                    int tableIndex = THFilesList.SelectedIndex;
+                    int tableIndex = THFilesList.GetSelectedIndex();
                     int cind = ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns["Original"].Ordinal;// Колонка Original
                     int cindTrans = ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns["Translation"].Ordinal;// Колонка Original
                     int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
                         //координаты ячейки
-                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.SelectedIndex, THFileElementsDataGridView.SelectedCells[i].RowIndex);
+                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), THFileElementsDataGridView.SelectedCells[i].RowIndex);
 
                     }
                     foreach (var rind in selectedRowIndexses)
@@ -1701,7 +1701,7 @@ namespace TranslationHelper
             {
                 SelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable
                     (
-                    THFilesList.SelectedIndex,
+                    THFilesList.GetSelectedIndex(),
                     THFileElementsDataGridView.SelectedCells[0].RowIndex
                     );
             }
@@ -1814,7 +1814,7 @@ namespace TranslationHelper
 
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ProjectData.THFilesElementsDataset.Tables[THFilesList.SelectedIndex].DefaultView.Sort = string.Empty;
+            ProjectData.THFilesElementsDataset.Tables[THFilesList.GetSelectedIndex()].DefaultView.Sort = string.Empty;
         }
 
         private async void SaveTranslationAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1965,7 +1965,7 @@ namespace TranslationHelper
                     }
                     else
                     {
-                        for (int f = 0; f < THFilesList.Items.Count; f++)
+                        for (int f = 0; f < THFilesList.GetItemsCount(); f++)
                         {
                             //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
                             //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
@@ -1989,7 +1989,7 @@ namespace TranslationHelper
                                 ///*THMsg*/MessageBox.Show("start writing");
 
                                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                                success = await Task.Run(() => new RPGMMVOLD().WriteJson(THFilesList.Items[f] + string.Empty, Path.Combine(ProjectData.SelectedDir, "www", "data", THFilesList.Items[f] + ".json"))).ConfigureAwait(true);
+                                success = await Task.Run(() => new RPGMMVOLD().WriteJson(THFilesList.GetItemName(f), Path.Combine(ProjectData.SelectedDir, "www", "data", THFilesList.GetItemName(f) + ".json"))).ConfigureAwait(true);
                                 if (!success)
                                 {
                                     break;
@@ -2130,7 +2130,7 @@ namespace TranslationHelper
         internal THfrmSearch search;
         private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (THFilesList.SelectedIndex == -1)
+            if (THFilesList.GetSelectedIndex() == -1)
             {
             }
             else
@@ -2172,11 +2172,11 @@ namespace TranslationHelper
                     int realRowIndex = -1;
                     string columnName = string.Empty;
 
-                    if (THFilesList.SelectedIndex == -1)
+                    if (THFilesList.GetSelectedIndex() == -1)
                     {
                         return;
                     }
-                    int tableindex = THFilesList.SelectedIndex;
+                    int tableindex = THFilesList.GetSelectedIndex();
                     var cell = THFileElementsDataGridView.CurrentCell;
 
                     if (tableindex > -1 && cell != null)
@@ -2331,10 +2331,10 @@ namespace TranslationHelper
             e.DrawBackground();
 
             int index = e.Index;
-            if (index >= 0 && index < THFilesList.Items.Count)
+            if (index >= 0 && index < THFilesList.GetItemsCount())
             {
                 bool selected = ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
-                string text = THFilesList.Items[index] as string;
+                string text = THFilesList.GetItemName(index) as string;
                 Graphics g = e.Graphics;
 
                 //background:
@@ -2461,7 +2461,7 @@ namespace TranslationHelper
 
             foreach (int index in selindexes)
             {
-                THAutoSetSameTranslationForSimular(THFilesList.SelectedIndex, FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.SelectedIndex, index), 0, true, true);
+                THAutoSetSameTranslationForSimular(THFilesList.GetSelectedIndex(), FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), index), 0, true, true);
             }
         }
 
@@ -2803,7 +2803,7 @@ namespace TranslationHelper
                         rowindex = row.Index))
                         )
                     {
-                        FunctionsTable.ShowSelectedRow(THFilesList.SelectedIndex, Properties.Settings.Default.DGVSelectedColumnIndex, rowindex);
+                        FunctionsTable.ShowSelectedRow(THFilesList.GetSelectedIndex(), Properties.Settings.Default.DGVSelectedColumnIndex, rowindex);
                         Properties.Settings.Default.DGVSelectedRowIndex = rowindex;
                         Properties.Settings.Default.DGVSelectedRowRealIndex = realrowindex;
                         SelectedRowRealIndex = realrowindex;
@@ -3081,7 +3081,7 @@ namespace TranslationHelper
                 var item = THFilesList.IndexFromPoint(e.Location);
                 if (item >= 0)
                 {
-                    THFilesList.SelectedIndex = item;
+                    THFilesList.SetSelectedIndex(item);
                     CMSFilesList.Show(THFilesList, e.Location);
                 }
             }

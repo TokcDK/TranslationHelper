@@ -306,9 +306,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 else
                 {
 #if DEBUG
-                    ProjectData.Main.Invoke((Action)(() => SelectedTableIndex = ProjectData.Main.THFilesList.SelectedIndex));
+                    ProjectData.Main.Invoke((Action)(() => SelectedTableIndex = ProjectData.Main.THFilesList.GetSelectedIndex()));
 #else
-                    SelectedTableIndex = ProjectData.Main.THFilesList.SelectedIndex;
+                    SelectedTableIndex = ProjectData.Main.THFilesList.GetSelectedIndex();
 #endif
                 }
             }
