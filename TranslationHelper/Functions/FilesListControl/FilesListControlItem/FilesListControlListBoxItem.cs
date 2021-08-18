@@ -2,5 +2,9 @@
 {
     class FilesListControlListBoxItem : FilesListControlItemBase
     {
+        public override object GetItem()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
