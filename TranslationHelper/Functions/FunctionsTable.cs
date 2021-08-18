@@ -108,7 +108,6 @@ namespace TranslationHelper.Main.Functions
                 }
                 else
                 {
-                    ProjectData.Main.THFilesList.ClearSelected();
                     ProjectData.Main.THFilesList.SetSelectedIndex(tableIndex);
                     ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[tableIndex];
 

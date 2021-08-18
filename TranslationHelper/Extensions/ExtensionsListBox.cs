@@ -86,6 +86,7 @@ namespace TranslationHelper.Extensions
 
         internal static void SetSelectedIndex(this ListControl listControl, int itemIndex)
         {
+            (listControl as ListBox).ClearSelected();
             (listControl as ListBox).SelectedIndex = itemIndex;
         }
 
