@@ -53,7 +53,7 @@ namespace TranslationHelper.Functions
                 return;
             }
 
-            new CleanupData().THCleanupThings();
+            CleanupData.THCleanupThings();
 
             ProjectData.SelectedFilePath = filePath;
 

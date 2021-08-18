@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Extensions
 {
@@ -17,8 +18,8 @@ namespace TranslationHelper.Extensions
                 return "";
             }
 
-            var names = new List<string>(listBox.SelectedItems.Count);
-            foreach (var item in listBox.SelectedItems)
+            var names = new List<string>(listBox.GetSelectedItemsCount());
+            foreach (var item in listBox.GetSelectedItems())
             {
                 names.Add(item.ToString());
             }
@@ -36,9 +37,9 @@ namespace TranslationHelper.Extensions
                 return new int[1] { -1 };
             }
 
-            var indexes = new int[listBox.SelectedItems.Count];
+            var indexes = new int[listBox.GetSelectedItemsCount()];
             int i = 0;
-            foreach (var index in listBox.SelectedIndices)
+            foreach (var index in ProjectData.FilesListControl.GetSelectedIndexes())
             {
                 indexes[i] = (int)index;
                 i++;
@@ -48,14 +49,29 @@ namespace TranslationHelper.Extensions
         }
 
         /// <summary>
-        /// Get name of selected item name from <paramref name="listControl"/> by <paramref name="itemIndex"/>
+        /// Get name of selected item name from <paramref name="listControl"/> by <paramref name="index"/>
         /// </summary>
         /// <param name="listControl"></param>
-        /// <param name="itemIndex"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
-        internal static string GetItemName(this ListControl listControl, int itemIndex)
+        internal static string GetItemName(this ListControl listControl, int index)
         {
-            return (listControl as ListBox).Items[itemIndex] + "";
+            return ProjectData.FilesListControl.GetItemName(index);
+            //return (listControl as ListBox).Items[index] + "";
+            //return ((listControl as ListBox).Items[itemIndex] as FilesListData).FIleName;
+        }
+
+        /// <summary>
+        /// Get name of selected item name from <paramref name="listControl"/> by <paramref name="index"/>.
+        /// It includes index in list
+        /// </summary>
+        /// <param name="listControl"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        internal static string GetItemNameWithIndex(this ListControl listControl, int index)
+        {
+            return (index + 1) + " " + ProjectData.FilesListControl.GetItemName(index);
+            //return (listControl as ListBox).Items[index] + "";
             //return ((listControl as ListBox).Items[itemIndex] as FilesListData).FIleName;
         }
 
@@ -66,7 +82,30 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static int GetItemsCount(this ListControl listControl)
         {
-            return (listControl as ListBox).Items.Count;
+            return ProjectData.FilesListControl.GetItemsCount();
+            //return (listControl as ListBox).Items.Count;
+        }
+
+        /// <summary>
+        /// Get selected items count of <paramref name="listControl"/>
+        /// </summary>
+        /// <param name="listControl"></param>
+        /// <returns></returns>
+        internal static int GetSelectedItemsCount(this ListControl listControl)
+        {
+            return ProjectData.FilesListControl.GetSelectedItemsCount();
+            //return (listControl as ListBox).SelectedItems.Count;
+        }
+
+        /// <summary>
+        /// Get selected items count of <paramref name="listControl"/>
+        /// </summary>
+        /// <param name="listControl"></param>
+        /// <returns></returns>
+        internal static object[] GetSelectedItems(this ListControl listControl)
+        {
+            return ProjectData.FilesListControl.GetSelectedItems();
+            //return (listControl as ListBox).SelectedItems.Count;
         }
 
         /// <summary>
@@ -76,7 +115,8 @@ namespace TranslationHelper.Extensions
         /// <param name="item"></param>
         internal static void AddItem(this ListControl listControl, object item)
         {
-            (listControl as ListBox).Items.Add(item);
+            ProjectData.FilesListControl.AddItem(item);
+            //(listControl as ListBox).Items.Add(item);
         }
 
         /// <summary>
@@ -86,18 +126,21 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static int GetSelectedIndex(this ListControl listControl)
         {
-            return (listControl as ListBox).SelectedIndex;
+            return ProjectData.FilesListControl.GetSelectedIndex();
+            //return (listControl as ListBox).SelectedIndex;
         }
 
         /// <summary>
-        /// Set selected <paramref name="itemIndex"/> for the <paramref name="listControl"/>
+        /// Set selected <paramref name="index"/> for the <paramref name="listControl"/>
         /// </summary>
         /// <param name="listControl"></param>
-        /// <param name="itemIndex"></param>
-        internal static void SetSelectedIndex(this ListControl listControl, int itemIndex)
+        /// <param name="index"></param>
+        internal static void SetSelectedIndex(this ListControl listControl, int index, bool clearSelected = true)
         {
-            (listControl as ListBox).ClearSelected();
-            (listControl as ListBox).SelectedIndex = itemIndex;
+            ProjectData.FilesListControl.SetSelectedIndex(index, clearSelected);
+
+            //(listControl as ListBox).ClearSelected();
+            //(listControl as ListBox).SelectedIndex = index;
         }
 
         /// <summary>
@@ -107,7 +150,8 @@ namespace TranslationHelper.Extensions
         /// <param name="drawMode"></param>
         internal static void SetDrawMode(this ListControl listControl, DrawMode drawMode)
         {
-            (listControl as ListBox).DrawMode = drawMode;
+            ProjectData.FilesListControl.SetDrawMode(drawMode);
+            //(listControl as ListBox).DrawMode = drawMode;
         }
     }
 }

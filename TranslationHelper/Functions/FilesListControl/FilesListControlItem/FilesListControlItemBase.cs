@@ -4,6 +4,6 @@
     {
         public abstract object GetItem();
 
-
+        public abstract void SetItem(object item);
     }
 }

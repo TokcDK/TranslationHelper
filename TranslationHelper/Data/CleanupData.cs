@@ -6,13 +6,7 @@ namespace TranslationHelper.Data
 {
     class CleanupData
     {
-        
-        public CleanupData()
-        {
-            
-        }
-
-        internal void THCleanupThings()
+        internal static void THCleanupThings()
         {
             try
             {
@@ -28,6 +22,9 @@ namespace TranslationHelper.Data
                     }
                     ProjectData.Main.search = null;
                 }
+
+                //ProjectData.FilesListControl.Dispose(); // dispose for control elements
+
                 //if (ProjectData.Main.Settings != null)
                 //{
                 //    if (!ProjectData.Main.Settings.IsDisposed)

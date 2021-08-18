@@ -16,7 +16,8 @@ namespace TranslationHelper.Functions.FilesListControl
         public FilesListControlListBox()
         {
             //_listBox = new ListBox();
-            _listBox = ProjectData.FilesList as ListBox;
+            //_listBox = ProjectData.FilesList as ListBox;
+            _listBox = ProjectData.THFilesList;
 
             // register events
             _listBox.DrawItem += ListBox_DrawItem;
@@ -34,15 +35,58 @@ namespace TranslationHelper.Functions.FilesListControl
             return _listBox.Items.Count;
         }
 
+        public override int GetSelectedItemsCount()
+        {
+            return _listBox.SelectedItems.Count;
+        }
+
         public override int GetSelectedIndex()
         {
             return _listBox.SelectedIndex;
         }
 
-        public override void SetSelectedIndex(int index)
+        public override void SetSelectedIndex(int index, bool clearSelected = true)
         {
-            _listBox.ClearSelected();
+            if(clearSelected)
+            {
+                _listBox.ClearSelected();
+            }
+
             _listBox.SelectedIndex = index;
+        }
+
+        public override void AddItem(object item)
+        {
+            _listBox.Items.Add(item);
+        }
+
+        public override object[] GetSelectedItems()
+        {
+            var items = new object[GetSelectedItemsCount()];
+            int i = 0;
+            foreach (var item in _listBox.SelectedItems)
+            {
+                items[i++] = item;
+            }
+
+            return items;
+        }
+
+        public override int[] GetSelectedIndexes()
+        {
+            var indexes = new int[GetSelectedItemsCount()];
+            int i = 0;
+            foreach (var index in _listBox.SelectedIndices)
+            {
+                indexes[i++] = (int)index;
+            }
+
+            return indexes;
+        }
+
+        public override void SetDrawMode(DrawMode drawMode)
+        {
+            _listBox.DrawMode = drawMode;
         }
 
         private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -61,7 +105,7 @@ namespace TranslationHelper.Functions.FilesListControl
                 var item = _listBox.IndexFromPoint(e.Location);
                 if (item >= 0)
                 {
-                    _listBox.SetSelectedIndex(item);
+                    //_listBox.SetSelectedIndex(item);
                     ProjectData.Main.CMSFilesList.Show(_listBox, e.Location);
                 }
             }
@@ -87,13 +131,15 @@ namespace TranslationHelper.Functions.FilesListControl
             if (index >= 0 && index < ProjectData.THFilesList.GetItemsCount())
             {
                 bool selected = ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
-                string text = _listBox.GetItemName(index);
+                string text = _listBox.GetItemNameWithIndex(index);
                 Graphics g = e.Graphics;
 
                 //background:
                 SolidBrush backgroundBrush;
                 if (selected)
+                {
                     backgroundBrush = ListBoxItemBackgroundBrushSelected;
+                }
                 else if ((index % 2) == 0)
                 {
                     if (FunctionsTable.IsTableRowsCompleted(ProjectData.THFilesElementsDataset.Tables[e.Index]))

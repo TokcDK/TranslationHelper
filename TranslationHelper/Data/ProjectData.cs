@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 using TranslationHelper.Functions;
+using TranslationHelper.Functions.FilesListControl;
 using TranslationHelper.Projects;
 
 namespace TranslationHelper.Data
@@ -16,6 +17,8 @@ namespace TranslationHelper.Data
         public static void Init(FormMain hfrmMain)
         {
             Main = hfrmMain;
+
+            FilesListControl = new FilesListControlListBox(); // set using files list control
 
             THFilesElementsDataset = new DataSet();
             THFilesElementsDatasetInfo = new DataSet();
@@ -169,6 +172,11 @@ namespace TranslationHelper.Data
         /// Fileslist control object
         /// </summary>
         internal static object FilesList;
+
+        /// <summary>
+        /// Files list using now control
+        /// </summary>
+        internal static FilesListControlBase FilesListControl;
 
         /// <summary>
         /// Files list

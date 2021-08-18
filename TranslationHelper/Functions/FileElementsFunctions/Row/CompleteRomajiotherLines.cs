@@ -1,5 +1,4 @@
-﻿using TranslationHelper.Data;
-using TranslationHelper.Extensions;
+﻿using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
