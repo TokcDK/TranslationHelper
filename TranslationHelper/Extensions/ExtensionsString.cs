@@ -703,7 +703,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool IsValidForTranslation(this string inputString)
         {
-            return !string.IsNullOrWhiteSpace(inputString) && !inputString.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther() && inputString.HasLetters() && !inputString.IsSoundsText();
+            return !string.IsNullOrWhiteSpace(inputString) && ProjectData.CurrentProject.IsValidForTranslation(inputString) && !inputString.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther() && inputString.HasLetters() && !inputString.IsSoundsText();
         }
 
         /// <summary>

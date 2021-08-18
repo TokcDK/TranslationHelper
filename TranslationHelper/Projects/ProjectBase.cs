@@ -766,6 +766,16 @@ namespace TranslationHelper.Projects
         }
 
         /// <summary>
+        /// true if <paramref name="inputString"/> is valid for translation
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal virtual bool IsValidForTranslation(string inputString)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// here can be set actions to execute after write of translation
         /// </summary>
         internal virtual void AfterTranslationWriteActions()

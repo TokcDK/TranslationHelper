@@ -561,6 +561,13 @@ namespace TranslationHelper.Projects.RPGMMV
             //write list
             File.WriteAllLines(THSettings.RPGMakerMVSkipjsRulesFilePath(), SkipJSOveralList);
         }
+
+        internal override bool IsValidForTranslation(string inputString)
+        {
+            return 
+                !inputString.StartsWith("<TE:") // Plugin TemplateEvent.js , mark of event name for use and must not be translated if name of event was not translated
+                ;
+        }
     }
 }
 
