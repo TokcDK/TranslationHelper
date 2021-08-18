@@ -3,5 +3,7 @@
     abstract class FilesListControlItemBase
     {
         public abstract object GetItem();
+
+
     }
 }

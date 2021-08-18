@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -8,13 +9,63 @@ namespace TranslationHelper.Functions.FilesListControl
 {
     class FilesListControlListBox : FilesListControlBase
     {
-        readonly ListBox _listBox = ProjectData.FilesList as ListBox;
+        ListBox _listBox;
 
-        public override string ItemName(int index)
+        public override object FilesListControl { get => _listBox; protected set => _listBox = value as ListBox; }
+
+        public FilesListControlListBox()
         {
-            return (_listBox.Items[index] as FilesListData).FIleName;
+            //_listBox = new ListBox();
+            _listBox = ProjectData.FilesList as ListBox;
+
+            // register events
+            _listBox.DrawItem += ListBox_DrawItem;
+            _listBox.MouseUp += ListBox_MouseUp;
+            _listBox.SelectedIndexChanged += ListBox_SelectedIndexChanged;
         }
 
+        public override string GetItemName(int index)
+        {
+            return _listBox.Items[index] + "";
+        }
+
+        public override int GetItemsCount()
+        {
+            return _listBox.Items.Count;
+        }
+
+        public override int GetSelectedIndex()
+        {
+            return _listBox.SelectedIndex;
+        }
+
+        public override void SetSelectedIndex(int index)
+        {
+            _listBox.ClearSelected();
+            _listBox.SelectedIndex = index;
+        }
+
+        private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ProjectData.Main.ActionsOnTHFIlesListElementSelected();
+            if (!ProjectData.Main.TableCompleteInfoLabel.Visible)
+            {
+                ProjectData.Main.TableCompleteInfoLabel.Visible = false;
+            }
+        }
+
+        private void ListBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var item = _listBox.IndexFromPoint(e.Location);
+                if (item >= 0)
+                {
+                    _listBox.SetSelectedIndex(item);
+                    ProjectData.Main.CMSFilesList.Show(_listBox, e.Location);
+                }
+            }
+        }
 
         //global brushes with ordinary/selected colors
         private readonly SolidBrush ListBoxItemForegroundBrushSelected = new SolidBrush(Color.White);
@@ -24,15 +75,8 @@ namespace TranslationHelper.Functions.FilesListControl
         private readonly SolidBrush ListBoxItemBackgroundBrush1Complete = new SolidBrush(Color.FromArgb(235, 255, 235));
         private readonly SolidBrush ListBoxItemBackgroundBrush2 = new SolidBrush(Color.FromArgb(235, 240, 235));
         private readonly SolidBrush ListBoxItemBackgroundBrush2Complete = new SolidBrush(Color.FromArgb(225, 255, 225));
-
-        public FilesListControlListBox()
-        {
-            // register events
-            _listBox.DrawItem += THFilesList_DrawItem;
-        }
-
         //custom method to draw the items, don't forget to set DrawMode of the ListBox to OwnerDrawFixed
-        public void THFilesList_DrawItem(object sender, DrawItemEventArgs e)
+        public void ListBox_DrawItem(object sender, DrawItemEventArgs e)
         {
             //раскраска строк
             //https://stackoverflow.com/questions/2554609/c-sharp-changing-listbox-row-color

@@ -79,17 +79,32 @@ namespace TranslationHelper.Extensions
             (listControl as ListBox).Items.Add(item);
         }
 
+        /// <summary>
+        /// Get selected <paramref name="itemIndex"/> for the <paramref name="listControl"/>
+        /// </summary>
+        /// <param name="listControl"></param>
+        /// <returns></returns>
         internal static int GetSelectedIndex(this ListControl listControl)
         {
             return (listControl as ListBox).SelectedIndex;
         }
 
+        /// <summary>
+        /// Set selected <paramref name="itemIndex"/> for the <paramref name="listControl"/>
+        /// </summary>
+        /// <param name="listControl"></param>
+        /// <param name="itemIndex"></param>
         internal static void SetSelectedIndex(this ListControl listControl, int itemIndex)
         {
             (listControl as ListBox).ClearSelected();
             (listControl as ListBox).SelectedIndex = itemIndex;
         }
 
+        /// <summary>
+        /// set <paramref name="drawMode"/> of the <paramref name="listControl"/>
+        /// </summary>
+        /// <param name="listControl"></param>
+        /// <param name="drawMode"></param>
         internal static void SetDrawMode(this ListControl listControl, DrawMode drawMode)
         {
             (listControl as ListBox).DrawMode = drawMode;
