@@ -46,5 +46,16 @@ namespace TranslationHelper.Extensions
 
             return indexes;
         }
+
+        /// <summary>
+        /// Get name of selected item name from <paramref name="listControl"/> by <paramref name="itemIndex"/>
+        /// </summary>
+        /// <param name="listControl"></param>
+        /// <param name="itemIndex"></param>
+        /// <returns></returns>
+        internal static string GetItemName(this ListControl listControl, int itemIndex)
+        {
+            return ((listControl as ListBox).Items[itemIndex] as FilesListData).FIleName;
+        }
     }
 }
