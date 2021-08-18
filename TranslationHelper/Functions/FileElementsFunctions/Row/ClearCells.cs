@@ -9,9 +9,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override void ActionsPreRowsApply()
+        protected override void ActionsPreTableApply()
         {
-            if (IsAll || IsTable)
+            if (IsAll || IsTables || IsTable)
             {
                 //отключение датасорса для убирания тормозов с параллельной прорисовкой
                 ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = null));
@@ -20,9 +20,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        protected override void ActionsPostRowsApply()
+        protected override void ActionsPostTableApply()
         {
-            if (IsAll || IsTable)
+            if (IsAll || IsTables || IsTable)
             {
                 ProjectData.Main.Invoke((Action)(() => ProjectData.Main.ActionsOnTHFIlesListElementSelected()));
             }

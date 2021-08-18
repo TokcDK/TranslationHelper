@@ -47,12 +47,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         protected Dictionary<string, string> SessionData;
 
-        protected RowBase()
-        {
-
-        }
-
-
         /// <summary>
         /// true when SelectedRow(row) was executed from Selected()
         /// </summary>
@@ -90,10 +84,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 SelectedRow = row;
                 SelectedRowIndex = GetRowIndex(rowIndex);
 
-                if (!_isInternalSelectedRowExecution && IsSelectedRows)
+                if (!IsAll && !IsTables && !IsSelectedRows)
                 {
-                    ActionsPreRowsApply();
+                    ActionsInit();
                 }
+
+                ActionsPreRowApply();
 
                 ApplyConditions();
             }
@@ -101,9 +97,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
             }
 
-            if (!_isInternalSelectedRowExecution && IsSelectedRows)
+            ActionsPostRowApply();
+
+            if (!IsAll && !IsTables && !IsSelectedRows)
             {
-                ActionsPostRowsApply();
+                ActionsFinalize();
             }
 
             return Ret;
@@ -139,7 +137,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// True when !IsAll && !IsTables && !IsTable
         /// </summary>
-        bool IsSelectedRows { get => !IsAll && !IsTables && !IsTable; }
+        protected bool IsSelectedRows { get => !IsAll && !IsTables && !IsTable && SelectedRowsCount>1; }
 
         /// <summary>
         /// selected rows count
@@ -162,10 +160,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 #endif
             }
 
-            if (IsSelectedRows)
-            {
-                SelectedRowsCount = Dgv.GetCountOfRowsWithSelectedCellsCount();
-            }
+            SelectedRowsCount = Dgv.GetCountOfRowsWithSelectedCellsCount();
 
             if (SelectedRowsCount > 0)
             {
@@ -183,7 +178,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     if (IsSelectedRows)
                     {
-                        ActionsPreRowsApply(); // need here also as in All because must be executed even if only selected rows was selected
+                        ActionsInit();
+
+                        ActionsPreRowsApply(); // need here also when not table but selected rows more of one
                     }
 
                     var selectedRowIndexses = new int[SelectedRowsCount];
@@ -231,7 +228,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     if (IsSelectedRows)
                     {
-                        ActionsPostRowsApply(); // need here also as in All because must be executed even if only selected rows was selected
+                        ActionsPostRowsApply(); // when selected more of one row
+
+                        ActionsFinalize();
                     }
                 }
                 catch (Exception ex)
@@ -244,50 +243,82 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         /// <summary>
+        /// apply the actions before selected row will be parsed
+        /// will be executed in any case
+        /// </summary>
+        protected virtual void ActionsPreRowApply()
+        {
+        }
+
+        /// <summary>
         /// apply the actions before all rows for selected,table or all was applied
-        /// will be executed before Selected or before Table or before All
+        /// will be executed if parse more of one row
         /// </summary>
         protected virtual void ActionsPreRowsApply()
         {
         }
 
         /// <summary>
-        /// apply the actions before all tables wil be processed
-        /// will be executed before Table or before All
+        /// apply the actions before several tables will be parsed
+        /// will be executed when parse more of one table
         /// </summary>
         protected virtual void ActionsPreTablesApply()
         {
         }
 
         /// <summary>
-        /// apply the actions before selected table wil be processed. 
-        /// will be executed each time before table parse
+        /// apply the actions before selected table wil be processed
+        /// will be executed when one or more tables parsed
         /// </summary>
         protected virtual void ActionsPreTableApply()
         {
         }
 
         /// <summary>
-        /// apply the actions after all rows for selected,table or all was applied
-        /// will be executed after Selected or after Table or after All
+        /// apply the actions before selected type of object will be parsed
+        /// will be executed always before all elements of selected type of object and before any other actions
+        /// </summary>
+        protected virtual void ActionsInit()
+        {
+        }
+
+        /// <summary>
+        /// apply the actions after row was parsed
+        /// will be executed in any case
+        /// </summary>
+        protected virtual void ActionsPostRowApply()
+        {
+        }
+
+        /// <summary>
+        /// apply the actions after several rows was parsed
+        /// will be executed after all rows of table or more of one selected rows was parsed
         /// </summary>
         protected virtual void ActionsPostRowsApply()
         {
         }
 
         /// <summary>
-        /// apply the actions after selected table wil be processed
-        /// will be executed ech time after table parsed
+        /// apply the actions after selected table will be processed
+        /// will be executed each time when table was parsed
         /// </summary>
         protected virtual void ActionsPostTableApply()
         {
         }
 
         /// <summary>
-        /// apply the actions after all tables wil be processed
-        /// will be executed after Table or after All
+        /// apply the actions after all tables was parsed
+        /// will be executed after all tables was parsed
         /// </summary>
         protected virtual void ActionsPostTablesApply()
+        {
+        }
+
+        /// <summary>
+        /// apply the actions before selected type of object will be parsed
+        /// will be executed always before all elements of selected type of object and after any other actions
+        /// </summary>
+        protected virtual void ActionsFinalize()
         {
         }
 
@@ -367,17 +398,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return false;
             }
 
-            if (!IsAll && !IsTables)
+            if(!IsAll && !IsTables)
             {
-                ActionsPreTablesApply(); // need here also as in All because must be executed even if only one table was selected
+                ActionsFinalize();
             }
 
             ActionsPreTableApply();
 
-            if (!IsAll && !IsTables)
-            {
-                ActionsPreRowsApply(); // need here also as in All because must be executed even if only one table was selected
-            }
+            ActionsPreRowsApply();
 
             _isInternalSelectedRowExecution = true;
 
@@ -392,16 +420,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 Selected(SelectedTable.Rows[i], SelectedTableIndex, i);
             }
 
-            if (!IsAll && !IsTables && IsTable)
-            {
-                ActionsPostRowsApply(); // need here also as in All because must be executed even if only one table was selected
-            }
+            ActionsPostRowsApply(); // need here also as in All because must be executed even if only one table was selected
 
             ActionsPostTableApply();
 
-            if (!IsAll && !IsTables && IsTable)
+            if (!IsAll && !IsTables)
             {
-                ActionsPostTablesApply(); // need here also as in All because must be executed even if only one table was selected
+                ActionsFinalize();
             }
 
             if (!IsAll && !IsTables)
@@ -439,6 +464,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 SetSelectedRowsCountForTables(tables);
 
+                ActionsInit();
+
                 ActionsPreTablesApply();
             }
 
@@ -450,6 +477,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsAll && IsTables)
             {
                 ActionsPostTablesApply();
+
+                ActionsFinalize();
             }
 
             return Ret;
@@ -468,7 +497,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// True when selected more of one table
         /// </summary>
-        bool IsTables;
+        protected bool IsTables;
 
         /// <summary>
         /// Proceed all tables. Multithreaded.
@@ -503,6 +532,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             Tablescount = tables.Count;
             SetSelectedRowsCountForAll();
 
+            ActionsInit();
+
             ActionsPreTablesApply();
 
             foreach (DataTable table in tables)
@@ -521,6 +552,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             ActionsPostTablesApply();
+
+            ActionsFinalize();
 
             CompleteSound();
 

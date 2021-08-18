@@ -15,7 +15,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         Dictionary<string, string> _dict = new Dictionary<string, string>();
         string _custom = THSettings.CustomDBPath();
-        protected override void ActionsPreRowsApply()
+        protected override void ActionsInit()
         {
             //load DB if need
             if (File.Exists(_custom))
@@ -36,7 +36,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        protected override void ActionsPostRowsApply()
+        protected override void ActionsFinalize()
         {
             //save DB
             ProjectData.Main.ProgressInfo(true, "Save custom DB");

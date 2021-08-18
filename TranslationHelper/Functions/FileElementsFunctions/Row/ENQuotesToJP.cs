@@ -18,11 +18,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        protected override void ActionsPreRowsApply()
+        protected override void ActionsInit()
         {
             PreLearn();
         }
-        protected override void ActionsPostRowsApply()
+        protected override void ActionsFinalize()
         {
             PostLearn();
         }

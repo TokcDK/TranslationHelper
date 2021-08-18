@@ -605,7 +605,7 @@ namespace TranslationHelper
                 if (!THSourceRichTextBox.Enabled
                     //&& THFileElementsDataGridView.CurrentCell != null
                     || THFileElementsDataGridView.Rows.Count == 0
-                    || rowIndex == -1
+                    //|| rowIndex == -1
                     || columnIndex == -1)
                 {
                     return;
@@ -3024,88 +3024,89 @@ namespace TranslationHelper
             new FixInstancesOfName().All();
         }
 
-        private void THFilesList_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                var item = THFilesList.IndexFromPoint(e.Location);
-                if (item >= 0)
-                {
-                    THFilesList.SetSelectedIndex(item);
-                    CMSFilesList.Show(THFilesList, e.Location);
-                }
-            }
-        }
+        // commented because files list events using from fileslistcontrollistbox class
+        //private void THFilesList_MouseUp(object sender, MouseEventArgs e)
+        //{
+        //    if (e.Button == MouseButtons.Right)
+        //    {
+        //        var item = THFilesList.IndexFromPoint(e.Location);
+        //        if (item >= 0)
+        //        {
+        //            THFilesList.SetSelectedIndex(item);
+        //            CMSFilesList.Show(THFilesList, e.Location);
+        //        }
+        //    }
+        //}
 
-        private void THFilesList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ActionsOnTHFIlesListElementSelected();
-            if (!TableCompleteInfoLabel.Visible)
-            {
-                TableCompleteInfoLabel.Visible = false;
-            }
-        }
+        //private void THFilesList_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    ActionsOnTHFIlesListElementSelected();
+        //    if (!TableCompleteInfoLabel.Visible)
+        //    {
+        //        TableCompleteInfoLabel.Visible = false;
+        //    }
+        //}
 
-        //global brushes with ordinary/selected colors
-        private readonly SolidBrush ListBoxItemForegroundBrushSelected = new SolidBrush(Color.White);
-        private readonly SolidBrush ListBoxItemForegroundBrush = new SolidBrush(Color.Black);
-        private readonly SolidBrush ListBoxItemBackgroundBrushSelected = new SolidBrush(Color.FromKnownColor(KnownColor.Highlight));
-        private readonly SolidBrush ListBoxItemBackgroundBrush1 = new SolidBrush(Color.White);
-        private readonly SolidBrush ListBoxItemBackgroundBrush1Complete = new SolidBrush(Color.FromArgb(235, 255, 235));
-        private readonly SolidBrush ListBoxItemBackgroundBrush2 = new SolidBrush(Color.FromArgb(235, 240, 235));
-        private readonly SolidBrush ListBoxItemBackgroundBrush2Complete = new SolidBrush(Color.FromArgb(225, 255, 225));
+        ////global brushes with ordinary/selected colors
+        //private readonly SolidBrush ListBoxItemForegroundBrushSelected = new SolidBrush(Color.White);
+        //private readonly SolidBrush ListBoxItemForegroundBrush = new SolidBrush(Color.Black);
+        //private readonly SolidBrush ListBoxItemBackgroundBrushSelected = new SolidBrush(Color.FromKnownColor(KnownColor.Highlight));
+        //private readonly SolidBrush ListBoxItemBackgroundBrush1 = new SolidBrush(Color.White);
+        //private readonly SolidBrush ListBoxItemBackgroundBrush1Complete = new SolidBrush(Color.FromArgb(235, 255, 235));
+        //private readonly SolidBrush ListBoxItemBackgroundBrush2 = new SolidBrush(Color.FromArgb(235, 240, 235));
+        //private readonly SolidBrush ListBoxItemBackgroundBrush2Complete = new SolidBrush(Color.FromArgb(225, 255, 225));
 
-        //custom method to draw the items, don't forget to set DrawMode of the ListBox to OwnerDrawFixed
-        private void THFilesList_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            //раскраска строк
-            //https://stackoverflow.com/questions/2554609/c-sharp-changing-listbox-row-color
-            //https://stackoverflow.com/questions/91747/background-color-of-a-listbox-item-winforms
-            e.DrawBackground();
+        ////custom method to draw the items, don't forget to set DrawMode of the ListBox to OwnerDrawFixed
+        //private void THFilesList_DrawItem(object sender, DrawItemEventArgs e)
+        //{
+        //    //раскраска строк
+        //    //https://stackoverflow.com/questions/2554609/c-sharp-changing-listbox-row-color
+        //    //https://stackoverflow.com/questions/91747/background-color-of-a-listbox-item-winforms
+        //    e.DrawBackground();
 
-            int index = e.Index;
-            if (index >= 0 && index < THFilesList.GetItemsCount())
-            {
-                bool selected = ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
-                string text = THFilesList.GetItemName(index) as string;
-                Graphics g = e.Graphics;
+        //    int index = e.Index;
+        //    if (index >= 0 && index < THFilesList.GetItemsCount())
+        //    {
+        //        bool selected = ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
+        //        string text = THFilesList.GetItemName(index) as string;
+        //        Graphics g = e.Graphics;
 
-                //background:
-                SolidBrush backgroundBrush;
-                if (selected)
-                    backgroundBrush = ListBoxItemBackgroundBrushSelected;
-                else if ((index % 2) == 0)
-                {
-                    if (FunctionsTable.IsTableRowsCompleted(ProjectData.THFilesElementsDataset.Tables[e.Index]))
-                    {
-                        backgroundBrush = ListBoxItemBackgroundBrush1Complete;
-                    }
-                    else
-                    {
-                        backgroundBrush = ListBoxItemBackgroundBrush1;
-                    }
-                }
-                else
-                {
-                    if (FunctionsTable.IsTableRowsCompleted(ProjectData.THFilesElementsDataset.Tables[e.Index]))
-                    {
-                        backgroundBrush = ListBoxItemBackgroundBrush2Complete;
-                    }
-                    else
-                    {
-                        backgroundBrush = ListBoxItemBackgroundBrush2;
-                    }
-                }
+        //        //background:
+        //        SolidBrush backgroundBrush;
+        //        if (selected)
+        //            backgroundBrush = ListBoxItemBackgroundBrushSelected;
+        //        else if ((index % 2) == 0)
+        //        {
+        //            if (FunctionsTable.IsTableRowsCompleted(ProjectData.THFilesElementsDataset.Tables[e.Index]))
+        //            {
+        //                backgroundBrush = ListBoxItemBackgroundBrush1Complete;
+        //            }
+        //            else
+        //            {
+        //                backgroundBrush = ListBoxItemBackgroundBrush1;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (FunctionsTable.IsTableRowsCompleted(ProjectData.THFilesElementsDataset.Tables[e.Index]))
+        //            {
+        //                backgroundBrush = ListBoxItemBackgroundBrush2Complete;
+        //            }
+        //            else
+        //            {
+        //                backgroundBrush = ListBoxItemBackgroundBrush2;
+        //            }
+        //        }
 
-                g.FillRectangle(backgroundBrush, e.Bounds);
+        //        g.FillRectangle(backgroundBrush, e.Bounds);
 
-                //text:
-                SolidBrush foregroundBrush = (selected) ? ListBoxItemForegroundBrushSelected : ListBoxItemForegroundBrush;
-                g.DrawString(text, e.Font, foregroundBrush, THFilesList.GetItemRectangle(index).Location);
-            }
+        //        //text:
+        //        SolidBrush foregroundBrush = (selected) ? ListBoxItemForegroundBrushSelected : ListBoxItemForegroundBrush;
+        //        g.DrawString(text, e.Font, foregroundBrush, THFilesList.GetItemRectangle(index).Location);
+        //    }
 
-            e.DrawFocusRectangle();
-        }
+        //    e.DrawFocusRectangle();
+        //}
 
         //Материалы
         //по оптимизации кода

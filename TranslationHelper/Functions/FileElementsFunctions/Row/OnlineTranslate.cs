@@ -83,7 +83,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// true if all DB was loaded
         /// </summary>
         bool _allDbLoaded4All;
-        protected override void ActionsPreRowsApply()
+        protected override void ActionsInit()
         {
             FunctionsOnlineCache.Init();
 
@@ -111,7 +111,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             }
         }
-        protected override void ActionsPostRowsApply()
+        protected override void ActionsFinalize()
         {
             TranslateStrings();
             Size = 0;
@@ -121,22 +121,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             ProjectData.Main.ProgressInfo(false);
 
-            if (!IsAll && !IsTable && Properties.Settings.Default.InterruptTtanslation)
-            {
-                Properties.Settings.Default.InterruptTtanslation = false;
-            }
-        }
-
-        protected override void ActionsPostTableApply()
-        {
-            if (!IsAll && Properties.Settings.Default.InterruptTtanslation)
-            {
-                Properties.Settings.Default.InterruptTtanslation = false;
-            }
-        }
-
-        protected override void ActionsPostTablesApply()
-        {
             if (Properties.Settings.Default.InterruptTtanslation)
             {
                 Properties.Settings.Default.InterruptTtanslation = false;
