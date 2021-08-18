@@ -123,13 +123,20 @@ namespace TranslationHelper.Extensions
                     continue;
                 }
 
-                if (onlyOne && m.Groups.Count > 1)
+                if (onlyOne && m.Groups.Count > 2) // 2 because 0 group is always will be in success match
                 {
                     continue;
                 }
 
+                bool skipFirst = true;
                 foreach (Group g in m.Groups)
                 {
+                    if (skipFirst) // first $0 group is equal line itself
+                    {
+                        skipFirst = false;
+                        continue;
+                    }
+
                     try
                     {
 

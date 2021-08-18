@@ -137,7 +137,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// True when !IsAll && !IsTables && !IsTable
         /// </summary>
-        protected bool IsSelectedRows { get => !IsAll && !IsTables && !IsTable && SelectedRowsCount>1; }
+        protected bool IsSelectedRows { get => !IsAll && !IsTables && !IsTable && SelectedRowsCount > 1; }
 
         /// <summary>
         /// selected rows count
@@ -349,9 +349,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 SelectedTable = ProjectData.THFilesElementsDataset.Tables[SelectedTableIndex];
             }
 
-            ColumnIndexOriginal = SelectedTable.Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
-            ColumnIndexTranslation = SelectedTable.Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Translation
+            if (needToGetOrigTransColumnsNum)
+            {
+                needToGetOrigTransColumnsNum = false;
+                ColumnIndexOriginal = SelectedTable.Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
+                ColumnIndexTranslation = SelectedTable.Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Translation
+            }
         }
+
+        /// <summary>
+        /// only one time get Original and Translation columns numbers
+        /// </summary>
+        bool needToGetOrigTransColumnsNum = true;
 
         /// <summary>
         /// proceed selected table. Multithreaded.
@@ -398,7 +407,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return false;
             }
 
-            if(!IsAll && !IsTables)
+            if (!IsAll && !IsTables)
             {
                 ActionsFinalize();
             }
@@ -427,10 +436,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsAll && !IsTables)
             {
                 ActionsFinalize();
-            }
 
-            if (!IsAll && !IsTables)
-            {
                 CompleteSound();
             }
 
@@ -451,7 +457,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 #else
             tableindexes = ProjectData.THFilesList.CopySelectedIndexes();
 #endif
-            DataTable[] tables=null;
+            DataTable[] tables = null;
 #if DEBUG
             ProjectData.Main.Invoke((Action)(() => tables = ProjectData.THFilesElementsDataset.GetTablesByIndexes(tableindexes)));
 #else
@@ -542,7 +548,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 SelectedTableIndex = tindex;
                 try
                 {
-                    Table();
+                    Table(table);
                 }
                 catch (Exception ex)
                 {

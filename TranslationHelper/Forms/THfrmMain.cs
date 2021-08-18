@@ -3019,9 +3019,9 @@ namespace TranslationHelper
             new TrimEndSpace().Selected();
         }
 
-        private void fixInstancesOfNameToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void fixInstancesOfNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new FixInstancesOfName().All();
+            await new FixInstancesOfName().AllT();
         }
 
         // commented because files list events using from fileslistcontrollistbox class
