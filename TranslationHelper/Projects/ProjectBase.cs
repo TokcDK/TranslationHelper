@@ -189,7 +189,7 @@ namespace TranslationHelper.Projects
             {
                 foreach (var file in Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
                 {
-                    if (exclusions != null && file.FullName.IsStringAContainsAnyFromArray(exclusions))//skip exclusions
+                    if (/*exclusions != null &&*/ file.FullName.IsStringAContainsAnyFromArray(exclusions))//skip exclusions
                         continue;
 
                     ProjectData.FilePath = file.FullName;
@@ -436,24 +436,6 @@ namespace TranslationHelper.Projects
         internal virtual string CleanStringForCheck(string str)
         {
             return str;
-        }
-
-        internal void FillTHFilesElementsDictionary()
-        {
-            if (ProjectData.TablesLinesDict == null || ProjectData.TablesLinesDict.Count == 0)
-            {
-                foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
-                {
-                    foreach (DataRow row in table.Rows)
-                    {
-                        string orig;
-                        if (!string.IsNullOrEmpty(orig = row[0] + string.Empty) && !ProjectData.TablesLinesDict.ContainsKey(orig))
-                        {
-                            ProjectData.TablesLinesDict.Add(orig, row[1] + string.Empty);
-                        }
-                    }
-                }
-            }
         }
 
         internal void FillTablesLinesDict()
