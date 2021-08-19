@@ -436,8 +436,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsAll && !IsTables)
             {
                 ActionsFinalize();
-
-                CompleteSound();
             }
 
             return Ret;
@@ -485,6 +483,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 ActionsPostTablesApply();
 
                 ActionsFinalize();
+
+                CompleteSound();
             }
 
             return Ret;
