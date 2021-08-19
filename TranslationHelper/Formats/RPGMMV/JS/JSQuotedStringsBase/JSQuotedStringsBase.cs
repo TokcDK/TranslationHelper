@@ -42,7 +42,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
             }
 
-            SaveModeAddLine("\n");
+            SaveModeAddLine(System.Environment.NewLine);
 
             return 0;
         }
