@@ -84,7 +84,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 SelectedRow = row;
                 SelectedRowIndex = GetRowIndex(rowIndex);
 
-                if (!IsAll && !IsTables && !IsSelectedRows)
+                if (!IsAll && !IsTables && !IsTable && !IsSelectedRows)
                 {
                     ActionsInit();
                 }
@@ -99,7 +99,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             ActionsPostRowApply();
 
-            if (!IsAll && !IsTables && !IsSelectedRows)
+            if (!IsAll && !IsTables && !IsTable && !IsSelectedRows)
             {
                 ActionsFinalize();
             }
