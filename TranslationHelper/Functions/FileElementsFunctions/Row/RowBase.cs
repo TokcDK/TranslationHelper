@@ -409,7 +409,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (!IsAll && !IsTables)
             {
-                ActionsFinalize();
+                ActionsInit();
             }
 
             ActionsPreTableApply();
