@@ -21,7 +21,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 foreach (var regexQuote in new[] { "'", @"\""" })
                 {
                     var mc = Regex.Matches(ParseData.line, /*@"[\""']([^\""'\r\n]+)[\""']"*/
-                          @"" + regexQuote + @"([^" + regexQuote + @"\r\n\\]+(?:\\.[^" + regexQuote + @"\\]*)*)" + regexQuote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
+                          @"" + regexQuote + @"([^" + regexQuote + @"\r\n\\]*(?:\\.[^" + regexQuote + @"\\]*)*)" + regexQuote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
                         );
                     for (int m = mc.Count - 1; m >= 0; m--)
                     {
