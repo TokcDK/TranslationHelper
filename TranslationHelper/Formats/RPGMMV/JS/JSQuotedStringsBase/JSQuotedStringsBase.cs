@@ -24,8 +24,6 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                     var mc = Regex.Matches(ParseData.line.Split(new[]{ "//" },System.StringSplitOptions.None)[0], /*@"[\""']([^\""'\r\n]+)[\""']"*/
                           @"" + regexQuote + @"([^" + regexQuote + @"\r\n\\]*(?:\\.[^" + regexQuote + @"\\]*)*)" + regexQuote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
                         );
-                    int internalCommentIndex = ParseData.line.IndexOf("//");
-                    bool hasInternalComment = internalCommentIndex != 1;
                     for (int m = mc.Count - 1; m >= 0; m--)
                     {
                         var result = mc[m].Result("$1");
