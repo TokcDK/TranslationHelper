@@ -30,13 +30,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
             if (_cache.ContainsKey(orig))
             {
-                if (orig != trans)
+                var cachedTrans = _cache[orig];
+                if (orig != cachedTrans)
                 {
-                    SelectedRow[1] = trans;
+                    SelectedRow[1] = cachedTrans;
                 }
             }
 
-            var extractedFromOrig = orig.ExtractMulty(true);
+            var extractedFromOrig = orig.ExtractMulty(onlyOne: true);
             if (string.IsNullOrWhiteSpace(extractedFromOrig[0]) || extractedFromOrig[0].Trim() == orig)
             {
                 _cache.AddTry(orig, trans);

@@ -393,7 +393,15 @@ namespace TranslationHelper.Main.Functions
                     if (string.IsNullOrWhiteSpace(InputTranslationValue) || InputTranslationValue == Environment.NewLine)
                         return;
 
-                    bool weUseDuplicates = !Properties.Settings.Default.DontLoadDuplicates && ProjectData.OriginalsTableRowCoordinats != null && ProjectData.OriginalsTableRowCoordinats[inputOriginalValue].Values.Count > 1;
+                    bool weUseDuplicates = false;
+                    try
+                    {
+                        weUseDuplicates = !Properties.Settings.Default.DontLoadDuplicates && ProjectData.OriginalsTableRowCoordinats != null && ProjectData.OriginalsTableRowCoordinats[inputOriginalValue].Values.Count > 1;
+                    }
+                    catch
+                    {
+
+                    }
                     //set same value for duplicates
                     if (weUseDuplicates)
                     {
