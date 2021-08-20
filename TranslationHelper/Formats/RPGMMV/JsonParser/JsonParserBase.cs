@@ -154,12 +154,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         }
 
         /// <summary>
-        /// Determines to parse only string token types as values
+        /// Determines to parse only string token types as values. True by default
         /// </summary>
         protected bool ParseOnlyStringValues = true;
 
         /// <summary>
-        /// Parse <paramref name="jsonToken"/>
+        /// Parse <paramref name="jsonToken"/>.
+        /// ParseValue parse only string values by default.
         /// </summary>
         /// <param name="jsonToken"></param>
         protected void Parse(JToken jsonToken)

@@ -13,12 +13,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
     {
         protected override void ParseValue(JValue jsonValue)
         {
-            if (jsonValue.Type != JTokenType.String)
-            {
-                return;
-            }
-
-            string tokenValue = jsonValue.Value + "";
+            string tokenValue = jsonValue.Value as string;
 
             if (!IsValidString(jsonValue, tokenValue))
             {
@@ -130,7 +125,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         {
             string path;
             return Format.IsValidString(value)
-                && !((path = token.Path).Contains("].name") && Regex.IsMatch(path, @"events\[[0-9]+\]\.name")) // skip event names
+                && !((path = token.Path).Contains("].name") && !value.Contains("Enemy(")/*constructions like Enemy(enemyname) using also to identify enemies*/ && Regex.IsMatch(path, @"events\[[0-9]+\]\.name")) // skip event names //disabled because using in some cases like enemy name as event name(need to make dull open save with duplicates for correct translation)
                 && !(path.Contains("].image") && Regex.IsMatch(path, @"\[[0-9]+\]\.image")) // skip image names
                 && !(path.Contains("gm.name") && Regex.IsMatch(token.Path, @"[Bb]gm\.name")); // skip bgm
         }

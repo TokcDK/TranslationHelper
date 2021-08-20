@@ -24,11 +24,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
         protected override void ParseValue(JValue jsonValue)
         {
-            var TokenValue = jsonValue + "";
+            var tokenValue = (string)jsonValue.Value;
 
-            if (TokenValue.StartsWith("{") && TokenValue.EndsWith("}") || TokenValue.StartsWith("[\"") && TokenValue.EndsWith("\"]"))
+            if (tokenValue.StartsWith("{") && tokenValue.EndsWith("}") || tokenValue.StartsWith("[\"") && tokenValue.EndsWith("\"]"))
             {
-                var root = JToken.Parse(TokenValue);
+                var root = JToken.Parse(tokenValue);
 
                 //parse subtoken
                 Parse(root);
@@ -45,7 +45,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
                 if (ProjectData.OpenFileMode)
                 {
-                    Format.AddRowData(JsonName, TokenValue,
+                    Format.AddRowData(JsonName, tokenValue,
                         jsonValue.Path
                         + (IsPluginsJS && jsonValue.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase)
                         ? Environment.NewLine + T._("Warning") + ". " + T._("Parameter: translation of some parameters can break the game.")
@@ -57,11 +57,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
                     if(UseHashSet)
                     {
-                        if (ProjectData.TablesLinesDict.ContainsKey(TokenValue)
-                            && !string.IsNullOrEmpty(ProjectData.TablesLinesDict[TokenValue])
-                            && ProjectData.TablesLinesDict[TokenValue] != TokenValue)
+                        if (ProjectData.TablesLinesDict.ContainsKey(tokenValue)
+                            && !string.IsNullOrEmpty(ProjectData.TablesLinesDict[tokenValue])
+                            && ProjectData.TablesLinesDict[tokenValue] != tokenValue)
                         {
-                            jsonValue.Value = ProjectData.TablesLinesDict[TokenValue];
+                            jsonValue.Value = ProjectData.TablesLinesDict[tokenValue];
                         }
                     }
                     else

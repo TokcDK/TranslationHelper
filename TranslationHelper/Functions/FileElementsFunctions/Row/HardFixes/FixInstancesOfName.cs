@@ -20,6 +20,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         protected override bool Apply()
         {
             var orig = SelectedRow[0] as string;
+
+            if (orig.IsMultiline()) // skip multiline
+            {
+                return false;
+            }
+
             var trans = SelectedRow[1] + string.Empty;
 
             if (_cache.ContainsKey(orig))
@@ -33,6 +39,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             var extractedFromOrig = orig.ExtractMulty(true);
             if (string.IsNullOrWhiteSpace(extractedFromOrig[0]) || extractedFromOrig[0].Trim() == orig)
             {
+                _cache.AddTry(orig, trans);
                 return false;
             }
 
@@ -41,6 +48,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             if (string.IsNullOrWhiteSpace(extractedFromTrans[0])
                 || extractedFromTrans[0].Trim() == trans)
             {
+                _cache.AddTry(orig, trans);
                 return false;
             }
 
