@@ -27,13 +27,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 AddToStats();
 
                 bool HasCurCode = CurrentEventCode > -1;
-                Format.AddRowData(JsonName, tokenValue, "JsonPath: "
+                Format.AddRowData(tablename: JsonName, RowData: tokenValue, RowInfo: "JsonPath: "
                     + Environment.NewLine
                     + jsonValue.Path
                     + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
                     HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
                     //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
-                    , true, false);
+                    , CheckAddHashes: true, CheckInput: false);
             }
             else
             {
