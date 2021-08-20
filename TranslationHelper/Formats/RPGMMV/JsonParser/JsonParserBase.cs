@@ -154,12 +154,17 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         }
 
         /// <summary>
+        /// Determines to parse only string token types as values
+        /// </summary>
+        protected bool ParseOnlyStringValues = true;
+
+        /// <summary>
         /// Parse <paramref name="jsonToken"/>
         /// </summary>
         /// <param name="jsonToken"></param>
         protected void Parse(JToken jsonToken)
         {
-            if (jsonToken == null || UseSkipJsonTokens && SkipJsonTokens.Contains(jsonToken))
+            if (jsonToken == null || (UseSkipJsonTokens && SkipJsonTokens.Contains(jsonToken)))
             {
                 return;
             }
@@ -168,6 +173,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             {
                 case JValue value:
                     {
+                        if (ParseOnlyStringValues && jsonToken.Type != JTokenType.String)
+                        {
+                            return;
+                        }
+
                         ParseValue(value);
 
                         break;
