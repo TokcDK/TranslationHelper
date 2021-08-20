@@ -38,13 +38,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             else
             {
                 //предполагается, что ячейки из таблицы были разбиты на строки и добавлены в словарь
-                if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/
-                    !ProjectData.TablesLinesDict.ContainsKey(tokenValue)
-                    || ProjectData.TablesLinesDict[tokenValue].Length == 0
-                    )
-                {
-                    return;
-                }
+                //if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/
+                //    !ProjectData.TablesLinesDict.ContainsKey(tokenValue)
+                //    || ProjectData.TablesLinesDict[tokenValue].Length == 0
+                //    )
+                //{
+                //    return;
+                //}
 
                 WriteTranslation(jsonValue, tokenValue);
             }
@@ -60,8 +60,14 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         {
             try
             {
-                int tokenvalueLinesCount;
-                if (ProjectData.TablesLinesDict[tokenValue].GetLinesCount() == (tokenvalueLinesCount = tokenValue.GetLinesCount())
+                string translation = tokenValue;
+                if (!Format.SetTranslation(ref translation))
+                {
+                    return;
+                }
+
+                int originalLinesCount;
+                if (translation.GetLinesCount() == (originalLinesCount = tokenValue.GetLinesCount())
                     || value.Parent == null
                     || value.Parent.Parent == null
                     || value.Parent.Parent.Parent == null
@@ -69,35 +75,35 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
                     )
                 {
-                    value.Value = ProjectData.TablesLinesDict[tokenValue];
+                    value.Value = translation;
                 }
                 else
                 {
                     int ind = 0;
                     List<string> stringToWrite = new List<string>();
-                    bool NotWrited = true;
-                    bool IsTheJObjetAdded = false;
+                    bool notWrited = true;
+                    bool isTheJObjetAdded = false;
 
-                    foreach (var line in ProjectData.TablesLinesDict[tokenValue].SplitToLines())
+                    foreach (var line in translation.SplitToLines())
                     {
-                        if (ind < tokenvalueLinesCount)
+                        if (ind < originalLinesCount)
                         {
                             stringToWrite.Add(line);
                             ind++;
                         }
                         else
                         {
-                            if (NotWrited)
+                            if (notWrited)
                             {
                                 value.Value = string.Join(Environment.NewLine, stringToWrite);
-                                NotWrited = false;
+                                notWrited = false;
                             }
 
                             var newJObject = GetNewJObject(currentJObject, line);
                             currentJObject.AddAfterSelf(newJObject);
-                            if (!IsTheJObjetAdded && !AddedJObjects.Contains(newJObject))
+                            if (!isTheJObjetAdded && !AddedJObjects.Contains(newJObject))
                             {
-                                IsTheJObjetAdded = true;
+                                isTheJObjetAdded = true;
                                 AddedJObjects.Add(newJObject);
                             }
                             currentJObject = newJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
