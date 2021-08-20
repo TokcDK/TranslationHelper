@@ -13,6 +13,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
     {
         protected override void ParseValue(JValue jsonValue)
         {
+
             string tokenValue = jsonValue.Value as string;
 
             if (!IsValidString(jsonValue, tokenValue))

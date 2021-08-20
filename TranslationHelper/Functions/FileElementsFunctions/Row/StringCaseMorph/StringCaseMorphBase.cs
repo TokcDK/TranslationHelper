@@ -143,6 +143,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 
         internal string StringToUpper(string inputString)
         {
+            if (string.IsNullOrWhiteSpace(inputString))
+            {
+                return inputString;
+            }
+
             if (char.IsLetter(inputString[0]))
             {
                 if ((SelectedRow[0] as string)[0] != inputString[0]) // skip if char in original equals char in translation with same index

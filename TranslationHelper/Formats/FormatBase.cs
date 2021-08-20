@@ -19,6 +19,7 @@ namespace TranslationHelper.Formats
         {
             TablesLinesDict = ProjectData.TablesLinesDict;
             hashes = ProjectData.hashes;
+            RowNumber = 0;
 
             if (ProjectData.CurrentProject != null)
             {
@@ -634,67 +635,72 @@ namespace TranslationHelper.Formats
 
                 if (Properties.Settings.Default.DontLoadDuplicates && CheckAddHashes && hashes != null)
                 {
+                    // add to hashes when only unique values
                     hashes.Add(original);
                 }
                 else if (!Properties.Settings.Default.DontLoadDuplicates)
                 {
-                    //add coordinates
+                    // variant with duplicates
+
+                    // check if original exists
                     if (!ProjectData.OriginalsTableRowCoordinats.ContainsKey(original))
                     {
-                        ProjectData.OriginalsTableRowCoordinats.Add(original, new Dictionary<string, List<int>>());
-                        ProjectData.OriginalsTableRowCoordinats[original].Add(tablename, new List<int>());
-                        ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
+                        ProjectData.OriginalsTableRowCoordinats.Add(original, new Dictionary<string, HashSet<int>>());
                     }
-                    else
+
+                    // check if tablename is exists
+                    if (!ProjectData.OriginalsTableRowCoordinats[original].ContainsKey(tablename))
                     {
-                        if (!ProjectData.OriginalsTableRowCoordinats[original].ContainsKey(tablename))
-                        {
-                            ProjectData.OriginalsTableRowCoordinats[original].Add(tablename, new List<int>());
-                            ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
-                        }
-                        else
-                        {
-                            ProjectData.OriginalsTableRowCoordinats[RowData[0]][tablename].Add(ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count);
-                        }
+                        ProjectData.OriginalsTableRowCoordinats[original].Add(tablename, new HashSet<int>());
                     }
+
+                    // check if current row number is exists
+                    if (!ProjectData.OriginalsTableRowCoordinats[original][tablename].Contains(RowNumber))
+                    {
+                        ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(RowNumber);
+                    }
+
+                    // raise row number
+                    RowNumber++;
                 }
             }
+
             return true;
         }
 
         /// <summary>
-        /// row index indicator for save purposes
+        /// current row number in parsing table
         /// </summary>
-        protected int SaveRowIndex = 0;
+        protected int RowNumber = 0;
 
         /// <summary>
         /// check if translation is exists and set str return true if found.
         /// value = input string, must contain original value for search.
         /// controltrans = control translation value, if was loaded translation from file
         /// </summary>
-        /// <param name="value">input=original, output=translation</param>
-        /// <param name="controltrans">control translation value if was loaded translation from file</param>
+        /// <param name="valueToTranslate">input=original, output=translation</param>
+        /// <param name="existsTranslation">control translation value if was loaded translation from file</param>
         /// <returns>true if translation was set and not equal to input original</returns>
-        internal bool SetTranslation(ref string value, string controltrans = null)
+        internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null)
         {
-            var ret = false;
+            var isTranslated = false;
 
             if (!Properties.Settings.Default.DontLoadDuplicates
                 && ProjectData.OriginalsTableRowCoordinats != null
-                && ProjectData.OriginalsTableRowCoordinats.ContainsKey(value))
+                && ProjectData.OriginalsTableRowCoordinats.ContainsKey(valueToTranslate) // input value has original's value before it will be changed to translation
+                )
             {
-                var tname = Path.GetFileName(ProjectData.FilePath);
-                if (ProjectData.OriginalsTableRowCoordinats[value].ContainsKey(tname))
+                var currentTableName = ParseData.tablename;
+                var pretranslatedOriginal = valueToTranslate;
+                if (ProjectData.OriginalsTableRowCoordinats[valueToTranslate].ContainsKey(currentTableName))
                 {
-                    var control = value;
-                    if (ProjectData.OriginalsTableRowCoordinats[value][tname].Contains(SaveRowIndex))
+                    if (ProjectData.OriginalsTableRowCoordinats[valueToTranslate][currentTableName].Contains(RowNumber))
                     {
-                        value = ProjectData.THFilesElementsDataset.Tables[tname].Rows[SaveRowIndex][1] + "";
-                        value = FixInvalidSymbols(value);
-                        SaveRowIndex++;
+                        valueToTranslate = ProjectData.THFilesElementsDataset.Tables[currentTableName].Rows[RowNumber][1] + "";
+                        valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
-                        ret = control != value || (controltrans != null && controltrans != value);
-                        if (ret)
+                        isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
+                        if (isTranslated)
                         {
                             ParseData.Ret = true;
                         }
@@ -703,14 +709,13 @@ namespace TranslationHelper.Formats
                     }
                     else // set 1st value from avalaible values
                     {
-                        foreach (var rind in ProjectData.OriginalsTableRowCoordinats[value][tname])
+                        foreach (var rowIndex in ProjectData.OriginalsTableRowCoordinats[valueToTranslate][currentTableName])
                         {
-                            value = ProjectData.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
-                            value = FixInvalidSymbols(value);
-                            SaveRowIndex++;
+                            valueToTranslate = ProjectData.THFilesElementsDataset.Tables[currentTableName].Rows[rowIndex][1] + "";
+                            valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
-                            ret = control != value || (controltrans != null && controltrans != value);
-                            if (ret)
+                            isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
+                            if (isTranslated)
                             {
                                 ParseData.Ret = true;
                             }
@@ -721,34 +726,41 @@ namespace TranslationHelper.Formats
                 }
                 else // set 1st value from avalaible values
                 {
-                    var control = value;
-                    foreach (var tn in ProjectData.OriginalsTableRowCoordinats[value].Values)
+                    foreach (var existTableName in ProjectData.OriginalsTableRowCoordinats[valueToTranslate].Values)
                     {
-                        foreach (var rind in tn)
+                        foreach (var existsRowIndex in existTableName)
                         {
-                            value = ProjectData.THFilesElementsDataset.Tables[tname].Rows[rind][1] + "";
-                            value = FixInvalidSymbols(value);
-                            SaveRowIndex++;
+                            valueToTranslate = ProjectData.THFilesElementsDataset.Tables[currentTableName].Rows[existsRowIndex][1] + "";
+                            valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
-                            ret = control != value || (controltrans != null && controltrans != value);
-                            if (ret)
+                            isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
+                            if (isTranslated)
                             {
                                 ParseData.Ret = true;
+                                break; // translated, dont need to iterate rows anymore
                             }
 
                             //return ret;
                         }
+
+                        if (isTranslated)
+                        {
+                            ParseData.Ret = true;
+                            break; // translated, dont need to iterate table names anymore
+                        }
                     }
                 }
-            }
-            else if (ProjectData.TablesLinesDict.ContainsKey(value))
-            {
-                var control = value;
-                value = ProjectData.TablesLinesDict[value];
-                value = FixInvalidSymbols(value);
 
-                ret = control != value || (controltrans != null && controltrans != value);
-                if (ret)
+                RowNumber++;
+            }
+            else if (ProjectData.TablesLinesDict.ContainsKey(valueToTranslate))
+            {
+                var control = valueToTranslate;
+                valueToTranslate = ProjectData.TablesLinesDict[valueToTranslate];
+                valueToTranslate = FixInvalidSymbols(valueToTranslate);
+
+                isTranslated = control != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
+                if (isTranslated)
                 {
                     ParseData.Ret = true;
                 }
@@ -756,7 +768,7 @@ namespace TranslationHelper.Formats
                 //return ret;
             }
 
-            return ret;
+            return isTranslated;
         }
 
         protected bool CheckTablesContent(string tablename, bool IsDictionary = false)

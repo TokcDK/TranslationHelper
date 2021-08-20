@@ -23,7 +23,7 @@ namespace TranslationHelper.Data
             THFilesElementsDataset = new DataSet();
             THFilesElementsDatasetInfo = new DataSet();
             THFilesElementsALLDataTable = new DataSet();
-            OriginalsTableRowCoordinats = new Dictionary<string, Dictionary<string, List<int>>>();
+            OriginalsTableRowCoordinats = new Dictionary<string, Dictionary<string, HashSet<int>>>();
             //THFilesElementsDictionary = new Dictionary<string, string>();
             //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
 
@@ -107,9 +107,13 @@ namespace TranslationHelper.Data
         internal static DataSet THFilesElementsALLDataTable { get; set; }
 
         /// <summary>
-        /// main table/row index coordinats data for same translation for identical and for write functions
+        /// main table/row index coordinates data for same translation for identical and for write functions.
+        /// Format:
+        ///     original value:
+        ///         list of table names:
+        ///             list of row numbers:
         /// </summary>
-        internal static Dictionary<string, Dictionary<string, List<int>>> OriginalsTableRowCoordinats { get; set; }
+        internal static Dictionary<string, Dictionary<string, HashSet<int>>> OriginalsTableRowCoordinats { get; set; }
 
         public static string SelectedGameDir;
         public static string SelectedDir;
