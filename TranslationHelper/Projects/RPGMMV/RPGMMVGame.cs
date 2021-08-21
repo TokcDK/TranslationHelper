@@ -564,7 +564,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override bool IsValidForTranslation(string inputString)
         {
-            return 
+            return
                 !inputString.StartsWith("<TE:") // Plugin TemplateEvent.js , mark of event name for use and must not be translated if name of event was not translated
                 ;
         }

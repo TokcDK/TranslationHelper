@@ -58,62 +58,55 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <param name="tokenValue"></param>
         private void WriteTranslation(JValue value, string tokenValue)
         {
-            try
+            string translation = tokenValue;
+            if (!Format.SetTranslation(ref translation))
             {
-                string translation = tokenValue;
-                if (!Format.SetTranslation(ref translation))
-                {
-                    return;
-                }
+                return;
+            }
 
-                int originalLinesCount;
-                if (translation.GetLinesCount() == (originalLinesCount = tokenValue.GetLinesCount())
-                    || value.Parent == null
-                    || value.Parent.Parent == null
-                    || value.Parent.Parent.Parent == null
-                    || !(value.Parent.Parent.Parent is JObject currentJObject)
+            int originalLinesCount;
+            if (translation.GetLinesCount() == (originalLinesCount = tokenValue.GetLinesCount())
+                || value.Parent == null
+                || value.Parent.Parent == null
+                || value.Parent.Parent.Parent == null
+                || !(value.Parent.Parent.Parent is JObject currentJObject)
 
-                    )
-                {
-                    value.Value = translation;
-                }
-                else
-                {
-                    int ind = 0;
-                    List<string> stringToWrite = new List<string>();
-                    bool notWrited = true;
-                    bool isTheJObjetAdded = false;
+                )
+            {
+                value.Value = translation;
+            }
+            else
+            {
+                int ind = 0;
+                List<string> stringToWrite = new List<string>();
+                bool notWrited = true;
+                bool isTheJObjetAdded = false;
 
-                    foreach (var line in translation.SplitToLines())
+                foreach (var line in translation.SplitToLines())
+                {
+                    if (ind < originalLinesCount)
                     {
-                        if (ind < originalLinesCount)
+                        stringToWrite.Add(line);
+                        ind++;
+                    }
+                    else
+                    {
+                        if (notWrited)
                         {
-                            stringToWrite.Add(line);
-                            ind++;
+                            value.Value = string.Join(Environment.NewLine, stringToWrite);
+                            notWrited = false;
                         }
-                        else
-                        {
-                            if (notWrited)
-                            {
-                                value.Value = string.Join(Environment.NewLine, stringToWrite);
-                                notWrited = false;
-                            }
 
-                            var newJObject = GetNewJObject(currentJObject, line);
-                            currentJObject.AddAfterSelf(newJObject);
-                            if (!isTheJObjetAdded && !AddedJObjects.Contains(newJObject))
-                            {
-                                isTheJObjetAdded = true;
-                                AddedJObjects.Add(newJObject);
-                            }
-                            currentJObject = newJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
+                        var newJObject = GetNewJObject(currentJObject, line);
+                        currentJObject.AddAfterSelf(newJObject);
+                        if (!isTheJObjetAdded && !AddedJObjects.Contains(newJObject))
+                        {
+                            isTheJObjetAdded = true;
+                            AddedJObjects.Add(newJObject);
                         }
+                        currentJObject = newJObject;//делать добавленный JObject текущим, чтобы новый добавлялся после него
                     }
                 }
-            }
-            catch
-            {
-
             }
         }
 
@@ -307,34 +300,35 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 return;
             }
 
-            if (!ProjectData.TablesLinesDict.ContainsKey(originalMergedMessage))
+            var translation = originalMergedMessage;
+            if (!Format.SetTranslation(ref translation))
             {
                 return;
             }
 
-            var translated = ProjectData.TablesLinesDict[originalMergedMessage].SplitToLines().ToArray();
+            var translated = translation.SplitToLines().ToArray();
 
             var origLength = originalMessageJTokensList.Count;
-            JToken last = null;
+            JToken lastJObject = null;
             for (int i = 0; i < translated.Length; i++)
             {
                 if (i < origLength)
                 {
-                    JObject obj = originalMessageJTokensList[i] as JObject;
-                    JProperty prop = obj.Last as JProperty;
-                    JArray array = prop.Value as JArray;
-                    array[0] = translated[i];
+                    JObject jObject = originalMessageJTokensList[i] as JObject;
+                    JProperty jProperty = jObject.Last as JProperty;
+                    JArray propertiesJArray = jProperty.Value as JArray;
+                    propertiesJArray[0] = translated[i]; // set line as one value of properties array of the object
 
-                    AddedJObjects.TryAdd(obj);
-                    last = obj;
+                    AddedJObjects.TryAdd(jObject);
+                    lastJObject = jObject;
                 }
                 else
                 {
-                    var newJObject = GetNewJObject(last as JObject, translated[i]);
-                    last.AddAfterSelf(newJObject);
-                    AddedJObjects.TryAdd(newJObject);
+                    var newJObjectWithExtraMessageLine = GetNewJObject(lastJObject as JObject, translated[i]); // get new object for extra line
+                    lastJObject.AddAfterSelf(newJObjectWithExtraMessageLine); // add new object after last
+                    AddedJObjects.TryAdd(newJObjectWithExtraMessageLine); // add new object to skip list
 
-                    last = last.Next;
+                    lastJObject = lastJObject.Next; // make new object as last object
                 }
             }
 

@@ -29,7 +29,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 return false;
             }
 
-            ParseStringFilePreOpen();
+            if (!ParseStringFilePreOpen())
+            {
+                return false;
+            }
 
             long startpos = 1720080;
             long endpos = 6803572;

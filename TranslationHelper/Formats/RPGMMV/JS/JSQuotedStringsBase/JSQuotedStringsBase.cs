@@ -31,11 +31,16 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
                         var result = match.Result("$1");
 
+                        if (!IsValidString(result))
+                        {
+                            continue;
+                        }
+
                         if (ProjectData.OpenFileMode)
                         {
-                            AddRowData(result, ParseData.Line, true);
+                            AddRowData(result, ParseData.Line, CheckInput: false);
                         }
-                        else if (IsValidString(result) && TablesLinesDict.ContainsKey(result))
+                        else
                         {
                             string translation = result;
                             if (!SetTranslation(ref translation))

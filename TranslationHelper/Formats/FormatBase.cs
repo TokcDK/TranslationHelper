@@ -90,7 +90,10 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected bool ParseStringFile()
         {
-            ParseStringFilePreOpen();
+            if (!ParseStringFilePreOpen())
+            {
+                return false;
+            }
 
             ParseStringFileOpen();
 
@@ -142,9 +145,14 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Pre open file actions
         /// </summary>
-        protected virtual void ParseStringFilePreOpen()
+        protected virtual bool ParseStringFilePreOpen()
         {
             ParseData = new ParseFileData();
+
+            if (ProjectData.SaveFileMode && !ProjectData.THFilesList.Items.Contains(ParseData.TableName))
+            {
+                return false;
+            }
 
             if (ProjectData.OpenFileMode)
             {
@@ -157,6 +165,8 @@ namespace TranslationHelper.Formats
             }
 
             ParseStringFilePreOpenExtra();
+
+            return true;
         }
 
         /// <summary>
@@ -708,6 +718,8 @@ namespace TranslationHelper.Formats
                     }
                     else // set 1st value from avalaible values
                     {
+                        ProjectData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + TableName()+ ".valueToTranslate:\r\n"+ valueToTranslate+ "\r\nexistsTranslation:\r\n"+ existsTranslation);
+
                         foreach (var rowIndex in ProjectData.OriginalsTableRowCoordinats[valueToTranslate][currentTableName])
                         {
                             valueToTranslate = ProjectData.THFilesElementsDataset.Tables[currentTableName].Rows[rowIndex][1] + "";
@@ -725,6 +737,8 @@ namespace TranslationHelper.Formats
                 }
                 else // set 1st value from avalaible values
                 {
+                    ProjectData.AppLog.LogToFile("Warning! Table not found. row number=" + RowNumber + ". table name=" + TableName() + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
+
                     foreach (var existTableName in ProjectData.OriginalsTableRowCoordinats[valueToTranslate].Values)
                     {
                         foreach (var existsRowIndex in existTableName)
