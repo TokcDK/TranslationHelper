@@ -37,7 +37,7 @@ namespace TranslationHelper
         internal string extractedpatchpath = string.Empty;
 
         internal string FVariant = string.Empty;
-        
+
 
         internal static string THTranslationCachePath
         {
@@ -2389,9 +2389,9 @@ namespace TranslationHelper
 
         }
 
-        private void ForceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void ForceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new AutoSameForSimularForce().Selected();
+            await Task.Run(() => new AutoSameForSimularForce().Selected()).ConfigureAwait(false);
         }
 
         private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
