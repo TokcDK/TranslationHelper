@@ -109,11 +109,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
                     var inputTable = ProjectData.THFilesElementsDataset.Tables[_inputTableIndexFromStack];
                     var inputTableRow = inputTable.Rows[_inputRowIndexFromStack];
-                    var inputTableOriginalCell = inputTableRow[ProjectData.OriginalColumnIndex];
+                    var inputTableRowOriginalCell = inputTableRow[ProjectData.OriginalColumnIndex];
                     int translationColumnIndex = ProjectData.TranslationColumnIndex;
-                    var inputTableTranslationCell = inputTableRow[translationColumnIndex];
+                    var inputTableRowTranslationCell = inputTableRow[translationColumnIndex];
 
-                    if (inputTableTranslationCell == null || string.IsNullOrEmpty(inputTableTranslationCell as string))
+                    if (inputTableRowTranslationCell == null || string.IsNullOrEmpty(inputTableRowTranslationCell as string))
                     {
                         continue;
                     }
@@ -124,8 +124,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     string regexPattern = GetStringSimularityRegexPattern();
 
                     Regex reg = new Regex(regexPattern); //reg равняется любым цифрам
-                    string inputOriginalValue = FunctionsRomajiKana.THFixDigits(inputTableOriginalCell as string);
-                    string InputTranslationValue = FunctionsRomajiKana.THFixDigits(inputTableTranslationCell as string);
+                    string inputOriginalValue = FunctionsRomajiKana.THFixDigits(inputTableRowOriginalCell as string);
+                    string InputTranslationValue = FunctionsRomajiKana.THFixDigits(inputTableRowTranslationCell as string);
 
                     //Было исключение OutOfRangeException когда в оригинале присутствовали совпадения для regex, а входной перевод был пустой или равен \r\n, тогда попытка получить индекс совпадения из оригинала заканчивалась исключением, т.к. никаких совпадений не было. Похоже на неверный перевод от онлайн сервиса
                     if (string.IsNullOrWhiteSpace(InputTranslationValue) || InputTranslationValue == Environment.NewLine)
@@ -191,16 +191,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             }
 
                             var targetRow = targetTable.Rows[targetRowIndex];
-                            var targetOriginallCell = targetRow[ProjectData.OriginalColumnIndex];
+                            var targetOriginalCell = targetRow[ProjectData.OriginalColumnIndex];
                             var targetTranslationCell = targetRow[translationColumnIndex];
-                            string targetOriginallCellString = targetOriginallCell as string;
+                            string targetOriginallCellString = targetOriginalCell as string;
                             string targetTranslationCellString = targetTranslationCell + string.Empty;
                             if (
-                                (_forceSetValueFromStack && (
-                                targetRowIndex == _inputRowIndexFromStack // skip input row index
-                                || targetTranslationCellString == targetOriginallCellString /*только если оригинал и перевод целевой ячейки не равны-*/
+                                (targetTableIndex == _inputTableIndexFromStack && targetRowIndex == _inputRowIndexFromStack) // skip input row index
+                                ||
+                                (!_forceSetValueFromStack && (
+                                targetTranslationCellString == targetOriginallCellString /*только если оригинал и перевод целевой ячейки не равны-*/
+                                || !string.IsNullOrEmpty(targetTranslationCellString) //Проверять только для пустых ячеек перевода
                                 ))
-                                || !string.IsNullOrEmpty(targetTranslationCellString)//Проверять только для пустых ячеек перевода
                                 )
                             {
                                 continue;
@@ -209,107 +210,108 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             //LogToFile("THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString()=" + THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString());
                             //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
                             //также проверить, если оригиналы с цифрами не равны, иначе присваивать по обычному
-                            if (inputOriginalMatchesCount > 0 && !Equals(inputTableOriginalCell, targetOriginallCell))
+                            if (inputOriginalMatchesCount == 0 || Equals(inputTableRowOriginalCell, targetOriginalCell))
                             {
-                                //string TargetOriginallCellStringFixed = RomajiKana.THFixDigits(TargetOriginallCellString);
-                                MatchCollection targetMatches = reg.Matches(targetOriginallCellString); //mc0 равно значениям цифр ячейки под номером y в файле i
-                                int targetMatchesCount = targetMatches.Count;
-                                if (targetMatchesCount == 0) //если количество совпадений больше нуля(идти дальше), т.е. цифры были в поле untrans проверяемой на совпадение ячейки
-                                {
-                                    continue;
-                                }
-
-                                string TargetTransCellValueWithRemovedPatternMatches = Regex.Replace(targetTranslationCellString, regexPattern, string.Empty, RegexOptions.Compiled);
-                                string InputTransCellValueWithRemovedPatternMatches = Regex.Replace(InputTranslationValue, regexPattern, string.Empty, RegexOptions.Compiled);
-
-                                //Если значение ячеек перевода без паттернов равны, идти дальше
-                                if (TargetTransCellValueWithRemovedPatternMatches == InputTransCellValueWithRemovedPatternMatches)
-                                {
-                                    continue;
-                                }
-
-                                string TargetOrigCellValueWithRemovedPatternMatches = Regex.Replace(targetOriginallCellString, regexPattern, string.Empty, RegexOptions.Compiled);
-                                string InputOrigCellValueWithRemovedPatternMatches = Regex.Replace(inputOriginalValue, regexPattern, string.Empty, RegexOptions.Compiled);
-
-                                //LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
-                                //если поле перевода равно только что измененному во входной, без учета цифр
-                                if (TargetOrigCellValueWithRemovedPatternMatches != InputOrigCellValueWithRemovedPatternMatches
-                                    || inputOriginalMatchesCount != targetMatchesCount
-                                    || !IsAllMatchesInIdenticalPlaces(inputOriginalMatches, targetMatches)
-                                    )
-                                {
-                                    continue;
-                                }
-
-                                {
-                                    ////инициализация основных целевого и входного массивов
-                                    //string[] inputOrigMatches = new string[mccount];
-                                    //string[] targetOrigMatches = new string[mccount];
-                                    ////присваивание цифр из совпадений в массивы, в основной входного и во временный целевого
-                                    //for (int r = 0; r < mccount; r++)
-                                    //{
-                                    //    inputOrigMatches[r] = RomajiKana.THFixDigits(mc[r].Value/*.Replace(mc[r].Value, mc[r].Value)*/);
-                                    //    targetOrigMatches[r] = RomajiKana.THFixDigits(mc0[r].Value/*.Replace(mc0[r].Value, mc0[r].Value)*/);
-                                    //}
-                                    //также инфо о другом способе:
-                                    //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
-                                    //там же все тесты и for, как у здесь меня - наиболее быстрый вариант
-
-                                    //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
-                                    //переименовано и закомментировано, т.к. было убрано оборачивание в цифры. string inputtranscellvalue = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
-                                }
-
-                                MatchCollection tm = reg.Matches(InputTranslationValue);
-
-                                //количество совпадений должно быть равное для избежания исключений и прочих неверных замен
-                                if (tm.Count != inputOriginalMatches.Count)
-                                {
-                                    continue;
-                                }
-
-                                int startindex;
-                                int stringoverallength = 0;
-                                int stringlength;
-                                int stringoverallength0 = 0;
-                                bool failed = false;
-                                //LogToFile("arraysize=" + arraysize + ", wrapped inputresult" + inputresult);
-                                for (int m = 0; m < inputOriginalMatchesCount; m++)
-                                {
-                                    //проверка, ЧТОБЫ СОВПАДЕНИЯ ОТЛИЧАЛИСЬ, Т.Е. НЕ МЕНЯТЬ ! НА ! И ? НА ?, ТОЛЬКО ! НА ? И 1 НА 2
-                                    if (inputOriginalMatches[m].Value == targetMatches[m].Value)
-                                    {
-                                        continue;
-                                    }
-
-                                    //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
-                                    startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
-
-                                    stringlength = tm[m].Value.Length;
-                                    stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
-
-                                    //InputTransCellValue = InputTransCellValue.Remove(startindex, stringlength).Insert(startindex, targetOrigMatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
-                                    InputTranslationValue = InputTranslationValue.Remove(startindex, stringlength).Insert(startindex, targetMatches[m].Value);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
-
-                                    //stringoverallength0 += targetOrigMatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
-                                    stringoverallength0 += targetMatches[m].Value.Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
-
-                                }
-                                //только если ячейка пустая
-                                targetTranslationCell = ProjectData.THFilesElementsDataset.Tables[targetTableIndex].Rows[targetRowIndex][translationColumnIndex];
-                                if (!failed && (_forceSetValueFromStack || targetTranslationCell == null || string.IsNullOrEmpty(targetTranslationCell as string)))
-                                {
-                                    //ProjectData.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTransCellValue;
-                                    targetRow[translationColumnIndex] = InputTranslationValue;
-                                }
-                            }
-                            else //иначе, если в поле оригинала не было цифр, сравнить как обычно, два поля между собой 
-                            {
+                                //иначе, если в поле оригинала не было цифр, сравнить как обычно, два поля между собой 
                                 if (!weUseDuplicates // skip when using duplicates and search for fully duplicated values already was made earlier
-                                    && Equals(targetRow[ProjectData.OriginalColumnIndex], inputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
+                                    && Equals(inputTableRowOriginalCell, targetOriginalCell)) //если поле Untrans елемента равно только что измененному
                                 {
                                     //ProjectData.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
-                                    targetRow[translationColumnIndex] = inputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
+                                    targetRow[translationColumnIndex] = inputTableRowTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
                                 }
+
+                                continue;
+                            }
+
+                            //string TargetOriginallCellStringFixed = RomajiKana.THFixDigits(TargetOriginallCellString);
+                            MatchCollection targetMatches = reg.Matches(targetOriginallCellString); //mc0 равно значениям цифр ячейки под номером y в файле i
+                            int targetMatchesCount = targetMatches.Count;
+                            if (targetMatchesCount == 0) //если количество совпадений больше нуля(идти дальше), т.е. цифры были в поле untrans проверяемой на совпадение ячейки
+                            {
+                                continue;
+                            }
+
+                            string TargetTransCellValueWithRemovedPatternMatches = Regex.Replace(targetTranslationCellString, regexPattern, string.Empty, RegexOptions.Compiled);
+                            string InputTransCellValueWithRemovedPatternMatches = Regex.Replace(InputTranslationValue, regexPattern, string.Empty, RegexOptions.Compiled);
+
+                            //Если значение ячеек перевода без паттернов равны, идти дальше
+                            if (TargetTransCellValueWithRemovedPatternMatches == InputTransCellValueWithRemovedPatternMatches)
+                            {
+                                continue;
+                            }
+
+                            string TargetOrigCellValueWithRemovedPatternMatches = Regex.Replace(targetOriginallCellString, regexPattern, string.Empty, RegexOptions.Compiled);
+                            string InputOrigCellValueWithRemovedPatternMatches = Regex.Replace(inputOriginalValue, regexPattern, string.Empty, RegexOptions.Compiled);
+
+                            //LogToFile("checkingorigcellvalue=\r\n" + checkingorigcellvalue + "\r\ninputorigcellvalue=\r\n" + inputorigcellvalue);
+                            //если поле перевода равно только что измененному во входной, без учета цифр
+                            if (TargetOrigCellValueWithRemovedPatternMatches != InputOrigCellValueWithRemovedPatternMatches
+                                || inputOriginalMatchesCount != targetMatchesCount
+                                || !IsAllMatchesInIdenticalPlaces(inputOriginalMatches, targetMatches)
+                                )
+                            {
+                                continue;
+                            }
+
+                            {
+                                ////инициализация основных целевого и входного массивов
+                                //string[] inputOrigMatches = new string[mccount];
+                                //string[] targetOrigMatches = new string[mccount];
+                                ////присваивание цифр из совпадений в массивы, в основной входного и во временный целевого
+                                //for (int r = 0; r < mccount; r++)
+                                //{
+                                //    inputOrigMatches[r] = RomajiKana.THFixDigits(mc[r].Value/*.Replace(mc[r].Value, mc[r].Value)*/);
+                                //    targetOrigMatches[r] = RomajiKana.THFixDigits(mc0[r].Value/*.Replace(mc0[r].Value, mc0[r].Value)*/);
+                                //}
+                                //также инфо о другом способе:
+                                //http://qaru.site/questions/41136/how-to-convert-matchcollection-to-string-array
+                                //там же все тесты и for, как у здесь меня - наиболее быстрый вариант
+
+                                //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+                                //переименовано и закомментировано, т.к. было убрано оборачивание в цифры. string inputtranscellvalue = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
+                            }
+
+                            MatchCollection tm = reg.Matches(InputTranslationValue);
+
+                            //количество совпадений должно быть равное для избежания исключений и прочих неверных замен
+                            if (tm.Count != inputOriginalMatches.Count)
+                            {
+                                continue;
+                            }
+
+                            int startindex;
+                            int stringoverallength = 0;
+                            int stringlength;
+                            int stringoverallength0 = 0;
+                            bool failed = false;
+                            //LogToFile("arraysize=" + arraysize + ", wrapped inputresult" + inputresult);
+                            for (int m = 0; m < inputOriginalMatchesCount; m++)
+                            {
+                                //проверка, ЧТОБЫ СОВПАДЕНИЯ ОТЛИЧАЛИСЬ, Т.Е. НЕ МЕНЯТЬ ! НА ! И ? НА ?, ТОЛЬКО ! НА ? И 1 НА 2
+                                if (inputOriginalMatches[m].Value == targetMatches[m].Value)
+                                {
+                                    continue;
+                                }
+
+                                //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
+                                startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
+
+                                stringlength = tm[m].Value.Length;
+                                stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
+
+                                //InputTransCellValue = InputTransCellValue.Remove(startindex, stringlength).Insert(startindex, targetOrigMatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
+                                InputTranslationValue = InputTranslationValue.Remove(startindex, stringlength).Insert(startindex, targetMatches[m].Value);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
+
+                                //stringoverallength0 += targetOrigMatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
+                                stringoverallength0 += targetMatches[m].Value.Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
+
+                            }
+                            //только если ячейка пустая
+                            targetTranslationCell = ProjectData.THFilesElementsDataset.Tables[targetTableIndex].Rows[targetRowIndex][translationColumnIndex];
+                            if (!failed && (_forceSetValueFromStack || targetTranslationCell == null || string.IsNullOrEmpty(targetTranslationCell as string)))
+                            {
+                                //ProjectData.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTransCellValue;
+                                targetRow[translationColumnIndex] = InputTranslationValue;
                             }
                         }
                     }
