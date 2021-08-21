@@ -67,9 +67,9 @@ namespace TranslationHelper.Functions
                     Translator.ResetCache();
 
                     //перебор таблиц dataset
-                    for (int t = TableIndex; t < TableMaxIndex; t++)
+                    for (int tableIndex = TableIndex; tableIndex < TableMaxIndex; tableIndex++)
                     {
-                        RowsCountInTable = (Method == "a" || Method == "t") ? ProjectData.THFilesElementsDataset.Tables[t].Rows.Count : SelectedIndexes.Length;
+                        RowsCountInTable = (Method == "a" || Method == "t") ? ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows.Count : SelectedIndexes.Length;
                         //if (method == "a" || method == "t")
                         //{
                         //    //все строки в выбранной таблице
@@ -116,7 +116,7 @@ namespace TranslationHelper.Functions
                             }
                             else
                             {
-                                progressinfo = T._("getting translation: ") + t + "/" + TableMaxIndex + "::" + (r + 1) + "/" + RowsCountInTable;
+                                progressinfo = T._("getting translation: ") + tableIndex + "/" + TableMaxIndex + "::" + (r + 1) + "/" + RowsCountInTable;
                                 //индекс с нуля и до последней строки
                                 CurrentRowIndex = r;
                             }
@@ -125,9 +125,9 @@ namespace TranslationHelper.Functions
                             //LogToFile("111=" + 111, true);
                             //проверка пустого значения поля для перевода
                             //if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
-                            if ((ProjectData.THFilesElementsDataset.Tables[t].Rows[CurrentRowIndex][OrigColIndex + 1] + string.Empty).Length == 0)
+                            if ((ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows[CurrentRowIndex][OrigColIndex + 1] + string.Empty).Length == 0)
                             {
-                                var row = ProjectData.THFilesElementsDataset.Tables[t].Rows[CurrentRowIndex];
+                                var row = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows[CurrentRowIndex];
                                 string InputValue = row[OrigColIndex] + string.Empty;
                                 //LogToFile("1 inputvalue=" + inputvalue, true);
                                 //проверка наличия заданного процента romaji или other в оригинале
@@ -217,7 +217,7 @@ namespace TranslationHelper.Functions
                                         }
                                     }
                                 }
-                                ProjectData.Main.SetSameTranslationForSimular(t, CurrentRowIndex, OrigColIndex);
+                                ProjectData.Main.SetSameTranslationForSimular(tableIndex, CurrentRowIndex);
                             }
                         }
                     }
@@ -374,7 +374,7 @@ namespace TranslationHelper.Functions
                     {
                         var Table = ProjectData.THFilesElementsDataset.Tables[t];
 
-                        if (FunctionsTable.IsTableRowsCompleted(Table))
+                        if (FunctionsTable.IsTableRowsAll(Table))
                         {
                             continue;
                         }

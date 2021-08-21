@@ -27,7 +27,7 @@ namespace TranslationHelper.Formats.KiriKiri
                     //string original = string.Empty;
                     string filename = Path.GetFileNameWithoutExtension(ProjectData.SelectedFilePath);
                     _ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
-                    _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Original");
+                    _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add(THSettings.OriginalColumnName());
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
@@ -75,7 +75,7 @@ namespace TranslationHelper.Formats.KiriKiri
 
                     //if (ProjectData.THFilesElementsDataset.Tables[0].Rows.Count > 0)
                     //{
-                    //    _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                    //    _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add(THSettings.TranslationColumnName());
                     //    THFilesList.Invoke((Action)(() => THFilesList.AddItem(filename)));
                     //}
                     //else

@@ -1,5 +1,4 @@
 ﻿using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -15,7 +14,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             try
             {
-                AutoSameForSimularUtils.Set(inputTableIndex: SelectedTableIndex, inputRowIndex: SelectedRowIndex, inputColumnIndex: 0, IsForce);
+                AutoSameForSimularUtils.Set(inputTableIndex: SelectedTableIndex, inputRowIndex: SelectedRowIndex, inputForceSetValue: IsForce);
             }
             catch
             {

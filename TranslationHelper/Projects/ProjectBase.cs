@@ -375,6 +375,11 @@ namespace TranslationHelper.Projects
         }
 
         int mcArrNum;
+
+        internal string SelectedGameDir;
+        internal string SelectedDir;
+        internal string ProjectWorkDir;
+
         internal string RestoreVARS(string str)
         {
             if (HideVARSMatchCollectionsList == null || HideVARSMatchCollectionsList.Count == 0 || !str.Contains("VAR") || HideVARSMatchCollectionsList[mcArrNum].Count == 0)

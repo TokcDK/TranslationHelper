@@ -35,18 +35,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
         public static void Set(this DataRow dataRow, bool inputForceSetValue = false)
         {
             var table = dataRow.Table;
-            Set(inputTableIndex: ProjectData.THFilesElementsDataset.Tables.IndexOf(table), inputRowIndex: table.Rows.IndexOf(dataRow), inputColumnIndex: 0, inputForceSetValue: inputForceSetValue);
+            Set(inputTableIndex: ProjectData.THFilesElementsDataset.Tables.IndexOf(table), inputRowIndex: table.Rows.IndexOf(dataRow), inputForceSetValue: inputForceSetValue);
         }
 
         static bool _autoSetSameTranslationForSimularIsBusy;
         static bool _forceSetValueFromStack;
         static int _inputTableIndexFromStack;
         static int _inputRowIndexFromStack;
-        static int _inputColumnIndexFromStack;
         /// <summary>
-        /// Table,Row,Column
+        /// Table,Row
         /// </summary>
-        static string _TRC;
+        static string _tableRowPair;
+        /// <summary>
+        /// List of coordinates
+        /// </summary>
         static Dictionary<string, bool> _autoSetSameTranslationForSimularDataStack = new Dictionary<string, bool>();
 
         /// <summary>
@@ -54,9 +56,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
         /// </summary>
         /// <param name="inputTableIndex"></param>
         /// <param name="inputRowIndex"></param>
-        /// <param name="inputColumnIndex"></param>
+        /// <param name="inputOriginalColumnIndex"></param>
         /// <param name="inputForceSetValue"></param>
-        public static void Set(int inputTableIndex, int inputRowIndex, int inputColumnIndex = 0, bool inputForceSetValue = false)
+        public static void Set(int inputTableIndex, int inputRowIndex, bool inputForceSetValue = false)
         {
             if (!Properties.Settings.Default.ProjectIsOpened)
             {
@@ -65,11 +67,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
             if (inputTableIndex == -1
                 || inputRowIndex == -1
-                || inputColumnIndex == -1
+                //|| inputOriginalColumnIndex == -1
                 || ProjectData.THFilesElementsDataset == null
                 || inputTableIndex > ProjectData.THFilesElementsDataset.Tables.Count - 1
                 || inputRowIndex > ProjectData.THFilesElementsDataset.Tables[inputTableIndex].Rows.Count - 1
-                || (ProjectData.THFilesElementsDataset.Tables[inputTableIndex].Rows[inputRowIndex][inputColumnIndex + 1] + string.Empty).Length == 0)
+                || (ProjectData.THFilesElementsDataset.Tables[inputTableIndex].Rows[inputRowIndex][ProjectData.TranslationColumnIndex] + string.Empty).Length == 0)
             {
                 return;
             }
@@ -77,10 +79,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
             //{
             //    return;
             //}
-            if (!_autoSetSameTranslationForSimularDataStack.ContainsKey(inputTableIndex + "|" + inputRowIndex + "|" + inputColumnIndex))
-            {
-                _autoSetSameTranslationForSimularDataStack.Add(inputTableIndex + "|" + inputRowIndex + "|" + inputColumnIndex, inputForceSetValue);
-            }
+            _autoSetSameTranslationForSimularDataStack.TryAdd(inputTableIndex + "|" + inputRowIndex, inputForceSetValue);
 
             while (!_autoSetSameTranslationForSimularIsBusy && _autoSetSameTranslationForSimularDataStack.Count > 0)
             {
@@ -103,16 +102,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     }
 
                     //присвоить значения для обработки
-                    _TRC = _autoSetSameTranslationForSimularDataStack.ElementAt(0).Key;
-                    _inputTableIndexFromStack = int.Parse(_TRC.Split('|')[0], CultureInfo.InvariantCulture);
-                    _inputRowIndexFromStack = int.Parse(_TRC.Split('|')[1], CultureInfo.InvariantCulture);
-                    _inputColumnIndexFromStack = int.Parse(_TRC.Split('|')[2], CultureInfo.InvariantCulture);
-                    _forceSetValueFromStack = _autoSetSameTranslationForSimularDataStack[_TRC];
+                    _tableRowPair = _autoSetSameTranslationForSimularDataStack.ElementAt(0).Key;
+                    _inputTableIndexFromStack = int.Parse(_tableRowPair.Split('|')[0], CultureInfo.InvariantCulture);
+                    _inputRowIndexFromStack = int.Parse(_tableRowPair.Split('|')[1], CultureInfo.InvariantCulture);
+                    _forceSetValueFromStack = _autoSetSameTranslationForSimularDataStack[_tableRowPair];
 
                     var inputTable = ProjectData.THFilesElementsDataset.Tables[_inputTableIndexFromStack];
                     var inputTableRow = inputTable.Rows[_inputRowIndexFromStack];
-                    var inputTableOriginalCell = inputTableRow[_inputColumnIndexFromStack];
-                    int translationColumnIndex = _inputColumnIndexFromStack + 1;
+                    var inputTableOriginalCell = inputTableRow[ProjectData.OriginalColumnIndex];
+                    int translationColumnIndex = ProjectData.TranslationColumnIndex;
                     var inputTableTranslationCell = inputTableRow[translationColumnIndex];
 
                     if (inputTableTranslationCell == null || string.IsNullOrEmpty(inputTableTranslationCell as string))
@@ -193,7 +191,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             }
 
                             var targetRow = targetTable.Rows[targetRowIndex];
-                            var targetOriginallCell = targetRow[_inputColumnIndexFromStack];
+                            var targetOriginallCell = targetRow[ProjectData.OriginalColumnIndex];
                             var targetTranslationCell = targetRow[translationColumnIndex];
                             string targetOriginallCellString = targetOriginallCell as string;
                             string targetTranslationCellString = targetTranslationCell + string.Empty;
@@ -307,7 +305,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             else //иначе, если в поле оригинала не было цифр, сравнить как обычно, два поля между собой 
                             {
                                 if (!weUseDuplicates // skip when using duplicates and search for fully duplicated values already was made earlier
-                                    && Equals(targetRow[_inputColumnIndexFromStack], inputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
+                                    && Equals(targetRow[ProjectData.OriginalColumnIndex], inputTableOriginalCell)) //если поле Untrans елемента равно только что измененному
                                 {
                                     //ProjectData.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
                                     targetRow[translationColumnIndex] = inputTableTranslationCell; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
@@ -321,7 +319,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
                 }
 
-                _autoSetSameTranslationForSimularDataStack.TryRemove(_TRC);
+                _autoSetSameTranslationForSimularDataStack.TryRemove(_tableRowPair);
                 _autoSetSameTranslationForSimularIsBusy = false;
             }
         }

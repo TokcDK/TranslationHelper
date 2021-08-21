@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -39,8 +40,8 @@ namespace TranslationHelper.Main.Functions
             }
 
             //LogToFile("PasteClipboardValue Enter 1");
-            int origcolindex = THFileElementsDataGridView.Columns["Original"].Index;
-            //int transcolindex = THFileElementsDataGridView.Columns["Translation"].Index;
+            int origcolindex = ProjectData.OriginalColumnIndex;
+            //int transcolindex = THFileElementsDataGridView.Columns[THSettings.TranslationColumnName()].Index;
 
             //Get the starting Cell
             DataGridViewCell startCell = GetStartCell(THFileElementsDataGridView);

@@ -126,7 +126,7 @@ namespace TranslationHelper
 
         private string GetSearchColumn()
         {
-            return SearchMethodTranslationRadioButton.Checked ? "Translation" : "Original";
+            return SearchMethodTranslationRadioButton.Checked ? THSettings.TranslationColumnName() : THSettings.OriginalColumnName();
         }
 
         int startrowsearchindex;        //Индекс стартовой ячейки для поиска
@@ -864,7 +864,7 @@ namespace TranslationHelper
                             if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-                                THFileElementsDataGridView["Translation", rowindex].Value = Regex.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView["Translation", rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text), RegexOptions.IgnoreCase);
+                                THFileElementsDataGridView[THSettings.TranslationColumnName(), rowindex].Value = Regex.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView[THSettings.TranslationColumnName(), rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text), RegexOptions.IgnoreCase);
                             }
                         }
                         else
@@ -872,7 +872,7 @@ namespace TranslationHelper
                             if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-                                THFileElementsDataGridView["Translation", rowindex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView["Translation", rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                THFileElementsDataGridView[THSettings.TranslationColumnName(), rowindex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView[THSettings.TranslationColumnName(), rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                             }
                         }
                     }

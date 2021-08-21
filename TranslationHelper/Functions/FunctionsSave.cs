@@ -136,7 +136,7 @@ namespace TranslationHelper.Functions
                         bool changed = false;
                         for (int r = 0; r < ProjectData.THFilesElementsDataset.Tables[f].Rows.Count; r++)
                         {
-                            if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r]["Translation"] + string.Empty).Length == 0)
+                            if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r][THSettings.TranslationColumnName()] + string.Empty).Length == 0)
                             {
                             }
                             else

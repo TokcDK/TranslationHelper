@@ -116,8 +116,6 @@ namespace TranslationHelper.Functions
         {
             ProjectData.SelectedFilePath = sPath;
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
-            ProjectData.SelectedDir = dir.FullName;
-            ProjectData.SelectedGameDir = dir.FullName;
 
             ProjectData.Main.frmMainPanel.Invoke((Action)(() => ProjectData.Main.frmMainPanel.Visible = true));
 
@@ -125,6 +123,10 @@ namespace TranslationHelper.Functions
             foreach (Type Project in ProjectData.ProjectsList) // iterate projectbase types
             {
                 ProjectData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project);// create instance of project
+
+                ProjectData.SelectedDir = dir.FullName;
+                ProjectData.SelectedGameDir = dir.FullName;
+
                 if (TryDetectProject(ProjectData.CurrentProject))
                 {
                     // reinit new instance of project before try to open
@@ -387,17 +389,17 @@ namespace TranslationHelper.Functions
             }
             //_ = /*THMsg*/MessageBox.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");
 
-            ProjectData.Main.editToolStripMenuItem.Enabled = true;
-            ProjectData.Main.viewToolStripMenuItem.Enabled = true;
-            ProjectData.Main.loadTranslationToolStripMenuItem.Enabled = true;
-            ProjectData.Main.loadTrasnlationAsToolStripMenuItem.Enabled = true;
-            ProjectData.Main.loadTrasnlationAsForcedToolStripMenuItem.Enabled = true;
-            ProjectData.Main.exportToolStripMenuItem1.Enabled = true;
+            ProjectData.Main.EditToolStripMenuItem.Enabled = true;
+            ProjectData.Main.ViewToolStripMenuItem.Enabled = true;
+            ProjectData.Main.LoadTranslationToolStripMenuItem.Enabled = true;
+            ProjectData.Main.LoadTrasnlationAsToolStripMenuItem.Enabled = true;
+            ProjectData.Main.LoadTrasnlationAsForcedToolStripMenuItem.Enabled = true;
+            ProjectData.Main.ExportToolStripMenuItem1.Enabled = true;
             ProjectData.Main.runTestGameToolStripMenuItem.Enabled = ProjectData.CurrentProject != null && ProjectData.CurrentProject.IsTestRunEnabled;
-            ProjectData.Main.openProjectsDirToolStripMenuItem.Enabled = true;
-            ProjectData.Main.openTranslationRulesFileToolStripMenuItem.Enabled = true;
-            ProjectData.Main.openCellFixesFileToolStripMenuItem.Enabled = true;
-            ProjectData.Main.reloadRulesToolStripMenuItem.Enabled = true;
+            ProjectData.Main.OpenProjectsDirToolStripMenuItem.Enabled = true;
+            ProjectData.Main.OpenTranslationRulesFileToolStripMenuItem.Enabled = true;
+            ProjectData.Main.OpenCellFixesFileToolStripMenuItem.Enabled = true;
+            ProjectData.Main.ReloadRulesToolStripMenuItem.Enabled = true;
 
             if (ProjectData.Main.FVariant.Length == 0)
             {

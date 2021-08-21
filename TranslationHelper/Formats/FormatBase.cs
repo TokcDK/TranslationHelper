@@ -266,7 +266,7 @@ namespace TranslationHelper.Formats
         /// by default will be checked translation for ParseData.line if not set
         /// translation will be set to ParseData.line. use other overload to set specific variable for translation
         /// </summary>
-        /// <param name="original">if not set then will be used ParseData.line</param>
+        /// <param name=THSettings.OriginalColumnName()>if not set then will be used ParseData.line</param>
         protected virtual void AddTranslation(string original = null)
         {
             original = original ?? ParseData.Line;
@@ -282,8 +282,8 @@ namespace TranslationHelper.Formats
         /// by default for original will be checked translation for ParseData.line if not set
         /// 'translation' will be set with translation
         /// </summary>
-        /// <param name="translation">will be set by value of translation</param>
-        /// <param name="original">if not set then will be used ParseData.line</param>
+        /// <param name=THSettings.TranslationColumnName()>will be set by value of translation</param>
+        /// <param name=THSettings.OriginalColumnName()>if not set then will be used ParseData.line</param>
         protected virtual void AddTranslation(ref string translation, string original = null)
         {
             original = original ?? ParseData.Line;
@@ -298,7 +298,7 @@ namespace TranslationHelper.Formats
         /// modification of translation before it will be added
         /// by default no modifications
         /// </summary>
-        /// <param name="translation"></param>
+        /// <param name=THSettings.TranslationColumnName()></param>
         /// <returns></returns>
         protected virtual string TranslationMod(string translation)
         {
@@ -538,8 +538,8 @@ namespace TranslationHelper.Formats
             if (!ProjectData.THFilesElementsDataset.Tables.Contains(tablename))
             {
                 ProjectData.THFilesElementsDataset.Tables.Add(tablename);
-                ProjectData.THFilesElementsDataset.Tables[tablename].Columns.Add("Original");
-                ProjectData.THFilesElementsDataset.Tables[tablename].Columns.Add("Translation");
+                ProjectData.THFilesElementsDataset.Tables[tablename].Columns.Add(THSettings.OriginalColumnName());
+                ProjectData.THFilesElementsDataset.Tables[tablename].Columns.Add(THSettings.TranslationColumnName());
 
                 if (extraColumns != null && extraColumns.Length > 0)
                 {

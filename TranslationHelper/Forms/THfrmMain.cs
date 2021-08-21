@@ -183,43 +183,43 @@ namespace TranslationHelper
             //Menu File
             this.fileToolStripMenuItem.Text = T._("File");
             this.openToolStripMenuItem.Text = T._("Open");
-            this.saveToolStripMenuItem.Text = T._("Save");
-            this.saveAsToolStripMenuItem.Text = T._("Save As");
-            this.writeTranslationInGameToolStripMenuItem.Text = T._("Write translation");
-            this.saveTranslationToolStripMenuItem.Text = T._("Save translation");
-            this.saveTranslationAsToolStripMenuItem.Text = T._("Save Translation as");
-            this.loadTranslationToolStripMenuItem.Text = T._("Load Translation");
-            this.loadTrasnlationAsToolStripMenuItem.Text = T._("Load Translation as");
-            this.loadTrasnlationAsForcedToolStripMenuItem.Text = T._("Load Translation as") + "(" + T._("forced") + ")";
+            this.SaveToolStripMenuItem.Text = T._("Save");
+            this.SaveAsToolStripMenuItem.Text = T._("Save As");
+            this.WriteTranslationInGameToolStripMenuItem.Text = T._("Write translation");
+            this.SaveTranslationToolStripMenuItem.Text = T._("Save translation");
+            this.SaveTranslationAsToolStripMenuItem.Text = T._("Save Translation as");
+            this.LoadTranslationToolStripMenuItem.Text = T._("Load Translation");
+            this.LoadTrasnlationAsToolStripMenuItem.Text = T._("Load Translation as");
+            this.LoadTrasnlationAsForcedToolStripMenuItem.Text = T._("Load Translation as") + "(" + T._("forced") + ")";
             this.runTestGameToolStripMenuItem.Text = T._("Test");
             //Menu Edit
-            this.editToolStripMenuItem.Text = T._("Edit");
-            this.openInWebToolStripMenuItem.Text = T._("Open in Web");
+            this.EditToolStripMenuItem.Text = T._("Edit");
+            this.OpenInWebToolStripMenuItem.Text = T._("Open in Web");
             this.tryToTranslateOnlineToolStripMenuItem.Text = T._("Translate Online");
-            this.selectedToolStripMenuItem1.Text = T._("Selected");
-            this.tableToolStripMenuItem1.Text = T._("Table");
+            this.SelectedToolStripMenuItem1.Text = T._("Selected");
+            this.TableToolStripMenuItem1.Text = T._("Table");
             this.allToolStripMenuItem1.Text = T._("All");
             this.translationInteruptToolStripMenuItem.Text = T._("Interupt");
             this.fixCellSpecialSymbolsToolStripMenuItem.Text = T._("Fix cell special symbols");
-            this.fixCellsSelectedToolStripMenuItem.Text = T._("Selected");
-            this.fixCellsTableToolStripMenuItem.Text = T._("Table");
+            this.FixCellsSelectedToolStripMenuItem.Text = T._("Selected");
+            this.FixCellsTableToolStripMenuItem.Text = T._("Table");
             this.allToolStripMenuItem.Text = T._("All");
-            this.setOriginalValueToTranslationToolStripMenuItem.Text = T._("Translation=Original");
-            this.completeRomajiotherLinesToolStripMenuItem.Text = T._("Complete Romaji/Other lines");
-            this.completeRomajiotherLinesToolStripMenuItem1.Text = T._("Complete Romaji/Other lines");
-            this.forceSameForSimularToolStripMenuItem.Text = T._("Force same for simular");
-            this.forceSameForSimularToolStripMenuItem1.Text = T._("Force same for simular");
-            this.cutToolStripMenuItem1.Text = T._("Cut");
-            this.copyCellValuesToolStripMenuItem.Text = T._("Copy");
-            this.pasteCellValuesToolStripMenuItem.Text = T._("Paste");
+            this.SetOriginalValueToTranslationToolStripMenuItem.Text = T._("Translation=Original");
+            this.CompleteRomajiotherLinesToolStripMenuItem.Text = T._("Complete Romaji/Other lines");
+            this.CompleteRomajiotherLinesToolStripMenuItem1.Text = T._("Complete Romaji/Other lines");
+            this.ForceSameForSimularToolStripMenuItem.Text = T._("Force same for simular");
+            this.ForceSameForSimularToolStripMenuItem1.Text = T._("Force same for simular");
+            this.CutToolStripMenuItem1.Text = T._("Cut");
+            this.CopyCellValuesToolStripMenuItem.Text = T._("Copy");
+            this.PasteCellValuesToolStripMenuItem.Text = T._("Paste");
             this.ClearSelectedCellsToolStripMenuItem.Text = T._("Clear selected cells");
-            this.toUPPERCASEToolStripMenuItem.Text = T._("UPPERCASE");
-            this.firstCharacterToUppercaseToolStripMenuItem.Text = T._("Uppercase");
-            this.toLOWERCASEToolStripMenuItem.Text = T._("lowercase");
+            this.ToUPPERCASEToolStripMenuItem.Text = T._("UPPERCASE");
+            this.FirstCharacterToUppercaseToolStripMenuItem.Text = T._("Uppercase");
+            this.ToLowercaseToolStripMenuItem.Text = T._("lowercase");
             this.searchToolStripMenuItem.Text = T._("Search");
             //Menu View
-            this.viewToolStripMenuItem.Text = T._("View");
-            this.setColumnSortingToolStripMenuItem.Text = T._("Reset column sorting");
+            this.ViewToolStripMenuItem.Text = T._("View");
+            this.SetColumnSortingToolStripMenuItem.Text = T._("Reset column sorting");
             //Menu Options
             this.optionsToolStripMenuItem.Text = T._("Options");
             this.settingsToolStripMenuItem.Text = T._("Settings");
@@ -234,17 +234,17 @@ namespace TranslationHelper
             this.toolStripMenuItem9.Text = T._("All");
             this.translationInteruptToolStripMenuItem1.Text = T._("Interupt");
             this.toolStripMenuItem2.Text = T._("Fix cell special symbols");
-            this.fixSymbolsContextToolStripMenuItem.Text = T._("Selected");
-            this.fixSymbolsTableContextToolStripMenuItem.Text = T._("Table");
+            this.FixSymbolsContextToolStripMenuItem.Text = T._("Selected");
+            this.FixSymbolsTableContextToolStripMenuItem.Text = T._("Table");
             this.toolStripMenuItem5.Text = T._("All");
             this.OriginalToTransalationContextToolStripMenuItem.Text = T._("Translation=Original");
             this.CutToolStripMenuItem.Text = T._("Cut");
             this.CopyToolStripMenuItem.Text = T._("Copy");
-            this.pasteToolStripMenuItem.Text = T._("Paste");
+            this.PasteToolStripMenuItem.Text = T._("Paste");
             this.CleanSelectedCellsToolStripMenuItem1.Text = T._("Clear selected cells");
-            this.toolStripMenuItem14.Text = T._("UPPERCASE");
-            this.uppercaseToolStripMenuItem.Text = T._("Uppercase");
-            this.lowercaseToolStripMenuItem.Text = T._("lowercase");
+            this.ToolStripMenuItem14.Text = T._("UPPERCASE");
+            this.UppercaseToolStripMenuItem.Text = T._("Uppercase");
+            this.LowercaseToolStripMenuItem.Text = T._("lowercase");
         }
 
         private void THMain_Load(object sender, EventArgs e)
@@ -444,7 +444,7 @@ namespace TranslationHelper
 
             foreach (DataGridViewColumn Column in THFileElementsDataGridView.Columns)
             {
-                if (Column.Name != "Original" && Column.Name != "Translation")
+                if (Column.Name != THSettings.OriginalColumnName() && Column.Name != THSettings.OriginalColumnName())
                 {
                     Column.Visible = false;
                 }
@@ -499,50 +499,50 @@ namespace TranslationHelper
         private void SetOnTHFileElementsDataGridViewWasLoaded()
         {
             ControlsSwitchActivated = true;
-            ControlsSwitchIsOn = (cutToolStripMenuItem1.ShortcutKeys != Keys.None);
+            ControlsSwitchIsOn = (CutToolStripMenuItem1.ShortcutKeys != Keys.None);
 
             if (THFileElementsDataGridView != null && THFileElementsDataGridView.Columns.Count > 1)
             {
-                THFileElementsDataGridView.Columns["Original"].HeaderText = T._("Original");//THMainDGVOriginalColumnName;
-                THFileElementsDataGridView.Columns["Translation"].HeaderText = T._("Translation");//THMainDGVTranslationColumnName;
-                THFileElementsDataGridView.Columns["Original"].ReadOnly = true;
+                THFileElementsDataGridView.Columns[THSettings.OriginalColumnName()].HeaderText = T._("Original");//THMainDGVOriginalColumnName;
+                THFileElementsDataGridView.Columns[THSettings.TranslationColumnName()].HeaderText = T._("Translation");//THMainDGVTranslationColumnName;
+                THFileElementsDataGridView.Columns[THSettings.OriginalColumnName()].ReadOnly = true;
                 THFiltersDataGridView.Enabled = true;
                 THSourceRichTextBox.Enabled = true;
                 THTargetRichTextBox.Enabled = true;
             }
 
 
-            openInWebToolStripMenuItem.Enabled = true;
-            selectedToolStripMenuItem1.Enabled = true;
-            tableToolStripMenuItem1.Enabled = true;
-            fixCellsSelectedToolStripMenuItem.Enabled = true;
-            fixCellsTableToolStripMenuItem.Enabled = true;
-            setOriginalValueToTranslationToolStripMenuItem.Enabled = true;
-            completeRomajiotherLinesToolStripMenuItem.Enabled = true;
-            completeRomajiotherLinesToolStripMenuItem1.Enabled = true;
-            forceSameForSimularToolStripMenuItem.Enabled = true;
-            forceSameForSimularToolStripMenuItem1.Enabled = true;
-            cutToolStripMenuItem1.Enabled = true;
-            copyCellValuesToolStripMenuItem.Enabled = true;
-            pasteCellValuesToolStripMenuItem.Enabled = true;
+            OpenInWebToolStripMenuItem.Enabled = true;
+            SelectedToolStripMenuItem1.Enabled = true;
+            TableToolStripMenuItem1.Enabled = true;
+            FixCellsSelectedToolStripMenuItem.Enabled = true;
+            FixCellsTableToolStripMenuItem.Enabled = true;
+            SetOriginalValueToTranslationToolStripMenuItem.Enabled = true;
+            CompleteRomajiotherLinesToolStripMenuItem.Enabled = true;
+            CompleteRomajiotherLinesToolStripMenuItem1.Enabled = true;
+            ForceSameForSimularToolStripMenuItem.Enabled = true;
+            ForceSameForSimularToolStripMenuItem1.Enabled = true;
+            CutToolStripMenuItem1.Enabled = true;
+            CopyCellValuesToolStripMenuItem.Enabled = true;
+            PasteCellValuesToolStripMenuItem.Enabled = true;
             ClearSelectedCellsToolStripMenuItem.Enabled = true;
-            toUPPERCASEToolStripMenuItem.Enabled = true;
-            firstCharacterToUppercaseToolStripMenuItem.Enabled = true;
-            toLOWERCASEToolStripMenuItem.Enabled = true;
-            setColumnSortingToolStripMenuItem.Enabled = true;
+            ToUPPERCASEToolStripMenuItem.Enabled = true;
+            FirstCharacterToUppercaseToolStripMenuItem.Enabled = true;
+            ToLowercaseToolStripMenuItem.Enabled = true;
+            SetColumnSortingToolStripMenuItem.Enabled = true;
             OpenInWebContextToolStripMenuItem.Enabled = true;
             TranslateSelectedContextToolStripMenuItem.Enabled = true;
             TranslateTableContextToolStripMenuItem.Enabled = true;
-            fixSymbolsContextToolStripMenuItem.Enabled = true;
-            fixSymbolsTableContextToolStripMenuItem.Enabled = true;
+            FixSymbolsContextToolStripMenuItem.Enabled = true;
+            FixSymbolsTableContextToolStripMenuItem.Enabled = true;
             OriginalToTransalationContextToolStripMenuItem.Enabled = true;
             CutToolStripMenuItem.Enabled = true;
             CopyToolStripMenuItem.Enabled = true;
-            pasteToolStripMenuItem.Enabled = true;
+            PasteToolStripMenuItem.Enabled = true;
             CleanSelectedCellsToolStripMenuItem1.Enabled = true;
-            toolStripMenuItem14.Enabled = true;
-            uppercaseToolStripMenuItem.Enabled = true;
-            lowercaseToolStripMenuItem.Enabled = true;
+            ToolStripMenuItem14.Enabled = true;
+            UppercaseToolStripMenuItem.Enabled = true;
+            LowercaseToolStripMenuItem.Enabled = true;
         }
 
         private void SetFilterDGV()
@@ -614,14 +614,14 @@ namespace TranslationHelper
 
                 THTargetRichTextBox.Clear();
 
-                if (string.IsNullOrEmpty(THFileElementsDataGridView.Rows[THFileElementsDataGridView.CurrentCell.RowIndex].Cells["Original"].Value + string.Empty))
+                if (string.IsNullOrEmpty(THFileElementsDataGridView.Rows[THFileElementsDataGridView.CurrentCell.RowIndex].Cells[THSettings.OriginalColumnName()].Value + string.Empty))
                 {
                     THSourceRichTextBox.Clear();
                 }
                 else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
                 {
                     //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
-                    THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[rowIndex].Cells["Original"].Value + string.Empty);
+                    THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[rowIndex].Cells[THSettings.OriginalColumnName()].Value + string.Empty);
                     //https://github.com/caguiclajmg/WanaKanaSharp
                     //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
                     //{
@@ -633,7 +633,7 @@ namespace TranslationHelper
                     //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
                 }
                 string TranslationCellValue;
-                if (string.IsNullOrEmpty(TranslationCellValue = THFileElementsDataGridView.Rows[rowIndex].Cells["Translation"].Value + string.Empty))
+                if (string.IsNullOrEmpty(TranslationCellValue = THFileElementsDataGridView.Rows[rowIndex].Cells[THSettings.TranslationColumnName()].Value + string.Empty))
                 {
                     THTargetRichTextBox.Clear();
                 }
@@ -1321,7 +1321,7 @@ namespace TranslationHelper
             }
         }
 
-        internal bool savemenusNOTenabled = true;
+        internal bool SavemenusNOTenabled = true;
         private async void THFileElementsDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
             if (!Properties.Settings.Default.ProjectIsOpened)
@@ -1329,19 +1329,18 @@ namespace TranslationHelper
 
             try
             {
-                if (FileDataWasChanged && savemenusNOTenabled)
+                if (FileDataWasChanged && SavemenusNOTenabled)
                 {
-                    writeTranslationInGameToolStripMenuItem.Enabled = true;
-                    saveToolStripMenuItem.Enabled = true;
-                    saveAsToolStripMenuItem.Enabled = true;
-                    saveTranslationToolStripMenuItem.Enabled = true;
-                    saveTranslationAsToolStripMenuItem.Enabled = true;
-                    savemenusNOTenabled = false;
+                    WriteTranslationInGameToolStripMenuItem.Enabled = true;
+                    SaveToolStripMenuItem.Enabled = true;
+                    SaveAsToolStripMenuItem.Enabled = true;
+                    SaveTranslationToolStripMenuItem.Enabled = true;
+                    SaveTranslationAsToolStripMenuItem.Enabled = true;
+                    SavemenusNOTenabled = false;
                 }
 
                 int tableind = THFilesList.GetSelectedIndex();
                 int rind = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), e.RowIndex);
-                int cind = THFileElementsDataGridView.Columns["Original"].Index;
 
                 if (rind > -1 && rind < ProjectData.THFilesElementsDataset.Tables[tableind].Rows.Count && (ProjectData.THFilesElementsDataset.Tables[tableind].Rows[rind][1] + string.Empty).Length > 0)
                 {
@@ -1349,7 +1348,7 @@ namespace TranslationHelper
                     //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)));
                     //trans.Start();
 
-                    await Task.Run(() => SetSameTranslationForSimular(tableind, rind, cind, false)).ConfigureAwait(false);
+                    await Task.Run(() => SetSameTranslationForSimular(tableind, rind, false)).ConfigureAwait(false);
                 }
 
                 //Запуск автосохранения
@@ -1379,7 +1378,7 @@ namespace TranslationHelper
             //    IsTranslating = true;
 
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
-            //    int cind = THFileElementsDataGridView.Columns["Original"].Index;//-поле untrans
+            //    int cind = ProjectData.OriginalColumnIndex;//-поле untrans
             //    int tableindex = THFilesList.GetSelectedIndex();
             //    int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable();
 
@@ -1427,7 +1426,7 @@ namespace TranslationHelper
             //        return;
             //    }
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
-            //    int cind = ProjectData.THFilesElementsDataset.Tables[THFilesList.GetSelectedIndex()].Columns["Original"].Ordinal;//-поле untrans
+            //    int cind = ProjectData.THFilesElementsDataset.Tables[THFilesList.GetSelectedIndex()].Columns[THSettings.OriginalColumnName()].Ordinal;//-поле untrans
             //    int tableindex = THFilesList.GetSelectedIndex();
             //    int[] selindexes = new int[1];
 
@@ -1464,7 +1463,7 @@ namespace TranslationHelper
             //try
             //{
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
-            //    int cind = ProjectData.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;//-поле untrans
+            //    int cind = ProjectData.THFilesElementsDataset.Tables[0].Columns[THSettings.OriginalColumnName()].Ordinal;//-поле untrans
             //    int tableindex = 0;
             //    int[] selindexes = new int[1];
 
@@ -1503,7 +1502,7 @@ namespace TranslationHelper
             //    //не менять, если значение текстбокса не поменялось
             //    if (THTargetRichTextBox.Text != ProjectData.TargetTextBoxPreValue)
             //    {
-            //        THFileElementsDataGridView.CurrentRow.Cells["Translation"].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
+            //        THFileElementsDataGridView.CurrentRow.Cells[THSettings.TranslationColumnName()].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
             //    }
             //}
         }
@@ -1626,8 +1625,8 @@ namespace TranslationHelper
                 try
                 {
                     int tableIndex = THFilesList.GetSelectedIndex();
-                    int cind = ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns["Original"].Ordinal;// Колонка Original
-                    int cindTrans = ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns["Translation"].Ordinal;// Колонка Original
+                    int cind = ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
+                    int cindTrans = ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Original
                     int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
@@ -1653,11 +1652,11 @@ namespace TranslationHelper
         }
 
         bool cellchanged;
-        public void SetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool forcevalue = false)
+        public void SetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, bool forcerun = true, bool forcevalue = false)
         {
             if (forcevalue || (Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
-                AutoSameForSimularUtils.Set(InputTableIndex, InputRowIndex, InputCellIndex, forcevalue);
+                AutoSameForSimularUtils.Set(InputTableIndex, InputRowIndex, forcevalue);
 
                 cellchanged = false;
             }
@@ -1974,7 +1973,7 @@ namespace TranslationHelper
                             bool changed = false;
                             for (int r = 0; r < ProjectData.THFilesElementsDataset.Tables[f].Rows.Count; r++)
                             {
-                                if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r]["Translation"] + string.Empty).Length == 0)
+                                if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r][THSettings.TranslationColumnName()] + string.Empty).Length == 0)
                                 {
                                 }
                                 else
@@ -2117,8 +2116,8 @@ namespace TranslationHelper
             //else
             //{
             //    DataRelation dr = new DataRelation("ALL",
-            //         new DataColumn[] { THFilesElementsDataset.Tables[0].Columns["Original"], THFilesElementsDataset.Tables[0].Columns["Translation"] },
-            //         new DataColumn[] { THFilesElementsDataset.Tables[1].Columns["Original"], THFilesElementsDataset.Tables[1].Columns["Translation"] },
+            //         new DataColumn[] { THFilesElementsDataset.Tables[0].Columns[THSettings.OriginalColumnName()], THFilesElementsDataset.Tables[0].Columns[THSettings.TranslationColumnName()] },
+            //         new DataColumn[] { THFilesElementsDataset.Tables[1].Columns[THSettings.OriginalColumnName()], THFilesElementsDataset.Tables[1].Columns[THSettings.TranslationColumnName()] },
             //         false
             //                                        );
 
@@ -2295,17 +2294,17 @@ namespace TranslationHelper
                 {
                     ControlsSwitchIsOn = switchon;
                     //System.Media.SystemSounds.Asterisk.Play();
-                    cutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
-                    copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
-                    pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
+                    CutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
+                    CopyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
+                    PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
                 }
                 else if (ControlsSwitchIsOn)
                 {
                     ControlsSwitchIsOn = switchon;
                     //System.Media.SystemSounds.Hand.Play();
-                    cutToolStripMenuItem1.ShortcutKeys = Keys.None;
-                    copyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
-                    pasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+                    CutToolStripMenuItem1.ShortcutKeys = Keys.None;
+                    CopyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+                    PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
                 }
             }
         }
@@ -2464,8 +2463,8 @@ namespace TranslationHelper
             }
             ProjectFilesList = ProjectFilesList.Distinct().ToArray();
 
-            int cind = ProjectData.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;// Колонка Original
-            int cindTrans = ProjectData.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;// Колонка Original
+            int cind = ProjectData.THFilesElementsDataset.Tables[0].Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
+            int cindTrans = ProjectData.THFilesElementsDataset.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Original
             //string[] Files = Directory.GetFiles(Properties.Settings.Default.THWorkProjectDir, "*.*", SearchOption.AllDirectories);
             //string[] Dirs = Directory.GetDirectories(Properties.Settings.Default.THWorkProjectDir, "*", SearchOption.AllDirectories);
             int tablesCount = ProjectData.THFilesElementsDataset.Tables.Count;
@@ -2677,7 +2676,7 @@ namespace TranslationHelper
         {
             if (!Properties.Settings.Default.DGVCellInEditMode && (sender as RichTextBox).Focused && THFileElementsDataGridView.CurrentRow.Index > -1)
             {
-                THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells["Translation"].Value = (sender as RichTextBox).Text;
+                THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells[THSettings.TranslationColumnName()].Value = (sender as RichTextBox).Text;
             }
 
             TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength((sender as RichTextBox).Text).ToString(CultureInfo.InvariantCulture);

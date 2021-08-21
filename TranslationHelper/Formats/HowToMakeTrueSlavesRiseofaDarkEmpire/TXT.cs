@@ -247,8 +247,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             string fileName = Path.GetFileNameWithoutExtension(ProjectData.FilePath);
 
-            ProjectData.THFilesElementsDataset.Tables.Add(fileName).Columns.Add("Original");
-            ProjectData.THFilesElementsDatasetInfo.Tables.Add(fileName).Columns.Add("Original");
+            ProjectData.THFilesElementsDataset.Tables.Add(fileName).Columns.Add(THSettings.OriginalColumnName());
+            ProjectData.THFilesElementsDatasetInfo.Tables.Add(fileName).Columns.Add(THSettings.OriginalColumnName());
 
             using (StreamReader sr = new StreamReader(GetOriginalWhenExists(), Encoding.GetEncoding(932)))
             {
@@ -343,7 +343,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             if (ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Count > 0)
             {
-                ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
+                ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add(THSettings.TranslationColumnName());
                 return true;
             }
             else

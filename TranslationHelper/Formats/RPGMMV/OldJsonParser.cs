@@ -217,7 +217,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
 
                 //ds.Tables.Add(jsonName); // create table with json name
-                //ds.Tables[jsonName].Columns.Add("Original"); //create Original column
+                //ds.Tables[jsonName].Columns.Add(THSettings.OriginalColumnName()); //create Original column
 
 
                 //treeView1.BeginUpdate();
@@ -271,8 +271,8 @@ namespace TranslationHelper.Formats.RPGMMV
             {
                 //LogToFile(string.Empty, true);
                 //MessageBox.Show("sss");
-                //ds.Tables[jsonName].Columns.Add("Translation");
-                //ds.Tables[jsonName].Columns["Original"].ReadOnly = true;
+                //ds.Tables[jsonName].Columns.Add(THSettings.TranslationColumnName());
+                //ds.Tables[jsonName].Columns[THSettings.OriginalColumnName()].ReadOnly = true;
                 //DGV.DataSource = ds.Tables[0];
                 //treeView1.EndUpdate();
             }

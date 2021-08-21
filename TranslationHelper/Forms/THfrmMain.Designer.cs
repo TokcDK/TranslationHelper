@@ -36,31 +36,31 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.writeTranslationInGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.WriteTranslationInGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toXmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTranslationFromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rPGMakerTransPatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveTranslationAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadTrasnlationAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadTrasnlationAsForcedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveTranslationAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LoadTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LoadTrasnlationAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LoadTrasnlationAsForcedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExportToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tXTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runTestGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testXorDecriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testXorEncriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getAndSaveStaticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openInWebToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenInWebToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tryToTranslateOnlineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.tableToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.SelectedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.TableToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.allToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.translationInteruptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,28 +68,28 @@
             this.commitChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.revertToPreviousToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fixCellSpecialSymbolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fixCellsSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fixCellsTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FixCellsSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FixCellsTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setOriginalValueToTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SetOriginalValueToTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.allIfExistsFiledirWithNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TSMISetOriginalToTranslationAll = new System.Windows.Forms.ToolStripMenuItem();
             this.TSMISetOriginalToTranslationTable = new System.Windows.Forms.ToolStripMenuItem();
-            this.completeRomajiotherLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.forceSameForSimularToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pasteCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CompleteRomajiotherLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ForceSameForSimularToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.CopyCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PasteCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ClearSelectedCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ClearTableCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ClearAllCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toUPPERCASEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToUPPERCASEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toUPPERCASEAllToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.toUPPERCASETableToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.firstCharacterToUppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FirstCharacterToUppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.firstCharacterToUppercaseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.firstCharacterToUppercaseTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toLOWERCASEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToLowercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.allToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.LowercaseTableToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -108,16 +108,16 @@
             this.tableToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.allToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.fixInstancesOfNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setColumnSortingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SetColumnSortingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setAsDatasourceAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showCheckboxvalueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openProjectsDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openTranslationRulesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openCellFixesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenProjectsDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenTranslationRulesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenCellFixesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reloadRulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ReloadRulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THsplitContainerFilesElements = new System.Windows.Forms.SplitContainer();
@@ -142,20 +142,20 @@
             this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripMenuItem();
             this.translationInteruptToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.fixSymbolsContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fixSymbolsTableContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FixSymbolsContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FixSymbolsTableContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.selectedForceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OriginalToTransalationContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.completeRomajiotherLinesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.forceSameForSimularToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.CompleteRomajiotherLinesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.ForceSameForSimularToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.CutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CopyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CleanSelectedCellsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem14 = new System.Windows.Forms.ToolStripMenuItem();
-            this.uppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lowercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem14 = new System.Windows.Forms.ToolStripMenuItem();
+            this.UppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LowercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongerOfLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.smiEnQuotesToJp = new System.Windows.Forms.ToolStripMenuItem();
             this.hardFixesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -219,8 +219,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.editToolStripMenuItem,
-            this.viewToolStripMenuItem,
+            this.EditToolStripMenuItem,
+            this.ViewToolStripMenuItem,
             this.optionsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -234,17 +234,17 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
             this.recentToolStripMenuItem,
-            this.saveToolStripMenuItem,
-            this.saveAsToolStripMenuItem,
-            this.writeTranslationInGameToolStripMenuItem,
+            this.SaveToolStripMenuItem,
+            this.SaveAsToolStripMenuItem,
+            this.WriteTranslationInGameToolStripMenuItem,
             this.exportToolStripMenuItem,
             this.loadTranslationFromToolStripMenuItem,
-            this.saveTranslationToolStripMenuItem,
-            this.saveTranslationAsToolStripMenuItem,
-            this.loadTranslationToolStripMenuItem,
-            this.loadTrasnlationAsToolStripMenuItem,
-            this.loadTrasnlationAsForcedToolStripMenuItem,
-            this.exportToolStripMenuItem1,
+            this.SaveTranslationToolStripMenuItem,
+            this.SaveTranslationAsToolStripMenuItem,
+            this.LoadTranslationToolStripMenuItem,
+            this.LoadTrasnlationAsToolStripMenuItem,
+            this.LoadTrasnlationAsForcedToolStripMenuItem,
+            this.ExportToolStripMenuItem1,
             this.runTestGameToolStripMenuItem,
             this.testXorDecriptToolStripMenuItem,
             this.testXorEncriptToolStripMenuItem,
@@ -270,31 +270,31 @@
             // 
             // saveToolStripMenuItem
             // 
-            this.saveToolStripMenuItem.Enabled = false;
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Visible = false;
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.WriteTranslationToolStripMenuItem_Click);
+            this.SaveToolStripMenuItem.Enabled = false;
+            this.SaveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.SaveToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.SaveToolStripMenuItem.Text = "Save";
+            this.SaveToolStripMenuItem.Visible = false;
+            this.SaveToolStripMenuItem.Click += new System.EventHandler(this.WriteTranslationToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
-            this.saveAsToolStripMenuItem.Enabled = false;
-            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.saveAsToolStripMenuItem.Text = "Save As";
-            this.saveAsToolStripMenuItem.Visible = false;
-            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
+            this.SaveAsToolStripMenuItem.Enabled = false;
+            this.SaveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.SaveAsToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.SaveAsToolStripMenuItem.Text = "Save As";
+            this.SaveAsToolStripMenuItem.Visible = false;
+            this.SaveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
             // 
             // writeTranslationInGameToolStripMenuItem
             // 
-            this.writeTranslationInGameToolStripMenuItem.Enabled = false;
-            this.writeTranslationInGameToolStripMenuItem.Name = "writeTranslationInGameToolStripMenuItem";
-            this.writeTranslationInGameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            this.WriteTranslationInGameToolStripMenuItem.Enabled = false;
+            this.WriteTranslationInGameToolStripMenuItem.Name = "writeTranslationInGameToolStripMenuItem";
+            this.WriteTranslationInGameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.S)));
-            this.writeTranslationInGameToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.writeTranslationInGameToolStripMenuItem.Text = "Write translation";
-            this.writeTranslationInGameToolStripMenuItem.Click += new System.EventHandler(this.WriteTranslationToolStripMenuItem_Click);
+            this.WriteTranslationInGameToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.WriteTranslationInGameToolStripMenuItem.Text = "Write translation";
+            this.WriteTranslationInGameToolStripMenuItem.Click += new System.EventHandler(this.WriteTranslationToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
@@ -339,58 +339,58 @@
             // 
             // saveTranslationToolStripMenuItem
             // 
-            this.saveTranslationToolStripMenuItem.Enabled = false;
-            this.saveTranslationToolStripMenuItem.Name = "saveTranslationToolStripMenuItem";
-            this.saveTranslationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveTranslationToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.saveTranslationToolStripMenuItem.Text = "Save translation";
-            this.saveTranslationToolStripMenuItem.Click += new System.EventHandler(this.SaveTranslationToolStripMenuItem_Click);
+            this.SaveTranslationToolStripMenuItem.Enabled = false;
+            this.SaveTranslationToolStripMenuItem.Name = "saveTranslationToolStripMenuItem";
+            this.SaveTranslationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.SaveTranslationToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.SaveTranslationToolStripMenuItem.Text = "Save translation";
+            this.SaveTranslationToolStripMenuItem.Click += new System.EventHandler(this.SaveTranslationToolStripMenuItem_Click);
             // 
             // saveTranslationAsToolStripMenuItem
             // 
-            this.saveTranslationAsToolStripMenuItem.Enabled = false;
-            this.saveTranslationAsToolStripMenuItem.Name = "saveTranslationAsToolStripMenuItem";
-            this.saveTranslationAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            this.SaveTranslationAsToolStripMenuItem.Enabled = false;
+            this.SaveTranslationAsToolStripMenuItem.Name = "saveTranslationAsToolStripMenuItem";
+            this.SaveTranslationAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.saveTranslationAsToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.saveTranslationAsToolStripMenuItem.Text = "Save Translation as";
-            this.saveTranslationAsToolStripMenuItem.Click += new System.EventHandler(this.SaveTranslationAsToolStripMenuItem_Click);
+            this.SaveTranslationAsToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.SaveTranslationAsToolStripMenuItem.Text = "Save Translation as";
+            this.SaveTranslationAsToolStripMenuItem.Click += new System.EventHandler(this.SaveTranslationAsToolStripMenuItem_Click);
             // 
             // loadTranslationToolStripMenuItem
             // 
-            this.loadTranslationToolStripMenuItem.Enabled = false;
-            this.loadTranslationToolStripMenuItem.Name = "loadTranslationToolStripMenuItem";
-            this.loadTranslationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
-            this.loadTranslationToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.loadTranslationToolStripMenuItem.Text = "Load Translation";
-            this.loadTranslationToolStripMenuItem.Click += new System.EventHandler(this.LoadTranslationToolStripMenuItem_Click);
+            this.LoadTranslationToolStripMenuItem.Enabled = false;
+            this.LoadTranslationToolStripMenuItem.Name = "loadTranslationToolStripMenuItem";
+            this.LoadTranslationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+            this.LoadTranslationToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.LoadTranslationToolStripMenuItem.Text = "Load Translation";
+            this.LoadTranslationToolStripMenuItem.Click += new System.EventHandler(this.LoadTranslationToolStripMenuItem_Click);
             // 
             // loadTrasnlationAsToolStripMenuItem
             // 
-            this.loadTrasnlationAsToolStripMenuItem.Enabled = false;
-            this.loadTrasnlationAsToolStripMenuItem.Name = "loadTrasnlationAsToolStripMenuItem";
-            this.loadTrasnlationAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            this.LoadTrasnlationAsToolStripMenuItem.Enabled = false;
+            this.LoadTrasnlationAsToolStripMenuItem.Name = "loadTrasnlationAsToolStripMenuItem";
+            this.LoadTrasnlationAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.L)));
-            this.loadTrasnlationAsToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.loadTrasnlationAsToolStripMenuItem.Text = "Load Translation as";
-            this.loadTrasnlationAsToolStripMenuItem.Click += new System.EventHandler(this.LoadTrasnlationAsToolStripMenuItem_Click);
+            this.LoadTrasnlationAsToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.LoadTrasnlationAsToolStripMenuItem.Text = "Load Translation as";
+            this.LoadTrasnlationAsToolStripMenuItem.Click += new System.EventHandler(this.LoadTrasnlationAsToolStripMenuItem_Click);
             // 
             // loadTrasnlationAsForcedToolStripMenuItem
             // 
-            this.loadTrasnlationAsForcedToolStripMenuItem.Enabled = false;
-            this.loadTrasnlationAsForcedToolStripMenuItem.Name = "loadTrasnlationAsForcedToolStripMenuItem";
-            this.loadTrasnlationAsForcedToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.loadTrasnlationAsForcedToolStripMenuItem.Text = "Load Translation as (forced)";
-            this.loadTrasnlationAsForcedToolStripMenuItem.Click += new System.EventHandler(this.LoadTrasnlationAsForcedToolStripMenuItem_Click);
+            this.LoadTrasnlationAsForcedToolStripMenuItem.Enabled = false;
+            this.LoadTrasnlationAsForcedToolStripMenuItem.Name = "loadTrasnlationAsForcedToolStripMenuItem";
+            this.LoadTrasnlationAsForcedToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.LoadTrasnlationAsForcedToolStripMenuItem.Text = "Load Translation as (forced)";
+            this.LoadTrasnlationAsForcedToolStripMenuItem.Click += new System.EventHandler(this.LoadTrasnlationAsForcedToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem1
             // 
-            this.exportToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ExportToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tXTToolStripMenuItem});
-            this.exportToolStripMenuItem1.Enabled = false;
-            this.exportToolStripMenuItem1.Name = "exportToolStripMenuItem1";
-            this.exportToolStripMenuItem1.Size = new System.Drawing.Size(248, 22);
-            this.exportToolStripMenuItem1.Text = "Export";
+            this.ExportToolStripMenuItem1.Enabled = false;
+            this.ExportToolStripMenuItem1.Name = "exportToolStripMenuItem1";
+            this.ExportToolStripMenuItem1.Size = new System.Drawing.Size(248, 22);
+            this.ExportToolStripMenuItem1.Text = "Export";
             // 
             // tXTToolStripMenuItem
             // 
@@ -440,21 +440,21 @@
             // 
             // editToolStripMenuItem
             // 
-            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openInWebToolStripMenuItem,
+            this.EditToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.OpenInWebToolStripMenuItem,
             this.tryToTranslateOnlineToolStripMenuItem,
             this.gitToolStripMenuItem,
             this.fixCellSpecialSymbolsToolStripMenuItem,
-            this.setOriginalValueToTranslationToolStripMenuItem,
-            this.completeRomajiotherLinesToolStripMenuItem,
-            this.forceSameForSimularToolStripMenuItem,
-            this.cutToolStripMenuItem1,
-            this.copyCellValuesToolStripMenuItem,
-            this.pasteCellValuesToolStripMenuItem,
+            this.SetOriginalValueToTranslationToolStripMenuItem,
+            this.CompleteRomajiotherLinesToolStripMenuItem,
+            this.ForceSameForSimularToolStripMenuItem,
+            this.CutToolStripMenuItem1,
+            this.CopyCellValuesToolStripMenuItem,
+            this.PasteCellValuesToolStripMenuItem,
             this.ClearSelectedCellsToolStripMenuItem,
-            this.toUPPERCASEToolStripMenuItem,
-            this.firstCharacterToUppercaseToolStripMenuItem,
-            this.toLOWERCASEToolStripMenuItem,
+            this.ToUPPERCASEToolStripMenuItem,
+            this.FirstCharacterToUppercaseToolStripMenuItem,
+            this.ToLowercaseToolStripMenuItem,
             this.searchToolStripMenuItem,
             this.splitLinesWhichLongestOfLimitToolStripMenuItem,
             this.TSMIEnQuotes0,
@@ -463,25 +463,25 @@
             this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem,
             this.trimEndToolStripMenuItem,
             this.fixInstancesOfNameToolStripMenuItem});
-            this.editToolStripMenuItem.Enabled = false;
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-            this.editToolStripMenuItem.Text = "Edit";
+            this.EditToolStripMenuItem.Enabled = false;
+            this.EditToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.EditToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.EditToolStripMenuItem.Text = "Edit";
             // 
             // openInWebToolStripMenuItem
             // 
-            this.openInWebToolStripMenuItem.Enabled = false;
-            this.openInWebToolStripMenuItem.Name = "openInWebToolStripMenuItem";
-            this.openInWebToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F12;
-            this.openInWebToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
-            this.openInWebToolStripMenuItem.Text = "Open in Web";
-            this.openInWebToolStripMenuItem.Click += new System.EventHandler(this.OpenInWebToolStripMenuItem_Click);
+            this.OpenInWebToolStripMenuItem.Enabled = false;
+            this.OpenInWebToolStripMenuItem.Name = "openInWebToolStripMenuItem";
+            this.OpenInWebToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F12;
+            this.OpenInWebToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.OpenInWebToolStripMenuItem.Text = "Open in Web";
+            this.OpenInWebToolStripMenuItem.Click += new System.EventHandler(this.OpenInWebToolStripMenuItem_Click);
             // 
             // tryToTranslateOnlineToolStripMenuItem
             // 
             this.tryToTranslateOnlineToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectedToolStripMenuItem1,
-            this.tableToolStripMenuItem1,
+            this.SelectedToolStripMenuItem1,
+            this.TableToolStripMenuItem1,
             this.allToolStripMenuItem1,
             this.translationInteruptToolStripMenuItem});
             this.tryToTranslateOnlineToolStripMenuItem.Name = "tryToTranslateOnlineToolStripMenuItem";
@@ -490,20 +490,20 @@
             // 
             // selectedToolStripMenuItem1
             // 
-            this.selectedToolStripMenuItem1.Enabled = false;
-            this.selectedToolStripMenuItem1.Name = "selectedToolStripMenuItem1";
-            this.selectedToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
-            this.selectedToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
-            this.selectedToolStripMenuItem1.Text = "Selected";
-            this.selectedToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateSelectedToolStripMenuItem_Click);
+            this.SelectedToolStripMenuItem1.Enabled = false;
+            this.SelectedToolStripMenuItem1.Name = "selectedToolStripMenuItem1";
+            this.SelectedToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
+            this.SelectedToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.SelectedToolStripMenuItem1.Text = "Selected";
+            this.SelectedToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateSelectedToolStripMenuItem_Click);
             // 
             // tableToolStripMenuItem1
             // 
-            this.tableToolStripMenuItem1.Enabled = false;
-            this.tableToolStripMenuItem1.Name = "tableToolStripMenuItem1";
-            this.tableToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
-            this.tableToolStripMenuItem1.Text = "Table";
-            this.tableToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateTableToolStripMenuItem1_Click);
+            this.TableToolStripMenuItem1.Enabled = false;
+            this.TableToolStripMenuItem1.Name = "tableToolStripMenuItem1";
+            this.TableToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.TableToolStripMenuItem1.Text = "Table";
+            this.TableToolStripMenuItem1.Click += new System.EventHandler(this.OnlineTranslateTableToolStripMenuItem1_Click);
             // 
             // allToolStripMenuItem1
             // 
@@ -553,8 +553,8 @@
             // fixCellSpecialSymbolsToolStripMenuItem
             // 
             this.fixCellSpecialSymbolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fixCellsSelectedToolStripMenuItem,
-            this.fixCellsTableToolStripMenuItem,
+            this.FixCellsSelectedToolStripMenuItem,
+            this.FixCellsTableToolStripMenuItem,
             this.allToolStripMenuItem});
             this.fixCellSpecialSymbolsToolStripMenuItem.Name = "fixCellSpecialSymbolsToolStripMenuItem";
             this.fixCellSpecialSymbolsToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
@@ -562,21 +562,21 @@
             // 
             // fixCellsSelectedToolStripMenuItem
             // 
-            this.fixCellsSelectedToolStripMenuItem.Enabled = false;
-            this.fixCellsSelectedToolStripMenuItem.Name = "fixCellsSelectedToolStripMenuItem";
-            this.fixCellsSelectedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            this.FixCellsSelectedToolStripMenuItem.Enabled = false;
+            this.FixCellsSelectedToolStripMenuItem.Name = "fixCellsSelectedToolStripMenuItem";
+            this.FixCellsSelectedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.F)));
-            this.fixCellsSelectedToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.fixCellsSelectedToolStripMenuItem.Text = "Selected";
-            this.fixCellsSelectedToolStripMenuItem.Click += new System.EventHandler(this.CellFixesSelectedToolStripMenuItem_Click);
+            this.FixCellsSelectedToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.FixCellsSelectedToolStripMenuItem.Text = "Selected";
+            this.FixCellsSelectedToolStripMenuItem.Click += new System.EventHandler(this.CellFixesSelectedToolStripMenuItem_Click);
             // 
             // fixCellsTableToolStripMenuItem
             // 
-            this.fixCellsTableToolStripMenuItem.Enabled = false;
-            this.fixCellsTableToolStripMenuItem.Name = "fixCellsTableToolStripMenuItem";
-            this.fixCellsTableToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.fixCellsTableToolStripMenuItem.Text = "Table";
-            this.fixCellsTableToolStripMenuItem.Click += new System.EventHandler(this.CellFixesTableToolStripMenuItem_Click);
+            this.FixCellsTableToolStripMenuItem.Enabled = false;
+            this.FixCellsTableToolStripMenuItem.Name = "fixCellsTableToolStripMenuItem";
+            this.FixCellsTableToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.FixCellsTableToolStripMenuItem.Text = "Table";
+            this.FixCellsTableToolStripMenuItem.Click += new System.EventHandler(this.CellFixesTableToolStripMenuItem_Click);
             // 
             // allToolStripMenuItem
             // 
@@ -587,15 +587,15 @@
             // 
             // setOriginalValueToTranslationToolStripMenuItem
             // 
-            this.setOriginalValueToTranslationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SetOriginalValueToTranslationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.allIfExistsFiledirWithNameToolStripMenuItem,
             this.TSMISetOriginalToTranslationAll,
             this.TSMISetOriginalToTranslationTable});
-            this.setOriginalValueToTranslationToolStripMenuItem.Enabled = false;
-            this.setOriginalValueToTranslationToolStripMenuItem.Name = "setOriginalValueToTranslationToolStripMenuItem";
-            this.setOriginalValueToTranslationToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
-            this.setOriginalValueToTranslationToolStripMenuItem.Text = "Original=Translation";
-            this.setOriginalValueToTranslationToolStripMenuItem.Click += new System.EventHandler(this.SetOriginalValueToTranslationToolStripMenuItem_Click);
+            this.SetOriginalValueToTranslationToolStripMenuItem.Enabled = false;
+            this.SetOriginalValueToTranslationToolStripMenuItem.Name = "setOriginalValueToTranslationToolStripMenuItem";
+            this.SetOriginalValueToTranslationToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.SetOriginalValueToTranslationToolStripMenuItem.Text = "Original=Translation";
+            this.SetOriginalValueToTranslationToolStripMenuItem.Click += new System.EventHandler(this.SetOriginalValueToTranslationToolStripMenuItem_Click);
             // 
             // allIfExistsFiledirWithNameToolStripMenuItem
             // 
@@ -620,45 +620,45 @@
             // 
             // completeRomajiotherLinesToolStripMenuItem
             // 
-            this.completeRomajiotherLinesToolStripMenuItem.Enabled = false;
-            this.completeRomajiotherLinesToolStripMenuItem.Name = "completeRomajiotherLinesToolStripMenuItem";
-            this.completeRomajiotherLinesToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
-            this.completeRomajiotherLinesToolStripMenuItem.Text = "Complete romaji\\other lines";
-            this.completeRomajiotherLinesToolStripMenuItem.Click += new System.EventHandler(this.CompleteRomajiotherLinesToolStripMenuItem_Click);
+            this.CompleteRomajiotherLinesToolStripMenuItem.Enabled = false;
+            this.CompleteRomajiotherLinesToolStripMenuItem.Name = "completeRomajiotherLinesToolStripMenuItem";
+            this.CompleteRomajiotherLinesToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.CompleteRomajiotherLinesToolStripMenuItem.Text = "Complete romaji\\other lines";
+            this.CompleteRomajiotherLinesToolStripMenuItem.Click += new System.EventHandler(this.CompleteRomajiotherLinesToolStripMenuItem_Click);
             // 
             // forceSameForSimularToolStripMenuItem
             // 
-            this.forceSameForSimularToolStripMenuItem.Name = "forceSameForSimularToolStripMenuItem";
-            this.forceSameForSimularToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
-            this.forceSameForSimularToolStripMenuItem.Text = "Force same for simular";
-            this.forceSameForSimularToolStripMenuItem.Click += new System.EventHandler(this.ForceSameTranslationForIdenticalToolStripMenuItem_Click);
+            this.ForceSameForSimularToolStripMenuItem.Name = "forceSameForSimularToolStripMenuItem";
+            this.ForceSameForSimularToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.ForceSameForSimularToolStripMenuItem.Text = "Force same for simular";
+            this.ForceSameForSimularToolStripMenuItem.Click += new System.EventHandler(this.ForceSameTranslationForIdenticalToolStripMenuItem_Click);
             // 
             // cutToolStripMenuItem1
             // 
-            this.cutToolStripMenuItem1.Enabled = false;
-            this.cutToolStripMenuItem1.Name = "cutToolStripMenuItem1";
-            this.cutToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.cutToolStripMenuItem1.Size = new System.Drawing.Size(295, 22);
-            this.cutToolStripMenuItem1.Text = "Cut";
-            this.cutToolStripMenuItem1.Click += new System.EventHandler(this.CutToolStripMenuItem_Click);
+            this.CutToolStripMenuItem1.Enabled = false;
+            this.CutToolStripMenuItem1.Name = "cutToolStripMenuItem1";
+            this.CutToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.CutToolStripMenuItem1.Size = new System.Drawing.Size(295, 22);
+            this.CutToolStripMenuItem1.Text = "Cut";
+            this.CutToolStripMenuItem1.Click += new System.EventHandler(this.CutToolStripMenuItem_Click);
             // 
             // copyCellValuesToolStripMenuItem
             // 
-            this.copyCellValuesToolStripMenuItem.Enabled = false;
-            this.copyCellValuesToolStripMenuItem.Name = "copyCellValuesToolStripMenuItem";
-            this.copyCellValuesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyCellValuesToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
-            this.copyCellValuesToolStripMenuItem.Text = "Copy";
-            this.copyCellValuesToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
+            this.CopyCellValuesToolStripMenuItem.Enabled = false;
+            this.CopyCellValuesToolStripMenuItem.Name = "copyCellValuesToolStripMenuItem";
+            this.CopyCellValuesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.CopyCellValuesToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.CopyCellValuesToolStripMenuItem.Text = "Copy";
+            this.CopyCellValuesToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
             // 
             // pasteCellValuesToolStripMenuItem
             // 
-            this.pasteCellValuesToolStripMenuItem.Enabled = false;
-            this.pasteCellValuesToolStripMenuItem.Name = "pasteCellValuesToolStripMenuItem";
-            this.pasteCellValuesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.pasteCellValuesToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
-            this.pasteCellValuesToolStripMenuItem.Text = "Paste";
-            this.pasteCellValuesToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
+            this.PasteCellValuesToolStripMenuItem.Enabled = false;
+            this.PasteCellValuesToolStripMenuItem.Name = "pasteCellValuesToolStripMenuItem";
+            this.PasteCellValuesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.PasteCellValuesToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.PasteCellValuesToolStripMenuItem.Text = "Paste";
+            this.PasteCellValuesToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
             // 
             // ClearSelectedCellsToolStripMenuItem
             // 
@@ -688,14 +688,14 @@
             // 
             // toUPPERCASEToolStripMenuItem
             // 
-            this.toUPPERCASEToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToUPPERCASEToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toUPPERCASEAllToolStripMenuItem4,
             this.toUPPERCASETableToolStripMenuItem2});
-            this.toUPPERCASEToolStripMenuItem.Enabled = false;
-            this.toUPPERCASEToolStripMenuItem.Name = "toUPPERCASEToolStripMenuItem";
-            this.toUPPERCASEToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
-            this.toUPPERCASEToolStripMenuItem.Text = "UPPERCASE";
-            this.toUPPERCASEToolStripMenuItem.Click += new System.EventHandler(this.ToUPPERCASEToolStripMenuItem_Click);
+            this.ToUPPERCASEToolStripMenuItem.Enabled = false;
+            this.ToUPPERCASEToolStripMenuItem.Name = "toUPPERCASEToolStripMenuItem";
+            this.ToUPPERCASEToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.ToUPPERCASEToolStripMenuItem.Text = "UPPERCASE";
+            this.ToUPPERCASEToolStripMenuItem.Click += new System.EventHandler(this.ToUPPERCASEToolStripMenuItem_Click);
             // 
             // toUPPERCASEAllToolStripMenuItem4
             // 
@@ -713,14 +713,14 @@
             // 
             // firstCharacterToUppercaseToolStripMenuItem
             // 
-            this.firstCharacterToUppercaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FirstCharacterToUppercaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.firstCharacterToUppercaseAllToolStripMenuItem,
             this.firstCharacterToUppercaseTableToolStripMenuItem});
-            this.firstCharacterToUppercaseToolStripMenuItem.Enabled = false;
-            this.firstCharacterToUppercaseToolStripMenuItem.Name = "firstCharacterToUppercaseToolStripMenuItem";
-            this.firstCharacterToUppercaseToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
-            this.firstCharacterToUppercaseToolStripMenuItem.Text = "Uppercase";
-            this.firstCharacterToUppercaseToolStripMenuItem.Click += new System.EventHandler(this.FirstCharacterToUppercaseToolStripMenuItem_Click);
+            this.FirstCharacterToUppercaseToolStripMenuItem.Enabled = false;
+            this.FirstCharacterToUppercaseToolStripMenuItem.Name = "firstCharacterToUppercaseToolStripMenuItem";
+            this.FirstCharacterToUppercaseToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.FirstCharacterToUppercaseToolStripMenuItem.Text = "Uppercase";
+            this.FirstCharacterToUppercaseToolStripMenuItem.Click += new System.EventHandler(this.FirstCharacterToUppercaseToolStripMenuItem_Click);
             // 
             // firstCharacterToUppercaseAllToolStripMenuItem
             // 
@@ -738,14 +738,14 @@
             // 
             // toLOWERCASEToolStripMenuItem
             // 
-            this.toLOWERCASEToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToLowercaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.allToolStripMenuItem2,
             this.LowercaseTableToolStripMenuItem4});
-            this.toLOWERCASEToolStripMenuItem.Enabled = false;
-            this.toLOWERCASEToolStripMenuItem.Name = "toLOWERCASEToolStripMenuItem";
-            this.toLOWERCASEToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
-            this.toLOWERCASEToolStripMenuItem.Text = "lowercase";
-            this.toLOWERCASEToolStripMenuItem.Click += new System.EventHandler(this.TolowercaseToolStripMenuItem_Click);
+            this.ToLowercaseToolStripMenuItem.Enabled = false;
+            this.ToLowercaseToolStripMenuItem.Name = "toLOWERCASEToolStripMenuItem";
+            this.ToLowercaseToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.ToLowercaseToolStripMenuItem.Text = "lowercase";
+            this.ToLowercaseToolStripMenuItem.Click += new System.EventHandler(this.TolowercaseToolStripMenuItem_Click);
             // 
             // allToolStripMenuItem2
             // 
@@ -887,25 +887,25 @@
             // 
             // viewToolStripMenuItem
             // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.setColumnSortingToolStripMenuItem,
+            this.ViewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SetColumnSortingToolStripMenuItem,
             this.setAsDatasourceAllToolStripMenuItem,
             this.showCheckboxvalueToolStripMenuItem,
-            this.openProjectsDirToolStripMenuItem,
-            this.openTranslationRulesFileToolStripMenuItem,
-            this.openCellFixesFileToolStripMenuItem});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.viewToolStripMenuItem.Text = "View";
+            this.OpenProjectsDirToolStripMenuItem,
+            this.OpenTranslationRulesFileToolStripMenuItem,
+            this.OpenCellFixesFileToolStripMenuItem});
+            this.ViewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.ViewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.ViewToolStripMenuItem.Text = "View";
             // 
             // setColumnSortingToolStripMenuItem
             // 
-            this.setColumnSortingToolStripMenuItem.Enabled = false;
-            this.setColumnSortingToolStripMenuItem.Name = "setColumnSortingToolStripMenuItem";
-            this.setColumnSortingToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.setColumnSortingToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.setColumnSortingToolStripMenuItem.Text = "Reset column sorting";
-            this.setColumnSortingToolStripMenuItem.Click += new System.EventHandler(this.SetColumnSortingToolStripMenuItem_Click);
+            this.SetColumnSortingToolStripMenuItem.Enabled = false;
+            this.SetColumnSortingToolStripMenuItem.Name = "setColumnSortingToolStripMenuItem";
+            this.SetColumnSortingToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.SetColumnSortingToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.SetColumnSortingToolStripMenuItem.Text = "Reset column sorting";
+            this.SetColumnSortingToolStripMenuItem.Click += new System.EventHandler(this.SetColumnSortingToolStripMenuItem_Click);
             // 
             // setAsDatasourceAllToolStripMenuItem
             // 
@@ -925,33 +925,33 @@
             // 
             // openProjectsDirToolStripMenuItem
             // 
-            this.openProjectsDirToolStripMenuItem.Enabled = false;
-            this.openProjectsDirToolStripMenuItem.Name = "openProjectsDirToolStripMenuItem";
-            this.openProjectsDirToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.openProjectsDirToolStripMenuItem.Text = "Open projects dir";
-            this.openProjectsDirToolStripMenuItem.Click += new System.EventHandler(this.OpenProjectsDirToolStripMenuItem_Click);
+            this.OpenProjectsDirToolStripMenuItem.Enabled = false;
+            this.OpenProjectsDirToolStripMenuItem.Name = "openProjectsDirToolStripMenuItem";
+            this.OpenProjectsDirToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.OpenProjectsDirToolStripMenuItem.Text = "Open projects dir";
+            this.OpenProjectsDirToolStripMenuItem.Click += new System.EventHandler(this.OpenProjectsDirToolStripMenuItem_Click);
             // 
             // openTranslationRulesFileToolStripMenuItem
             // 
-            this.openTranslationRulesFileToolStripMenuItem.Enabled = false;
-            this.openTranslationRulesFileToolStripMenuItem.Name = "openTranslationRulesFileToolStripMenuItem";
-            this.openTranslationRulesFileToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.openTranslationRulesFileToolStripMenuItem.Text = "Open translation rules file";
-            this.openTranslationRulesFileToolStripMenuItem.Click += new System.EventHandler(this.OpenTranslationRulesFileToolStripMenuItem_Click);
+            this.OpenTranslationRulesFileToolStripMenuItem.Enabled = false;
+            this.OpenTranslationRulesFileToolStripMenuItem.Name = "openTranslationRulesFileToolStripMenuItem";
+            this.OpenTranslationRulesFileToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.OpenTranslationRulesFileToolStripMenuItem.Text = "Open translation rules file";
+            this.OpenTranslationRulesFileToolStripMenuItem.Click += new System.EventHandler(this.OpenTranslationRulesFileToolStripMenuItem_Click);
             // 
             // openCellFixesFileToolStripMenuItem
             // 
-            this.openCellFixesFileToolStripMenuItem.Enabled = false;
-            this.openCellFixesFileToolStripMenuItem.Name = "openCellFixesFileToolStripMenuItem";
-            this.openCellFixesFileToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.openCellFixesFileToolStripMenuItem.Text = "Open cell fixes rules file";
-            this.openCellFixesFileToolStripMenuItem.Click += new System.EventHandler(this.OpenCellFixesFileToolStripMenuItem_Click);
+            this.OpenCellFixesFileToolStripMenuItem.Enabled = false;
+            this.OpenCellFixesFileToolStripMenuItem.Name = "openCellFixesFileToolStripMenuItem";
+            this.OpenCellFixesFileToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.OpenCellFixesFileToolStripMenuItem.Text = "Open cell fixes rules file";
+            this.OpenCellFixesFileToolStripMenuItem.Click += new System.EventHandler(this.OpenCellFixesFileToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.settingsToolStripMenuItem,
-            this.reloadRulesToolStripMenuItem});
+            this.ReloadRulesToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -965,11 +965,11 @@
             // 
             // reloadRulesToolStripMenuItem
             // 
-            this.reloadRulesToolStripMenuItem.Enabled = false;
-            this.reloadRulesToolStripMenuItem.Name = "reloadRulesToolStripMenuItem";
-            this.reloadRulesToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.reloadRulesToolStripMenuItem.Text = "Reload rules";
-            this.reloadRulesToolStripMenuItem.Click += new System.EventHandler(this.ReloadRulesToolStripMenuItem_Click);
+            this.ReloadRulesToolStripMenuItem.Enabled = false;
+            this.ReloadRulesToolStripMenuItem.Name = "reloadRulesToolStripMenuItem";
+            this.ReloadRulesToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.ReloadRulesToolStripMenuItem.Text = "Reload rules";
+            this.ReloadRulesToolStripMenuItem.Click += new System.EventHandler(this.ReloadRulesToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -1200,15 +1200,15 @@
             this.toolStripMenuItem6,
             this.toolStripMenuItem2,
             this.OriginalToTransalationContextToolStripMenuItem,
-            this.completeRomajiotherLinesToolStripMenuItem1,
-            this.forceSameForSimularToolStripMenuItem1,
+            this.CompleteRomajiotherLinesToolStripMenuItem1,
+            this.ForceSameForSimularToolStripMenuItem1,
             this.CutToolStripMenuItem,
             this.CopyToolStripMenuItem,
-            this.pasteToolStripMenuItem,
+            this.PasteToolStripMenuItem,
             this.CleanSelectedCellsToolStripMenuItem1,
-            this.toolStripMenuItem14,
-            this.uppercaseToolStripMenuItem,
-            this.lowercaseToolStripMenuItem,
+            this.ToolStripMenuItem14,
+            this.UppercaseToolStripMenuItem,
+            this.LowercaseToolStripMenuItem,
             this.splitLinesWhichLongerOfLimitToolStripMenuItem,
             this.smiEnQuotesToJp,
             this.hardFixesToolStripMenuItem,
@@ -1271,8 +1271,8 @@
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fixSymbolsContextToolStripMenuItem,
-            this.fixSymbolsTableContextToolStripMenuItem,
+            this.FixSymbolsContextToolStripMenuItem,
+            this.FixSymbolsTableContextToolStripMenuItem,
             this.toolStripMenuItem5,
             this.selectedForceToolStripMenuItem});
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
@@ -1282,19 +1282,19 @@
             // 
             // fixSymbolsContextToolStripMenuItem
             // 
-            this.fixSymbolsContextToolStripMenuItem.Enabled = false;
-            this.fixSymbolsContextToolStripMenuItem.Name = "fixSymbolsContextToolStripMenuItem";
-            this.fixSymbolsContextToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.fixSymbolsContextToolStripMenuItem.Text = "Selected";
-            this.fixSymbolsContextToolStripMenuItem.Click += new System.EventHandler(this.CellFixesSelectedToolStripMenuItem_Click);
+            this.FixSymbolsContextToolStripMenuItem.Enabled = false;
+            this.FixSymbolsContextToolStripMenuItem.Name = "fixSymbolsContextToolStripMenuItem";
+            this.FixSymbolsContextToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.FixSymbolsContextToolStripMenuItem.Text = "Selected";
+            this.FixSymbolsContextToolStripMenuItem.Click += new System.EventHandler(this.CellFixesSelectedToolStripMenuItem_Click);
             // 
             // fixSymbolsTableContextToolStripMenuItem
             // 
-            this.fixSymbolsTableContextToolStripMenuItem.Enabled = false;
-            this.fixSymbolsTableContextToolStripMenuItem.Name = "fixSymbolsTableContextToolStripMenuItem";
-            this.fixSymbolsTableContextToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.fixSymbolsTableContextToolStripMenuItem.Text = "Table";
-            this.fixSymbolsTableContextToolStripMenuItem.Click += new System.EventHandler(this.CellFixesTableToolStripMenuItem_Click);
+            this.FixSymbolsTableContextToolStripMenuItem.Enabled = false;
+            this.FixSymbolsTableContextToolStripMenuItem.Name = "fixSymbolsTableContextToolStripMenuItem";
+            this.FixSymbolsTableContextToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.FixSymbolsTableContextToolStripMenuItem.Text = "Table";
+            this.FixSymbolsTableContextToolStripMenuItem.Click += new System.EventHandler(this.CellFixesTableToolStripMenuItem_Click);
             // 
             // toolStripMenuItem5
             // 
@@ -1321,18 +1321,18 @@
             // 
             // completeRomajiotherLinesToolStripMenuItem1
             // 
-            this.completeRomajiotherLinesToolStripMenuItem1.Enabled = false;
-            this.completeRomajiotherLinesToolStripMenuItem1.Name = "completeRomajiotherLinesToolStripMenuItem1";
-            this.completeRomajiotherLinesToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
-            this.completeRomajiotherLinesToolStripMenuItem1.Text = "Complete romaji\\other lines";
-            this.completeRomajiotherLinesToolStripMenuItem1.Click += new System.EventHandler(this.CompleteRomajiotherLinesToolStripMenuItem_Click);
+            this.CompleteRomajiotherLinesToolStripMenuItem1.Enabled = false;
+            this.CompleteRomajiotherLinesToolStripMenuItem1.Name = "completeRomajiotherLinesToolStripMenuItem1";
+            this.CompleteRomajiotherLinesToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
+            this.CompleteRomajiotherLinesToolStripMenuItem1.Text = "Complete romaji\\other lines";
+            this.CompleteRomajiotherLinesToolStripMenuItem1.Click += new System.EventHandler(this.CompleteRomajiotherLinesToolStripMenuItem_Click);
             // 
             // forceSameForSimularToolStripMenuItem1
             // 
-            this.forceSameForSimularToolStripMenuItem1.Name = "forceSameForSimularToolStripMenuItem1";
-            this.forceSameForSimularToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
-            this.forceSameForSimularToolStripMenuItem1.Text = "Force same for simular";
-            this.forceSameForSimularToolStripMenuItem1.Click += new System.EventHandler(this.ForceSameTranslationForIdenticalToolStripMenuItem_Click);
+            this.ForceSameForSimularToolStripMenuItem1.Name = "forceSameForSimularToolStripMenuItem1";
+            this.ForceSameForSimularToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
+            this.ForceSameForSimularToolStripMenuItem1.Text = "Force same for simular";
+            this.ForceSameForSimularToolStripMenuItem1.Click += new System.EventHandler(this.ForceSameTranslationForIdenticalToolStripMenuItem_Click);
             // 
             // CutToolStripMenuItem
             // 
@@ -1352,11 +1352,11 @@
             // 
             // pasteToolStripMenuItem
             // 
-            this.pasteToolStripMenuItem.Enabled = false;
-            this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.pasteToolStripMenuItem.Text = "Paste";
-            this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
+            this.PasteToolStripMenuItem.Enabled = false;
+            this.PasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
+            this.PasteToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.PasteToolStripMenuItem.Text = "Paste";
+            this.PasteToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
             // 
             // CleanSelectedCellsToolStripMenuItem1
             // 
@@ -1369,27 +1369,27 @@
             // 
             // toolStripMenuItem14
             // 
-            this.toolStripMenuItem14.Enabled = false;
-            this.toolStripMenuItem14.Name = "toolStripMenuItem14";
-            this.toolStripMenuItem14.Size = new System.Drawing.Size(237, 22);
-            this.toolStripMenuItem14.Text = "UPPERCASE";
-            this.toolStripMenuItem14.Click += new System.EventHandler(this.ToUPPERCASEToolStripMenuItem_Click);
+            this.ToolStripMenuItem14.Enabled = false;
+            this.ToolStripMenuItem14.Name = "toolStripMenuItem14";
+            this.ToolStripMenuItem14.Size = new System.Drawing.Size(237, 22);
+            this.ToolStripMenuItem14.Text = "UPPERCASE";
+            this.ToolStripMenuItem14.Click += new System.EventHandler(this.ToUPPERCASEToolStripMenuItem_Click);
             // 
             // uppercaseToolStripMenuItem
             // 
-            this.uppercaseToolStripMenuItem.Enabled = false;
-            this.uppercaseToolStripMenuItem.Name = "uppercaseToolStripMenuItem";
-            this.uppercaseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.uppercaseToolStripMenuItem.Text = "Uppercase";
-            this.uppercaseToolStripMenuItem.Click += new System.EventHandler(this.FirstCharacterToUppercaseToolStripMenuItem_Click);
+            this.UppercaseToolStripMenuItem.Enabled = false;
+            this.UppercaseToolStripMenuItem.Name = "uppercaseToolStripMenuItem";
+            this.UppercaseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.UppercaseToolStripMenuItem.Text = "Uppercase";
+            this.UppercaseToolStripMenuItem.Click += new System.EventHandler(this.FirstCharacterToUppercaseToolStripMenuItem_Click);
             // 
             // lowercaseToolStripMenuItem
             // 
-            this.lowercaseToolStripMenuItem.Enabled = false;
-            this.lowercaseToolStripMenuItem.Name = "lowercaseToolStripMenuItem";
-            this.lowercaseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.lowercaseToolStripMenuItem.Text = "lowercase";
-            this.lowercaseToolStripMenuItem.Click += new System.EventHandler(this.TolowercaseToolStripMenuItem_Click);
+            this.LowercaseToolStripMenuItem.Enabled = false;
+            this.LowercaseToolStripMenuItem.Name = "lowercaseToolStripMenuItem";
+            this.LowercaseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.LowercaseToolStripMenuItem.Text = "lowercase";
+            this.LowercaseToolStripMenuItem.Click += new System.EventHandler(this.TolowercaseToolStripMenuItem_Click);
             // 
             // splitLinesWhichLongerOfLimitToolStripMenuItem
             // 
@@ -1815,28 +1815,28 @@
         private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem2;
         internal System.Windows.Forms.ToolStripMenuItem translationInteruptToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem translationInteruptToolStripMenuItem1;
-        internal System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem writeTranslationInGameToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem SaveToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem SaveAsToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem WriteTranslationInGameToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem loadTranslationFromToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem saveTranslationToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem loadTranslationToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem loadTrasnlationAsToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem saveTranslationAsToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem openInWebToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem fixCellsSelectedToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem fixCellsTableToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem SaveTranslationToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem LoadTranslationToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem LoadTrasnlationAsToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem SaveTranslationAsToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem EditToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem ViewToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem OpenInWebToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem FixCellsSelectedToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem FixCellsTableToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem OpenInWebContextToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem fixSymbolsContextToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem fixSymbolsTableContextToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem FixSymbolsContextToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem FixSymbolsTableContextToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
-        internal System.Windows.Forms.ToolStripMenuItem setOriginalValueToTranslationToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem selectedToolStripMenuItem1;
-        internal System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem1;
+        internal System.Windows.Forms.ToolStripMenuItem SetOriginalValueToTranslationToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem SelectedToolStripMenuItem1;
+        internal System.Windows.Forms.ToolStripMenuItem TableToolStripMenuItem1;
         internal System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem1;
         internal System.Windows.Forms.ToolStripMenuItem TranslateSelectedContextToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem TranslateTableContextToolStripMenuItem;
@@ -1846,26 +1846,26 @@
         internal System.Windows.Forms.ToolStripMenuItem CleanSelectedCellsToolStripMenuItem1;
         internal System.Windows.Forms.ToolStripMenuItem CutToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem CopyToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem1;
-        internal System.Windows.Forms.ToolStripMenuItem copyCellValuesToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem pasteCellValuesToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem toUPPERCASEToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem firstCharacterToUppercaseToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem toLOWERCASEToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem toolStripMenuItem14;
-        internal System.Windows.Forms.ToolStripMenuItem uppercaseToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem lowercaseToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem PasteToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem CutToolStripMenuItem1;
+        internal System.Windows.Forms.ToolStripMenuItem CopyCellValuesToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem PasteCellValuesToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem ToUPPERCASEToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem FirstCharacterToUppercaseToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem ToLowercaseToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem14;
+        internal System.Windows.Forms.ToolStripMenuItem UppercaseToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem LowercaseToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem completeRomajiotherLinesToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem completeRomajiotherLinesToolStripMenuItem1;
-        internal System.Windows.Forms.ToolStripMenuItem forceSameForSimularToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem forceSameForSimularToolStripMenuItem1;
+        internal System.Windows.Forms.ToolStripMenuItem CompleteRomajiotherLinesToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem CompleteRomajiotherLinesToolStripMenuItem1;
+        internal System.Windows.Forms.ToolStripMenuItem ForceSameForSimularToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem ForceSameForSimularToolStripMenuItem1;
         internal System.Windows.Forms.ToolStripMenuItem splitLinesWhichLongestOfLimitToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem fixMessagesForSelectedToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem allIfExistsFiledirWithNameToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem splitLinesWhichLongerOfLimitToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem setColumnSortingToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem SetColumnSortingToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem setAsDatasourceAllToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem showCheckboxvalueToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem runTestGameToolStripMenuItem;
@@ -1904,18 +1904,18 @@
         private System.Windows.Forms.ToolStripMenuItem fixMessagesForAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getAndSaveStaticToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem loadTrasnlationAsForcedToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem LoadTrasnlationAsForcedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showCharCategoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToCustomDBToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyNameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem makeTranslatedFilecopyForExistOriginalsToolStripMenuItem;
         internal System.Windows.Forms.ContextMenuStrip CMSFilesList;
         private System.Windows.Forms.ToolStripMenuItem tXTToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem1;
-        internal System.Windows.Forms.ToolStripMenuItem openProjectsDirToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem openTranslationRulesFileToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem openCellFixesFileToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem reloadRulesToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem ExportToolStripMenuItem1;
+        internal System.Windows.Forms.ToolStripMenuItem OpenProjectsDirToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem OpenTranslationRulesFileToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem OpenCellFixesFileToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem ReloadRulesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toUPPERCASETableToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem firstCharacterToUppercaseTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LowercaseTableToolStripMenuItem4;

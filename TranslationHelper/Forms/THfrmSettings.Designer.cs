@@ -232,7 +232,7 @@
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Name = "THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox";
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Size = new System.Drawing.Size(77, 17);
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.TabIndex = 6;
-            this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Text = "translation";
+            this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Text = "Translation";
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.UseVisualStyleBackColor = true;
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Visible = false;
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.CheckedChanged += new System.EventHandler(this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox_CheckedChanged);

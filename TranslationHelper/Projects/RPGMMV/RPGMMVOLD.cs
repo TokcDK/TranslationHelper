@@ -61,9 +61,9 @@ namespace TranslationHelper.Projects.RPGMMV
                 string jsondata = File.ReadAllText(sPath); // get json data
 
                 ProjectData.THFilesElementsDataset.Tables.Add(Jsonname); // create table with json name
-                ProjectData.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Original"); //create Original column
+                ProjectData.THFilesElementsDataset.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName()); //create Original column
                 ProjectData.THFilesElementsDatasetInfo.Tables.Add(Jsonname); // create table with json name
-                ProjectData.THFilesElementsDatasetInfo.Tables[Jsonname].Columns.Add("Original"); //create Original column
+                ProjectData.THFilesElementsDatasetInfo.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName()); //create Original column
                 //MessageBox.Show("Added table:"+Jsonname);
 
                 /*
@@ -202,7 +202,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 if (ProjectData.THFilesElementsDataset.Tables[Jsonname].Rows.Count > 0)
                 {
-                    ProjectData.THFilesElementsDataset.Tables[Jsonname].Columns.Add("Translation");
+                    ProjectData.THFilesElementsDataset.Tables[Jsonname].Columns.Add(THSettings.TranslationColumnName());
                 }
                 else
                 {
@@ -239,7 +239,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 }
 
                 //ds.Tables.Add(Jsonname); // create table with json name
-                //ds.Tables[Jsonname].Columns.Add("Original"); //create Original column
+                //ds.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName()); //create Original column
 
 
                 //treeView1.BeginUpdate();
@@ -283,8 +283,8 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 //LogToFile(string.Empty, true);
                 //MessageBox.Show("sss");
-                //ds.Tables[Jsonname].Columns.Add("Translation");
-                //ds.Tables[Jsonname].Columns["Original"].ReadOnly = true;
+                //ds.Tables[Jsonname].Columns.Add(THSettings.TranslationColumnName());
+                //ds.Tables[Jsonname].Columns[THSettings.OriginalColumnName()].ReadOnly = true;
                 //DGV.DataSource = ds.Tables[0];
                 //treeView1.EndUpdate();
             }
@@ -437,7 +437,7 @@ namespace TranslationHelper.Projects.RPGMMV
             ProjectData.Main.ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
 
             //skip file if table with same name has translation cells in all lines empty
-            if (FunctionsTable.IsTableRowsAllEmpty(ProjectData.THFilesElementsDataset.Tables[Jsonname]))
+            if (FunctionsTable.IsTableRowsAll(ProjectData.THFilesElementsDataset.Tables[Jsonname], complete: false))
                 return true;
 
             try

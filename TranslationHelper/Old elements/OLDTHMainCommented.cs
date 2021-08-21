@@ -2122,7 +2122,7 @@
 //            int googletextcurrentsize = 0;
 //            using (DataTable inputtextarrayData = new DataTable())
 //            {
-//                inputtextarrayData.Columns.Add("Original");
+//                inputtextarrayData.Columns.Add(THSettings.OriginalColumnName());
 //                StringBuilder inputtextarrayDataSB = new StringBuilder();
 //                using (DataTable inputtextarrayInfo = new DataTable())
 //                {

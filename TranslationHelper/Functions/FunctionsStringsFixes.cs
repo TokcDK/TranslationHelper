@@ -515,7 +515,7 @@ namespace TranslationHelper.Functions
         ///"\\N[\\V[122]]'s blabla... and [1]' s bla...!
         ///　\\NIt \\Nseems to[2222] be[1]'s blabla...!
         /// </summary>
-        /// <param name="translation"></param>
+        /// <param name=THSettings.TranslationColumnName()></param>
         /// <returns></returns>
         internal static string FixBrokenNameVar(string translation)
         {

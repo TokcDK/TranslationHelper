@@ -35,9 +35,9 @@ namespace TranslationHelper.Projects.KiriKiri
             string extension = Path.GetExtension(ProjectData.SelectedFilePath);
 
             _ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
-            _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
+            _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
             _ = ProjectData.THFilesElementsDatasetInfo.Tables.Add(filename);
-            _ = ProjectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
+            _ = ProjectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
 
             DataTable DT = KiriKiriScriptScenarioOpen(ProjectData.SelectedFilePath, ProjectData.THFilesElementsDataset.Tables[0], ProjectData.THFilesElementsDatasetInfo.Tables[0]);
             if (DT == null || DT.Rows.Count == 0)
@@ -47,7 +47,7 @@ namespace TranslationHelper.Projects.KiriKiri
             }
             else
             {
-                _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add(THSettings.TranslationColumnName());
                 ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(filename)));
                 if (extension == ".ks")
                 {
@@ -121,9 +121,9 @@ namespace TranslationHelper.Projects.KiriKiri
                     filename = Path.GetFileName(kiriKiriFiles[i]);
 
                     _ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
-                    _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add("Original");
+                    _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
                     _ = ProjectData.THFilesElementsDatasetInfo.Tables.Add(filename);
-                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add("Original");
+                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
 
                     DataTable DT = null;
 
@@ -148,7 +148,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     else
                     {
                         ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(filename)));
-                        _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add("Translation");
+                        _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add(THSettings.TranslationColumnName());
                     }
                 }
 
@@ -399,7 +399,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     //string original = string.Empty;
                     string filename = Path.GetFileNameWithoutExtension(sPath);
                     _ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
-                    _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Original");
+                    _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add(THSettings.OriginalColumnName());
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
@@ -419,7 +419,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
                     if (ProjectData.THFilesElementsDataset.Tables[0].Rows.Count > 0)
                     {
-                        _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add("Translation");
+                        _ = ProjectData.THFilesElementsDataset.Tables[0].Columns.Add(THSettings.TranslationColumnName());
                         ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(filename)));
                     }
                     else

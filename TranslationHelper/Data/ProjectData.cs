@@ -36,7 +36,7 @@ namespace TranslationHelper.Data
         /// <summary>
         /// Application's loaded config ini
         /// </summary>
-        internal static INIFileMan.INIFile ConfigIni { get=> Main.Settings.THConfigINI; set=> Main.Settings.THConfigINI=value; }
+        internal static INIFileMan.INIFile ConfigIni { get => Main.Settings.THConfigINI; set => Main.Settings.THConfigINI = value; }
 
         /// <summary>
         /// true - when file open, false - when file writing
@@ -115,9 +115,9 @@ namespace TranslationHelper.Data
         /// </summary>
         internal static Dictionary<string, Dictionary<string, HashSet<int>>> OriginalsTableRowCoordinats { get; set; }
 
-        internal static string SelectedGameDir;
-        internal static string SelectedDir;
-        internal static string ProjectWorkDir;
+        internal static string SelectedGameDir { get => CurrentProject.SelectedGameDir; set => CurrentProject.SelectedGameDir = value; }
+        internal static string SelectedDir { get => CurrentProject.SelectedDir; set => CurrentProject.SelectedDir = value; }
+        internal static string ProjectWorkDir { get => CurrentProject.ProjectWorkDir; set => CurrentProject.ProjectWorkDir = value; }
 
         /// <summary>
         /// target textbox control value
@@ -186,5 +186,14 @@ namespace TranslationHelper.Data
         /// Files list
         /// </summary>
         internal static ListBox THFilesList { get => Main.THFilesList; }
+
+        /// <summary>
+        /// Index of Original column
+        /// </summary>
+        internal static int OriginalColumnIndex = 0;
+        /// <summary>
+        /// Index of main Translation column
+        /// </summary>
+        internal static int TranslationColumnIndex = 1;
     }
 }

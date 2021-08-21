@@ -79,8 +79,8 @@ namespace TranslationHelper.Functions
             XElement el = new XElement("TranslationCache",
                 cache.Select(KeyValue =>
                 new XElement("Value",
-                    new XElement("Original", KeyValue.Key),
-                    new XElement("Translation", KeyValue.Value)
+                    new XElement(THSettings.OriginalColumnName(), KeyValue.Key),
+                    new XElement(THSettings.TranslationColumnName(), KeyValue.Value)
                     )
                 ));
             //el.Save("cache.xml");
@@ -143,10 +143,10 @@ namespace TranslationHelper.Functions
             }
             foreach (var el in rootElement.Elements())
             {
-                string key = el.Element("Original").Value;
+                string key = el.Element(THSettings.OriginalColumnName()).Value;
                 if (!cache.ContainsKey(key))
                 {
-                    cache.Add(key, el.Element("Translation").Value);
+                    cache.Add(key, el.Element(THSettings.TranslationColumnName()).Value);
                 }
             }
         }

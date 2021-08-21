@@ -63,7 +63,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
                     {
                         var Table = ProjectData.THFilesElementsDataset.Tables[t];
 
-                        if (FunctionsTable.IsTableRowsCompleted(Table))
+                        if (FunctionsTable.IsTableRowsAll(Table))
                         {
                             continue;
                         }

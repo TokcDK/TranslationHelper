@@ -78,7 +78,7 @@ namespace TranslationHelper.Main.Functions
                     var cell = table.Rows[r][1];
                     if (cell == null || string.IsNullOrEmpty(cell as string))
                     {
-                        ShowSelectedRow(t, "Translation", r);
+                        ShowSelectedRow(t, THSettings.TranslationColumnName(), r);
                         return;
                     }
                 }
@@ -186,9 +186,9 @@ namespace TranslationHelper.Main.Functions
             if (add && !ProjectData.THFilesElementsDataset.Tables.Contains(fileName))
             {
                 _ = ProjectData.THFilesElementsDataset.Tables.Add(fileName);
-                _ = ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add("Original");
+                _ = ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
                 _ = ProjectData.THFilesElementsDatasetInfo.Tables.Add(fileName);
-                _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Columns.Add("Original");
+                _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
 
                 return true;
             }
@@ -202,7 +202,7 @@ namespace TranslationHelper.Main.Functions
                 }
                 else
                 {
-                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add("Translation");
+                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add(THSettings.TranslationColumnName());
                     return true;
                 }
             }
@@ -404,8 +404,8 @@ namespace TranslationHelper.Main.Functions
             else
             {
                 DS.Tables.Add("TranslationCache");
-                DS.Tables["TranslationCache"].Columns.Add("Original");
-                DS.Tables["TranslationCache"].Columns.Add("Translation");
+                DS.Tables["TranslationCache"].Columns.Add(THSettings.OriginalColumnName());
+                DS.Tables["TranslationCache"].Columns.Add(THSettings.TranslationColumnName());
             }
             //MessageBox.Show("TranslationCache Rows.Count=" + THTranslationCache.Tables["TranslationCache"].Rows.Count+ "TranslationCache Columns.Count=" + THTranslationCache.Tables["TranslationCache"].Columns.Count);
         }
@@ -501,8 +501,8 @@ namespace TranslationHelper.Main.Functions
                 var Table = DS.Tables[t];
                 string tname = Table.TableName;
                 RETDS.Tables.Add(tname);
-                RETDS.Tables[tname].Columns.Add("Original");
-                RETDS.Tables[tname].Columns.Add("Translation");
+                RETDS.Tables[tname].Columns.Add(THSettings.OriginalColumnName());
+                RETDS.Tables[tname].Columns.Add(THSettings.TranslationColumnName());
                 int RowsCount = Table.Rows.Count;
                 for (int r = 0; r < RowsCount; r++)
                 {
@@ -551,48 +551,25 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// Returns true if translation cells in all rows have values
+        /// Checks if all rows in column <paramref name="columnName"/> of <paramref name="dataSet"/> if they are <paramref name="complete"/> or not
         /// </summary>
-        /// <param name="DT"></param>
-        /// <param name="column"></param>
-        /// <returns></returns>
-        public static bool IsTableRowsCompleted(DataTable DT, string column = "Translation")
+        /// <param name="dataSet">dataset which to check</param>
+        /// <param name="columnName">column name for check, default is translation</param>
+        /// <param name="complete">true - all is empty, false - all have values</param>
+        /// <returns>True when <paramref name="complete"/> is true and all values of <paramref name="columnName"/> is NOT empty. True when <paramref name="complete"/> is false and all values of <paramref name="columnName"/> is empty.</returns>
+        public static bool IsTableRowsAll(DataTable dataSet, string columnName = null, bool complete = true)
         {
-            if (DT == null)
+            if (dataSet == null)
             {
                 return false;
             }
-            int DTRowsCount = DT.Rows.Count;
+            int DTRowsCount = dataSet.Rows.Count;
+            columnName = columnName ?? THSettings.TranslationColumnName();
             for (int r = 0; r < DTRowsCount; r++)
             {
-                var cell = DT.Rows[r]?[column];
+                var cell = dataSet.Rows[r]?[columnName];
 
-                if (cell == null || string.IsNullOrEmpty(cell as string))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Returns true if translation cells in all Datatable rows is empty
-        /// </summary>
-        /// <param name="DT"></param>
-        /// <param name="column"></param>
-        /// <returns></returns>
-        public static bool IsTableRowsAllEmpty(DataTable DT, string column = "Translation")
-        {
-            if (DT == null)
-            {
-                return true;
-            }
-            int DTRowsCount = DT.Rows.Count;
-            for (int r = 0; r < DTRowsCount; r++)
-            {
-                var cell = DT.Rows[r][column];
-
-                if (cell != null && !string.IsNullOrEmpty(cell as string))
+                if ((!complete && (cell != null && !string.IsNullOrEmpty(cell as string))) || (complete && (cell == null || string.IsNullOrEmpty(cell as string))))
                 {
                     return false;
                 }
@@ -626,22 +603,22 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Get count of non empty rows in the Dataset tables
         /// </summary>
-        /// <param name="DS"></param>
-        /// <param name="column"></param>
+        /// <param name="dataSet"></param>
+        /// <param name="columnName"></param>
         /// <returns></returns>
-        public static int GetDatasetNonEmptyRowsCount(DataSet DS, string column = "Translation")
+        public static int GetDatasetNonEmptyRowsCount(DataSet dataSet, string columnName = null)
         {
-            if (DS == null)
+            if (dataSet == null)
             {
                 return 0;
             }
 
             int NonEmptyRowsCount = 0;
-
-            int DTTablesCount = DS.Tables.Count;
+            columnName = columnName ?? THSettings.TranslationColumnName();
+            int DTTablesCount = dataSet.Tables.Count;
             for (int t = 0; t < DTTablesCount; t++)
             {
-                NonEmptyRowsCount += GetTableNonEmptyRowsCount(DS.Tables[t], column);
+                NonEmptyRowsCount += GetTableNonEmptyRowsCount(dataSet.Tables[t], columnName);
             }
 
             return NonEmptyRowsCount;
@@ -650,21 +627,22 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Get count of non empty rows in the Table
         /// </summary>
-        /// <param name="DT"></param>
-        /// <param name="column"></param>
+        /// <param name="dataTable"></param>
+        /// <param name="columnName"></param>
         /// <returns></returns>
-        public static int GetTableNonEmptyRowsCount(DataTable DT, string column = "Translation")
+        public static int GetTableNonEmptyRowsCount(DataTable dataTable, string columnName = null)
         {
-            if (DT == null)
+            if (dataTable == null)
             {
                 return 0;
             }
 
             int NonEmptyRowsCount = 0;
-            int DTRowsCount = DT.Rows.Count;
+            int DTRowsCount = dataTable.Rows.Count;
+            columnName = columnName ?? THSettings.TranslationColumnName();
             for (int r = 0; r < DTRowsCount; r++)
             {
-                var cell = DT.Rows[r][column];
+                var cell = dataTable.Rows[r][columnName];
 
                 if (cell == null || string.IsNullOrEmpty(cell as string))
                 {

@@ -129,8 +129,8 @@ namespace TranslationHelper.Projects.RPGMTrans
                 _file = new StreamReader(ListFiles[i]); //Задаем файл
                 //THRPGMTransPatchFiles.Add(new THRPGMTransPatchFile(Path.GetFileNameWithoutExtension(ListFiles[i]), ListFiles[i].ToString(), string.Empty));    //Добaвляем файл
                 _ = ProjectData.THFilesElementsDataset.Tables.Add(fname);
-                _ = ProjectData.THFilesElementsDataset.Tables[i].Columns.Add("Original");
-                _ = ProjectData.THFilesElementsDataset.Tables[i].Columns.Add("Translation");
+                _ = ProjectData.THFilesElementsDataset.Tables[i].Columns.Add(THSettings.OriginalColumnName());
+                _ = ProjectData.THFilesElementsDataset.Tables[i].Columns.Add(THSettings.TranslationColumnName());
                 _ = ProjectData.THFilesElementsDataset.Tables[i].Columns.Add("Context");
                 _ = ProjectData.THFilesElementsDataset.Tables[i].Columns.Add("Advice");
                 _ = ProjectData.THFilesElementsDataset.Tables[i].Columns.Add("Status");
@@ -140,7 +140,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                 else
                 {
                     _ = ProjectData.THFilesElementsDatasetInfo.Tables.Add(fname);
-                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[i].Columns.Add("Original");
+                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[i].Columns.Add(THSettings.OriginalColumnName());
                 }
 
                 if (RPGMFunctions.RPGMTransPatchVersion == "3")
@@ -378,8 +378,8 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //MessageBox.Show(progressBar.Maximum.ToString());
                 //progressBar.Value = 0;
 
-                int originalcolumnindex = ProjectData.THFilesElementsDataset.Tables[0].Columns["Original"].Ordinal;
-                int translationcolumnindex = ProjectData.THFilesElementsDataset.Tables[0].Columns["Translation"].Ordinal;
+                int originalcolumnindex = ProjectData.THFilesElementsDataset.Tables[0].Columns[THSettings.OriginalColumnName()].Ordinal;
+                int translationcolumnindex = ProjectData.THFilesElementsDataset.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;
                 int contextcolumnindex = ProjectData.THFilesElementsDataset.Tables[0].Columns["Context"].Ordinal;
                 int advicecolumnindex = ProjectData.THFilesElementsDataset.Tables[0].Columns["Advice"].Ordinal;
                 int statuscolumnindex = ProjectData.THFilesElementsDataset.Tables[0].Columns["Status"].Ordinal;
