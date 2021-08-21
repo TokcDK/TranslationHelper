@@ -674,8 +674,8 @@ namespace TranslationHelper.Formats
 
         /// <summary>
         /// check if translation is exists and set str return true if found.
-        /// value = input string, must contain original value for search.
-        /// controltrans = control translation value, if was loaded translation from file
+        /// <paramref name="valueToTranslate"/> = input string, must contain original value for search.
+        /// <paramref name="existsTranslation"/> = control translation value, if was loaded translation from file
         /// </summary>
         /// <param name="valueToTranslate">input=original, output=translation</param>
         /// <param name="existsTranslation">control translation value if was loaded translation from file</param>

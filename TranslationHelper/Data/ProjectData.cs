@@ -115,9 +115,9 @@ namespace TranslationHelper.Data
         /// </summary>
         internal static Dictionary<string, Dictionary<string, HashSet<int>>> OriginalsTableRowCoordinats { get; set; }
 
-        public static string SelectedGameDir;
-        public static string SelectedDir;
-        public static string ProjectWorkDir;
+        internal static string SelectedGameDir;
+        internal static string SelectedDir;
+        internal static string ProjectWorkDir;
 
         /// <summary>
         /// target textbox control value
@@ -172,10 +172,10 @@ namespace TranslationHelper.Data
         /// </summary>
         internal static FunctionsLogs AppLog = new FunctionsLogs();
 
-        /// <summary>
-        /// Fileslist control object
-        /// </summary>
-        internal static object FilesList;
+        ///// <summary>
+        ///// Fileslist control object
+        ///// </summary>
+        //internal static object FilesList;
 
         /// <summary>
         /// Files list using now control
