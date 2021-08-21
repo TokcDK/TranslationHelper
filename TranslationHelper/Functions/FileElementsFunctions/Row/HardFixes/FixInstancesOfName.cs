@@ -40,7 +40,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             var extractedFromOrig = orig.ExtractMulty(onlyOne: true);
             if (string.IsNullOrWhiteSpace(extractedFromOrig[0]) || extractedFromOrig[0].Trim() == orig)
             {
-                _cache.AddTry(orig, trans);
+                _cache.TryAdd(orig, trans);
                 return false;
             }
 
@@ -49,7 +49,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             if (string.IsNullOrWhiteSpace(extractedFromTrans[0])
                 || extractedFromTrans[0].Trim() == trans)
             {
-                _cache.AddTry(orig, trans);
+                _cache.TryAdd(orig, trans);
                 return false;
             }
 
@@ -65,7 +65,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             }
             else
             {
-                _cache.AddTry(extractedFromOrig[0], extractedFromTrans[0]); // add translation to cache
+                _cache.TryAdd(extractedFromOrig[0], extractedFromTrans[0]); // add translation to cache
             }
 
             return true;

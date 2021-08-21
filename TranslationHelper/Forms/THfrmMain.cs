@@ -20,6 +20,7 @@ using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
+using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 using TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
@@ -1348,7 +1349,7 @@ namespace TranslationHelper
                     //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)));
                     //trans.Start();
 
-                    await Task.Run(() => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)).ConfigureAwait(false);
+                    await Task.Run(() => SetSameTranslationForSimular(tableind, rind, cind, false)).ConfigureAwait(false);
                 }
 
                 //Запуск автосохранения
@@ -1652,11 +1653,11 @@ namespace TranslationHelper
         }
 
         bool cellchanged;
-        public void THAutoSetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool forcevalue = false)
+        public void SetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, int InputCellIndex, bool forcerun = true, bool forcevalue = false)
         {
             if (forcevalue || (Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
-                FunctionsAutoOperations.THAutoSetSameTranslationForSimular(InputTableIndex, InputRowIndex, InputCellIndex, forcevalue);
+                AutoSameForSimularUtils.Set(InputTableIndex, InputRowIndex, InputCellIndex, forcevalue);
 
                 cellchanged = false;
             }
@@ -2391,17 +2392,7 @@ namespace TranslationHelper
 
         private void ForceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount() < 1)
-            {
-                return;
-            }
-
-            int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable();
-
-            foreach (int index in selindexes)
-            {
-                THAutoSetSameTranslationForSimular(THFilesList.GetSelectedIndex(), FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), index), 0, true, true);
-            }
+            new AutoSameForSimularForce().Selected();
         }
 
         private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2615,7 +2606,7 @@ namespace TranslationHelper
                                 ReadRule = !ReadRule;
                             }
 
-                            ProjectDataTranslationRegexRules.AddTry(regexPattern, regexReplacement);
+                            ProjectDataTranslationRegexRules.TryAdd(regexPattern, regexReplacement);
                         }
                         catch
                         {
@@ -2668,7 +2659,7 @@ namespace TranslationHelper
                                 ReadRule = !ReadRule;
                             }
 
-                            ProjectDataCellFixesRegexRules.AddTry(regexPattern, regexReplacement);
+                            ProjectDataCellFixesRegexRules.TryAdd(regexPattern, regexReplacement);
                         }
                         catch
                         {

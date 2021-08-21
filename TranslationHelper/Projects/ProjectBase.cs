@@ -458,7 +458,7 @@ namespace TranslationHelper.Projects
                     string trans;
                     if (!string.IsNullOrWhiteSpace(orig = row[0] + string.Empty) && !string.IsNullOrEmpty(trans = row[1] + string.Empty))
                     {
-                        ProjectData.TablesLinesDict.AddTry(orig, trans);
+                        ProjectData.TablesLinesDict.TryAdd(orig, trans);
 
                         if (!trans.StartsWith(@"\n<>") && Regex.IsMatch(orig, @"\\n<.+>[\s\S]*$"))
                         {
@@ -466,7 +466,7 @@ namespace TranslationHelper.Projects
                             trans = Regex.Replace(trans, @"\\n<(.+)>[\s\S]*$", "$1");
                             if (orig != trans)
                             {
-                                ProjectData.TablesLinesDict.AddTry(
+                                ProjectData.TablesLinesDict.TryAdd(
                                 orig
                                 ,
                                 trans

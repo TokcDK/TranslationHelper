@@ -275,7 +275,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <returns></returns>
         private List<JToken> GetNextTokensWithSameCode(JToken jsonToken)
         {
-            List<JToken> list = new List<JToken>
+            var list = new List<JToken>
             {
                 jsonToken
             };
@@ -287,7 +287,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 && (int)prop.Value == CurrentEventCode
                 )
             {
-                AddedJObjects.AddTry(obj);
+                AddedJObjects.TryAdd(obj);
                 list.Add(next);
                 next = next.Next;
             }
@@ -325,14 +325,14 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                     JArray array = prop.Value as JArray;
                     array[0] = translated[i];
 
-                    AddedJObjects.AddTry(obj);
+                    AddedJObjects.TryAdd(obj);
                     last = obj;
                 }
                 else
                 {
                     var newJObject = GetNewJObject(last as JObject, translated[i]);
                     last.AddAfterSelf(newJObject);
-                    AddedJObjects.AddTry(newJObject);
+                    AddedJObjects.TryAdd(newJObject);
 
                     last = last.Next;
                 }

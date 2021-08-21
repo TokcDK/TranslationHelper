@@ -422,8 +422,6 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Return real row index in Datatable for Datagridviev cell
         /// </summary>
-        /// <param name="TargetDataSet"></param>
-        /// <param name="InputDataGridView"></param>
         /// <param name="TableIndex"></param>
         /// <param name="rowIndex"></param>
         /// <returns></returns>
@@ -437,10 +435,11 @@ namespace TranslationHelper.Main.Functions
                     return rowIndex;
                 }
 
-                return table.Rows
-                    .IndexOf(
-                    ((DataRowView)ProjectData.Main.THFileElementsDataGridView.Rows[rowIndex].DataBoundItem).Row
-                            );
+                var dataRow = ProjectData.Main.THFileElementsDataGridView.Rows[rowIndex];
+                var dataBoundItem = (DataRowView)dataRow.DataBoundItem;
+                var dataBoundItemRow = dataBoundItem.Row;
+                var realIndex = table.Rows.IndexOf(dataBoundItemRow);
+                return realIndex;
             }
             catch
             {

@@ -217,7 +217,7 @@ namespace TranslationHelper.Functions
                                         }
                                     }
                                 }
-                                ProjectData.Main.THAutoSetSameTranslationForSimular(t, CurrentRowIndex, OrigColIndex);
+                                ProjectData.Main.SetSameTranslationForSimular(t, CurrentRowIndex, OrigColIndex);
                             }
                         }
                     }
