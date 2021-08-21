@@ -344,37 +344,44 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
         {
             var extractedTargetOriginalIndexses = new List<int>();
             var extractedTargetOriginal = targetOriginallCellString.ExtractMulty(outIndexes: extractedTargetOriginalIndexses);
-            if (extractedTargetOriginal.Length > 0
-                && extractedTargetOriginal[0] != targetOriginallCellString
-                && extractedTargetOriginalIndexses.Count == extractedTargetOriginal.Length)
+            int extractedTargetOriginalLength = extractedTargetOriginal.Length;
+            var extractedTargetOriginalIndexsesCount = extractedTargetOriginalIndexses.Count;
+            if (extractedTargetOriginalLength == 0
+                || extractedTargetOriginal[0] == targetOriginallCellString
+                || extractedTargetOriginalIndexsesCount != extractedTargetOriginalLength)
             {
-                var extractedTargetTranslationIndexses = new List<int>();
-                var extractedTargetTranslation = targetTranslationCellString.ExtractMulty(outIndexes: extractedTargetTranslationIndexses);
-                if (extractedTargetTranslation.Length > 0
-                    && extractedTargetTranslation[0] != targetTranslationCellString
-                    && extractedTargetTranslation.Length == extractedTargetTranslationIndexses.Count
-                    && extractedTargetTranslation.Length == extractedTargetOriginal.Length
-                    )
+                return false;
+            }
+
+            var extractedTargetTranslationIndexses = new List<int>();
+            var extractedTargetTranslation = targetTranslationCellString.ExtractMulty(outIndexes: extractedTargetTranslationIndexses);
+            var extractedTargetTranslationLength = extractedTargetTranslation.Length;
+            if (extractedTargetTranslationLength == 0
+                || extractedTargetTranslation[0] == targetTranslationCellString
+                || extractedTargetTranslationLength != extractedTargetTranslationIndexses.Count
+                || extractedTargetTranslationLength != extractedTargetOriginalLength
+                )
+            {
+                return false;
+            }
+
+            bool parsedWithMultyExtract = false;
+            for (int i = extractedTargetOriginalIndexsesCount - 1; i >= 0; i--)
+            {
+                if (inputOriginalValue == extractedTargetOriginal[i])
                 {
-                    bool parsedWithMultyExtract = false;
-                    for (int i = extractedTargetOriginalIndexses.Count - 1; i >= 0; i--)
-                    {
-                        if (inputOriginalValue == extractedTargetOriginal[i])
-                        {
-                            parsedWithMultyExtract = true;
+                    parsedWithMultyExtract = true;
 
-                            targetTranslationCellString = targetTranslationCellString
-                                .Remove(extractedTargetTranslationIndexses[i], extractedTargetTranslation[i].Length)
-                                .Insert(extractedTargetTranslationIndexses[i], inputTranslationValue);
-                        }
-                    }
-
-                    if (parsedWithMultyExtract)
-                    {
-                        targetRow[ProjectData.TranslationColumnIndex] = targetTranslationCellString;
-                        return true;;
-                    }
+                    targetTranslationCellString = targetTranslationCellString
+                        .Remove(extractedTargetTranslationIndexses[i], extractedTargetTranslation[i].Length)
+                        .Insert(extractedTargetTranslationIndexses[i], inputTranslationValue);
                 }
+            }
+
+            if (parsedWithMultyExtract)
+            {
+                targetRow[ProjectData.TranslationColumnIndex] = targetTranslationCellString;
+                return true; ;
             }
 
             return false;
