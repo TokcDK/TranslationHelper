@@ -125,10 +125,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
                     Regex reg = new Regex(regexPattern); //reg равняется любым цифрам
                     string inputOriginalValue = FunctionsRomajiKana.THFixDigits(inputTableRowOriginalCell as string);
-                    string InputTranslationValue = FunctionsRomajiKana.THFixDigits(inputTableRowTranslationCell as string);
+                    string inputTranslationValue = FunctionsRomajiKana.THFixDigits(inputTableRowTranslationCell as string);
 
                     //Было исключение OutOfRangeException когда в оригинале присутствовали совпадения для regex, а входной перевод был пустой или равен \r\n, тогда попытка получить индекс совпадения из оригинала заканчивалась исключением, т.к. никаких совпадений не было. Похоже на неверный перевод от онлайн сервиса
-                    if (string.IsNullOrWhiteSpace(InputTranslationValue) || InputTranslationValue == Environment.NewLine)
+                    if (string.IsNullOrWhiteSpace(inputTranslationValue) || inputTranslationValue == Environment.NewLine)
                         return;
 
                     bool weUseDuplicates = false;
@@ -157,13 +157,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                                     continue;
                                 }
 
-                                row[1] = InputTranslationValue;
+                                row[1] = inputTranslationValue;
                             }
                         }
                     }
 
                     //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменяется, т.к. 万 [man] переводится как 10000.
-                    if (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && Regex.Matches(InputTranslationValue, @"\d+").Count != Regex.Matches(inputOriginalValue, @"\d+").Count)
+                    if (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && Regex.Matches(inputTranslationValue, @"\d+").Count != Regex.Matches(inputOriginalValue, @"\d+").Count)
                     {
                         Properties.Settings.Default.THAutoSetSameTranslationForSimularIsBusy = false;
                         return;
@@ -207,6 +207,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                                 continue;
                             }
 
+                            if (ParsedWithExtractMulti(targetOriginallCellString, targetTranslationCellString, inputOriginalValue, inputTranslationValue, targetRow))
+                            {
+                                continue;
+                            }
+
                             //LogToFile("THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString()=" + THFilesElementsDataset.Tables[i].Rows[y][transcind].ToString());
                             //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
                             //также проверить, если оригиналы с цифрами не равны, иначе присваивать по обычному
@@ -232,7 +237,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             }
 
                             string TargetTransCellValueWithRemovedPatternMatches = Regex.Replace(targetTranslationCellString, regexPattern, string.Empty, RegexOptions.Compiled);
-                            string InputTransCellValueWithRemovedPatternMatches = Regex.Replace(InputTranslationValue, regexPattern, string.Empty, RegexOptions.Compiled);
+                            string InputTransCellValueWithRemovedPatternMatches = Regex.Replace(inputTranslationValue, regexPattern, string.Empty, RegexOptions.Compiled);
 
                             //Если значение ячеек перевода без паттернов равны, идти дальше
                             if (TargetTransCellValueWithRemovedPatternMatches == InputTransCellValueWithRemovedPatternMatches)
@@ -271,7 +276,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                                 //переименовано и закомментировано, т.к. было убрано оборачивание в цифры. string inputtranscellvalue = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
                             }
 
-                            MatchCollection tm = reg.Matches(InputTranslationValue);
+                            MatchCollection tm = reg.Matches(inputTranslationValue);
 
                             //количество совпадений должно быть равное для избежания исключений и прочих неверных замен
                             if (tm.Count != inputOriginalMatches.Count)
@@ -300,7 +305,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                                 stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
 
                                 //InputTransCellValue = InputTransCellValue.Remove(startindex, stringlength).Insert(startindex, targetOrigMatches[m]);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
-                                InputTranslationValue = InputTranslationValue.Remove(startindex, stringlength).Insert(startindex, targetMatches[m].Value);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
+                                inputTranslationValue = inputTranslationValue.Remove(startindex, stringlength).Insert(startindex, targetMatches[m].Value);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
 
                                 //stringoverallength0 += targetOrigMatches[m].Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
                                 stringoverallength0 += targetMatches[m].Value.Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
@@ -311,7 +316,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             if (!failed && (_forceSetValueFromStack || targetTranslationCell == null || string.IsNullOrEmpty(targetTranslationCell as string)))
                             {
                                 //ProjectData.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTransCellValue;
-                                targetRow[translationColumnIndex] = InputTranslationValue;
+                                targetRow[translationColumnIndex] = inputTranslationValue;
                             }
                         }
                     }
@@ -324,6 +329,55 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                 _autoSetSameTranslationForSimularDataStack.TryRemove(_tableRowPair);
                 _autoSetSameTranslationForSimularIsBusy = false;
             }
+        }
+
+        /// <summary>
+        /// Try to translate using multiextract method
+        /// </summary>
+        /// <param name="targetOriginallCellString"></param>
+        /// <param name="targetTranslationCellString"></param>
+        /// <param name="inputOriginalValue"></param>
+        /// <param name="inputTranslationValue"></param>
+        /// <param name="targetRow"></param>
+        /// <returns></returns>
+        private static bool ParsedWithExtractMulti(string targetOriginallCellString, string targetTranslationCellString, string inputOriginalValue, string inputTranslationValue, DataRow targetRow)
+        {
+            var extractedTargetOriginalIndexses = new List<int>();
+            var extractedTargetOriginal = targetOriginallCellString.ExtractMulty(outIndexes: extractedTargetOriginalIndexses);
+            if (extractedTargetOriginal.Length > 0
+                && extractedTargetOriginal[0] != targetOriginallCellString
+                && extractedTargetOriginalIndexses.Count == extractedTargetOriginal.Length)
+            {
+                var extractedTargetTranslationIndexses = new List<int>();
+                var extractedTargetTranslation = targetTranslationCellString.ExtractMulty(outIndexes: extractedTargetTranslationIndexses);
+                if (extractedTargetTranslation.Length > 0
+                    && extractedTargetTranslation[0] != targetTranslationCellString
+                    && extractedTargetTranslation.Length == extractedTargetTranslationIndexses.Count
+                    && extractedTargetTranslation.Length == extractedTargetOriginal.Length
+                    )
+                {
+                    bool parsedWithMultyExtract = false;
+                    for (int i = extractedTargetOriginalIndexses.Count - 1; i >= 0; i--)
+                    {
+                        if (inputOriginalValue == extractedTargetOriginal[i])
+                        {
+                            parsedWithMultyExtract = true;
+
+                            targetTranslationCellString = targetTranslationCellString
+                                .Remove(extractedTargetTranslationIndexses[i], extractedTargetTranslation[i].Length)
+                                .Insert(extractedTargetTranslationIndexses[i], inputTranslationValue);
+                        }
+                    }
+
+                    if (parsedWithMultyExtract)
+                    {
+                        targetRow[ProjectData.TranslationColumnIndex] = targetTranslationCellString;
+                        return true;;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public static bool IsAllMatchesInIdenticalPlaces(MatchCollection mc, MatchCollection mc0)
