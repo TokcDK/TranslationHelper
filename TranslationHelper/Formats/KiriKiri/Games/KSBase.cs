@@ -153,11 +153,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         private bool IsEmptyOrComment()
         {
-            if (!ParseData.IsComment && ParseData.line.Contains("/*"))
+            if (!ParseData.IsComment && ParseData.Line.Contains("/*"))
             {
                 ParseData.IsComment = true;
             }
-            if (ParseData.IsComment && ParseData.line.Contains("*/"))
+            if (ParseData.IsComment && ParseData.Line.Contains("*/"))
             {
                 ParseData.IsComment = false;
             }
@@ -209,16 +209,16 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 //1. search tag start
                 //2. search tag end
                 //3. parse tag attributes in the tag
-                var tagstartcollection = Regex.Matches(ParseData.line, @"(?<!\[)\[\s*\w+");
+                var tagstartcollection = Regex.Matches(ParseData.Line, @"(?<!\[)\[\s*\w+");
                 if (tagstartcollection.Count > 0)
                 {
-                    var tagendcollection = Regex.Matches(ParseData.line, @"\]");
+                    var tagendcollection = Regex.Matches(ParseData.Line, @"\]");
 
                     var endind = 0;
                     foreach (Match tagstart in tagstartcollection)
                     {
                         var start = tagstart.Index + tagstart.Length;
-                        var searchstring = ParseData.line.Substring(start, tagendcollection[endind].Index - start);
+                        var searchstring = ParseData.Line.Substring(start, tagendcollection[endind].Index - start);
 
                         var attribs = Regex.Matches(searchstring, @"(\w+)(\s*=\s*(&?%?("".*? ""|\'.*?\'|[^\\s\]=]+)))?");
 
@@ -230,10 +230,10 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 }
                 else
                 {
-                    tagstartcollection = Regex.Matches(ParseData.line, @"\t*@\s*\w+");
+                    tagstartcollection = Regex.Matches(ParseData.Line, @"\t*@\s*\w+");
                     if (tagstartcollection.Count > 0)
                     {
-                        var searchstring = ParseData.line.Substring(tagstartcollection[0].Index + tagstartcollection[0].Length);
+                        var searchstring = ParseData.Line.Substring(tagstartcollection[0].Index + tagstartcollection[0].Length);
 
                         var attribs = Regex.Matches(searchstring, @"(\w+)(\s*=\s*(&?%?("".*? ""|\'.*?\'|[^\\s\]=]+)))?");
 
@@ -259,7 +259,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             {
 
                 bool transApplied = false;
-                var strarr = ParseData.line.Split(new[] { newlineSymbol }, System.StringSplitOptions.None);
+                var strarr = ParseData.Line.Split(new[] { newlineSymbol }, System.StringSplitOptions.None);
                 var strarrLength = strarr.Length;
                 for (int i = 0; i < strarrLength; i++)
                 {
@@ -311,7 +311,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 {
                     //character name correction
                     var s = string.Join(newlineSymbol, strarr);
-                    var onamematch = Regex.Match(ParseData.line, @"^【([^】]+)】.+$");
+                    var onamematch = Regex.Match(ParseData.Line, @"^【([^】]+)】.+$");
                     if (onamematch.Success)
                     {
                         var tnamematch = Regex.Match(s, @"^-([^-]+)-(.+)$");
@@ -321,7 +321,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                         }
                     }
 
-                    ParseData.line = s + (endsWithWait && !s.EndsWith(waitSymbol) ? waitSymbol : string.Empty);
+                    ParseData.Line = s + (endsWithWait && !s.EndsWith(waitSymbol) ? waitSymbol : string.Empty);
                 }
             }
 
@@ -341,7 +341,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 return false;
             }
 
-            var cleaned = ParseData.line;
+            var cleaned = ParseData.Line;
             var mcstart = Regex.Matches(cleaned, @"(?<!\[)\[\s*\w+");
             if (mcstart.Count == 0)
             {
@@ -377,7 +377,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         {
             if (IsScript)
             {
-                if (ParseData.line.Contains("endscript"))
+                if (ParseData.Line.Contains("endscript"))
                 {
                     IsScript = false;
                 }
@@ -387,7 +387,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             }
             else
             {
-                if (ParseData.line.Contains("iscript"))
+                if (ParseData.Line.Contains("iscript"))
                 {
                     IsScript = true;
                     //return true;
@@ -404,7 +404,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 return false;
             }
 
-            return !(ParseData.line.Contains("[") || ParseData.line.Contains("]") || ParseData.line.Contains("@") || ParseData.line.Contains("*"));
+            return !(ParseData.Line.Contains("[") || ParseData.Line.Contains("]") || ParseData.Line.Contains("@") || ParseData.Line.Contains("*"));
         }
 
         internal string CleanVars(string str)

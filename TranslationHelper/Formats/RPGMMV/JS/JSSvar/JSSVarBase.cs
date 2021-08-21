@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
         {
             if (StartReadingSvar)
             {
-                if (ParseData.line.TrimStart().StartsWith("};"))
+                if (ParseData.Line.TrimStart().StartsWith("};"))
                 {
                     Svar.Append('}');
 
@@ -58,7 +58,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                 }
                 else
                 {
-                    Svar.AppendLine(ParseData.line);
+                    Svar.AppendLine(ParseData.Line);
                 }
             }
             else
@@ -66,7 +66,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                 //comments
                 if (ParseData.IsComment)
                 {
-                    if (ParseData.line.Contains("*/"))
+                    if (ParseData.Line.Contains("*/"))
                     {
                         ParseData.IsComment = false;
                     }
@@ -74,25 +74,25 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                 }
                 else
                 {
-                    if (ParseData.line.TrimStart().StartsWith("//"))
+                    if (ParseData.Line.TrimStart().StartsWith("//"))
                     {
                         //continue;
                     }
-                    else if (ParseData.line.TrimStart().StartsWith("/*"))
+                    else if (ParseData.Line.TrimStart().StartsWith("/*"))
                     {
-                        if (!ParseData.line.Contains("*/"))
+                        if (!ParseData.Line.Contains("*/"))
                         {
                             ParseData.IsComment = true;
                             //continue;
                         }
                     }//endcomments
-                    else if (ParseData.line.TrimStart().StartsWith(SvarIdentifier))
+                    else if (ParseData.Line.TrimStart().StartsWith(SvarIdentifier))
                     {
                         StartReadingSvar = true;
                         if (ProjectData.SaveFileMode)
                         {
                             // add line with identifier without "{" of json block
-                            ParseData.line = ParseData.line.Remove(ParseData.line.Length - 1, 1);
+                            ParseData.Line = ParseData.Line.Remove(ParseData.Line.Length - 1, 1);
                             SaveModeAddLine("\n");
                         }
                         Svar.AppendLine("{");

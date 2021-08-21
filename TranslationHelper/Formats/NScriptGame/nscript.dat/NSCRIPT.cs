@@ -32,7 +32,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
             foreach (var line in nscripttxt.SplitToLines())
             {
-                ParseData.line = line;
+                ParseData.Line = line;
                 ParseStringFileLineReturnState parseLineResult;
                 if ((parseLineResult = ParseStringFileLine()) == ParseStringFileLineReturnState.Break)
                 {
@@ -52,13 +52,13 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             if (IsComment())
             {
                 if (ProjectData.SaveFileMode)
-                    ParseData.ResultForWrite.Append(ParseData.line + '\n');
+                    ParseData.ResultForWrite.Append(ParseData.Line + '\n');
                 return 0;
             }
 
             if (!ParsePatterns())
             {
-                var array = ParseData.line.Split(':');
+                var array = ParseData.Line.Split(':');
                 var lines = new List<string>(array.Length);
                 for (int i = 0; i < array.Length; i++)
                 {
@@ -87,12 +87,12 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                 }
                 if (ProjectData.SaveFileMode && lines.Count > 0)
                 {
-                    ParseData.line = string.Join(":", lines);
+                    ParseData.Line = string.Join(":", lines);
                 }
             }
 
             if (ProjectData.SaveFileMode)
-                ParseData.ResultForWrite.Append(ParseData.line + '\n');
+                ParseData.ResultForWrite.Append(ParseData.Line + '\n');
             return ParseStringFileLineReturnState.ReadToEnd;
         }
 
@@ -165,7 +165,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         private bool IsComment()
         {
-            return ParseData.line.TrimStart().StartsWith(";");
+            return ParseData.Line.TrimStart().StartsWith(";");
         }
 
         internal override bool Save()

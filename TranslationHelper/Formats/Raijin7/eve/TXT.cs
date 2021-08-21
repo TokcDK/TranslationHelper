@@ -26,7 +26,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
             var ret = ParseStringFileLineReturnState.ReadToEnd;
 
             //commented or empty
-            if (string.IsNullOrWhiteSpace(ParseData.line) || ParseData.TrimmedLine.StartsWith("//"))
+            if (string.IsNullOrWhiteSpace(ParseData.Line) || ParseData.TrimmedLine.StartsWith("//"))
             {
                 ret = ParseStringFileLineReturnState.Continue;
             }
@@ -60,10 +60,10 @@ namespace TranslationHelper.Formats.Raijin7.eve
             {
                 SetValue(5);
             }
-            else if (ParseData.tablename.StartsWith("sn"))
+            else if (ParseData.TableName.StartsWith("sn"))
             {
-                var Values = ParseData.line.Split(',');
-                var RestOfText = ParseData.reader.ReadToEnd();
+                var Values = ParseData.Line.Split(',');
+                var RestOfText = ParseData.Reader.ReadToEnd();
                 if (ProjectData.OpenFileMode)
                 {
                     AddRowData(Values[1], "", true);
@@ -84,7 +84,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
                         RestOfText = FixInvalidSymbols(ProjectData.TablesLinesDict[RestOfText]);
                     }
 
-                    ParseData.line = string.Join(",", Values) + Environment.NewLine + RestOfText;
+                    ParseData.Line = string.Join(",", Values) + Environment.NewLine + RestOfText;
 
                 }
 

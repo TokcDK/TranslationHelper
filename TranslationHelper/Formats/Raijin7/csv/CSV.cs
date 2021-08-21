@@ -21,19 +21,19 @@ namespace TranslationHelper.Formats.Raijin7
         protected override void ParseStringFilePreOpenExtra()
         {
             lineNumber = 0;
-            if (ParseData.tablename.StartsWith("fship")
-                || ParseData.tablename.StartsWith("pnet")
-                || ParseData.tablename.StartsWith("pson")
-                || ParseData.tablename.StartsWith("wapon")
+            if (ParseData.TableName.StartsWith("fship")
+                || ParseData.TableName.StartsWith("pnet")
+                || ParseData.TableName.StartsWith("pson")
+                || ParseData.TableName.StartsWith("wapon")
                 )
             {
                 variant = 1;
             }
-            else if (ParseData.tablename.StartsWith("item"))
+            else if (ParseData.TableName.StartsWith("item"))
             {
                 variant = 2;
             }
-            else if (ParseData.tablename.StartsWith("spec_rate"))
+            else if (ParseData.TableName.StartsWith("spec_rate"))
             {
                 variant = 3;
             }
@@ -50,7 +50,7 @@ namespace TranslationHelper.Formats.Raijin7
             if (variant > 0)
             {
                 //commented or empty
-                if (string.IsNullOrWhiteSpace(ParseData.line) || ParseData.line.TrimStart().StartsWith("//"))
+                if (string.IsNullOrWhiteSpace(ParseData.Line) || ParseData.Line.TrimStart().StartsWith("//"))
                 {
                     ret = ParseStringFileLineReturnState.Continue;
                 }

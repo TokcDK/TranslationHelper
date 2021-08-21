@@ -330,7 +330,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             if (ProjectData.OpenFileMode)
             {
-                return CheckTablesContent(ParseData.tablename);
+                return CheckTablesContent(ParseData.TableName);
             }
             else
             {

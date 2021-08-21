@@ -58,7 +58,7 @@ namespace TranslationHelper.Functions
         internal static string[] SplitStringByEqualParts(string str, int chunkSize)
         {
             if (str == null || chunkSize < 1)
-                return null;
+                return Array.Empty<string>();
 
             if (str.Length < chunkSize)//when length < of required chunkSize size
                 return new string[1] { str };
@@ -99,7 +99,7 @@ namespace TranslationHelper.Functions
                     }
                     catch
                     {
-                        return null;
+                        return Array.Empty<string>();
                     }
                 }
             }

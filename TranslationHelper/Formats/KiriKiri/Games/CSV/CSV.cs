@@ -17,7 +17,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
 
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
-            var values = Regex.Matches(ParseData.line, @"[^\t\r\n]+");
+            var values = Regex.Matches(ParseData.Line, @"[^\t\r\n]+");
             var maxindex = values.Count - 1;
             for (int i = maxindex; i >= 0; i--)
             {
@@ -45,7 +45,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
 
                         if (ProjectData.SaveFileMode && subvalueschanged)
                         {
-                            ParseData.line = ParseData.line
+                            ParseData.Line = ParseData.Line
                                 .Remove(values[i].Index, values[i].Length)
                                 .Insert(values[i].Index, string.Join(",", subvalues));
                             ParseData.Ret = true;
@@ -62,7 +62,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
                             var value = values[i].Value;
                             if (IsValidString(value) && ProjectData.TablesLinesDict.ContainsKey(value))
                             {
-                                ParseData.line = ParseData.line
+                                ParseData.Line = ParseData.Line
                                     .Remove(values[i].Index, values[i].Length)
                                     .Insert(values[i].Index, ProjectData.TablesLinesDict[value]);
                                 ParseData.Ret = true;

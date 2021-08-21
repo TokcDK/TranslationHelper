@@ -37,7 +37,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 else if (ParseData.TrimmedLine.StartsWith("//")) //comment
                 {
                 }
-                else if ((r = Regex.Match(ParseData.line, @"src: url\(\""([^\""]+)\""\)")).Success)
+                else if ((r = Regex.Match(ParseData.Line, @"src: url\(\""([^\""]+)\""\)")).Success)
                 {
                     if (ProjectData.OpenFileMode)
                     {
@@ -52,7 +52,7 @@ namespace TranslationHelper.Formats.RPGMMV
                         if (SetTranslation(ref trans))
                         {
                             int i;
-                            ParseData.line = ParseData.line
+                            ParseData.Line = ParseData.Line
                                 .Remove(r.Index, r.Value.Length)
                                 .Insert(r.Index,
                                 r.Value.Remove(i = r.Value.IndexOf(str), str.Length).Insert(i, trans)

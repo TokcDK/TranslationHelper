@@ -9,10 +9,10 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
         }
 
-        internal override bool Open()
-        {
-            return ParseStringFile();
-        }
+        /// <summary>
+        /// pattern which will be placed before quoted pattern
+        /// </summary>
+        protected virtual string PreQuoteRegexPattern => "";
 
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
@@ -21,21 +21,33 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 foreach (var regexQuote in new[] { "'", @"\""" })
                 {
                     // remove comment // area and get matches
-                    var mc = Regex.Matches(ParseData.line.Split(new[]{ "//" },System.StringSplitOptions.None)[0], /*@"[\""']([^\""'\r\n]+)[\""']"*/
-                          @"" + regexQuote + @"([^" + regexQuote + @"\r\n\\]*(?:\\.[^" + regexQuote + @"\\]*)*)" + regexQuote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
+                    var lineNoComment = ParseData.Line.Split(new[] { "//" }, System.StringSplitOptions.None)[0];
+                    var mc = Regex.Matches(lineNoComment, /*@"[\""']([^\""'\r\n]+)[\""']"*/
+                          PreQuoteRegexPattern + @"" + regexQuote + @"([^" + regexQuote + @"\r\n\\]*(?:\\.[^" + regexQuote + @"\\]*)*)" + regexQuote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
                         );
-                    for (int m = mc.Count - 1; m >= 0; m--)
+                    for (int m = mc.Count - 1; m >= 0; m--) // negative because lenght of string will be changing
                     {
-                        var result = mc[m].Result("$1");
+                        var match = mc[m];
+
+                        var result = match.Result("$1");
 
                         if (ProjectData.OpenFileMode)
                         {
-                            AddRowData(result, ParseData.line, true);
+                            AddRowData(result, ParseData.Line, true);
                         }
                         else if (IsValidString(result) && TablesLinesDict.ContainsKey(result))
                         {
-                            var quote = regexQuote.Replace(@"\", "");
-                            ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, quote + TablesLinesDict[result] + quote);
+                            string translation = result;
+                            if (!SetTranslation(ref translation))
+                            {
+                                continue;
+                            }
+
+                            //1111 abc "aaa"
+                            int index = match.Value.IndexOf(result); // get internal index of result
+                            ParseData.Line = ParseData.Line
+                                .Remove(index = match.Index + index/*remove only original string*/, result.Length)
+                                .Insert(index, translation); // paste translation on place of original
                             ParseData.Ret = true;
                         }
                     }
@@ -49,21 +61,16 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         private bool IsEmptyOrComment()
         {
-            if (!ParseData.IsComment && ParseData.line.Contains("/*"))
+            if (!ParseData.IsComment && ParseData.Line.Contains("/*"))
             {
                 ParseData.IsComment = true;
             }
-            if (ParseData.IsComment && ParseData.line.Contains("*/"))
+            if (ParseData.IsComment && ParseData.Line.Contains("*/"))
             {
                 ParseData.IsComment = false;
             }
 
             return ParseData.IsComment || ParseData.TrimmedLine.Length == 0 || ParseData.TrimmedLine[0] == ';' || ParseData.TrimmedLine.StartsWith("//");
-        }
-
-        internal override bool Save()
-        {
-            return ParseStringFile();
         }
     }
 }

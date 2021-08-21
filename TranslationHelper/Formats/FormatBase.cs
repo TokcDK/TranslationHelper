@@ -102,7 +102,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual void ParseStringFileOpen()
         {
-            using (ParseData.reader = new StreamReader(ProjectData.FilePath, ParseStringFileEncoding()))
+            using (ParseData.Reader = new StreamReader(ProjectData.FilePath, ParseStringFileEncoding()))
             {
                 ParseStringFileLines();
             }
@@ -136,12 +136,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual string TableName()
         {
-            if (UseTableNameWithoutExtension)
-            {
-                ParseData.tablename = Path.GetFileNameWithoutExtension(ParseData.tablename);
-            }
-
-            return ParseData.tablename;
+            return ParseData.TableName;
         }
 
         /// <summary>
@@ -180,7 +175,7 @@ namespace TranslationHelper.Formats
         {
             if (ProjectData.OpenFileMode)
             {
-                return CheckTablesContent(ParseData.tablename);
+                return CheckTablesContent(ParseData.TableName);
             }
             else
             {
@@ -246,7 +241,7 @@ namespace TranslationHelper.Formats
             {
                 if (LastEmptyLine)
                 {
-                    ParseData.ResultForWrite.Append(ParseData.line + newline);
+                    ParseData.ResultForWrite.Append(ParseData.Line + newline);
                 }
                 else
                 {
@@ -261,7 +256,7 @@ namespace TranslationHelper.Formats
 
                     lastNewline = newline;//set newline symbol to paste after current line
 
-                    ParseData.ResultForWrite.Append(ParseData.line);
+                    ParseData.ResultForWrite.Append(ParseData.Line);
                 }
             }
         }
@@ -274,11 +269,11 @@ namespace TranslationHelper.Formats
         /// <param name="original">if not set then will be used ParseData.line</param>
         protected virtual void AddTranslation(string original = null)
         {
-            original = original ?? ParseData.line;
+            original = original ?? ParseData.Line;
             if (ProjectData.TablesLinesDict.ContainsKey(original))
             {
                 ParseData.Ret = true;
-                ParseData.line = TranslationMod(ProjectData.TablesLinesDict[original]);
+                ParseData.Line = TranslationMod(ProjectData.TablesLinesDict[original]);
             }
         }
 
@@ -291,7 +286,7 @@ namespace TranslationHelper.Formats
         /// <param name="original">if not set then will be used ParseData.line</param>
         protected virtual void AddTranslation(ref string translation, string original = null)
         {
-            original = original ?? ParseData.line;
+            original = original ?? ParseData.Line;
             if (ProjectData.TablesLinesDict.ContainsKey(original))
             {
                 ParseData.Ret = true;
@@ -316,11 +311,11 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual string ReadLine()
         {
-            ParseData.line = ParseData.reader.ReadLine();
+            ParseData.Line = ParseData.Reader.ReadLine();
             ReadLineMod();
             //ParseData.TrimmedLine = ParseData.line;
 
-            return ParseData.line;
+            return ParseData.Line;
         }
 
         /// <summary>
@@ -376,9 +371,9 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected bool ParsePattern(KeyValuePair<string, string> pattern, bool useInlineSearch = true)
         {
-            if ((!useInlineSearch || ParseData.line.IndexOf(pattern.Key) != -1) && Regex.IsMatch(ParseData.line, pattern.Value, RegexOptions.Compiled))
+            if ((!useInlineSearch || ParseData.Line.IndexOf(pattern.Key) != -1) && Regex.IsMatch(ParseData.Line, pattern.Value, RegexOptions.Compiled))
             {
-                var mc = Regex.Matches(ParseData.line, pattern.Value, RegexOptions.Compiled);
+                var mc = Regex.Matches(ParseData.Line, pattern.Value, RegexOptions.Compiled);
                 if (mc.Count > 0)
                 {
                     var IsSet = false;
@@ -398,7 +393,7 @@ namespace TranslationHelper.Formats
                             var trans = str;
                             if (IsValidString(str) && SetTranslation(ref trans) && trans != str)
                             {
-                                ParseData.line = ParseData.line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
+                                ParseData.Line = ParseData.Line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
                                 ParseData.Ret = true;
                                 IsSet = true;
                             }
@@ -482,23 +477,37 @@ namespace TranslationHelper.Formats
 
         internal class ParseFileData
         {
+            public ParseFileData()
+            {
+                TableName = ProjectData.CurrentProject?.CurrentFormat != null && ProjectData.CurrentProject.CurrentFormat.UseTableNameWithoutExtension
+                    ? Path.GetFileNameWithoutExtension(ProjectData.FilePath)
+                    : Path.GetFileName(ProjectData.FilePath);
+
+                if (ProjectData.SaveFileMode)
+                {
+                    ResultForWrite = new StringBuilder();
+                }
+            }
+
             /// <summary>
             /// tablename/filename
             /// </summary>
-            internal string tablename;
+            internal string TableName;
             /// <summary>
-            /// result of parsing
+            /// result of parsing. Must be set to true if any value was translated.
             /// </summary>
             internal bool Ret;
             /// <summary>
             /// line value
             /// </summary>
-            internal string line;
-            string trimmed = string.Empty;
+            internal string Line;
+
+            //string trimmed = string.Empty;
+
             /// <summary>
             /// trimmed line value
             /// </summary>
-            internal string TrimmedLine { get => line.Trim(); }
+            internal string TrimmedLine { get => Line.Trim(); }
             /// <summary>
             /// Usually here adding file's content for write
             /// </summary>
@@ -510,21 +519,11 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// Streamreader of the processing file
             /// </summary>
-            internal StreamReader reader;
+            internal StreamReader Reader;
             /// <summary>
             /// array of all lines of opened file. For causes when it is using
             /// </summary>
             internal string[] LinesArray;
-
-            public ParseFileData()
-            {
-
-                tablename = Path.GetFileName(ProjectData.FilePath);
-                if (ProjectData.SaveFileMode)
-                {
-                    ResultForWrite = new StringBuilder();
-                }
-            }
         }
 
         protected void AddTables()
@@ -690,7 +689,7 @@ namespace TranslationHelper.Formats
                 && ProjectData.OriginalsTableRowCoordinats.ContainsKey(valueToTranslate) // input value has original's value before it will be changed to translation
                 )
             {
-                var currentTableName = ParseData.tablename;
+                var currentTableName = ParseData.TableName;
                 var pretranslatedOriginal = valueToTranslate;
                 if (ProjectData.OriginalsTableRowCoordinats[valueToTranslate].ContainsKey(currentTableName))
                 {
@@ -836,13 +835,19 @@ namespace TranslationHelper.Formats
         /// add all original\translation pairs of datatable rows in Dictionary<br/>
         /// also split multiline values and add all of their lines in Dictionary
         /// </summary>
-        /// <param name="TableName"></param>
-        /// <param name="MakeLinesCountEqual">if true, line count will be made equal in translation before add original else it will be made only for multiline and rigth after line by line check</param>
-        internal void SplitTableCellValuesAndTheirLinesToDictionary(string TableName, bool MakeLinesCountEqual = true, bool OnlyOneTable = true)
+        /// <param name="tableName"></param>
+        /// <param name="makeLinesCountEqual">if true, line count will be made equal in translation before add original else it will be made only for multiline and rigth after line by line check</param>
+        /// <param name="onlyOneTable">Parse only <paramref name="tableName"/></param>
+        internal void SplitTableCellValuesAndTheirLinesToDictionary(string tableName, bool makeLinesCountEqual = true, bool onlyOneTable = true)
         {
-            if (OnlyOneTable)
+            if (!Properties.Settings.Default.DontLoadDuplicates) // skip if do not load duplicates option is disabled
             {
-                if (!ProjectData.THFilesElementsDataset.Tables.Contains(TableName))
+                return;
+            }
+
+            if (onlyOneTable)
+            {
+                if (!ProjectData.THFilesElementsDataset.Tables.Contains(tableName))
                     return;
 
                 if (TablesLinesDict.Count > 0)
@@ -861,7 +866,7 @@ namespace TranslationHelper.Formats
 
             foreach (DataTable Table in ProjectData.THFilesElementsDataset.Tables)
             {
-                if (OnlyOneTable && Table.TableName != TableName)
+                if (onlyOneTable && Table.TableName != tableName)
                 {
                     continue;
                 }
@@ -883,7 +888,7 @@ namespace TranslationHelper.Formats
 
                     int TranslationLinesCount = Translation.GetLinesCount();
                     bool LinesCountisEqual = OriginalLinesCount == TranslationLinesCount;
-                    if (!LinesCountisEqual && MakeLinesCountEqual)
+                    if (!LinesCountisEqual && makeLinesCountEqual)
                     {
                         if (OriginalLinesCount > Translation.Length)
                         {
@@ -911,7 +916,7 @@ namespace TranslationHelper.Formats
                         }
                     }
 
-                    if (!MakeLinesCountEqual && OriginalLinesCount > TranslationLinesCount)
+                    if (!makeLinesCountEqual && OriginalLinesCount > TranslationLinesCount)
                     {
                         if (OriginalLinesCount > Translation.Length)
                         {

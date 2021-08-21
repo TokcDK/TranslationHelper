@@ -35,23 +35,23 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             {
                 try
                 {
-                    if (ParseData.line.EndsWith(","))
+                    if (ParseData.Line.EndsWith(","))
                     {
                         IsJsonNotLast = true;
-                        ParseData.line = ParseData.line.Remove(ParseData.line.Length - 1, 1);
+                        ParseData.Line = ParseData.Line.Remove(ParseData.Line.Length - 1, 1);
                     }
                     else if (ProjectData.SaveFileMode)
                     {
                         IsJsonNotLast = false;
                     }
 
-                    JsonParser.ParseString(ParseData.line);
+                    JsonParser.ParseString(ParseData.Line);
 
                     //PluginsJsNameFound = false;
 
                     if (ProjectData.SaveFileMode)
                     {
-                        ParseData.line = JsonParser.JsonRoot.ToString(Formatting.None) + (IsJsonNotLast ? "," : string.Empty);
+                        ParseData.Line = JsonParser.JsonRoot.ToString(Formatting.None) + (IsJsonNotLast ? "," : string.Empty);
                         ParseData.Ret = true;
                     }
                 }

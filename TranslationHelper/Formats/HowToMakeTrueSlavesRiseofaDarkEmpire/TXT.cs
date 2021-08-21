@@ -39,8 +39,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         {
             if (readmode)
             {
-                bool startswithsharp = ParseData.line.StartsWith("#");
-                bool startswithOther = StartsWithOther(ParseData.line);
+                bool startswithsharp = ParseData.Line.StartsWith("#");
+                bool startswithOther = StartsWithOther(ParseData.Line);
                 if (startswithsharp || startswithOther /*string.IsNullOrEmpty(line)*/)
                 {
                     var str = sb.ToString().TrimEnd();
@@ -78,17 +78,17 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
                     if (startswithsharp)
                     {
-                        if (IsMessage(ParseData.line))
+                        if (IsMessage(ParseData.Line))
                         {
                             ParseMessage();
                             return 0;
                         }
-                        else if (IsVoicedMessage(ParseData.line))
+                        else if (IsVoicedMessage(ParseData.Line))
                         {
                             ParseVoicedMessage();
                             return 0;
                         }
-                        else if (IsChoiceVariants(ParseData.line))
+                        else if (IsChoiceVariants(ParseData.Line))
                         {
                             ParseChoices();
                             return 0;
@@ -101,7 +101,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     {
                         sb.Append(Environment.NewLine);
                     }
-                    sb.Append(ParseData.line);
+                    sb.Append(ParseData.Line);
                 }
 
                 SaveModeAddLine();
@@ -110,22 +110,22 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             }
             else
             {
-                if (IsCommentary(ParseData.line))//commented or empty
+                if (IsCommentary(ParseData.Line))//commented or empty
                 {
                     SaveModeAddLine();
                     return 0;
                 }
-                else if (IsMessage(ParseData.line))
+                else if (IsMessage(ParseData.Line))
                 {
                     ParseMessage();
                     return 0;
                 }
-                else if (IsVoicedMessage(ParseData.line))
+                else if (IsVoicedMessage(ParseData.Line))
                 {
                     ParseVoicedMessage();
                     return 0;
                 }
-                else if (IsChoiceVariants(ParseData.line))
+                else if (IsChoiceVariants(ParseData.Line))
                 {
                     ParseChoices();
                     return 0;
@@ -139,22 +139,22 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         private void ParseMessage()
         {
-            LastMSGType = ParseData.line;
+            LastMSGType = ParseData.Line;
             SaveModeAddLine();
             readmode = true;
         }
 
         private void ParseVoicedMessage()
         {
-            LastMSGType = ParseData.line;
+            LastMSGType = ParseData.Line;
             if (ProjectData.SaveFileMode)
             {
                 SaveModeAddLine();//add mark
-                ParseData.ResultForWrite.AppendLine(ParseData.line = ParseData.reader.ReadLine());//add voice file name line
+                ParseData.ResultForWrite.AppendLine(ParseData.Line = ParseData.Reader.ReadLine());//add voice file name line
             }
             else
             {
-                ParseData.line = ParseData.reader.ReadLine();//read next line with voice name, nex readline will skip it
+                ParseData.Line = ParseData.Reader.ReadLine();//read next line with voice name, nex readline will skip it
             }
             readmode = true;
         }
@@ -164,11 +164,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             SaveModeAddLine();
 
             //get choices count
-            int selectioncnt = int.Parse(ParseData.line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+            int selectioncnt = int.Parse(ParseData.Line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
             //add all choices
             for (int i = 0; i < selectioncnt; i++)
             {
-                var str = ParseData.reader.ReadLine();
+                var str = ParseData.Reader.ReadLine();
                 var extracted = Regex.Replace(str, ChoiceTextExtractionRegex(), "$1");
                 if (ProjectData.OpenFileMode)
                 {

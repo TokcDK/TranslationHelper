@@ -19,25 +19,25 @@ namespace TranslationHelper.Formats.LiveMaker
         {
             if (CaptureMessage)
             {
-                if (ParseData.line.StartsWith("{MESOFF"))
+                if (ParseData.Line.StartsWith("{MESOFF"))
                 {
                     CaptureMessage = false;
                 }
                 else
                 {
                     if (
-                        !ParseData.line.StartsWith("{PLAYSND")//exclude not messages
-                        && !ParseData.line.StartsWith("{WAITPLAY")//exclude not messages
-                        && !ParseData.line.StartsWith("{CHANGECG")//exclude not messages
-                        && !ParseData.line.StartsWith("{DELETECG")//exclude not messages
-                        && !ParseData.line.StartsWith("{CREATECG")//exclude not messages
-                        && !ParseData.line.StartsWith("<EVENT")//exclude not messages
-                        && IsValidString(CleanedFromTags(ParseData.line))
+                        !ParseData.Line.StartsWith("{PLAYSND")//exclude not messages
+                        && !ParseData.Line.StartsWith("{WAITPLAY")//exclude not messages
+                        && !ParseData.Line.StartsWith("{CHANGECG")//exclude not messages
+                        && !ParseData.Line.StartsWith("{DELETECG")//exclude not messages
+                        && !ParseData.Line.StartsWith("{CREATECG")//exclude not messages
+                        && !ParseData.Line.StartsWith("<EVENT")//exclude not messages
+                        && IsValidString(CleanedFromTags(ParseData.Line))
                         )
                     {
                         if (ProjectData.OpenFileMode)
                         {
-                            AddRowData(ParseData.line, "", true, false);
+                            AddRowData(ParseData.Line, "", true, false);
                         }
                         else
                         {
@@ -47,12 +47,12 @@ namespace TranslationHelper.Formats.LiveMaker
 
                 }
             }
-            else if (ParseData.line.StartsWith("{MESON"))
+            else if (ParseData.Line.StartsWith("{MESON"))
             {
                 CaptureMessage = true;
             }
 
-            SaveModeAddLine(ParseData.line.Length > 0 ? "\r" : "\r\n");//not empty line in lns ends with \r
+            SaveModeAddLine(ParseData.Line.Length > 0 ? "\r" : "\r\n");//not empty line in lns ends with \r
 
             return 0;
         }

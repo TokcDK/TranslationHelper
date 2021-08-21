@@ -10,8 +10,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
     {
         protected bool IsPluginsJS;//for some specific to plugins.js operations
         private bool PluginsJsNameFound;
-        protected int rowindex = 0;
-        private bool UseHashSet;
+        //protected int rowindex = 0;
+        //private bool UseHashSet;
 
         public JSJsonParser()
         {
@@ -54,26 +54,32 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 }
                 else
                 {
-
-                    if(UseHashSet)
+                    string translation = tokenValue;
+                    if (!Format.SetTranslation(ref translation))
                     {
-                        if (ProjectData.TablesLinesDict.ContainsKey(tokenValue)
-                            && !string.IsNullOrEmpty(ProjectData.TablesLinesDict[tokenValue])
-                            && ProjectData.TablesLinesDict[tokenValue] != tokenValue)
-                        {
-                            jsonValue.Value = ProjectData.TablesLinesDict[tokenValue];
-                        }
-                    }
-                    else
-                    {
-                        var row = ProjectData.THFilesElementsDataset.Tables[JsonName].Rows[rowindex];
-                        if (Equals(jsonValue.ToString(), row[0]) && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
-                        {
-                            jsonValue.Value = row[1] as string;
-                        }
-                        rowindex++;
+                        return;
                     }
 
+                    jsonValue.Value = translation;
+
+                    //if (UseHashSet)
+                    //{
+                    //    if (ProjectData.TablesLinesDict.ContainsKey(tokenValue)
+                    //        && !string.IsNullOrEmpty(ProjectData.TablesLinesDict[tokenValue])
+                    //        && ProjectData.TablesLinesDict[tokenValue] != tokenValue)
+                    //    {
+                    //        jsonValue.Value = ProjectData.TablesLinesDict[tokenValue];
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    var row = ProjectData.THFilesElementsDataset.Tables[JsonName].Rows[rowindex];
+                    //    if (Equals(jsonValue.ToString(), row[0]) && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
+                    //    {
+                    //        jsonValue.Value = row[1] as string;
+                    //    }
+                    //    rowindex++;
+                    //}
                 }
             }
         }

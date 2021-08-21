@@ -1,9 +1,6 @@
 ﻿using GetListOfSubClasses;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMMV.JsonParser;
@@ -69,6 +66,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return true;
         }
 
+        // old code
         //protected bool PluginsJsNameFound;
 
         //protected void GetStringsFromJToken(JToken token, string Jsonname)
@@ -461,151 +459,147 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    return true;
         //}
 
-        protected bool ParseJSSingleLinesWithRegex(string RegexPattern)
-        {
-            return ParseJSSingleLinesWithRegex(RegexPattern, false);
-        }
+        //protected bool ParseJSSingleLinesWithRegex(string RegexPattern)
+        //{
+        //    return ParseJSSingleLinesWithRegex(RegexPattern, "", true, "$1", "");
+        //}
 
-        protected bool ParseJSSingleLinesWithRegex(string RegexPattern, bool Iswrite = false)
-        {
-            return ParseJSSingleLinesWithRegex(RegexPattern, "", true, "$1", "", Iswrite);
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="regexPattern"></param>
+        ///// <param name="lineWithTheString"></param>
+        ///// <param name="checkIfContains">true=contains,false=startswith</param>
+        ///// <param name="regexGroup"></param>
+        ///// <param name="stringInfo"></param>
+        ///// <returns></returns>
+        //protected bool ParseJSSingleLinesWithRegex(string regexPattern, string lineWithTheString = "", bool checkIfContains = true, string regexGroup = "$1", string stringInfo = "")
+        //{
+        //    if (ProjectData.FilePath.Length == 0 || !File.Exists(ProjectData.FilePath))
+        //    {
+        //        return false;
+        //    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="RegexPattern"></param>
-        /// <param name="LinePartForSearch"></param>
-        /// <param name="LinePartForSearchContains">true=contains,false=startswith</param>
-        /// <param name="RegexPartOfPatternToSave"></param>
-        /// <param name="SInfo"></param>
-        /// <param name="Iswrite"></param>
-        /// <returns></returns>
-        protected bool ParseJSSingleLinesWithRegex(string RegexPattern, string LinePartForSearch = "", bool LinePartForSearchContains = true, string RegexPartOfPatternToSave = "$1", string SInfo = "", bool Iswrite = false)
-        {
-            if (ProjectData.FilePath.Length == 0 || !File.Exists(ProjectData.FilePath))
-            {
-                return false;
-            }
+        //    string line;
 
-            string line;
+        //    string tablename = Path.GetFileName(ProjectData.FilePath);
 
-            string tablename = Path.GetFileName(ProjectData.FilePath);
+        //    bool UseDict = false;
+        //    if (ProjectData.SaveFileMode)
+        //    {
+        //        SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
+        //        if (TablesLinesDict != null && TablesLinesDict.Count > 0)
+        //        {
+        //            UseDict = true;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        AddTables(tablename);
+        //    }
 
-            bool UseDict = false;
-            if (Iswrite)
-            {
-                SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
-                if (TablesLinesDict != null && TablesLinesDict.Count > 0)
-                {
-                    UseDict = true;
-                }
-            }
-            else
-            {
-                AddTables(tablename);
-            }
+        //    StringBuilder ResultForWrite = new StringBuilder();
+        //    int RowIndex = 0;
+        //    bool IsComment = false;
+        //    try
+        //    {
+        //        bool SearchText = lineWithTheString.Length > 0;
+        //        using (StreamReader reader = new StreamReader(ProjectData.FilePath))
+        //        {
+        //            while (!reader.EndOfStream)
+        //            {
+        //                line = reader.ReadLine();
 
-            StringBuilder ResultForWrite = new StringBuilder();
-            int RowIndex = 0;
-            bool IsComment = false;
-            try
-            {
-                bool SearchText = LinePartForSearch.Length > 0;
-                using (StreamReader reader = new StreamReader(ProjectData.FilePath))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        line = reader.ReadLine();
+        //                if (IsComment)
+        //                {
+        //                    if (line.Contains("*/"))
+        //                    {
+        //                        IsComment = false;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (line.Contains("/*"))
+        //                    {
+        //                        IsComment = true;
+        //                    }
 
-                        if (IsComment)
-                        {
-                            if (line.Contains("*/"))
-                            {
-                                IsComment = false;
-                            }
-                        }
-                        else
-                        {
-                            if (line.Contains("/*"))
-                            {
-                                IsComment = true;
-                            }
+        //                    if (!line.TrimStart().StartsWith("//")
+        //                        &&
+        //                        (
+        //                        (SearchText &&
+        //                            (checkIfContains && line.Contains(lineWithTheString))
+        //                            ||
+        //                            (!checkIfContains && line.StartsWith(lineWithTheString))
+        //                        )
+        //                        || (!SearchText && Regex.IsMatch(line, regexPattern))
+        //                        )
+        //                        )
+        //                    {
+        //                        string StringToAdd = Regex.Replace(line, regexPattern, regexGroup);
+        //                        if (!IsValidString(StringToAdd))
+        //                        {
+        //                            continue;
+        //                        }
 
-                            if (!line.TrimStart().StartsWith("//")
-                                &&
-                                (
-                                (SearchText &&
-                                    (LinePartForSearchContains && line.Contains(LinePartForSearch))
-                                    ||
-                                    (!LinePartForSearchContains && line.StartsWith(LinePartForSearch))
-                                )
-                                || (!SearchText && Regex.IsMatch(line, RegexPattern))
-                                )
-                                )
-                            {
-                                string StringToAdd = Regex.Replace(line, RegexPattern, RegexPartOfPatternToSave);
-                                if (IsValidString(StringToAdd))
-                                {
-                                    if (Iswrite)
-                                    {
-                                        if (UseDict)
-                                        {
-                                            if (TablesLinesDict.ContainsKey(StringToAdd) && !string.IsNullOrEmpty(TablesLinesDict[StringToAdd]) && TablesLinesDict[StringToAdd] != StringToAdd)
-                                            {
-                                                line = line.Replace(StringToAdd, TablesLinesDict[StringToAdd]);
-                                            }
-                                        }
-                                        else
-                                        {
+        //                        if (ProjectData.SaveFileMode)
+        //                        {
+        //                            if (UseDict)
+        //                            {
+        //                                if (TablesLinesDict.ContainsKey(StringToAdd) && !string.IsNullOrEmpty(TablesLinesDict[StringToAdd]) && TablesLinesDict[StringToAdd] != StringToAdd)
+        //                                {
+        //                                    line = line.Replace(StringToAdd, TablesLinesDict[StringToAdd]);
+        //                                }
+        //                            }
+        //                            else
+        //                            {
 
-                                            var row = ProjectData.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
-                                            if (row[0] as string == StringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
-                                            {
-                                                line = line.Replace(StringToAdd, row[1] as string);
-                                            }
+        //                                var row = ProjectData.THFilesElementsDataset.Tables[tablename].Rows[RowIndex];
+        //                                if (row[0] as string == StringToAdd && row[1] != null && !string.IsNullOrEmpty(row[1] as string))
+        //                                {
+        //                                    line = line.Replace(StringToAdd, row[1] as string);
+        //                                }
 
-                                            RowIndex++;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        AddRowData(tablename, StringToAdd, SInfo, true);
-                                        //ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
-                                        //ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
-                                    }
-                                }
-                            }
-                        }
+        //                                RowIndex++;
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            AddRowData(tablename, StringToAdd, stringInfo, true);
+        //                            //ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
+        //                            //ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
+        //                        }
+        //                    }
+        //                }
 
-                        if (Iswrite)
-                        {
-                            ResultForWrite.AppendLine(line);
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                return false;
-            }
+        //                if (ProjectData.SaveFileMode)
+        //                {
+        //                    ResultForWrite.AppendLine(line);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
 
-            if (Iswrite)
-            {
-                try
-                {
-                    File.WriteAllText(ProjectData.FilePath, ResultForWrite.ToString());
-                }
-                catch
-                {
-                    return false;
-                }
-                return true;
-            }
-            else
-            {
-                return CheckTablesContent(tablename);
-            }
-        }
+        //    if (ProjectData.SaveFileMode)
+        //    {
+        //        try
+        //        {
+        //            File.WriteAllText(ProjectData.FilePath, ResultForWrite.ToString());
+        //        }
+        //        catch
+        //        {
+        //            return false;
+        //        }
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return CheckTablesContent(tablename);
+        //    }
+        //}
     }
 }

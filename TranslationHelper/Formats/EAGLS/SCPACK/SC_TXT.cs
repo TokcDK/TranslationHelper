@@ -42,7 +42,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
 
         protected override void ParseStringFileLines()
         {
-            var file = ParseData.reader.ReadToEnd();
+            var file = ParseData.Reader.ReadToEnd();
             foreach (var pattern in Patterns())
             {
                 var mc = Regex.Matches(file, pattern.Value);
@@ -147,7 +147,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
             //    ParseName();
             //}
 
-            SaveModeAddLine(ParseData.line.StartsWith("$") ? "\n" : "\r\n", false);//line starting with $ ends with \n
+            SaveModeAddLine(ParseData.Line.StartsWith("$") ? "\n" : "\r\n", false);//line starting with $ ends with \n
 
             return 0;
         }

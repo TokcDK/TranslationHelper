@@ -17,7 +17,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         protected override void ReadLineMod()
         {
-            ProjectData.CurrentProject.ReadLineMod(ref ParseData.line);
+            ProjectData.CurrentProject.ReadLineMod(ref ParseData.Line);
         }
 
         protected override ParseStringFileLineReturnState ParseStringFileLine()
@@ -43,7 +43,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 }
                 else
                 {
-                    var mc = Regex.Matches(ParseData.line, @"\""([^\""\r\n\\]+(?:\\.[^\""\\]*)*)\""");//get all between '"' include '\"' link: https://stackoverflow.com/questions/2148587/finding-quoted-strings-with-escaped-quotes-in-c-sharp-using-a-regular-expression
+                    var mc = Regex.Matches(ParseData.Line, @"\""([^\""\r\n\\]+(?:\\.[^\""\\]*)*)\""");//get all between '"' include '\"' link: https://stackoverflow.com/questions/2148587/finding-quoted-strings-with-escaped-quotes-in-c-sharp-using-a-regular-expression
                     if (mc.Count > 0)
                     {
                         for (int i = mc.Count - 1; i >= 0; i--)
@@ -53,13 +53,13 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                             {
                                 if (ProjectData.OpenFileMode)
                                 {
-                                    AddRowData(value, ParseData.line, true, false);
+                                    AddRowData(value, ParseData.Line, true, false);
                                 }
                                 else
                                 {
                                     if (ProjectData.TablesLinesDict.ContainsKey(value))
                                     {
-                                        ParseData.line = ParseData.line
+                                        ParseData.Line = ParseData.Line
                                             .Remove(mc[i].Index, mc[i].Length)
                                             .Insert(mc[i].Index, "\"" + ProjectData.TablesLinesDict[value] + "\"");
                                     }

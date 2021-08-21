@@ -23,7 +23,7 @@ namespace TranslationHelper.Formats.Raijin7
 
         protected void SetValue(params int[] nums)
         {
-            var Values = ParseData.line.Split(',');
+            var Values = ParseData.Line.Split(',');
 
             var set = false;
             var numbers = nums[0] < 999 ? nums : Enumerable.Range(0, Values.Length);
@@ -44,7 +44,7 @@ namespace TranslationHelper.Formats.Raijin7
 
             if (set)
             {
-                ParseData.line = string.Join(",", Values);
+                ParseData.Line = string.Join(",", Values);
             }
         }
     }
