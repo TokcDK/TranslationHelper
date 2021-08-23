@@ -146,7 +146,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                     }
 
                                     var info = "Orig bytes length(" + Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + (/*ffbytesAfter.Count + */zeroffbytesAfter.Count) + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
-                                    AddRowData(str, info, true, true);
+                                    AddRowData(str, info, CheckInput: true);
                                 }
                                 else//save mode
                                 {

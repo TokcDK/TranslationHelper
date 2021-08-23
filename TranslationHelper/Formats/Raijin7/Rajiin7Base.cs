@@ -32,7 +32,7 @@ namespace TranslationHelper.Formats.Raijin7
                 var trans="";
                 if (ProjectData.OpenFileMode)
                 {
-                    AddRowData(Values[num], "", true);
+                    AddRowData(Values[num], "", CheckInput: true);
                 }
                 else if (IsValid(Values[num], ref trans))
                 {

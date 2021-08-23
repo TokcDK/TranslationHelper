@@ -97,7 +97,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                     else
                                     {
                                         string StringForInfo = Regex.Replace(line, @"\.addCommand\('[^']+', '([^']+)'\);", "$2");
-                                        AddRowData(tablename, StringToAdd, "addCommand\\" + StringForInfo, true);
+                                        AddRowData(tablename, StringToAdd, "addCommand\\" + StringForInfo, CheckInput: true);
                                         //ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(StringToAdd);
                                         //ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add("addCommand\\" + StringForInfo);
                                     }

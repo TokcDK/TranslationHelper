@@ -66,8 +66,8 @@ namespace TranslationHelper.Formats.Raijin7.eve
                 var RestOfText = ParseData.Reader.ReadToEnd();
                 if (ProjectData.OpenFileMode)
                 {
-                    AddRowData(Values[1], "", true);
-                    AddRowData(RestOfText, "", true);
+                    AddRowData(Values[1], "", CheckInput: true);
+                    AddRowData(RestOfText, "", CheckInput: true);
                 }
                 else
                 {

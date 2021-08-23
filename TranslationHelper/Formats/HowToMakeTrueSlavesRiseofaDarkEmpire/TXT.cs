@@ -46,7 +46,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     var str = sb.ToString().TrimEnd();
                     if (ProjectData.OpenFileMode)
                     {
-                        AddRowData(str, string.Empty, true);
+                        AddRowData(str, string.Empty, CheckInput: true);
                     }
                     else
                     {
@@ -172,7 +172,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 var extracted = Regex.Replace(str, ChoiceTextExtractionRegex(), "$1");
                 if (ProjectData.OpenFileMode)
                 {
-                    AddRowData(extracted, "Choice variant " + i, true);
+                    AddRowData(extracted, "Choice variant " + i, CheckInput: true);
                 }
                 else
                 {

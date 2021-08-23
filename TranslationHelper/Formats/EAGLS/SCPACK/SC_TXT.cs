@@ -55,7 +55,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                 {
                     foreach (Match match in mc)
                     {
-                        AddRowData(match.Result("$1"), "", true);
+                        AddRowData(match.Result("$1"), "", CheckInput: true);
                     }
                 }
                 else

@@ -31,7 +31,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
                         {
                             if (ProjectData.OpenFileMode)
                             {
-                                AddRowData(subvalues[s], "", true);
+                                AddRowData(subvalues[s], "", CheckInput: true);
                             }
                             else
                             {
@@ -55,7 +55,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
                     {
                         if (ProjectData.OpenFileMode)
                         {
-                            AddRowData(values[i].Value, "", true);
+                            AddRowData(values[i].Value, "", CheckInput: true);
                         }
                         else
                         {

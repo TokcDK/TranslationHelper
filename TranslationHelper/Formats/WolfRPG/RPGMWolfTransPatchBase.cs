@@ -276,11 +276,11 @@ namespace TranslationHelper.Formats.WolfRPG
                 var context = string.Join("\r\n", contextLines);
                 if (string.IsNullOrEmpty(translation))
                 {
-                    AddRowData(original, context + (P2 ? "\r\n" + advice : ""), true);
+                    AddRowData(original, context + (P2 ? "\r\n" + advice : ""), CheckInput: true);
                 }
                 else
                 {
-                    AddRowData(new[] { original, translation }, context + (P2 ? "\r\n" + advice : ""), true);
+                    AddRowData(new[] { original, translation }, context + (P2 ? "\r\n" + advice : ""), CheckInput: true);
                 }
             }
             else

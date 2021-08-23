@@ -53,7 +53,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                             {
                                 if (ProjectData.OpenFileMode)
                                 {
-                                    AddRowData(value, ParseData.Line, true, false);
+                                    AddRowData(value, ParseData.Line, CheckInput: false);
                                 }
                                 else
                                 {

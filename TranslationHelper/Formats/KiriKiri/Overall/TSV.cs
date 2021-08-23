@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using TranslationHelper.Data;
-using TranslationHelper.Extensions;
-using TranslationHelper.Main.Functions;
+﻿using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
@@ -13,44 +8,105 @@ namespace TranslationHelper.Formats.KiriKiri
         {
         }
 
-        internal override bool Open()
+        protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
-            return KiriKiriTSVOpen();
-        }
-
-        public bool KiriKiriTSVOpen()
-        {
-            FunctionsTable.SetTableAndColumns();
-
-            using (StreamReader file = new StreamReader(ProjectData.FilePath, Encoding.GetEncoding(932)))
+            if (ParseData.TrimmedLine.StartsWith(";") || !ParseData.Line.Contains("	"))
             {
-                string fileName = Path.GetFileName(ProjectData.FilePath);
-                string line;
-                while (!file.EndOfStream)
+            }
+            else
+            {
+                var lineArray = ParseData.Line.Split(new[] { '	' });
+
+                if (lineArray.Length != 2)
                 {
-                    line = file.ReadLine();
-                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";"))
+                }
+                else
+                {
+                    var data = lineArray[1];
+                    bool dataIsArray;
+                    if (dataIsArray = data.IndexOf(',') != -1)
                     {
-                    }
-                    else
-                    {
-                        string[] NameValues = line.Split('	');
+                        var dataArray = data.Split(new[] { ',' });
 
-                        if (NameValues.Length == 2)
+                        for (int i = dataArray.Length - 1; i >= 0; i--)
                         {
-                            string[] Values = NameValues[1].Split(',');
+                            var dataSubValue = dataArray[i];
 
-                            int ValuesLength = Values.Length;
-                            for (int l = 0; l < ValuesLength; l++)
+                            if (string.IsNullOrWhiteSpace(dataSubValue))
                             {
-                                string subline = Values[l];
-                                if (string.IsNullOrEmpty(subline) || subline == "true" || subline == "false" || subline.StartsWith("0x") || subline.IsDigitsOnly())
+                                continue;
+                            }
+
+                            bool dataIsWithSubValue;
+                            if (dataIsWithSubValue = dataSubValue.IndexOf(':') != -1)
+                            {
+                                var dataSubValueArray = dataSubValue.Split(new[] { ':' });
+                                if (dataSubValueArray.Length != 2)
                                 {
+                                    continue;
+                                }
+
+                                if (!IsValidString(dataSubValueArray[1]))
+                                {
+                                    continue;
+                                }
+
+                                if (ProjectData.OpenFileMode)
+                                {
+                                    AddRowData(dataSubValueArray[1], "Parent array:" + lineArray[0] + ", Member name:" + dataSubValueArray[0], CheckInput: false);
                                 }
                                 else
                                 {
-                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(subline);
-                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(NameValues[0]);
+                                    var translation = dataSubValueArray[1];
+                                    if (SetTranslation(ref translation))
+                                    {
+                                        dataSubValueArray[1] = translation;
+
+                                        dataArray[i] = dataSubValueArray[0] + ":" + dataSubValueArray[1];
+                                    }
+                                }
+                            }
+
+                            if (!dataIsWithSubValue)
+                            {
+                                if (IsValidString(dataSubValue))
+                                {
+                                    if (ProjectData.OpenFileMode)
+                                    {
+                                        AddRowData(dataSubValue, "Parent array:" + lineArray[0], CheckInput: false);
+                                    }
+                                    else
+                                    {
+                                        var translation = dataSubValue;
+                                        if (SetTranslation(ref translation))
+                                        {
+                                            dataArray[i] = translation;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (ProjectData.SaveFileMode)
+                        {
+                            lineArray[1] = string.Join(",", dataArray); // merge all value members
+                        }
+                    }
+
+                    if (!dataIsArray)
+                    {
+                        if (IsValidString(lineArray[1]))
+                        {
+                            if (ProjectData.OpenFileMode)
+                            {
+                                AddRowData(lineArray[1], "Varname: " + lineArray[0], CheckInput: false);
+                            }
+                            else
+                            {
+                                var translation = lineArray[1];
+                                if (SetTranslation(ref translation))
+                                {
+                                    ParseData.Line = lineArray[0] + "	" + translation;
                                 }
                             }
                         }
@@ -58,12 +114,9 @@ namespace TranslationHelper.Formats.KiriKiri
                 }
             }
 
-            return FunctionsTable.SetTableAndColumns(false);
-        }
+            SaveModeAddLine();
 
-        internal override bool Save()
-        {
-            throw new NotImplementedException();
+            return 0;
         }
     }
 }

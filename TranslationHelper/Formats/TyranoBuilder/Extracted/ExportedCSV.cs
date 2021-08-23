@@ -20,7 +20,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                 var data = ParseData.Line.Split('\t');
                 if (ProjectData.OpenFileMode)
                 {
-                    AddRowData(data[0], "", true, false);
+                    AddRowData(data[0], "", CheckInput: false);
                 }
                 else
                 {

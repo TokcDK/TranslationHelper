@@ -33,7 +33,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                     + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
                     HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
                     //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
-                    , CheckAddHashes: true, CheckInput: false);
+                    , CheckInput: false);
             }
             else
             {
@@ -193,7 +193,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                         + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
                         HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
                         //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
-                        , CheckAddHashes: true, CheckInput: true);
+                        , CheckInput: true);
 
                     AddToStats();
                 }

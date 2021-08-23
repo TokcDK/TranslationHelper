@@ -50,7 +50,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                         + (IsPluginsJS && jsonValue.Path.StartsWith("parameters.", StringComparison.InvariantCultureIgnoreCase)
                         ? Environment.NewLine + T._("Warning") + ". " + T._("Parameter: translation of some parameters can break the game.")
                         : string.Empty)
-                        , true);
+                        , CheckInput: true);
                 }
                 else
                 {

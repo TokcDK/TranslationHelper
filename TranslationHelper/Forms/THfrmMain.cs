@@ -444,7 +444,7 @@ namespace TranslationHelper
 
             foreach (DataGridViewColumn Column in THFileElementsDataGridView.Columns)
             {
-                if (Column.Name != THSettings.OriginalColumnName() && Column.Name != THSettings.OriginalColumnName())
+                if (Column.Name != THSettings.TranslationColumnName() && Column.Name != THSettings.OriginalColumnName())
                 {
                     Column.Visible = false;
                 }

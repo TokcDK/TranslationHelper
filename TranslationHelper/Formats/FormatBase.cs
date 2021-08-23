@@ -392,7 +392,7 @@ namespace TranslationHelper.Formats
                         foreach (Match m in mc)
                         {
                             var str = m.Result("$1");
-                            IsSet = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, true, true);
+                            IsSet = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, CheckInput: true);
                         }
                     }
                     else
@@ -574,9 +574,9 @@ namespace TranslationHelper.Formats
         /// <param name="RowInfo">info about the string</param>
         /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <returns></returns>
-        internal bool AddRowData(string RowData, string RowInfo = "", bool CheckAddHashes = false, bool CheckInput = true)
+        internal bool AddRowData(string RowData, string RowInfo = "", bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput);
+            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput);
         }
         /// <summary>
         /// Add string to table with options
@@ -585,9 +585,9 @@ namespace TranslationHelper.Formats
         /// <param name="RowInfo">info about the string</param>
         /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <returns></returns>
-        internal bool AddRowData(string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true)
+        internal bool AddRowData(string[] RowData, string RowInfo, bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckAddHashes, CheckInput, false);
+            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput, false);
         }
         /// <summary>
         /// Add string to table with options
@@ -599,9 +599,9 @@ namespace TranslationHelper.Formats
         /// <param name="CheckInput">cheack original string if valid</param>
         /// <param name="AddToDictionary"></param>
         /// <returns></returns>
-        internal bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
+        internal bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckInput = true, bool AddToDictionary = false)
         {
-            return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckAddHashes, CheckInput, AddToDictionary);
+            return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckInput, AddToDictionary);
         }
 
         /// <summary>
@@ -614,7 +614,7 @@ namespace TranslationHelper.Formats
         /// <param name="CheckInput">cheack original string if valid</param>
         /// <param name="AddToDictionary"></param>
         /// <returns></returns>
-        internal bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckAddHashes = false, bool CheckInput = true, bool AddToDictionary = false)
+        internal bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckInput = true, bool AddToDictionary = false)
         {
             var original = AddRowDataPreAddOriginalStringMod(RowData[0]);
 
@@ -623,7 +623,7 @@ namespace TranslationHelper.Formats
                 return false;
             }
 
-            if (Properties.Settings.Default.DontLoadDuplicates && CheckAddHashes && hashes != null && hashes.Contains(RowData[0]))
+            if (Properties.Settings.Default.DontLoadDuplicates && hashes != null && hashes.Contains(RowData[0]))
             {
                 return false;
             }
@@ -642,7 +642,7 @@ namespace TranslationHelper.Formats
                 ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
                 ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
 
-                if (Properties.Settings.Default.DontLoadDuplicates && CheckAddHashes && hashes != null)
+                if (Properties.Settings.Default.DontLoadDuplicates && hashes != null)
                 {
                     // add to hashes when only unique values
                     hashes.Add(original);
@@ -718,7 +718,7 @@ namespace TranslationHelper.Formats
                     }
                     else // set 1st value from avalaible values
                     {
-                        ProjectData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + TableName()+ ".valueToTranslate:\r\n"+ valueToTranslate+ "\r\nexistsTranslation:\r\n"+ existsTranslation);
+                        ProjectData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + TableName() + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
 
                         foreach (var rowIndex in ProjectData.OriginalsTableRowCoordinats[valueToTranslate][currentTableName])
                         {

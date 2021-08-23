@@ -67,7 +67,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                             {
                                 if (ProjectData.OpenFileMode)
                                 {
-                                    AddRowData(value, ParseData.Line, true, false);
+                                    AddRowData(value, ParseData.Line, CheckInput: false);
                                 }
                                 else
                                 {
@@ -105,7 +105,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                                     continue;
                                 }
 
-                                AddRowData(value, ParseData.Line, true, true);
+                                AddRowData(value, ParseData.Line, CheckInput: true);
                             }
                             else
                             {

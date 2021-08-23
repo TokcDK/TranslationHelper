@@ -68,7 +68,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
                         if (ProjectData.OpenFileMode)
                         {
-                            AddRowData(str, "", true);
+                            AddRowData(str, "", CheckInput: true);
                         }
                         else
                         {

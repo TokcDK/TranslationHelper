@@ -37,7 +37,7 @@ namespace TranslationHelper.Formats.LiveMaker
                     {
                         if (ProjectData.OpenFileMode)
                         {
-                            AddRowData(ParseData.Line, "", true, false);
+                            AddRowData(ParseData.Line, "", CheckInput: false);
                         }
                         else
                         {
