@@ -587,7 +587,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(string[] RowData, string RowInfo, bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput, false);
+            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput);
         }
         /// <summary>
         /// Add string to table with options
@@ -599,9 +599,9 @@ namespace TranslationHelper.Formats
         /// <param name="CheckInput">cheack original string if valid</param>
         /// <param name="AddToDictionary"></param>
         /// <returns></returns>
-        internal bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckInput = true, bool AddToDictionary = false)
+        internal bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckInput = true)
         {
-            return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckInput, AddToDictionary);
+            return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckInput);
         }
 
         /// <summary>
@@ -614,7 +614,7 @@ namespace TranslationHelper.Formats
         /// <param name="CheckInput">cheack original string if valid</param>
         /// <param name="AddToDictionary"></param>
         /// <returns></returns>
-        internal bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckInput = true, bool AddToDictionary = false)
+        internal bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckInput = true)
         {
             var original = AddRowDataPreAddOriginalStringMod(RowData[0]);
 
@@ -623,55 +623,43 @@ namespace TranslationHelper.Formats
                 return false;
             }
 
-            if (Properties.Settings.Default.DontLoadDuplicates && hashes != null && hashes.Contains(RowData[0]))
+            if (Properties.Settings.Default.DontLoadDuplicates && (hashes == null || hashes.Contains(RowData[0])))
             {
                 return false;
             }
 
-            if (AddToDictionary)
+            ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
+            ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
+
+            if (Properties.Settings.Default.DontLoadDuplicates)
             {
-                throw new NotImplementedException("Dictionary not implemented");
-                //if (!ProjectData.THFilesElementsDictionary.ContainsKey(original))
-                //{
-                //    ProjectData.THFilesElementsDictionary.Add(original, RowData.Length == 2 ? RowData[1] : string.Empty);
-                //    ProjectData.THFilesElementsDictionaryInfo.Add(original, RowInfo);
-                //}
+                // add to hashes when only unique values
+                hashes.Add(original);
             }
-            else
+            else if (!Properties.Settings.Default.DontLoadDuplicates)
             {
-                ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
-                ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
+                // variant with duplicates
 
-                if (Properties.Settings.Default.DontLoadDuplicates && hashes != null)
+                // check if original exists
+                if (!ProjectData.OriginalsTableRowCoordinats.ContainsKey(original))
                 {
-                    // add to hashes when only unique values
-                    hashes.Add(original);
+                    ProjectData.OriginalsTableRowCoordinats.Add(original, new Dictionary<string, HashSet<int>>());
                 }
-                else if (!Properties.Settings.Default.DontLoadDuplicates)
+
+                // check if tablename is exists
+                if (!ProjectData.OriginalsTableRowCoordinats[original].ContainsKey(tablename))
                 {
-                    // variant with duplicates
-
-                    // check if original exists
-                    if (!ProjectData.OriginalsTableRowCoordinats.ContainsKey(original))
-                    {
-                        ProjectData.OriginalsTableRowCoordinats.Add(original, new Dictionary<string, HashSet<int>>());
-                    }
-
-                    // check if tablename is exists
-                    if (!ProjectData.OriginalsTableRowCoordinats[original].ContainsKey(tablename))
-                    {
-                        ProjectData.OriginalsTableRowCoordinats[original].Add(tablename, new HashSet<int>());
-                    }
-
-                    // check if current row number is exists
-                    if (!ProjectData.OriginalsTableRowCoordinats[original][tablename].Contains(RowNumber))
-                    {
-                        ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(RowNumber);
-                    }
-
-                    // raise row number
-                    RowNumber++;
+                    ProjectData.OriginalsTableRowCoordinats[original].Add(tablename, new HashSet<int>());
                 }
+
+                // check if current row number is exists
+                if (!ProjectData.OriginalsTableRowCoordinats[original][tablename].Contains(RowNumber))
+                {
+                    ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(RowNumber);
+                }
+
+                // raise row number
+                RowNumber++;
             }
 
             return true;
