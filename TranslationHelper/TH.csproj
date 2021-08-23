@@ -143,6 +143,7 @@
     <Compile Include="Formats\KiriKiri\Games\FGroup2\NLoveImGoingToGetRidOfItAndLive\KS.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup1\VirginLode2\KS.cs" />
     <Compile Include="Formats\KiriKiri\Games\KSSyntax\Attribute.cs" />
+    <Compile Include="Formats\KiriKiri\Games\KSSyntax\CSBySyntax.cs" />
     <Compile Include="Formats\KiriKiri\Games\KSSyntax\Name.cs" />
     <Compile Include="Formats\KiriKiri\Games\KSSyntax\Comment.cs" />
     <Compile Include="Formats\KiriKiri\Games\KSSyntax\KSSyntaxBase.cs" />

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {

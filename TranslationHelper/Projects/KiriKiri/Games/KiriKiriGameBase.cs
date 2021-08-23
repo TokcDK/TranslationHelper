@@ -607,7 +607,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                         }
                         else
                         {
-                            dataFiles.Add(name);
+                            if(!dataFiles.Contains(name))
+                            {
+                                dataFiles.Add(name);
+                            }
                         }
                     }
                     else

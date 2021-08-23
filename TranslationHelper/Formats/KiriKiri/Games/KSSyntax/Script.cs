@@ -1,6 +1,4 @@
-﻿using TranslationHelper.Data;
-
-namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
+﻿namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 {
     class Script : KSSyntaxBase
     {
