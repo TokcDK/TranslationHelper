@@ -96,7 +96,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
         /// modification of original before add
         /// no modification by default
         /// </summary>
-        /// <param name=THSettings.OriginalColumnName()></param>
+        /// <param name="original"></param>
         /// <returns></returns>
         protected virtual string OriginalMod(string original)
         {

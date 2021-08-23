@@ -276,14 +276,14 @@ namespace TranslationHelper.Formats
         /// by default will be checked translation for ParseData.line if not set
         /// translation will be set to ParseData.line. use other overload to set specific variable for translation
         /// </summary>
-        /// <param name=THSettings.OriginalColumnName()>if not set then will be used ParseData.line</param>
-        protected virtual void AddTranslation(string original = null)
+        /// <param name="originalValue">if not set then will be used ParseData.line</param>
+        protected virtual void AddTranslation(string originalValue = null)
         {
-            original = original ?? ParseData.Line;
-            if (ProjectData.TablesLinesDict.ContainsKey(original))
+            originalValue = originalValue ?? ParseData.Line;
+            if (ProjectData.TablesLinesDict.ContainsKey(originalValue))
             {
                 ParseData.Ret = true;
-                ParseData.Line = TranslationMod(ProjectData.TablesLinesDict[original]);
+                ParseData.Line = TranslationMod(ProjectData.TablesLinesDict[originalValue]);
             }
         }
 
@@ -292,15 +292,15 @@ namespace TranslationHelper.Formats
         /// by default for original will be checked translation for ParseData.line if not set
         /// 'translation' will be set with translation
         /// </summary>
-        /// <param name=THSettings.TranslationColumnName()>will be set by value of translation</param>
-        /// <param name=THSettings.OriginalColumnName()>if not set then will be used ParseData.line</param>
-        protected virtual void AddTranslation(ref string translation, string original = null)
+        /// <param name="originalValue">will be set by value of translation</param>
+        /// <param name="translationValue">if not set then will be used ParseData.line</param>
+        protected virtual void AddTranslation(ref string translationValue, string originalValue = null)
         {
-            original = original ?? ParseData.Line;
-            if (ProjectData.TablesLinesDict.ContainsKey(original))
+            originalValue = originalValue ?? ParseData.Line;
+            if (ProjectData.TablesLinesDict.ContainsKey(originalValue))
             {
                 ParseData.Ret = true;
-                translation = TranslationMod(ProjectData.TablesLinesDict[original]);
+                translationValue = TranslationMod(ProjectData.TablesLinesDict[originalValue]);
             }
         }
 
