@@ -20,7 +20,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             ProjectData.CurrentProject.ReadLineMod(ref ParseData.Line);
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.IsComment)
             {

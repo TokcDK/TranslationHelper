@@ -33,7 +33,7 @@ namespace TranslationHelper.Formats.LiveMaker
                 {
                     //skip last line because stringbuilder adding new line and lmlsb will fail if will be empty line on the end
                 }
-                else if (ParseStringFileLine() == ParseStringFileLineReturnState.Break)
+                else if (ParseStringFileLine() == KeywordActionAfter.Break)
                 {
                     break;
                 }
@@ -50,7 +50,7 @@ namespace TranslationHelper.Formats.LiveMaker
             }
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.TrimmedLine.StartsWith("pylm"))
             {
@@ -77,8 +77,12 @@ namespace TranslationHelper.Formats.LiveMaker
                     }
                     else
                     {
-                        AddTranslation(ref translation, original);
-                        dataarray[4] = translation;
+                        var trans = original;
+                        if (SetTranslation(ref trans, translation))
+                        {
+                            dataarray[4] = trans;
+                        }
+
                         ParseData.Line = string.Join(",", dataarray);
                     }
                 }

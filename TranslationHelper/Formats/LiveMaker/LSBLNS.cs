@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.LiveMaker
         }
 
         bool CaptureMessage = false;
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (CaptureMessage)
             {

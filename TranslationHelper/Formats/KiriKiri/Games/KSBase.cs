@@ -249,9 +249,9 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         }
 
         bool endsWithWait;
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
-            var ret = ParseStringFileLineReturnState.Continue;
+            var ret = KeywordActionAfter.Continue;
 
             if (!IsScriptBegin() && !IsEmptyOrComment() && !ParsePatterns() &&
                 ((endsWithWait = ParseData.TrimmedLine.EndsWith(waitSymbol)) || EndsWithValidSymbol() || ContainsNoSpecSymbols() || ContainsCharsWhenTagsRemoved())

@@ -26,7 +26,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
             return ParseStringFile();
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             return CheckAndParse();
         }

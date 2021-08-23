@@ -12,7 +12,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
 
         protected abstract string SvarIdentifier { get; }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (StartReadingSvar)
             {
@@ -48,11 +48,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
 
                     if (ProjectData.SaveFileMode)
                     {
-                        return ParseStringFileLineReturnState.Continue;
+                        return KeywordActionAfter.Continue;
                     }
                     else
                     {
-                        return ParseStringFileLineReturnState.Break;
+                        return KeywordActionAfter.Break;
                     }
 
                 }
@@ -105,7 +105,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                 SaveModeAddLine("\n");
             }
 
-            return ParseStringFileLineReturnState.Continue;
+            return KeywordActionAfter.Continue;
         }
     }
 }

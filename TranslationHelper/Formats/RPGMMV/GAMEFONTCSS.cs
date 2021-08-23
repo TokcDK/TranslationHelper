@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.RPGMMV
             return ParseStringFile();
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.IsComment)
             {
@@ -43,7 +43,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     {
                         ParseData.Ret = AddRowData(r.Result("$1"), T._("GameFont.\r\nFont must be installed in system or file placed in folder %GAME%\\www\\fonts\\ \r\n or use absolute path. \r\n Change font to smaller is more preferable than line split function\r\nexample: c:/windows/fonts/browa.ttf"), CheckInput: false);
 
-                        return ParseStringFileLineReturnState.Break;
+                        return KeywordActionAfter.Break;
                     }
                     else
                     {
@@ -66,7 +66,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
             SaveModeAddLine();
 
-            return ParseStringFileLineReturnState.ReadToEnd;
+            return KeywordActionAfter.ReadToEnd;
         }
 
         internal override bool Save()

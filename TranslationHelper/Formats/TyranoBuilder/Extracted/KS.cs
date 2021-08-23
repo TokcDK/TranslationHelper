@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.KiriKiri.Games.KSSyntax;
 
@@ -9,6 +11,8 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
         public KS()
         {
             scriptMark = new Script();
+            Tag = new TAG1();
+            textOnMessage = new List<string>();
         }
 
         internal override string Ext()
@@ -17,12 +21,15 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
         }
 
         bool IsScript = false;
-        Script scriptMark;
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        bool TextOn = false;
+        readonly Script scriptMark;
+        readonly TAG1 Tag;
+        readonly List<string> textOnMessage;
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.IsComment)
             {
-                if (ParseData.TrimmedLine.EndsWith("*/")) //comment section end
+                if (ParseData.TrimmedLine.Contains("*/")) //comment section end
                 {
                     ParseData.IsComment = false;
                 }
@@ -34,9 +41,44 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                     IsScript = false;
                 }
             }
+            else if (TextOn)
+            {
+                if (ParseData.TrimmedLine == "[textoff]")
+                {
+                    var joined = string.Join(Environment.NewLine, textOnMessage);
+                    if (IsValidString(joined))
+                    {
+                        if (ProjectData.OpenFileMode)
+                        {
+                            AddRowData(joined, "TextOn block message", CheckInput: false);
+                        }
+                        else
+                        {
+                            SetTranslation(ref joined);
+                        }
+                    }
+
+                    if (ProjectData.SaveFileMode)
+                    {
+                        ParseData.Line = joined + ParseData.Line;
+                    }
+
+                    TextOn = false;
+                }
+                else
+                {
+                    textOnMessage.Add(ParseData.Line);
+                    return KeywordActionAfter.Continue;
+                }
+            }
             else if (Regex.IsMatch(ParseData.Line, scriptMark.StartsWith))
             {
                 IsScript = true;
+            }
+            else if (ParseData.TrimmedLine == "[texton]")
+            {
+                textOnMessage.Clear();
+                TextOn = true;
             }
             else
             {
@@ -53,7 +95,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                 else if (ParseData.Line.StartsWith("[glink")
                     || ParseData.Line.StartsWith("[ptext")
                     || ParseData.Line.StartsWith("[mtext")
-                    || (ParseData.Line.Contains("text=") && Regex.IsMatch(ParseData.Line,@"^\t*\[[a-zA-Z] "))
+                    || (ParseData.Line.Contains("text=") && Regex.IsMatch(ParseData.Line, @"^\t*\[[a-zA-Z] "))
                     )
                 {
                     var glinkStringData = Regex.Matches(ParseData.Line, @"text\=\""([^\""\r\n\\]+(?:\\.[^\""\\]*)*)\""");//attributename="attributevalue"
@@ -71,12 +113,55 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                                 }
                                 else
                                 {
-                                    if (ProjectData.TablesLinesDict.ContainsKey(value) && ProjectData.TablesLinesDict[value] != value)
+                                    var trans = value;
+                                    if (SetTranslation(ref trans))
                                     {
                                         ParseData.Line = ParseData.Line
                                             .Remove(glinkStringData[i].Index, glinkStringData[i].Length)
-                                            .Insert(glinkStringData[i].Index, "text=\"" + ProjectData.TablesLinesDict[value] + "\"");
-                                        ParseData.Ret = true;
+                                            .Insert(glinkStringData[i].Index, "text=\"" + trans + "\"");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (Regex.IsMatch(ParseData.Line, Tag.StartsWith))
+                {
+                    if (Tag.Include() != null)
+                    {
+                        foreach (var attributePattern in Tag.Include())
+                        {
+                            if (attributePattern == null)
+                            {
+                                continue;
+                            }
+
+                            var attributeMatches = Regex.Matches(ParseData.Line, attributePattern.StartsWith);
+
+                            for (int i = attributeMatches.Count - 1; i >= 0; i--)
+                            {
+                                var attributeMatch = attributeMatches[i];
+
+                                var attributeValue = attributeMatch.Groups[1].Value;
+
+                                if (!IsValidString(attributeValue))
+                                {
+                                    continue;
+                                }
+
+                                if (ProjectData.OpenFileMode)
+                                {
+                                    AddRowData(attributeValue, "", CheckInput:false);
+                                }
+                                else
+                                {
+                                    var trans = attributeValue;
+                                    if (SetTranslation(ref trans))
+                                    {
+                                        int index = attributeMatch.Groups[1].Index;
+                                        ParseData.Line = ParseData.Line
+                                            .Remove(index, attributeMatch.Groups[1].Length)
+                                            .Insert(index, trans);
                                     }
                                 }
                             }
@@ -89,7 +174,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 
                     if (mc.Count > 0)
                     {
-                        if(ProjectData.SaveFileMode)
+                        if (ProjectData.SaveFileMode)
                         {
                             ParseData.Line = "";
                         }
@@ -111,9 +196,9 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                             {
                                 if (!(value.StartsWith("[") && value.EndsWith("]")) && IsValidString(value))
                                 {
-                                    AddTranslation(ref value, value);
-                                    ParseData.Ret = true;
+                                    SetTranslation(ref value);
                                 }
+
                                 ParseData.Line += value;
                             }
                         }
@@ -144,9 +229,9 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             }
 
 
-            SaveModeAddLine("\n");//using \n as new line
+            SaveModeAddLine(Environment.NewLine);//using \n as new line
 
-            return 0;
+            return KeywordActionAfter.Continue;
         }
 
         private static string Cleaned(string line)

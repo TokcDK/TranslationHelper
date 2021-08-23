@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             return ".csv";
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (!string.IsNullOrWhiteSpace(ParseData.Line) && !ParseData.Line.Contains("DO NOT EDIT"))//skip info lines
             {
@@ -24,8 +24,12 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                 }
                 else
                 {
-                    AddTranslation(ref data[1], data[0]);
-                    data[1] = data[1].Replace("\t"," ");//replace tabspace with common space because tab is splitter
+                    var trans = data[0];
+                    if(SetTranslation(ref trans))
+                    {
+                        data[1] = trans.Replace("\t", " ");//replace tabspace with common space because tab is splitter
+                    }
+
                     ParseData.Line = string.Join("\t", data);
                 }
             }

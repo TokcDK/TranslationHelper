@@ -19,16 +19,16 @@ namespace TranslationHelper.Formats.Raijin7.eve
             return ParseStringFile();
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             //ParseData.TrimmedLine = ParseData.line;
 
-            var ret = ParseStringFileLineReturnState.ReadToEnd;
+            var ret = KeywordActionAfter.ReadToEnd;
 
             //commented or empty
             if (string.IsNullOrWhiteSpace(ParseData.Line) || ParseData.TrimmedLine.StartsWith("//"))
             {
-                ret = ParseStringFileLineReturnState.Continue;
+                ret = KeywordActionAfter.Continue;
             }
             else if (ParseData.TrimmedLine.StartsWith("set_run_msg")
                 || ParseData.TrimmedLine.StartsWith("zin_old_msg")
@@ -88,7 +88,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
 
                 }
 
-                ret = ParseStringFileLineReturnState.Break;
+                ret = KeywordActionAfter.Break;
             }
 
             SaveModeAddLine();

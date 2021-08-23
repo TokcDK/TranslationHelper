@@ -29,7 +29,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    return ParseJSArrayOfJsons();
         //}
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.TrimmedLine.TrimStart().StartsWith("{\"name\":"))
             {
@@ -64,7 +64,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
             SaveModeAddLine("\n");
 
-            return ParseStringFileLineReturnState.Continue;
+            return KeywordActionAfter.Continue;
         }
 
         //private bool ParseJSArrayOfJsons()

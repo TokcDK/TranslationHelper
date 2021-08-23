@@ -41,18 +41,18 @@ namespace TranslationHelper.Formats.Raijin7
 
         int lineNumber;
         int variant;
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             //ParseData.TrimmedLine = ParseData.line;
 
-            var ret = ParseStringFileLineReturnState.ReadToEnd;
+            var ret = KeywordActionAfter.ReadToEnd;
 
             if (variant > 0)
             {
                 //commented or empty
                 if (string.IsNullOrWhiteSpace(ParseData.Line) || ParseData.Line.TrimStart().StartsWith("//"))
                 {
-                    ret = ParseStringFileLineReturnState.Continue;
+                    ret = KeywordActionAfter.Continue;
                 }
                 else if (variant == 1)
                 {

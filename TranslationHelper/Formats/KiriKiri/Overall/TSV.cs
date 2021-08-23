@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.KiriKiri
             return true;
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.TrimmedLine.StartsWith(";") || !ParseData.Line.Contains("	"))
             {

@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
             return ".csv";
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             var values = Regex.Matches(ParseData.Line, @"[^\t\r\n]+");
             var maxindex = values.Count - 1;

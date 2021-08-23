@@ -33,8 +33,8 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             foreach (var line in nscripttxt.SplitToLines())
             {
                 ParseData.Line = line;
-                ParseStringFileLineReturnState parseLineResult;
-                if ((parseLineResult = ParseStringFileLine()) == ParseStringFileLineReturnState.Break)
+                KeywordActionAfter parseLineResult;
+                if ((parseLineResult = ParseStringFileLine()) == KeywordActionAfter.Break)
                 {
                     break;
                 }
@@ -45,7 +45,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             }
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             //ParseData.TrimmedLine = ParseData.line;
 
@@ -93,7 +93,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
             if (ProjectData.SaveFileMode)
                 ParseData.ResultForWrite.Append(ParseData.Line + '\n');
-            return ParseStringFileLineReturnState.ReadToEnd;
+            return KeywordActionAfter.ReadToEnd;
         }
 
         protected override string FixInvalidSymbols(string str)

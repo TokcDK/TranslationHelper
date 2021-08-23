@@ -197,12 +197,12 @@ namespace TranslationHelper.Formats.WolfRPG
         /// check and parse lines
         /// </summary>
         /// <returns></returns>
-        protected ParseStringFileLineReturnState CheckAndParse()
+        protected KeywordActionAfter CheckAndParse()
         {
             //skip if not patch files
             if (!CheckSetPatchVersion())
             {
-                return ParseStringFileLineReturnState.Break;
+                return KeywordActionAfter.Break;
             }
 
             //skip if begin string not found
@@ -215,7 +215,7 @@ namespace TranslationHelper.Formats.WolfRPG
                 SaveModeAddLine("\n");
             }
 
-            return ParseStringFileLineReturnState.Continue;
+            return KeywordActionAfter.Continue;
         }
 
         /// <summary>

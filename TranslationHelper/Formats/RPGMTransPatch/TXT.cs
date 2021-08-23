@@ -25,7 +25,7 @@ namespace TranslationHelper.Formats.RPGMTrans
             return "RPGMTrans patch txt";
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             return CheckAndParse();
         }

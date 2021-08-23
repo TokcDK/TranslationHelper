@@ -448,7 +448,12 @@ namespace TranslationHelper.Functions
                 }
 
                 // check if last value is on first place else update
-                if (values.Contains(ProjectData.SelectedFilePath) && values.IndexOf(ProjectData.SelectedFilePath) > 0)
+                if (!values.Contains(ProjectData.SelectedFilePath) && !string.IsNullOrWhiteSpace(ProjectData.SelectedFilePath))
+                {
+                    changed = true;
+                    values.Insert(0, ProjectData.SelectedFilePath);
+                }
+                else if (values.IndexOf(ProjectData.SelectedFilePath) > 0)
                 {
                     changed = true;
                     values.Remove(ProjectData.SelectedFilePath);

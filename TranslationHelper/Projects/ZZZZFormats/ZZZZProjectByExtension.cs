@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             foreach (var formatType in formatsTypes)
             {
                 var format = (FormatBase)Activator.CreateInstance(formatType);
-                if (format.Ext() == fileExt && format.ExtIdentifier())
+                if (format.Ext() == fileExt /*&& format.ExtIdentifier()*/)
                 {
                     CurrentFormat = format;
                     return true;

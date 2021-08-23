@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.Liar_soft
             return ".txt";
         }
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (!ParseData.Line.StartsWith("#"))
             {

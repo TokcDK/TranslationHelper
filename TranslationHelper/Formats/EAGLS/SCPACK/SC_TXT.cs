@@ -81,7 +81,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         }
 
         //string lastMentionedCharacter = string.Empty;
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
 
 

@@ -35,7 +35,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         readonly StringBuilder sb = new StringBuilder();
         private string LastMSGType;
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (readmode)
             {

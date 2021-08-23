@@ -14,7 +14,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         /// </summary>
         protected virtual string PreQuoteRegexPattern => "";
 
-        protected override ParseStringFileLineReturnState ParseStringFileLine()
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             if (!IsEmptyOrComment())
             {

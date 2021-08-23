@@ -194,7 +194,7 @@ namespace TranslationHelper.Formats
             }
         }
 
-        internal enum ParseStringFileLineReturnState
+        internal enum KeywordActionAfter
         {
             Break = -1,
             Continue = 0,
@@ -208,7 +208,7 @@ namespace TranslationHelper.Formats
         {
             while (ReadLine() != null)
             {
-                if (ParseStringFileLine() == ParseStringFileLineReturnState.Break)
+                if (ParseStringFileLine() == KeywordActionAfter.Break)
                 {
                     break;
                 }
@@ -220,9 +220,9 @@ namespace TranslationHelper.Formats
         /// -1=stop parse cyrcle, 0-continue cyrcle, 1 - read to end of the cyrcle
         /// </summary>
         /// <returns></returns>
-        protected virtual ParseStringFileLineReturnState ParseStringFileLine()
+        protected virtual KeywordActionAfter ParseStringFileLine()
         {
-            return ParseStringFileLineReturnState.Break;
+            return KeywordActionAfter.Break;
         }
 
         bool firstline = true;
@@ -285,23 +285,6 @@ namespace TranslationHelper.Formats
             {
                 ParseData.Ret = true;
                 ParseData.Line = TranslationMod(ProjectData.TablesLinesDict[originalValue]);
-            }
-        }
-
-        /// <summary>
-        /// add translation if exists in DB 
-        /// by default for original will be checked translation for ParseData.line if not set
-        /// 'translation' will be set with translation
-        /// </summary>
-        /// <param name="originalValue">will be set by value of translation</param>
-        /// <param name="translationValue">if not set then will be used ParseData.line</param>
-        protected virtual void AddTranslation(ref string translationValue, string originalValue = null)
-        {
-            originalValue = originalValue ?? ParseData.Line;
-            if (ProjectData.TablesLinesDict.ContainsKey(originalValue))
-            {
-                ParseData.Ret = true;
-                translationValue = TranslationMod(ProjectData.TablesLinesDict[originalValue]);
             }
         }
 
