@@ -57,12 +57,13 @@ namespace TranslationHelper.Functions
 
             ProjectData.SelectedFilePath = filePath;
 
+            bool isProjectFound = false;
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-            await Task.Run(() => RPGMFunctions.THSelectedSourceType = GetSourceType(ProjectData.SelectedFilePath)).ConfigureAwait(true);
+            await Task.Run(() => isProjectFound = GetSourceType(ProjectData.SelectedFilePath)).ConfigureAwait(true);
 
             ProjectData.Main.ProgressInfo(false, string.Empty);
 
-            if (RPGMFunctions.THSelectedSourceType.Length == 0)
+            if (!isProjectFound)
             {
                 ProjectData.Main.frmMainPanel.Visible = false;
 
@@ -112,9 +113,8 @@ namespace TranslationHelper.Functions
         }
 
         internal DirectoryInfo mvdatadir;
-        private static string GetSourceType(string sPath)
+        private static bool GetSourceType(string sPath)
         {
-            ProjectData.SelectedFilePath = sPath;
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
 
             ProjectData.Main.frmMainPanel.Invoke((Action)(() => ProjectData.Main.frmMainPanel.Visible = true));
@@ -124,20 +124,19 @@ namespace TranslationHelper.Functions
             {
                 ProjectData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project);// create instance of project
 
+                ProjectData.SelectedFilePath = sPath;
                 ProjectData.SelectedDir = dir.FullName;
                 ProjectData.SelectedGameDir = dir.FullName;
 
-                if (TryDetectProject(ProjectData.CurrentProject))
+                if (TryDetectProject(ProjectData.CurrentProject) && TryOpenProject())
                 {
-                    // reinit new instance of project before try to open
-
-                    return TryOpenProject();
+                    return true;
                 }
                 ProjectData.CurrentProject = null;
             }
 
             //Old projects
-            return ""; //TryDetectOpenOldProjects(sPath); // disabled because obsolete code
+            return false; //TryDetectOpenOldProjects(sPath); // disabled because obsolete code
         }
 
         private string TryDetectOpenOldProjects(string sPath)
@@ -312,7 +311,7 @@ namespace TranslationHelper.Functions
         /// Try to open project and return project name if open is success
         /// </summary>
         /// <returns></returns>
-        private static string TryOpenProject()
+        private static bool TryOpenProject()
         {
             ProjectData.CurrentProject.Init();
             ProjectData.CurrentProject.BakRestore();
@@ -321,9 +320,9 @@ namespace TranslationHelper.Functions
             {
                 ProjectData.CurrentProject.CreateMenus();//createmenus
 
-                return ProjectData.CurrentProject.Name();
+                return true;
             }
-            return string.Empty;
+            return false;
         }
 
         /// <summary>
@@ -372,7 +371,7 @@ namespace TranslationHelper.Functions
 
             ProjectData.SelectedGameDir = GetCorrectedGameDIr(ProjectData.SelectedGameDir);
 
-            if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker game with RPGMTransPatch") || RPGMFunctions.THSelectedSourceType.Contains("KiriKiri game"))
+            if (ProjectData.CurrentProject.Name().Contains("RPG Maker game with RPGMTransPatch") || ProjectData.CurrentProject.Name().Contains("KiriKiri game"))
             {
                 ProjectData.Main.Settings.THConfigINI.SetKey("Paths", "LastPath", ProjectData.SelectedGameDir);
             }
@@ -387,7 +386,7 @@ namespace TranslationHelper.Functions
                     MessageBox.Show("An error occured:" + Environment.NewLine + ex);
                 }
             }
-            //_ = /*THMsg*/MessageBox.Show(RPGMFunctions.THSelectedSourceType + T._(" loaded") + "!");
+            //_ = /*THMsg*/MessageBox.Show(ProjectData.CurrentProject.Name() + T._(" loaded") + "!");
 
             ProjectData.Main.EditToolStripMenuItem.Enabled = true;
             ProjectData.Main.ViewToolStripMenuItem.Enabled = true;
@@ -403,7 +402,7 @@ namespace TranslationHelper.Functions
 
             if (ProjectData.Main.FVariant.Length == 0)
             {
-                ProjectData.Main.FVariant = " * " + RPGMFunctions.THSelectedSourceType;
+                ProjectData.Main.FVariant = " * " + ProjectData.CurrentProject.Name();
             }
             try
             {

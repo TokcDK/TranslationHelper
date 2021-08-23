@@ -158,20 +158,17 @@ namespace TranslationHelper.Main.Functions
             {
                 ret = ProjectData.CurrentProject.ProjectFolderName();
             }
-            else if (RPGMFunctions.THSelectedSourceType.Contains("RPG Maker MV"))
+            else if (ProjectData.CurrentProject.Name().Contains("RPG Maker MV"))
             {
                 ret = "RPGMakerMV";
             }
-            else if (RPGMFunctions.THSelectedSourceType.Contains("RPGMaker") || RPGMFunctions.THSelectedSourceType.Contains("RPG Maker"))
+            else if (ProjectData.CurrentProject.Name().Contains("RPGMaker") || ProjectData.CurrentProject.Name().Contains("RPG Maker"))
             {
                 ret = "RPGMakerTransPatch";
             }
 
             ret = Path.Combine(Application.StartupPath, "DB", ret.Length > 0 ? ret : "Other");
-            if (!Directory.Exists(ret))
-            {
-                Directory.CreateDirectory(ret);
-            }
+            Directory.CreateDirectory(ret);
 
             return ret;
         }
@@ -183,7 +180,7 @@ namespace TranslationHelper.Main.Functions
             {
                 fName = ProjectData.CurrentProject.GetProjectDBFileName();
             }
-            else if (RPGMFunctions.THSelectedSourceType.Contains(new RPGMMVGame().Name()))
+            else if (ProjectData.CurrentProject.Name().Contains(new RPGMMVGame().Name()))
             {
                 if (ProjectData.Main.THFilesList.GetItemsCount() == 1 && ProjectData.Main.THFilesList.GetItemName(0) != null && !string.IsNullOrWhiteSpace(ProjectData.Main.THFilesList.GetItemName(0).ToString()))
                 {

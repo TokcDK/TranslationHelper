@@ -678,7 +678,7 @@ namespace TranslationHelper
 
                 THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(SelectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(SelectedCellValue);
 
-                if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
+                if (ProjectData.CurrentProject.Name() == "RPG Maker MV")
                 {
                     THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
                 }
@@ -835,7 +835,7 @@ namespace TranslationHelper
 
                 if (THSaveFolderBrowser.ShowDialog() == DialogResult.OK)
                 {
-                    if (RPGMFunctions.THSelectedSourceType == "RPGMakerTransPatch")
+                    if (ProjectData.CurrentProject.Name() == "RPGMakerTransPatch")
                     {
                         if (new RPGMTransOLD().SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, RPGMFunctions.RPGMTransPatchVersion))
                         {
@@ -1016,7 +1016,7 @@ namespace TranslationHelper
 
             ProgressInfo(true);
 
-            switch (RPGMFunctions.THSelectedSourceType)
+            switch (ProjectData.CurrentProject.Name())
             {
                 case "RPGMakerTransPatch":
                 case "RPG Maker game with RPGMTransPatch":
@@ -1840,7 +1840,7 @@ namespace TranslationHelper
 
                         ProgressInfo(true);
 
-                        switch (RPGMFunctions.THSelectedSourceType)
+                        switch (ProjectData.CurrentProject.Name())
                         {
                             case "RPGMakerTransPatch":
                             case "RPG Maker game with RPGMTransPatch":
@@ -1949,7 +1949,7 @@ namespace TranslationHelper
                 ProjectData.TablesLinesDict.Clear();
             }
 
-            if (ProjectData.CurrentProject != null || RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
+            if (ProjectData.CurrentProject != null || ProjectData.CurrentProject.Name() == "RPG Maker MV")
             {
                 bool BuckupCreated = false;
                 try

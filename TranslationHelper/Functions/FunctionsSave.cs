@@ -43,26 +43,26 @@ namespace TranslationHelper.Functions
             }
             else
             {
-                if (RPGMFunctions.THSelectedSourceType == new HowToMakeTrueSlavesRiseofaDarkEmpire().Name())
+                if (ProjectData.CurrentProject.Name() == new HowToMakeTrueSlavesRiseofaDarkEmpire().Name())
                 {
                     await Task.Run(() => new HowToMakeTrueSlavesRiseofaDarkEmpire().Save()).ConfigureAwait(true);
                 }
-                else if (RPGMFunctions.THSelectedSourceType == "RubyRPGGame")
+                else if (ProjectData.CurrentProject.Name() == "RubyRPGGame")
                 {
                     new RJ263914OLD().ProceedRubyRPGGame(ProjectData.SelectedGameDir, true);
                     //MessageBox.Show("Finished");
                 }
-                else if (RPGMFunctions.THSelectedSourceType == "Wolf RPG txt")
+                else if (ProjectData.CurrentProject.Name() == "Wolf RPG txt")
                 {
                     new WRPGOLDOpen().ProceedWriteWolfRPGtxt();
                     //MessageBox.Show("Finished");
                 }
-                else if (RPGMFunctions.THSelectedSourceType == "WOLF TRANS PATCH")
+                else if (ProjectData.CurrentProject.Name() == "WOLF TRANS PATCH")
                 {
                     new WRPGOLDOpen().WriteWOLFTRANSPATCH();
                     //MessageBox.Show("Finished");
                 }
-                else if (RPGMFunctions.THSelectedSourceType == "RPGMakerTransPatch" || RPGMFunctions.THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
+                else if (ProjectData.CurrentProject.Name() == "RPGMakerTransPatch" || ProjectData.CurrentProject.Name() == "RPG Maker game with RPGMTransPatch")
                 {
                     //THActionProgressBar.Visible = true;
                     //THInfolabel.Visible = true;
@@ -85,7 +85,7 @@ namespace TranslationHelper.Functions
 
                     //THActionProgressBar.Visible = false;
 
-                    if (RPGMFunctions.THSelectedSourceType == "RPG Maker game with RPGMTransPatch")
+                    if (ProjectData.CurrentProject.Name() == "RPG Maker game with RPGMTransPatch")
                     {
                         string rpgmakertranscli = Application.StartupPath + @"\Res\rpgmakertrans\rpgmt.exe";
 
@@ -121,12 +121,12 @@ namespace TranslationHelper.Functions
 
                     ProjectData.Main.SaveInAction = false;
                 }
-                else if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV json")
+                else if (ProjectData.CurrentProject.Name() == "RPG Maker MV json")
                 {
                     ///*THMsg*/MessageBox.Show(ProjectData.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
                     await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.GetItemName(0), ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".json")).ConfigureAwait(true);
                 }
-                else if (RPGMFunctions.THSelectedSourceType == "RPG Maker MV")
+                else if (ProjectData.CurrentProject.Name() == "RPG Maker MV")
                 {
                     for (int f = 0; f < ProjectData.Main.THFilesList.GetItemsCount(); f++)
                     {
@@ -158,13 +158,13 @@ namespace TranslationHelper.Functions
                     /*THMsg*/
                     //MessageBox.Show(T._("finished") + "!");
                 }
-                else if (RPGMFunctions.THSelectedSourceType == "KiriKiri scenario")
+                else if (ProjectData.CurrentProject.Name() == "KiriKiri scenario")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                     //await Task.Run(() => KiriKiriScenarioWrite(ProjectData.SelectedDir + "\\" + THFilesList.GetItemName(0) + ".scn"));
                     await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".scn")).ConfigureAwait(true);
                 }
-                else if (RPGMFunctions.THSelectedSourceType == "KiriKiri script")
+                else if (ProjectData.CurrentProject.Name() == "KiriKiri script")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
                     await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".ks")).ConfigureAwait(true);
