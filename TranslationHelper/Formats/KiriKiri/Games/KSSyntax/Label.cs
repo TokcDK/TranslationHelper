@@ -15,6 +15,6 @@ namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
 
         internal override string StartsWith => @"^\*";
 
-        internal override string EndsWith => @"\n";
+        internal override string EndsWith => "\n";
     }
 }

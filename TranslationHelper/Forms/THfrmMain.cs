@@ -1949,7 +1949,7 @@ namespace TranslationHelper
                 ProjectData.TablesLinesDict.Clear();
             }
 
-            if (ProjectData.CurrentProject != null || ProjectData.CurrentProject.Name() == "RPG Maker MV")
+            if (ProjectData.CurrentProject != null /*|| ProjectData.CurrentProject.Name() == "RPG Maker MV"*/)
             {
                 bool BuckupCreated = false;
                 try

@@ -158,14 +158,14 @@ namespace TranslationHelper.Main.Functions
             {
                 ret = ProjectData.CurrentProject.ProjectFolderName();
             }
-            else if (ProjectData.CurrentProject.Name().Contains("RPG Maker MV"))
-            {
-                ret = "RPGMakerMV";
-            }
-            else if (ProjectData.CurrentProject.Name().Contains("RPGMaker") || ProjectData.CurrentProject.Name().Contains("RPG Maker"))
-            {
-                ret = "RPGMakerTransPatch";
-            }
+            //else if (ProjectData.CurrentProject.Name().Contains("RPG Maker MV"))
+            //{
+            //    ret = "RPGMakerMV";
+            //}
+            //else if (ProjectData.CurrentProject.Name().Contains("RPGMaker") || ProjectData.CurrentProject.Name().Contains("RPG Maker"))
+            //{
+            //    ret = "RPGMakerTransPatch";
+            //}
 
             ret = Path.Combine(Application.StartupPath, "DB", ret.Length > 0 ? ret : "Other");
             Directory.CreateDirectory(ret);
