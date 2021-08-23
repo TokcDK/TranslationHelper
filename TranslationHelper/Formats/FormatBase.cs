@@ -623,16 +623,13 @@ namespace TranslationHelper.Formats
                 return false;
             }
 
-            if (Properties.Settings.Default.DontLoadDuplicates && (hashes == null || hashes.Contains(RowData[0])))
-            {
-                return false;
-            }
-
-            ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
-            ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
-
             if (Properties.Settings.Default.DontLoadDuplicates)
             {
+                if (hashes == null || hashes.Contains(original))
+                {
+                    return false;
+                }
+
                 // add to hashes when only unique values
                 hashes.Add(original);
             }
@@ -661,6 +658,9 @@ namespace TranslationHelper.Formats
                 // raise row number
                 RowNumber++;
             }
+
+            ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
+            ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
 
             return true;
         }
