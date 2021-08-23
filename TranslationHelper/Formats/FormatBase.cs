@@ -636,7 +636,7 @@ namespace TranslationHelper.Formats
                 // add to hashes when only unique values
                 hashes.Add(original);
             }
-            else if (!Properties.Settings.Default.DontLoadDuplicates)
+            else
             {
                 // variant with duplicates
 

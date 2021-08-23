@@ -30,9 +30,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 Format.AddRowData(tablename: JsonName, RowData: tokenValue, RowInfo: "JsonPath: "
                     + Environment.NewLine
                     + jsonValue.Path
-                    + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
-                    HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
-                    //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                    + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
                     , CheckInput: false);
             }
             else
@@ -190,9 +188,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                     Format.AddRowData(tablename: JsonName, RowData: fullmessage, RowInfo: "JsonPath: "
                         + Environment.NewLine
                         + jsonObject.Path
-                        + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) :
-                        HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
-                        //+ (HasCurCode && (CurrentEventCode == 402 || CurrentEventCode == 102) ? Environment.NewLine + "note: Choice. Only 1 line." : string.Empty)
+                        + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + GetCodeName(CurrentEventCode) : string.Empty)
                         , CheckInput: true);
 
                     AddToStats();
@@ -245,12 +241,12 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// </summary>
         /// <param name="messagePartsList"></param>
         /// <returns></returns>
-        private static string GetMessageLinesFrom(List<JToken> messagePartsList)
+        private static string GetMessageLinesFrom(List<JObject> messagePartsList)
         {
             List<string> lines = new List<string>(messagePartsList.Count);
-            foreach (JToken token in messagePartsList)
+            foreach (JObject token in messagePartsList)
             {
-                JProperty prop = (token as JObject).Last as JProperty;
+                JProperty prop = token.Last as JProperty;
                 JArray array = prop.Value as JArray;
                 foreach (string value in array)
                 {
@@ -266,14 +262,14 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// </summary>
         /// <param name="jsonToken"></param>
         /// <returns></returns>
-        private List<JToken> GetNextTokensWithSameCode(JToken jsonToken)
+        private List<JObject> GetNextTokensWithSameCode(JToken jsonToken)
         {
-            var list = new List<JToken>
+            var list = new List<JObject>
             {
-                jsonToken
+                jsonToken as JObject
             };
 
-            var next = jsonToken.Next;
+            var next = jsonToken.Next as JObject;
             while (next is JObject obj
                 && obj.First is JProperty prop
                 && prop.Name == "code"
@@ -282,7 +278,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             {
                 AddedJObjects.TryAdd(obj);
                 list.Add(next);
-                next = next.Next;
+                next = next.Next as JObject;
             }
 
             return list;
@@ -293,7 +289,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// </summary>
         /// <param name="originalMessageJTokensList"></param>
         /// <param name="originalMergedMessage"></param>
-        private void TranslateMessages(List<JToken> originalMessageJTokensList, string originalMergedMessage)
+        private void TranslateMessages(List<JObject> originalMessageJTokensList, string originalMergedMessage)
         {
             if (!Format.IsValidString(originalMergedMessage))
             {
@@ -309,12 +305,12 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             var translated = translation.SplitToLines().ToArray();
 
             var origLength = originalMessageJTokensList.Count;
-            JToken lastJObject = null;
+            JObject lastJObject = null;
             for (int i = 0; i < translated.Length; i++)
             {
                 if (i < origLength)
                 {
-                    JObject jObject = originalMessageJTokensList[i] as JObject;
+                    JObject jObject = originalMessageJTokensList[i];
                     JProperty jProperty = jObject.Last as JProperty;
                     JArray propertiesJArray = jProperty.Value as JArray;
                     propertiesJArray[0] = translated[i]; // set line as one value of properties array of the object
@@ -324,11 +320,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 }
                 else
                 {
-                    var newJObjectWithExtraMessageLine = GetNewJObject(lastJObject as JObject, translated[i]); // get new object for extra line
+                    var newJObjectWithExtraMessageLine = GetNewJObject(lastJObject, translated[i]); // get new object for extra line
                     lastJObject.AddAfterSelf(newJObjectWithExtraMessageLine); // add new object after last
                     AddedJObjects.TryAdd(newJObjectWithExtraMessageLine); // add new object to skip list
 
-                    lastJObject = lastJObject.Next; // make new object as last object
+                    lastJObject = lastJObject.Next as JObject; // make new object as last object
                 }
             }
 
