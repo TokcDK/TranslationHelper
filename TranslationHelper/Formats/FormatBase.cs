@@ -33,7 +33,8 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// extension which can be parsed with the format, ".txt" or ".txt,.csv" for example
+        /// extension which can be parsed with the format, ".txt" or ".txt,.csv" for example.
+        /// override ExtIdentifier() to determine when a file with the extension can be opened
         /// </summary>
         /// <returns></returns>
         internal virtual string Ext()
@@ -42,7 +43,7 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// identifier to check how to identifi if selected extension must be parsed with this format.
+        /// identifier to check how to identify if selected extension must be parsed with this format.
         /// in result can be added new project which will be used Ext and this identifier to open valid standalone files.
         /// </summary>
         /// <returns></returns>
@@ -57,7 +58,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal virtual string Name()
         {
-            return null;
+            return string.Empty;
         }
 
         internal virtual bool Open() { return ParseStringFile(); }

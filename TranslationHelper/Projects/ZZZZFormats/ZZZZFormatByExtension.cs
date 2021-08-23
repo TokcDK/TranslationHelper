@@ -6,12 +6,12 @@ using TranslationHelper.Formats;
 
 namespace TranslationHelper.Projects.ZZZZFormats
 {
-    class ZZZZFormatByExtension : ProjectBase
+    class ZZZZProjectByExtension : ProjectBase
     {
         /// <summary>
         /// Project will be set be specified extension of found format
         /// </summary>
-        public ZZZZFormatByExtension()
+        public ZZZZProjectByExtension()
         {
         }
 
@@ -26,10 +26,11 @@ namespace TranslationHelper.Projects.ZZZZFormats
         {
             GetValidOpenable();
 
+            var fileExt = Path.GetExtension(ProjectData.SelectedFilePath);
             foreach (var formatType in formatsTypes)
             {
                 var format = (FormatBase)Activator.CreateInstance(formatType);
-                if (format.Ext() == Path.GetExtension(ProjectData.SelectedFilePath) && format.ExtIdentifier())
+                if (format.Ext() == fileExt && format.ExtIdentifier())
                 {
                     CurrentFormat = format;
                     return true;
@@ -41,7 +42,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         internal override string Name()
         {
-            return CurrentFormat.Name();
+            return string.IsNullOrWhiteSpace(CurrentFormat.Name()) ? CurrentFormat.Ext() : CurrentFormat.Name();
         }
 
         internal override bool Open()

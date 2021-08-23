@@ -8,6 +8,16 @@ namespace TranslationHelper.Formats.KiriKiri
         {
         }
 
+        internal override string Ext()
+        {
+            return ".tsv";
+        }
+
+        internal override bool ExtIdentifier()
+        {
+            return true;
+        }
+
         protected override ParseStringFileLineReturnState ParseStringFileLine()
         {
             if (ParseData.TrimmedLine.StartsWith(";") || !ParseData.Line.Contains("	"))
