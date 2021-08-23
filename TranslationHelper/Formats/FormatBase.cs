@@ -572,7 +572,6 @@ namespace TranslationHelper.Formats
         /// </summary>
         /// <param name="RowData">original string</param>
         /// <param name="RowInfo">info about the string</param>
-        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <returns></returns>
         internal bool AddRowData(string RowData, string RowInfo = "", bool CheckInput = true)
         {
@@ -583,7 +582,6 @@ namespace TranslationHelper.Formats
         /// </summary>
         /// <param name="RowData">original string</param>
         /// <param name="RowInfo">info about the string</param>
-        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <returns></returns>
         internal bool AddRowData(string[] RowData, string RowInfo, bool CheckInput = true)
         {
@@ -595,9 +593,7 @@ namespace TranslationHelper.Formats
         /// <param name="tablename">file/table name</param>
         /// <param name="RowData">original string</param>
         /// <param name="RowInfo">info about the string</param>
-        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <param name="CheckInput">cheack original string if valid</param>
-        /// <param name="AddToDictionary"></param>
         /// <returns></returns>
         internal bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckInput = true)
         {
@@ -610,9 +606,7 @@ namespace TranslationHelper.Formats
         /// <param name="tablename">file/table name</param>
         /// <param name="RowData">original string</param>
         /// <param name="RowInfo">info about the string</param>
-        /// <param name="CheckAddHashes">add strings to hashes and skip same strings</param>
         /// <param name="CheckInput">cheack original string if valid</param>
-        /// <param name="AddToDictionary"></param>
         /// <returns></returns>
         internal bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckInput = true)
         {
