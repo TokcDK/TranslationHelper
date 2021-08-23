@@ -2384,11 +2384,6 @@ namespace TranslationHelper
             _ = MessageBox.Show(Properties.Settings.Default.EnableTranslationCache.ToString(CultureInfo.InvariantCulture));
         }
 
-        private void SaveInnewFormatToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private async void ForceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             await Task.Run(() => new AutoSameForSimularForce().Selected()).ConfigureAwait(false);
