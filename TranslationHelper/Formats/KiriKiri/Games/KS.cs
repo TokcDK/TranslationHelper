@@ -1,9 +1,9 @@
 ﻿using System.Text;
-using TranslationHelper.Data;
+using TranslationHelper.Formats.TyranoBuilder.Extracted;
 
-namespace TranslationHelper.Formats.KiriKiri.Games
+namespace TranslationHelper.Formats.KiriKiri.KSParser
 {
-    class KS : KSBase
+    class KS : KSParserBase
     {
         public KS()
         {

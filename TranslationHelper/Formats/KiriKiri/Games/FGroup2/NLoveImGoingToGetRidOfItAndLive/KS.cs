@@ -1,13 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using TranslationHelper.Data;
-using TranslationHelper.Formats.KiriKiri.Games.FGroup2;
+﻿using System.Text;
+using TranslationHelper.Formats.TyranoBuilder.Extracted;
 
-namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive
+namespace TranslationHelper.Formats.KiriKiri.KSParser.NLoveImGoingToGetRidOfItAndLive
 {
-    class KS : FGroup2Base
+    class KS : KSParserBase
     {
         public KS()
         {

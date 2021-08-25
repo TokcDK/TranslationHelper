@@ -1,4 +1,4 @@
-﻿namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
+﻿namespace TranslationHelper.Formats.KiriKiri.KSParser.KSSyntax
 {
     class Comment : KSSyntaxBase
     {

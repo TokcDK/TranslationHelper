@@ -31,7 +31,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
 
         protected override List<System.Type> FormatType()
         {
-            return new List<System.Type> { typeof(Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLive.KS) };
+            return new List<System.Type> { typeof(Formats.KiriKiri.KSParser.NLoveImGoingToGetRidOfItAndLive.KS) };
         }
 
         protected override string[] Mask()

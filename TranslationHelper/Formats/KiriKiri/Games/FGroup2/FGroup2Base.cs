@@ -1,8 +1,8 @@
-﻿using TranslationHelper.Data;
+﻿using TranslationHelper.Formats.TyranoBuilder.Extracted;
 
-namespace TranslationHelper.Formats.KiriKiri.Games.FGroup2
+namespace TranslationHelper.Formats.KiriKiri.KSParser.FGroup2
 {
-    abstract class FGroup2Base : KSBase
+    abstract class FGroup2Base : KSParserBase
     {
         protected FGroup2Base()
         {

@@ -24,8 +24,8 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         {
             return new List<System.Type>
             {
-                typeof(Formats.KiriKiri.Games.KS),
-                typeof(Formats.KiriKiri.Games.CSV.CSV)
+                typeof(Formats.KiriKiri.KSParser.KS),
+                typeof(Formats.KiriKiri.KSParser.CSV.CSV)
             };
         }
 

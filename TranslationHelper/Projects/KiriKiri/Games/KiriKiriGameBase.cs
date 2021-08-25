@@ -104,7 +104,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         {
             return new List<Type>
                 {
-                   typeof(Formats.KiriKiri.Games.KS)
+                   typeof(Formats.KiriKiri.KSParser.KS)
                 };
         }
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
+namespace TranslationHelper.Formats.KiriKiri.KSParser.KSSyntax
 {
     abstract class KSSyntaxBase
     {

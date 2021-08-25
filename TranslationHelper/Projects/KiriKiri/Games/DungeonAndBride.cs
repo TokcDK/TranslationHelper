@@ -25,9 +25,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         protected override List<System.Type> FormatType()
         {
             return new List<System.Type>(3) {
-                typeof(Formats.KiriKiri.Games.FGroup1.VirginLode2.KS),
-                typeof(Formats.KiriKiri.Games.TJS),
-                typeof(Formats.KiriKiri.Games.CSV.CSV)
+                typeof(Formats.KiriKiri.KSParser.FGroup1.VirginLode2.KS),
+                typeof(Formats.KiriKiri.KSParser.TJS),
+                typeof(Formats.KiriKiri.KSParser.CSV.CSV)
             };
         }
 

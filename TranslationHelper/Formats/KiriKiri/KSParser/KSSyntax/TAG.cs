@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using TranslationHelper.Formats.KiriKiri.KSParser.KSSyntax;
 
-namespace TranslationHelper.Formats.KiriKiri.Games.KSSyntax
+namespace TranslationHelper.Formats.KiriKiri.KSParser.KSSyntax
 {
     class TAG : KSSyntaxBase
     {
