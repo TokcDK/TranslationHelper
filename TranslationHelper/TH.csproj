@@ -304,6 +304,7 @@
     <Compile Include="Projects\EAGLS\sc_.cs" />
     <Compile Include="Projects\HowToMakeTrueSlavesRiseofaDarkEmpire\HowToMakeTrueSlavesRiseofaDarkEmpire.cs" />
     <Compile Include="Projects\KiriKiri\Games\DungeonAndBride.cs" />
+    <Compile Include="Projects\KiriKiri\Games\KiriKiriGameUtils.cs" />
     <Compile Include="Projects\KiriKiri\Games\ZZZOtherKiriKiriGame.cs" />
     <Compile Include="Projects\KiriKiri\Games\PGroup1\PGroup1Base.cs" />
     <Compile Include="Projects\KiriKiri\Games\PGroup1\RJ297684GoblinsCave\RJ297684GoblinsCave.cs" />
