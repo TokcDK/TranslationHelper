@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         bool JsonIsParsed;
 
-        protected override void ParseStringFileOpen()
+        protected override void FileOpen()
         {
             JsonIsParsed = JsonParser.ParseUsingFormat(this);
         }

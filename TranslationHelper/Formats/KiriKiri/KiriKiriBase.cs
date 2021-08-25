@@ -5,7 +5,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    abstract class KiriKiriBase : FormatBase
+    abstract class KiriKiriBase : StringFileFormatBase
     {
         /// <summary>
         /// overall kirikiri environment for all formats
@@ -17,12 +17,12 @@ namespace TranslationHelper.Formats.KiriKiri
 
         internal override bool Open()
         {
-            return ParseStringFile();
+            return ParseFile();
         }
 
         internal override bool Save()
         {
-            return ParseStringFile();
+            return ParseFile();
         }
 
         protected Encoding encoding = Encoding.Unicode;
@@ -49,7 +49,7 @@ namespace TranslationHelper.Formats.KiriKiri
             //return Enc;
             //return new UTF8Encoding(false);
         }
-        protected override void ParseStringFilePreOpenExtra()
+        protected override void PreOpenExtraActions()
         {
             ParseData.IsComment = false;
         }

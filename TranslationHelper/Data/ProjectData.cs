@@ -125,16 +125,6 @@ namespace TranslationHelper.Data
         internal static string TargetTextBoxPreValue;
 
         /// <summary>
-        /// filtering records duplicates while adding to main work data table
-        /// </summary>
-        internal static HashSet<string> hashes = new HashSet<string>();
-
-        /// <summary>
-        /// для целей записи, скидывание сюда данных таблицы
-        /// </summary>
-        internal static Dictionary<string, string> TablesLinesDict = new Dictionary<string, string>();
-
-        /// <summary>
         /// все баз данных в кучу здесь
         /// </summary>
         internal static Dictionary<string, string> AllDBmerged;// = new Dictionary<string, string>();

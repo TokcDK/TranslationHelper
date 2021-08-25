@@ -108,6 +108,33 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         /// <summary>
+        /// Check before processing Selected().
+        /// </summary>
+        /// <returns>State if Selected() can be continue</returns>
+        protected virtual bool IsOkSelected()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Check before processing Table().
+        /// </summary>
+        /// <returns>State if Table() can be continue</returns>
+        protected virtual bool IsOkTable()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Check before processing All().
+        /// </summary>
+        /// <returns>State if All() can be continue</returns>
+        protected virtual bool IsOkAll()
+        {
+            return true;
+        }
+
+        /// <summary>
         /// get index of selected row
         /// </summary>
         /// <param name="rowIndex"></param>
@@ -149,6 +176,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal bool Selected()
         {
+            if (!IsOkSelected())
+            {
+                return false;
+            }
+
             Init();
 
             if (Dgv == null)
@@ -447,6 +479,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal bool Table()
         {
+            if (!IsOkTable())
+            {
+                return false;
+            }
+
             Init();
 
             int[] tableindexes = null;
@@ -529,6 +566,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal bool All()
         {
+            if (!IsOkAll())
+            {
+                return false;
+            }
+
             IsAll = true;
 
             Init();
@@ -651,10 +693,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         protected virtual bool IsValidRow()
         {
-            if (Properties.Settings.Default.IgnoreOrigEqualTransLines && Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation]))//apply only if translation not equal original
-                return false;
-
-            return true;
+            return Properties.Settings.Default.IgnoreOrigEqualTransLines || !Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation]);
         }
 
         protected abstract bool Apply();

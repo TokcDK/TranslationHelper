@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
+using TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesLinesDict;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.KiriKiri.Games
@@ -65,7 +66,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 //PatchDir
                 Directory.CreateDirectory(Path.Combine(ProjectData.ProjectWorkDir, PatchDirName));
 
-                ProjectData.CurrentProject.FillTablesLinesDict();
+                new FillEmptyTablesLinesDictSaveModeNoDups().All();
             }
 
             var dir = new DirectoryInfo(GetXP3OrigDirPath());
@@ -81,7 +82,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 ret = true;
             }
 
-            ProjectData.TablesLinesDict.Clear();
+            ProjectData.CurrentProject.TablesLinesDict.Clear();
 
             if (ret && ProjectData.SaveFileMode)
             {

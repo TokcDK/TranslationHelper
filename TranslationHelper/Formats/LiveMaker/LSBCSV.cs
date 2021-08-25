@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.LiveMaker
             return ".csv";
         }
 
-        protected override void ParseStringFileOpen()
+        protected override void FileOpen()
         {
             //reading all file and split it by \r\n because streamreader.readline also split by \n
             ParseData.LinesArray = File.ReadAllText(ProjectData.FilePath, ParseStringFileEncoding()).Split(new[] { "\r\n" }, System.StringSplitOptions.None);

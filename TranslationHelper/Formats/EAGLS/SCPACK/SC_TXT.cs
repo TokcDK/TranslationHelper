@@ -23,7 +23,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
 
         internal override bool Open()
         {
-            return ParseStringFile(); //OpenSC();
+            return ParseFile(); //OpenSC();
         }
         protected override Dictionary<string, string> Patterns()
         {
@@ -436,7 +436,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
 
         internal override bool Save()
         {
-            return ParseStringFile();// SaveSC();
+            return ParseFile();// SaveSC();
         }
 
         //old

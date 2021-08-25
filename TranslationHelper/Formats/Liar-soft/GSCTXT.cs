@@ -5,7 +5,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.Liar_soft
 {
-    class GSCTXT : FormatBase
+    class GSCTXT : StringFileFormatBase
     {
         public GSCTXT()
         {
@@ -53,7 +53,7 @@ namespace TranslationHelper.Formats.Liar_soft
 
             return 0;
         }
-        protected override bool ParseStringFilePostOpen()
+        protected override bool FilePostOpen()
         {
             if (ProjectData.OpenFileMode)
             {

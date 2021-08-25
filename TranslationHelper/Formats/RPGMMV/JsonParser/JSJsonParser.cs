@@ -64,11 +64,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
                     //if (UseHashSet)
                     //{
-                    //    if (ProjectData.TablesLinesDict.ContainsKey(tokenValue)
-                    //        && !string.IsNullOrEmpty(ProjectData.TablesLinesDict[tokenValue])
-                    //        && ProjectData.TablesLinesDict[tokenValue] != tokenValue)
+                    //    if (ProjectData.CurrentProject.TablesLinesDict.ContainsKey(tokenValue)
+                    //        && !string.IsNullOrEmpty(ProjectData.CurrentProject.TablesLinesDict[tokenValue])
+                    //        && ProjectData.CurrentProject.TablesLinesDict[tokenValue] != tokenValue)
                     //    {
-                    //        jsonValue.Value = ProjectData.TablesLinesDict[tokenValue];
+                    //        jsonValue.Value = ProjectData.CurrentProject.TablesLinesDict[tokenValue];
                     //    }
                     //}
                     //else

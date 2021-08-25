@@ -7,7 +7,7 @@ using TranslationHelper.Formats.KiriKiri.KSParser.KSSyntax;
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
-    abstract class KSParserBase : FormatBase
+    abstract class KSParserBase : StringFileFormatBase
     {
         public KSParserBase()
         {

@@ -556,12 +556,12 @@ namespace TranslationHelper.Formats.RPGMMV
                 return;
             }
 
-            if (!ProjectData.TablesLinesDict.ContainsKey(originalMergedMessage))
+            if (!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(originalMergedMessage))
             {
                 return;
             }
 
-            var translated = ProjectData.TablesLinesDict[originalMergedMessage].SplitToLines().ToArray();
+            var translated = ProjectData.CurrentProject.TablesLinesDict[originalMergedMessage].SplitToLines().ToArray();
 
             var origLength = originalMessageJTokensList.Count;
             JToken last = null;

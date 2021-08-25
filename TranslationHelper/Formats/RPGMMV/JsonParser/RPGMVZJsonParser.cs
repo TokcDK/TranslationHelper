@@ -37,8 +37,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             {
                 //предполагается, что ячейки из таблицы были разбиты на строки и добавлены в словарь
                 //if (/*IsTranslatableRow.ContainsKey(tokenvalue) && IsTranslatableRow[tokenvalue] tried to add check if row have translation but here also issue because no displaed rows will be translated &&*/
-                //    !ProjectData.TablesLinesDict.ContainsKey(tokenValue)
-                //    || ProjectData.TablesLinesDict[tokenValue].Length == 0
+                //    !ProjectData.CurrentProject.TablesLinesDict.ContainsKey(tokenValue)
+                //    || ProjectData.CurrentProject.TablesLinesDict[tokenValue].Length == 0
                 //    )
                 //{
                 //    return;

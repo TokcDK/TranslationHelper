@@ -19,5 +19,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             }
             return false;
         }
+
+        protected override void ActionsFinalize()
+        {
+            base.ActionsFinalize();
+        }
     }
 }

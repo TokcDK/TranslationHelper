@@ -752,9 +752,9 @@ namespace TranslationHelper
         internal bool FileDataWasChanged;
         private async void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ProjectData.TablesLinesDict != null && ProjectData.TablesLinesDict.Count > 0)
+            if (ProjectData.CurrentProject.TablesLinesDict != null && ProjectData.CurrentProject.TablesLinesDict.Count > 0)
             {
-                ProjectData.TablesLinesDict.Clear();
+                ProjectData.CurrentProject.TablesLinesDict.Clear();
             }
             await Task.Run(() => new FunctionsSave().PrepareToWrite()).ConfigureAwait(true);
             ProjectData.CurrentProject.AfterTranslationWriteActions();
@@ -1944,9 +1944,9 @@ namespace TranslationHelper
 
         private async void RunTestGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ProjectData.TablesLinesDict != null && ProjectData.TablesLinesDict.Count > 0)
+            if (ProjectData.CurrentProject.TablesLinesDict != null && ProjectData.CurrentProject.TablesLinesDict.Count > 0)
             {
-                ProjectData.TablesLinesDict.Clear();
+                ProjectData.CurrentProject.TablesLinesDict.Clear();
             }
 
             if (ProjectData.CurrentProject != null /*|| ProjectData.CurrentProject.Name() == "RPG Maker MV"*/)

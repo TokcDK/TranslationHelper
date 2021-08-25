@@ -2,7 +2,7 @@
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    class TSV : FormatBase
+    class TSV : StringFileFormatBase
     {
         public TSV()
         {

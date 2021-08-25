@@ -11,7 +11,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 {
-    class TXT : FormatBase
+    class TXT : StringFileFormatBase
     {
         public TXT()
         {
@@ -24,7 +24,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         internal override bool Open()
         {
-            return ParseStringFile();
+            return ParseFile();
         }
         protected override Encoding DefaultEncoding()
         {
@@ -52,11 +52,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     {
                         var extraEmptyLinesForWrite = (str.Length > 0 ? sb.ToString().Replace(str, string.Empty) : sb.ToString());//только пустота на конце, пустоту надо записать в новый файл для корректности
 
-                        if (IsValidString(str) && TablesLinesDict.ContainsKey(str))
+                        if (IsValidString(str) && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(str))
                         {
 
                             //split lines
-                            var newLine = TablesLinesDict[str].SplitMultiLineIfBeyondOfLimit(60);//37 if transform all en chars to jp variants
+                            var newLine = ProjectData.CurrentProject.TablesLinesDict[str].SplitMultiLineIfBeyondOfLimit(60);//37 if transform all en chars to jp variants
 
                             MakeRequiredEdits(ref newLine);
 
@@ -176,9 +176,9 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 }
                 else
                 {
-                    if (IsValidString(extracted) && TablesLinesDict.ContainsKey(extracted))
+                    if (IsValidString(extracted) && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(extracted))
                     {
-                        str = str.Replace(extracted, TablesLinesDict[extracted]);
+                        str = str.Replace(extracted, ProjectData.CurrentProject.TablesLinesDict[extracted]);
                         ParseData.Ret = true;
                     }
                     ParseData.ResultForWrite.AppendLine(str);
@@ -370,7 +370,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
         internal override bool Save()
         {
-            return ParseStringFile();
+            return ParseFile();
         }
 
         private bool WriteTxt()

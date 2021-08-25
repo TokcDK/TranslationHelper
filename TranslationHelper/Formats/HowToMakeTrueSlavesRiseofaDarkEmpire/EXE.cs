@@ -29,7 +29,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 return false;
             }
 
-            if (!ParseStringFilePreOpen())
+            if (!FilePreOpenActions())
             {
                 return false;
             }
@@ -150,9 +150,9 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                                 }
                                 else//save mode
                                 {
-                                    if (IsValidString(str) && TablesLinesDict.ContainsKey(str))
+                                    if (IsValidString(str) && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(str))
                                     {
-                                        str = TablesLinesDict[str];
+                                        str = ProjectData.CurrentProject.TablesLinesDict[str];
                                         strtranslated = true;
                                         filetranslated = true;
                                     }
@@ -333,7 +333,7 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             if (ProjectData.OpenFileMode)
             {
-                return CheckTablesContent(ParseData.TableName);
+                return CheckTablesContent(TableName());
             }
             else
             {

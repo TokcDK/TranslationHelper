@@ -526,7 +526,7 @@ namespace TranslationHelper.Functions
 
         private static void AfterOpenCleaning()
         {
-            ProjectData.TablesLinesDict?.Clear();
+            ProjectData.CurrentProject.TablesLinesDict?.Clear();
             ProjectData.ENQuotesToJPLearnDataFoundNext?.Clear();
             ProjectData.ENQuotesToJPLearnDataFoundPrev?.Clear();
         }

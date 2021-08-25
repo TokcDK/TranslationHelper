@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
 
         internal override bool Open()
         {
-            return ParseStringFile();
+            return ParseFile();
         }
 
         protected override KeywordActionAfter ParseStringFileLine()
@@ -75,13 +75,13 @@ namespace TranslationHelper.Formats.Raijin7.eve
                     if (IsValid(Values[1], ref trans))
                     {
                         ParseData.Ret = true;
-                        Values[1] = FixInvalidSymbols(ProjectData.TablesLinesDict[Values[1]]);
+                        Values[1] = FixInvalidSymbols(ProjectData.CurrentProject.TablesLinesDict[Values[1]]);
                     }
 
                     if (IsValid(RestOfText, ref trans))
                     {
                         ParseData.Ret = true;
-                        RestOfText = FixInvalidSymbols(ProjectData.TablesLinesDict[RestOfText]);
+                        RestOfText = FixInvalidSymbols(ProjectData.CurrentProject.TablesLinesDict[RestOfText]);
                     }
 
                     ParseData.Line = string.Join(",", Values) + Environment.NewLine + RestOfText;
@@ -107,7 +107,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
 
         internal override bool Save()
         {
-            return ParseStringFile();
+            return ParseFile();
         }
     }
 }

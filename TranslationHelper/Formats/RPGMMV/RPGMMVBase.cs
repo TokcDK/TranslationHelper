@@ -2,7 +2,7 @@
 
 namespace TranslationHelper.Formats.RPGMMV
 {
-    abstract class RPGMMVBase : FormatBase
+    abstract class RPGMMVBase : StringFileFormatBase
     {
     }
 }

@@ -17,13 +17,13 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 
         internal override bool Open()
         {
-            return ParseStringFile();
+            return ParseFile();
         }
 
         internal override bool Save()
         {
             ProjectData.SaveFileMode = true;
-            return ParseStringFile();
+            return ParseFile();
         }
 
         protected override KeywordActionAfter ParseStringFileLine()

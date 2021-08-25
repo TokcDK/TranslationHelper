@@ -3,13 +3,13 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
-    abstract class RPGMWolfTransPatchBase : FormatBase
+    abstract class RPGMWolfTransPatchBase : StringFileFormatBase
     {
         protected RPGMWolfTransPatchBase()
         {
         }
 
-        protected override void ParseStringFilePreOpenExtra()
+        protected override void PreOpenExtraActions()
         {
             unused = false;
         }

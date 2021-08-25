@@ -8,7 +8,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 {
-    internal class NSCRIPT : FormatBase
+    internal class NSCRIPT : StringFileFormatBase
     {
         public NSCRIPT()
         {
@@ -21,10 +21,10 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         internal override bool Open()
         {
-            return ParseStringFile();
+            return ParseFile();
         }
 
-        protected override void ParseStringFileOpen()
+        protected override void FileOpen()
         {
             var nscripttxt = System.Text.Encoding.GetEncoding(932).GetString(File.ReadAllBytes(ProjectData.FilePath).XorUnxor());
 
@@ -170,7 +170,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         internal override bool Save()
         {
-            return ParseStringFile();
+            return ParseFile();
         }
 
         protected override bool WriteFileData(string filePath = "")

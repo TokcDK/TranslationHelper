@@ -12,7 +12,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         internal override bool Open()
         {
-            return ParseStringFile();
+            return ParseFile();
         }
 
         protected override KeywordActionAfter ParseStringFileLine()
@@ -72,7 +72,7 @@ namespace TranslationHelper.Formats.RPGMMV
         internal override bool Save()
         {
             ProjectData.SaveFileMode = true;
-            return ParseStringFile();
+            return ParseFile();
         }
 
     }

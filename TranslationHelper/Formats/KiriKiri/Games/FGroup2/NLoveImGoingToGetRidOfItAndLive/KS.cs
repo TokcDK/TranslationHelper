@@ -448,7 +448,7 @@ namespace TranslationHelper.Formats.KiriKiri.KSParser.NLoveImGoingToGetRidOfItAn
         //                        //string value;
         //                        if (IsTranslationValidFor(RowData[1]))
         //                        {
-        //                            RowData[1] = ProjectData.TablesLinesDict[RowData[1]];
+        //                            RowData[1] = ProjectData.CurrentProject.TablesLinesDict[RowData[1]];
         //                            line = string.Join("|", RowData);
         //                        }
         //                        //RowIndex++;
@@ -466,7 +466,7 @@ namespace TranslationHelper.Formats.KiriKiri.KSParser.NLoveImGoingToGetRidOfItAn
 
         //                        if (IsTranslationValidFor(RowData))
         //                        {
-        //                            line = line.Replace(RowData, ProjectData.TablesLinesDict[RowData]);
+        //                            line = line.Replace(RowData, ProjectData.CurrentProject.TablesLinesDict[RowData]);
         //                        }
         //                        //RowIndex++;
         //                        //AddRowData(tablename, RowData, "title name");
@@ -504,7 +504,7 @@ namespace TranslationHelper.Formats.KiriKiri.KSParser.NLoveImGoingToGetRidOfItAn
         //private bool IsTranslationValidFor(string DataString)
         //{
         //    string value;
-        //    if (ProjectData.TablesLinesDict.ContainsKey(DataString) && !string.IsNullOrEmpty(value = ProjectData.TablesLinesDict[DataString]) && !Equals(DataString, value))
+        //    if (ProjectData.CurrentProject.TablesLinesDict.ContainsKey(DataString) && !string.IsNullOrEmpty(value = ProjectData.CurrentProject.TablesLinesDict[DataString]) && !Equals(DataString, value))
         //    {
         //        return true;
         //    }
@@ -528,7 +528,7 @@ namespace TranslationHelper.Formats.KiriKiri.KSParser.NLoveImGoingToGetRidOfItAn
 
         //        if (IsTranslationValidFor(cleanedMessage))
         //        {
-        //            string[] TranslatedLines = (ProjectData.TablesLinesDict[cleanedMessage]).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        //            string[] TranslatedLines = (ProjectData.CurrentProject.TablesLinesDict[cleanedMessage]).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
         //            string[] OrigLines = MessageInfo.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
         //            if (TranslatedLines.Length == OrigLines.Length)

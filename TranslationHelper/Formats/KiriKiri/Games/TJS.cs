@@ -57,11 +57,11 @@ namespace TranslationHelper.Formats.KiriKiri.KSParser
                                 }
                                 else
                                 {
-                                    if (ProjectData.TablesLinesDict.ContainsKey(value))
+                                    if (ProjectData.CurrentProject.TablesLinesDict.ContainsKey(value))
                                     {
                                         ParseData.Line = ParseData.Line
                                             .Remove(mc[i].Index, mc[i].Length)
-                                            .Insert(mc[i].Index, "\"" + ProjectData.TablesLinesDict[value] + "\"");
+                                            .Insert(mc[i].Index, "\"" + ProjectData.CurrentProject.TablesLinesDict[value] + "\"");
                                     }
                                 }
                             }

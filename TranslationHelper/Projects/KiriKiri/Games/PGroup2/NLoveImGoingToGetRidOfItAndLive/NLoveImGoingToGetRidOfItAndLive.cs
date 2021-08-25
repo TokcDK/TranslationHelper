@@ -67,7 +67,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
         //        {
         //        }
         //    }
-        //    ProjectData.TablesLinesDict.Clear();
+        //    ProjectData.CurrentProject.TablesLinesDict.Clear();
 
         //    //PackTranslatedFilesInPatch();
 

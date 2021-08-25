@@ -6,7 +6,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    class TJS : FormatBase
+    class TJS : StringFileFormatBase
     {
         public TJS()
         {
@@ -96,6 +96,11 @@ namespace TranslationHelper.Formats.KiriKiri
         }
 
         internal override bool Save()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override KeywordActionAfter ParseStringFileLine()
         {
             throw new NotImplementedException();
         }

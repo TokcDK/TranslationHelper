@@ -53,7 +53,6 @@ namespace TranslationHelper.Data
                 ProjectData.THFilesElementsDatasetInfo.Reset();
                 ProjectData.THFilesElementsALLDataTable.Reset();
                 ProjectData.Main.THFileElementsDataGridView.Columns.Clear();
-                ProjectData.hashes.Clear();
                 ProjectData.AllDBmerged = null;
                 //THFileElementsDataGridView.Rows.Clear();
                 ProjectData.FilePath = string.Empty;

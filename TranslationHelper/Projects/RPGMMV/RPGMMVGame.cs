@@ -11,6 +11,7 @@ using TranslationHelper.Formats;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Functions;
+using TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesLinesDict;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
@@ -129,7 +130,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
                         hardcodedJS.Add(js.JSName);//add js to exclude from parsing of other js
 
-                        var jsFormat = (FormatBase)Activator.CreateInstance(jsType); // create format instance for open or save
+                        var jsFormat = (StringFileFormatBase)Activator.CreateInstance(jsType); // create format instance for open or save
 
                         ProjectData.Main.ProgressInfo(true, ParseFileMessage + js.JSName);
 
@@ -425,6 +426,8 @@ namespace TranslationHelper.Projects.RPGMMV
             }
         }
 
+        FillEmptyTablesLinesDictBase _filler;
+
         /// <summary>
         /// Hardcoded fixes for RPGMakerMV
         /// </summary>
@@ -439,7 +442,11 @@ namespace TranslationHelper.Projects.RPGMMV
                     ProjectData.OnlineTranslationCache.Read();
                 }
 
-                FillTablesLinesDict();
+                if (_filler == null)
+                {
+                    _filler = new FillEmptyTablesLinesDictForce();
+                    _filler.All();
+                }
 
                 var name = Regex.Replace(original, @"^\\n<(.+)>[\s\S]*$", "$1");
 
@@ -447,13 +454,17 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 if (translatedname.Length > 0)
                 {
-                    return translation.Insert(3, translatedname);
+                    return translation
+                        .Remove(3, name.Length)
+                        .Insert(3, translatedname);
                 }
                 else
                 {
-                    if (ProjectData.TablesLinesDict.ContainsKey(name))
+                    if (_filler.Translations.ContainsKey(name))
                     {
-                        return translation.Insert(3, ProjectData.TablesLinesDict[name]);
+                        return translation
+                            .Remove(3, name.Length)
+                            .Insert(3, _filler.Translations[name]);
                     }
                     return translation.Insert(3, name);
                 }

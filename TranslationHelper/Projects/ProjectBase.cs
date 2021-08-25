@@ -16,7 +16,10 @@ namespace TranslationHelper.Projects
 
         protected ProjectBase()
         {
-
+            if (ProjectData.SaveFileMode && Properties.Settings.Default.DontLoadDuplicates)
+            {
+                TablesLinesDict = new Dictionary<string, string>();
+            }
         }
 
         /// <summary>
@@ -194,7 +197,7 @@ namespace TranslationHelper.Projects
 
                     ProjectData.FilePath = file.FullName;
 
-                    var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
+                    var format = (StringFileFormatBase)Activator.CreateInstance(formatType); // create instance of format
                     if (file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
                     {
                         continue;
@@ -249,11 +252,6 @@ namespace TranslationHelper.Projects
         /// test run menu. maybe it is obsolete and will be removed later
         /// </summary>
         internal virtual bool IsTestRunEnabled => false;
-
-        /// <summary>
-        /// add equal lines to TablesLinesDict while save translation
-        /// </summary>
-        internal virtual bool TablesLinesDictAddEqual => false;
 
         /// <summary>
         /// Project specific line skip rules for line split function. When check line.
@@ -443,45 +441,21 @@ namespace TranslationHelper.Projects
             return str;
         }
 
-        internal void FillTablesLinesDict()
-        {
-            bool notnull;
-            if ((notnull = ProjectData.TablesLinesDict != null) && ProjectData.TablesLinesDict.Count > 0)
-            {
-                return;
-            }
-            else if (!notnull)
-            {
-                ProjectData.TablesLinesDict = new Dictionary<string, string>();
-            }
+        /// <summary>
+        /// For save mode. File the dictionary with row's original,translation values
+        /// </summary>
+        internal Dictionary<string, string> TablesLinesDict;
 
-            foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
-            {
-                foreach (DataRow row in table.Rows)
-                {
-                    string orig;
-                    string trans;
-                    if (!string.IsNullOrWhiteSpace(orig = row[0] + string.Empty) && !string.IsNullOrEmpty(trans = row[1] + string.Empty))
-                    {
-                        ProjectData.TablesLinesDict.TryAdd(orig, trans);
+        /// <summary>
+        /// Hash of adding original values to prevent duplicates to be added.
+        /// filtering records duplicates while adding to main work data table.
+        /// </summary>
+        internal HashSet<string> Hashes;
 
-                        if (!trans.StartsWith(@"\n<>") && Regex.IsMatch(orig, @"\\n<.+>[\s\S]*$"))
-                        {
-                            orig = Regex.Replace(orig, @"\\n<(.+)>[\s\S]*$", "$1");
-                            trans = Regex.Replace(trans, @"\\n<(.+)>[\s\S]*$", "$1");
-                            if (orig != trans)
-                            {
-                                ProjectData.TablesLinesDict.TryAdd(
-                                orig
-                                ,
-                                trans
-                                );
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        /// <summary>
+        /// add equal lines to TablesLinesDict while save translation
+        /// </summary>
+        internal virtual bool TablesLinesDictAddEqual => false;
 
         /// <summary>
         /// Hardcoded fixes for cells for specific projects

@@ -132,6 +132,8 @@
     <Compile Include="Formats\EAGLS\SCPACK\SC_TXT.cs" />
     <Compile Include="Formats\EAGLS\SCPACK\SCPACKBase.cs" />
     <Compile Include="Formats\FormatBase.cs" />
+    <Compile Include="Formats\FormatUtils.cs" />
+    <Compile Include="Formats\StringFileFormatBase.cs" />
     <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\EXE.cs" />
     <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\TXT.cs" />
     <Compile Include="Formats\KiriKiri\Games\CSV\CSV.cs" />
@@ -212,6 +214,9 @@
     <Compile Include="Functions\FileElementsFunctions\Row\CompleteRomajiotherLines.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\ExportFormatsBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\RPGMakerLikeTXT.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\FillEmptyTablesLinesDict\FillEmptyTablesLinesDictBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\FillEmptyTablesLinesDict\FillEmptyTablesLinesDictForce.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\FillEmptyTablesLinesDict\FillEmptyTablesLinesDictSaveModeNoDups.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FixCellsForce.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\MakeTranslatedCopyIfFileWithTheNameExists.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OpenInWeb.cs" />

@@ -27,20 +27,20 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
             string line;
 
-            string tablename = Path.GetFileName(ProjectData.FilePath);
+            string tablename = TableName();
 
             bool UseDict = false;
             if (Iswrite)
             {
-                SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
-                if (TablesLinesDict != null && TablesLinesDict.Count > 0)
+                SplitTableCellValuesAndTheirLinesToDictionary(tablename, makeLinesCountEqual: false, onlyOneTable: false);
+                if (ProjectData.CurrentProject.TablesLinesDict != null && ProjectData.CurrentProject.TablesLinesDict.Count > 0)
                 {
                     UseDict = true;
                 }
             }
             else
             {
-                AddTables(tablename);
+                AddTables();
             }
 
             StringBuilder ResultForWrite = new StringBuilder();
@@ -77,9 +77,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                                     {
                                         if (UseDict)
                                         {
-                                            if (TablesLinesDict.ContainsKey(StringToAdd) && !string.IsNullOrEmpty(TablesLinesDict[StringToAdd]) && TablesLinesDict[StringToAdd] != StringToAdd)
+                                            if (ProjectData.CurrentProject.TablesLinesDict.ContainsKey(StringToAdd) && !string.IsNullOrEmpty(ProjectData.CurrentProject.TablesLinesDict[StringToAdd]) && ProjectData.CurrentProject.TablesLinesDict[StringToAdd] != StringToAdd)
                                             {
-                                                line = line.Replace(StringToAdd, TablesLinesDict[StringToAdd]);
+                                                line = line.Replace(StringToAdd, ProjectData.CurrentProject.TablesLinesDict[StringToAdd]);
                                             }
                                         }
                                         else

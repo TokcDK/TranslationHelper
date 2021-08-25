@@ -35,9 +35,9 @@ namespace TranslationHelper.Formats.KiriKiri.KSParser.CSV
                             }
                             else
                             {
-                                if (IsValidString(subvalues[s]) && ProjectData.TablesLinesDict.ContainsKey(subvalues[s]))
+                                if (IsValidString(subvalues[s]) && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(subvalues[s]))
                                 {
-                                    subvalues[s] = ProjectData.TablesLinesDict[subvalues[s]];
+                                    subvalues[s] = ProjectData.CurrentProject.TablesLinesDict[subvalues[s]];
                                     subvalueschanged = true;
                                 }
                             }
@@ -60,11 +60,11 @@ namespace TranslationHelper.Formats.KiriKiri.KSParser.CSV
                         else
                         {
                             var value = values[i].Value;
-                            if (IsValidString(value) && ProjectData.TablesLinesDict.ContainsKey(value))
+                            if (IsValidString(value) && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(value))
                             {
                                 ParseData.Line = ParseData.Line
                                     .Remove(values[i].Index, values[i].Length)
-                                    .Insert(values[i].Index, ProjectData.TablesLinesDict[value]);
+                                    .Insert(values[i].Index, ProjectData.CurrentProject.TablesLinesDict[value]);
                                 ParseData.Ret = true;
                             }
                         }
