@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Projects.KiriKiri.Games
 {
@@ -15,19 +15,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         /// </summary>
         /// <param name="targetSubFolder"></param>
         /// <returns></returns>
-        internal static List<FileInfo> GetPaths(DirectoryInfo targetSubFolder)
+        internal static List<FileInfo> GetKiriKiriScriptPaths(DirectoryInfo targetSubFolder)
         {
-            List<FileInfo> filePaths = new List<FileInfo>();
-            string[] extensions = new string[2] { "*.ks", "*.tjs" };
-            Parallel.ForEach(extensions, mask =>
-            {
-                Parallel.ForEach(targetSubFolder.EnumerateFiles(mask, SearchOption.AllDirectories), filePath =>
-                {
-                    filePaths.Add(filePath);
-                });
-            });
-
-            return filePaths;
+            return targetSubFolder.GetFileInfosList(new string[2] { "*.ks", "*.tjs" });
         }
 
         internal static void ReCreateFolder(DirectoryInfo targetSubFolder)

@@ -1,14 +1,37 @@
 ﻿using CheckForEmptyDir;
 using Soft160.Data.Cryptography;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TranslationHelper.Extensions
 {
     internal static class ExtensionsFileFolder
     {
+        /// <summary>
+        /// Get list of fileinfos with the selected <paramref name="searchPatterns"/> from the <paramref name="directoryInfo"/>
+        /// </summary>
+        /// <param name="directoryInfo">Directory where to search</param>
+        /// <param name="searchPatterns">array of masks like "*.txt","*.doc"..</param>
+        /// <param name="searchOption">Search option.</param>
+        /// <returns></returns>
+        internal static List<FileInfo> GetFileInfosList(this DirectoryInfo directoryInfo, string[] searchPatterns, SearchOption searchOption = SearchOption.AllDirectories)
+        {
+            var filePaths = new List<FileInfo>();
+            Parallel.ForEach(searchPatterns, searchPattern =>
+            {
+                Parallel.ForEach(directoryInfo.EnumerateFiles(searchPattern, searchOption), filePath =>
+                {
+                    filePaths.Add(filePath);
+                });
+            });
+
+            return filePaths;
+        }
+
         /// <summary>
         /// returns true if dir is empty
         /// </summary>

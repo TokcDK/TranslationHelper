@@ -270,7 +270,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                     {
                         ProjectData.Main.ProgressInfo(true, progressMessageTitle + (usecrc ? T._("Calculate control crc") : string.Empty) + ":" + dataDir.Name);
 
-                        var paths = KiriKiriGameUtils.GetPaths(dataDir);
+                        var paths = KiriKiriGameUtils.GetKiriKiriScriptPaths(dataDir);
 
                         foreach(var path in paths)
                         {
