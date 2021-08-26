@@ -1,6 +1,6 @@
 ﻿using TranslationHelper.Formats.TyranoBuilder.Extracted;
 
-namespace TranslationHelper.Formats.KiriKiri.KSParser.FGroup1
+namespace TranslationHelper.Formats.KiriKiri.Games.FGroup1
 {
     abstract class FGroup1Base : KSParserBase
     {

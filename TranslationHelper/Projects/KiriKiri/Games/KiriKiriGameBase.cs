@@ -81,7 +81,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 ret = true;
             }
 
-            ProjectData.CurrentProject.TablesLinesDict.Clear();
+            if(ProjectData.SaveFileMode && Properties.Settings.Default.DontLoadDuplicates)
+            {
+                ProjectData.CurrentProject.TablesLinesDict.Clear();
+            }
 
             if (ret && ProjectData.SaveFileMode)
             {
@@ -102,13 +105,15 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         {
             return new List<Type>
                 {
-                   typeof(Formats.KiriKiri.KSParser.KS)
+                   typeof(Formats.KiriKiri.Games.KS),
+                   typeof(Formats.KiriKiri.Games.TJS),
+                   typeof(Formats.KiriKiri.Games.CSV.CSV)
                 };
         }
 
         protected virtual string[] Mask()
         {
-            return new[] { "*.ks" };
+            return new string[3] { "*.ks", "*.tjs", "*.csv" };
         }
 
         internal override bool Open()
@@ -270,7 +275,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                     {
                         ProjectData.Main.ProgressInfo(true, progressMessageTitle + (usecrc ? T._("Calculate control crc") : string.Empty) + ":" + dataDir.Name);
 
-                        var paths = KiriKiriGameUtils.GetKiriKiriScriptPaths(dataDir);
+                        var paths = KiriKiriGameUtils.GetKiriKiriScriptPaths(dataDir, Mask());
 
                         foreach(var path in paths)
                         {

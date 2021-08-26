@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using TranslationHelper.Formats.TyranoBuilder.Extracted;
 
-namespace TranslationHelper.Formats.KiriKiri.KSParser
+namespace TranslationHelper.Formats.KiriKiri.Games
 {
     class KS : KSParserBase
     {

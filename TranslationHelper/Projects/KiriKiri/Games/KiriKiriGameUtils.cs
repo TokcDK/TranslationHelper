@@ -15,9 +15,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         /// </summary>
         /// <param name="targetSubFolder"></param>
         /// <returns></returns>
-        internal static List<FileInfo> GetKiriKiriScriptPaths(DirectoryInfo targetSubFolder)
+        internal static List<FileInfo> GetKiriKiriScriptPaths(DirectoryInfo targetSubFolder, string[] masks)
         {
-            return targetSubFolder.GetFileInfosList(new string[2] { "*.ks", "*.tjs" });
+            return targetSubFolder.GetFileInfosList(masks);
         }
 
         internal static void ReCreateFolder(DirectoryInfo targetSubFolder)

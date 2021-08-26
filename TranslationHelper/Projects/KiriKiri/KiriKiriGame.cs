@@ -16,7 +16,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Check()
         {
-            return false;
+            return false; // old code
             //Path.GetExtension(ProjectData.SPath) == ".exe"
             //    &&
             //    FunctionsProcess.GetExeDescription(ProjectData.SPath) != null

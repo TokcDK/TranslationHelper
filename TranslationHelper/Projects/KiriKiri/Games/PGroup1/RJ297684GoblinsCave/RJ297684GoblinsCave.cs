@@ -24,7 +24,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
 
         protected override List<Type> FormatType()
         {
-            return new List<Type>() { typeof(Formats.KiriKiri.KSParser.FGroup1.RJ297684GoblinsCave.KS) };
+            return new List<Type>() { typeof(Formats.KiriKiri.Games.FGroup1.RJ297684GoblinsCave.KS) };
         }
 
         protected override string[] Mask()

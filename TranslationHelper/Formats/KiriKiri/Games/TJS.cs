@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 
-namespace TranslationHelper.Formats.KiriKiri.KSParser
+namespace TranslationHelper.Formats.KiriKiri.Games
 {
     class TJS : KiriKiriBase
     {

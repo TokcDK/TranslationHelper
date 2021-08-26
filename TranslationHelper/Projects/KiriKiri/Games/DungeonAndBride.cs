@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats.KiriKiri.Games;
 
 namespace TranslationHelper.Projects.KiriKiri.Games
 {
@@ -25,9 +26,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         protected override List<System.Type> FormatType()
         {
             return new List<System.Type>(3) {
-                typeof(Formats.KiriKiri.KSParser.FGroup1.VirginLode2.KS),
-                typeof(Formats.KiriKiri.KSParser.TJS),
-                typeof(Formats.KiriKiri.KSParser.CSV.CSV)
+                typeof(Formats.KiriKiri.Games.FGroup1.VirginLode2.KS),
+                typeof(TJS),
+                typeof(Formats.KiriKiri.Games.CSV.CSV)
             };
         }
 

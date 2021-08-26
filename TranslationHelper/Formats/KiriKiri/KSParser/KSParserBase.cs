@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Formats.KiriKiri.KSParser.KSSyntax;
+using TranslationHelper.Formats.KiriKiri.Games.KSSyntax;
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
@@ -42,45 +42,45 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                     IsScript = false;
                 }
             }
-            else if (TextOn)
-            {
-                if (ParseData.TrimmedLine == "[textoff]")
-                {
-                    var joined = string.Join(Environment.NewLine, textOnMessage);
-                    if (IsValidString(joined))
-                    {
-                        if (ProjectData.OpenFileMode)
-                        {
-                            AddRowData(joined, "TextOn block message", CheckInput: false);
-                        }
-                        else
-                        {
-                            SetTranslation(ref joined);
-                        }
-                    }
+            //else if (TextOn)
+            //{
+            //    if (ParseData.TrimmedLine == "[textoff]")
+            //    {
+            //        var joined = string.Join(Environment.NewLine, textOnMessage);
+            //        if (IsValidString(joined))
+            //        {
+            //            if (ProjectData.OpenFileMode)
+            //            {
+            //                AddRowData(joined, "TextOn block message", CheckInput: false);
+            //            }
+            //            else
+            //            {
+            //                SetTranslation(ref joined);
+            //            }
+            //        }
 
-                    if (ProjectData.SaveFileMode)
-                    {
-                        ParseData.Line = joined + ParseData.Line;
-                    }
+            //        if (ProjectData.SaveFileMode)
+            //        {
+            //            ParseData.Line = joined + ParseData.Line;
+            //        }
 
-                    TextOn = false;
-                }
-                else
-                {
-                    textOnMessage.Add(ParseData.Line);
-                    return KeywordActionAfter.Continue;
-                }
-            }
+            //        TextOn = false;
+            //    }
+            //    else
+            //    {
+            //        textOnMessage.Add(ParseData.Line);
+            //        return KeywordActionAfter.Continue;
+            //    }
+            //}
             else if (Regex.IsMatch(ParseData.Line, scriptMark.StartsWith))
             {
                 IsScript = true;
             }
-            else if (ParseData.TrimmedLine == "[texton]")
-            {
-                textOnMessage.Clear();
-                TextOn = true;
-            }
+            //else if (ParseData.TrimmedLine == "[texton]")
+            //{
+            //    textOnMessage.Clear();
+            //    TextOn = true;
+            //}
             else
             {
                 if (ParseData.TrimmedLine.StartsWith("/*")) //comment section start

@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
 
         protected override List<System.Type> FormatType()
         {
-            return new List<System.Type> { typeof(Formats.KiriKiri.KSParser.FGroup1.VirginLode2.KS) };
+            return new List<System.Type> { typeof(Formats.KiriKiri.Games.FGroup1.VirginLode2.KS) };
         }
 
         protected override string[] Mask()

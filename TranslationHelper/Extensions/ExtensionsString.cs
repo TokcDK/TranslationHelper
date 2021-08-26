@@ -402,16 +402,20 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool IsDigitsOnly(this string str)
         {
-            if (string.IsNullOrEmpty(str))
+            str = str
+                .Replace(".", string.Empty) // remove dots
+                .Replace(",", string.Empty);
+
+            if (string.IsNullOrWhiteSpace(str))
             {
                 return false;
             }
 
-            str = str.Replace(".", string.Empty);
             //https://stackoverflow.com/questions/7461080/fastest-way-to-check-if-string-contains-only-digits
             //наибыстрейший метод 
             int strLength = str.Length;//и моя оптимизация, ускоряющая с 2.19 до 1.62 при 100млн. итераций
-            for (int i = 0; i < strLength; i++)
+            int startIndex = str[0] == '-' && strLength > 1 ? 1 : 0;
+            for (int i = startIndex; i < strLength; i++)
             {
                 if ((str[i] ^ '0') > 9)
                 {

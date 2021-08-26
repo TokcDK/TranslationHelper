@@ -177,6 +177,31 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
+        /// Add string to table with options. In save mode will replace RowData with translation
+        /// </summary>
+        /// <param name="RowData">reference to original string</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <returns></returns>
+        internal bool AddRowData(ref string RowData, string RowInfo = "", bool CheckInput = true)
+        {
+            if (ProjectData.OpenFileMode)
+            {
+                return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput);
+            }
+            else
+            {
+                if (CheckInput)
+                {
+                    if (!IsValidString(RowData))
+                    {
+                        return false;
+                    }
+                }
+                return SetTranslation(ref RowData);
+            }
+        }
+
+        /// <summary>
         /// Add string to table with options
         /// </summary>
         /// <param name="RowData">original string</param>
@@ -187,12 +212,38 @@ namespace TranslationHelper.Formats
             return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput);
         }
         /// <summary>
+        /// Add string to table with options. In save mode will replace <paramref name="RowData"/>[0] as translation and will use <paramref name="RowData"/>[1] as default translation 
+        /// </summary>
+        /// <param name="RowData">First value is Original, second value is translation.</param>
+        /// <param name="RowInfo">info about the string</param>
+        /// <returns></returns>
+        internal bool AddRowData(ref string[] RowData, string RowInfo = "", bool CheckInput = true)
+        {
+            if (ProjectData.OpenFileMode)
+            {
+                return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput);
+            }
+            else
+            {
+                if (CheckInput)
+                {
+                    if (!IsValidString(RowData[0]))
+                    {
+                        return false;
+                    }
+                }
+
+                return SetTranslation(ref RowData[0], RowData[1]);
+            }
+        }
+
+        /// <summary>
         /// Add string to table with options
         /// </summary>
         /// <param name="RowData">original string</param>
         /// <param name="RowInfo">info about the string</param>
         /// <returns></returns>
-        internal bool AddRowData(string[] RowData, string RowInfo, bool CheckInput = true)
+        internal bool AddRowData(string[] RowData, string RowInfo = "", bool CheckInput = true)
         {
             return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput);
         }
@@ -204,7 +255,7 @@ namespace TranslationHelper.Formats
         /// <param name="RowInfo">info about the string</param>
         /// <param name="CheckInput">cheack original string if valid</param>
         /// <returns></returns>
-        internal bool AddRowData(string tablename, string RowData, string RowInfo, bool CheckInput = true)
+        internal bool AddRowData(string tablename, string RowData, string RowInfo = "", bool CheckInput = true)
         {
             return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckInput);
         }
