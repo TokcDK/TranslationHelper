@@ -31,18 +31,10 @@ namespace TranslationHelper.Formats.LiveMaker
                         && !ParseData.Line.StartsWith("{CHANGECG")//exclude not messages
                         && !ParseData.Line.StartsWith("{DELETECG")//exclude not messages
                         && !ParseData.Line.StartsWith("{CREATECG")//exclude not messages
-                        && !ParseData.Line.StartsWith("<EVENT")//exclude not messages
-                        && IsValidString(CleanedFromTags(ParseData.Line))
+                        && !ParseData.Line.StartsWith("<EVENT")//exclude not messages)
                         )
                     {
-                        if (ProjectData.OpenFileMode)
-                        {
-                            AddRowData(ParseData.Line, "", CheckInput: false);
-                        }
-                        else
-                        {
-                            AddTranslation();
-                        }
+                        AddRowData(ref ParseData.Line);
                     }
 
                 }

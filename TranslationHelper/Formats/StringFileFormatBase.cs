@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Extensions;
-using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats
 {
-    abstract class StringFileFormatBase:FormatBase
+    abstract class StringFileFormatBase : FormatBase
     {
         protected StringFileFormatBase()
         {
@@ -69,7 +65,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected override bool FilePreOpenActions()
         {
-            ParseData = new ParseFileData();            
+            ParseData = new ParseFileData();
 
             return base.FilePreOpenActions();
         }
@@ -157,22 +153,6 @@ namespace TranslationHelper.Formats
 
                     ParseData.ResultForWrite.Append(ParseData.Line);
                 }
-            }
-        }
-
-        /// <summary>
-        /// add translation if exists in DB 
-        /// by default will be checked translation for ParseData.line if not set
-        /// translation will be set to ParseData.line. use other overload to set specific variable for translation
-        /// </summary>
-        /// <param name="originalValue">if not set then will be used ParseData.line</param>
-        protected virtual void AddTranslation(string originalValue = null)
-        {
-            originalValue = originalValue ?? ParseData.Line;
-            if (ProjectData.CurrentProject.TablesLinesDict.ContainsKey(originalValue))
-            {
-                ParseData.Ret = true;
-                ParseData.Line = TranslationMod(ProjectData.CurrentProject.TablesLinesDict[originalValue]);
             }
         }
 

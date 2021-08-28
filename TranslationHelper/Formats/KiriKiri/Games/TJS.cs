@@ -49,22 +49,13 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                         for (int i = mc.Count - 1; i >= 0; i--)
                         {
                             var value = mc[i].Result("$1");
-                            if (IsValidString(value))
-                            {
-                                if (ProjectData.OpenFileMode)
-                                {
-                                    AddRowData(value, ParseData.Line, CheckInput: false);
-                                }
-                                else
-                                {
-                                    if (ProjectData.CurrentProject.TablesLinesDict.ContainsKey(value))
-                                    {
-                                        ParseData.Line = ParseData.Line
-                                            .Remove(mc[i].Index, mc[i].Length)
-                                            .Insert(mc[i].Index, "\"" + ProjectData.CurrentProject.TablesLinesDict[value] + "\"");
-                                    }
-                                }
-                            }
+
+                            AddRowData(ref value, ParseData.Line);
+
+                            if (ProjectData.SaveFileMode)
+                                ParseData.Line = ParseData.Line
+                                    .Remove(mc[i].Index, mc[i].Length)
+                                    .Insert(mc[i].Index, "\"" + value + "\"");
                         }
                     }
                 }

@@ -275,32 +275,29 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                     {
                         ProjectData.Main.ProgressInfo(true, progressMessageTitle + (usecrc ? T._("Calculate control crc") : string.Empty) + ":" + dataDir.Name);
 
-                        var paths = KiriKiriGameUtils.GetKiriKiriScriptPaths(dataDir, Mask());
+                        var sourceFilePaths = KiriKiriGameUtils.GetKiriKiriScriptPaths(dataDir, Mask());
 
-                        foreach(var path in paths)
+                        foreach(var sourceFilePath in sourceFilePaths)
                         {
-                            var targetFileFir = new FileInfo(path.FullName
+                            var targetFilePath = new FileInfo(sourceFilePath.FullName
                                 .Remove(0, dataDir.FullName.Length)
                                 .Insert(0, Path.Combine(KiriKiriWorkOrigFolder,"Data"))
                                 );
 
-                            if (targetFileFir.Exists)
+                            if (targetFilePath.Exists)
                             {
-                                if(targetFileFir.LastWriteTime < path.LastWriteTime)
+                                if(targetFilePath.LastWriteTime < sourceFilePath.LastWriteTime)
                                 {
                                     // copy new file if target is older
-                                    targetFileFir.Delete();
-                                    path.CopyTo(targetFileFir.FullName);
+                                    targetFilePath.Delete();
                                 }
                             }
-                            else
-                            {
-                                path.CopyTo(targetFileFir.FullName);
-                            }
+
+                            targetFilePath.Directory.Create();
+                            sourceFilePath.CopyTo(targetFilePath.FullName);
                         }
                     }
                 }
-
             }
             catch
             {

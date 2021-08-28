@@ -52,11 +52,11 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                     {
                         var extraEmptyLinesForWrite = (str.Length > 0 ? sb.ToString().Replace(str, string.Empty) : sb.ToString());//только пустота на конце, пустоту надо записать в новый файл для корректности
 
-                        if (IsValidString(str) && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(str))
+                        if (SetTranslation(ref str))
                         {
 
                             //split lines
-                            var newLine = ProjectData.CurrentProject.TablesLinesDict[str].SplitMultiLineIfBeyondOfLimit(60);//37 if transform all en chars to jp variants
+                            var newLine = str.SplitMultiLineIfBeyondOfLimit(60);//37 if transform all en chars to jp variants
 
                             MakeRequiredEdits(ref newLine);
 
@@ -170,18 +170,10 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
             {
                 var str = ParseData.Reader.ReadLine();
                 var extracted = Regex.Replace(str, ChoiceTextExtractionRegex(), "$1");
-                if (ProjectData.OpenFileMode)
+                AddRowData(ref extracted, "Choice variant " + i);
+                if (ProjectData.SaveFileMode)
                 {
-                    AddRowData(extracted, "Choice variant " + i, CheckInput: true);
-                }
-                else
-                {
-                    if (IsValidString(extracted) && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(extracted))
-                    {
-                        str = str.Replace(extracted, ProjectData.CurrentProject.TablesLinesDict[extracted]);
-                        ParseData.Ret = true;
-                    }
-                    ParseData.ResultForWrite.AppendLine(str);
+                    ParseData.ResultForWrite.AppendLine(extracted);
                 }
             }
         }

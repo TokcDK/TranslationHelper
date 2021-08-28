@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats
             {
                 ProjectData.CurrentProject.CurrentFormat = this;
 
-                if (Properties.Settings.Default.DontLoadDuplicates)
+                if (Properties.Settings.Default.DontLoadDuplicates && ProjectData.CurrentProject.Hashes == null)
                 {
                     ProjectData.CurrentProject.Hashes = new HashSet<string>();
                 }
@@ -297,6 +297,11 @@ namespace TranslationHelper.Formats
         {
             var original = AddRowDataPreAddOriginalStringMod(RowData[0]);
 
+            if(original== "人間")
+            {
+
+            }
+
             if (CheckInput && !IsValidString(original))
             {
                 return false;
@@ -576,6 +581,11 @@ namespace TranslationHelper.Formats
                     //    }
                     //    lineNumber++;
                     //}
+                }
+
+                if (onlyOneTable)
+                {
+                    break;
                 }
             }
             TablesLinesDictFilled = true;
