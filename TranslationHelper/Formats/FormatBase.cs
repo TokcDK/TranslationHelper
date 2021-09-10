@@ -16,9 +16,23 @@ namespace TranslationHelper.Formats
             {
                 ProjectData.CurrentProject.CurrentFormat = this;
 
-                if (Properties.Settings.Default.DontLoadDuplicates && ProjectData.CurrentProject.Hashes == null)
+                if (Properties.Settings.Default.DontLoadDuplicates)
                 {
-                    ProjectData.CurrentProject.Hashes = new HashSet<string>();
+                    if (ProjectData.SaveFileMode)
+                    {
+                        if (ProjectData.CurrentProject.TablesLinesDict == null)
+                        {
+                            ProjectData.CurrentProject.TablesLinesDict = new Dictionary<string, string>();
+                        }
+                    }
+                    else
+                    {
+                        if (ProjectData.CurrentProject.Hashes == null)
+                        {
+                            ProjectData.CurrentProject.Hashes = new HashSet<string>();
+                        }
+                    }
+
                 }
             }
         }
@@ -296,11 +310,6 @@ namespace TranslationHelper.Formats
         internal bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckInput = true)
         {
             var original = AddRowDataPreAddOriginalStringMod(RowData[0]);
-
-            if(original== "人間")
-            {
-
-            }
 
             if (CheckInput && !IsValidString(original))
             {
