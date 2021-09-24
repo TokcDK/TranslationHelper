@@ -9,6 +9,7 @@ using System.Threading;
 using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Functions;
 using TranslationHelper.OnlineTranslators;
 using TranslationHelper.Translators;
 
@@ -19,87 +20,6 @@ namespace TranslationHelper
         public GoogleAPIOLD()
         {
         }
-
-        // Token: 0x06000EEC RID: 3820 RVA: 0x0006AD20 File Offset: 0x00068F20
-        //public static string Translate2(string text, string fromCulture, string toCulture)
-        //{
-        //    fromCulture = fromCulture.ToLower();
-        //    toCulture = toCulture.ToLower();
-        //    string[] array = fromCulture.Split(new char[]
-        //    {
-        //        '-'
-        //    });
-        //    bool flag = array.Length > 1;
-        //    if (flag)
-        //    {
-        //        fromCulture = array[0];
-        //    }
-        //    array = toCulture.Split(new char[]
-        //    {
-        //        '-'
-        //    });
-        //    bool flag2 = array.Length > 1;
-        //    if (flag2)
-        //    {
-        //        toCulture = array[0];
-        //    }
-        //    string address = string.Format("http://translate.google.com/translate_a/t?client=j&text={0}&hl=en&sl={1}&tl={2}", JsonConvert.ToString(text, '"', StringEscapeHandling.Default), fromCulture, toCulture);
-        //    string input;// = null;
-        //    try
-        //    {
-        //        using (WebClient webClient = new WebClient
-        //        {
-        //            Headers =
-        //            {
-        //                {
-        //                    HttpRequestHeader.UserAgent,
-        //                    "Mozilla/5.0"
-        //                },
-        //                {
-        //                    HttpRequestHeader.AcceptCharset,
-        //                    "UTF-8"
-        //                }
-        //            },
-        //            Encoding = Encoding.UTF8
-        //        })
-        //        {
-        //            input = webClient.DownloadString(address);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return null;
-        //    }
-        //    string value = Regex.Match(input, "trans\":(\".*?\"),\"", RegexOptions.IgnoreCase).Groups[1].Value;
-        //    bool flag3 = string.IsNullOrEmpty(value);
-        //    string result;
-        //    if (flag3)
-        //    {
-        //        result = null;
-        //    }
-        //    else
-        //    {
-        //        result = null;
-        //    }
-        //    return result;
-        //}
-
-        ///// <summary>
-        ///// кодирует некоторые символы в строке, как видно из строки адресу переводчика Гугл
-        ///// </summary>
-        ///// <param name="value"></param>
-        ///// <returns></returns>
-        //public static string UrlEncodeForTranslation(string value)
-        //{
-        //    string[,] encode = { { "%", "%25" }, { Environment.NewLine, "%0A" }, { " ", "%20" }, { ":", "%3A" }, { ",", "%2C" }, { "$", "%24" }, { "&", "%26" }, { "#", "%23" }, { "@", "%40" }, { "`", "%60" }, { "+", "%2B" }, { "^", "%5E" }, { "/", "%2F" } };
-
-        //    for (int i = 0; i < encode.Length / 2; i++)
-        //    {
-        //        value = value.Replace(encode[i, 0], encode[i, 1]);
-        //    }
-
-        //    return value;
-        //}
 
         public override string Translate(string OriginalText, string LanguageFrom = "auto", string LanguageTo = "en")
         {
@@ -121,48 +41,24 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nOriginalText:\r\n" + OriginalText);
-                    //https://www.codementor.io/000581/use-the-google-translate-api-for-free-rmxch1s67
-                    //link = 'https://translate.googleapis.com/translate_a/single'.'?client=gtx&sl=auto&tl=ru&dt=t&q='.urlencode(text_part);
-                    //result = go_curl(result = go​curl(link);
-
-                    //string str = WebUtility.UrlEncode(OriginalText);
-                    //string str = UrlEncodeForTranslation(OriginalText);
-                    //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "DNTT", RegexOptions.None);
-                    //https://stackoverflow.com/questions/44444910/unable-to-preserve-line-breaks-in-google-translate-response
-                    //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "<code>0</code>", RegexOptions.None);
                     string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", " </br> ", RegexOptions.None);
-                    //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nSTR:\r\n" + str);
-                    //string str = OriginalText.Replace(Environment.NewLine, "BBC");
-                    //string str = OriginalText.Replace(Environment.NewLine, "%0A");
-                    //string str = OriginalText;
-                    //string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", "%0A", RegexOptions.None).Replace("\"", "\\\"");//.Replace("\r\n", "%0A").Replace("\"", "\\\"")
-
+                    
                     string arg = HttpUtility.UrlEncode(str, Encoding.UTF8);
-                    //string arg = UrlEncodeForTranslation(str);
-                    //string arg = str;
 
                     string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
                     if (webClient == null)
                         webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
-                    //webClient = new ScrapySharp.Network.ScrapingBrowser();
-
-                    //using (WebClient webClient = new WebClient())
-                    //{
-                    //}
+                    
                     webClient.Encoding = Encoding.UTF8;
-                    //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
-                    webClient.Headers.Add(HttpRequestHeader.UserAgent, /*UserAgents.Chrome_Iron_Win7*/ Functions.FunctionsWeb.GetUserAgent());
-                    //webClient.UserAgent = ScrapySharp.Network.FakeUserAgents.Chrome;
+                    webClient.Headers.Add(HttpRequestHeader.UserAgent, Functions.FunctionsWeb.GetUserAgent());
+                    
                     try
                     {
                         //Материалы
                         //http://www.cyberforum.ru/ado-net/thread903701.html
                         //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
                         //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
-
-                        //string downloadString = webClient.DownloadString(string.Format("https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}tl={1}&dt=t&q={2}", LanguageFrom, LanguageTo, "打撃/必殺技"));
 
                         string text = webClient.DownloadString(new Uri(address));
 
@@ -175,33 +71,6 @@ namespace TranslationHelper
                             sessionCache[OriginalText] = text2;
 
                             return text2;
-
-                            {
-                                //foreach (object obj in htmlDocument.Body.Children)
-                                //{
-                                //    HtmlElement htmlElement = (HtmlElement)obj;
-                                //    if (htmlElement.InnerText == null)
-                                //    {
-                                //    }
-                                //    else
-                                //    {
-                                //        //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
-                                //        if (htmlElement.InnerHtml.StartsWith("<"))
-                                //        {
-                                //        }
-                                //        else
-                                //        {
-                                //            //string text2 = htmlElement.InnerText.Replace(" BBC ", "BBC").Replace(" BBC", "BBC").Replace("BBC ", "BBC").Replace("BBC", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                //            //string text2 = htmlElement.InnerText.Replace(" DNTT ", "DNTT").Replace(" DNTT", "DNTT").Replace("DNTT ", "DNTT").Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                //            string text2 = FixFormat(htmlElement.InnerText);
-                                //            //string text2 = htmlElement.InnerText.Replace("DNTT", "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                                //            myCache[OriginalText] = text2;
-                                //            //FileWriter.WriteData("c:\\THLog.log", "\r\n\r\n\r\ntext2:\r\n" + text2);
-                                //            return text2;
-                                //        }
-                                //    }
-                                //}
-                            }
                         }
                         finally
                         {
@@ -216,10 +85,7 @@ namespace TranslationHelper
                     {
                         new Functions.FunctionsLogs().LogToFile("google translation error:" + Environment.NewLine + ex);
                     }
-                    //finally
-                    //{
-                    //    webClient.Dispose();
-                    //}
+
                     ResultOfTranslation = string.Empty;
                 }
             }
@@ -257,15 +123,8 @@ namespace TranslationHelper
                     //https://stackoverflow.com/questions/47709517/google-translate-api-how-to-add-newline-without-changing-the-phrase-meaning
                     _ = stringBuilder.Append(string.Concat(new string[]
                     {
-                                //"##",
-                                //Conversions.ToString(i),
-                                //"#># ",
-                                //"<br>",
-                                //Environment.NewLine,
                                 Regex.Replace(Regex.Replace(originalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None), @"<br>", "QBRQ", RegexOptions.None),
-                                //" #<#",
-                                //Conversions.ToString(i),
-                                //"##\r\n"
+                                
                                 oneOrLast ? "" : (
                                 Environment.NewLine
                                 //<br> заменил на </br>, последний также воспринимается как новая строка, влияя на перевод и не клонировался в середину там, где была проблема с <br> <== upd: <br> Гугл один раз раздвоил, сунув копию в середину, из-за чего была ошибка при раборе строк перевода <== <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
@@ -275,32 +134,25 @@ namespace TranslationHelper
                     }));
                 }
             }
-            //FileWriter.WriteData("c:\\THLog.log", "\r\nstringBuilder.ToString():\r\n" + stringBuilder.ToString());
+
             var arg = HttpUtility.UrlEncode(stringBuilder.ToString(), Encoding.UTF8);
             var address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
             if (webClient == null)
             {
                 webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
-                //webClient = new ScrapySharp.Network.ScrapingBrowser();
             }
-            //using (WebClient webClient = new WebClient())
-            //{
-            //}
+
             webClient.Encoding = Encoding.UTF8;
-            //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
-            webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Win7);
-            //webClient.UserAgent= ScrapySharp.Network.FakeUserAgents.Chrome;
+            webClient.Headers.Add(HttpRequestHeader.UserAgent, FunctionsWeb.GetUserAgent());
             var uri = new Uri(address);
             try
             {
-                //Материалы, что помогли
+                //Материалы
                 //http://www.cyberforum.ru/ado-net/thread903701.html
                 //https://stackoverflow.com/questions/12546126/threading-webbrowser-in-c-sharp
                 //https://stackoverflow.com/questions/4269800/webbrowser-control-in-a-new-thread
 
-
-                //скачать страницу
                 var text = string.Empty;
 
                 try
@@ -334,65 +186,13 @@ namespace TranslationHelper
                     }
                 }
 
-
-
-                //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"TEXT:"+Environment.NewLine + text);
-
                 var htmlDocument = WBhtmlDocument();
                 htmlDocument.Write(text);
 
-                {
-                    //string text2 = string.Empty;
-                    //try
-                    //{
-                    //    text2 = FixFormatMulti(GetTranslationHtmlElement(htmlDocument));
-                    //}
-                    //finally
-                    //{
-                    //}
-                }
-
                 var text2 = GetTranslationHtmlElement(htmlDocument).FixFormatMulti();
 
-                {
-                    //FileWriter.WriteData("c:\\THLog.log", Environment.NewLine+"text2:"+Environment.NewLine + text2);
-                    //if (text2.Length == 0)
-                    //{
-                    //    for (int j = 0; j < array.Count(); j++)
-                    //    {
-                    //        if (array[j] == null)
-                    //        {
-                    //            array[j] = string.Empty;
-                    //        }
-                    //    }
-                    //    return array;
-                    //}
-
-                    //array = NormalizeResponse(text2);
-                    //MatchCollection matchCollection = myReg.Matches(text2);
-                    ////FileWriter.WriteData("c:\\THLog.log", "\r\nmatchCollection cnt:" + matchCollection.Count+ ", array.Count()"+ array.Count());
-                    //int matchnum = 0;
-                    //for (int k = 0; k < array.Count(); k++)
-                    //{
-                    //    //FileWriter.WriteData("c:\\THLog.log", "\r\narray[k]=" + array[k]);
-                    //    if (array[k] == null)
-                    //    {
-                    //        if (matchCollection.Count == matchnum)
-                    //        {
-                    //            array[k] = string.Empty;
-                    //        }
-                    //        else
-                    //        {
-                    //            //FileWriter.WriteData("c:\\THLog.log", "\r\nSet matchCollection["+matchnum+"].Value" + matchCollection[matchnum].Value);
-                    //            array[k] = matchCollection[matchnum].Value.Replace("DNTT", Environment.NewLine);
-                    //            matchnum++;
-                    //        }
-                    //    }
-                    //}
-                }
-
                 return text2.Length == 0 ? RetWithNullToEmpty(array) : SplitTextToLinesAndRestoreSomeSpecsymbols(text2);
-                //return array;
+                
             }
             catch (WebException ex)
             {
@@ -404,10 +204,7 @@ namespace TranslationHelper
             {
                 new Functions.FunctionsLogs().LogToFile("google array translation error:" + Environment.NewLine + ex + Environment.NewLine + "uri=" + uri);
             }
-            //finally
-            //{
-            //    webClient.Dispose();
-            //}
+
             return null;
         }
 
@@ -448,11 +245,6 @@ namespace TranslationHelper
                 WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty };
             }
             return WB.Document.OpenNew(true);
-
-            //using (WebBrowser WB = new WebBrowser() { ScriptErrorsSuppressed = true, DocumentText = string.Empty })//перенос WB сюда - это исправление ошибки "COM object that has been separated from its underlying RCW cannot be used.", когда этот переводчик вызывается в другом потоке STA
-            //{
-            //    return WB.Document.OpenNew(true);
-            //}
         }
 
         private static string[] SplitTextToLinesAndRestoreSomeSpecsymbols(string text2)
@@ -472,21 +264,10 @@ namespace TranslationHelper
         }
 
         private const string DNTT = "DNTT";
-        //private const string DNTT = "<code>0</code>";
 
-        //private const string SEPARATOR = "\r\n#DONOTTRANSLATE#\r\n";
-
-        //private static WebBrowser WB = new WebBrowser();
-
-        //private static readonly Regex myReg = new Regex("(?<=##\\d## ).*?(?=##\\d##)", RegexOptions.Compiled);
-        //заменено на <br>
-        //private static readonly Regex myReg = new Regex(@"(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\<\# \1 \#\# )|(?<=\#\# (\d{1,5}) \#\>\# ).*?(?= \#\#\#\#\# )", RegexOptions.Compiled);
-
-        //## 27 #># Same sex with this woman _ <# 27 ## 
-        //\#\# \d{1,3} \#\# ?(.*) ?\#\# \d{1,3} \#\# ?
         private static readonly string[] splitter = new string[] { "</br>" };
 
-        // TKK Approach stolen from Translation Aggregator r190, all credits to Sinflower
+        // Translation Aggregator r190. Credits to Sinflower.
         private long m = 427761;
         private long s = 1179739010;
         //private int _translationsPerRequest = 1;
