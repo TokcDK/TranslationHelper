@@ -18,7 +18,7 @@ namespace TranslationHelper.Projects.IrisField
 
         internal override string Name()
         {
-            return "Iris Field game";
+            return "Irisfield game";
         }
 
         internal override string GetProjectDBFileName()
@@ -27,7 +27,7 @@ namespace TranslationHelper.Projects.IrisField
         }
 
         protected abstract string GameExeName { get; }
-        protected abstract Type GameExeType { get; }
+        protected abstract Type GameExeFormatType { get; }
 
         internal override bool Check()
         {
@@ -65,7 +65,7 @@ namespace TranslationHelper.Projects.IrisField
             ProjectData.Main.ProgressInfo(true, Path.GetFileName(ProjectData.SelectedFilePath));
             ProjectData.FilePath = ProjectData.SelectedFilePath;
             var openPath = new DirectoryInfo(Path.GetDirectoryName(ProjectData.SelectedFilePath));
-            if (OpenSaveFilesBase(openPath, GameExeType, GameExeName + ".exe"))
+            if (OpenSaveFilesBase(openPath, GameExeFormatType, GameExeName + ".exe"))
             {
                 ret = true;
             }

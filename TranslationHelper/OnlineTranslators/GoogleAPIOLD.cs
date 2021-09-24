@@ -153,7 +153,7 @@ namespace TranslationHelper
                     //}
                     webClient.Encoding = Encoding.UTF8;
                     //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
-                    webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
+                    webClient.Headers.Add(HttpRequestHeader.UserAgent, /*UserAgents.Chrome_Iron_Win7*/ Functions.FunctionsWeb.GetUserAgent());
                     //webClient.UserAgent = ScrapySharp.Network.FakeUserAgents.Chrome;
                     try
                     {
@@ -289,7 +289,7 @@ namespace TranslationHelper
             //}
             webClient.Encoding = Encoding.UTF8;
             //webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.OperaMini);
-            webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
+            webClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Win7);
             //webClient.UserAgent= ScrapySharp.Network.FakeUserAgents.Chrome;
             var uri = new Uri(address);
             try

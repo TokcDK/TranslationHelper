@@ -12,6 +12,6 @@ namespace TranslationHelper.Projects.IrisField
 
         protected override string GameExeName => "素晴らしき国家の築き方";
 
-        protected override Type GameExeType => typeof(HowToBuildAMagnificentNationExe);
+        protected override Type GameExeFormatType => typeof(HowToBuildAMagnificentNationExe);
     }
 }

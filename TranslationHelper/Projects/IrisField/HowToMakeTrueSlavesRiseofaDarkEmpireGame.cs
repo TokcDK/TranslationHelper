@@ -12,6 +12,6 @@ namespace TranslationHelper.Projects.IrisField
 
         protected override string GameExeName => "正しい性奴隷の使い方";
 
-        protected override Type GameExeType => typeof(HowToMakeTrueSlavesRiseofaDarkEmpireExe);
+        protected override Type GameExeFormatType => typeof(HowToMakeTrueSlavesRiseofaDarkEmpireExe);
     }
 }
