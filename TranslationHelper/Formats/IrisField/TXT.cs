@@ -37,7 +37,7 @@ namespace TranslationHelper.Formats.IrisField
         {
             if (!_messageReadMode)
             {
-                SaveModeAddLine();
+                SaveModeAddLine(newline: Environment.NewLine, LastEmptyLine: true);
             }
 
             if (IsEmpty())
@@ -93,7 +93,7 @@ namespace TranslationHelper.Formats.IrisField
                     else
                     {
                         string extraEmptyLinesForWrite = mergedMessage.Replace(mergedMessage = mergedMessage.TrimEnd(), string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
-                        
+
                         if (SetTranslation(ref mergedMessage))
                         {
                             //split lines

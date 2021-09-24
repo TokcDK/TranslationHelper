@@ -126,7 +126,9 @@ namespace TranslationHelper.Formats
         /// </summary>
         string lastNewline = "\r\n";
         /// <summary>
-        /// add line for wtite in save mode
+        /// add ParseData.Line for wtite in save mode
+        /// <paramref name="newline"/> will be used as newline symbol.
+        /// when <paramref name="LastEmptyLine"/> is true after ParseData.Line also will be added <paramref name="newline"/>
         /// </summary>
         /// <param name="newline"></param>
         /// <param name="LastEmptyLine">last line must be empty</param>
@@ -136,33 +138,29 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// add line for wtite in save mode
+        /// add <paramref name="line"/> for wtite in save mode.
+        /// <paramref name="newline"/> will be used as newline symbol.
+        /// when <paramref name="LastEmptyLine"/> is true after <paramref name="line"/> also will be added <paramref name="newline"/>
         /// </summary>
+        /// <param name="line"></param>
         /// <param name="newline"></param>
         /// <param name="LastEmptyLine">last line must be empty</param>
         protected virtual void SaveModeAddLine(string line, string newline = "\r\n", bool LastEmptyLine = false)
         {
             if (ProjectData.SaveFileMode)
             {
-                if (LastEmptyLine)
+                if (firstline)
                 {
-                    ParseData.ResultForWrite.Append(line + newline);
+                    firstline = false;
                 }
                 else
                 {
-                    if (firstline)
-                    {
-                        firstline = false;
-                    }
-                    else
-                    {
-                        ParseData.ResultForWrite.Append(lastNewline);
-                    }
-
-                    lastNewline = newline;//set newline symbol to paste after current line
-
-                    ParseData.ResultForWrite.Append(line);
+                    ParseData.ResultForWrite.Append(lastNewline);
                 }
+
+                lastNewline = newline;//set newline symbol to paste after current line
+
+                ParseData.ResultForWrite.Append(line + (LastEmptyLine ? newline : ""));
             }
         }
 
