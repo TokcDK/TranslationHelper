@@ -35,9 +35,9 @@ namespace TranslationHelper.Formats.IrisField
 
         protected override KeywordActionAfter ParseStringFileLine()
         {
-            if (!_messageReadMode)
+            if (!_messageReadMode) // skip when read message content
             {
-                SaveModeAddLine(newline: Environment.NewLine, LastEmptyLine: true);
+                SaveModeAddLine(newline: Environment.NewLine, newLineAfter: true);
             }
 
             if (IsEmpty())

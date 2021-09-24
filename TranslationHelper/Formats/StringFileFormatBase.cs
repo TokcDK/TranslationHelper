@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -118,50 +119,58 @@ namespace TranslationHelper.Formats
         /// <param name="LastEmptyLine">last line must be empty</param>
         protected virtual void SaveModeAddLine(bool LastEmptyLine)
         {
-            SaveModeAddLine(newline: "\r\n", LastEmptyLine: LastEmptyLine);
+            SaveModeAddLine(newline: Environment.NewLine, newLineAfter: LastEmptyLine);
         }
 
         /// <summary>
         /// last newline symbol for paste after required line, not before it
         /// </summary>
-        string lastNewline = "\r\n";
+        string lastNewline = Environment.NewLine;
         /// <summary>
         /// add ParseData.Line for wtite in save mode
         /// <paramref name="newline"/> will be used as newline symbol.
-        /// when <paramref name="LastEmptyLine"/> is true after ParseData.Line also will be added <paramref name="newline"/>
+        /// when <paramref name="newLineAfter"/> is true after ParseData.Line also will be added <paramref name="newline"/>
         /// </summary>
         /// <param name="newline"></param>
-        /// <param name="LastEmptyLine">last line must be empty</param>
-        protected virtual void SaveModeAddLine(string newline = "\r\n", bool LastEmptyLine = false)
+        /// <param name="newLineAfter">last line must be empty</param>
+        protected virtual void SaveModeAddLine(string newline = "\r\n", bool newLineAfter = false)
         {
-            SaveModeAddLine(line: ParseData.Line, newline: newline, LastEmptyLine: LastEmptyLine);
+            SaveModeAddLine(line: ParseData.Line, newline: newline, newLineAfter: newLineAfter);
         }
 
         /// <summary>
         /// add <paramref name="line"/> for wtite in save mode.
         /// <paramref name="newline"/> will be used as newline symbol.
-        /// when <paramref name="LastEmptyLine"/> is true after <paramref name="line"/> also will be added <paramref name="newline"/>
+        /// when <paramref name="newLineAfter"/> is true after <paramref name="line"/> also will be added <paramref name="newline"/>
         /// </summary>
         /// <param name="line"></param>
         /// <param name="newline"></param>
-        /// <param name="LastEmptyLine">last line must be empty</param>
-        protected virtual void SaveModeAddLine(string line, string newline = "\r\n", bool LastEmptyLine = false)
+        /// <param name="newLineAfter">last line must be empty</param>
+        protected virtual void SaveModeAddLine(string line, string newline = "\r\n", bool newLineAfter = false)
         {
-            if (ProjectData.SaveFileMode)
+            if (ProjectData.OpenFileMode)
             {
-                if (firstline)
-                {
-                    firstline = false;
-                }
-                else
-                {
-                    ParseData.ResultForWrite.Append(lastNewline);
-                }
-
-                lastNewline = newline;//set newline symbol to paste after current line
-
-                ParseData.ResultForWrite.Append(line + (LastEmptyLine ? newline : ""));
+                return;
             }
+
+            if (newLineAfter)
+            {
+                ParseData.ResultForWrite.Append(line + newline); // just paste newline symbol after line
+                return;
+            }
+
+            if (firstline)
+            {
+                firstline = false; // add newline only after 1st line
+            }
+            else
+            {
+                ParseData.ResultForWrite.Append(lastNewline);
+            }
+
+            lastNewline = newline; // remember newline symbol to paste after current line
+
+            ParseData.ResultForWrite.Append(line);
         }
 
         /// <summary>
