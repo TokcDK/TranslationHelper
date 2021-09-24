@@ -116,10 +116,10 @@ namespace TranslationHelper.Formats
         /// add line for wtite in save mode
         /// </summary>
         /// <param name="newline"></param>
-        /// <param name="LastEmptyLine">last line must be empty</param>
-        protected virtual void SaveModeAddLine(bool LastEmptyLine)
+        /// <param name="newLineAfter">last line must be empty</param>
+        protected virtual void SaveModeAddLine(bool newLineAfter)
         {
-            SaveModeAddLine(newline: Environment.NewLine, newLineAfter: LastEmptyLine);
+            SaveModeAddLine(newline: Environment.NewLine, newLineAfter: newLineAfter);
         }
 
         /// <summary>
