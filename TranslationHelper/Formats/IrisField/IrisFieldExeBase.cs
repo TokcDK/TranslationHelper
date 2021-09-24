@@ -91,6 +91,11 @@ namespace TranslationHelper.Formats.IrisField
 
                 while (br.BaseStream.Position <= endpos)
                 {
+                    if (br.BaseStream.Position == 2121835)
+                    {
+
+                    }
+
                     currentbyte = br.ReadByte();
 
                     if (readstring)

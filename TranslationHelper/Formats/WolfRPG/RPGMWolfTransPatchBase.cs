@@ -212,7 +212,7 @@ namespace TranslationHelper.Formats.WolfRPG
             }
             else
             {
-                SaveModeAddLine("\n");
+                SaveModeAddLine(newline:"\n");
             }
 
             return KeywordActionAfter.Continue;
@@ -332,7 +332,7 @@ namespace TranslationHelper.Formats.WolfRPG
                                 "> END STRING"
                     ;
 
-                SaveModeAddLine("\n");//add endstring line
+                SaveModeAddLine(newline: "\n");//add endstring line
             }
         }
 

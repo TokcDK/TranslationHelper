@@ -62,7 +62,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 IsJsonNotLast = !IsJsonNotLast;
             }
 
-            SaveModeAddLine("\n");
+            SaveModeAddLine(newline: "\n");
 
             return KeywordActionAfter.Continue;
         }

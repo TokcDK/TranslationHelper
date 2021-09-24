@@ -93,7 +93,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                         {
                             // add line with identifier without "{" of json block
                             ParseData.Line = ParseData.Line.Remove(ParseData.Line.Length - 1, 1);
-                            SaveModeAddLine("\n");
+                            SaveModeAddLine(newline: "\n");
                         }
                         Svar.AppendLine("{");
                     }
@@ -102,7 +102,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
 
             if (!StartReadingSvar)
             {
-                SaveModeAddLine("\n");
+                SaveModeAddLine(newline: "\n");
             }
 
             return KeywordActionAfter.Continue;

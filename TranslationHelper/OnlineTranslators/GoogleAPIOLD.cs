@@ -42,17 +42,17 @@ namespace TranslationHelper
                 else
                 {
                     string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", " </br> ", RegexOptions.None);
-                    
+
                     string arg = HttpUtility.UrlEncode(str, Encoding.UTF8);
 
                     string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
                     if (webClient == null)
                         webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
-                    
+
                     webClient.Encoding = Encoding.UTF8;
                     webClient.Headers.Add(HttpRequestHeader.UserAgent, Functions.FunctionsWeb.GetUserAgent());
-                    
+
                     try
                     {
                         //Материалы
@@ -124,7 +124,7 @@ namespace TranslationHelper
                     _ = stringBuilder.Append(string.Concat(new string[]
                     {
                                 Regex.Replace(Regex.Replace(originalText[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None), @"<br>", "QBRQ", RegexOptions.None),
-                                
+
                                 oneOrLast ? "" : (
                                 Environment.NewLine
                                 //<br> заменил на </br>, последний также воспринимается как новая строка, влияя на перевод и не клонировался в середину там, где была проблема с <br> <== upd: <br> Гугл один раз раздвоил, сунув копию в середину, из-за чего была ошибка при раборе строк перевода <== <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
@@ -192,7 +192,7 @@ namespace TranslationHelper
                 var text2 = GetTranslationHtmlElement(htmlDocument).FixFormatMulti();
 
                 return text2.Length == 0 ? RetWithNullToEmpty(array) : SplitTextToLinesAndRestoreSomeSpecsymbols(text2);
-                
+
             }
             catch (WebException ex)
             {

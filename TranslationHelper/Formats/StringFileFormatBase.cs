@@ -118,7 +118,7 @@ namespace TranslationHelper.Formats
         /// <param name="LastEmptyLine">last line must be empty</param>
         protected virtual void SaveModeAddLine(bool LastEmptyLine)
         {
-            SaveModeAddLine("\r\n", LastEmptyLine);
+            SaveModeAddLine(newline: "\r\n", LastEmptyLine: LastEmptyLine);
         }
 
         /// <summary>
@@ -132,11 +132,21 @@ namespace TranslationHelper.Formats
         /// <param name="LastEmptyLine">last line must be empty</param>
         protected virtual void SaveModeAddLine(string newline = "\r\n", bool LastEmptyLine = false)
         {
+            SaveModeAddLine(line: ParseData.Line, newline: newline, LastEmptyLine: LastEmptyLine);
+        }
+
+        /// <summary>
+        /// add line for wtite in save mode
+        /// </summary>
+        /// <param name="newline"></param>
+        /// <param name="LastEmptyLine">last line must be empty</param>
+        protected virtual void SaveModeAddLine(string line, string newline = "\r\n", bool LastEmptyLine = false)
+        {
             if (ProjectData.SaveFileMode)
             {
                 if (LastEmptyLine)
                 {
-                    ParseData.ResultForWrite.Append(ParseData.Line + newline);
+                    ParseData.ResultForWrite.Append(line + newline);
                 }
                 else
                 {
@@ -151,7 +161,7 @@ namespace TranslationHelper.Formats
 
                     lastNewline = newline;//set newline symbol to paste after current line
 
-                    ParseData.ResultForWrite.Append(ParseData.Line);
+                    ParseData.ResultForWrite.Append(line);
                 }
             }
         }

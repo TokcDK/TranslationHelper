@@ -44,7 +44,7 @@ namespace TranslationHelper.Formats.LiveMaker
                 CaptureMessage = true;
             }
 
-            SaveModeAddLine(ParseData.Line.Length > 0 ? "\r" : "\r\n");//not empty line in lns ends with \r
+            SaveModeAddLine(newline: ParseData.Line.Length > 0 ? "\r" : "\r\n");//not empty line in lns ends with \r
 
             return 0;
         }

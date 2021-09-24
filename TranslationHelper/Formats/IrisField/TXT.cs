@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.IrisField
 {
@@ -31,151 +29,112 @@ namespace TranslationHelper.Formats.IrisField
             return Encoding.GetEncoding(932);
         }
 
-        bool readmode;
-        readonly StringBuilder sb = new StringBuilder();
+        bool _messageReadMode;
+        readonly StringBuilder messageContent = new StringBuilder();
         private string LastMSGType;
 
         protected override KeywordActionAfter ParseStringFileLine()
         {
-            if (readmode)
+            if (!_messageReadMode)
             {
-                bool startswithsharp = ParseData.Line.StartsWith("#");
-                bool startswithOther = StartsWithOther(ParseData.Line);
-                if (startswithsharp || startswithOther /*string.IsNullOrEmpty(line)*/)
-                {
-                    var str = sb.ToString().TrimEnd();
-                    if (ProjectData.OpenFileMode)
-                    {
-                        AddRowData(str, string.Empty, CheckInput: true);
-                    }
-                    else
-                    {
-                        var extraEmptyLinesForWrite = (str.Length > 0 ? sb.ToString().Replace(str, string.Empty) : sb.ToString());//только пустота на конце, пустоту надо записать в новый файл для корректности
-
-                        if (SetTranslation(ref str))
-                        {
-
-                            //split lines
-                            var newLine = str.SplitMultiLineIfBeyondOfLimit(60);//37 if transform all en chars to jp variants
-
-                            MakeRequiredEdits(ref newLine);
-
-                            ParseData.ResultForWrite.AppendLine(newLine + extraEmptyLinesForWrite);
-
-                            if (str != newLine)
-                            {
-                                ParseData.Ret = true;
-                            }
-                        }
-                        else
-                        {
-                            ParseData.ResultForWrite.AppendLine(sb.ToString() + Environment.NewLine);
-                        }
-                    }
-
-                    readmode = false;
-                    sb.Clear();
-
-                    if (startswithsharp)
-                    {
-                        if (IsMessage(ParseData.Line))
-                        {
-                            ParseMessage();
-                            return 0;
-                        }
-                        else if (IsVoicedMessage(ParseData.Line))
-                        {
-                            ParseVoicedMessage();
-                            return 0;
-                        }
-                        else if (IsChoiceVariants(ParseData.Line))
-                        {
-                            ParseChoices();
-                            return 0;
-                        }
-                    }
-                }
-                else
-                {
-                    if (sb.Length > 0)
-                    {
-                        sb.Append(Environment.NewLine);
-                    }
-                    sb.Append(ParseData.Line);
-                }
-
                 SaveModeAddLine();
-
-                return 0;
             }
-            else
+
+            if (IsEmpty())
             {
-                if (IsCommentary(ParseData.Line))//commented or empty
-                {
-                    SaveModeAddLine();
-                    return 0;
-                }
-                else if (IsMessage(ParseData.Line))
-                {
-                    ParseMessage();
-                    return 0;
-                }
-                else if (IsVoicedMessage(ParseData.Line))
-                {
-                    ParseVoicedMessage();
-                    return 0;
-                }
-                else if (IsChoiceVariants(ParseData.Line))
-                {
-                    ParseChoices();
-                    return 0;
-                }
+                // do nothing
+            }
+            else if (IsComment())
+            {
+                // do nothing
+            }
+            else if (IsMessage())
+            {
+                ParseMessage();
+            }
+            else if (IsChoiceVariants())
+            {
+                ParseChoices();
             }
 
-            SaveModeAddLine();
-
-            return 0;
+            return KeywordActionAfter.Continue;
         }
 
         private void ParseMessage()
         {
-            LastMSGType = ParseData.Line;
-            SaveModeAddLine();
-            readmode = true;
-        }
-
-        private void ParseVoicedMessage()
-        {
-            LastMSGType = ParseData.Line;
-            if (ProjectData.SaveFileMode)
+            if (!_messageReadMode)
             {
-                SaveModeAddLine();//add mark
-                ParseData.ResultForWrite.AppendLine(ParseData.Line = ParseData.Reader.ReadLine());//add voice file name line
+                LastMSGType = ParseData.Line;
+
+                if (IsVoicedMessage())
+                {
+                    SaveModeAddLine(ReadLine()/*read line with voice file name*/, Environment.NewLine, true); // add line with translation                 
+                }
+
+                _messageReadMode = true;
             }
             else
             {
-                ParseData.Line = ParseData.Reader.ReadLine();//read next line with voice name, nex readline will skip it
+                if (!StartsWithOther() && !ParseData.Line.StartsWith("#"))
+                {
+                    messageContent.AppendLine(ParseData.Line);
+                }
+                else
+                {
+                    var mergedMessage = messageContent.ToString();
+                    messageContent.Clear();
+
+                    _messageReadMode = false;
+
+                    if (ProjectData.OpenFileMode)
+                    {
+                        AddRowData(RowData: mergedMessage.TrimEnd(), RowInfo: LastMSGType);
+                    }
+                    else
+                    {
+                        string extraEmptyLinesForWrite = mergedMessage.Replace(mergedMessage = mergedMessage.TrimEnd(), string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
+                        
+                        if (SetTranslation(ref mergedMessage))
+                        {
+                            //split lines
+                            var newLine = mergedMessage.SplitMultiLineIfBeyondOfLimit(60);//37 if transform all en chars to jp variants
+
+                            MakeRequiredEdits(ref newLine);
+
+                            mergedMessage = newLine + extraEmptyLinesForWrite;
+                        }
+
+                        SaveModeAddLine(mergedMessage, Environment.NewLine, true); // add line with translation
+                    }
+
+                    ParseStringFileLine(); // repeat parse last line because message saved
+                }
+
+                return;
             }
-            readmode = true;
+
         }
 
         private void ParseChoices()
         {
-            SaveModeAddLine();
-
             //get choices count
-            int selectioncnt = int.Parse(ParseData.Line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+            int choicesCount = GetChoicesCount();
             //add all choices
-            for (int i = 0; i < selectioncnt; i++)
+            for (int i = 0; i < choicesCount; i++)
             {
-                var str = ParseData.Reader.ReadLine();
-                var extracted = Regex.Replace(str, ChoiceTextExtractionRegex(), "$1");
-                AddRowData(ref extracted, "Choice variant " + i);
-                if (ProjectData.SaveFileMode)
-                {
-                    ParseData.ResultForWrite.AppendLine(extracted);
-                }
+                var choice = ParseData.Reader.ReadLine(); // read choice line
+                var choiceMatch = Regex.Match(choice, _choiceTextExtractionRegex);
+                var choiceText = choiceMatch.Groups[1].Value;
+
+                AddRowData(ref choiceText, "Choice: " + i);
+
+                SaveModeAddLine(choiceText + choiceMatch.Groups[2].Value, Environment.NewLine, true);
             }
+        }
+
+        private int GetChoicesCount()
+        {
+            return int.Parse(ParseData.Line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -230,134 +189,134 @@ namespace TranslationHelper.Formats.IrisField
             return retLine;
         }
 
-        bool openTxt()
+        //bool openTxt()
+        //{
+        //    if (ProjectData.FilePath.Length == 0)
+        //    {
+        //        return false;
+        //    }
+
+        //    string fileName = Path.GetFileNameWithoutExtension(ProjectData.FilePath);
+
+        //    ProjectData.THFilesElementsDataset.Tables.Add(fileName).Columns.Add(THSettings.OriginalColumnName());
+        //    ProjectData.THFilesElementsDatasetInfo.Tables.Add(fileName).Columns.Add(THSettings.OriginalColumnName());
+
+        //    using (StreamReader sr = new StreamReader(GetOriginalWhenExists(), Encoding.GetEncoding(932)))
+        //    {
+        //        string line;
+        //        bool readmode = false;
+        //        StringBuilder sb = new StringBuilder();
+        //        while (!sr.EndOfStream)
+        //        {
+        //            line = sr.ReadLine();
+
+        //            if (readmode)
+        //            {
+        //                bool startswithsharp = line.StartsWith("#");
+        //                bool startswithOther = StartsWithOther(line);
+        //                if (startswithsharp || startswithOther /*string.IsNullOrEmpty(line)*/)
+        //                {
+        //                    if (!string.IsNullOrWhiteSpace(sb.ToString()))
+        //                    {
+        //                        ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(sb.ToString().TrimEnd());
+        //                        ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(string.Empty);
+        //                    }
+
+        //                    readmode = false;
+        //                    sb.Clear();
+
+        //                    if (startswithsharp)
+        //                    {
+        //                        if (IsMessage(line))
+        //                        {
+        //                            readmode = true;
+        //                            continue;
+        //                        }
+        //                        else if (IsVoicedMessage(line))
+        //                        {
+        //                            sr.ReadLine();
+        //                            readmode = true;
+        //                            continue;
+        //                        }
+        //                        else if (IsChoiceVariants(line))
+        //                        {
+        //                            int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+        //                            for (int i = 0; i < selectioncnt; i++)
+        //                            {
+        //                                ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1"));
+        //                                ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("Choice variant " + i);
+        //                            }
+        //                            continue;
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (sb.Length > 0)
+        //                    {
+        //                        sb.Append(Environment.NewLine);
+        //                    }
+        //                    sb.Append(line);
+        //                }
+
+        //                continue;
+        //            }
+        //            else
+        //            {
+        //                if (IsEmptyOrComment(line))//commented or empty
+        //                {
+        //                    continue;
+        //                }
+        //                else if (IsMessage(line))
+        //                {
+        //                    readmode = true;
+        //                    continue;
+        //                }
+        //                else if (IsVoicedMessage(line))
+        //                {
+        //                    sr.ReadLine();
+        //                    readmode = true;
+        //                    continue;
+        //                }
+        //                else if (IsChoiceVariants(line))
+        //                {
+        //                    int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+        //                    for (int i = 0; i < selectioncnt; i++)
+        //                    {
+        //                        ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1"));
+        //                        ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("Choice variant " + i);
+        //                    }
+        //                    continue;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    if (ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Count > 0)
+        //    {
+        //        ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add(THSettings.TranslationColumnName());
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        ProjectData.THFilesElementsDataset.Tables.Remove(fileName);
+        //        ProjectData.THFilesElementsDatasetInfo.Tables.Remove(fileName);
+        //        return false;
+        //    }
+        //}
+
+        //private string GetOriginalWhenExists()
+        //{
+        //    if (File.Exists(ProjectData.FilePath + ".orig"))
+        //    {
+        //        return ProjectData.FilePath + ".orig";
+        //    }
+        //    return ProjectData.FilePath;
+        //}
+
+        private bool StartsWithOther()
         {
-            if (ProjectData.FilePath.Length == 0)
-            {
-                return false;
-            }
-
-            string fileName = Path.GetFileNameWithoutExtension(ProjectData.FilePath);
-
-            ProjectData.THFilesElementsDataset.Tables.Add(fileName).Columns.Add(THSettings.OriginalColumnName());
-            ProjectData.THFilesElementsDatasetInfo.Tables.Add(fileName).Columns.Add(THSettings.OriginalColumnName());
-
-            using (StreamReader sr = new StreamReader(GetOriginalWhenExists(), Encoding.GetEncoding(932)))
-            {
-                string line;
-                bool readmode = false;
-                StringBuilder sb = new StringBuilder();
-                while (!sr.EndOfStream)
-                {
-                    line = sr.ReadLine();
-
-                    if (readmode)
-                    {
-                        bool startswithsharp = line.StartsWith("#");
-                        bool startswithOther = StartsWithOther(line);
-                        if (startswithsharp || startswithOther /*string.IsNullOrEmpty(line)*/)
-                        {
-                            if (!string.IsNullOrWhiteSpace(sb.ToString()))
-                            {
-                                ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(sb.ToString().TrimEnd());
-                                ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add(string.Empty);
-                            }
-
-                            readmode = false;
-                            sb.Clear();
-
-                            if (startswithsharp)
-                            {
-                                if (IsMessage(line))
-                                {
-                                    readmode = true;
-                                    continue;
-                                }
-                                else if (IsVoicedMessage(line))
-                                {
-                                    sr.ReadLine();
-                                    readmode = true;
-                                    continue;
-                                }
-                                else if (IsChoiceVariants(line))
-                                {
-                                    int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
-                                    for (int i = 0; i < selectioncnt; i++)
-                                    {
-                                        ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1"));
-                                        ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("Choice variant " + i);
-                                    }
-                                    continue;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (sb.Length > 0)
-                            {
-                                sb.Append(Environment.NewLine);
-                            }
-                            sb.Append(line);
-                        }
-
-                        continue;
-                    }
-                    else
-                    {
-                        if (IsCommentary(line))//commented or empty
-                        {
-                            continue;
-                        }
-                        else if (IsMessage(line))
-                        {
-                            readmode = true;
-                            continue;
-                        }
-                        else if (IsVoicedMessage(line))
-                        {
-                            sr.ReadLine();
-                            readmode = true;
-                            continue;
-                        }
-                        else if (IsChoiceVariants(line))
-                        {
-                            int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
-                            for (int i = 0; i < selectioncnt; i++)
-                            {
-                                ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1"));
-                                ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("Choice variant " + i);
-                            }
-                            continue;
-                        }
-                    }
-                }
-            }
-
-            if (ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Count > 0)
-            {
-                ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add(THSettings.TranslationColumnName());
-                return true;
-            }
-            else
-            {
-                ProjectData.THFilesElementsDataset.Tables.Remove(fileName);
-                ProjectData.THFilesElementsDatasetInfo.Tables.Remove(fileName);
-                return false;
-            }
-        }
-
-        private string GetOriginalWhenExists()
-        {
-            if (File.Exists(ProjectData.FilePath + ".orig"))
-            {
-                return ProjectData.FilePath + ".orig";
-            }
-            return ProjectData.FilePath;
-        }
-
-        private static bool StartsWithOther(string line)
-        {
-            return line.StartsWith("//") || line.StartsWith("[") || line.StartsWith("}");
+            return ParseData.Line.StartsWith("//") || ParseData.Line.StartsWith("[") || ParseData.Line.StartsWith("}");
         }
 
         internal override bool Save()
@@ -365,246 +324,248 @@ namespace TranslationHelper.Formats.IrisField
             return ParseFile();
         }
 
-        private bool WriteTxt()
+        //private bool WriteTxt()
+        //{
+        //    if (ProjectData.FilePath.Length == 0)
+        //    {
+        //        return false;
+        //    }
+
+        //    string fileName = Path.GetFileNameWithoutExtension(ProjectData.FilePath);
+
+        //    StringBuilder sbWrite = new StringBuilder();
+
+        //    int TableRowIndex = 0;
+        //    bool WriteIt = false;
+        //    string LastMSGType = string.Empty;
+        //    using (StreamReader sr = new StreamReader(GetOriginalWhenExists(), Encoding.GetEncoding(932)))
+        //    {
+        //        string line;
+        //        bool readmode = false;
+        //        StringBuilder sb = new StringBuilder();
+        //        while (!sr.EndOfStream)
+        //        {
+        //            line = sr.ReadLine();
+
+        //            if (readmode)
+        //            {
+        //                bool startswithsharp = line.StartsWith("#");
+        //                bool startswithOther = StartsWithOther(line);
+        //                if (startswithsharp || startswithOther /*string.IsNullOrEmpty(line)*/)
+        //                {
+        //                    if (!string.IsNullOrWhiteSpace(sb.ToString()))
+        //                    {
+        //                        string trimmedSB = sb.ToString().TrimEnd();//строка с обрезаной пустотой на конце
+        //                        string extraEmptyLinesForWrite = sb.ToString().Replace(trimmedSB, string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
+
+        //                        var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
+        //                        if (!string.IsNullOrEmpty(row[1] + string.Empty) && (row[0] as string) == trimmedSB && !Equals(row[0], row[1]))
+        //                        {
+        //                            string newLine = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex][1] + string.Empty;
+        //                            //bool startsWithJPQuote1 = newLine.Contains("「");
+        //                            //bool startsWithJPQuote2 = newLine.Contains("『");
+
+        //                            //split lines
+        //                            newLine = newLine.SplitMultiLineIfBeyondOfLimit(60);//37 if transform all en chars to jp variants
+
+        //                            //required edits
+        //                            newLine = PreReduceTranslation(newLine);
+        //                            newLine = ApplyRequiredCharReplacements(newLine);
+
+        //                            int newLinesCount = newLine.GetLinesCount();
+        //                            int linesCount = 0;
+        //                            int linesCountMax = 5;
+        //                            string retLine = string.Empty;
+        //                            //newLine = TransformString(newLine);
+        //                            LastMSGType = LastMSGType.Replace("#MSGVOICE,", "#MSG,");
+        //                            foreach (var subline in newLine.SplitToLines())
+        //                            {
+        //                                string cleanedSubline = PostTransFormLineCleaning(subline);
+        //                                cleanedSubline = ENJPCharsReplacementFirstLetter(cleanedSubline);
+        //                                //cleanedSubline = CheckFirstCharIsLatinAndTransform(cleanedSubline);
+        //                                linesCount++;
+        //                                if (linesCount == linesCountMax)
+        //                                {
+        //                                    linesCountMax += 4;
+        //                                    retLine += /*(startsWithJPQuote1 ? "」" : (startsWithJPQuote2? "』" : string.Empty))
+        //                                        + */Environment.NewLine
+        //                                        + Environment.NewLine
+        //                                        + LastMSGType
+        //                                        + Environment.NewLine
+        //                                        /*+ (startsWithJPQuote1 ? "「" : (startsWithJPQuote2 ? "『" : string.Empty))*/;
+        //                                }
+        //                                else if (linesCount > 1 && linesCount <= newLinesCount)
+        //                                {
+        //                                    retLine += Environment.NewLine;
+        //                                }
+        //                                retLine += cleanedSubline;
+        //                            }
+
+        //                            sbWrite.AppendLine(retLine + extraEmptyLinesForWrite);
+
+        //                        }
+        //                        else
+        //                        {
+        //                            sbWrite.AppendLine(sb.ToString() + Environment.NewLine);
+        //                        }
+        //                        TableRowIndex++;
+        //                    }
+        //                    readmode = false;
+        //                    sb.Clear();
+        //                    WriteIt = true;
+        //                    LastMSGType = string.Empty;
+        //                }
+        //                else
+        //                {
+        //                    if (sb.Length > 0)
+        //                    {
+        //                        sb.Append(Environment.NewLine);
+        //                    }
+        //                    sb.Append(line);
+        //                }
+
+        //                if (startswithsharp)
+        //                {
+        //                    if (IsMessage(line))
+        //                    {
+        //                        LastMSGType = line;
+        //                        sbWrite.AppendLine(line);
+        //                        readmode = true;
+        //                        continue;
+        //                    }
+        //                    else if (IsVoicedMessage(line))
+        //                    {
+        //                        LastMSGType = line;
+        //                        sbWrite.AppendLine(line);
+        //                        sbWrite.AppendLine(sr.ReadLine());
+        //                        readmode = true;
+        //                        continue;
+        //                    }
+        //                    else if (IsChoiceVariants(line))
+        //                    {
+        //                        sbWrite.AppendLine(line);
+        //                        int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+        //                        string[] selectionsLine;
+        //                        for (int i = 0; i < selectioncnt; i++)
+        //                        {
+        //                            selectionsLine = Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
+        //                            var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
+        //                            if ((row[0] as string) == selectionsLine[0] && !string.IsNullOrEmpty(row[1] + string.Empty))
+        //                            {
+        //                                sbWrite.AppendLine(TransformString(row[1] + string.Empty) + selectionsLine[1]);
+        //                            }
+        //                            else
+        //                            {
+        //                                sbWrite.AppendLine(selectionsLine[0]);
+        //                            }
+        //                            TableRowIndex++;
+        //                        }
+        //                        //sbWrite.AppendLine(Environment.NewLine);
+        //                        WriteIt = true;
+        //                        continue;
+        //                    }
+        //                }
+
+        //                if (startswithsharp || startswithOther)
+        //                {
+        //                    sbWrite.AppendLine(line);
+        //                }
+
+        //                continue;
+        //            }
+        //            else
+        //            {
+        //                if (IsEmptyOrComment(line))//commented or empty
+        //                {
+        //                    sbWrite.AppendLine(line);
+        //                    continue;
+        //                }
+        //                else if (IsMessage(line))
+        //                {
+        //                    LastMSGType = line;
+        //                    sbWrite.AppendLine(line);
+        //                    readmode = true;
+        //                    continue;
+        //                }
+        //                else if (IsVoicedMessage(line))
+        //                {
+        //                    LastMSGType = line;
+        //                    sbWrite.AppendLine(line);
+        //                    sbWrite.AppendLine(sr.ReadLine());
+        //                    readmode = true;
+        //                    continue;
+        //                }
+        //                else if (IsChoiceVariants(line))
+        //                {
+        //                    sbWrite.AppendLine(line);
+        //                    int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
+        //                    string[] selectionsLine;
+        //                    for (int i = 0; i < selectioncnt; i++)
+        //                    {
+        //                        selectionsLine = Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
+        //                        var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
+        //                        if ((row[0] as string) == selectionsLine[0] && !string.IsNullOrEmpty(row[1] + string.Empty))
+        //                        {
+        //                            sbWrite.AppendLine(TransformString(row[1] + string.Empty) + selectionsLine[1]);
+        //                        }
+        //                        else
+        //                        {
+        //                            sbWrite.AppendLine(selectionsLine[0]);
+        //                        }
+        //                        TableRowIndex++;
+        //                    }
+        //                    //sbWrite.AppendLine(Environment.NewLine);
+        //                    WriteIt = true;
+        //                    continue;
+        //                }
+        //            }
+
+        //            sbWrite.AppendLine(line);
+        //        }
+        //    }
+
+        //    if (WriteIt && sbWrite.ToString().Length > 0 && !FunctionsFileFolder.FileInUse(ProjectData.FilePath))
+        //    {
+        //        if (!File.Exists(ProjectData.FilePath + ".orig"))
+        //        {
+        //            File.Move(ProjectData.FilePath, ProjectData.FilePath + ".orig");
+        //        }
+
+        //        File.WriteAllText(ProjectData.FilePath, sbWrite.ToString(), Encoding.GetEncoding(932));
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        private bool IsEmpty()
         {
-            if (ProjectData.FilePath.Length == 0)
-            {
-                return false;
-            }
-
-            string fileName = Path.GetFileNameWithoutExtension(ProjectData.FilePath);
-
-            StringBuilder sbWrite = new StringBuilder();
-
-            int TableRowIndex = 0;
-            bool WriteIt = false;
-            string LastMSGType = string.Empty;
-            using (StreamReader sr = new StreamReader(GetOriginalWhenExists(), Encoding.GetEncoding(932)))
-            {
-                string line;
-                bool readmode = false;
-                StringBuilder sb = new StringBuilder();
-                while (!sr.EndOfStream)
-                {
-                    line = sr.ReadLine();
-
-                    if (readmode)
-                    {
-                        bool startswithsharp = line.StartsWith("#");
-                        bool startswithOther = StartsWithOther(line);
-                        if (startswithsharp || startswithOther /*string.IsNullOrEmpty(line)*/)
-                        {
-                            if (!string.IsNullOrWhiteSpace(sb.ToString()))
-                            {
-                                string trimmedSB = sb.ToString().TrimEnd();//строка с обрезаной пустотой на конце
-                                string extraEmptyLinesForWrite = sb.ToString().Replace(trimmedSB, string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
-
-                                var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
-                                if (!string.IsNullOrEmpty(row[1] + string.Empty) && (row[0] as string) == trimmedSB && !Equals(row[0], row[1]))
-                                {
-                                    string newLine = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex][1] + string.Empty;
-                                    //bool startsWithJPQuote1 = newLine.Contains("「");
-                                    //bool startsWithJPQuote2 = newLine.Contains("『");
-
-                                    //split lines
-                                    newLine = newLine.SplitMultiLineIfBeyondOfLimit(60);//37 if transform all en chars to jp variants
-
-                                    //required edits
-                                    newLine = PreReduceTranslation(newLine);
-                                    newLine = ApplyRequiredCharReplacements(newLine);
-
-                                    int newLinesCount = newLine.GetLinesCount();
-                                    int linesCount = 0;
-                                    int linesCountMax = 5;
-                                    string retLine = string.Empty;
-                                    //newLine = TransformString(newLine);
-                                    LastMSGType = LastMSGType.Replace("#MSGVOICE,", "#MSG,");
-                                    foreach (var subline in newLine.SplitToLines())
-                                    {
-                                        string cleanedSubline = PostTransFormLineCleaning(subline);
-                                        cleanedSubline = ENJPCharsReplacementFirstLetter(cleanedSubline);
-                                        //cleanedSubline = CheckFirstCharIsLatinAndTransform(cleanedSubline);
-                                        linesCount++;
-                                        if (linesCount == linesCountMax)
-                                        {
-                                            linesCountMax += 4;
-                                            retLine += /*(startsWithJPQuote1 ? "」" : (startsWithJPQuote2? "』" : string.Empty))
-                                                + */Environment.NewLine
-                                                + Environment.NewLine
-                                                + LastMSGType
-                                                + Environment.NewLine
-                                                /*+ (startsWithJPQuote1 ? "「" : (startsWithJPQuote2 ? "『" : string.Empty))*/;
-                                        }
-                                        else if (linesCount > 1 && linesCount <= newLinesCount)
-                                        {
-                                            retLine += Environment.NewLine;
-                                        }
-                                        retLine += cleanedSubline;
-                                    }
-
-                                    sbWrite.AppendLine(retLine + extraEmptyLinesForWrite);
-
-                                }
-                                else
-                                {
-                                    sbWrite.AppendLine(sb.ToString() + Environment.NewLine);
-                                }
-                                TableRowIndex++;
-                            }
-                            readmode = false;
-                            sb.Clear();
-                            WriteIt = true;
-                            LastMSGType = string.Empty;
-                        }
-                        else
-                        {
-                            if (sb.Length > 0)
-                            {
-                                sb.Append(Environment.NewLine);
-                            }
-                            sb.Append(line);
-                        }
-
-                        if (startswithsharp)
-                        {
-                            if (IsMessage(line))
-                            {
-                                LastMSGType = line;
-                                sbWrite.AppendLine(line);
-                                readmode = true;
-                                continue;
-                            }
-                            else if (IsVoicedMessage(line))
-                            {
-                                LastMSGType = line;
-                                sbWrite.AppendLine(line);
-                                sbWrite.AppendLine(sr.ReadLine());
-                                readmode = true;
-                                continue;
-                            }
-                            else if (IsChoiceVariants(line))
-                            {
-                                sbWrite.AppendLine(line);
-                                int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
-                                string[] selectionsLine;
-                                for (int i = 0; i < selectioncnt; i++)
-                                {
-                                    selectionsLine = Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
-                                    var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
-                                    if ((row[0] as string) == selectionsLine[0] && !string.IsNullOrEmpty(row[1] + string.Empty))
-                                    {
-                                        sbWrite.AppendLine(TransformString(row[1] + string.Empty) + selectionsLine[1]);
-                                    }
-                                    else
-                                    {
-                                        sbWrite.AppendLine(selectionsLine[0]);
-                                    }
-                                    TableRowIndex++;
-                                }
-                                //sbWrite.AppendLine(Environment.NewLine);
-                                WriteIt = true;
-                                continue;
-                            }
-                        }
-
-                        if (startswithsharp || startswithOther)
-                        {
-                            sbWrite.AppendLine(line);
-                        }
-
-                        continue;
-                    }
-                    else
-                    {
-                        if (IsCommentary(line))//commented or empty
-                        {
-                            sbWrite.AppendLine(line);
-                            continue;
-                        }
-                        else if (IsMessage(line))
-                        {
-                            LastMSGType = line;
-                            sbWrite.AppendLine(line);
-                            readmode = true;
-                            continue;
-                        }
-                        else if (IsVoicedMessage(line))
-                        {
-                            LastMSGType = line;
-                            sbWrite.AppendLine(line);
-                            sbWrite.AppendLine(sr.ReadLine());
-                            readmode = true;
-                            continue;
-                        }
-                        else if (IsChoiceVariants(line))
-                        {
-                            sbWrite.AppendLine(line);
-                            int selectioncnt = int.Parse(line.Split(',')[1].TrimStart().Substring(0, 1), CultureInfo.InvariantCulture);
-                            string[] selectionsLine;
-                            for (int i = 0; i < selectioncnt; i++)
-                            {
-                                selectionsLine = Regex.Replace(sr.ReadLine(), ChoiceTextExtractionRegex(), "$1{{|}}$2").Split(new string[] { "{{|}}" }, StringSplitOptions.None);
-                                var row = ProjectData.THFilesElementsDataset.Tables[fileName].Rows[TableRowIndex];
-                                if ((row[0] as string) == selectionsLine[0] && !string.IsNullOrEmpty(row[1] + string.Empty))
-                                {
-                                    sbWrite.AppendLine(TransformString(row[1] + string.Empty) + selectionsLine[1]);
-                                }
-                                else
-                                {
-                                    sbWrite.AppendLine(selectionsLine[0]);
-                                }
-                                TableRowIndex++;
-                            }
-                            //sbWrite.AppendLine(Environment.NewLine);
-                            WriteIt = true;
-                            continue;
-                        }
-                    }
-
-                    sbWrite.AppendLine(line);
-                }
-            }
-
-            if (WriteIt && sbWrite.ToString().Length > 0 && !FunctionsFileFolder.FileInUse(ProjectData.FilePath))
-            {
-                if (!File.Exists(ProjectData.FilePath + ".orig"))
-                {
-                    File.Move(ProjectData.FilePath, ProjectData.FilePath + ".orig");
-                }
-
-                File.WriteAllText(ProjectData.FilePath, sbWrite.ToString(), Encoding.GetEncoding(932));
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return !_messageReadMode && string.IsNullOrWhiteSpace(ParseData.Line);
         }
 
-        private static bool IsCommentary(string line)
+        private bool IsComment()
         {
-            return string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("//");
+            return !_messageReadMode && ParseData.TrimmedLine.StartsWith("//");
         }
 
-        private static bool IsMessage(string line)
+        private bool IsMessage()
         {
-            return line.StartsWith("#MSG,") || line == "#MSG";
+            return _messageReadMode || ParseData.Line.StartsWith("#MSG,") || ParseData.Line == "#MSG" || IsVoicedMessage();
         }
 
-        private static bool IsVoicedMessage(string line)
+        private bool IsVoicedMessage()
         {
-            return line.StartsWith("#MSGVOICE,");
+            return ParseData.Line.StartsWith("#MSGVOICE");
         }
 
-        private static bool IsChoiceVariants(string line)
+        private bool IsChoiceVariants()
         {
-            return line.StartsWith("#SELECT,");
+            return !_messageReadMode && ParseData.Line.StartsWith("#SELECT");
         }
 
-        private static string ChoiceTextExtractionRegex()
-        {
-            return @"([^	]+)([	 ]+[0-9]{1,2}.*)";
-        }
+        private static string _choiceTextExtractionRegex = @"([^\t]+)([\t]+[0-9]{1,2}.*)";
 
         /// <summary>
         /// prevents script parse errors in game

@@ -59,7 +59,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
             }
 
-            SaveModeAddLine(System.Environment.NewLine);
+            SaveModeAddLine(newline: System.Environment.NewLine);
 
             return 0;
         }

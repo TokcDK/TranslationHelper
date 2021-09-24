@@ -230,7 +230,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             }
 
 
-            SaveModeAddLine(Environment.NewLine);//using \n as new line
+            SaveModeAddLine(newline: Environment.NewLine);//using \n as new line
 
             return KeywordActionAfter.Continue;
         }

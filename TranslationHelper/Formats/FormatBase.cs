@@ -331,21 +331,21 @@ namespace TranslationHelper.Formats
                 // variant with duplicates
 
                 // check if original exists
-                if (!ProjectData.OriginalsTableRowCoordinats.ContainsKey(original))
+                if (!ProjectData.OriginalsTableRowCoordinates.ContainsKey(original))
                 {
-                    ProjectData.OriginalsTableRowCoordinats.Add(original, new Dictionary<string, HashSet<int>>());
+                    ProjectData.OriginalsTableRowCoordinates.Add(original, new Dictionary<string, HashSet<int>>());
                 }
 
                 // check if tablename is exists
-                if (!ProjectData.OriginalsTableRowCoordinats[original].ContainsKey(tablename))
+                if (!ProjectData.OriginalsTableRowCoordinates[original].ContainsKey(tablename))
                 {
-                    ProjectData.OriginalsTableRowCoordinats[original].Add(tablename, new HashSet<int>());
+                    ProjectData.OriginalsTableRowCoordinates[original].Add(tablename, new HashSet<int>());
                 }
 
                 // check if current row number is exists
-                if (!ProjectData.OriginalsTableRowCoordinats[original][tablename].Contains(RowNumber))
+                if (!ProjectData.OriginalsTableRowCoordinates[original][tablename].Contains(RowNumber))
                 {
-                    ProjectData.OriginalsTableRowCoordinats[original][tablename].Add(RowNumber);
+                    ProjectData.OriginalsTableRowCoordinates[original][tablename].Add(RowNumber);
                 }
 
                 // raise row number
@@ -613,15 +613,15 @@ namespace TranslationHelper.Formats
             var isTranslated = false;
 
             if (!Properties.Settings.Default.DontLoadDuplicates
-                && ProjectData.OriginalsTableRowCoordinats != null
-                && ProjectData.OriginalsTableRowCoordinats.ContainsKey(valueToTranslate) // input value has original's value before it will be changed to translation
+                && ProjectData.OriginalsTableRowCoordinates != null
+                && ProjectData.OriginalsTableRowCoordinates.ContainsKey(valueToTranslate) // input value has original's value before it will be changed to translation
                 )
             {
                 var currentTableName = TableName();
                 var pretranslatedOriginal = valueToTranslate;
-                if (ProjectData.OriginalsTableRowCoordinats[valueToTranslate].ContainsKey(currentTableName))
+                if (ProjectData.OriginalsTableRowCoordinates[valueToTranslate].ContainsKey(currentTableName))
                 {
-                    if (ProjectData.OriginalsTableRowCoordinats[valueToTranslate][currentTableName].Contains(RowNumber))
+                    if (ProjectData.OriginalsTableRowCoordinates[valueToTranslate][currentTableName].Contains(RowNumber))
                     {
                         valueToTranslate = ProjectData.THFilesElementsDataset.Tables[currentTableName].Rows[RowNumber][1] + "";
                         valueToTranslate = FixInvalidSymbols(valueToTranslate);
@@ -638,7 +638,7 @@ namespace TranslationHelper.Formats
                     {
                         ProjectData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + TableName() + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
 
-                        foreach (var rowIndex in ProjectData.OriginalsTableRowCoordinats[valueToTranslate][currentTableName])
+                        foreach (var rowIndex in ProjectData.OriginalsTableRowCoordinates[valueToTranslate][currentTableName])
                         {
                             valueToTranslate = ProjectData.THFilesElementsDataset.Tables[currentTableName].Rows[rowIndex][1] + "";
                             valueToTranslate = FixInvalidSymbols(valueToTranslate);
@@ -657,7 +657,7 @@ namespace TranslationHelper.Formats
                 {
                     ProjectData.AppLog.LogToFile("Warning! Table not found. row number=" + RowNumber + ". table name=" + TableName() + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
 
-                    foreach (var existTableName in ProjectData.OriginalsTableRowCoordinats[valueToTranslate].Values)
+                    foreach (var existTableName in ProjectData.OriginalsTableRowCoordinates[valueToTranslate].Values)
                     {
                         foreach (var existsRowIndex in existTableName)
                         {
