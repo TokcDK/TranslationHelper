@@ -200,7 +200,7 @@ namespace TranslationHelper.Projects
 
                 ProjectData.FilePath = file.FullName;
 
-                var format = (StringFileFormatBase)Activator.CreateInstance(formatType); // create instance of format
+                var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
                 if (file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
                 {
                     continue;
