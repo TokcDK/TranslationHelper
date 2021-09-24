@@ -20,7 +20,7 @@
                 ;
         }
 
-        internal static bool IsStringAContainsAnyFromArray(this string strA, string[] array)
+        internal static bool ContainsAnyFromArray(this string strA, string[] array)
         {
             foreach (var str in array)
             {

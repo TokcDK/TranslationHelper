@@ -6,7 +6,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire;
+using TranslationHelper.Projects.IrisField;
 using TranslationHelper.Projects.KiriKiri;
 using TranslationHelper.Projects.RJ263914;
 using TranslationHelper.Projects.RPGMMV;
@@ -43,11 +43,12 @@ namespace TranslationHelper.Functions
             }
             else
             {
-                if (ProjectData.CurrentProject.Name() == new HowToMakeTrueSlavesRiseofaDarkEmpire().Name())
-                {
-                    await Task.Run(() => new HowToMakeTrueSlavesRiseofaDarkEmpire().Save()).ConfigureAwait(true);
-                }
-                else if (ProjectData.CurrentProject.Name() == "RubyRPGGame")
+                //if (ProjectData.CurrentProject.Name() == new IrisFieldGameBase().Name())
+                //{
+                //    await Task.Run(() => new IrisFieldGameBase().Save()).ConfigureAwait(true);
+                //}
+                //else 
+                if (ProjectData.CurrentProject.Name() == "RubyRPGGame")
                 {
                     new RJ263914OLD().ProceedRubyRPGGame(ProjectData.SelectedGameDir, true);
                     //MessageBox.Show("Finished");

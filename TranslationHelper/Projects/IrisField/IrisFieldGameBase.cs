@@ -1,17 +1,24 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using TranslationHelper.Data;
 
-namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
+namespace TranslationHelper.Projects.IrisField
 {
-    class HowToMakeTrueSlavesRiseofaDarkEmpire : ProjectBase
+    abstract class IrisFieldGameBase : ProjectBase
     {
-        public HowToMakeTrueSlavesRiseofaDarkEmpire()
+        public IrisFieldGameBase()
         {
+            BackupPaths = new string[3]
+            {
+                @".\data\Script",
+                @".\data\AdditionalScript",
+                @".\" + GameExeName + ".exe"
+            };
         }
 
         internal override string Name()
         {
-            return "How to make true slaves -Rise of a Dark Empire-";
+            return "Iris Field game";
         }
 
         internal override string GetProjectDBFileName()
@@ -19,11 +26,14 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
             return Name();
         }
 
+        protected abstract string GameExeName { get; }
+        protected abstract Type GameExeType { get; }
+
         internal override bool Check()
         {
             return Path.GetExtension(ProjectData.SelectedFilePath) == ".exe"
                 &&
-                Path.GetFileNameWithoutExtension(ProjectData.SelectedFilePath) == "正しい性奴隷の使い方"
+                Path.GetFileNameWithoutExtension(ProjectData.SelectedFilePath) == GameExeName
                 &&
                 Directory.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "data", "Script"));
         }
@@ -54,38 +64,21 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
 
             ProjectData.Main.ProgressInfo(true, Path.GetFileName(ProjectData.SelectedFilePath));
             ProjectData.FilePath = ProjectData.SelectedFilePath;
-            if (ProjectData.OpenFileMode ? new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE().Open() : new Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.EXE().Save())
+            var openPath = new DirectoryInfo(Path.GetDirectoryName(ProjectData.SelectedFilePath));
+            if (OpenSaveFilesBase(openPath, GameExeType, GameExeName + ".exe"))
             {
                 ret = true;
             }
 
-
-            var openPath = Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "data");
-
-            if (!Directory.Exists(openPath + ".skip") && !File.Exists(openPath + ".skip"))
+            openPath = new DirectoryInfo(Path.Combine(openPath.FullName, "data"));
+            if (!Directory.Exists(openPath.FullName + ".skip") && !File.Exists(openPath.FullName + ".skip"))
             {
-                var txtFormat = typeof(Formats.HowToMakeTrueSlavesRiseofaDarkEmpire.TXT);
-                if (OpenSaveFilesBase(new DirectoryInfo(openPath), txtFormat, "*.txt"))
+                var txtFormat = typeof(Formats.IrisField.TXT);
+                if (OpenSaveFilesBase(openPath, txtFormat, "*.txt"))
                 {
                     ret = true;
                 }
             }
-
-            //old
-            //foreach (string txt in Directory.EnumerateFiles(openPath, "*.txt", SearchOption.AllDirectories))
-            //{
-            //    ProjectData.FilePath = txt;
-            //    ProjectData.Main.ProgressInfo(true, Path.GetFileName(txt));
-
-            //    if (IsOpen)
-            //    {
-            //        txtFormat.Open();
-            //    }
-            //    else
-            //    {
-            //        txtFormat.Save();
-            //    }
-            //}
 
             ProjectData.Main.ProgressInfo(false);
             return ret;
@@ -102,12 +95,7 @@ namespace TranslationHelper.Projects.HowToMakeTrueSlavesRiseofaDarkEmpire
             return true;
         }
 
-        readonly string[] BackupPaths = new string[3]
-        {
-            @".\data\Script",
-            @".\data\AdditionalScript",
-            @".\正しい性奴隷の使い方.exe"
-        };
+        readonly string[] BackupPaths;
 
         internal override bool BakCreate()
         {

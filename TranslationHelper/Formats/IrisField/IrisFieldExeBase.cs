@@ -4,13 +4,19 @@ using System.Text;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
-namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
+namespace TranslationHelper.Formats.IrisField
 {
-    class EXE : FormatBase
+    abstract class IrisFieldExeBase : FormatBase
     {
-        public EXE()
+        public IrisFieldExeBase()
         {
         }
+
+        //internal override bool Check()
+        //{
+        //    var crc = ProjectData.FilePath.GetCrc32();
+        //    return crc=="23424234234234";
+        //}
 
         internal override string Ext()
         {
@@ -21,6 +27,15 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
         {
             return OpenSaveEXE();
         }
+
+        /// <summary>
+        /// start position in exe from where to start parse
+        /// </summary>
+        protected abstract long StartPos { get; }
+        /// <summary>
+        /// end position of the exe where to stop parse
+        /// </summary>
+        protected abstract long EndtPos { get; }
 
         private bool OpenSaveEXE()
         {
@@ -34,8 +49,8 @@ namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
                 return false;
             }
 
-            long startpos = 1720080;
-            long endpos = 6803572;
+            long startpos = StartPos;
+            long endpos = EndtPos;
 
             List<byte> NewEXEBytesForWrite = null;//new file content
             var translatedbytesControlPosition = 0;

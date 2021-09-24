@@ -133,9 +133,11 @@
     <Compile Include="Formats\EAGLS\SCPACK\SCPACKBase.cs" />
     <Compile Include="Formats\FormatBase.cs" />
     <Compile Include="Formats\FormatUtils.cs" />
+    <Compile Include="Formats\IrisField\HowToBuildAMagnificentNationExe.cs" />
+    <Compile Include="Formats\IrisField\HowToMakeTrueSlavesRiseofaDarkEmpireExe.cs" />
     <Compile Include="Formats\StringFileFormatBase.cs" />
-    <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\EXE.cs" />
-    <Compile Include="Formats\HowToMakeTrueSlavesRiseofaDarkEmpire\TXT.cs" />
+    <Compile Include="Formats\IrisField\IrisFieldExeBase.cs" />
+    <Compile Include="Formats\IrisField\TXT.cs" />
     <Compile Include="Formats\KiriKiri\Games\CSV\CSV.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup1\FGroup1Base.cs" />
     <Compile Include="Formats\KiriKiri\Games\KS.cs" />
@@ -302,7 +304,9 @@
     <Compile Include="Projects\EAGLS\SCPACKpak.cs" />
     <Compile Include="Projects\EAGLS\EAGLSGame.cs" />
     <Compile Include="Projects\EAGLS\sc_.cs" />
-    <Compile Include="Projects\HowToMakeTrueSlavesRiseofaDarkEmpire\HowToMakeTrueSlavesRiseofaDarkEmpire.cs" />
+    <Compile Include="Projects\IrisField\HowToBuildAMagnificentNationGame.cs" />
+    <Compile Include="Projects\IrisField\HowToMakeTrueSlavesRiseofaDarkEmpireGame.cs" />
+    <Compile Include="Projects\IrisField\IrisFieldGameBase.cs" />
     <Compile Include="Projects\KiriKiri\Games\DungeonAndBride.cs" />
     <Compile Include="Projects\KiriKiri\Games\KiriKiriGameUtils.cs" />
     <Compile Include="Projects\KiriKiri\Games\ZZZOtherKiriKiriGame.cs" />

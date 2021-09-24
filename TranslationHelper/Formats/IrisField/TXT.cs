@@ -9,7 +9,7 @@ using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
-namespace TranslationHelper.Formats.HowToMakeTrueSlavesRiseofaDarkEmpire
+namespace TranslationHelper.Formats.IrisField
 {
     class TXT : StringFileFormatBase
     {

@@ -185,33 +185,36 @@ namespace TranslationHelper.Projects
             //    mask += format.Ext();
             //}
 
+            if (!DirForSearch.Exists)
+            {
+                return false;
+            }
+
             exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
 
             var ret = false;
-            if (DirForSearch.Exists)
+            foreach (var file in Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
             {
-                foreach (var file in Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
+                if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions))//skip exclusions
+                    continue;
+
+                ProjectData.FilePath = file.FullName;
+
+                var format = (StringFileFormatBase)Activator.CreateInstance(formatType); // create instance of format
+                if (file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
                 {
-                    if (/*exclusions != null &&*/ file.FullName.IsStringAContainsAnyFromArray(exclusions))//skip exclusions
-                        continue;
+                    continue;
+                }
 
-                    ProjectData.FilePath = file.FullName;
-
-                    var format = (StringFileFormatBase)Activator.CreateInstance(formatType); // create instance of format
-                    if (file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
-                    {
-                        continue;
-                    }
-
-                    ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
-                    if (ProjectData.OpenFileMode ? format.Open() : format.Save())
-                    {
-                        ret = true;
-                    }
+                ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
+                if (ProjectData.OpenFileMode ? format.Open() : format.Save())
+                {
+                    ret = true;
                 }
             }
 
             ProjectData.Main.ProgressInfo(false);
+
             return ret;
         }
         protected static List<FileInfo> GetNewestFilesList(DirectoryInfo dir, string mask = "*.*")
