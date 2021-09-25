@@ -193,6 +193,7 @@ namespace TranslationHelper.Projects
             exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
 
             var ret = false;
+            var existsTables = ProjectData.THFilesElementsDataset.Tables;
             foreach (var file in Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
             {
                 if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions))//skip exclusions
@@ -206,7 +207,7 @@ namespace TranslationHelper.Projects
                     continue;
                 }
 
-                if (ProjectData.SaveFileMode)
+                if (ProjectData.SaveFileMode && existsTables.Contains(format.TableName())) // check if exist table has any translated
                 {
                     if (!format.TableName().HasAnyTranslated())
                     {
