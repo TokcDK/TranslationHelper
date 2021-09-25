@@ -39,6 +39,13 @@ namespace TranslationHelper.Formats.IrisField
         /// </summary>
         protected abstract long EndtPos { get; }
 
+        List<byte> zeroffbytesAfter = new List<byte>();
+        List<byte> ffbytesBefore = new List<byte>();
+        List<byte> ffbytesAfter = new List<byte>();
+        List<byte> candidate = new List<byte>();
+        List<byte> ffbytesBeforeForSave = new List<byte>();
+        List<byte> NewEXEBytesForWrite = ProjectData.SaveFileMode ? new List<byte>() : null;//new file content
+        long translatedbytesControlPosition = 0;
         private bool OpenSaveEXE()
         {
             if (string.IsNullOrWhiteSpace(ProjectData.FilePath) || !File.Exists(ProjectData.FilePath) || Path.GetExtension(ProjectData.FilePath) != ".exe")
@@ -54,28 +61,16 @@ namespace TranslationHelper.Formats.IrisField
             long startpos = StartPos;
             long endpos = EndtPos;
 
-            List<byte> NewEXEBytesForWrite = null;//new file content
-            var translatedbytesControlPosition = 0;
-            if (ProjectData.SaveFileMode)
-            {
-                NewEXEBytesForWrite = new List<byte>();//init only for translation
-            }
-
-            var filetranslated = false;
+            bool filetranslated = false;
 
             using (var fs = new FileStream(ProjectData.SelectedFilePath, FileMode.Open, FileAccess.Read))
             using (var br = new BinaryReader(fs, Encoding.GetEncoding(932)))
             {
                 byte currentbyte;
-                var zeroffbytesAfter = new List<byte>();
-                var ffbytesBefore = new List<byte>();
-                var ffbytesAfter = new List<byte>();
                 //var ffbytesAfterMode = false; ;
-                var candidate = new List<byte>();
                 var readstring = true;
-                var BaseStreamLength = br.BaseStream.Length;
-                var ffbytesBeforeForSave = new List<byte>();
                 var strtranslated = false;
+                var BaseStreamLength = br.BaseStream.Length;
 
                 if (ProjectData.OpenFileMode)
                 {
@@ -178,60 +173,23 @@ namespace TranslationHelper.Formats.IrisField
                             //<<--check string
 
                             //write all bytes-->>
-                            if (ProjectData.SaveFileMode && strtranslated)
+                            if (ProjectData.SaveFileMode)
                             {
-                                var lastwritepos = br.BaseStream.Position - 1; //-1 because 1st byte of next string already read in currentbyte
-
-                                //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
-                                //{
-                                //    foreach (var _ in ffbytesBeforeForSave)// add pre FF bytes if exist
-                                //    {
-                                //        NewEXEBytesForWrite.Add(0xff);
-                                //        translatedbytesControlPosition++;
-                                //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
-                                //        {
-                                //            break;
-                                //        }
-                                //    }
-                                //}
-
-                                //add other skipped bytes if they exist
-                                if (strhaveotherbytes)
+                                if (!strtranslated)
                                 {
-                                    foreach (var b in candidate)
+                                    // just add not translated bytes in result exe
+
+                                    //translatedbytesControlPosition++; // control byte+1 because next currentbyte was already read
+
+                                    foreach (var b in candidate)//add main string bytes form candidate itself
                                     {
                                         NewEXEBytesForWrite.Add(b);
                                         translatedbytesControlPosition++;
-                                        if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
-                                        {
-                                            break;
-                                        }
-
-                                        otherbytescount--;
-
-                                        if (otherbytescount == 0)
-                                            break;
                                     }
-
-                                    //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
-                                    //{
-
-                                    //}
-                                }
-
-                                //add translation bytes
-                                var translatonControlPos = (lastwritepos)/* - ffbytesAfter.Count*/;//recalculate end position for translation depend on ffbytes after count
-                                if (translatedbytesControlPosition < translatonControlPos)
-                                {
-                                    var strBytes = Encoding.GetEncoding(932).GetBytes(str);
-                                    foreach (var b in strBytes)//add main string bytes
+                                    foreach (var b in zeroffbytesAfter)// add zero FF bytes
                                     {
                                         NewEXEBytesForWrite.Add(b);
                                         translatedbytesControlPosition++;
-                                        if (translatedbytesControlPosition == translatonControlPos)//remove all bytes which over of maxbytes limit
-                                        {
-                                            break;
-                                        }
                                     }
 
                                     //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
@@ -239,84 +197,125 @@ namespace TranslationHelper.Formats.IrisField
 
                                     //}
                                 }
-
-                                //FF bytes after translation
-                                //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
-                                //{
-                                //    foreach (var _ in ffbytesAfter)// add pre FF bytes if exist
-                                //    {
-                                //        NewEXEBytesForWrite.Add(0xff);
-                                //        translatedbytesControlPosition++;
-                                //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
-                                //        {
-                                //            break;
-                                //        }
-                                //    }
-                                //}
-
-                                //while (translatedbytesControlPosition < pos)//add new zero bytes count after string, add only before stream position
-                                //{
-                                //    NewEXEBytesForWrite.Add(0);
-                                //    translatedbytesControlPosition++;
-                                //}
-
-                                //add saved ff and zero bytes
-                                if (translatedbytesControlPosition < lastwritepos)
+                                else
                                 {
-                                    foreach (var b in zeroffbytesAfter)// add zero and FF bytes after
+
+                                    var lastwritepos = br.BaseStream.Position - 1; //-1 because 1st byte of next string already read in currentbyte
+
+                                    //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
+                                    //{
+                                    //    foreach (var _ in ffbytesBeforeForSave)// add pre FF bytes if exist
+                                    //    {
+                                    //        NewEXEBytesForWrite.Add(0xff);
+                                    //        translatedbytesControlPosition++;
+                                    //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                                    //        {
+                                    //            break;
+                                    //        }
+                                    //    }
+                                    //}
+
+                                    //add other skipped bytes if they exist
+                                    if (strhaveotherbytes)
                                     {
-                                        NewEXEBytesForWrite.Add(b);
-                                        translatedbytesControlPosition++;
-                                        if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
+                                        foreach (var b in candidate)
                                         {
-                                            break;
+                                            NewEXEBytesForWrite.Add(b);
+                                            translatedbytesControlPosition++;
+                                            if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
+                                            {
+                                                break;
+                                            }
+
+                                            otherbytescount--;
+
+                                            if (otherbytescount == 0)
+                                                break;
                                         }
+
+                                        //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                        //{
+
+                                        //}
                                     }
 
-                                    //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
-                                    //{
-
-                                    //}
-                                }
-
-                                //if lastwritepos still not reached then write last byte of zeroffbytesAfter while lastwritepos will be reached 
-                                if (translatedbytesControlPosition < lastwritepos)
-                                {
-                                    var lastbyte = zeroffbytesAfter[zeroffbytesAfter.Count-1];
-
-                                    while(translatedbytesControlPosition < lastwritepos)
+                                    //add translation bytes
+                                    var translatonControlPos = (lastwritepos)/* - ffbytesAfter.Count*/;//recalculate end position for translation depend on ffbytes after count
+                                    if (translatedbytesControlPosition < translatonControlPos)
                                     {
-                                        NewEXEBytesForWrite.Add(lastbyte);
-                                        translatedbytesControlPosition++;
+                                        var strBytes = Encoding.GetEncoding(932).GetBytes(str);
+                                        foreach (var b in strBytes)//add main string bytes
+                                        {
+                                            NewEXEBytesForWrite.Add(b);
+                                            translatedbytesControlPosition++;
+                                            if (translatedbytesControlPosition == translatonControlPos)//remove all bytes which over of maxbytes limit
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                        //{
+
+                                        //}
                                     }
 
-                                    //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                    //FF bytes after translation
+                                    //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
                                     //{
-
+                                    //    foreach (var _ in ffbytesAfter)// add pre FF bytes if exist
+                                    //    {
+                                    //        NewEXEBytesForWrite.Add(0xff);
+                                    //        translatedbytesControlPosition++;
+                                    //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                                    //        {
+                                    //            break;
+                                    //        }
+                                    //    }
                                     //}
+
+                                    //while (translatedbytesControlPosition < pos)//add new zero bytes count after string, add only before stream position
+                                    //{
+                                    //    NewEXEBytesForWrite.Add(0);
+                                    //    translatedbytesControlPosition++;
+                                    //}
+
+                                    //add saved ff and zero bytes
+                                    if (translatedbytesControlPosition < lastwritepos)
+                                    {
+                                        foreach (var b in zeroffbytesAfter)// add zero and FF bytes after
+                                        {
+                                            NewEXEBytesForWrite.Add(b);
+                                            translatedbytesControlPosition++;
+                                            if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                        //{
+
+                                        //}
+                                    }
+
+                                    //if lastwritepos still not reached then write last byte of zeroffbytesAfter while lastwritepos will be reached 
+                                    if (translatedbytesControlPosition < lastwritepos)
+                                    {
+                                        var lastbyte = zeroffbytesAfter[zeroffbytesAfter.Count - 1];
+
+                                        while (translatedbytesControlPosition < lastwritepos)
+                                        {
+                                            NewEXEBytesForWrite.Add(lastbyte);
+                                            translatedbytesControlPosition++;
+                                        }
+
+                                        //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                        //{
+
+                                        //}
+                                    }
                                 }
-                            }
-                            else if (ProjectData.SaveFileMode)
-                            {
-                                // just add not translated bytes in result exe
-
-                                //translatedbytesControlPosition++; // control byte+1 because next currentbyte was already read
-
-                                foreach (var b in candidate)//add main string bytes form candidate itself
-                                {
-                                    NewEXEBytesForWrite.Add(b);
-                                    translatedbytesControlPosition++;
-                                }
-                                foreach (var b in zeroffbytesAfter)// add zero FF bytes
-                                {
-                                    NewEXEBytesForWrite.Add(b);
-                                    translatedbytesControlPosition++;
-                                }
-
-                                //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
-                                //{
-
-                                //}
                             }
                             //<<--write bytes
 

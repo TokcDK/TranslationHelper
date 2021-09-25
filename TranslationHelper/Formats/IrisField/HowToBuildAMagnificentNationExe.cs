@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TranslationHelper.Formats.IrisField
+﻿namespace TranslationHelper.Formats.IrisField
 {
     class HowToBuildAMagnificentNationExe : IrisFieldExeBase
     {
