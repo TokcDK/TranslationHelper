@@ -56,7 +56,7 @@ namespace TranslationHelper.Formats.IrisField
         bool strtranslated;
 
         long startpos { get => StartPos; }
-        long endpos { get => EndPos; }
+        //long endpos { get => EndPos; }
         byte currentbyte { get => ParseData.CurrentByte; set => ParseData.CurrentByte = value; }
         BinaryReader br { get => ParseData.BReader; set => ParseData.BReader = value; }
 
@@ -102,7 +102,6 @@ namespace TranslationHelper.Formats.IrisField
             return ParseData.FStream.Position <= EndPos;
         }
 
-        bool _setStartPos = false;
         protected override KeywordActionAfter ParseByte()
         {
             if (readstring)
