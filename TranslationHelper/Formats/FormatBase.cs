@@ -87,7 +87,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// table name
         /// </summary>
-        protected virtual string TableName()
+        internal virtual string TableName()
         {
             return UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(ProjectData.FilePath) : Path.GetFileName(ProjectData.FilePath);
         }

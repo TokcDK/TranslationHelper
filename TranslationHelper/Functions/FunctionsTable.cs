@@ -551,23 +551,23 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// Checks if all rows in column <paramref name="columnName"/> of <paramref name="dataSet"/> if they are <paramref name="complete"/> or not
+        /// Checks if all rows in column <paramref name="columnName"/> of <paramref name="dataTabe"/> if they are <paramref name="complete"/> or not
         /// </summary>
-        /// <param name="dataSet">dataset which to check</param>
+        /// <param name="dataTabe">dataset which to check</param>
         /// <param name="columnName">column name for check, default is translation</param>
         /// <param name="complete">true - all is empty, false - all have values</param>
         /// <returns>True when <paramref name="complete"/> is true and all values of <paramref name="columnName"/> is NOT empty. True when <paramref name="complete"/> is false and all values of <paramref name="columnName"/> is empty.</returns>
-        public static bool IsTableRowsAll(DataTable dataSet, string columnName = null, bool complete = true)
+        public static bool IsTableColumnCellsAll(this DataTable dataTabe, string columnName = null, bool complete = true)
         {
-            if (dataSet == null)
+            if (dataTabe == null)
             {
                 return false;
             }
-            int DTRowsCount = dataSet.Rows.Count;
+            int DTRowsCount = dataTabe.Rows.Count;
             columnName = columnName ?? THSettings.TranslationColumnName();
             for (int r = 0; r < DTRowsCount; r++)
             {
-                var cell = dataSet.Rows[r]?[columnName];
+                var cell = dataTabe.Rows[r]?[columnName];
 
                 if ((!complete && (cell != null && !string.IsNullOrEmpty(cell as string))) || (complete && (cell == null || string.IsNullOrEmpty(cell as string))))
                 {

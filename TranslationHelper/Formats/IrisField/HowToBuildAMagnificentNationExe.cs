@@ -6,6 +6,6 @@ namespace TranslationHelper.Formats.IrisField
     {
         protected override long StartPos => 2121836;
 
-        protected override long EndtPos => 11982816;
+        protected override long EndtPos => 11999744;
     }
 }

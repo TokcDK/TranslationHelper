@@ -109,10 +109,7 @@ namespace TranslationHelper.Formats.IrisField
 
                     ParseStringFileLine(); // repeat parse last line because message saved
                 }
-
-                return;
             }
-
         }
 
         private void ParseChoices()

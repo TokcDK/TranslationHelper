@@ -29,11 +29,13 @@ namespace TranslationHelper.Formats.IrisField
         }
 
         /// <summary>
-        /// start position in exe from where to start parse
+        /// start position in exe from where to start parse.
+        /// Set it to offset of first byte of string.
         /// </summary>
         protected abstract long StartPos { get; }
         /// <summary>
-        /// end position of the exe where to stop parse
+        /// end position of the exe where to stop parse.
+        /// set it to first not zero and not ff byte offset where scan for strings must stop
         /// </summary>
         protected abstract long EndtPos { get; }
 
@@ -91,11 +93,6 @@ namespace TranslationHelper.Formats.IrisField
 
                 while (br.BaseStream.Position <= endpos)
                 {
-                    if (br.BaseStream.Position == 2121835)
-                    {
-
-                    }
-
                     currentbyte = br.ReadByte();
 
                     if (readstring)
@@ -215,6 +212,11 @@ namespace TranslationHelper.Formats.IrisField
                                         if (otherbytescount == 0)
                                             break;
                                     }
+
+                                    //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                    //{
+
+                                    //}
                                 }
 
                                 //add translation bytes
@@ -231,6 +233,11 @@ namespace TranslationHelper.Formats.IrisField
                                             break;
                                         }
                                     }
+
+                                    //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                    //{
+
+                                    //}
                                 }
 
                                 //FF bytes after translation
@@ -265,6 +272,11 @@ namespace TranslationHelper.Formats.IrisField
                                             break;
                                         }
                                     }
+
+                                    //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                    //{
+
+                                    //}
                                 }
 
                                 //if lastwritepos still not reached then write last byte of zeroffbytesAfter while lastwritepos will be reached 
@@ -277,10 +289,19 @@ namespace TranslationHelper.Formats.IrisField
                                         NewEXEBytesForWrite.Add(lastbyte);
                                         translatedbytesControlPosition++;
                                     }
+
+                                    //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                    //{
+
+                                    //}
                                 }
                             }
                             else if (ProjectData.SaveFileMode)
                             {
+                                // just add not translated bytes in result exe
+
+                                //translatedbytesControlPosition++; // control byte+1 because next currentbyte was already read
+
                                 foreach (var b in candidate)//add main string bytes form candidate itself
                                 {
                                     NewEXEBytesForWrite.Add(b);
@@ -291,8 +312,18 @@ namespace TranslationHelper.Formats.IrisField
                                     NewEXEBytesForWrite.Add(b);
                                     translatedbytesControlPosition++;
                                 }
+
+                                //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                //{
+
+                                //}
                             }
                             //<<--write bytes
+
+                            //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                            //{
+
+                            //}
 
                             //reset-->>
                             candidate.Clear();
@@ -325,12 +356,12 @@ namespace TranslationHelper.Formats.IrisField
                                     translatedbytesControlPosition++;
                                 }
 
+                                //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                //{
+
+                                //}
+
                                 break;
-                            }
-
-                            if (translatedbytesControlPosition != br.BaseStream.Position)
-                            {
-
                             }
 
                             //start to add new string byte for which was already read and it is not 0x00 and not 0xFF
@@ -348,6 +379,11 @@ namespace TranslationHelper.Formats.IrisField
                         NewEXEBytesForWrite.Add(br.ReadByte());
                         translatedbytesControlPosition++;
                     }
+
+                    //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                    //{
+
+                    //}
                 }
             }
 

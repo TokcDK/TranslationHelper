@@ -206,6 +206,14 @@ namespace TranslationHelper.Projects
                     continue;
                 }
 
+                if (ProjectData.SaveFileMode)
+                {
+                    if (!format.TableName().HasAnyTranslated())
+                    {
+                        continue;
+                    }
+                }
+
                 ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
                 if (ProjectData.OpenFileMode ? format.Open() : format.Save())
                 {

@@ -2,11 +2,35 @@
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using TranslationHelper.Data;
+using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Extensions
 {
     static class ExtensionsTable
     {
+
+        /// <summary>
+        /// Check if any cell of translation column in the <paramref name="tableName"/> has value not equal to original
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public static bool HasAnyTranslated(this string tableName)
+        {
+            return ProjectData.THFilesElementsDataset.Tables.Contains(tableName)
+                && ProjectData.THFilesElementsDataset.Tables[tableName].HasAnyTranslated();
+        }
+
+        /// <summary>
+        /// Check if any cell of translation column in the <paramref name="dataTable"/> has value not equal to original
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <returns></returns>
+        public static bool HasAnyTranslated(this DataTable dataTable)
+        {
+            return !dataTable.IsTableColumnCellsAll(null, false);
+        }
+
         /// <summary>
         /// Fills datatable with values from dictionary
         /// </summary>

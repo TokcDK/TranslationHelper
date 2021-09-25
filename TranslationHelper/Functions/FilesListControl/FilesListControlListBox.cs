@@ -142,7 +142,7 @@ namespace TranslationHelper.Functions.FilesListControl
                 }
                 else if ((index % 2) == 0)
                 {
-                    if (FunctionsTable.IsTableRowsAll(ProjectData.THFilesElementsDataset.Tables[e.Index]))
+                    if (FunctionsTable.IsTableColumnCellsAll(ProjectData.THFilesElementsDataset.Tables[e.Index]))
                     {
                         backgroundBrush = ListBoxItemBackgroundBrush1Complete;
                     }
@@ -153,7 +153,7 @@ namespace TranslationHelper.Functions.FilesListControl
                 }
                 else
                 {
-                    if (FunctionsTable.IsTableRowsAll(ProjectData.THFilesElementsDataset.Tables[e.Index]))
+                    if (FunctionsTable.IsTableColumnCellsAll(ProjectData.THFilesElementsDataset.Tables[e.Index]))
                     {
                         backgroundBrush = ListBoxItemBackgroundBrush2Complete;
                     }

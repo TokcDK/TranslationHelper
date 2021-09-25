@@ -72,7 +72,7 @@ namespace TranslationHelper.Functions
                 using (var Table = ProjectData.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
-                    if (FunctionsTable.IsTableRowsAll(Table))
+                    if (FunctionsTable.IsTableColumnCellsAll(Table))
                         continue;
 
                     string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
@@ -160,7 +160,7 @@ namespace TranslationHelper.Functions
                 using (var DT = ProjectData.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
-                    if (FunctionsTable.IsTableRowsAll(DT))
+                    if (FunctionsTable.IsTableColumnCellsAll(DT))
                         continue;
 
                     string tableprogressinfo = infomessage + DT.TableName + ">" + t + "/" + tcount;
@@ -224,7 +224,7 @@ namespace TranslationHelper.Functions
                 using (var Table = ProjectData.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
-                    if (!forced && FunctionsTable.IsTableRowsAll(Table))
+                    if (!forced && FunctionsTable.IsTableColumnCellsAll(Table))
                         continue;
 
                     string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
@@ -334,7 +334,7 @@ namespace TranslationHelper.Functions
                 using (var Table = ProjectData.THFilesElementsDataset.Tables[t])
                 {
                     //skip table if there is no untranslated lines
-                    if (!forced && FunctionsTable.IsTableRowsAll(Table))
+                    if (!forced && FunctionsTable.IsTableColumnCellsAll(Table))
                         return;
 
                     string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
@@ -446,7 +446,7 @@ namespace TranslationHelper.Functions
                     var RowIndexShift = 0;
 
                     //skip table if there is no untranslated lines
-                    if (!forced && FunctionsTable.IsTableRowsAll(Table))
+                    if (!forced && FunctionsTable.IsTableColumnCellsAll(Table))
                         return;
 
                     string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
@@ -612,7 +612,7 @@ namespace TranslationHelper.Functions
                     ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
                 }
                 //skip table if there is no untranslated lines
-                if (!FunctionsTable.IsTableRowsAll(ProjectData.THFilesElementsDataset.Tables[t]))
+                if (!FunctionsTable.IsTableColumnCellsAll(ProjectData.THFilesElementsDataset.Tables[t]))
                 {
                     string tableprogressinfo = infomessage + ProjectData.THFilesElementsDataset.Tables[t].TableName + ">" + t + "/" + tcount;
                     ProjectData.Main.ProgressInfo(true, tableprogressinfo);

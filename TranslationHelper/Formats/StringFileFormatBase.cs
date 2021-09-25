@@ -20,14 +20,6 @@ namespace TranslationHelper.Formats
         internal override bool Save() { return ParseFile(); }
 
         /// <summary>
-        /// table name
-        /// </summary>
-        protected override string TableName()
-        {
-            return ParseData.TableName;
-        }
-
-        /// <summary>
         /// Parse Data
         /// </summary>
         internal ParseFileData ParseData;

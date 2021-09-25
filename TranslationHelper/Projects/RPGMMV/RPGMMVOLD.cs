@@ -437,7 +437,7 @@ namespace TranslationHelper.Projects.RPGMMV
             ProjectData.Main.ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
 
             //skip file if table with same name has translation cells in all lines empty
-            if (FunctionsTable.IsTableRowsAll(ProjectData.THFilesElementsDataset.Tables[Jsonname], complete: false))
+            if (FunctionsTable.IsTableColumnCellsAll(ProjectData.THFilesElementsDataset.Tables[Jsonname], complete: false))
                 return true;
 
             try
