@@ -3,7 +3,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
-    abstract class RPGMWolfTransPatchBase : StringFileFormatBase
+    abstract class RPGMWolfTransPatchBase : FormatStringBase
     {
         protected RPGMWolfTransPatchBase()
         {

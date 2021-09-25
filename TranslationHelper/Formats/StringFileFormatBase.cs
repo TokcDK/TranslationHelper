@@ -8,9 +8,9 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats
 {
-    abstract class StringFileFormatBase : FormatBase
+    abstract class FormatStringBase : FormatBase
     {
-        protected StringFileFormatBase()
+        protected FormatStringBase()
         {
             RowNumber = 0;
         }

@@ -7,7 +7,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.AliceSoft
 {
-    abstract class AliceSoftBase : StringFileFormatBase
+    abstract class AliceSoftBase : FormatStringBase
     {
         protected AliceSoftBase()
         {

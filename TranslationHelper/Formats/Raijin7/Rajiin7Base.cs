@@ -4,7 +4,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.Raijin7
 {
-    abstract class Rajiin7Base : StringFileFormatBase
+    abstract class Rajiin7Base : FormatStringBase
     {
         protected Rajiin7Base()
         {

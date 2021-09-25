@@ -8,7 +8,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    class CSV : StringFileFormatBase
+    class CSV : FormatStringBase
     {
         public CSV()
         {

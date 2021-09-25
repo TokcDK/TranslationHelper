@@ -5,7 +5,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.Liar_soft
 {
-    class GSCTXT : StringFileFormatBase
+    class GSCTXT : FormatStringBase
     {
         public GSCTXT()
         {

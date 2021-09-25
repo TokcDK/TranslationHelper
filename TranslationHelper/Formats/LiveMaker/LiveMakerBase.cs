@@ -7,7 +7,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.LiveMaker
 {
-    abstract class LiveMakerBase : StringFileFormatBase
+    abstract class LiveMakerBase : FormatStringBase
     {
         protected LiveMakerBase()
         {

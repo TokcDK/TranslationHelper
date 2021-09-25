@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using TranslationHelper.Data;
@@ -7,9 +6,9 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats
 {
-    abstract class BinaryFileFormatBase : FormatBase
+    abstract class FormatBinaryBase : FormatBase
     {
-        protected BinaryFileFormatBase()
+        protected FormatBinaryBase()
         {
         }
 

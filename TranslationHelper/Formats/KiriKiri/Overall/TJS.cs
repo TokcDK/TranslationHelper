@@ -6,7 +6,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    class TJS : StringFileFormatBase
+    class TJS : FormatStringBase
     {
         public TJS()
         {

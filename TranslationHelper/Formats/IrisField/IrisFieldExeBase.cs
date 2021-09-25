@@ -6,7 +6,7 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.IrisField
 {
-    abstract class IrisFieldExeBase : BinaryFileFormatBase
+    abstract class IrisFieldExeBase : FormatBinaryBase
     {
         public IrisFieldExeBase()
         {

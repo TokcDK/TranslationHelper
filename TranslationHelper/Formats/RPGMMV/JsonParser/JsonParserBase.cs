@@ -84,7 +84,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// Parse selected <paramref name="json"/> using functions from the <paramref name="format"/> then write changes in default ProjectData.FilePath
         /// </summary>
         /// <param name="json"></param>
-        internal bool ParseUsingFormat(StringFileFormatBase format)
+        internal bool ParseUsingFormat(FormatStringBase format)
         {
             Format = format;
             return Load(new FileInfo(ProjectData.FilePath));

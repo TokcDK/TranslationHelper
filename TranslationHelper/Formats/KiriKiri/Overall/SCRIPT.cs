@@ -7,7 +7,7 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    class SCRIPT : StringFileFormatBase
+    class SCRIPT : FormatStringBase
     {
         public SCRIPT()
         {

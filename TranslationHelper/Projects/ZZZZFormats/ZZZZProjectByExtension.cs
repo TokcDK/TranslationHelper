@@ -17,7 +17,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         private void GetValidOpenable()
         {
-            formatsTypes = GetListOfSubClasses.Inherited.GetListOfInheritedTypes(typeof(StringFileFormatBase));
+            formatsTypes = GetListOfSubClasses.Inherited.GetListOfInheritedTypes(typeof(FormatStringBase));
         }
 
         List<Type> formatsTypes;
@@ -29,7 +29,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             var fileExt = Path.GetExtension(ProjectData.SelectedFilePath);
             foreach (var formatType in formatsTypes)
             {
-                var format = (StringFileFormatBase)Activator.CreateInstance(formatType);
+                var format = (FormatStringBase)Activator.CreateInstance(formatType);
                 if (format.Ext() == fileExt /*&& format.ExtIdentifier()*/)
                 {
                     CurrentFormat = format;

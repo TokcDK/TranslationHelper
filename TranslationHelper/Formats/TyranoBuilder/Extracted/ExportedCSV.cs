@@ -2,7 +2,7 @@
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
-    class ExportedCSV : StringFileFormatBase
+    class ExportedCSV : FormatStringBase
     {
         public ExportedCSV()
         {

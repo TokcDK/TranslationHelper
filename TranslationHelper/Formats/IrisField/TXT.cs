@@ -9,7 +9,7 @@ using TranslationHelper.Functions;
 
 namespace TranslationHelper.Formats.IrisField
 {
-    class TXT : StringFileFormatBase
+    class TXT : FormatStringBase
     {
         public TXT()
         {

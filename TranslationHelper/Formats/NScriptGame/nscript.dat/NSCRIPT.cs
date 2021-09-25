@@ -8,7 +8,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 {
-    internal class NSCRIPT : StringFileFormatBase
+    internal class NSCRIPT : FormatStringBase
     {
         public NSCRIPT()
         {

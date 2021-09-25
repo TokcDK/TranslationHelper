@@ -5,7 +5,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
-    abstract class KiriKiriBase : StringFileFormatBase
+    abstract class KiriKiriBase : FormatStringBase
     {
         /// <summary>
         /// overall kirikiri environment for all formats
