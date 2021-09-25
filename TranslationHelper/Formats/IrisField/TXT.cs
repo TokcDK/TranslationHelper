@@ -75,7 +75,7 @@ namespace TranslationHelper.Formats.IrisField
             }
             else
             {
-                if (!StartsWithOther() && !ParseData.Line.StartsWith("#"))
+                if (!IsMessageEnd())
                 {
                     messageContent.AppendLine(ParseData.Line);
                 }
@@ -88,11 +88,20 @@ namespace TranslationHelper.Formats.IrisField
 
                     if (ProjectData.OpenFileMode)
                     {
-                        AddRowData(RowData: mergedMessage.TrimEnd(), RowInfo: LastMSGType);
+                        AddRowData(RowData: mergedMessage.TrimEnd(), RowInfo: LastMSGType, CheckInput: true);
                     }
-                    else
+                    else if (IsValidString(mergedMessage))
                     {
-                        string extraEmptyLinesForWrite = mergedMessage.Replace(mergedMessage = mergedMessage.TrimEnd(), string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
+                        string extraEmptyLinesForWrite = string.Empty;
+
+                        try
+                        {
+                            extraEmptyLinesForWrite = mergedMessage.Replace(mergedMessage = mergedMessage.TrimEnd(), string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
+                        }
+                        catch
+                        {
+
+                        }
 
                         if (SetTranslation(ref mergedMessage))
                         {
@@ -103,9 +112,9 @@ namespace TranslationHelper.Formats.IrisField
 
                             mergedMessage = newLine + extraEmptyLinesForWrite;
                         }
-
-                        SaveModeAddLine(mergedMessage, Environment.NewLine, true); // add line with translation
                     }
+
+                    SaveModeAddLine(mergedMessage, Environment.NewLine, true); // add line with translation
 
                     ParseStringFileLine(); // repeat parse last line because message saved
                 }
@@ -122,8 +131,6 @@ namespace TranslationHelper.Formats.IrisField
                 var choice = ParseData.Reader.ReadLine(); // read choice line
                 var choiceMatch = Regex.Match(choice, _choiceTextExtractionRegex);
                 var choiceText = choiceMatch.Groups[1].Value;
-
-                AddRowData(ref choiceText, "Choice: " + i);
 
                 SaveModeAddLine(choiceText + choiceMatch.Groups[2].Value, Environment.NewLine, true);
             }
@@ -311,9 +318,10 @@ namespace TranslationHelper.Formats.IrisField
         //    return ProjectData.FilePath;
         //}
 
-        private bool StartsWithOther()
+        private bool IsMessageEnd()
         {
-            return ParseData.Line.StartsWith("//") || ParseData.Line.StartsWith("[") || ParseData.Line.StartsWith("}");
+            return !string.IsNullOrWhiteSpace(ParseData.Line) &&
+                (ParseData.Line.StartsWith("//") || ParseData.Line.StartsWith("[") || ParseData.Line.StartsWith("}") || ParseData.Line.StartsWith("#"));
         }
 
         internal override bool Save()
