@@ -118,6 +118,11 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual bool FilePreOpenActions()
         {
+            if (string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(ProjectData.FilePath) != Ext()) // extension must be same as set, if set
+            {
+                return false;
+            }
+
             if (ProjectData.SaveFileMode && !ProjectData.THFilesList.Items.Contains(TableName()))
             {
                 return false;

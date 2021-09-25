@@ -11,6 +11,7 @@ namespace TranslationHelper.Formats
     {
         protected BinaryFileFormatBase()
         {
+            ParseData = new ParseFileData();
         }
 
         /// <summary>
@@ -23,24 +24,59 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected override void FileOpen()
         {
-            using (ParseData.fs = new FileStream(ProjectData.SelectedFilePath, FileMode.Open, FileAccess.Read))
-            using (ParseData.br = new BinaryReader(ParseData.fs, DefaultEncoding()))
+            using (ParseData.FStream = new FileStream(ProjectData.SelectedFilePath, FileMode.Open, FileAccess.Read))
+            using (ParseData.BReader = new BinaryReader(ParseData.FStream, DefaultEncoding()))
             {
+                PreParseBytes();
+
                 ParseBytes();
+
+                PostParseBytesRequired();
+
+                PostParseBytes();
             }
+        }
+
+        private void PostParseBytesRequired()
+        {
+            if (ProjectData.SaveFileMode)
+            {
+                //add rest bytes of the stream
+                while (ParseData.FStream.Length > ParseData.FStream.Position)
+                {
+                    ParseData.NewBinaryForWrite.Add(ParseData.BReader.ReadByte());
+                    //translatedbytesControlPosition++;
+                }
+            }
+        }
+
+        protected virtual void PostParseBytes()
+        {
+        }
+
+        /// <summary>
+        /// Actions before bytes will be parsed
+        /// </summary>
+        protected virtual void PreParseBytes()
+        {
         }
 
         protected virtual void ParseBytes()
         {
-            while (ParseData.fs.Position < ParseData.fs.Length)
+            while (ParseBytesReadCondition())
             {
-                ParseData.currentbyte = ParseData.br.ReadByte();
+                ParseData.CurrentByte = ParseData.BReader.ReadByte();
 
                 if (ParseByte() == KeywordActionAfter.Break)
                 {
                     break;
                 }
             }
+        }
+
+        protected virtual bool ParseBytesReadCondition()
+        {
+            return ParseData.FStream.Position < ParseData.FStream.Length - 1; // when position equals last position in the stream
         }
 
         protected virtual KeywordActionAfter ParseByte()
@@ -71,9 +107,13 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.NewEXEBytesForWrite.Count > 0 && !FunctionsFileFolder.FileInUse(ProjectData.FilePath))
+                if (ProjectData.SaveFileMode // save mode
+                    && ParseData.Ret // something translated
+                    && ParseData.NewBinaryForWrite.Count > 0 // new bynary is not empty
+                    && !FunctionsFileFolder.FileInUse(ProjectData.FilePath) // file is not locked
+                    )
                 {
-                    File.WriteAllBytes(ProjectData.FilePath, ParseData.NewEXEBytesForWrite.ToArray());
+                    File.WriteAllBytes(ProjectData.FilePath, ParseData.NewBinaryForWrite.ToArray());
                     return true;
                 }
             }
@@ -93,12 +133,11 @@ namespace TranslationHelper.Formats
         {
             public ParseFileData()
             {
-                TableName = ProjectData.CurrentProject?.CurrentFormat != null && ProjectData.CurrentProject.CurrentFormat.UseTableNameWithoutExtension
-                    ? Path.GetFileNameWithoutExtension(ProjectData.FilePath)
-                    : Path.GetFileName(ProjectData.FilePath);
+                TableName = ProjectData.CurrentProject?.CurrentFormat != null ? ProjectData.CurrentProject.CurrentFormat.TableName() : Path.GetFileName(ProjectData.FilePath);
 
                 if (ProjectData.SaveFileMode)
                 {
+                    NewBinaryForWrite = new List<byte>();
                 }
             }
 
@@ -111,12 +150,21 @@ namespace TranslationHelper.Formats
             /// </summary>
             internal bool Ret;
             /// <summary>
-            /// line value
+            /// current byte value
             /// </summary>
-            internal byte currentbyte;
-            internal FileStream fs;
-            internal BinaryReader br;
-            internal List<byte> NewEXEBytesForWrite;
+            internal byte CurrentByte;
+            /// <summary>
+            /// file's content stream
+            /// </summary>
+            internal FileStream FStream;
+            /// <summary>
+            /// file's content stream reader
+            /// </summary>
+            internal BinaryReader BReader;
+            /// <summary>
+            /// new file content
+            /// </summary>
+            internal List<byte> NewBinaryForWrite;
         }
     }
 }

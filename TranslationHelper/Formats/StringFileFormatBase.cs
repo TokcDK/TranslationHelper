@@ -313,9 +313,7 @@ namespace TranslationHelper.Formats
         {
             public ParseFileData()
             {
-                TableName = ProjectData.CurrentProject?.CurrentFormat != null && ProjectData.CurrentProject.CurrentFormat.UseTableNameWithoutExtension
-                    ? Path.GetFileNameWithoutExtension(ProjectData.FilePath)
-                    : Path.GetFileName(ProjectData.FilePath);
+                TableName = ProjectData.CurrentProject?.CurrentFormat != null ? ProjectData.CurrentProject.CurrentFormat.TableName() : Path.GetFileName(ProjectData.FilePath);
 
                 if (ProjectData.SaveFileMode)
                 {

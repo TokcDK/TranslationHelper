@@ -23,10 +23,10 @@ namespace TranslationHelper.Formats.IrisField
             return ".exe";
         }
 
-        internal override bool Open()
-        {
-            return OpenSaveEXE();
-        }
+        //internal override bool Open()
+        //{
+        //    return OpenSaveEXE();
+        //}
 
         /// <summary>
         /// start position in exe from where to start parse.
@@ -45,318 +45,284 @@ namespace TranslationHelper.Formats.IrisField
         }
 
         List<byte> zeroffbytesAfter = new List<byte>();
-        List<byte> ffbytesBefore = new List<byte>();
-        List<byte> ffbytesAfter = new List<byte>();
+        //List<byte> ffbytesBefore = new List<byte>();
+        //List<byte> ffbytesAfter = new List<byte>();
         List<byte> candidate = new List<byte>();
-        List<byte> ffbytesBeforeForSave = new List<byte>();
-        List<byte> NewEXEBytesForWrite = ProjectData.SaveFileMode ? new List<byte>() : null;//new file content
-        long translatedbytesControlPosition = 0;
-        private bool OpenSaveEXE()
+        //List<byte> ffbytesBeforeForSave = new List<byte>();
+        List<byte> NewEXEBytesForWrite { get => ParseData.NewBinaryForWrite; set => ParseData.NewBinaryForWrite = value; }
+
+        long translatedbytesControlPosition;
+        bool readstring;
+        bool strtranslated;
+
+        long startpos { get => StartPos; }
+        long endpos { get => EndPos; }
+        byte currentbyte { get => ParseData.CurrentByte; set => ParseData.CurrentByte = value; }
+        BinaryReader br { get => ParseData.BReader; set => ParseData.BReader = value; }
+
+        protected override bool FilePreOpenActions()
         {
-            if (string.IsNullOrWhiteSpace(ProjectData.FilePath) || !File.Exists(ProjectData.FilePath) || Path.GetExtension(ProjectData.FilePath) != ".exe")
+            if (!base.FilePreOpenActions())
             {
                 return false;
             }
 
-            if (!FilePreOpenActions())
+            readstring = false;
+            strtranslated = false;
+
+            if (ProjectData.SaveFileMode)
             {
-                return false;
+                translatedbytesControlPosition = 0;
             }
 
-            long startpos = StartPos;
-            long endpos = EndPos;
+            return true;
+        }
 
-            bool filetranslated = false;
-
-            using (var fs = new FileStream(ProjectData.SelectedFilePath, FileMode.Open, FileAccess.Read))
-            using (var br = new BinaryReader(fs, DefaultEncoding()))
+        protected override void PreParseBytes()
+        {
+            if (ProjectData.OpenFileMode)
             {
-                byte currentbyte;
-                //var ffbytesAfterMode = false; ;
-                var readstring = true;
-                var strtranslated = false;
-                var BaseStreamLength = br.BaseStream.Length;
-
-                if (ProjectData.OpenFileMode)
+                br.BaseStream.Position = startpos; // go to strings part
+            }
+            else
+            {
+                // add bytes before start position
+                while (br.BaseStream.Position < startpos)
                 {
-                    br.BaseStream.Position = startpos;//go to strings part
+                    NewEXEBytesForWrite.Add(br.ReadByte());
+                    translatedbytesControlPosition++;
                 }
+            }
+
+            readstring = true; // set to true because current position is set to 1st not zero and not ff byte of 1st string
+        }
+
+        protected override bool ParseBytesReadCondition()
+        {
+            return ParseData.FStream.Position <= EndPos;
+        }
+
+        bool _setStartPos = false;
+        protected override KeywordActionAfter ParseByte()
+        {
+            if (readstring)
+            {
+                if (currentbyte == 0 || currentbyte == 0xFF) //string end and need to count zero bytes after this
+                {
+                    readstring = false;
+                    //ffbytesAfterMode = false;
+                    zeroffbytesAfter.Add(currentbyte);
+                }
+                //else if (currentbyte == 0xFF)
+                //{
+                //    readstring = false;
+                //    ffbytesAfterMode = true;
+                //    ffbytesAfter.Add(currentbyte);
+                //}
                 else
                 {
-                    //add bytes before start position
-                    while (br.BaseStream.Position < startpos)
-                    {
-                        NewEXEBytesForWrite.Add(br.ReadByte());
-                        translatedbytesControlPosition++;
-                    }
+                    candidate.Add(currentbyte);
                 }
-
-                while (br.BaseStream.Position <= endpos)
+            }
+            else
+            {
+                if (currentbyte == 0 || currentbyte == 0xff) //we count here rest of zero ff bytes
                 {
-                    currentbyte = br.ReadByte();
-
-                    if (readstring)
+                    //if (currentbyte == 0 || currentbyte == 0xff)
                     {
-                        if (currentbyte == 0 || currentbyte == 0xFF) //string end and need to count zero bytes after this
+                        //ffbytesAfterMode = false;
+                        zeroffbytesAfter.Add(currentbyte);
+                    }
+                    //else if (ffbytesAfterMode && currentbyte == 0xff) // in ffbytesAfterMode add ff bytes after string for write
+                    //{
+                    //    ffbytesAfter.Add(currentbyte);
+                    //}
+                    //else if (ProjectData.SaveFileMode && currentbyte == 0xff) // only need for save mode
+                    //{
+                    //    ffbytesBefore.Add(currentbyte);//save FF bytes for next string to write
+                    //}
+                }
+                else//parse string
+                {
+                    var str = DefaultEncoding().GetString(candidate.ToArray());
+                    //var oldstr = "";
+                    var maxbytes = candidate.Count/* + ffbytesAfter.Count*/ + zeroffbytesAfter.Count;
+                    var strhaveotherbytes = false;
+                    int otherbytescount = 0;
+
+                    //>>check if string is valid and add row or check for translation if found
+                    if (maxbytes > 20)//skip all candidates spam
+                    {
+                        if (maxbytes > 256 && maxbytes < 300)
                         {
-                            readstring = false;
-                            //ffbytesAfterMode = false;
-                            zeroffbytesAfter.Add(currentbyte);
+                            var oldstr = str;//remember old string
+                            str = GetCorrectString(str);
+                            strhaveotherbytes = str.Length < oldstr.Length;
+                            if (strhaveotherbytes)//calculate other bytes
+                            {
+                                otherbytescount = candidate.Count - DefaultEncoding().GetBytes(str).Length;
+                            }
                         }
-                        //else if (currentbyte == 0xFF)
-                        //{
-                        //    readstring = false;
-                        //    ffbytesAfterMode = true;
-                        //    ffbytesAfter.Add(currentbyte);
-                        //}
-                        else
+
+                        if (ProjectData.OpenFileMode)
                         {
-                            candidate.Add(currentbyte);
+                            //recalculate maxbytes
+                            if (strhaveotherbytes)
+                            {
+                                maxbytes -= otherbytescount;//exclude other from string area
+                            }
+
+                            var info = "Orig bytes length(" + DefaultEncoding().GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + (/*ffbytesAfter.Count + */zeroffbytesAfter.Count) + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
+                            AddRowData(str, info, CheckInput: true);
+                        }
+                        else//save mode
+                        {
+                            if (IsValidString(str))
+                            {
+                                if (SetTranslation(ref str))
+                                {
+                                    strtranslated = true;
+                                }
+                            }
                         }
                     }
-                    else
+                    //<<--check string
+
+                    //write all bytes-->>
+                    if (ProjectData.SaveFileMode)
                     {
-                        if (currentbyte == 0 || currentbyte == 0xff) //we count here rest of zero ff bytes
+                        if (!strtranslated)
                         {
-                            //if (currentbyte == 0 || currentbyte == 0xff)
+                            // just add not translated bytes in result exe
+
+                            //translatedbytesControlPosition++; // control byte+1 because next currentbyte was already read
+
+                            foreach (var b in candidate)//add main string bytes form candidate itself
                             {
-                                //ffbytesAfterMode = false;
-                                zeroffbytesAfter.Add(currentbyte);
+                                NewEXEBytesForWrite.Add(b);
+                                translatedbytesControlPosition++;
                             }
-                            //else if (ffbytesAfterMode && currentbyte == 0xff) // in ffbytesAfterMode add ff bytes after string for write
-                            //{
-                            //    ffbytesAfter.Add(currentbyte);
-                            //}
-                            //else if (ProjectData.SaveFileMode && currentbyte == 0xff) // only need for save mode
-                            //{
-                            //    ffbytesBefore.Add(currentbyte);//save FF bytes for next string to write
-                            //}
-                        }
-                        else//parse string
-                        {
-                            var str = Encoding.GetEncoding(932).GetString(candidate.ToArray());
-                            var oldstr = "";
-                            var maxbytes = candidate.Count/* + ffbytesAfter.Count*/ + zeroffbytesAfter.Count;
-                            var strhaveotherbytes = false;
-                            int otherbytescount = 0;
-
-                            //>>check if string is valid and add row or check for translation if found
-                            if (maxbytes > 20)//skip all candidates spam
+                            foreach (var b in zeroffbytesAfter)// add zero FF bytes
                             {
-                                if (maxbytes > 256 && maxbytes < 300)
-                                {
-                                    oldstr = str;//remember old string
-                                    str = GetCorrectString(str);
-                                    strhaveotherbytes = str.Length < oldstr.Length;
-                                    if (strhaveotherbytes)//calculate other bytes
-                                    {
-                                        otherbytescount = candidate.Count - Encoding.GetEncoding(932).GetBytes(str).Length;
-                                    }
-                                }
-
-                                if (ProjectData.OpenFileMode)
-                                {
-                                    //recalculate maxbytes
-                                    if (strhaveotherbytes)
-                                    {
-                                        maxbytes -= otherbytescount;//exclude other from string area
-                                    }
-
-                                    var info = "Orig bytes length(" + Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + (/*ffbytesAfter.Count + */zeroffbytesAfter.Count) + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
-                                    AddRowData(str, info, CheckInput: true);
-                                }
-                                else//save mode
-                                {
-                                    if (IsValidString(str) && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(str))
-                                    {
-                                        str = ProjectData.CurrentProject.TablesLinesDict[str];
-                                        strtranslated = true;
-                                        filetranslated = true;
-                                    }
-                                }
+                                NewEXEBytesForWrite.Add(b);
+                                translatedbytesControlPosition++;
                             }
-                            //<<--check string
-
-                            //write all bytes-->>
-                            if (ProjectData.SaveFileMode)
-                            {
-                                if (!strtranslated)
-                                {
-                                    // just add not translated bytes in result exe
-
-                                    //translatedbytesControlPosition++; // control byte+1 because next currentbyte was already read
-
-                                    foreach (var b in candidate)//add main string bytes form candidate itself
-                                    {
-                                        NewEXEBytesForWrite.Add(b);
-                                        translatedbytesControlPosition++;
-                                    }
-                                    foreach (var b in zeroffbytesAfter)// add zero FF bytes
-                                    {
-                                        NewEXEBytesForWrite.Add(b);
-                                        translatedbytesControlPosition++;
-                                    }
-
-                                    //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
-                                    //{
-
-                                    //}
-                                }
-                                else
-                                {
-
-                                    var lastwritepos = br.BaseStream.Position - 1; //-1 because 1st byte of next string already read in currentbyte
-
-                                    //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
-                                    //{
-                                    //    foreach (var _ in ffbytesBeforeForSave)// add pre FF bytes if exist
-                                    //    {
-                                    //        NewEXEBytesForWrite.Add(0xff);
-                                    //        translatedbytesControlPosition++;
-                                    //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
-                                    //        {
-                                    //            break;
-                                    //        }
-                                    //    }
-                                    //}
-
-                                    //add other skipped bytes if they exist
-                                    if (strhaveotherbytes)
-                                    {
-                                        foreach (var b in candidate)
-                                        {
-                                            NewEXEBytesForWrite.Add(b);
-                                            translatedbytesControlPosition++;
-                                            if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
-                                            {
-                                                break;
-                                            }
-
-                                            otherbytescount--;
-
-                                            if (otherbytescount == 0)
-                                                break;
-                                        }
-
-                                        //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
-                                        //{
-
-                                        //}
-                                    }
-
-                                    //add translation bytes
-                                    var translatonControlPos = (lastwritepos)/* - ffbytesAfter.Count*/;//recalculate end position for translation depend on ffbytes after count
-                                    if (translatedbytesControlPosition < translatonControlPos)
-                                    {
-                                        var strBytes = Encoding.GetEncoding(932).GetBytes(str);
-                                        foreach (var b in strBytes)//add main string bytes
-                                        {
-                                            NewEXEBytesForWrite.Add(b);
-                                            translatedbytesControlPosition++;
-                                            if (translatedbytesControlPosition == translatonControlPos)//remove all bytes which over of maxbytes limit
-                                            {
-                                                break;
-                                            }
-                                        }
-
-                                        //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
-                                        //{
-
-                                        //}
-                                    }
-
-                                    //FF bytes after translation
-                                    //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
-                                    //{
-                                    //    foreach (var _ in ffbytesAfter)// add pre FF bytes if exist
-                                    //    {
-                                    //        NewEXEBytesForWrite.Add(0xff);
-                                    //        translatedbytesControlPosition++;
-                                    //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
-                                    //        {
-                                    //            break;
-                                    //        }
-                                    //    }
-                                    //}
-
-                                    //while (translatedbytesControlPosition < pos)//add new zero bytes count after string, add only before stream position
-                                    //{
-                                    //    NewEXEBytesForWrite.Add(0);
-                                    //    translatedbytesControlPosition++;
-                                    //}
-
-                                    //add saved ff and zero bytes
-                                    if (translatedbytesControlPosition < lastwritepos)
-                                    {
-                                        foreach (var b in zeroffbytesAfter)// add zero and FF bytes after
-                                        {
-                                            NewEXEBytesForWrite.Add(b);
-                                            translatedbytesControlPosition++;
-                                            if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
-                                            {
-                                                break;
-                                            }
-                                        }
-
-                                        //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
-                                        //{
-
-                                        //}
-                                    }
-
-                                    //if lastwritepos still not reached then write last byte of zeroffbytesAfter while lastwritepos will be reached 
-                                    if (translatedbytesControlPosition < lastwritepos)
-                                    {
-                                        var lastbyte = zeroffbytesAfter[zeroffbytesAfter.Count - 1];
-
-                                        while (translatedbytesControlPosition < lastwritepos)
-                                        {
-                                            NewEXEBytesForWrite.Add(lastbyte);
-                                            translatedbytesControlPosition++;
-                                        }
-
-                                        //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
-                                        //{
-
-                                        //}
-                                    }
-                                }
-                            }
-                            //<<--write bytes
 
                             //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
                             //{
 
                             //}
+                        }
+                        else
+                        {
 
-                            //reset-->>
-                            candidate.Clear();
-                            zeroffbytesAfter.Clear();
-                            strtranslated = false;
-                            //ffbytesAfter.Clear();
-                            //ffbytesAfterMode = false;
-                            //if (ProjectData.SaveFileMode)
+                            var lastwritepos = ParseData.FStream.Position - 1; //-1 because 1st byte of next string already read in currentbyte
+
+                            //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
                             //{
-                            //    if (ffbytesBefore.Count > 0)
+                            //    foreach (var _ in ffbytesBeforeForSave)// add pre FF bytes if exist
                             //    {
-                            //        ffbytesBeforeForSave = ffbytesBefore;//set prenextstring FF for write with next string
+                            //        NewEXEBytesForWrite.Add(0xff);
+                            //        translatedbytesControlPosition++;
+                            //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                            //        {
+                            //            break;
+                            //        }
                             //    }
-                            //    else
-                            //    {
-                            //        ffbytesBeforeForSave.Clear();
-                            //    }
-                            //    ffbytesBefore.Clear();
                             //}
-                            //<<--reset
 
-                            //check if end position reached
-                            if (br.BaseStream.Position >= endpos)
+                            //add other skipped bytes if they exist
+                            if (strhaveotherbytes)
                             {
-
-                                if (ProjectData.SaveFileMode)
+                                foreach (var b in candidate)
                                 {
-                                    //add currentbyte to translation because it was already read but cyrcle will over
-                                    NewEXEBytesForWrite.Add(currentbyte);
+                                    NewEXEBytesForWrite.Add(b);
+                                    translatedbytesControlPosition++;
+                                    if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
+                                    {
+                                        break;
+                                    }
+
+                                    otherbytescount--;
+
+                                    if (otherbytescount == 0)
+                                        break;
+                                }
+
+                                //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                //{
+
+                                //}
+                            }
+
+                            //add translation bytes
+                            var translatonControlPos = (lastwritepos)/* - ffbytesAfter.Count*/;//recalculate end position for translation depend on ffbytes after count
+                            if (translatedbytesControlPosition < translatonControlPos)
+                            {
+                                var strBytes = DefaultEncoding().GetBytes(str);
+                                foreach (var b in strBytes)//add main string bytes
+                                {
+                                    NewEXEBytesForWrite.Add(b);
+                                    translatedbytesControlPosition++;
+                                    if (translatedbytesControlPosition == translatonControlPos)//remove all bytes which over of maxbytes limit
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                //{
+
+                                //}
+                            }
+
+                            //FF bytes after translation
+                            //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
+                            //{
+                            //    foreach (var _ in ffbytesAfter)// add pre FF bytes if exist
+                            //    {
+                            //        NewEXEBytesForWrite.Add(0xff);
+                            //        translatedbytesControlPosition++;
+                            //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+                            //        {
+                            //            break;
+                            //        }
+                            //    }
+                            //}
+
+                            //while (translatedbytesControlPosition < pos)//add new zero bytes count after string, add only before stream position
+                            //{
+                            //    NewEXEBytesForWrite.Add(0);
+                            //    translatedbytesControlPosition++;
+                            //}
+
+                            //add saved ff and zero bytes
+                            if (translatedbytesControlPosition < lastwritepos)
+                            {
+                                foreach (var b in zeroffbytesAfter)// add zero and FF bytes after
+                                {
+                                    NewEXEBytesForWrite.Add(b);
+                                    translatedbytesControlPosition++;
+                                    if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                                //{
+
+                                //}
+                            }
+
+                            //if lastwritepos still not reached then write last byte of zeroffbytesAfter while lastwritepos will be reached 
+                            if (translatedbytesControlPosition < lastwritepos)
+                            {
+                                var lastbyte = zeroffbytesAfter[zeroffbytesAfter.Count - 1];
+
+                                while (translatedbytesControlPosition < lastwritepos)
+                                {
+                                    NewEXEBytesForWrite.Add(lastbyte);
                                     translatedbytesControlPosition++;
                                 }
 
@@ -364,47 +330,419 @@ namespace TranslationHelper.Formats.IrisField
                                 //{
 
                                 //}
-
-                                break;
                             }
-
-                            //start to add new string byte for which was already read and it is not 0x00 and not 0xFF
-                            candidate.Add(currentbyte);
-                            readstring = true;
                         }
                     }
-                }
-
-                if (ProjectData.SaveFileMode)
-                {
-                    //add rest bytes of the stream
-                    while (BaseStreamLength > br.BaseStream.Position)
-                    {
-                        NewEXEBytesForWrite.Add(br.ReadByte());
-                        translatedbytesControlPosition++;
-                    }
+                    //<<--write bytes
 
                     //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
                     //{
 
                     //}
+
+                    //reset-->>
+                    candidate.Clear();
+                    zeroffbytesAfter.Clear();
+                    strtranslated = false;
+                    //ffbytesAfter.Clear();
+                    //ffbytesAfterMode = false;
+                    //if (ProjectData.SaveFileMode)
+                    //{
+                    //    if (ffbytesBefore.Count > 0)
+                    //    {
+                    //        ffbytesBeforeForSave = ffbytesBefore;//set prenextstring FF for write with next string
+                    //    }
+                    //    else
+                    //    {
+                    //        ffbytesBeforeForSave.Clear();
+                    //    }
+                    //    ffbytesBefore.Clear();
+                    //}
+                    //<<--reset
+
+                    //check if end position reached
+                    if (ParseData.FStream.Position >= EndPos)
+                    {
+
+                        if (ProjectData.SaveFileMode)
+                        {
+                            //add currentbyte to translation because it was already read but cyrcle will over
+                            NewEXEBytesForWrite.Add(currentbyte);
+                            translatedbytesControlPosition++;
+                        }
+
+                        //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+                        //{
+
+                        //}
+
+                        return KeywordActionAfter.Break;
+                    }
+
+                    //start to add new string byte for which was already read and it is not 0x00 and not 0xFF
+                    candidate.Add(currentbyte);
+                    readstring = true;
                 }
             }
 
-            if (ProjectData.OpenFileMode)
-            {
-                return CheckTablesContent(TableName());
-            }
-            else
-            {
-                if (filetranslated)
-                {
-                    File.WriteAllBytes(ProjectData.FilePath, NewEXEBytesForWrite.ToArray());
-                }
-
-                return true;
-            }
+            return KeywordActionAfter.Continue;
         }
+
+
+        //private bool OpenSaveEXE()
+        //{
+        //    if (string.IsNullOrWhiteSpace(ProjectData.FilePath) || !File.Exists(ProjectData.FilePath) || Path.GetExtension(ProjectData.FilePath) != ".exe")
+        //    {
+        //        return false;
+        //    }
+
+        //    if (!FilePreOpenActions())
+        //    {
+        //        return false;
+        //    }
+
+        //    //long startpos = StartPos;
+        //    //long endpos = EndPos;
+
+        //    bool filetranslated = false;
+
+        //    using (var fs = new FileStream(ProjectData.SelectedFilePath, FileMode.Open, FileAccess.Read))
+        //    using (var br = new BinaryReader(fs, DefaultEncoding()))
+        //    {
+        //        byte currentbyte;
+        //        //var ffbytesAfterMode = false; ;
+        //        var readstring = true;
+        //        var strtranslated = false;
+        //        var BaseStreamLength = br.BaseStream.Length;
+
+        //        if (ProjectData.OpenFileMode)
+        //        {
+        //            br.BaseStream.Position = startpos;//go to strings part
+        //        }
+        //        else
+        //        {
+        //            //add bytes before start position
+        //            while (br.BaseStream.Position < startpos)
+        //            {
+        //                NewEXEBytesForWrite.Add(br.ReadByte());
+        //                translatedbytesControlPosition++;
+        //            }
+        //        }
+
+        //        while (br.BaseStream.Position <= endpos)
+        //        {
+        //            currentbyte = br.ReadByte();
+
+        //            if (readstring)
+        //            {
+        //                if (currentbyte == 0 || currentbyte == 0xFF) //string end and need to count zero bytes after this
+        //                {
+        //                    readstring = false;
+        //                    //ffbytesAfterMode = false;
+        //                    zeroffbytesAfter.Add(currentbyte);
+        //                }
+        //                //else if (currentbyte == 0xFF)
+        //                //{
+        //                //    readstring = false;
+        //                //    ffbytesAfterMode = true;
+        //                //    ffbytesAfter.Add(currentbyte);
+        //                //}
+        //                else
+        //                {
+        //                    candidate.Add(currentbyte);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                if (currentbyte == 0 || currentbyte == 0xff) //we count here rest of zero ff bytes
+        //                {
+        //                    //if (currentbyte == 0 || currentbyte == 0xff)
+        //                    {
+        //                        //ffbytesAfterMode = false;
+        //                        zeroffbytesAfter.Add(currentbyte);
+        //                    }
+        //                    //else if (ffbytesAfterMode && currentbyte == 0xff) // in ffbytesAfterMode add ff bytes after string for write
+        //                    //{
+        //                    //    ffbytesAfter.Add(currentbyte);
+        //                    //}
+        //                    //else if (ProjectData.SaveFileMode && currentbyte == 0xff) // only need for save mode
+        //                    //{
+        //                    //    ffbytesBefore.Add(currentbyte);//save FF bytes for next string to write
+        //                    //}
+        //                }
+        //                else//parse string
+        //                {
+        //                    var str = Encoding.GetEncoding(932).GetString(candidate.ToArray());
+        //                    var oldstr = "";
+        //                    var maxbytes = candidate.Count/* + ffbytesAfter.Count*/ + zeroffbytesAfter.Count;
+        //                    var strhaveotherbytes = false;
+        //                    int otherbytescount = 0;
+
+        //                    //>>check if string is valid and add row or check for translation if found
+        //                    if (maxbytes > 20)//skip all candidates spam
+        //                    {
+        //                        if (maxbytes > 256 && maxbytes < 300)
+        //                        {
+        //                            oldstr = str;//remember old string
+        //                            str = GetCorrectString(str);
+        //                            strhaveotherbytes = str.Length < oldstr.Length;
+        //                            if (strhaveotherbytes)//calculate other bytes
+        //                            {
+        //                                otherbytescount = candidate.Count - Encoding.GetEncoding(932).GetBytes(str).Length;
+        //                            }
+        //                        }
+
+        //                        if (ProjectData.OpenFileMode)
+        //                        {
+        //                            //recalculate maxbytes
+        //                            if (strhaveotherbytes)
+        //                            {
+        //                                maxbytes -= otherbytescount;//exclude other from string area
+        //                            }
+
+        //                            var info = "Orig bytes length(" + Encoding.GetEncoding(932).GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + (/*ffbytesAfter.Count + */zeroffbytesAfter.Count) + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
+        //                            AddRowData(str, info, CheckInput: true);
+        //                        }
+        //                        else//save mode
+        //                        {
+        //                            if (IsValidString(str) && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(str))
+        //                            {
+        //                                str = ProjectData.CurrentProject.TablesLinesDict[str];
+        //                                strtranslated = true;
+        //                                filetranslated = true;
+        //                            }
+        //                        }
+        //                    }
+        //                    //<<--check string
+
+        //                    //write all bytes-->>
+        //                    if (ProjectData.SaveFileMode)
+        //                    {
+        //                        if (!strtranslated)
+        //                        {
+        //                            // just add not translated bytes in result exe
+
+        //                            //translatedbytesControlPosition++; // control byte+1 because next currentbyte was already read
+
+        //                            foreach (var b in candidate)//add main string bytes form candidate itself
+        //                            {
+        //                                NewEXEBytesForWrite.Add(b);
+        //                                translatedbytesControlPosition++;
+        //                            }
+        //                            foreach (var b in zeroffbytesAfter)// add zero FF bytes
+        //                            {
+        //                                NewEXEBytesForWrite.Add(b);
+        //                                translatedbytesControlPosition++;
+        //                            }
+
+        //                            //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+        //                            //{
+
+        //                            //}
+        //                        }
+        //                        else
+        //                        {
+
+        //                            var lastwritepos = br.BaseStream.Position - 1; //-1 because 1st byte of next string already read in currentbyte
+
+        //                            //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
+        //                            //{
+        //                            //    foreach (var _ in ffbytesBeforeForSave)// add pre FF bytes if exist
+        //                            //    {
+        //                            //        NewEXEBytesForWrite.Add(0xff);
+        //                            //        translatedbytesControlPosition++;
+        //                            //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+        //                            //        {
+        //                            //            break;
+        //                            //        }
+        //                            //    }
+        //                            //}
+
+        //                            //add other skipped bytes if they exist
+        //                            if (strhaveotherbytes)
+        //                            {
+        //                                foreach (var b in candidate)
+        //                                {
+        //                                    NewEXEBytesForWrite.Add(b);
+        //                                    translatedbytesControlPosition++;
+        //                                    if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
+        //                                    {
+        //                                        break;
+        //                                    }
+
+        //                                    otherbytescount--;
+
+        //                                    if (otherbytescount == 0)
+        //                                        break;
+        //                                }
+
+        //                                //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+        //                                //{
+
+        //                                //}
+        //                            }
+
+        //                            //add translation bytes
+        //                            var translatonControlPos = (lastwritepos)/* - ffbytesAfter.Count*/;//recalculate end position for translation depend on ffbytes after count
+        //                            if (translatedbytesControlPosition < translatonControlPos)
+        //                            {
+        //                                var strBytes = Encoding.GetEncoding(932).GetBytes(str);
+        //                                foreach (var b in strBytes)//add main string bytes
+        //                                {
+        //                                    NewEXEBytesForWrite.Add(b);
+        //                                    translatedbytesControlPosition++;
+        //                                    if (translatedbytesControlPosition == translatonControlPos)//remove all bytes which over of maxbytes limit
+        //                                    {
+        //                                        break;
+        //                                    }
+        //                                }
+
+        //                                //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+        //                                //{
+
+        //                                //}
+        //                            }
+
+        //                            //FF bytes after translation
+        //                            //if (translatedbytesControlPosition < pos - 1)// -1 here for make one zero on the end of block
+        //                            //{
+        //                            //    foreach (var _ in ffbytesAfter)// add pre FF bytes if exist
+        //                            //    {
+        //                            //        NewEXEBytesForWrite.Add(0xff);
+        //                            //        translatedbytesControlPosition++;
+        //                            //        if (translatedbytesControlPosition == pos - 1)//remove all bytes which over of maxbytes limit
+        //                            //        {
+        //                            //            break;
+        //                            //        }
+        //                            //    }
+        //                            //}
+
+        //                            //while (translatedbytesControlPosition < pos)//add new zero bytes count after string, add only before stream position
+        //                            //{
+        //                            //    NewEXEBytesForWrite.Add(0);
+        //                            //    translatedbytesControlPosition++;
+        //                            //}
+
+        //                            //add saved ff and zero bytes
+        //                            if (translatedbytesControlPosition < lastwritepos)
+        //                            {
+        //                                foreach (var b in zeroffbytesAfter)// add zero and FF bytes after
+        //                                {
+        //                                    NewEXEBytesForWrite.Add(b);
+        //                                    translatedbytesControlPosition++;
+        //                                    if (translatedbytesControlPosition == lastwritepos)//remove all bytes which over of maxbytes limit
+        //                                    {
+        //                                        break;
+        //                                    }
+        //                                }
+
+        //                                //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+        //                                //{
+
+        //                                //}
+        //                            }
+
+        //                            //if lastwritepos still not reached then write last byte of zeroffbytesAfter while lastwritepos will be reached 
+        //                            if (translatedbytesControlPosition < lastwritepos)
+        //                            {
+        //                                var lastbyte = zeroffbytesAfter[zeroffbytesAfter.Count - 1];
+
+        //                                while (translatedbytesControlPosition < lastwritepos)
+        //                                {
+        //                                    NewEXEBytesForWrite.Add(lastbyte);
+        //                                    translatedbytesControlPosition++;
+        //                                }
+
+        //                                //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+        //                                //{
+
+        //                                //}
+        //                            }
+        //                        }
+        //                    }
+        //                    //<<--write bytes
+
+        //                    //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+        //                    //{
+
+        //                    //}
+
+        //                    //reset-->>
+        //                    candidate.Clear();
+        //                    zeroffbytesAfter.Clear();
+        //                    strtranslated = false;
+        //                    //ffbytesAfter.Clear();
+        //                    //ffbytesAfterMode = false;
+        //                    //if (ProjectData.SaveFileMode)
+        //                    //{
+        //                    //    if (ffbytesBefore.Count > 0)
+        //                    //    {
+        //                    //        ffbytesBeforeForSave = ffbytesBefore;//set prenextstring FF for write with next string
+        //                    //    }
+        //                    //    else
+        //                    //    {
+        //                    //        ffbytesBeforeForSave.Clear();
+        //                    //    }
+        //                    //    ffbytesBefore.Clear();
+        //                    //}
+        //                    //<<--reset
+
+        //                    //check if end position reached
+        //                    if (br.BaseStream.Position >= endpos)
+        //                    {
+
+        //                        if (ProjectData.SaveFileMode)
+        //                        {
+        //                            //add currentbyte to translation because it was already read but cyrcle will over
+        //                            NewEXEBytesForWrite.Add(currentbyte);
+        //                            translatedbytesControlPosition++;
+        //                        }
+
+        //                        //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+        //                        //{
+
+        //                        //}
+
+        //                        break;
+        //                    }
+
+        //                    //start to add new string byte for which was already read and it is not 0x00 and not 0xFF
+        //                    candidate.Add(currentbyte);
+        //                    readstring = true;
+        //                }
+        //            }
+        //        }
+
+        //        if (ProjectData.SaveFileMode)
+        //        {
+        //            //add rest bytes of the stream
+        //            while (BaseStreamLength > br.BaseStream.Position)
+        //            {
+        //                NewEXEBytesForWrite.Add(br.ReadByte());
+        //                translatedbytesControlPosition++;
+        //            }
+
+        //            //if (ProjectData.SaveFileMode && translatedbytesControlPosition != br.BaseStream.Position)
+        //            //{
+
+        //            //}
+        //        }
+        //    }
+
+        //    if (ProjectData.OpenFileMode)
+        //    {
+        //        return CheckTablesContent(TableName());
+        //    }
+        //    else
+        //    {
+        //        if (filetranslated)
+        //        {
+        //            File.WriteAllBytes(ProjectData.FilePath, NewEXEBytesForWrite.ToArray());
+        //        }
+
+        //        return true;
+        //    }
+        //}
 
         /// <summary>
         /// remove all non kanji/katakana/hiragana symbold and also remove '・' because it can be on start of string but it is not part of string
@@ -430,9 +768,9 @@ namespace TranslationHelper.Formats.IrisField
             return str;
         }
 
-        internal override bool Save()
-        {
-            return OpenSaveEXE();
-        }
+        //internal override bool Save()
+        //{
+        //    return OpenSaveEXE();
+        //}
     }
 }
