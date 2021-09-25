@@ -135,8 +135,8 @@
     <Compile Include="Formats\FormatUtils.cs" />
     <Compile Include="Formats\IrisField\HowToBuildAMagnificentNationExe.cs" />
     <Compile Include="Formats\IrisField\HowToMakeTrueSlavesRiseofaDarkEmpireExe.cs" />
-    <Compile Include="Formats\BynaryFileFormatBase.cs" />
-    <Compile Include="Formats\StringFileFormatBase.cs" />
+    <Compile Include="Formats\FormatBinaryBase.cs" />
+    <Compile Include="Formats\FormatStringBase.cs" />
     <Compile Include="Formats\IrisField\IrisFieldExeBase.cs" />
     <Compile Include="Formats\IrisField\TXT.cs" />
     <Compile Include="Formats\KiriKiri\Games\CSV\CSV.cs" />
