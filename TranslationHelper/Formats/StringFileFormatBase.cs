@@ -71,13 +71,6 @@ namespace TranslationHelper.Formats
             firstline = true;
         }
 
-        internal enum KeywordActionAfter
-        {
-            Break = -1,
-            Continue = 0,
-            ReadToEnd = 1
-        }
-
         /// <summary>
         /// opening string file and parse lines
         /// </summary>

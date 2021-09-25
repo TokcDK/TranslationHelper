@@ -4,6 +4,6 @@
     {
         protected override long StartPos => 1720080;
 
-        protected override long EndtPos => 6803572;
+        protected override long EndPos => 6803572;
     }
 }

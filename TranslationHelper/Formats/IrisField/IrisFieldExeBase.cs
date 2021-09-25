@@ -6,7 +6,7 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.IrisField
 {
-    abstract class IrisFieldExeBase : FormatBase
+    abstract class IrisFieldExeBase : BinaryFileFormatBase
     {
         public IrisFieldExeBase()
         {
@@ -37,7 +37,12 @@ namespace TranslationHelper.Formats.IrisField
         /// end position of the exe where to stop parse.
         /// set it to first not zero and not ff byte offset where scan for strings must stop
         /// </summary>
-        protected abstract long EndtPos { get; }
+        protected abstract long EndPos { get; }
+
+        protected override Encoding DefaultEncoding()
+        {
+            return Encoding.GetEncoding(932);
+        }
 
         List<byte> zeroffbytesAfter = new List<byte>();
         List<byte> ffbytesBefore = new List<byte>();
@@ -59,12 +64,12 @@ namespace TranslationHelper.Formats.IrisField
             }
 
             long startpos = StartPos;
-            long endpos = EndtPos;
+            long endpos = EndPos;
 
             bool filetranslated = false;
 
             using (var fs = new FileStream(ProjectData.SelectedFilePath, FileMode.Open, FileAccess.Read))
-            using (var br = new BinaryReader(fs, Encoding.GetEncoding(932)))
+            using (var br = new BinaryReader(fs, DefaultEncoding()))
             {
                 byte currentbyte;
                 //var ffbytesAfterMode = false; ;

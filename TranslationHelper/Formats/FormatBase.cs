@@ -75,9 +75,9 @@ namespace TranslationHelper.Formats
             return string.Empty;
         }
 
-        internal virtual bool Open() { return false; }
+        internal virtual bool Open() { return ParseFile(); }
 
-        internal virtual bool Save() { return false; }
+        internal virtual bool Save() { return ParseFile(); }
 
         /// <summary>
         /// Means use for table name name of file without extension
@@ -160,6 +160,13 @@ namespace TranslationHelper.Formats
             FileOpen();
 
             return FilePostOpen();
+        }
+
+        protected enum KeywordActionAfter
+        {
+            Break = -1,
+            Continue = 0,
+            ReadToEnd = 1
         }
 
         /// <summary>
