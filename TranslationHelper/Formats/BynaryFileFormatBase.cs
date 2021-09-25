@@ -11,7 +11,6 @@ namespace TranslationHelper.Formats
     {
         protected BinaryFileFormatBase()
         {
-            ParseData = new ParseFileData();
         }
 
         /// <summary>
@@ -98,7 +97,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected override bool FilePreOpenActions()
         {
-            //ParseData = new ParseFileData();
+            ParseData = new ParseFileData();
 
             return base.FilePreOpenActions();
         }
