@@ -417,13 +417,23 @@ namespace TranslationHelper.Extensions
             int startIndex = str[0] == '-' && strLength > 1 ? 1 : 0;
             for (int i = startIndex; i < strLength; i++)
             {
-                if ((str[i] ^ '0') > 9)
+                if (!IsDigit(str[i]))
                 {
                     return false;
                 }
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Return if <paramref name="character"/> is digit
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
+        internal static bool IsDigit(this char character)
+        {
+            return !((character ^ '0') > 9);
         }
 
         /// <summary>
@@ -508,53 +518,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool IsMultiline(this string input)
         {
-            //inputString="line1\r\n"
-            //00.00066x100000
-            //var count = 0;
-            //var index = -1;
-
-            //do
-            //{
-            //    if (++count > 1)
-            //    {
-            //        return true;
-            //    }
-
-            //    index = inputString.IndexOf('\n', index + 1);
-            //}
-            //while (index != -1);
-
-            //return false;
-
-            //inputString="line1\r\n"
-            //00.00055x100000
             return input.IndexOf('\n', 0) > -1;
-
-            //inputString="line1\r\n"
-            //00.0021x100000
-            //return inputString.Contains("\n");
-
-            ///old
-            {
-                //0.0035x100000
-                //if (input != null)
-                //{
-                //    using (System.IO.StringReader reader = new System.IO.StringReader(input))
-                //    {
-                //        int i = 0;
-                //        while (reader.ReadLine() != null)
-                //        {
-                //            i++;
-                //            if (i > 1)
-                //            {
-                //                return true;
-                //            }
-                //        }
-                //    }
-                //}
-
-                //return false;
-            }
         }
 
         //https://stackoverflow.com/a/2567623

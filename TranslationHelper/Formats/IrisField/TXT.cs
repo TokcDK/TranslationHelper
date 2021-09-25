@@ -586,10 +586,10 @@ namespace TranslationHelper.Formats.IrisField
         private static string ApplyRequiredCharReplacements(string newLine)
         {
             return newLine
-                .Replace("　", "_").Replace(" ", "_")//whitespaces forbidden
-                .Replace(",", "、")//message will stop with en symbol
-                .Replace("[", "_")
-                .Replace("]", "_")
+                .Replace('　', '_').Replace(' ', '_') // whitespaces forbidden
+                .Replace(',', '、') // message will stop with en symbol
+                .Replace('[', '_')
+                .Replace(']', '_')
                 ;
         }
 
@@ -600,31 +600,61 @@ namespace TranslationHelper.Formats.IrisField
                 return cleanedSubline;
             }
 
-            var Firstletter = cleanedSubline.Substring(0, 1);
-            if (Firstletter.IsDigitsOnly() || Firstletter == "!" || Firstletter == "?")
+            var firstCharacter = cleanedSubline[0];
+            if (firstCharacter.IsDigit() || firstCharacter == '!' || firstCharacter == '?')
             {
-                return TransformFirstChar(Firstletter) + (cleanedSubline.Length > 1 ? cleanedSubline.Substring(1) : string.Empty);
+                return TransformFirstChar(firstCharacter) + (cleanedSubline.Length > 1 ? cleanedSubline.Substring(1) : string.Empty);
             }
 
             return cleanedSubline;
         }
 
-        private static string TransformFirstChar(string firstletter)
+        private static char TransformFirstChar(char firstCharacter)
         {
-            return firstletter
-                .Replace('1', '１')
-                .Replace('2', '２')
-                .Replace('3', '３')
-                .Replace('4', '４')
-                .Replace('5', '５')
-                .Replace('6', '６')
-                .Replace('7', '７')
-                .Replace('8', '８')
-                .Replace('9', '９')
-                .Replace('0', '０')
-                .Replace('!', '！')
-                .Replace('?', '？')
-                ;
+            switch (firstCharacter)
+            {
+                case '1':
+                    return '１';
+                case '2':
+                    return '２';
+                case '3':
+                    return '３';
+                case '4':
+                    return '４';
+                case '5':
+                    return '５';
+                case '6':
+                    return '６';
+                case '7':
+                    return '７';
+                case '8':
+                    return '８';
+                case '9':
+                    return '９';
+                case '0':
+                    return '０';
+                case '!':
+                    return '！';
+                case '?':
+                    return '？';
+                default:
+                    return firstCharacter;
+            }
+
+            //firstCharacter
+            //    .Replace('1', '１')
+            //    .Replace('2', '２')
+            //    .Replace('3', '３')
+            //    .Replace('4', '４')
+            //    .Replace('5', '５')
+            //    .Replace('6', '６')
+            //    .Replace('7', '７')
+            //    .Replace('8', '８')
+            //    .Replace('9', '９')
+            //    .Replace('0', '０')
+            //    .Replace('!', '！')
+            //    .Replace('?', '？')
+            //    ;
         }
 
         private static string PreReduceTranslation(string newLine)
@@ -643,9 +673,9 @@ namespace TranslationHelper.Formats.IrisField
                 .Replace(" [", " ")
                 .Replace("] ", " ")
                 .Replace("''", string.Empty)
-                .Replace("“", string.Empty)
-                .Replace("”", string.Empty)
-                .Replace("\"", string.Empty)
+                .Replace('“', ' ')
+                .Replace('”', ' ')
+                .Replace('\"', ' ')
                 .Replace(" a ", " ")
                 .Replace("The ", string.Empty)
                 .Replace(" the ", " ")
@@ -654,9 +684,9 @@ namespace TranslationHelper.Formats.IrisField
                 .Replace(" ' ", string.Empty)
                 .Replace(" '", string.Empty)
                 .Replace("' ", string.Empty)
-                .Replace("'", string.Empty)
-                .Replace("’", string.Empty)
-                .Replace("*", string.Empty)
+                .Replace('\'', ' ')
+                .Replace('’', ' ')
+                .Replace('*', ' ')
                 .Replace(" , ", ",")
                 .Replace(" ,", ",")
                 .Replace(", ", ",")
@@ -702,89 +732,88 @@ namespace TranslationHelper.Formats.IrisField
                 ;
         }
 
-        readonly Dictionary<string, string> ENtoJPReplacementPairsOneLetterDict = new Dictionary<string, string>
+        readonly Dictionary<char, char> ENtoJPReplacementPairsOneLetterDict = new Dictionary<char, char>
             {
-                { "a", "ａ" },
-                { "A", "Ａ" },
-                { "b", "ｂ" },
-                { "B", "Ｂ" },
-                { "c", "ｃ" },
-                { "C", "Ｃ" },
-                { "d", "ｄ" },
-                { "D", "Ｄ" },
-                { "e", "ｅ" },
-                { "E", "Ｅ" },
-                { "f", "ｆ" },
-                { "F", "Ｆ" },
-                { "g", "ｇ" },
-                { "G", "Ｇ" },
-                { "h", "ｈ" },
-                { "H", "Ｈ" },
-                { "i", "ｉ" },
-                { "I", "Ｉ" },
-                { "j", "ｊ" },
-                { "J", "Ｊ" },
-                { "k", "ｋ" },
-                { "K", "Ｋ" },
-                { "l", "ｌ" },
-                { "L", "Ｌ" },
-                { "m", "ｍ" },
-                { "M", "Ｍ" },
-                { "n", "ｎ" },
-                { "N", "Ｎ" },
-                { "o", "ｏ" },
-                { "O", "Ｏ" },
-                { "p", "ｐ" },
-                { "P", "Ｐ" },
-                { "q", "ｑ" },
-                { "Q", "Ｑ" },
-                { "r", "ｒ" },
-                { "R", "Ｒ" },
-                { "s", "ｓ" },
-                { "S", "Ｓ" },
-                { "t", "ｔ" },
-                { "T", "Ｔ" },
-                { "u", "ｕ" },
-                { "U", "Ｕ" },
-                { "v", "ｖ" },
-                { "V", "Ｖ" },
-                { "w", "ｗ" },
-                { "W", "Ｗ" },
-                { "x", "ｘ" },
-                { "X", "Ｘ" },
-                { "y", "ｙ" },
-                { "Y", "Ｙ" },
-                { "z", "ｚ" },
-                { "Z", "Ｚ" },
-                { "0", "０" },
-                { "1", "１" },
-                { "2", "２" },
-                { "3", "３" },
-                { "4", "４" },
-                { "5", "５" },
-                { "6", "６" },
-                { "7", "７" },
-                { "8", "８" },
-                { "9", "９" },
-                { ",", "、" },
-                { ".", "。" },
-                { "\"", string.Empty },
-                { "”", " " },
-                { "'", string.Empty },
-                { "’", string.Empty },
-                { "{", string.Empty },
-                { "}", string.Empty },
-                { "[", " " },
-                { "]", " " },
-                { "(", "（" },
-                { ")", "）" },
-                { "#", string.Empty },
-                { "「", " " },
-                { "『", " " },
-                { "」", " " },
-                { "』", " " },
-                { "　", " " },
-                { " ", "_" }
+                { 'a', 'ａ' },
+                { 'A', 'Ａ' },
+                { 'b', 'ｂ' },
+                { 'B', 'Ｂ' },
+                { 'c', 'ｃ' },
+                { 'C', 'Ｃ' },
+                { 'd', 'ｄ' },
+                { 'D', 'Ｄ' },
+                { 'e', 'ｅ' },
+                { 'E', 'Ｅ' },
+                { 'f', 'ｆ' },
+                { 'F', 'Ｆ' },
+                { 'g', 'ｇ' },
+                { 'G', 'Ｇ' },
+                { 'h', 'ｈ' },
+                { 'H', 'Ｈ' },
+                { 'i', 'ｉ' },
+                { 'I', 'Ｉ' },
+                { 'j', 'ｊ' },
+                { 'J', 'Ｊ' },
+                { 'k', 'ｋ' },
+                { 'K', 'Ｋ' },
+                { 'l', 'ｌ' },
+                { 'L', 'Ｌ' },
+                { 'm', 'ｍ' },
+                { 'M', 'Ｍ' },
+                { 'n', 'ｎ' },
+                { 'N', 'Ｎ' },
+                { 'o', 'ｏ' },
+                { 'O', 'Ｏ' },
+                { 'p', 'ｐ' },
+                { 'P', 'Ｐ' },
+                { 'q', 'ｑ' },
+                { 'Q', 'Ｑ' },
+                { 'r', 'ｒ' },
+                { 'R', 'Ｒ' },
+                { 's', 'ｓ' },
+                { 'S', 'Ｓ' },
+                { 't', 'ｔ' },
+                { 'T', 'Ｔ' },
+                { 'u', 'ｕ' },
+                { 'U', 'Ｕ' },
+                { 'v', 'ｖ' },
+                { 'V', 'Ｖ' },
+                { 'w', 'ｗ' },
+                { 'W', 'Ｗ' },
+                { 'x', 'ｘ' },
+                { 'X', 'Ｘ' },
+                { 'y', 'ｙ' },
+                { 'Y', 'Ｙ' },
+                { 'z', 'ｚ' },
+                { 'Z', 'Ｚ' },
+                { '0', '０' },
+                { '1', '１' },
+                { '2', '２' },
+                { '3', '３' },
+                { '4', '４' },
+                { '5', '５' },
+                { '6', '６' },
+                { '7', '７' },
+                { '8', '８' },
+                { '9', '９' },
+                { ',', '、' },
+                { '.', '。' },
+                { '\'', ' ' },
+                { '”', ' ' },
+                { '’', ' ' },
+                { '{', ' ' },
+                { '}', ' ' },
+                { '[', ' ' },
+                { ']', ' ' },
+                { '(', '（' },
+                { ')', '）' },
+                { '#', ' ' },
+                { '「', ' ' },
+                { '『', ' ' },
+                { '」', ' ' },
+                { '』', ' ' },
+                { '　', ' ' },
+                { ' ', '_' }
             };
 
         //    readonly string[][] ENtoJPReplacementPairsOneLetter = new string[][] {
@@ -1029,9 +1058,9 @@ namespace TranslationHelper.Formats.IrisField
                 return workString;
             }
 
-            if (workString.Substring(0, 1) == "_")
+            if (workString[0] == '_')
             {
-                while (workString.Substring(0, 1) == "_")
+                while (workString[0] == '_')
                 {
                     workString = workString.Remove(0, 1);
                     if (string.IsNullOrEmpty(workString))
@@ -1041,7 +1070,7 @@ namespace TranslationHelper.Formats.IrisField
                 }
             }
 
-            string firstLetter = workString.Substring(0, 1);
+            var firstLetter = workString[0];
 
             if (ENtoJPReplacementPairsOneLetterDict.ContainsKey(firstLetter))
             {
