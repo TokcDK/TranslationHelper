@@ -665,7 +665,7 @@ namespace TranslationHelper.Formats.IrisField
                 .Replace("!!", "!")
                 .Replace("??", "?")
                 .Replace("??", "?")
-                .Replace("#", string.Empty)
+                .Replace('#', ' ')
                 .Replace('「', ' ')
                 .Replace('『', ' ')
                 .Replace('」', ' ')

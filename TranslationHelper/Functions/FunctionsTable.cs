@@ -490,39 +490,39 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Returns Dataset with tables with only non empty rows
         /// </summary>
-        /// <param name="DS"></param>
+        /// <param name="dataSet"></param>
         /// <returns></returns>
-        public static DataSet FillTempDB(DataSet DS)
+        public static DataSet FillTempDB(DataSet dataSet)
         {
-            DataSet RETDS = new DataSet();
-            int TablesCount = DS.Tables.Count;
-            for (int t = 0; t < TablesCount; t++)
+            DataSet retDS = new DataSet();
+            int tablesCount = dataSet.Tables.Count;
+            for (int t = 0; t < tablesCount; t++)
             {
-                var Table = DS.Tables[t];
-                string tname = Table.TableName;
-                RETDS.Tables.Add(tname);
-                RETDS.Tables[tname].Columns.Add(THSettings.OriginalColumnName());
-                RETDS.Tables[tname].Columns.Add(THSettings.TranslationColumnName());
-                int RowsCount = Table.Rows.Count;
-                for (int r = 0; r < RowsCount; r++)
+                var table = dataSet.Tables[t];
+                string tname = table.TableName;
+                retDS.Tables.Add(tname);
+                retDS.Tables[tname].Columns.Add(THSettings.OriginalColumnName());
+                retDS.Tables[tname].Columns.Add(THSettings.TranslationColumnName());
+                int rowsCount = table.Rows.Count;
+                for (int r = 0; r < rowsCount; r++)
                 {
-                    var Row = Table.Rows[r];
-                    var CellTranslation = Row[1];
-                    if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                    var row = table.Rows[r];
+                    var cellTranslation = row[1];
+                    if (cellTranslation == null || string.IsNullOrEmpty(cellTranslation as string))
                     {
                     }
                     else
                     {
-                        RETDS.Tables[tname].ImportRow(Row);
+                        retDS.Tables[tname].ImportRow(row);
                     }
                 }
-                if (RETDS.Tables[tname].Rows.Count == 0)
+                if (retDS.Tables[tname].Rows.Count == 0)
                 {
-                    RETDS.Tables.Remove(tname);
+                    retDS.Tables.Remove(tname);
                 }
             }
 
-            return RETDS;
+            return retDS;
         }
 
         /// <summary>

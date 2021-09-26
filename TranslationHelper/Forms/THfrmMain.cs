@@ -1012,6 +1012,8 @@ namespace TranslationHelper
                 return;
             }
 
+            ProjectData.SaveFileMode = true;
+
             lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
 
             ProgressInfo(true);
@@ -1024,7 +1026,6 @@ namespace TranslationHelper
                     break;
             }
 
-            ProjectData.SaveFileMode = true;
             await Task.Run(() => ProjectData.CurrentProject.PreSaveDB()).ConfigureAwait(true);
             await Task.Run(() => WriteDBFileLite(ProjectData.THFilesElementsDataset, lastautosavepath)).ConfigureAwait(true);
 
