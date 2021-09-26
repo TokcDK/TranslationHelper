@@ -361,6 +361,16 @@ namespace TranslationHelper.Functions
                 //    ProjectData.THFilesElementsDataset.Clear();
                 //    ProjectData.THFilesElementsDataset.Merge(newdataset);
                 //}
+
+                var sortedtables = ProjectData.THFilesElementsDataset.Tables.Cast<DataTable>().OrderBy(table => table.TableName).ToArray();
+                ProjectData.THFilesElementsDataset.Tables.Clear();
+                ProjectData.THFilesElementsDataset.Tables.AddRange(sortedtables);
+
+                var sortedtablesinfo = ProjectData.THFilesElementsDatasetInfo.Tables.Cast<DataTable>().OrderBy(table => table.TableName).ToArray();
+                ProjectData.THFilesElementsDatasetInfo.Tables.Clear();
+                ProjectData.THFilesElementsDatasetInfo.Tables.AddRange(sortedtablesinfo);
+                
+                
                 foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
                 {
                     ProjectData.Main.THFilesList.AddItem(table.TableName);
