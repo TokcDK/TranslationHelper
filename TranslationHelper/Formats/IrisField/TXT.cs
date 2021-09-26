@@ -593,69 +593,69 @@ namespace TranslationHelper.Formats.IrisField
                 ;
         }
 
-        private static string CheckFirstCharIsLatinAndTransform(string cleanedSubline)
-        {
-            if (string.IsNullOrEmpty(cleanedSubline))
-            {
-                return cleanedSubline;
-            }
+        //private static string CheckFirstCharIsLatinAndTransform(string cleanedSubline)
+        //{
+        //    if (string.IsNullOrEmpty(cleanedSubline))
+        //    {
+        //        return cleanedSubline;
+        //    }
 
-            var firstCharacter = cleanedSubline[0];
-            if (firstCharacter.IsDigit() || firstCharacter == '!' || firstCharacter == '?')
-            {
-                return TransformFirstChar(firstCharacter) + (cleanedSubline.Length > 1 ? cleanedSubline.Substring(1) : string.Empty);
-            }
+        //    var firstCharacter = cleanedSubline[0];
+        //    if (firstCharacter.IsDigit() || firstCharacter == '!' || firstCharacter == '?')
+        //    {
+        //        return TransformFirstChar(firstCharacter) + (cleanedSubline.Length > 1 ? cleanedSubline.Substring(1) : string.Empty);
+        //    }
 
-            return cleanedSubline;
-        }
+        //    return cleanedSubline;
+        //}
 
-        private static char TransformFirstChar(char firstCharacter)
-        {
-            switch (firstCharacter)
-            {
-                case '1':
-                    return '１';
-                case '2':
-                    return '２';
-                case '3':
-                    return '３';
-                case '4':
-                    return '４';
-                case '5':
-                    return '５';
-                case '6':
-                    return '６';
-                case '7':
-                    return '７';
-                case '8':
-                    return '８';
-                case '9':
-                    return '９';
-                case '0':
-                    return '０';
-                case '!':
-                    return '！';
-                case '?':
-                    return '？';
-                default:
-                    return firstCharacter;
-            }
+        //private static char TransformFirstChar(char firstCharacter)
+        //{
+        //    switch (firstCharacter)
+        //    {
+        //        case '1':
+        //            return '１';
+        //        case '2':
+        //            return '２';
+        //        case '3':
+        //            return '３';
+        //        case '4':
+        //            return '４';
+        //        case '5':
+        //            return '５';
+        //        case '6':
+        //            return '６';
+        //        case '7':
+        //            return '７';
+        //        case '8':
+        //            return '８';
+        //        case '9':
+        //            return '９';
+        //        case '0':
+        //            return '０';
+        //        case '!':
+        //            return '！';
+        //        case '?':
+        //            return '？';
+        //        default:
+        //            return firstCharacter;
+        //    }
 
-            //firstCharacter
-            //    .Replace('1', '１')
-            //    .Replace('2', '２')
-            //    .Replace('3', '３')
-            //    .Replace('4', '４')
-            //    .Replace('5', '５')
-            //    .Replace('6', '６')
-            //    .Replace('7', '７')
-            //    .Replace('8', '８')
-            //    .Replace('9', '９')
-            //    .Replace('0', '０')
-            //    .Replace('!', '！')
-            //    .Replace('?', '？')
-            //    ;
-        }
+        //    //firstCharacter
+        //    //    .Replace('1', '１')
+        //    //    .Replace('2', '２')
+        //    //    .Replace('3', '３')
+        //    //    .Replace('4', '４')
+        //    //    .Replace('5', '５')
+        //    //    .Replace('6', '６')
+        //    //    .Replace('7', '７')
+        //    //    .Replace('8', '８')
+        //    //    .Replace('9', '９')
+        //    //    .Replace('0', '０')
+        //    //    .Replace('!', '！')
+        //    //    .Replace('?', '？')
+        //    //    ;
+        //}
 
         private static string PreReduceTranslation(string newLine)
         {
@@ -900,156 +900,156 @@ namespace TranslationHelper.Formats.IrisField
         //           new string[2]{ " ", "_" }
         //};
 
-        readonly string[][] ENtoJPReplacementPairs = new string[][] {
-               new string[2]{ "a", "ａ" },
-               new string[2]{ "A", "Ａ" },
-               new string[2]{ "b", "ｂ" },
-               new string[2]{ "B", "Ｂ" },
-               new string[2]{ "c", "ｃ" },
-               new string[2]{ "C", "Ｃ" },
-               new string[2]{ "d", "ｄ" },
-               new string[2]{ "D", "Ｄ" },
-               new string[2]{ "e", "ｅ" },
-               new string[2]{ "E", "Ｅ" },
-               new string[2]{ "f", "ｆ" },
-               new string[2]{ "F", "Ｆ" },
-               new string[2]{ "g", "ｇ" },
-               new string[2]{ "G", "Ｇ" },
-               new string[2]{ "h", "ｈ" },
-               new string[2]{ "H", "Ｈ" },
-               new string[2]{ "i", "ｉ" },
-               new string[2]{ "I", "Ｉ" },
-               new string[2]{ "j", "ｊ" },
-               new string[2]{ "J", "Ｊ" },
-               new string[2]{ "k", "ｋ" },
-               new string[2]{ "K", "Ｋ" },
-               new string[2]{ "l", "ｌ" },
-               new string[2]{ "L", "Ｌ" },
-               new string[2]{ "m", "ｍ" },
-               new string[2]{ "M", "Ｍ" },
-               new string[2]{ "n", "ｎ" },
-               new string[2]{ "N", "Ｎ" },
-               new string[2]{ "o", "ｏ" },
-               new string[2]{ "O", "Ｏ" },
-               new string[2]{ "p", "ｐ" },
-               new string[2]{ "P", "Ｐ" },
-               new string[2]{ "q", "ｑ" },
-               new string[2]{ "Q", "Ｑ" },
-               new string[2]{ "r", "ｒ" },
-               new string[2]{ "R", "Ｒ" },
-               new string[2]{ "s", "ｓ" },
-               new string[2]{ "S", "Ｓ" },
-               new string[2]{ "t", "ｔ" },
-               new string[2]{ "T", "Ｔ" },
-               new string[2]{ "u", "ｕ" },
-               new string[2]{ "U", "Ｕ" },
-               new string[2]{ "v", "ｖ" },
-               new string[2]{ "V", "Ｖ" },
-               new string[2]{ "w", "ｗ" },
-               new string[2]{ "W", "Ｗ" },
-               new string[2]{ "x", "ｘ" },
-               new string[2]{ "X", "Ｘ" },
-               new string[2]{ "y", "ｙ" },
-               new string[2]{ "Y", "Ｙ" },
-               new string[2]{ "z", "ｚ" },
-               new string[2]{ "Z", "Ｚ" },
-               new string[2]{ ", ", "、" },
-               new string[2]{ ",", "、" },
-               new string[2]{ ". ", "。" },
-               new string[2]{ ".", "。" },
-               new string[2]{ " ... ", "…" },
-               new string[2]{ "... ", "…" },
-               new string[2]{ " ...", "…" },
-               new string[2]{ "...", "…" },
-               new string[2]{ "...", "…" },
-               new string[2]{ "……", "…" },
-               new string[2]{ "……", "…" },
-                new string[2]{ "……", "…" },
-                new string[2]{ "……", "…" },
-               new string[2]{ " … ", "…" },
-               new string[2]{ "… ", "…" },
-               new string[2]{ " …", "…" },
-                new string[2]{ "。。", "。" },
-                new string[2]{ "。。", "。" },
-               new string[2]{ " \" ", " " },
-               new string[2]{ "\" ", " " },
-               new string[2]{ " \"", " " },
-               new string[2]{ "\"", string.Empty },
-                new string[2]{ " ” ", " " },
-                new string[2]{ " ”", " " },
-                new string[2]{ "” ", " " },
-                new string[2]{ "”", " " },
-               //new string[2]{ "\"", "”" },
-               new string[2]{ " ~ ", " " },
-               new string[2]{ "_~", string.Empty },
-               //new string[2]{ "? ", "？" },
-               //new string[2]{ "! ", "！" },
-               new string[2]{ " '", string.Empty },
-               new string[2]{ " ’", string.Empty },
-               new string[2]{ "'", string.Empty },
-               new string[2]{ "’", string.Empty },
-               new string[2]{ "{", string.Empty },
-               new string[2]{ "}", string.Empty },
-               new string[2]{ " [", " " },
-               new string[2]{ "] ", " " },
-               new string[2]{ "[", " " },
-               new string[2]{ "]", " " },
-               //new string[2]{ " [", "【" },
-               //new string[2]{ "] ", "】" },
-               //new string[2]{ "[", "【" },
-               //new string[2]{ "]", "】" },
-               new string[2]{ "#", string.Empty },
-               new string[2]{ "「", " " },
-               new string[2]{ "『", " " },
-               new string[2]{ "」", " " },
-               new string[2]{ "』", " " },
-               //new string[2]{ "$", string.Empty },
-               //new string[2]{ "@", string.Empty },
-               //new string[2]{ "/", "／" },
-               //new string[2]{ "\\", "＼" },
-               //new string[2]{ " (", "（" },
-               //new string[2]{ ") ", "）" },
-               //new string[2]{ "(", "（" },
-               //new string[2]{ ")", "）" },
-               //new string[2]{ ":", "：" },
-               //new string[2]{ ";", "；" },
-               //new string[2]{ "*", "＊" },
-               //new string[2]{ " '", "´" },
-               //new string[2]{ " ’", "´" },,
-               //new string[2]{ "'", "´" },
-               //new string[2]{ "’", "´" },
-               //new string[2]{ "#", "＃" },
-               //new string[2]{ "$", "＄" },
-               //new string[2]{ "%", "％" },
-               //new string[2]{ "&", "＆" },
-               //new string[2]{ ",", "，" },
-               //new string[2]{ "@", "＠" },
-               //new string[2]{ "[", "［" },
-               //new string[2]{ "[", "［" },
-               //new string[2]{ "^", "＾" },
-               //new string[2]{ "_", "＿" },
-               //new string[2]{ "~", "～" },
-               //new string[2]{ "¨", "￣" },
-               //new string[2]{ "\"", "〃" },
-               //new string[2]{ " ", "・" }
-               new string[2]{ "　", " " },
-               new string[2]{ "  ", " " },
-               new string[2]{ "  ", " " },
-               new string[2]{ " ", "_" }
-    };
+    //    readonly string[][] ENtoJPReplacementPairs = new string[][] {
+    //           new string[2]{ "a", "ａ" },
+    //           new string[2]{ "A", "Ａ" },
+    //           new string[2]{ "b", "ｂ" },
+    //           new string[2]{ "B", "Ｂ" },
+    //           new string[2]{ "c", "ｃ" },
+    //           new string[2]{ "C", "Ｃ" },
+    //           new string[2]{ "d", "ｄ" },
+    //           new string[2]{ "D", "Ｄ" },
+    //           new string[2]{ "e", "ｅ" },
+    //           new string[2]{ "E", "Ｅ" },
+    //           new string[2]{ "f", "ｆ" },
+    //           new string[2]{ "F", "Ｆ" },
+    //           new string[2]{ "g", "ｇ" },
+    //           new string[2]{ "G", "Ｇ" },
+    //           new string[2]{ "h", "ｈ" },
+    //           new string[2]{ "H", "Ｈ" },
+    //           new string[2]{ "i", "ｉ" },
+    //           new string[2]{ "I", "Ｉ" },
+    //           new string[2]{ "j", "ｊ" },
+    //           new string[2]{ "J", "Ｊ" },
+    //           new string[2]{ "k", "ｋ" },
+    //           new string[2]{ "K", "Ｋ" },
+    //           new string[2]{ "l", "ｌ" },
+    //           new string[2]{ "L", "Ｌ" },
+    //           new string[2]{ "m", "ｍ" },
+    //           new string[2]{ "M", "Ｍ" },
+    //           new string[2]{ "n", "ｎ" },
+    //           new string[2]{ "N", "Ｎ" },
+    //           new string[2]{ "o", "ｏ" },
+    //           new string[2]{ "O", "Ｏ" },
+    //           new string[2]{ "p", "ｐ" },
+    //           new string[2]{ "P", "Ｐ" },
+    //           new string[2]{ "q", "ｑ" },
+    //           new string[2]{ "Q", "Ｑ" },
+    //           new string[2]{ "r", "ｒ" },
+    //           new string[2]{ "R", "Ｒ" },
+    //           new string[2]{ "s", "ｓ" },
+    //           new string[2]{ "S", "Ｓ" },
+    //           new string[2]{ "t", "ｔ" },
+    //           new string[2]{ "T", "Ｔ" },
+    //           new string[2]{ "u", "ｕ" },
+    //           new string[2]{ "U", "Ｕ" },
+    //           new string[2]{ "v", "ｖ" },
+    //           new string[2]{ "V", "Ｖ" },
+    //           new string[2]{ "w", "ｗ" },
+    //           new string[2]{ "W", "Ｗ" },
+    //           new string[2]{ "x", "ｘ" },
+    //           new string[2]{ "X", "Ｘ" },
+    //           new string[2]{ "y", "ｙ" },
+    //           new string[2]{ "Y", "Ｙ" },
+    //           new string[2]{ "z", "ｚ" },
+    //           new string[2]{ "Z", "Ｚ" },
+    //           new string[2]{ ", ", "、" },
+    //           new string[2]{ ",", "、" },
+    //           new string[2]{ ". ", "。" },
+    //           new string[2]{ ".", "。" },
+    //           new string[2]{ " ... ", "…" },
+    //           new string[2]{ "... ", "…" },
+    //           new string[2]{ " ...", "…" },
+    //           new string[2]{ "...", "…" },
+    //           new string[2]{ "...", "…" },
+    //           new string[2]{ "……", "…" },
+    //           new string[2]{ "……", "…" },
+    //            new string[2]{ "……", "…" },
+    //            new string[2]{ "……", "…" },
+    //           new string[2]{ " … ", "…" },
+    //           new string[2]{ "… ", "…" },
+    //           new string[2]{ " …", "…" },
+    //            new string[2]{ "。。", "。" },
+    //            new string[2]{ "。。", "。" },
+    //           new string[2]{ " \" ", " " },
+    //           new string[2]{ "\" ", " " },
+    //           new string[2]{ " \"", " " },
+    //           new string[2]{ "\"", string.Empty },
+    //            new string[2]{ " ” ", " " },
+    //            new string[2]{ " ”", " " },
+    //            new string[2]{ "” ", " " },
+    //            new string[2]{ "”", " " },
+    //           //new string[2]{ "\"", "”" },
+    //           new string[2]{ " ~ ", " " },
+    //           new string[2]{ "_~", string.Empty },
+    //           //new string[2]{ "? ", "？" },
+    //           //new string[2]{ "! ", "！" },
+    //           new string[2]{ " '", string.Empty },
+    //           new string[2]{ " ’", string.Empty },
+    //           new string[2]{ "'", string.Empty },
+    //           new string[2]{ "’", string.Empty },
+    //           new string[2]{ "{", string.Empty },
+    //           new string[2]{ "}", string.Empty },
+    //           new string[2]{ " [", " " },
+    //           new string[2]{ "] ", " " },
+    //           new string[2]{ "[", " " },
+    //           new string[2]{ "]", " " },
+    //           //new string[2]{ " [", "【" },
+    //           //new string[2]{ "] ", "】" },
+    //           //new string[2]{ "[", "【" },
+    //           //new string[2]{ "]", "】" },
+    //           new string[2]{ "#", string.Empty },
+    //           new string[2]{ "「", " " },
+    //           new string[2]{ "『", " " },
+    //           new string[2]{ "」", " " },
+    //           new string[2]{ "』", " " },
+    //           //new string[2]{ "$", string.Empty },
+    //           //new string[2]{ "@", string.Empty },
+    //           //new string[2]{ "/", "／" },
+    //           //new string[2]{ "\\", "＼" },
+    //           //new string[2]{ " (", "（" },
+    //           //new string[2]{ ") ", "）" },
+    //           //new string[2]{ "(", "（" },
+    //           //new string[2]{ ")", "）" },
+    //           //new string[2]{ ":", "：" },
+    //           //new string[2]{ ";", "；" },
+    //           //new string[2]{ "*", "＊" },
+    //           //new string[2]{ " '", "´" },
+    //           //new string[2]{ " ’", "´" },,
+    //           //new string[2]{ "'", "´" },
+    //           //new string[2]{ "’", "´" },
+    //           //new string[2]{ "#", "＃" },
+    //           //new string[2]{ "$", "＄" },
+    //           //new string[2]{ "%", "％" },
+    //           //new string[2]{ "&", "＆" },
+    //           //new string[2]{ ",", "，" },
+    //           //new string[2]{ "@", "＠" },
+    //           //new string[2]{ "[", "［" },
+    //           //new string[2]{ "[", "［" },
+    //           //new string[2]{ "^", "＾" },
+    //           //new string[2]{ "_", "＿" },
+    //           //new string[2]{ "~", "～" },
+    //           //new string[2]{ "¨", "￣" },
+    //           //new string[2]{ "\"", "〃" },
+    //           //new string[2]{ " ", "・" }
+    //           new string[2]{ "　", " " },
+    //           new string[2]{ "  ", " " },
+    //           new string[2]{ "  ", " " },
+    //           new string[2]{ " ", "_" }
+    //};
 
-        private string TransformString(string workString)
-        {
-            workString = WordsReplacement(workString);
-            workString = ENJPCharsReplacement(workString);
+        //private string TransformString(string workString)
+        //{
+        //    workString = WordsReplacement(workString);
+        //    workString = ENJPCharsReplacement(workString);
 
-            return workString;
-        }
+        //    return workString;
+        //}
 
-        private string ENJPCharsReplacement(string workString)
-        {
-            return FunctionsString.CharsReplacementByPairsFromArray(workString, ENtoJPReplacementPairs);
-        }
+        //private string ENJPCharsReplacement(string workString)
+        //{
+        //    return FunctionsString.CharsReplacementByPairsFromArray(workString, ENtoJPReplacementPairs);
+        //}
 
         private string ENJPCharsReplacementFirstLetter(string workString)
         {
@@ -1082,124 +1082,124 @@ namespace TranslationHelper.Formats.IrisField
             //return FunctionsString.CharsReplacementByPairsFromArray(workString.Substring(0, 1), ENtoJPReplacementPairsOneLetter) + (workString.Length > 1 ? workString.Substring(1) : string.Empty);
         }
 
-        readonly string[][] ENJPWordsReplacementPairs = new string[][] {
-               new string[2]{ "one hundred", "100" },
-               new string[2]{ "ninety-nine", "99" },
-               new string[2]{ "ninety-eight", "98" },
-               new string[2]{ "ninety-seven", "97" },
-               new string[2]{ "ninety-six", "96" },
-               new string[2]{ "ninety-five", "95" },
-               new string[2]{ "ninety-four", "94" },
-               new string[2]{ "ninety-three", "93" },
-               new string[2]{ "ninety-two", "92" },
-               new string[2]{ "ninety-one", "91" },
-               new string[2]{ "ninety", "90" },
-               new string[2]{ "eighty-nine", "89" },
-               new string[2]{ "eighty-eight", "88" },
-               new string[2]{ "eighty-seven", "87" },
-               new string[2]{ "eighty-six", "86" },
-               new string[2]{ "eighty-five", "85" },
-               new string[2]{ "eighty-four", "84" },
-               new string[2]{ "eighty-three", "83" },
-               new string[2]{ "eighty-two", "82" },
-               new string[2]{ "eighty-one", "81" },
-               new string[2]{ "eighty", "80" },
-               new string[2]{ "seventy-nine", "79" },
-               new string[2]{ "seventy-eight", "78" },
-               new string[2]{ "seventy-seven", "77" },
-               new string[2]{ "seventy-six", "76" },
-               new string[2]{ "seventy-five", "75" },
-               new string[2]{ "seventy-four", "74" },
-               new string[2]{ "seventy-three", "73" },
-               new string[2]{ "seventy-two", "72" },
-               new string[2]{ "seventy-one", "71" },
-               new string[2]{ "seventy", "70" },
-               new string[2]{ "sixty-nine", "69" },
-               new string[2]{ "sixty-eight", "68" },
-               new string[2]{ "sixty-seven", "67" },
-               new string[2]{ "sixty-six", "66" },
-               new string[2]{ "sixty-five", "65" },
-               new string[2]{ "sixty-four", "64" },
-               new string[2]{ "sixty-three", "63" },
-               new string[2]{ "sixty-two", "62" },
-               new string[2]{ "sixty-one", "61" },
-               new string[2]{ "sixty", "60" },
-               new string[2]{ "fifty-nine", "59" },
-               new string[2]{ "fifty-eight", "58" },
-               new string[2]{ "fifty-seven", "57" },
-               new string[2]{ "fifty-six", "56" },
-               new string[2]{ "fifty-five", "55" },
-               new string[2]{ "fifty-four", "54" },
-               new string[2]{ "fifty-three", "53" },
-               new string[2]{ "fifty-two", "52" },
-               new string[2]{ "fifty-one", "51" },
-               new string[2]{ "fifty", "50" },
-               new string[2]{ "forty-nine", "49" },
-               new string[2]{ "forty-eight", "48" },
-               new string[2]{ "forty-seven", "47" },
-               new string[2]{ "forty-six", "46" },
-               new string[2]{ "forty-five", "45" },
-               new string[2]{ "forty-four", "44" },
-               new string[2]{ "forty-three", "43" },
-               new string[2]{ "forty-two", "42" },
-               new string[2]{ "forty-one", "41" },
-               new string[2]{ "forty", "40" },
-               new string[2]{ "thirty-nine", "39" },
-               new string[2]{ "thirty-eight", "38" },
-               new string[2]{ "thirty-seven", "37" },
-               new string[2]{ "thirty-six", "36" },
-               new string[2]{ "thirty-five", "35" },
-               new string[2]{ "thirty-four", "34" },
-               new string[2]{ "thirty-three", "33" },
-               new string[2]{ "thirty-two", "32" },
-               new string[2]{ "thirty-one", "31" },
-               new string[2]{ "thirty", "30" },
-               new string[2]{ "twenty-nine", "29" },
-               new string[2]{ "twenty-eight", "28" },
-               new string[2]{ "twenty-seven", "27" },
-               new string[2]{ "twenty-six", "26" },
-               new string[2]{ "twenty-five", "25" },
-               new string[2]{ "twenty-four", "24" },
-               new string[2]{ "twenty-three", "23" },
-               new string[2]{ "twenty-two", "22" },
-               new string[2]{ "twenty-one", "21" },
-               new string[2]{ "twenty", "20" },
-               new string[2]{ "nineteen", "19" },
-               new string[2]{ "eighteen", "18" },
-               new string[2]{ "seventeen", "17" },
-               new string[2]{ "sixteen", "16" },
-               new string[2]{ "fifteen", "15" },
-               new string[2]{ "fourteen", "14" },
-               new string[2]{ "thirteen", "13" },
-               new string[2]{ "twelve", "12" },
-               new string[2]{ "eleven", "11" },
-               new string[2]{ "ten", "10" },
-               new string[2]{ "nine", "9" },
-               new string[2]{ "eight", "8" },
-               new string[2]{ "seven", "7" },
-               new string[2]{ "six", "6" },
-               new string[2]{ "five", "5" },
-               new string[2]{ "four", "4" },
-               new string[2]{ "three", "3" },
-               new string[2]{ "two", "2" },
-               //new string[2]{ "foo2rk", "footwork" },
-               new string[2]{ "one", "1" },
-               //new string[2]{ "st1", "stone" },
-               new string[2]{ "enhancement", "enhance" },
-               new string[2]{ "ho-ho-ho-ho", "ho-ho" },
-               new string[2]{ "ho-ho-ho", "ho-ho" }
-            };
+        //readonly string[][] ENJPWordsReplacementPairs = new string[][] {
+        //       new string[2]{ "one hundred", "100" },
+        //       new string[2]{ "ninety-nine", "99" },
+        //       new string[2]{ "ninety-eight", "98" },
+        //       new string[2]{ "ninety-seven", "97" },
+        //       new string[2]{ "ninety-six", "96" },
+        //       new string[2]{ "ninety-five", "95" },
+        //       new string[2]{ "ninety-four", "94" },
+        //       new string[2]{ "ninety-three", "93" },
+        //       new string[2]{ "ninety-two", "92" },
+        //       new string[2]{ "ninety-one", "91" },
+        //       new string[2]{ "ninety", "90" },
+        //       new string[2]{ "eighty-nine", "89" },
+        //       new string[2]{ "eighty-eight", "88" },
+        //       new string[2]{ "eighty-seven", "87" },
+        //       new string[2]{ "eighty-six", "86" },
+        //       new string[2]{ "eighty-five", "85" },
+        //       new string[2]{ "eighty-four", "84" },
+        //       new string[2]{ "eighty-three", "83" },
+        //       new string[2]{ "eighty-two", "82" },
+        //       new string[2]{ "eighty-one", "81" },
+        //       new string[2]{ "eighty", "80" },
+        //       new string[2]{ "seventy-nine", "79" },
+        //       new string[2]{ "seventy-eight", "78" },
+        //       new string[2]{ "seventy-seven", "77" },
+        //       new string[2]{ "seventy-six", "76" },
+        //       new string[2]{ "seventy-five", "75" },
+        //       new string[2]{ "seventy-four", "74" },
+        //       new string[2]{ "seventy-three", "73" },
+        //       new string[2]{ "seventy-two", "72" },
+        //       new string[2]{ "seventy-one", "71" },
+        //       new string[2]{ "seventy", "70" },
+        //       new string[2]{ "sixty-nine", "69" },
+        //       new string[2]{ "sixty-eight", "68" },
+        //       new string[2]{ "sixty-seven", "67" },
+        //       new string[2]{ "sixty-six", "66" },
+        //       new string[2]{ "sixty-five", "65" },
+        //       new string[2]{ "sixty-four", "64" },
+        //       new string[2]{ "sixty-three", "63" },
+        //       new string[2]{ "sixty-two", "62" },
+        //       new string[2]{ "sixty-one", "61" },
+        //       new string[2]{ "sixty", "60" },
+        //       new string[2]{ "fifty-nine", "59" },
+        //       new string[2]{ "fifty-eight", "58" },
+        //       new string[2]{ "fifty-seven", "57" },
+        //       new string[2]{ "fifty-six", "56" },
+        //       new string[2]{ "fifty-five", "55" },
+        //       new string[2]{ "fifty-four", "54" },
+        //       new string[2]{ "fifty-three", "53" },
+        //       new string[2]{ "fifty-two", "52" },
+        //       new string[2]{ "fifty-one", "51" },
+        //       new string[2]{ "fifty", "50" },
+        //       new string[2]{ "forty-nine", "49" },
+        //       new string[2]{ "forty-eight", "48" },
+        //       new string[2]{ "forty-seven", "47" },
+        //       new string[2]{ "forty-six", "46" },
+        //       new string[2]{ "forty-five", "45" },
+        //       new string[2]{ "forty-four", "44" },
+        //       new string[2]{ "forty-three", "43" },
+        //       new string[2]{ "forty-two", "42" },
+        //       new string[2]{ "forty-one", "41" },
+        //       new string[2]{ "forty", "40" },
+        //       new string[2]{ "thirty-nine", "39" },
+        //       new string[2]{ "thirty-eight", "38" },
+        //       new string[2]{ "thirty-seven", "37" },
+        //       new string[2]{ "thirty-six", "36" },
+        //       new string[2]{ "thirty-five", "35" },
+        //       new string[2]{ "thirty-four", "34" },
+        //       new string[2]{ "thirty-three", "33" },
+        //       new string[2]{ "thirty-two", "32" },
+        //       new string[2]{ "thirty-one", "31" },
+        //       new string[2]{ "thirty", "30" },
+        //       new string[2]{ "twenty-nine", "29" },
+        //       new string[2]{ "twenty-eight", "28" },
+        //       new string[2]{ "twenty-seven", "27" },
+        //       new string[2]{ "twenty-six", "26" },
+        //       new string[2]{ "twenty-five", "25" },
+        //       new string[2]{ "twenty-four", "24" },
+        //       new string[2]{ "twenty-three", "23" },
+        //       new string[2]{ "twenty-two", "22" },
+        //       new string[2]{ "twenty-one", "21" },
+        //       new string[2]{ "twenty", "20" },
+        //       new string[2]{ "nineteen", "19" },
+        //       new string[2]{ "eighteen", "18" },
+        //       new string[2]{ "seventeen", "17" },
+        //       new string[2]{ "sixteen", "16" },
+        //       new string[2]{ "fifteen", "15" },
+        //       new string[2]{ "fourteen", "14" },
+        //       new string[2]{ "thirteen", "13" },
+        //       new string[2]{ "twelve", "12" },
+        //       new string[2]{ "eleven", "11" },
+        //       new string[2]{ "ten", "10" },
+        //       new string[2]{ "nine", "9" },
+        //       new string[2]{ "eight", "8" },
+        //       new string[2]{ "seven", "7" },
+        //       new string[2]{ "six", "6" },
+        //       new string[2]{ "five", "5" },
+        //       new string[2]{ "four", "4" },
+        //       new string[2]{ "three", "3" },
+        //       new string[2]{ "two", "2" },
+        //       //new string[2]{ "foo2rk", "footwork" },
+        //       new string[2]{ "one", "1" },
+        //       //new string[2]{ "st1", "stone" },
+        //       new string[2]{ "enhancement", "enhance" },
+        //       new string[2]{ "ho-ho-ho-ho", "ho-ho" },
+        //       new string[2]{ "ho-ho-ho", "ho-ho" }
+        //    };
 
-        private string WordsReplacement(string input)
-        {
-            string ret = input;
-            int charsLength = ENJPWordsReplacementPairs.Length;
-            for (int i = 0; i < charsLength; i++)
-            {
-                ret = ret.Replace(ENJPWordsReplacementPairs[i][0], ENJPWordsReplacementPairs[i][1], StringComparison.OrdinalIgnoreCase);
-            }
+        //private string WordsReplacement(string input)
+        //{
+        //    string ret = input;
+        //    int charsLength = ENJPWordsReplacementPairs.Length;
+        //    for (int i = 0; i < charsLength; i++)
+        //    {
+        //        ret = ret.Replace(ENJPWordsReplacementPairs[i][0], ENJPWordsReplacementPairs[i][1], StringComparison.OrdinalIgnoreCase);
+        //    }
 
-            return ret;
-        }
+        //    return ret;
+        //}
     }
 }

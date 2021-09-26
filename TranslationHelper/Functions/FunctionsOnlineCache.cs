@@ -19,17 +19,17 @@ namespace TranslationHelper.Functions
             if (!Properties.Settings.Default.EnableTranslationCache)
                 return string.Empty;
 
-            if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll 
-                && ProjectData.AllDBmerged != null 
-                && ProjectData.AllDBmerged.Count > 0 
-                && ProjectData.AllDBmerged.ContainsKey(keyValue) 
+            if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll
+                && ProjectData.AllDBmerged != null
+                && ProjectData.AllDBmerged.Count > 0
+                && ProjectData.AllDBmerged.ContainsKey(keyValue)
                 && !string.IsNullOrWhiteSpace(ProjectData.AllDBmerged[keyValue]))
             {
                 return ProjectData.AllDBmerged[keyValue];
             }
-            else if (cache != null 
-                && cache.Count > 0 
-                && cache.ContainsKey(keyValue) 
+            else if (cache != null
+                && cache.Count > 0
+                && cache.ContainsKey(keyValue)
                 && !string.IsNullOrWhiteSpace(cache[keyValue]))
             {
                 return cache[keyValue];
@@ -62,7 +62,7 @@ namespace TranslationHelper.Functions
             }
         }
 
-        bool cacheisbusy;
+        object cacheWriteLocker = new object();
         public void Write()
         {
             if (cache == null || cache.Count < 1)
@@ -70,85 +70,91 @@ namespace TranslationHelper.Functions
                 return;
             }
 
-            if (cacheisbusy)
+            lock (cacheWriteLocker)
             {
-                return;
+                XElement el = new XElement("TranslationCache",
+                    cache.Select(KeyValue =>
+                    new XElement("Value",
+                        new XElement(THSettings.OriginalColumnName(), KeyValue.Key),
+                        new XElement(THSettings.TranslationColumnName(), KeyValue.Value)
+                        )
+                    ));
+                //el.Save("cache.xml");
+                FunctionsDBFile.WriteXElementToXMLFile(el, Properties.Settings.Default.THTranslationCachePath);
             }
-            cacheisbusy = true;
-
-            XElement el = new XElement("TranslationCache",
-                cache.Select(KeyValue =>
-                new XElement("Value",
-                    new XElement(THSettings.OriginalColumnName(), KeyValue.Key),
-                    new XElement(THSettings.TranslationColumnName(), KeyValue.Value)
-                    )
-                ));
-            //el.Save("cache.xml");
-            FunctionsDBFile.WriteXElementToXMLFile(el, Properties.Settings.Default.THTranslationCachePath);
-
-            cacheisbusy = false;
         }
 
         /// <summary>
         /// init cache when it was not init
         /// </summary>
-        /// <param name="projectData"></param>
         internal static void Init()
         {
             //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
             //    return;
 
-            Properties.Settings.Default.OnlineTranslationCacheUseCount++;
             if (ProjectData.OnlineTranslationCache == null)
             {
                 ProjectData.OnlineTranslationCache = new FunctionsOnlineCache();
+                ProjectData.OnlineTranslationCache.UsersCount++;
                 ProjectData.OnlineTranslationCache.Read();
             }
         }
 
         /// <summary>
+        /// Count of users of the instance of cache
+        /// </summary>
+        internal int UsersCount = 0;
+
+        /// <summary>
         /// unload cache when need
         /// </summary>
-        /// <param name="projectData"></param>
         internal static void Unload()
         {
-            Properties.Settings.Default.OnlineTranslationCacheUseCount--;
-            if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)
+            ProjectData.OnlineTranslationCache.UsersCount--;
+            if (ProjectData.OnlineTranslationCache != null && ProjectData.OnlineTranslationCache.UsersCount == 0)
             {
-                if (ProjectData.OnlineTranslationCache != null)
-                {
-                    ProjectData.OnlineTranslationCache = null;
-                }
+                ProjectData.OnlineTranslationCache = null;
             }
         }
 
+        object cacheReadLocker = new object();
+
         public void Read()
         {
-            string xml = FunctionsDBFile.ReadXMLToString(Properties.Settings.Default.THTranslationCachePath);
-            if (xml.Length == 0)
+            if (cache != null && cache.Count > 0)
+            {
                 return;
+            }
 
-            XElement rootElement;// = null;
-            try
+            lock (cacheReadLocker)
             {
-                rootElement = XElement.Parse(xml);
-            }
-            catch (Exception ex)
-            {
-                //write exception, rename broken cache file and return
-                string targetFilePath = FunctionsFileFolder.NewFilePathPlusIndex(Properties.Settings.Default.THTranslationCachePath + ".broken");
-                File.WriteAllText(Path.Combine(Path.GetDirectoryName(targetFilePath), Path.GetFileName(targetFilePath) + ".log"), ex.ToString());
-                File.Move(Properties.Settings.Default.THTranslationCachePath, targetFilePath);
-                return;
-            }
-            foreach (var el in rootElement.Elements())
-            {
-                string key = el.Element(THSettings.OriginalColumnName()).Value;
-                if (!cache.ContainsKey(key))
+                string xml = FunctionsDBFile.ReadXMLToString(Properties.Settings.Default.THTranslationCachePath);
+                if (xml.Length == 0)
+                    return;
+
+                XElement rootElement;// = null;
+                try
                 {
-                    cache.Add(key, el.Element(THSettings.TranslationColumnName()).Value);
+                    rootElement = XElement.Parse(xml);
+                }
+                catch (Exception ex)
+                {
+                    //write exception, rename broken cache file and return
+                    string targetFilePath = FunctionsFileFolder.NewFilePathPlusIndex(Properties.Settings.Default.THTranslationCachePath + ".broken");
+                    File.WriteAllText(Path.Combine(Path.GetDirectoryName(targetFilePath), Path.GetFileName(targetFilePath) + ".log"), ex.ToString());
+                    File.Move(Properties.Settings.Default.THTranslationCachePath, targetFilePath);
+                    return;
+                }
+                foreach (var el in rootElement.Elements())
+                {
+                    string key = el.Element(THSettings.OriginalColumnName()).Value;
+                    if (!cache.ContainsKey(key))
+                    {
+                        cache.Add(key, el.Element(THSettings.TranslationColumnName()).Value);
+                    }
                 }
             }
+
         }
 
         public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/string Original, string Translation)

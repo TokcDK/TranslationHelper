@@ -237,18 +237,18 @@ namespace TranslationHelper.Functions.OnlineTranslation
             //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
             //    return;
 
-            Properties.Settings.Default.OnlineTranslationCacheUseCount++;
             if (ProjectData.OnlineTranslationCache == null)
             {
                 ProjectData.OnlineTranslationCache = new FunctionsOnlineCache();
+                ProjectData.OnlineTranslationCache.UsersCount++;
                 ProjectData.OnlineTranslationCache.Read();
             }
         }
 
         private static void CacheUnloadWhenNeed()
         {
-            Properties.Settings.Default.OnlineTranslationCacheUseCount--;
-            if (Properties.Settings.Default.OnlineTranslationCacheUseCount == 0)
+            ProjectData.OnlineTranslationCache.UsersCount--;
+            if (ProjectData.OnlineTranslationCache.UsersCount == 0)
             {
                 if (ProjectData.OnlineTranslationCache != null)
                 {
