@@ -208,8 +208,8 @@ namespace TranslationHelper.Formats.IrisField
 
         //    string fileName = Path.GetFileNameWithoutExtension(FilePath);
 
-        //    ProjectData.THFilesElementsDataset.Tables.Add(fileName).Columns.Add(THSettings.OriginalColumnName());
-        //    ProjectData.THFilesElementsDatasetInfo.Tables.Add(fileName).Columns.Add(THSettings.OriginalColumnName());
+        //    ProjectData.AddTableData(fileName).Columns.Add(THSettings.OriginalColumnName());
+        //    ProjectData.AddTableInfo(fileName).Columns.Add(THSettings.OriginalColumnName());
 
         //    using (StreamReader sr = new StreamReader(GetOriginalWhenExists(), Encoding.GetEncoding(932)))
         //    {

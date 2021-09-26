@@ -185,5 +185,31 @@ namespace TranslationHelper.Data
         /// Index of main Translation column
         /// </summary>
         internal static int TranslationColumnIndex = 1;
+
+        static readonly object TableDataAddLocker = new object();
+        /// <summary>
+        /// add new <paramref name="tableData"/> in tables list
+        /// </summary>
+        /// <param name="tableData"></param>
+        internal static void AddTableData(DataTable tableData)
+        {
+            lock (TableDataAddLocker)
+            {
+                THFilesElementsDataset.Tables.Add(tableData);
+            }
+        }
+
+        static readonly object TableInfoAddLocker = new object();
+        /// <summary>
+        /// add new <paramref name="tableInfo"/> in tables list
+        /// </summary>
+        /// <param name="tableInfo"></param>
+        internal static void AddTableInfo(DataTable tableInfo)
+        {
+            lock (TableInfoAddLocker)
+            {
+                THFilesElementsDatasetInfo.Tables.Add(tableInfo);
+            }
+        }
     }
 }

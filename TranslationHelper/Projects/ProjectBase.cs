@@ -4,6 +4,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
@@ -195,10 +196,10 @@ namespace TranslationHelper.Projects
             var ret = false;
             var existsTables = ProjectData.THFilesElementsDataset.Tables;
             var filesList = Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories);
-            foreach (var file in filesList)
+            Parallel.ForEach(filesList, file =>
             {
                 if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions))//skip exclusions
-                    continue;
+                    return;
 
                 ProjectData.FilePath = file.FullName;
 
@@ -208,14 +209,14 @@ namespace TranslationHelper.Projects
 
                 if (file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
                 {
-                    continue;
+                    return;
                 }
 
                 if (ProjectData.SaveFileMode && existsTables.Contains(format.TableName())) // check if exist table has any translated
                 {
                     if (!format.TableName().HasAnyTranslated())
                     {
-                        continue;
+                        return;
                     }
                 }
 
@@ -226,7 +227,7 @@ namespace TranslationHelper.Projects
                 {
                     ret = true;
                 }
-            }
+            });
 
             ProjectData.Main.ProgressInfo(false);
 

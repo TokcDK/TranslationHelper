@@ -117,97 +117,72 @@ namespace TranslationHelper.Formats
         {
             if (!string.IsNullOrEmpty(FilePath))
             {
-                FormatUtils.AddTables(TableName());
+                AddTables(TableName());
             }
         }
 
         /// <summary>
-        /// Pre open file actions
+        /// Main table with row data
         /// </summary>
-        protected virtual bool FilePreOpenActions()
-        {
-            if (string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(FilePath) != Ext()) // extension must be same as set, if set
-            {
-                return false;
-            }
-
-            if (ProjectData.SaveFileMode && !ProjectData.THFilesList.Items.Contains(TableName()))
-            {
-                return false;
-            }
-
-            if (ProjectData.OpenFileMode)
-            {
-                FormatUtils.AddTables(TableName());
-            }
-
-            if (ProjectData.SaveFileMode)
-            {
-                SplitTableCellValuesAndTheirLinesToDictionary(TableName(), false, false);
-            }
-
-            PreOpenExtraActions();
-
-            return true;
-        }
+        DataTable TableData;
+        /// <summary>
+        /// info table for info box
+        /// </summary>
+        DataTable TableInfo;
 
         /// <summary>
-        /// Pre open file extra actions
+        /// Add table to work dataset
         /// </summary>
-        protected virtual void PreOpenExtraActions()
+        /// <param name="tablename"></param>
+        /// <param name="extraColumns"></param>
+        internal void AddTables(string tablename, string[] extraColumns = null)
         {
-        }
-
-        /// <summary>
-        /// Base Parse File function
-        /// </summary>
-        /// <param name="IsOpen"></param>
-        /// <returns></returns>
-        protected bool ParseFile()
-        {
-            if (!FilePreOpenActions())
+            if (TableData == null)
             {
-                return false;
+                TableData = new DataTable
+                {
+                    TableName = tablename
+                };
+                TableData.Columns.Add(THSettings.OriginalColumnName());
+                TableData.Columns.Add(THSettings.TranslationColumnName());
+
+                if (extraColumns != null && extraColumns.Length > 0)
+                {
+                    foreach (var columnName in extraColumns)
+                    {
+                        TableData.Columns.Add(columnName);
+                    }
+                }
+
+                TableInfo = new DataTable
+                {
+                    TableName = tablename
+                };
+                TableInfo.Columns.Add("Info");
             }
 
-            FileOpen();
+            //var tables = ProjectData.THFilesElementsDataset.Tables;
+            //if (!tables.Contains(tablename))
+            //{
+            //    tables.Add(tablename);
+            //    var table = tables[tablename];
+            //    table.Columns.Add(THSettings.OriginalColumnName());
+            //    table.Columns.Add(THSettings.TranslationColumnName());
 
-            return FilePostOpen();
-        }
-
-        protected enum KeywordActionAfter
-        {
-            Break = -1,
-            Continue = 0,
-            ReadToEnd = 1
-        }
-
-        /// <summary>
-        /// Open file actions
-        /// </summary>
-        protected virtual void FileOpen()
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        protected virtual bool FilePostOpen()
-        {
-            if (ProjectData.OpenFileMode)
-            {
-                return CheckTablesContent(TableName());
-            }
-            else
-            {
-                return WriteFileData();
-            }
-        }
-
-        protected virtual bool WriteFileData(string filePath = "")
-        {
-            return false;
+            //    if (extraColumns != null && extraColumns.Length > 0)
+            //    {
+            //        foreach (var columnName in extraColumns)
+            //        {
+            //            table.Columns.Add(columnName);
+            //        }
+            //    }
+            //}
+            //var tablesInfo = ProjectData.THFilesElementsDatasetInfo.Tables;
+            //if (!tablesInfo.Contains(tablename))
+            //{
+            //    tablesInfo.Add(tablename);
+            //    tablesInfo[tablename].Columns.Add("Info");
+            //}
         }
 
         /// <summary>
@@ -295,31 +270,6 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// original string modification before add it with AddRowData.
-        /// default will be returned same string
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        protected virtual string AddRowDataPreAddOriginalStringMod(string str)
-        {
-            return str;
-        }
-
-        /// <summary>
-        /// Check string if it is valid for add to work table.
-        /// Usually it is not empty string. For japanese language it is also string contain most of japanese chars
-        /// </summary>
-        /// <param name="inputString"></param>
-        /// <returns></returns>
-        internal virtual bool IsValidString(string inputString)
-        {
-            //preclean string
-            inputString = ProjectData.CurrentProject.CleanStringForCheck(inputString);
-
-            return !string.IsNullOrWhiteSpace(inputString) && !inputString.ForJPLangHaveMostOfRomajiOtherChars();
-        }
-
-        /// <summary>
         /// Add string to table with options
         /// </summary>
         /// <param name="tablename">file/table name</param>
@@ -372,8 +322,15 @@ namespace TranslationHelper.Formats
                 RowNumber++;
             }
 
-            ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Add(RowData);
-            ProjectData.THFilesElementsDatasetInfo.Tables[tablename].Rows.Add(RowInfo);
+            try
+            {
+                TableData.Rows.Add(RowData);
+                TableInfo.Rows.Add(RowInfo);
+            }
+            catch (Exception ex)
+            {
+
+            }
 
             return true;
         }
@@ -390,21 +347,23 @@ namespace TranslationHelper.Formats
                 throw new NotImplementedException("Dictionary not implemented");
                 //return ProjectData.THFilesElementsDataset.Tables[tablename].FillWithDictionary(ProjectData.THFilesElementsDictionary);
             }
-            else if (ProjectData.THFilesElementsDataset.Tables[tablename].Rows.Count > 0)
+            else if (TableData.Rows.Count > 0)
             {
+                ProjectData.AddTableData(TableData);
+                ProjectData.AddTableInfo(TableInfo);
                 return true;
             }
             else
             {
-                if (ProjectData.THFilesElementsDataset.Tables.Contains(tablename))
-                {
-                    ProjectData.THFilesElementsDataset.Tables.Remove(tablename); // remove table if was no items added
-                }
+                //if (ProjectData.THFilesElementsDataset.Tables.Contains(tablename))
+                //{
+                    //ProjectData.THFilesElementsDataset.Tables.Remove(tablename); // remove table if was no items added
+                //}
 
-                if (ProjectData.THFilesElementsDatasetInfo.Tables.Contains(tablename))
-                {
-                    ProjectData.THFilesElementsDatasetInfo.Tables.Remove(tablename); // remove table if was no items added
-                }
+                //if (ProjectData.THFilesElementsDatasetInfo.Tables.Contains(tablename))
+                //{
+                    //ProjectData.THFilesElementsDatasetInfo.Tables.Remove(tablename); // remove table if was no items added
+                //}
 
                 return false;
             }
@@ -415,6 +374,120 @@ namespace TranslationHelper.Formats
         /// also split multiline values and add all of their lines in Dictionary
         /// </summary>
         /// <param name="TableName"></param>
+
+        /// <summary>
+        /// original string modification before add it with AddRowData.
+        /// default will be returned same string
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        protected virtual string AddRowDataPreAddOriginalStringMod(string str)
+        {
+            return str;
+        }
+
+        /// <summary>
+        /// Pre open file actions
+        /// </summary>
+        protected virtual bool FilePreOpenActions()
+        {
+            if (string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(FilePath) != Ext()) // extension must be same as set, if set
+            {
+                return false;
+            }
+
+            if (ProjectData.SaveFileMode && !ProjectData.THFilesList.Items.Contains(TableName()))
+            {
+                return false;
+            }
+
+            if (ProjectData.OpenFileMode)
+            {
+                AddTables();
+            }
+
+            if (ProjectData.SaveFileMode)
+            {
+                SplitTableCellValuesAndTheirLinesToDictionary(TableName(), false, false);
+            }
+
+            PreOpenExtraActions();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Pre open file extra actions
+        /// </summary>
+        protected virtual void PreOpenExtraActions()
+        {
+        }
+
+        /// <summary>
+        /// Base Parse File function
+        /// </summary>
+        /// <param name="IsOpen"></param>
+        /// <returns></returns>
+        protected bool ParseFile()
+        {
+            if (!FilePreOpenActions())
+            {
+                return false;
+            }
+
+            FileOpen();
+
+            return FilePostOpen();
+        }
+
+        protected enum KeywordActionAfter
+        {
+            Break = -1,
+            Continue = 0,
+            ReadToEnd = 1
+        }
+
+        /// <summary>
+        /// Open file actions
+        /// </summary>
+        protected virtual void FileOpen()
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool FilePostOpen()
+        {
+            if (ProjectData.OpenFileMode)
+            {
+                return CheckTablesContent(TableName());
+            }
+            else
+            {
+                return WriteFileData();
+            }
+        }
+
+        protected virtual bool WriteFileData(string filePath = "")
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Check string if it is valid for add to work table.
+        /// Usually it is not empty string. For japanese language it is also string contain most of japanese chars
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal virtual bool IsValidString(string inputString)
+        {
+            //preclean string
+            inputString = ProjectData.CurrentProject.CleanStringForCheck(inputString);
+
+            return !string.IsNullOrWhiteSpace(inputString) && !inputString.ForJPLangHaveMostOfRomajiOtherChars();
+        }
         internal void SplitTableCellValuesToDictionaryLines(string TableName)
         {
             if (!Properties.Settings.Default.DontLoadDuplicates || !ProjectData.SaveFileMode || !ProjectData.THFilesElementsDataset.Tables.Contains(TableName))

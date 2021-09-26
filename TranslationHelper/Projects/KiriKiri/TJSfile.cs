@@ -27,7 +27,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Open()
         {
-            var format = new TJS
+            var format = new TJSOld
             {
                 FilePath = ProjectData.FilePath
             };
@@ -36,7 +36,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Save()
         {
-            var format = new TJS
+            var format = new TJSOld
             {
                 FilePath = ProjectData.FilePath
             };
