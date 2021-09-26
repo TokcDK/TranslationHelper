@@ -12,27 +12,36 @@ namespace TranslationHelper.Formats
     {
         protected FormatBase()
         {
-            if (ProjectData.CurrentProject != null)
+            BaseInit();
+        }
+
+        private void BaseInit()
+        {
+            if (ProjectData.CurrentProject == null)
             {
-                ProjectData.CurrentProject.CurrentFormat = this;
+                return;
+            }
 
-                if (Properties.Settings.Default.DontLoadDuplicates)
+            ProjectData.CurrentProject.CurrentFormat = this; // set format
+
+            // DontLoadDuplicates options
+            if (!Properties.Settings.Default.DontLoadDuplicates)
+            {
+                return;
+            }
+
+            if (ProjectData.SaveFileMode)
+            {
+                if (ProjectData.CurrentProject.TablesLinesDict == null)
                 {
-                    if (ProjectData.SaveFileMode)
-                    {
-                        if (ProjectData.CurrentProject.TablesLinesDict == null)
-                        {
-                            ProjectData.CurrentProject.TablesLinesDict = new Dictionary<string, string>();
-                        }
-                    }
-                    else
-                    {
-                        if (ProjectData.CurrentProject.Hashes == null)
-                        {
-                            ProjectData.CurrentProject.Hashes = new HashSet<string>();
-                        }
-                    }
-
+                    ProjectData.CurrentProject.TablesLinesDict = new Dictionary<string, string>();
+                }
+            }
+            else
+            {
+                if (ProjectData.CurrentProject.Hashes == null)
+                {
+                    ProjectData.CurrentProject.Hashes = new HashSet<string>();
                 }
             }
         }
@@ -40,10 +49,14 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// current file path for open
         /// </summary>
-        internal string FilePath = "";
+        internal string FilePath;
+        protected virtual string GetFilePath()
+        {
+            return FilePath;
+        }
 
         /// <summary>
-        /// chack if format can be parsed?
+        /// check if format can be parsed?
         /// </summary>
         /// <returns></returns>
         internal virtual bool Check()
@@ -94,17 +107,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         internal virtual string TableName()
         {
-            return UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(ProjectData.FilePath) : Path.GetFileName(ProjectData.FilePath);
-        }
-
-        /// <summary>
-        /// file destination for write
-        /// usually it is same path as open but some time it can be other dir
-        /// </summary>
-        /// <returns></returns>
-        protected virtual string GetFilePath()
-        {
-            return ProjectData.FilePath;
+            return UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(FilePath) : Path.GetFileName(FilePath);
         }
 
         /// <summary>
@@ -112,7 +115,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected void AddTables()
         {
-            if (!string.IsNullOrEmpty(ProjectData.FilePath))
+            if (!string.IsNullOrEmpty(FilePath))
             {
                 FormatUtils.AddTables(TableName());
             }
@@ -123,7 +126,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual bool FilePreOpenActions()
         {
-            if (string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(ProjectData.FilePath) != Ext()) // extension must be same as set, if set
+            if (string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(FilePath) != Ext()) // extension must be same as set, if set
             {
                 return false;
             }
@@ -217,7 +220,7 @@ namespace TranslationHelper.Formats
         {
             if (ProjectData.OpenFileMode)
             {
-                return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput);
+                return AddRowData(Path.GetFileName(FilePath), RowData, RowInfo, CheckInput);
             }
             else
             {
@@ -240,7 +243,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(string RowData, string RowInfo = "", bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput);
+            return AddRowData(Path.GetFileName(FilePath), RowData, RowInfo, CheckInput);
         }
         /// <summary>
         /// Add string to table with options. In save mode will replace <paramref name="RowData"/>[0] as translation and will use <paramref name="RowData"/>[1] as default translation 
@@ -252,7 +255,7 @@ namespace TranslationHelper.Formats
         {
             if (ProjectData.OpenFileMode)
             {
-                return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput);
+                return AddRowData(Path.GetFileName(FilePath), RowData, RowInfo, CheckInput);
             }
             else
             {
@@ -276,7 +279,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(string[] RowData, string RowInfo = "", bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(ProjectData.FilePath), RowData, RowInfo, CheckInput);
+            return AddRowData(Path.GetFileName(FilePath), RowData, RowInfo, CheckInput);
         }
         /// <summary>
         /// Add string to table with options

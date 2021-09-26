@@ -95,8 +95,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         //            AddTables(ParseData.tablename);
         //        }
 
-        //        //using (var reader = new StreamReader(ProjectData.FilePath, true /*FileEncoding()*/))
-        //        using (var reader = new StreamReader(ProjectData.FilePath, FileEncoding()))
+        //        //using (var reader = new StreamReader(FilePath, true /*FileEncoding()*/))
+        //        using (var reader = new StreamReader(FilePath, FileEncoding()))
         //        {
         //            encoding = reader.CurrentEncoding;
         //            while ((ParseData.line = reader.ReadLine()) != null)

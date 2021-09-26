@@ -71,11 +71,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //{
         //    string line;
 
-        //    string tablename = Path.GetFileName(ProjectData.FilePath);
+        //    string tablename = Path.GetFileName(FilePath);
 
         //    AddTables(tablename);
 
-        //    using (StreamReader reader = new StreamReader(ProjectData.FilePath))
+        //    using (StreamReader reader = new StreamReader(FilePath))
         //    {
         //        while (!reader.EndOfStream)
         //        {
@@ -120,7 +120,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    TranslatedResult = new StringBuilder();
         //    string line;
         //    rowindex = 0;
-        //    string tablename = Path.GetFileName(ProjectData.FilePath);
+        //    string tablename = Path.GetFileName(FilePath);
         //    if (FunctionsTable.IsTableRowsAllEmpty(ProjectData.THFilesElementsDataset.Tables[tablename]))
         //    {
         //        return false;
@@ -128,7 +128,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         //    ProjectData.Main.ProgressInfo(true, T._("Writing") + ": " + "plugins.js");
 
-        //    using (StreamReader reader = new StreamReader(ProjectData.FilePath))
+        //    using (StreamReader reader = new StreamReader(FilePath))
         //    {
         //        bool isJsonNotLast = false;
         //        bool IsNotFirstLine = false;
@@ -183,7 +183,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //        }
         //    }
 
-        //    File.WriteAllText(ProjectData.FilePath, TranslatedResult.ToString().Replace("\r\n", "\n")/*js using only \n*/);
+        //    File.WriteAllText(FilePath, TranslatedResult.ToString().Replace("\r\n", "\n")/*js using only \n*/);
         //    return true;
         //}
 

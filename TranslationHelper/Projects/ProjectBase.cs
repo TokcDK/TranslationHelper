@@ -194,7 +194,8 @@ namespace TranslationHelper.Projects
 
             var ret = false;
             var existsTables = ProjectData.THFilesElementsDataset.Tables;
-            foreach (var file in Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories))
+            var filesList = Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories);
+            foreach (var file in filesList)
             {
                 if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions))//skip exclusions
                     continue;
@@ -202,6 +203,9 @@ namespace TranslationHelper.Projects
                 ProjectData.FilePath = file.FullName;
 
                 var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
+
+                format.FilePath = file.FullName;
+
                 if (file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
                 {
                     continue;
@@ -214,6 +218,8 @@ namespace TranslationHelper.Projects
                         continue;
                     }
                 }
+
+                format.FilePath = file.FullName;
 
                 ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
                 if (ProjectData.OpenFileMode ? format.Open() : format.Save())

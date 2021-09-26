@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Formats;
 using TranslationHelper.Formats.KiriKiri;
 using TranslationHelper.Main.Functions;
 
@@ -98,18 +99,22 @@ namespace TranslationHelper.Projects.KiriKiri
                     //_ = ProjectData.THFilesElementsDatasetInfo.Tables.Add(filename);
                     //_ = ProjectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
 
+                    FormatBase format = null;
                     if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
                     {
-                        ret = new SCRIPT().Open();
+                        format = new SCRIPT();
                     }
                     else if (filename.EndsWith(".csv"))
                     {
-                        ret = new CSV().Open();
+                        format = new CSV();
                     }
                     else if (filename.EndsWith(".tsv"))
                     {
-                        ret = new TSV().Open();
+                        format = new TSV();
                     }
+
+                    format.FilePath = ProjectData.FilePath;
+                    ret = format.Open();
 
                     //if (DT == null || DT.Rows.Count == 0)
                     //{

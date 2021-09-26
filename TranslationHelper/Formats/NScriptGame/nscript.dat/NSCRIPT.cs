@@ -26,9 +26,9 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         protected override void FileOpen()
         {
-            var nscripttxt = System.Text.Encoding.GetEncoding(932).GetString(File.ReadAllBytes(ProjectData.FilePath).XorUnxor());
+            var nscripttxt = System.Text.Encoding.GetEncoding(932).GetString(File.ReadAllBytes(FilePath).XorUnxor());
 
-            File.WriteAllText(ProjectData.FilePath + ".OpenTest.txt", nscripttxt, System.Text.Encoding.GetEncoding(932));
+            File.WriteAllText(FilePath + ".OpenTest.txt", nscripttxt, System.Text.Encoding.GetEncoding(932));
 
             foreach (var line in nscripttxt.SplitToLines())
             {
@@ -183,7 +183,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     var nscripttxtTranslated = ParseData.ResultForWrite.ToString();
                     if (filePath.Length == 0)
                     {
-                        filePath = ProjectData.FilePath;
+                        filePath = FilePath;
                     }
                     File.WriteAllText(filePath + ".SaveTest.txt", nscripttxtTranslated, Enc);
                     var nscriptdatTranslated = Enc.GetBytes(nscripttxtTranslated).XorUnxor();

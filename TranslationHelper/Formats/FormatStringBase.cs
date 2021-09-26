@@ -29,7 +29,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected override void FileOpen()
         {
-            using (ParseData.Reader = new StreamReader(ProjectData.FilePath, ParseStringFileEncoding()))
+            using (ParseData.Reader = new StreamReader(FilePath, ParseStringFileEncoding()))
             {
                 ParseStringFileLines();
             }
@@ -41,7 +41,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual Encoding ParseStringFileEncoding()
         {
-            return FunctionsFileFolder.GetEncoding(ProjectData.FilePath) ?? DefaultEncoding();
+            return FunctionsFileFolder.GetEncoding(FilePath) ?? DefaultEncoding();
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(ProjectData.FilePath))
+                if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(FilePath))
                 {
                     File.WriteAllText(filePath.Length > 0 ? filePath : GetFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
                     return true;

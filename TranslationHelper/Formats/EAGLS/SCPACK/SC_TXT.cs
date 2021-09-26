@@ -365,13 +365,13 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         ///// <returns></returns>
         //private bool OpenSC()
         //{
-        //    string fileName = Path.GetFileNameWithoutExtension(ProjectData.FilePath);
+        //    string fileName = Path.GetFileNameWithoutExtension(FilePath);
 
         //    try
         //    {
         //        AddTables(fileName);
         //        string lastMentionedCharacter = string.Empty;
-        //        using (StreamReader sr = new StreamReader(ProjectData.FilePath))
+        //        using (StreamReader sr = new StreamReader(FilePath))
         //        {
         //            string line;
         //            while (!sr.EndOfStream)
@@ -442,13 +442,13 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         //old
         //private bool SaveSC()
         //{
-        //    string fileName = Path.GetFileNameWithoutExtension(ProjectData.FilePath);
+        //    string fileName = Path.GetFileNameWithoutExtension(FilePath);
         //    SplitTableCellValuesAndTheirLinesToDictionary(fileName, false, false);
         //    StringBuilder Translated = new StringBuilder();
         //    bool changed = false;
         //    try
         //    {
-        //        using (StreamReader sr = new StreamReader(ProjectData.FilePath))
+        //        using (StreamReader sr = new StreamReader(FilePath))
         //        {
         //            string line;
         //            while (!sr.EndOfStream)
@@ -521,7 +521,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
 
         //    if (changed)
         //    {
-        //        File.WriteAllText(ProjectData.FilePath, Translated.ToString());
+        //        File.WriteAllText(FilePath, Translated.ToString());
         //        return true;
         //    }
         //    else

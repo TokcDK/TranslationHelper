@@ -27,12 +27,20 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Open()
         {
-            return new TJS().Open();
+            var format = new TJS
+            {
+                FilePath = ProjectData.FilePath
+            };
+            return format.Open();
         }
 
         internal override bool Save()
         {
-            return new TJS().Save();
+            var format = new TJS
+            {
+                FilePath = ProjectData.FilePath
+            };
+            return format.Save();
         }
     }
 }

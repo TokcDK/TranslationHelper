@@ -32,13 +32,13 @@ namespace TranslationHelper.Formats.KiriKiri
         /// <returns></returns>
         internal virtual Encoding FileEncoding()
         {
-            //using (var fs = new FileStream(ProjectData.FilePath, FileMode.Open, FileAccess.Read))
+            //using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
             //    return FunctionsFileFolder.GetEncoding(fs);
-            return FunctionsFileFolder.GetEncoding(ProjectData.FilePath);
-            //return FunctionsFileFolder.GetEncoding(ProjectData.FilePath);
-            //if (Enc == null && !string.IsNullOrEmpty(ProjectData.FilePath))
+            return FunctionsFileFolder.GetEncoding(FilePath);
+            //return FunctionsFileFolder.GetEncoding(FilePath);
+            //if (Enc == null && !string.IsNullOrEmpty(FilePath))
             //{
-            //    Enc = FunctionsFileFolder.GetEncoding(ProjectData.FilePath);
+            //    Enc = FunctionsFileFolder.GetEncoding(FilePath);
             //}
             //else
             //{
@@ -59,7 +59,7 @@ namespace TranslationHelper.Formats.KiriKiri
         protected override string GetFilePath()
         {
             //write translated files to patch dir
-            return Path.Combine(ProjectData.ProjectWorkDir, PatchDirName, Path.GetFileName(ProjectData.FilePath));
+            return Path.Combine(ProjectData.ProjectWorkDir, PatchDirName, Path.GetFileName(FilePath));
         }
         protected override Encoding DefaultEncoding()
         {

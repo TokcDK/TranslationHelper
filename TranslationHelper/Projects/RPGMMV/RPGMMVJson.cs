@@ -81,8 +81,12 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 ProjectData.FilePath = FilePath;
                 //ret = ReadJson(Jsonname, sPath);
+                var format = new JSON
+                {
+                    FilePath = ProjectData.FilePath
+                };
 
-                ret = Write ? new JSON().Save() : new JSON().Open();
+                ret = Write ? format.Save() : format.Open();
 
                 return ret;
             }

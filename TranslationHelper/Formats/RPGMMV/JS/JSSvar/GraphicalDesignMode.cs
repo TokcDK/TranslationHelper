@@ -23,14 +23,14 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
         {
             string line;
 
-            string tablename = Path.GetFileName(ProjectData.FilePath);
+            string tablename = Path.GetFileName(FilePath);
 
             AddTables(tablename);
 
             bool StartReadingSvar = false;
             bool IsComment = false;
             StringBuilder Svar = new StringBuilder();
-            using (StreamReader reader = new StreamReader(ProjectData.FilePath))
+            using (StreamReader reader = new StreamReader(FilePath))
             {
                 while (!reader.EndOfStream)
                 {
@@ -116,12 +116,12 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
             string line;
             //rowindex = 0;
 
-            string tablename = Path.GetFileName(ProjectData.FilePath);
+            string tablename = Path.GetFileName(FilePath);
 
             bool StartReadingSvar = false;
             bool IsComment = false;
             //StringBuilder Svar = new StringBuilder();
-            using (StreamReader reader = new StreamReader(ProjectData.FilePath))
+            using (StreamReader reader = new StreamReader(FilePath))
             {
                 while (!reader.EndOfStream)
                 {
@@ -180,7 +180,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
 
             try
             {
-                File.WriteAllText(ProjectData.FilePath, TranslatedResult.ToString());
+                File.WriteAllText(FilePath, TranslatedResult.ToString());
             }
             catch
             {

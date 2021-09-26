@@ -97,13 +97,18 @@ namespace TranslationHelper.Projects.RPGMMV
                 ProjectData.Main.ProgressInfo(true, ParseFileMessage + "gamefont.css");
                 ProjectData.FilePath = Path.Combine(ProjectData.SelectedDir, "www", "fonts", "gamefont.css");
 
+                FormatBase format = new GAMEFONTCSS
+                {
+                    FilePath = ProjectData.FilePath
+                };
+
                 try
                 {
-                    if (ProjectData.SaveFileMode && new GAMEFONTCSS().Save())
+                    if (ProjectData.SaveFileMode && format.Save())
                     {
                         isAnyFileCompleted = true;
                     }
-                    else if (new GAMEFONTCSS().Open())
+                    else if (format.Open())
                     {
                         isAnyFileCompleted = true;
                     }
@@ -130,7 +135,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
                         hardcodedJS.Add(js.JSName);//add js to exclude from parsing of other js
 
-                        var jsFormat = (FormatStringBase)Activator.CreateInstance(jsType); // create format instance for open or save
+                        FormatBase jsFormat = (FormatBase)Activator.CreateInstance(jsType); // create format instance for open or save
+                        jsFormat.FilePath = ProjectData.FilePath;
 
                         ProjectData.Main.ProgressInfo(true, ParseFileMessage + js.JSName);
 
@@ -175,13 +181,18 @@ namespace TranslationHelper.Projects.RPGMMV
                         continue;
                     }
 
+                    format = new ZZZOtherJS
+                    {
+                        FilePath = ProjectData.FilePath
+                    };
+
                     try
                     {
-                        if (ProjectData.SaveFileMode && new ZZZOtherJS().Save())
+                        if (ProjectData.SaveFileMode && format.Save())
                         {
                             isAnyFileCompleted = true;
                         }
-                        else if (new ZZZOtherJS().Open())
+                        else if (format.Open())
                         {
                             isAnyFileCompleted = true;
                         }
@@ -271,7 +282,12 @@ namespace TranslationHelper.Projects.RPGMMV
                 ProjectData.FilePath = FilePath;
                 //ret = ReadJson(Jsonname, sPath);
 
-                ret = ProjectData.SaveFileMode ? new JSON().Save() : new JSON().Open();
+                var format = new JSON
+                {
+                    FilePath = ProjectData.FilePath
+                };
+
+                ret = ProjectData.SaveFileMode ? format.Save() : format.Open();
 
                 return ret;
             }

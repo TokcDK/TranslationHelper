@@ -15,9 +15,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             {
                 Format = ProjectData.CurrentProject.CurrentFormat;
 
-                if (!string.IsNullOrWhiteSpace(ProjectData.FilePath))
+                if (!string.IsNullOrWhiteSpace(Format.FilePath))
                 {
-                    JsonName = Format.UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(ProjectData.FilePath) : Path.GetFileName(ProjectData.FilePath);
+                    JsonName = Format.UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(Format.FilePath) : Path.GetFileName(Format.FilePath);
                 }
             }
 
@@ -81,13 +81,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         }
 
         /// <summary>
-        /// Parse selected <paramref name="json"/> using functions from the <paramref name="format"/> then write changes in default ProjectData.FilePath
+        /// Parse selected <paramref name="json"/> using functions from the <paramref name="format"/> then write changes in default FilePath
         /// </summary>
         /// <param name="json"></param>
         internal bool ParseUsingFormat(FormatStringBase format)
         {
             Format = format;
-            return Load(new FileInfo(ProjectData.FilePath));
+            return Load(new FileInfo(Format.FilePath));
         }
 
         /// <summary>

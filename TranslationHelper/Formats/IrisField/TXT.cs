@@ -201,12 +201,12 @@ namespace TranslationHelper.Formats.IrisField
 
         //bool openTxt()
         //{
-        //    if (ProjectData.FilePath.Length == 0)
+        //    if (FilePath.Length == 0)
         //    {
         //        return false;
         //    }
 
-        //    string fileName = Path.GetFileNameWithoutExtension(ProjectData.FilePath);
+        //    string fileName = Path.GetFileNameWithoutExtension(FilePath);
 
         //    ProjectData.THFilesElementsDataset.Tables.Add(fileName).Columns.Add(THSettings.OriginalColumnName());
         //    ProjectData.THFilesElementsDatasetInfo.Tables.Add(fileName).Columns.Add(THSettings.OriginalColumnName());
@@ -317,11 +317,11 @@ namespace TranslationHelper.Formats.IrisField
 
         //private string GetOriginalWhenExists()
         //{
-        //    if (File.Exists(ProjectData.FilePath + ".orig"))
+        //    if (File.Exists(FilePath + ".orig"))
         //    {
-        //        return ProjectData.FilePath + ".orig";
+        //        return FilePath + ".orig";
         //    }
-        //    return ProjectData.FilePath;
+        //    return FilePath;
         //}
 
         private bool IsMessageEnd()
@@ -337,12 +337,12 @@ namespace TranslationHelper.Formats.IrisField
 
         //private bool WriteTxt()
         //{
-        //    if (ProjectData.FilePath.Length == 0)
+        //    if (FilePath.Length == 0)
         //    {
         //        return false;
         //    }
 
-        //    string fileName = Path.GetFileNameWithoutExtension(ProjectData.FilePath);
+        //    string fileName = Path.GetFileNameWithoutExtension(FilePath);
 
         //    StringBuilder sbWrite = new StringBuilder();
 
@@ -535,14 +535,14 @@ namespace TranslationHelper.Formats.IrisField
         //        }
         //    }
 
-        //    if (WriteIt && sbWrite.ToString().Length > 0 && !FunctionsFileFolder.FileInUse(ProjectData.FilePath))
+        //    if (WriteIt && sbWrite.ToString().Length > 0 && !FunctionsFileFolder.FileInUse(FilePath))
         //    {
-        //        if (!File.Exists(ProjectData.FilePath + ".orig"))
+        //        if (!File.Exists(FilePath + ".orig"))
         //        {
-        //            File.Move(ProjectData.FilePath, ProjectData.FilePath + ".orig");
+        //            File.Move(FilePath, FilePath + ".orig");
         //        }
 
-        //        File.WriteAllText(ProjectData.FilePath, sbWrite.ToString(), Encoding.GetEncoding(932));
+        //        File.WriteAllText(FilePath, sbWrite.ToString(), Encoding.GetEncoding(932));
         //        return true;
         //    }
         //    else

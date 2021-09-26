@@ -290,14 +290,14 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //{
         //    string line;
 
-        //    string tablename = Path.GetFileName(ProjectData.FilePath);
+        //    string tablename = Path.GetFileName(FilePath);
 
         //    AddTables(tablename);
 
         //    bool StartReadingSvar = false;
         //    bool IsComment = false;
         //    StringBuilder Svar = new StringBuilder();
-        //    using (StreamReader reader = new StreamReader(ProjectData.FilePath))
+        //    using (StreamReader reader = new StreamReader(FilePath))
         //    {
         //        while (!reader.EndOfStream)
         //        {
@@ -364,7 +364,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    string line;
         //    rowindex = 0;
 
-        //    string tablename = Path.GetFileName(ProjectData.FilePath);
+        //    string tablename = Path.GetFileName(FilePath);
         //    if (FunctionsTable.IsTableRowsAllEmpty(ProjectData.THFilesElementsDataset.Tables[tablename]))
         //    {
         //        return false;
@@ -373,7 +373,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    bool StartReadingSvar = false;
         //    bool IsComment = false;
         //    StringBuilder Svar = new StringBuilder();
-        //    using (StreamReader reader = new StreamReader(ProjectData.FilePath))
+        //    using (StreamReader reader = new StreamReader(FilePath))
         //    {
         //        while (!reader.EndOfStream)
         //        {
@@ -450,7 +450,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         //    try
         //    {
-        //        File.WriteAllText(ProjectData.FilePath, TranslatedResult.ToString());
+        //        File.WriteAllText(FilePath, TranslatedResult.ToString());
         //    }
         //    catch
         //    {
@@ -475,14 +475,14 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         ///// <returns></returns>
         //protected bool ParseJSSingleLinesWithRegex(string regexPattern, string lineWithTheString = "", bool checkIfContains = true, string regexGroup = "$1", string stringInfo = "")
         //{
-        //    if (ProjectData.FilePath.Length == 0 || !File.Exists(ProjectData.FilePath))
+        //    if (FilePath.Length == 0 || !File.Exists(FilePath))
         //    {
         //        return false;
         //    }
 
         //    string line;
 
-        //    string tablename = Path.GetFileName(ProjectData.FilePath);
+        //    string tablename = Path.GetFileName(FilePath);
 
         //    bool UseDict = false;
         //    if (ProjectData.SaveFileMode)
@@ -504,7 +504,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    try
         //    {
         //        bool SearchText = lineWithTheString.Length > 0;
-        //        using (StreamReader reader = new StreamReader(ProjectData.FilePath))
+        //        using (StreamReader reader = new StreamReader(FilePath))
         //        {
         //            while (!reader.EndOfStream)
         //            {
@@ -588,7 +588,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    {
         //        try
         //        {
-        //            File.WriteAllText(ProjectData.FilePath, ResultForWrite.ToString());
+        //            File.WriteAllText(FilePath, ResultForWrite.ToString());
         //        }
         //        catch
         //        {

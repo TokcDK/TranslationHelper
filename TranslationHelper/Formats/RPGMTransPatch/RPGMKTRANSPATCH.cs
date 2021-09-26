@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMTrans;
@@ -17,12 +13,16 @@ namespace TranslationHelper.Formats.RPGMTransPatch
         {
         }
 
-        internal override bool Open() 
+        internal override bool Open()
         {
-            return new TranslationHelper.Formats.RPGMTrans.TXT().Open(); 
+            FormatBase format = new TranslationHelper.Formats.RPGMTrans.TXT
+            {
+                FilePath = FilePath
+            };
+            return format.Open();
         }
 
-        internal override bool Save() 
+        internal override bool Save()
         {
             return WritePatchV3();
         }
@@ -36,7 +36,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
             };
 
             var TablesCount = ProjectData.THFilesElementsDataset.Tables.Count;
-            for (int t=0; t < TablesCount; t++)
+            for (int t = 0; t < TablesCount; t++)
             {
                 try
                 {

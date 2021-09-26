@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         internal override bool Open()
         {
-            return ReadJson(Path.GetFileNameWithoutExtension(ProjectData.FilePath), ProjectData.FilePath);
+            return ReadJson(Path.GetFileNameWithoutExtension(FilePath), FilePath);
         }
 
         internal override string Ext()
@@ -32,7 +32,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         internal override bool Save()
         {
-            return WriteJson(Path.GetFileNameWithoutExtension(ProjectData.FilePath), ProjectData.FilePath);
+            return WriteJson(Path.GetFileNameWithoutExtension(FilePath), FilePath);
         }
 
         internal override bool IsValidString(string inputString)

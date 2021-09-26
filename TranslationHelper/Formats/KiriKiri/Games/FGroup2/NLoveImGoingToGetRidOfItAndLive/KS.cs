@@ -33,11 +33,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
         //{
         //    string line;
 
-        //    string tablename = Path.GetFileName(ProjectData.FilePath);
+        //    string tablename = Path.GetFileName(FilePath);
 
         //    AddTables(tablename);
 
-        //    using (StreamReader reader = new StreamReader(ProjectData.FilePath))
+        //    using (StreamReader reader = new StreamReader(FilePath))
         //    {
         //        bool messageParse = false;
         //        bool statusInfoParse = false;
@@ -276,9 +276,9 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
         //    {
         //        string line;
 
-        //        string tablename = Path.GetFileName(ProjectData.FilePath);
+        //        string tablename = Path.GetFileName(FilePath);
 
-        //        using (StreamReader reader = new StreamReader(ProjectData.FilePath))
+        //        using (StreamReader reader = new StreamReader(FilePath))
         //        {
         //            bool messageParse = false;
         //            bool statusInfoParse = false;

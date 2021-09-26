@@ -14,7 +14,7 @@ namespace TranslationHelper.Formats.IrisField
 
         //internal override bool Check()
         //{
-        //    var crc = ProjectData.FilePath.GetCrc32();
+        //    var crc = FilePath.GetCrc32();
         //    return crc=="23424234234234";
         //}
 
@@ -390,7 +390,7 @@ namespace TranslationHelper.Formats.IrisField
 
         //private bool OpenSaveEXE()
         //{
-        //    if (string.IsNullOrWhiteSpace(ProjectData.FilePath) || !File.Exists(ProjectData.FilePath) || Path.GetExtension(ProjectData.FilePath) != ".exe")
+        //    if (string.IsNullOrWhiteSpace(FilePath) || !File.Exists(FilePath) || Path.GetExtension(FilePath) != ".exe")
         //    {
         //        return false;
         //    }
@@ -736,7 +736,7 @@ namespace TranslationHelper.Formats.IrisField
         //    {
         //        if (filetranslated)
         //        {
-        //            File.WriteAllBytes(ProjectData.FilePath, NewEXEBytesForWrite.ToArray());
+        //            File.WriteAllBytes(FilePath, NewEXEBytesForWrite.ToArray());
         //        }
 
         //        return true;

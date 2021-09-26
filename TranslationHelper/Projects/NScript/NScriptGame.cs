@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats.NScriptGame.nscript.dat;
 
 namespace TranslationHelper.Projects.NScript
 {
@@ -33,6 +34,11 @@ namespace TranslationHelper.Projects.NScript
             ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
             ProjectData.FilePath = Path.Combine(ProjectData.SelectedGameDir, "nscript.dat");
             bool ret;
+            var format = new NSCRIPT
+            {
+                FilePath = ProjectData.FilePath
+            };
+
             if (ProjectData.OpenFileMode)
             {
                 if (!File.Exists(ProjectData.FilePath + ".orig"))//backup for manual restore
@@ -40,11 +46,11 @@ namespace TranslationHelper.Projects.NScript
                     File.Copy(ProjectData.FilePath, ProjectData.FilePath + ".orig");
                 }
 
-                ret = new Formats.NScriptGame.nscript.dat.NSCRIPT().Open();
+                ret = format.Open();
             }
             else
             {
-                ret = new Formats.NScriptGame.nscript.dat.NSCRIPT().Save();
+                ret = format.Save();
             }
 
             ProjectData.Main.ProgressInfo(false);

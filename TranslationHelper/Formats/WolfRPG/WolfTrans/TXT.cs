@@ -37,7 +37,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
             {
                 if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0)
                 {
-                    File.WriteAllText(filePath.Length > 0 ? filePath : ProjectData.FilePath, ParseData.ResultForWrite.ToString().Replace(Properties.Settings.Default.NewLine, "\n"), FunctionsFileFolder.GetEncoding(ProjectData.FilePath));
+                    File.WriteAllText(filePath.Length > 0 ? filePath : FilePath, ParseData.ResultForWrite.ToString().Replace(Properties.Settings.Default.NewLine, "\n"), FunctionsFileFolder.GetEncoding(FilePath));
                     return true;
                 }
             }
