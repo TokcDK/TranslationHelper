@@ -150,7 +150,7 @@ namespace TranslationHelper.Formats.IrisField
                     int otherbytescount = 0;
 
                     //>>check if string is valid and add row or check for translation if found
-                    if (maxbytes > 20)//skip all candidates spam
+                    if (maxbytes > 20 || str.Length > 2)//skip all candidates spam
                     {
                         if (maxbytes > 256 && maxbytes < 300)
                         {
