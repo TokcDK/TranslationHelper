@@ -38,6 +38,11 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
+        /// current file path for open
+        /// </summary>
+        internal string FilePath = "";
+
+        /// <summary>
         /// chack if format can be parsed?
         /// </summary>
         /// <returns></returns>
