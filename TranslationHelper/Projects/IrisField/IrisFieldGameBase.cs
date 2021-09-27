@@ -54,10 +54,6 @@ namespace TranslationHelper.Projects.IrisField
             return ProjectData.THFilesElementsDataset.Tables.Count > 0;
         }
 
-        /// <summary>
-        /// IsOpen=true = Open, else Save
-        /// </summary>
-        /// <param name="IsOpen"></param>
         private bool OpenFilesSerial()
         {
             var ret = false;

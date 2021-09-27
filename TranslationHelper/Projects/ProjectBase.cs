@@ -201,7 +201,7 @@ namespace TranslationHelper.Projects
                 if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions))//skip exclusions
                     return;
 
-                ProjectData.FilePath = file.FullName;
+                //ProjectData.FilePath = file.FullName;
 
                 var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
 
