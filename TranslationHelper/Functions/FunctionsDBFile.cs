@@ -7,12 +7,12 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.DBSaveFormats;
 using TranslationHelper.Projects.RPGMMV;
@@ -21,13 +21,13 @@ namespace TranslationHelper.Main.Functions
 {
     static class FunctionsDBFile
     {
-        private const string baseNamePattern = @"^(.+)_[0-9]{2,4}\.[0-9]{2}\.[0-9]{2,4} [0-9]{2}-[0-9]{2}-[0-9]{2}$";
+        private const string _baseNamePattern = @"^(.+)_[0-9]{2,4}\.[0-9]{2}\.[0-9]{2,4} [0-9]{2}-[0-9]{2}-[0-9]{2}$";
 
-        public static void WriteTranslationCacheIfValid(DataSet THTranslationCache, string tHTranslationCachePath)
+        public static void WriteTranslationCacheIfValid(DataSet translationCacheDataSet, string translationCachePath)
         {
-            if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed && THTranslationCache.Tables[0].Rows.Count > 0)
+            if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed && translationCacheDataSet.Tables[0].Rows.Count > 0)
             {
-                FunctionsDBFile.WriteDBFile(THTranslationCache, tHTranslationCachePath);
+                FunctionsDBFile.WriteDBFile(translationCacheDataSet, translationCachePath);
                 //THTranslationCache.Reset();
             }
         }
@@ -93,7 +93,7 @@ namespace TranslationHelper.Main.Functions
             ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, read: false, useOriginaldbFilePath: useOriginaldbFilePath);
         }
 
-        private static readonly ReaderWriterLockSlim WriteXmlLocker = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim _writeXmlLocker = new ReaderWriterLockSlim();
         /// <summary>
         /// read or write db file
         /// </summary>
@@ -116,14 +116,14 @@ namespace TranslationHelper.Main.Functions
                 }
                 else
                 {
-                    WriteXmlLocker.EnterWriteLock();
+                    _writeXmlLocker.EnterWriteLock();
                     try
                     {
                         dataSet.WriteXml(s);
                     }
                     finally
                     {
-                        WriteXmlLocker.ExitWriteLock();
+                        _writeXmlLocker.ExitWriteLock();
                     }
                 }
 
@@ -182,7 +182,7 @@ namespace TranslationHelper.Main.Functions
             return ret;
         }
 
-        internal static string GetDBFileName(bool IsSaveAs = false)
+        internal static string GetDBFileName(bool saveAs = false)
         {
             string fName = Path.GetFileName(ProjectData.SelectedDir);
             if (ProjectData.CurrentProject != null && ProjectData.CurrentProject.GetProjectDBFileName().Length > 0)
@@ -212,7 +212,7 @@ namespace TranslationHelper.Main.Functions
             //{
 
             //}
-            return fName + (IsSaveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture) : string.Empty);
+            return fName + (saveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture) : string.Empty);
         }
 
         public static void WriteDictToXMLDB(Dictionary<string, string> db, string xmlPath)
@@ -338,11 +338,11 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        private static readonly ReaderWriterLockSlim WriteXElementToXMLFileLocker = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim _writeXElementToXMLFileLocker = new ReaderWriterLockSlim();
 
         internal static void WriteXElementToXMLFile(XElement el, string xmlPath)
         {
-            WriteXElementToXMLFileLocker.EnterWriteLock();
+            _writeXElementToXMLFileLocker.EnterWriteLock();
 
             try
             {
@@ -379,20 +379,21 @@ namespace TranslationHelper.Main.Functions
             }
             finally
             {
-                WriteXElementToXMLFileLocker.ExitWriteLock();
+                _writeXElementToXMLFileLocker.ExitWriteLock();
             }
         }
 
         /// <summary>
         /// Set strng,string dataset to dictionary
         /// </summary>
-        /// <param name="dBDataSet"></param>
+        /// <param name="dbDataSet"></param>
         /// <param name="inputDB"></param>
         /// <param name="dontAddEmptyTranslation"></param>
         /// <param name="dontAddEqualTranslation"></param>
         /// <returns></returns>
-        internal static Dictionary<string, string> ToDictionary(this DataSet dBDataSet, Dictionary<string, string> inputDB = null, bool dontAddEmptyTranslation = true, bool dontAddEqualTranslation = false)
+        internal static Dictionary<string, string> ToDictionary(this DataSet dbDataSet, Dictionary<string, string> inputDB = null, bool dontAddEmptyTranslation = true, bool dontAddEqualTranslation = false, object _dbDataSetToDictionaryAddLocker = null)
         {
+            bool threaded = _dbDataSetToDictionaryAddLocker != null;
             Dictionary<string, string> db;
             if (inputDB == null)
             {
@@ -403,31 +404,34 @@ namespace TranslationHelper.Main.Functions
                 db = inputDB;
             }
 
-            int TablesCount = dBDataSet.Tables.Count;
+            int tablesCount = dbDataSet.Tables.Count;
 
-            for (int t = 0; t < TablesCount; t++)
+            for (int t = 0; t < tablesCount; t++)
             {
                 try
                 {
-                    var table = dBDataSet.Tables[t];
+                    var table = dbDataSet.Tables[t];
                     if (!table.Columns.Contains(THSettings.OriginalColumnName()) || !table.Columns.Contains(THSettings.TranslationColumnName()))
                     {
                         continue;
                     }
 
-                    int RowsCount = table.Rows.Count;
+                    int rowsCount = table.Rows.Count;
 
-                    for (int r = 0; r < RowsCount; r++)
+                    for (int r = 0; r < rowsCount; r++)
                     {
                         var row = table.Rows[r];
-                        if (!db.ContainsKey(row[THSettings.OriginalColumnName()] as string))
-                        {
-                            if ((dontAddEmptyTranslation && (row[THSettings.TranslationColumnName()] == null || string.IsNullOrEmpty(row[THSettings.TranslationColumnName()] as string))) || (dontAddEqualTranslation && row[THSettings.TranslationColumnName()] as string == row[THSettings.OriginalColumnName()] as string))
-                            {
-                                continue;
-                            }
 
-                            db.Add(row[THSettings.OriginalColumnName()] as string, row[THSettings.TranslationColumnName()] + string.Empty);
+                        if (threaded)
+                        {
+                            lock (_dbDataSetToDictionaryAddLocker)
+                            {
+                                AddRecordToDictionary(db, row, dontAddEmptyTranslation, dontAddEqualTranslation);
+                            }
+                        }
+                        else
+                        {
+                            AddRecordToDictionary(db, row, dontAddEmptyTranslation, dontAddEqualTranslation);
                         }
                     }
                 }
@@ -439,13 +443,26 @@ namespace TranslationHelper.Main.Functions
             return db;
         }
 
+        private static void AddRecordToDictionary(Dictionary<string, string> db, DataRow row, bool dontAddEmptyTranslation, bool dontAddEqualTranslation)
+        {
+            if (!db.ContainsKey(row[THSettings.OriginalColumnName()] as string))
+            {
+                if ((dontAddEmptyTranslation && (row[THSettings.TranslationColumnName()] == null || string.IsNullOrEmpty(row[THSettings.TranslationColumnName()] as string))) || (dontAddEqualTranslation && row[THSettings.TranslationColumnName()] as string == row[THSettings.OriginalColumnName()] as string))
+                {
+                    return;
+                }
+
+                db.Add(row[THSettings.OriginalColumnName()] as string, row[THSettings.TranslationColumnName()] + string.Empty);
+            }
+        }
+
         /// <summary>
         /// Set -string,string- dataset to dictionary of coordinates
         /// </summary>
-        /// <param name="dBDataSet"></param>
+        /// <param name="dbDataSet"></param>
         /// <param name="inputDB"></param>
         /// <returns></returns>
-        internal static Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> ToDictionary2(this DataSet dBDataSet, Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> inputDB = null)
+        internal static Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> ToDictionary2(this DataSet dbDataSet, Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> inputDB = null)
         {
             Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> db;
             if (inputDB == null)
@@ -457,13 +474,13 @@ namespace TranslationHelper.Main.Functions
                 db = inputDB;
             }
 
-            int tablesCount = dBDataSet.Tables.Count;
+            int tablesCount = dbDataSet.Tables.Count;
 
             for (int t = 0; t < tablesCount; t++)
             {
                 try
                 {
-                    var table = dBDataSet.Tables[t];
+                    var table = dbDataSet.Tables[t];
                     if (!table.Columns.Contains(THSettings.OriginalColumnName()) || !table.Columns.Contains(THSettings.TranslationColumnName()))
                     {
                         continue;
@@ -520,19 +537,19 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        internal static Dictionary<string, string> GetTableRowsDataToDictionary(this DataSet dBDataSet)
+        internal static Dictionary<string, string> GetTableRowsDataToDictionary(this DataSet dbDataSet)
         {
             Dictionary<string, string> db = new Dictionary<string, string>();
 
-            int TablesCount = dBDataSet.Tables.Count;
+            int tablesCount = dbDataSet.Tables.Count;
 
-            for (int t = 0; t < TablesCount; t++)
+            for (int t = 0; t < tablesCount; t++)
             {
-                int RowsCount = dBDataSet.Tables[t].Rows.Count;
+                int rowsCount = dbDataSet.Tables[t].Rows.Count;
 
-                for (int r = 0; r < RowsCount; r++)
+                for (int r = 0; r < rowsCount; r++)
                 {
-                    var row = dBDataSet.Tables[t].Rows[r];
+                    var row = dbDataSet.Tables[t].Rows[r];
                     if (db.ContainsKey(row[0] as string))
                     {
                         if (row[1] == null || string.IsNullOrEmpty(row[1] + string.Empty))
@@ -559,28 +576,29 @@ namespace TranslationHelper.Main.Functions
 
             var newestFilesList = GetNewestFIlesList(THSettings.DBDirPath());
 
-            foreach (var DBfile in newestFilesList)
+            object _dbDataSetToDictionaryAddLocker = new object();
+            Parallel.ForEach(newestFilesList, dbFile =>
             {
                 try
                 {
-                    using (var DBDataSet = new DataSet())
+                    using (var dbDataSet = new DataSet())
                     {
-                        ProjectData.Main.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(DBfile.Value.Name));
+                        ProjectData.Main.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(dbFile.Value.Name));
 
-                        ReadDBFile(dataSet: DBDataSet, dbFilePath: DBfile.Value.FullName, useOriginaldbFilePath: true);
-                        DBDataSet.ToDictionary(ProjectData.AllDBmerged, true, true);
+                        ReadDBFile(dataSet: dbDataSet, dbFilePath: dbFile.Value.FullName, useOriginaldbFilePath: true);
+                        dbDataSet.ToDictionary(inputDB: ProjectData.AllDBmerged, dontAddEmptyTranslation: true, dontAddEqualTranslation: true, _dbDataSetToDictionaryAddLocker);
                     }
                 }
                 catch
                 {
                 }
-            }
+            });
         }
 
-        private static List<KeyValuePair<string, FileInfo>> GetNewestFIlesList(string DBDir)
+        private static List<KeyValuePair<string, FileInfo>> GetNewestFIlesList(string dbDir)
         {
             var info = new Dictionary<string, FileInfo>();
-            foreach (var DBFile in Directory.EnumerateFiles(DBDir, "*", SearchOption.AllDirectories))
+            foreach (var DBFile in Directory.EnumerateFiles(dbDir, "*", SearchOption.AllDirectories))
             {
                 var ext = Path.GetExtension(DBFile);
                 if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBFile.Contains("THTranslationCache") || DBFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(DBFile)) == THSettings.DBAutoSavesDirName())
@@ -617,9 +635,9 @@ namespace TranslationHelper.Main.Functions
         private static string GetBaseDBFileName(string dbFilePath)
         {
             string baseName = Path.GetFileNameWithoutExtension(dbFilePath);
-            if (Regex.IsMatch(baseName, baseNamePattern))
+            if (Regex.IsMatch(baseName, _baseNamePattern))
             {
-                baseName = Regex.Replace(baseName, baseNamePattern, "$1");
+                baseName = Regex.Replace(baseName, _baseNamePattern, "$1");
             }
             return baseName;
         }
