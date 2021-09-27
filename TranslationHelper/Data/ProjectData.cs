@@ -195,7 +195,14 @@ namespace TranslationHelper.Data
         {
             lock (TableDataAddLocker)
             {
-                THFilesElementsDataset.Tables.Add(tableData);
+                if (!THFilesElementsDataset.Tables.Contains(tableData.TableName))
+                {
+                    THFilesElementsDataset.Tables.Add(tableData);
+                }
+                else
+                {
+
+                }
             }
         }
 
@@ -208,7 +215,14 @@ namespace TranslationHelper.Data
         {
             lock (TableInfoAddLocker)
             {
-                THFilesElementsDatasetInfo.Tables.Add(tableInfo);
+                if (!THFilesElementsDatasetInfo.Tables.Contains(tableInfo.TableName))
+                {
+                    THFilesElementsDatasetInfo.Tables.Add(tableInfo);
+                }
+                else
+                {
+
+                }
             }
         }
     }

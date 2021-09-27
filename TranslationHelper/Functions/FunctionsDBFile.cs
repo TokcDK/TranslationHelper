@@ -112,7 +112,13 @@ namespace TranslationHelper.Main.Functions
 
                 if (read)
                 {
-                    dataSet.ReadXml(s);
+                    try
+                    {
+                        dataSet.ReadXml(s);
+                    }
+                    catch
+                    {
+                    }
                 }
                 else
                 {

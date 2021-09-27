@@ -179,7 +179,7 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, Type formatType, string mask = "*", bool Newest = false, string[] exclusions = null)
+        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, Type formatType, string mask = "*", bool Newest = false, string[] exclusions = null, SearchOption searchOption = SearchOption.AllDirectories)
         {
             //if (mask == "*")
             //{
@@ -195,7 +195,7 @@ namespace TranslationHelper.Projects
 
             var ret = false;
             var existsTables = ProjectData.THFilesElementsDataset.Tables;
-            var filesList = Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, SearchOption.AllDirectories);
+            var filesList = Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
             Parallel.ForEach(filesList, file =>
             {
                 if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions))//skip exclusions
