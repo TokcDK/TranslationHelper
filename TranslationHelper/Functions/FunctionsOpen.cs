@@ -342,6 +342,8 @@ namespace TranslationHelper.Functions
 
         internal static void AfterOpenActions()
         {
+            ProjectData.SaveFileMode = true; // project opened. dont need to openfilemode
+
             if (!ProjectData.Main.THWorkSpaceSplitContainer.Visible)
             {
                 ProjectData.Main.THWorkSpaceSplitContainer.Visible = true;

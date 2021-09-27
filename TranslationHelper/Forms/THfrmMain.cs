@@ -1007,12 +1007,12 @@ namespace TranslationHelper
         string lastautosavepath;
         private async void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ProjectData.Main.SaveInAction)
-            {
-                return;
-            }
+            //if (ProjectData.Main.SaveInAction)
+            //{
+            //    return;
+            //}
 
-            ProjectData.SaveFileMode = true;
+            //ProjectData.SaveFileMode = true;
 
             lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
 

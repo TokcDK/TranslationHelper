@@ -32,13 +32,13 @@ namespace TranslationHelper.Functions
             }
             ProjectData.Main.SaveInAction = true;
             ProjectData.Main.FileDataWasChanged = false;
+            ProjectData.SaveFileMode = true;
 
             //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
 
             if (ProjectData.CurrentProject != null)
             {
                 ProjectData.CurrentProject.BakCreate();
-                ProjectData.SaveFileMode = true;
                 await Task.Run(() => ProjectData.CurrentProject.Save()).ConfigureAwait(true);
             }
             else
