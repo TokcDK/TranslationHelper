@@ -1,10 +1,28 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Linq;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Extensions
 {
     internal static class ExtensionsDataRow
     {
+        /// <summary>
+        /// Set value to selected row.
+        /// Use invoke in debug
+        /// </summary>
+        /// <param name="selectedRow"></param>
+        /// <param name="columnIndex"></param>
+        /// <param name="value"></param>
+        internal static void SetValue(this DataRow selectedRow, int columnIndex, object value)
+        {
+#if DEBUG
+            ProjectData.Main.Invoke((Action)(selectedRow[columnIndex] = value));
+#else
+            selectedRow[columnIndex] = value
+#endif
+        }
+
         /// <summary>
         /// true when original and translation lines count is equal and any orig line valid and equal same transl line
         /// </summary>

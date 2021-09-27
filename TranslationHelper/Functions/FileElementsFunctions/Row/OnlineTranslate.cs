@@ -476,7 +476,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         lineNum++;
                     }
 
-                    row[1] = string.Join(Environment.NewLine, newValue);
+                    row.SetValue(1, string.Join(Environment.NewLine, newValue));
 
                     if (!row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//apply only for finished rows
                     {

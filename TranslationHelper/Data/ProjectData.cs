@@ -194,7 +194,7 @@ namespace TranslationHelper.Data
         internal static void AddTableData(DataTable tableData)
         {
             lock (TableDataAddLocker)
-            {
+            {                
                 if (!THFilesElementsDataset.Tables.Contains(tableData.TableName))
                 {
                     THFilesElementsDataset.Tables.Add(tableData);

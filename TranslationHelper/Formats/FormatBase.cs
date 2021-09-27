@@ -351,18 +351,27 @@ namespace TranslationHelper.Formats
             {
                 ProjectData.AddTableData(TableData);
                 ProjectData.AddTableInfo(TableInfo);
+
+                //#if DEBUG
+                //                ProjectData.Main.Invoke((Action)(() => ProjectData.AddTableData(TableData)));
+                //                ProjectData.Main.Invoke((Action)(() => ProjectData.AddTableInfo(TableInfo)));
+                //#else
+                //                ProjectData.AddTableData(TableData);
+                //                ProjectData.AddTableInfo(TableInfo);
+                //#endif
+
                 return true;
             }
             else
             {
                 //if (ProjectData.THFilesElementsDataset.Tables.Contains(tablename))
                 //{
-                    //ProjectData.THFilesElementsDataset.Tables.Remove(tablename); // remove table if was no items added
+                //ProjectData.THFilesElementsDataset.Tables.Remove(tablename); // remove table if was no items added
                 //}
 
                 //if (ProjectData.THFilesElementsDatasetInfo.Tables.Contains(tablename))
                 //{
-                    //ProjectData.THFilesElementsDatasetInfo.Tables.Remove(tablename); // remove table if was no items added
+                //ProjectData.THFilesElementsDatasetInfo.Tables.Remove(tablename); // remove table if was no items added
                 //}
 
                 return false;
