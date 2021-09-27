@@ -388,10 +388,10 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="dBDataSet"></param>
         /// <param name="inputDB"></param>
-        /// <param name="DontAddEmptyTranslation"></param>
-        /// <param name="DontAddEqualTranslation"></param>
+        /// <param name="dontAddEmptyTranslation"></param>
+        /// <param name="dontAddEqualTranslation"></param>
         /// <returns></returns>
-        internal static Dictionary<string, string> ToDictionary(this DataSet dBDataSet, Dictionary<string, string> inputDB = null, bool DontAddEmptyTranslation = true, bool DontAddEqualTranslation = false)
+        internal static Dictionary<string, string> ToDictionary(this DataSet dBDataSet, Dictionary<string, string> inputDB = null, bool dontAddEmptyTranslation = true, bool dontAddEqualTranslation = false)
         {
             Dictionary<string, string> db;
             if (inputDB == null)
@@ -422,7 +422,7 @@ namespace TranslationHelper.Main.Functions
                         var row = table.Rows[r];
                         if (!db.ContainsKey(row[THSettings.OriginalColumnName()] as string))
                         {
-                            if ((DontAddEmptyTranslation && (row[THSettings.TranslationColumnName()] == null || string.IsNullOrEmpty(row[THSettings.TranslationColumnName()] as string))) || (DontAddEqualTranslation && row[THSettings.TranslationColumnName()] as string == row[THSettings.OriginalColumnName()] as string))
+                            if ((dontAddEmptyTranslation && (row[THSettings.TranslationColumnName()] == null || string.IsNullOrEmpty(row[THSettings.TranslationColumnName()] as string))) || (dontAddEqualTranslation && row[THSettings.TranslationColumnName()] as string == row[THSettings.OriginalColumnName()] as string))
                             {
                                 continue;
                             }
@@ -444,8 +444,6 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="dBDataSet"></param>
         /// <param name="inputDB"></param>
-        /// <param name="DontAddEmptyTranslation"></param>
-        /// <param name="DontAddEqualTranslation"></param>
         /// <returns></returns>
         internal static Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> ToDictionary2(this DataSet dBDataSet, Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> inputDB = null)
         {
@@ -459,9 +457,9 @@ namespace TranslationHelper.Main.Functions
                 db = inputDB;
             }
 
-            int TablesCount = dBDataSet.Tables.Count;
+            int tablesCount = dBDataSet.Tables.Count;
 
-            for (int t = 0; t < TablesCount; t++)
+            for (int t = 0; t < tablesCount; t++)
             {
                 try
                 {
@@ -471,9 +469,9 @@ namespace TranslationHelper.Main.Functions
                         continue;
                     }
 
-                    int RowsCount = table.Rows.Count;
+                    int rowsCount = table.Rows.Count;
 
-                    for (int r = 0; r < RowsCount; r++)
+                    for (int r = 0; r < rowsCount; r++)
                     {
                         var row = table.Rows[r];
                         var O = row[THSettings.OriginalColumnName()] as string;
@@ -502,23 +500,23 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// set dictionary string,string to dataset
         /// </summary>
-        /// <param name="dict"></param>
+        /// <param name="dictionary"></param>
         /// <returns></returns>
-        internal static DataSet ToDataSet(this Dictionary<string, string> dict)
+        internal static DataSet ToDataSet(this Dictionary<string, string> dictionary)
         {
             //using (var DS = new DataSet())
             {
-                var DS = new DataSet();
-                DS.Tables.Add("DB");
-                DS.Tables["DB"].Columns.Add(THSettings.OriginalColumnName());
-                DS.Tables["DB"].Columns.Add(THSettings.TranslationColumnName());
+                var dataSet = new DataSet();
+                dataSet.Tables.Add("DB");
+                dataSet.Tables["DB"].Columns.Add(THSettings.OriginalColumnName());
+                dataSet.Tables["DB"].Columns.Add(THSettings.TranslationColumnName());
 
-                foreach (var pair in dict)
+                foreach (var pair in dictionary)
                 {
-                    DS.Tables["DB"].Rows.Add(pair.Key, pair.Value);
+                    dataSet.Tables["DB"].Rows.Add(pair.Key, pair.Value);
                 }
 
-                return DS;
+                return dataSet;
             }
         }
 
