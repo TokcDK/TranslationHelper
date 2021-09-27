@@ -93,6 +93,7 @@ namespace TranslationHelper.Main.Functions
             ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, read: false, useOriginaldbFilePath: useOriginaldbFilePath);
         }
 
+        private static readonly ReaderWriterLockSlim WriteXmlLocker = new ReaderWriterLockSlim();
         /// <summary>
         /// read or write db file
         /// </summary>
@@ -115,7 +116,15 @@ namespace TranslationHelper.Main.Functions
                 }
                 else
                 {
-                    dataSet.WriteXml(s);
+                    WriteXmlLocker.EnterWriteLock();
+                    try
+                    {
+                        dataSet.WriteXml(s);
+                    }
+                    finally
+                    {
+                        WriteXmlLocker.ExitWriteLock();
+                    }
                 }
 
                 s.Close();
@@ -329,44 +338,49 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        private static readonly ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim WriteXElementToXMLFileLocker = new ReaderWriterLockSlim();
 
         internal static void WriteXElementToXMLFile(XElement el, string xmlPath)
         {
-            locker.EnterWriteLock();
+            WriteXElementToXMLFileLocker.EnterWriteLock();
 
-            using (var fs = new FileStream(xmlPath, FileMode.Create))
+            try
             {
-                Stream s = null;
-                try
+                using (var fs = new FileStream(xmlPath, FileMode.Create))
                 {
-                    string fileExtension = Path.GetExtension(xmlPath);
-                    if (fileExtension == ".cmx")
+                    Stream s = null;
+                    try
                     {
-                        s = new GZipStream(fs, CompressionMode.Compress);
-                    }
-                    else if (fileExtension == ".cmz")
-                    {
-                        s = new DeflateStream(fs, CompressionMode.Compress);
-                    }
-                    else
-                    {
-                        s = fs;
-                    }
-                    el.Save(s);
-                    s.Close();
-                }
-                catch
-                {
-                    if (el != null && s != null)
-                    {
+                        string fileExtension = Path.GetExtension(xmlPath);
+                        if (fileExtension == ".cmx")
+                        {
+                            s = new GZipStream(fs, CompressionMode.Compress);
+                        }
+                        else if (fileExtension == ".cmz")
+                        {
+                            s = new DeflateStream(fs, CompressionMode.Compress);
+                        }
+                        else
+                        {
+                            s = fs;
+                        }
                         el.Save(s);
                         s.Close();
                     }
+                    catch
+                    {
+                        if (el != null && s != null)
+                        {
+                            el.Save(s);
+                            s.Close();
+                        }
+                    }
                 }
             }
-
-            locker.ExitWriteLock();
+            finally
+            {
+                WriteXElementToXMLFileLocker.ExitWriteLock();
+            }
         }
 
         /// <summary>
