@@ -614,9 +614,9 @@ namespace TranslationHelper.Main.Functions
             return sortedList;
         }
 
-        private static string GetBaseDBFileName(string DBfile)
+        private static string GetBaseDBFileName(string dbFilePath)
         {
-            string baseName = Path.GetFileNameWithoutExtension(DBfile);
+            string baseName = Path.GetFileNameWithoutExtension(dbFilePath);
             if (Regex.IsMatch(baseName, baseNamePattern))
             {
                 baseName = Regex.Replace(baseName, baseNamePattern, "$1");
@@ -625,19 +625,19 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// search if path exists for any extension from exist DB formats
+        /// search in <paramref name="dbDirPath"/> dir for any extension from exist DB formats
         /// </summary>
-        /// <param name="DBPath"></param>
-        internal static void SearchByAllDBFormatExtensions(ref string DBPath)
+        /// <param name="dbDirPath"></param>
+        internal static void SearchByAllDBFormatExtensions(ref string dbDirPath)
         {
-            var dir = Path.GetDirectoryName(DBPath);
-            var name = Path.GetFileNameWithoutExtension(DBPath);
+            var dir = Path.GetDirectoryName(dbDirPath);
+            var name = Path.GetFileNameWithoutExtension(dbDirPath);
             foreach (var format in FunctionsInterfaces.GetDBSaveFormats())
             {
                 var PathForFormat = Path.Combine(dir, name + "." + format.Ext);
                 if (File.Exists(PathForFormat))
                 {
-                    DBPath = PathForFormat;
+                    dbDirPath = PathForFormat;
                     return;
                 }
             }
