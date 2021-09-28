@@ -183,8 +183,6 @@ namespace TranslationHelper
             //Menu File
             this.fileToolStripMenuItem.Text = T._("File");
             this.openToolStripMenuItem.Text = T._("Open");
-            this.SaveToolStripMenuItem.Text = T._("Save");
-            this.SaveAsToolStripMenuItem.Text = T._("Save As");
             this.WriteTranslationInGameToolStripMenuItem.Text = T._("Write translation");
             this.SaveTranslationToolStripMenuItem.Text = T._("Save translation");
             this.SaveTranslationAsToolStripMenuItem.Text = T._("Save Translation as");
@@ -821,32 +819,6 @@ namespace TranslationHelper
             }
         }
 
-        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (FolderBrowserDialog THSaveFolderBrowser = new FolderBrowserDialog())
-            {
-
-                if (SaveInAction)
-                {
-                    return;
-                }
-
-                THSaveFolderBrowser.SelectedPath = ProjectData.SelectedDir; //Установить начальный путь на тот, что был установлен при открытии.
-
-                if (THSaveFolderBrowser.ShowDialog() == DialogResult.OK)
-                {
-                    if (ProjectData.CurrentProject.Name() == "RPGMakerTransPatch")
-                    {
-                        if (new RPGMTransOLD().SaveRPGMTransPatchFiles(THSaveFolderBrowser.SelectedPath, RPGMFunctions.RPGMTransPatchVersion))
-                        {
-                            ProjectData.SelectedDir = THSaveFolderBrowser.SelectedPath;
-                            _ = MessageBox.Show(T._("Save complete!"));
-                        }
-                    }
-                }
-            }
-        }
-
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             THfrmAbout AboutForm = new THfrmAbout();
@@ -1333,8 +1305,6 @@ namespace TranslationHelper
                 if (FileDataWasChanged && SavemenusNOTenabled)
                 {
                     WriteTranslationInGameToolStripMenuItem.Enabled = true;
-                    SaveToolStripMenuItem.Enabled = true;
-                    SaveAsToolStripMenuItem.Enabled = true;
                     SaveTranslationToolStripMenuItem.Enabled = true;
                     SaveTranslationAsToolStripMenuItem.Enabled = true;
                     SavemenusNOTenabled = false;

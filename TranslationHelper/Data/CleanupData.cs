@@ -73,8 +73,6 @@ namespace TranslationHelper.Data
                 ProjectData.Main.THWorkSpaceSplitContainer.Visible = false;
 
                 //Disable items
-                ProjectData.Main.SaveToolStripMenuItem.Enabled = false;
-                ProjectData.Main.SaveAsToolStripMenuItem.Enabled = false;
                 ProjectData.Main.EditToolStripMenuItem.Enabled = false;
                 ProjectData.Main.ViewToolStripMenuItem.Enabled = false;
                 ProjectData.Main.SaveTranslationToolStripMenuItem.Enabled = false;
