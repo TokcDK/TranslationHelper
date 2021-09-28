@@ -7,6 +7,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.RJ263914
 {
+    [Obsolete]
     class RJ263914OLD
     {
         

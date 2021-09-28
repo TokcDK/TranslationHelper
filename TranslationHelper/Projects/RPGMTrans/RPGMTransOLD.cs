@@ -8,6 +8,7 @@ using TranslationHelper.Formats.RPGMaker.Functions;
 
 namespace TranslationHelper.Projects.RPGMTrans
 {
+    [Obsolete]
     class RPGMTransOLD
     {
         

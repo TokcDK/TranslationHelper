@@ -12,6 +12,7 @@ using TranslationHelper.Formats.KiriKiri;
 
 namespace TranslationHelper.Projects.KiriKiri
 {
+    [Obsolete]
     class KiriKiriOLD
     {
         

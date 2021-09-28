@@ -9,6 +9,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.WolfRPG
 {
+    [Obsolete]
     class WRPGOLDOpen
     {
         

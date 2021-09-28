@@ -7,6 +7,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.RPGMaker
 {
+    [System.Obsolete]
     class RPGMGameOLD
     {
         

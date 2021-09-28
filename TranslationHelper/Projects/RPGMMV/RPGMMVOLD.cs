@@ -12,6 +12,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
+    [Obsolete]
     class RPGMMVOLD
     {
         
