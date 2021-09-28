@@ -1280,14 +1280,8 @@ namespace TranslationHelper
 
                     if (THFOpenBD.ShowDialog() == DialogResult.OK)
                     {
-                        if (THFOpenBD.FileName.Length == 0)
+                        if (THFOpenBD.FileName.Length > 0)
                         {
-                        }
-                        else
-                        {
-                            //string spath = THFOpenBD.FileName;
-                            //THFOpenBD.OpenFile().Close();
-                            //MessageBox.Show(THFOpenBD.FileName);
                             await Task.Run(() => LoadTranslationFromDB(THFOpenBD.FileName, false, forced)).ConfigureAwait(true);
                         }
                     }
