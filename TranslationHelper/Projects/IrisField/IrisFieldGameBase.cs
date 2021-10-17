@@ -28,6 +28,10 @@ namespace TranslationHelper.Projects.IrisField
 
         protected abstract string GameExeName { get; }
         protected abstract Type GameExeFormatType { get; }
+        /// <summary>
+        /// Maximum length of line
+        /// </summary>
+        internal virtual int MaxLineLength { get => 60; }
 
         internal override bool Check()
         {

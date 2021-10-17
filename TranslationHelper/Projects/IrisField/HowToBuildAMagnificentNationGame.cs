@@ -13,5 +13,7 @@ namespace TranslationHelper.Projects.IrisField
         protected override string GameExeName => "素晴らしき国家の築き方";
 
         protected override Type GameExeFormatType => typeof(HowToBuildAMagnificentNationExe);
+
+        internal override int MaxLineLength => 80;
     }
 }
