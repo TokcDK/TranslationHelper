@@ -13,7 +13,10 @@ namespace TranslationHelper.Formats.IrisField
     {
         public TXT()
         {
-            MaxLineLength = (ProjectData.CurrentProject as IrisFieldGameBase).MaxLineLength;
+            if (ProjectData.SaveFileMode)
+            {
+                MaxLineLength = (ProjectData.CurrentProject as IrisFieldGameBase).MaxLineLength;
+            }
         }
 
         readonly int MaxLineLength;
