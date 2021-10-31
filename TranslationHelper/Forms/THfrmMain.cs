@@ -1737,30 +1737,32 @@ namespace TranslationHelper
         {
             if (DGVCellInEditMode)//если ячейка в режиме редактирования
             {
-                //вылючение действий для ячеек при выходе из режима редактирования
+                //выключение действий для ячеек при выходе из режима редактирования
                 ControlsSwitch();
             }
 
-            //LogToFile("Paste Enter");
-            if (THFileElementsDataGridView == null)
-            {
-            }
-            else
-            {
-                //LogToFile("DGV is not empty");
-                // Determine if there is any text in the Clipboard to paste into the text box. 
-                if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text) == true)
-                {
-                    //LogToFile("GetDataPresent is true");
-                    // Determine if any text is selected in the text box. 
-                    if (THFileElementsDataGridView.SelectedCells.Count > 0)
-                    {
-                        //LogToFile("DGV sel cells > 0");
-                        //Perform paste Operation
-                        FunctionsCopyPaste.PasteClipboardValue(THFileElementsDataGridView);
-                    }
-                }
-            }
+            new PasteTranslation().Selected();
+
+            ////LogToFile("Paste Enter");
+            //if (THFileElementsDataGridView == null)
+            //{
+            //}
+            //else
+            //{
+            //    //LogToFile("DGV is not empty");
+            //    // Determine if there is any text in the Clipboard to paste into the text box. 
+            //    if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text) == true)
+            //    {
+            //        //LogToFile("GetDataPresent is true");
+            //        // Determine if any text is selected in the text box. 
+            //        if (THFileElementsDataGridView.SelectedCells.Count > 0)
+            //        {
+            //            //LogToFile("DGV sel cells > 0");
+            //            //Perform paste Operation
+            //            FunctionsCopyPaste.PasteClipboardValue(THFileElementsDataGridView);
+            //        }
+            //    }
+            //}
             //LogToFile("Paste End", true);
         }
 

@@ -109,6 +109,7 @@
     <Compile Include="Data\FilesListData.cs" />
     <Compile Include="Data\ProjectData.cs" />
     <Compile Include="Data\THSettings.cs" />
+    <Compile Include="Extensions\ExtensionsArray.cs" />
     <Compile Include="Extensions\ExtensionsBytes.cs" />
     <Compile Include="Extensions\ExtensionsDataRow.cs" />
     <Compile Include="Extensions\ExtensionsDataSet.cs" />
@@ -223,6 +224,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\FixCellsForce.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\MakeTranslatedCopyIfFileWithTheNameExists.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OpenInWeb.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\PasteTranslation.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\RowBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ENQuotesToJP.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FixCells.cs" />
