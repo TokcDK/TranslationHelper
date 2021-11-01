@@ -25,7 +25,6 @@ using TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects.RPGMMV;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper
@@ -1114,7 +1113,7 @@ namespace TranslationHelper
             {
                 IsOpeningInProcess = true;
 
-                var lastautosavepath  = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
+                var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
                 this.lastautosavepath = lastautosavepath;
                 if (File.Exists(lastautosavepath))
                 {
@@ -1917,116 +1916,120 @@ namespace TranslationHelper
 
         private async void RunTestGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (ProjectData.CurrentProject == null /*|| ProjectData.CurrentProject.Name() == "RPG Maker MV"*/)
+            {
+                return;
+            }
+
             if (ProjectData.CurrentProject.TablesLinesDict != null && ProjectData.CurrentProject.TablesLinesDict.Count > 0)
             {
                 ProjectData.CurrentProject.TablesLinesDict.Clear();
             }
 
-            if (ProjectData.CurrentProject != null /*|| ProjectData.CurrentProject.Name() == "RPG Maker MV"*/)
+            bool BuckupCreated = false;
+            try
             {
-                bool BuckupCreated = false;
-                try
+                //bool success = false;
+                //if (ProjectData.CurrentProject != null)
+                //{
+                ProgressInfo(true, "Creating buckups");
+                if (!(BuckupCreated = ProjectData.CurrentProject.BakCreate()))
                 {
-                    bool success = false;
-                    if (ProjectData.CurrentProject != null)
-                    {
-                        ProgressInfo(true, "Creating buckups");
-                        if (!(BuckupCreated = ProjectData.CurrentProject.BakCreate()))
-                            return;
+                    return;
+                }
 
-                        success = await Task.Run(() => ProjectData.CurrentProject.Save()).ConfigureAwait(true);
-                    }
-                    else
+                bool success = await Task.Run(() => ProjectData.CurrentProject.Save()).ConfigureAwait(true);
+                //}
+                //else
+                //{
+                //    for (int f = 0; f < THFilesList.GetItemsCount(); f++)
+                //    {
+                //        //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
+                //        //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
+
+                //        bool changed = false;
+                //        for (int r = 0; r < ProjectData.THFilesElementsDataset.Tables[f].Rows.Count; r++)
+                //        {
+                //            if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r][THSettings.TranslationColumnName()] + string.Empty).Length == 0)
+                //            {
+                //            }
+                //            else
+                //            {
+                //                changed = true;
+                //                break;
+                //            }
+                //        }
+                //        ///*THMsg*/MessageBox.Show(ProjectData.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                //        if (changed)
+                //        {
+
+                //            ///*THMsg*/MessageBox.Show("start writing");
+
+                //            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                //            success = await Task.Run(() => new RPGMMVOLD().WriteJson(THFilesList.GetItemName(f), Path.Combine(ProjectData.SelectedDir, "www", "data", THFilesList.GetItemName(f) + ".json"))).ConfigureAwait(true);
+                //            if (!success)
+                //            {
+                //                break;
+                //            }
+                //            //success = WriteJson(THFilesListBox.Items[f].ToString(), Properties.Settings.Default.THWorkProjectDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
+                //        }
+                //    }
+                //}
+
+                if (success)
+                {
+                    //using (Process Testgame = new Process())
                     {
-                        for (int f = 0; f < THFilesList.GetItemsCount(); f++)
+                        try
                         {
-                            //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
-                            //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
-
-                            bool changed = false;
-                            for (int r = 0; r < ProjectData.THFilesElementsDataset.Tables[f].Rows.Count; r++)
+                            DirectoryInfo di = new DirectoryInfo(ProjectData.SelectedDir);
+                            FileInfo[] fiArr = di.GetFiles("*.exe");
+                            string largestexe = string.Empty;
+                            long filesize = 0;
+                            foreach (FileInfo file in fiArr)
                             {
-                                if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r][THSettings.TranslationColumnName()] + string.Empty).Length == 0)
+                                if (file.Length > filesize)
                                 {
-                                }
-                                else
-                                {
-                                    changed = true;
-                                    break;
+                                    filesize = file.Length;
+                                    largestexe = file.FullName;
                                 }
                             }
-                            ///*THMsg*/MessageBox.Show(ProjectData.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                            if (changed)
-                            {
+                            //MessageBox.Show("outdir=" + outdir);
+                            //Testgame.StartInfo.FileName = Path.Combine(ProjectData.SelectedDir,"game.exe");
+                            //Testgame.StartInfo.FileName = largestexe;
+                            //RPGMakerTransPatch.StartInfo.Arguments = string.Empty;
+                            //Testgame.StartInfo.UseShellExecute = true;
 
-                                ///*THMsg*/MessageBox.Show("start writing");
+                            //http://www.cyberforum.ru/windows-forms/thread31052.html
+                            // свернуть
+                            WindowState = FormWindowState.Minimized;
 
-                                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                                success = await Task.Run(() => new RPGMMVOLD().WriteJson(THFilesList.GetItemName(f), Path.Combine(ProjectData.SelectedDir, "www", "data", THFilesList.GetItemName(f) + ".json"))).ConfigureAwait(true);
-                                if (!success)
-                                {
-                                    break;
-                                }
-                                //success = WriteJson(THFilesListBox.Items[f].ToString(), Properties.Settings.Default.THWorkProjectDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
-                            }
+                            _ = Process.Start("explorer.exe", ProjectData.SelectedDir);
+
+                            _ = FunctionsProcess.RunProcess(largestexe);
+
+                            //await Task.Run(() => Testgame.Start()).ConfigureAwait(true);
+                            //Testgame.WaitForExit();
+
+                            // Показать
+                            WindowState = FormWindowState.Normal;
+                        }
+                        catch
+                        {
                         }
                     }
-
-                    if (success)
-                    {
-                        //using (Process Testgame = new Process())
-                        {
-                            try
-                            {
-                                DirectoryInfo di = new DirectoryInfo(ProjectData.SelectedDir);
-                                FileInfo[] fiArr = di.GetFiles("*.exe");
-                                string largestexe = string.Empty;
-                                long filesize = 0;
-                                foreach (FileInfo file in fiArr)
-                                {
-                                    if (file.Length > filesize)
-                                    {
-                                        filesize = file.Length;
-                                        largestexe = file.FullName;
-                                    }
-                                }
-                                //MessageBox.Show("outdir=" + outdir);
-                                //Testgame.StartInfo.FileName = Path.Combine(ProjectData.SelectedDir,"game.exe");
-                                //Testgame.StartInfo.FileName = largestexe;
-                                //RPGMakerTransPatch.StartInfo.Arguments = string.Empty;
-                                //Testgame.StartInfo.UseShellExecute = true;
-
-                                //http://www.cyberforum.ru/windows-forms/thread31052.html
-                                // свернуть
-                                WindowState = FormWindowState.Minimized;
-
-                                _ = Process.Start("explorer.exe", ProjectData.SelectedDir);
-
-                                _ = FunctionsProcess.RunProcess(largestexe);
-
-                                //await Task.Run(() => Testgame.Start()).ConfigureAwait(true);
-                                //Testgame.WaitForExit();
-
-                                // Показать
-                                WindowState = FormWindowState.Normal;
-                            }
-                            catch
-                            {
-                            }
-                        }
-                    }
                 }
-                catch (Win32Exception)
-                {
-                }
-                catch
-                {
-                }
+            }
+            catch (Win32Exception)
+            {
+            }
+            catch
+            {
+            }
 
-                if (BuckupCreated)
-                {
-                    _ = ProjectData.CurrentProject.BakRestore();
-                }
+            if (BuckupCreated)
+            {
+                _ = ProjectData.CurrentProject.BakRestore();
             }
         }
 
