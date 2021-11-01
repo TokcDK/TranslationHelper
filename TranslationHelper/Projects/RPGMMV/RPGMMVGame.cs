@@ -104,11 +104,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 try
                 {
-                    if (ProjectData.SaveFileMode && format.Save())
-                    {
-                        isAnyFileCompleted = true;
-                    }
-                    else if (format.Open())
+                    if ((ProjectData.OpenFileMode && format.Open())
+                        || (ProjectData.SaveFileMode && format.Save()))
                     {
                         isAnyFileCompleted = true;
                     }
@@ -140,13 +137,16 @@ namespace TranslationHelper.Projects.RPGMMV
 
                         ProjectData.Main.ProgressInfo(true, ParseFileMessage + js.JSName);
 
-                        if (ProjectData.SaveFileMode && jsFormat.Save())
+                        try
                         {
-                            isAnyFileCompleted = true;
+                            if( (ProjectData.OpenFileMode && format.Open())
+                                || (ProjectData.SaveFileMode && format.Save()))
+                            {
+                                isAnyFileCompleted = true;
+                            }
                         }
-                        else if (jsFormat.Open())
+                        catch
                         {
-                            isAnyFileCompleted = true;
                         }
                     }
                     catch
@@ -188,11 +188,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
                     try
                     {
-                        if (ProjectData.SaveFileMode && format.Save())
-                        {
-                            isAnyFileCompleted = true;
-                        }
-                        else if (format.Open())
+                        if ((ProjectData.OpenFileMode && format.Open())
+                            || (ProjectData.SaveFileMode && format.Save()))
                         {
                             isAnyFileCompleted = true;
                         }

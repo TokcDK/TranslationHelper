@@ -400,7 +400,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual bool FilePreOpenActions()
         {
-            if (string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(FilePath) != Ext()) // extension must be same as set, if set
+            if (!string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(FilePath) != Ext()) // extension must be same as set, if set
             {
                 return false;
             }

@@ -124,6 +124,7 @@
     <Compile Include="ExternalAdditions\GDI.cs" />
     <Compile Include="ExternalAdditions\CSRegisterHotkey\HotKeyRegister.cs" />
     <Compile Include="ExternalAdditions\CSRegisterHotkey\KeyModifiers.cs" />
+    <Compile Include="ExternalAdditions\HardLink.cs" />
     <Compile Include="ExternalAdditions\Md5ForFolder.cs" />
     <Compile Include="ExternalAdditions\PythonInstance.cs" />
     <Compile Include="ExternalAdditions\ReplaceEx.cs" />
@@ -455,6 +456,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AlphaFS.New">
+      <Version>2.3.0</Version>
+    </PackageReference>
     <PackageReference Include="Costura.Fody">
       <Version>5.4.0</Version>
       <!--<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->

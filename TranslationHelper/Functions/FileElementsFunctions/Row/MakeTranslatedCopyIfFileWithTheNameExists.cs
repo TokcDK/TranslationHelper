@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.ExternalAdditions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -112,7 +113,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var targetPath = Path.Combine(Path.GetDirectoryName(path), transName + Path.GetExtension(path)); // target translated path
                     if (!File.Exists(targetPath))
                     {
-                        THCreateSymlink.File(path, targetPath);
+                        //THCreateSymlink.File(path, targetPath);
+                        path.CreateHardlink(targetPath);
                         //File.Copy(path, targetPath);
 
                         //info about translated copy
