@@ -4,6 +4,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class CopyOriginals : ApplyAfterFillBufferithOriginalsBase
     {
+        protected override bool IsValidRow()
+        {
+            return base.IsValidRow() && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1].ToString()));
+        }
+
         protected override bool ApplyToBuffered()
         {
             Clipboard.SetText(string.Join("\n", _bufferedOriginals));
