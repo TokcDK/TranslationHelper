@@ -123,7 +123,7 @@ namespace TranslationHelper.Functions
             foreach (Type Project in ProjectData.ProjectsList) // iterate projectbase types
             {
                 ProjectData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project);// create instance of project
-
+                ProjectData.OpenFileMode = true;
                 ProjectData.SelectedFilePath = sPath;
                 ProjectData.SelectedDir = dir.FullName;
                 ProjectData.SelectedGameDir = dir.FullName;

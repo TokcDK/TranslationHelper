@@ -19,14 +19,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             _bufferedOriginals.Add(SelectedRow[0] as string);//add original value
 
-            if (SelectedRowsCountRest > 0)
-            {
-                return true;//return while all rows originals will be added
-            }
-
-            return ApplyToBuffered();
+            return true;
         }
 
         protected abstract bool ApplyToBuffered();
+
+        protected override void ActionsFinalize()
+        {
+            ApplyToBuffered();
+        }
     }
 }

@@ -125,7 +125,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             return Format.IsValidString(value)
                 && !((path = token.Path).Contains("].name") && !value.Contains("Enemy(")/*constructions like Enemy(enemyname) using also to identify enemies*/ && Regex.IsMatch(path, @"events\[[0-9]+\]\.name")) // skip event names //disabled because using in some cases like enemy name as event name(need to make dull open save with duplicates for correct translation)
                 && !(path.Contains("].image") && Regex.IsMatch(path, @"\[[0-9]+\]\.image")) // skip image names
-                && !(path.Contains("gm.name") && Regex.IsMatch(token.Path, @"[Bb]gm\.name")); // skip bgm
+                && !(Regex.IsMatch(token.Path, @"[Bb]g[ms]\.name")) // skip bgm s
+                && !(path.Contains("soundName") || Regex.IsMatch(token.Path, @"sounds\[[0-9]+\]\.name")) // skip sounds
+                && !(path.Contains("].tilesetNames")) // skip tileset names
+                && !(path.Contains("parallaxName")) // skip parallax names
+                ;
         }
 
         HashSet<JObject> AddedJObjects = new HashSet<JObject>();

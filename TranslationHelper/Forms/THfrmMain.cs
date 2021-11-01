@@ -1712,10 +1712,25 @@ namespace TranslationHelper
         }
         private void CopyOriginalToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!IsValidToCopy())
+            {
+                return;
+            }
 
+            new CopyOriginals().Selected();
         }
 
         private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!IsValidToCopy())
+            {
+                return;
+            }
+
+            FunctionsCopyPaste.CopyToClipboard(THFileElementsDataGridView);
+        }
+
+        private bool IsValidToCopy()
         {
             if (DGVCellInEditMode)//если ячейка в режиме редактирования
             {
@@ -1723,17 +1738,7 @@ namespace TranslationHelper
                 ControlsSwitch();
             }
 
-            if (THFileElementsDataGridView == null)
-            {
-            }
-            else
-            {
-                // Ensure that text is selected in the text box.    
-                if (THFileElementsDataGridView.SelectedCells.Count > 0)
-                {
-                    FunctionsCopyPaste.CopyToClipboard(THFileElementsDataGridView);
-                }
-            }
+            return THFileElementsDataGridView != null && THFileElementsDataGridView.SelectedCells.Count > 0;
         }
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
