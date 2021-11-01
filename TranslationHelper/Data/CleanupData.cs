@@ -109,7 +109,7 @@ namespace TranslationHelper.Data
                 ProjectData.Main.FixSymbolsTableContextToolStripMenuItem.Enabled = false;
                 ProjectData.Main.OriginalToTransalationContextToolStripMenuItem.Enabled = false;
                 ProjectData.Main.CutToolStripMenuItem.Enabled = false;
-                ProjectData.Main.CopyToolStripMenuItem.Enabled = false;
+                ProjectData.Main.CopyCMStripMenuItem.Enabled = false;
                 ProjectData.Main.PasteToolStripMenuItem.Enabled = false;
                 ProjectData.Main.CleanSelectedCellsToolStripMenuItem1.Enabled = false;
                 ProjectData.Main.ToolStripMenuItem14.Enabled = false;

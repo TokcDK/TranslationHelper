@@ -148,7 +148,7 @@
             this.CompleteRomajiotherLinesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ForceSameForSimularToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.CutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CopyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CopyCMStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CleanSelectedCellsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem14 = new System.Windows.Forms.ToolStripMenuItem();
@@ -181,6 +181,8 @@
             this.tlpFrmMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpWorkInfo = new System.Windows.Forms.TableLayoutPanel();
             this.tlpTextLenPosInfo = new System.Windows.Forms.TableLayoutPanel();
+            this.CopyOriginalCMStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CopyOriginalCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
@@ -428,6 +430,7 @@
             this.ForceSameForSimularToolStripMenuItem,
             this.CutToolStripMenuItem1,
             this.CopyCellValuesToolStripMenuItem,
+            this.CopyOriginalCellValuesToolStripMenuItem,
             this.PasteCellValuesToolStripMenuItem,
             this.ClearSelectedCellsToolStripMenuItem,
             this.ToUPPERCASEToolStripMenuItem,
@@ -1181,7 +1184,8 @@
             this.CompleteRomajiotherLinesToolStripMenuItem1,
             this.ForceSameForSimularToolStripMenuItem1,
             this.CutToolStripMenuItem,
-            this.CopyToolStripMenuItem,
+            this.CopyCMStripMenuItem,
+            this.CopyOriginalCMStripMenuItem,
             this.PasteToolStripMenuItem,
             this.CleanSelectedCellsToolStripMenuItem1,
             this.ToolStripMenuItem14,
@@ -1194,7 +1198,7 @@
             this.addToCustomDBToolStripMenuItem,
             this.trimEndToolStripMenuItem1});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 422);
+            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 444);
             // 
             // OpenInWebContextToolStripMenuItem
             // 
@@ -1320,13 +1324,13 @@
             this.CutToolStripMenuItem.Text = "Cut";
             this.CutToolStripMenuItem.Click += new System.EventHandler(this.CutToolStripMenuItem_Click);
             // 
-            // CopyToolStripMenuItem
+            // CopyCMStripMenuItem
             // 
-            this.CopyToolStripMenuItem.Enabled = false;
-            this.CopyToolStripMenuItem.Name = "CopyToolStripMenuItem";
-            this.CopyToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.CopyToolStripMenuItem.Text = "Copy";
-            this.CopyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
+            this.CopyCMStripMenuItem.Enabled = false;
+            this.CopyCMStripMenuItem.Name = "CopyCMStripMenuItem";
+            this.CopyCMStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.CopyCMStripMenuItem.Text = "Copy";
+            this.CopyCMStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
             // 
             // PasteToolStripMenuItem
             // 
@@ -1703,6 +1707,24 @@
             this.tlpTextLenPosInfo.Size = new System.Drawing.Size(257, 20);
             this.tlpTextLenPosInfo.TabIndex = 8;
             // 
+            // CopyOriginalCMStripMenuItem
+            // 
+            this.CopyOriginalCMStripMenuItem.Enabled = false;
+            this.CopyOriginalCMStripMenuItem.Name = "CopyOriginalCMStripMenuItem";
+            this.CopyOriginalCMStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.CopyOriginalCMStripMenuItem.Text = "Copy original";
+            this.CopyOriginalCMStripMenuItem.Click += new System.EventHandler(this.CopyOriginalToolStripMenuItem_Click);
+            // 
+            // CopyOriginalCellValuesToolStripMenuItem
+            // 
+            this.CopyOriginalCellValuesToolStripMenuItem.Enabled = false;
+            this.CopyOriginalCellValuesToolStripMenuItem.Name = "CopyOriginalCellValuesToolStripMenuItem";
+            this.CopyOriginalCellValuesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.C)));
+            this.CopyOriginalCellValuesToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.CopyOriginalCellValuesToolStripMenuItem.Text = "Copy original";
+            this.CopyOriginalCellValuesToolStripMenuItem.Click += new System.EventHandler(this.CopyOriginalToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AccessibleDescription = "Program help with translation of some RPG games";
@@ -1821,7 +1843,7 @@
         internal System.Windows.Forms.ToolStripMenuItem OriginalToTransalationContextToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem CleanSelectedCellsToolStripMenuItem1;
         internal System.Windows.Forms.ToolStripMenuItem CutToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem CopyToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem CopyCMStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem PasteToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem CutToolStripMenuItem1;
         internal System.Windows.Forms.ToolStripMenuItem CopyCellValuesToolStripMenuItem;
@@ -1908,6 +1930,8 @@
         private System.Windows.Forms.ToolStripMenuItem fixInstancesOfNameToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem CopyOriginalCMStripMenuItem;
+        internal System.Windows.Forms.ToolStripMenuItem CopyOriginalCellValuesToolStripMenuItem;
     }
 }
 

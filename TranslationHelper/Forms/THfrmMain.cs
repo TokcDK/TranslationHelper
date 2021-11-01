@@ -237,7 +237,7 @@ namespace TranslationHelper
             this.toolStripMenuItem5.Text = T._("All");
             this.OriginalToTransalationContextToolStripMenuItem.Text = T._("Translation=Original");
             this.CutToolStripMenuItem.Text = T._("Cut");
-            this.CopyToolStripMenuItem.Text = T._("Copy");
+            this.CopyCMStripMenuItem.Text = T._("Copy");
             this.PasteToolStripMenuItem.Text = T._("Paste");
             this.CleanSelectedCellsToolStripMenuItem1.Text = T._("Clear selected cells");
             this.ToolStripMenuItem14.Text = T._("UPPERCASE");
@@ -535,7 +535,7 @@ namespace TranslationHelper
             FixSymbolsTableContextToolStripMenuItem.Enabled = true;
             OriginalToTransalationContextToolStripMenuItem.Enabled = true;
             CutToolStripMenuItem.Enabled = true;
-            CopyToolStripMenuItem.Enabled = true;
+            CopyCMStripMenuItem.Enabled = true;
             PasteToolStripMenuItem.Enabled = true;
             CleanSelectedCellsToolStripMenuItem1.Enabled = true;
             ToolStripMenuItem14.Enabled = true;
@@ -1710,6 +1710,10 @@ namespace TranslationHelper
 
                 }
             }
+        }
+        private void CopyOriginalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
