@@ -10,11 +10,6 @@ namespace TranslationHelper.Formats.RPGMMV
         {
         }
 
-        internal override bool Open()
-        {
-            return ParseFile();
-        }
-
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.IsComment)
