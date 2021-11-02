@@ -525,6 +525,7 @@ namespace TranslationHelper.Formats
             }
         }
 
+        object SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock = new object();
         bool TablesLinesDictFilled;
         /// <summary>
         /// add all original\translation pairs of datatable rows in Dictionary<br/>
@@ -596,7 +597,15 @@ namespace TranslationHelper.Formats
                     //Сначала добавить полный вариант
                     if (!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(Original) /*&& ((!ProjectData.CurrentProject.ProjectData.CurrentProject.TablesLinesDictAddEqual && Translation != Original) || ProjectData.CurrentProject.ProjectData.CurrentProject.TablesLinesDictAddEqual)*/)
                     {
-                        ProjectData.CurrentProject.TablesLinesDict.Add(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                        try
+                        {
+                            lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
+                            {
+                                ProjectData.CurrentProject.TablesLinesDict.TryAdd(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                            }
+                        }
+                        catch (ArgumentException) { }
+
                         if (OriginalLinesCount == 1)
                         {
                             continue;//когда одна строка не тратить время на её разбор
@@ -627,61 +636,82 @@ namespace TranslationHelper.Formats
                     List<string> extralines = new List<string>();
                     for (int lineNumber = 0; lineNumber < TranslationLinesCount; lineNumber++)
                     {
-                        try
+                        if (LinesCountisEqual) //когда количество строк равно, просто добавлять валидные строки в словарь
                         {
-                            if (LinesCountisEqual) //когда количество строк равно, просто добавлять валидные строки в словарь
+                            if (!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
                             {
-                                if (!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
+                                try
                                 {
-                                    ProjectData.CurrentProject.TablesLinesDict.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
-                                }
-                            }
-                            else
-                            {
-                                if (lineNumber < OriginalLinesCount - 1) // пока номер строки меньше номера последней строки в оригинале
-                                {
-                                    if (!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
+                                    lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                                     {
-                                        ProjectData.CurrentProject.TablesLinesDict.Add(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                        ProjectData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                     }
                                 }
-                                else // номер строки равен номеру последней строки оригинала
-                                {
-                                    if (lineNumber == TranslationLinesCount - 1) //если номер строки равен номеру последней строки в переводе
-                                    {
-                                        if (extralines.Count > 0) // если список экстра строк не пустой
-                                        {
-                                            extralines.Add(TranslationLines[lineNumber]); // добавить последнюю строку в переводе
-                                            string result = string.Join(Environment.NewLine, extralines); // объединить экстра строки в одну
-
-
-                                            if (!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) //если словарь не содержит последнюю строку оригинала
-                                                && result.Trim().Length > 0 // объединенные строки без пробельных символов и символов новой строки - не пустые 
-                                                && OriginalLines[OriginalLinesCount - 1] != result) // оригинал не равен переводу
-                                            {
-                                                //добавить оригинал с переводом содержащим больше строк, чем в оригинале
-                                                ProjectData.CurrentProject.TablesLinesDict.Add(OriginalLines[OriginalLinesCount - 1], result/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // при пустом списке экстра строк добавить в словарь оригинал с переводом, если валидный
-                                            if (!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[OriginalLinesCount - 1] != TranslationLines[lineNumber])
-                                            {
-                                                ProjectData.CurrentProject.TablesLinesDict.Add(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
-                                            }
-                                        }
-                                    }
-                                    else // пока номер текущей строки меньше номера последней строки в переводе, добавлять экстра строки в один список
-                                    {
-                                        extralines.Add(TranslationLines[lineNumber]);
-                                    }
-                                }
+                                catch (ArgumentException) { }
                             }
                         }
-                        catch
+                        else
                         {
+                            if (lineNumber < OriginalLinesCount - 1) // пока номер строки меньше номера последней строки в оригинале
+                            {
+                                if (/*!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) &&*/ TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
+                                {
+                                    try
+                                    {
+                                        lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
+                                        {
+                                            ProjectData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                        }
+                                    }
+                                    catch (ArgumentException) { }
+                                }
+                            }
+                            else // номер строки равен номеру последней строки оригинала
+                            {
+                                if (lineNumber == TranslationLinesCount - 1) //если номер строки равен номеру последней строки в переводе
+                                {
+                                    if (extralines.Count > 0) // если список экстра строк не пустой
+                                    {
+                                        extralines.Add(TranslationLines[lineNumber]); // добавить последнюю строку в переводе
+                                        string result = string.Join(Environment.NewLine, extralines); // объединить экстра строки в одну
 
+
+                                        if (/*!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1])*/ //если словарь не содержит последнюю строку оригинала
+                                            /*&&*/ result.Trim().Length > 0 // объединенные строки без пробельных символов и символов новой строки - не пустые 
+                                            && OriginalLines[OriginalLinesCount - 1] != result) // оригинал не равен переводу
+                                        {
+                                            try
+                                            {
+                                                lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
+                                                {
+                                                    //добавить оригинал с переводом содержащим больше строк, чем в оригинале
+                                                    ProjectData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[OriginalLinesCount - 1], result/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                                }
+                                            }
+                                            catch (ArgumentException) { }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // при пустом списке экстра строк добавить в словарь оригинал с переводом, если валидный
+                                        if (/*!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(OriginalLines[OriginalLinesCount - 1]) &&*/ TranslationLines[lineNumber].Length > 0 && OriginalLines[OriginalLinesCount - 1] != TranslationLines[lineNumber])
+                                        {
+                                            try
+                                            {
+                                                lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
+                                                {
+                                                    ProjectData.CurrentProject.TablesLinesDict.Add(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                                }
+                                            }
+                                            catch (ArgumentException) { }
+                                        }
+                                    }
+                                }
+                                else // пока номер текущей строки меньше номера последней строки в переводе, добавлять экстра строки в один список
+                                {
+                                    extralines.Add(TranslationLines[lineNumber]);
+                                }
+                            }
                         }
                     }
                     //foreach (string line in Original.SplitToLines())
