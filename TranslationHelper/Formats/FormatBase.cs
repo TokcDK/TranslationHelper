@@ -24,6 +24,19 @@ namespace TranslationHelper.Formats
 
             ProjectData.CurrentProject.CurrentFormat = this; // set format
 
+            // set filepath from projectdata filepath
+            if (string.IsNullOrWhiteSpace(FilePath))
+            {
+                if(string.IsNullOrWhiteSpace(ProjectData.FilePath))
+                {
+                    FilePath = ProjectData.FilePath;
+                }
+                else if (string.IsNullOrWhiteSpace(ProjectData.SelectedFilePath))
+                {
+                    FilePath = ProjectData.SelectedFilePath;
+                }
+            }
+
             // DontLoadDuplicates options
             if (!Properties.Settings.Default.DontLoadDuplicates)
             {
@@ -79,9 +92,9 @@ namespace TranslationHelper.Formats
         /// in result can be added new project which will be used Ext and this identifier to open valid standalone files.
         /// </summary>
         /// <returns></returns>
-        internal virtual bool ExtIdentifier()
+        internal virtual int ExtIdentifier()
         {
-            return false;
+            return 0; // 0 means not use identifier
         }
 
         /// <summary>

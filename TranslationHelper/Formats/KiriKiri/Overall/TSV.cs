@@ -13,11 +13,6 @@ namespace TranslationHelper.Formats.KiriKiri
             return ".tsv";
         }
 
-        internal override bool ExtIdentifier()
-        {
-            return true;
-        }
-
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.TrimmedLine.StartsWith(";") || !ParseData.Line.Contains("	"))

@@ -12,9 +12,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
         }
 
-        internal override bool ExtIdentifier()
+        internal override int ExtIdentifier()
         {
-            return Path.GetFileName(ProjectData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)).ToUpperInvariant() == "JS";
+            return (Path.GetFileName(ProjectData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)).ToUpperInvariant() == "JS" ? 1 : -1);
         }
 
         //protected static bool IsPluginsJS = false; //for some specific to plugins.js operations

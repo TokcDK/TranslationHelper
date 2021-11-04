@@ -14,10 +14,10 @@ namespace TranslationHelper.Formats.RPGMTrans
             return ".txt";
         }
 
-        internal override bool ExtIdentifier()
+        internal override int ExtIdentifier()
         {
             var patchfile = Path.GetFullPath(Path.GetDirectoryName(ProjectData.SelectedFilePath) + @"\..\RPGMKTRANSPATCH");
-            return File.Exists(patchfile) && Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)) == "patch";
+            return File.Exists(patchfile) && Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)) == "patch" ? 1 : -1;
         }
 
         internal override string Name()
