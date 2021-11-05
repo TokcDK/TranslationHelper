@@ -16,6 +16,8 @@ namespace TranslationHelper.Projects.ZZZZFormats
         {
         }
 
+        public override bool IsSaveToSourceFile => true; // we opened standalone file and will write in it
+
         private void GetValidOpenable()
         {
             formatsTypes = GetListOfSubClasses.Inherited.GetListOfInheritedTypes(typeof(FormatStringBase));

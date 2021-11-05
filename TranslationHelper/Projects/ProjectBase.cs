@@ -24,6 +24,11 @@ namespace TranslationHelper.Projects
         }
 
         /// <summary>
+        /// In some cases like opened file by extension it can be useful to detect when need to save file n place where it was opened
+        /// </summary>
+        public virtual bool IsSaveToSourceFile => false;
+
+        /// <summary>
         /// Current parsing format
         /// </summary>
         public FormatBase CurrentFormat;

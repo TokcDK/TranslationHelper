@@ -749,12 +749,16 @@ namespace TranslationHelper
         internal bool FileDataWasChanged;
         private async void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (ProjectData.CurrentProject.TablesLinesDict != null && ProjectData.CurrentProject.TablesLinesDict.Count > 0)
+            if (Properties.Settings.Default.DontLoadDuplicates && ProjectData.CurrentProject.TablesLinesDict != null && ProjectData.CurrentProject.TablesLinesDict.Count > 0)
             {
                 ProjectData.CurrentProject.TablesLinesDict.Clear();
             }
             await Task.Run(() => new FunctionsSave().PrepareToWrite()).ConfigureAwait(true);
             ProjectData.CurrentProject.AfterTranslationWriteActions();
+            if(Properties.Settings.Default.DontLoadDuplicates)
+            {
+                ProjectData.CurrentProject.TablesLinesDict = null;
+            }
         }
 
         /// <summary>

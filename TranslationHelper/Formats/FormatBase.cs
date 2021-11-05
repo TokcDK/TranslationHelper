@@ -539,7 +539,7 @@ namespace TranslationHelper.Formats
         }
 
         object SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock = new object();
-        bool TablesLinesDictFilled;
+        bool TablesLinesDictFilled = false;
         /// <summary>
         /// add all original\translation pairs of datatable rows in Dictionary<br/>
         /// also split multiline values and add all of their lines in Dictionary
@@ -552,6 +552,11 @@ namespace TranslationHelper.Formats
             if (!Properties.Settings.Default.DontLoadDuplicates) // skip if do not load duplicates option is disabled
             {
                 return;
+            }
+
+            if (ProjectData.CurrentProject.TablesLinesDict == null)
+            {
+                ProjectData.CurrentProject.TablesLinesDict = new Dictionary<string, string>();
             }
 
             if (onlyOneTable)

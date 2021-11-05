@@ -293,7 +293,7 @@ namespace TranslationHelper.Formats
             {
                 if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(FilePath))
                 {
-                    File.WriteAllText(filePath.Length > 0 ? filePath : GetFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
+                    File.WriteAllText(filePath.Length > 0 ? filePath : ProjectData.CurrentProject.IsSaveToSourceFile ? base.GetFilePath() : GetFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
                     return true;
                 }
             }
