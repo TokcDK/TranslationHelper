@@ -12,10 +12,14 @@ namespace TranslationHelper.Formats.RPGMTransPatch
         public RPGMKTRANSPATCH()
         {
         }
+        protected override string PatchFileID() // using for write rpgmaker trans patch v3
+        {
+            return "> RPGMAKER TRANS PATCH FILE VERSION 3.2";
+        }
 
         internal override bool Open()
         {
-            FormatBase format = new TranslationHelper.Formats.RPGMTrans.TXT
+            FormatBase format = new TXTv3
             {
                 FilePath = FilePath
             };
@@ -27,7 +31,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
             return WritePatchV3();
         }
 
-        private bool WritePatchV3()
+        private static bool WritePatchV3()
         {
             var ret = false;
             List<string> LinesToWrite = new List<string>

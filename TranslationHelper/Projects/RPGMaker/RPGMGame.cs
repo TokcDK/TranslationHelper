@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
-using TranslationHelper.Formats.RPGMTrans;
+using TranslationHelper.Formats.RPGMTransPatch;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
@@ -77,7 +77,7 @@ namespace TranslationHelper.Projects
         {
             patchdir = Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(ProjectData.SelectedGameDir) + "_patch");
 
-            return OpenSaveFilesBase(patchdir, typeof(TXT), "*.txt");
+            return OpenSaveFilesBase(patchdir, typeof(TXTv3), "*.txt");
         }
 
         private bool Patching()
@@ -353,7 +353,7 @@ namespace TranslationHelper.Projects
 
         internal override bool Save()
         {
-            OpenSaveFilesBase(patchdir, typeof(TXT), "*.txt");//not need to check return value here
+            OpenSaveFilesBase(patchdir, typeof(TXTv3), "*.txt");//not need to check return value here
 
             return Patching();
             //return OpenSaveFilesBase(patchdir, new TXT(), "*.txt") && Patching();
@@ -361,7 +361,7 @@ namespace TranslationHelper.Projects
 
         internal override void PreSaveDB()
         {
-            OpenSaveFilesBase(patchdir, typeof(TXT), "*.txt");
+            OpenSaveFilesBase(patchdir, typeof(TXTv3), "*.txt");
         }
 
         internal override void AfterTranslationWriteActions()

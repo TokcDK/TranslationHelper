@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using TranslationHelper.Data;
-using TranslationHelper.Formats.RPGMTrans;
+using TranslationHelper.Formats.RPGMTransPatch;
 
 namespace TranslationHelper.Projects
 {
@@ -30,12 +30,12 @@ namespace TranslationHelper.Projects
 
         internal override bool Open()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(TXT), "*.txt");
+            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(TXTv3), "*.txt");
         }
 
         internal override bool Save()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(TXT), "*.txt");
+            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(TXTv3), "*.txt");
         }
     }
 }

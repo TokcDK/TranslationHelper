@@ -1,51 +1,40 @@
-﻿using System.IO;
-using TranslationHelper.Data;
-using TranslationHelper.Main.Functions;
+﻿using System.Collections.Generic;
+using TranslationHelper.Formats.RPGMTransPatch;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 {
-    class TXT : WolfRPGBase
+    class TXT : PatchTXTBase
     {
         public TXT()
         {
         }
 
-        internal override string Ext()
+        internal override string Name()
         {
-            return ".txt";
+            return "WolfRPG patch txt";
         }
 
-        internal override bool Open()
+        protected override string PatchFileID()
         {
-            return ParseFile();
+            return "> WOLF TRANS PATCH FILE VERSION 1.0";
         }
 
-        internal override bool Save()
+        ///*bug in wolftrans, sometime filenames placed in next line*/
+        bool wolftransfail;
+        protected override bool ContextExtraCondition()
         {
-            ProjectData.SaveFileMode = true;
-            return ParseFile();
+            return wolftransfail = (!startsWinContext && ParseData.Line.EndsWith(" < UNTRANSLATED"));
         }
-
-        protected override KeywordActionAfter ParseStringFileLine()
+        protected override bool IsExtraConditionExecuted(List<string> contextLines)
         {
-            return CheckAndParse();
-        }
-
-        protected override bool WriteFileData(string filePath = "")
-        {
-            try
+            if (wolftransfail)
             {
-                if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0)
-                {
-                    File.WriteAllText(filePath.Length > 0 ? filePath : FilePath, ParseData.ResultForWrite.ToString().Replace(Properties.Settings.Default.NewLine, "\n"), FunctionsFileFolder.GetEncoding(FilePath));
-                    return true;
-                }
+                contextLines[contextLines.Count - 1] = contextLines[contextLines.Count - 1] + ParseData.Line;
+                return true;
             }
-            catch
-            {
 
-            }
             return false;
         }
+        //------------------------------------------------------
     }
 }

@@ -9,6 +9,11 @@ namespace TranslationHelper.Formats.WolfRPG
         {
         }
 
+        internal override string Ext()
+        {
+            return ".txt";
+        }
+
         protected override void PreOpenExtraActions()
         {
             unused = false;
@@ -23,14 +28,10 @@ namespace TranslationHelper.Formats.WolfRPG
         /// </summary>
         protected bool unused;
 
-        /// <summary>
-        /// is wolftrans patch
-        /// </summary>
-        bool IsWolfTrans = false;
-        /// <summary>
-        /// is rpgmtrans v2 patch
-        /// </summary>
-        bool IsRPGMTransVerson2 = false;
+        protected override KeywordActionAfter ParseStringFileLine()
+        {
+            return CheckAndParse();
+        }
 
         /// <summary>
         /// check if it is patch txt
@@ -40,20 +41,7 @@ namespace TranslationHelper.Formats.WolfRPG
         {
             if (!verchecked)
             {
-                if (ParseData.Line == "> RPGMAKER TRANS PATCH FILE VERSION 3.2")
-                {
-                    IsWolfTrans = false;
-                    IsRPGMTransVerson2 = false;
-                }
-                else if (ParseData.Line == "# RPGMAKER TRANS PATCH FILE VERSION 2.0")
-                {
-                    IsRPGMTransVerson2 = true;
-                }
-                else if (ParseData.Line == "> WOLF TRANS PATCH FILE VERSION 1.0")
-                {
-                    IsWolfTrans = true;
-                }
-                else
+                if (ParseData.Line != PatchFileID())
                 {
                     return false; //Not a patch file, break parsing
                 }
@@ -65,13 +53,10 @@ namespace TranslationHelper.Formats.WolfRPG
         }
 
         /// <summary>
-        /// is wolftrans
+        /// patch file identifier string.
         /// </summary>
-        bool W => IsWolfTrans;
-        /// <summary>
-        /// is rpgmtrans v2
-        /// </summary>
-        bool P2 => !IsWolfTrans && IsRPGMTransVerson2;
+        /// <returns></returns>
+        protected abstract string PatchFileID();
 
         /// <summary>
         /// check if string block begin
@@ -81,37 +66,38 @@ namespace TranslationHelper.Formats.WolfRPG
         {
             if (!unused)//означает, что перевод отсюда и далее не используется в игре и помечен RPGMakerTrans этой строкой
             {
-                if (P2)
-                {
-                    if (ParseData.Line == "# UNUSED TRANSLATABLES")
-                    {
-                        unused = true;
-                    }
-                }
-                else
-                {
-                    unused = true;
-                }
+                unused = GetUnused();
             }
 
-            return ParseData.Line.StartsWith(P2 ? "# TEXT STRING" : "> BEGIN STRING");
+            return ParseData.Line.StartsWith(StringBlockBeginId());
+        }
+
+        /// <summary>
+        /// determine unused part of patch txt
+        /// default for wolf,rpgm3
+        /// </summary>
+        protected virtual bool GetUnused()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// determines begin of string block
+        /// default for wolf,rpgm3
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string StringBlockBeginId()
+        {
+            return "> BEGIN STRING";
         }
 
         /// <summary>
         /// read advice for rpgm trans patch v2
         /// </summary>
         /// <param name="advice"></param>
-        protected void GetAdvice(out string advice)
+        protected virtual void GetAdvice(out string advice)
         {
-            if (ParseData.Line.StartsWith("# ADVICE")) //advice missing sometimes
-            {
-                advice = ParseData.Line;
-                ReadLine();
-            }
-            else
-            {
-                advice = "";
-            }
+            advice = "";
         }
 
         /// <summary>
@@ -121,24 +107,41 @@ namespace TranslationHelper.Formats.WolfRPG
         protected void GetOriginal(out List<string> originalLines)
         {
             originalLines = new List<string>();
-            if (P2)
-            {
-                //add first original line (was set last to line in check of previous block)
-                originalLines.Add(ParseData.Line);
-            }
+            GetOriginalPre(originalLines);
 
-            while (!ReadLine().StartsWith(P2 ? "# TRANSLATION" : "> CONTEXT"))
+            while (!ReadLine().StartsWith(OriginalEndID()))
             {
                 originalLines.Add(ParseData.Line);
             }
 
-            if (P2)
-            {
-                ReadLine();//skip # TRANSLATION
-            }
+            GetOriginalPost();
         }
 
-        bool IsitemAttr = false;
+        /// <summary>
+        /// original text end identifier
+        /// default for wolf,rpgm3
+        /// </summary>
+        protected virtual string OriginalEndID()
+        {
+            return "> CONTEXT";
+        }
+
+        /// <summary>
+        /// do nothing for wolf,rpgm3
+        /// </summary>
+        protected virtual void GetOriginalPost() { }
+
+        /// <summary>
+        /// read 1st line for rpgm trans patch v2
+        /// do nothing for wolf,rpgm3
+        /// </summary>
+        /// <param name="originalLines"></param>
+        protected virtual void GetOriginalPre(List<string> originalLines) { }
+
+        /// <summary>
+        /// true if current line is starts with context id
+        /// </summary>
+        protected bool startsWinContext;
         /// <summary>
         /// read context lines
         /// </summary>
@@ -146,34 +149,69 @@ namespace TranslationHelper.Formats.WolfRPG
         protected void GetContext(out List<string> contextLines)
         {
             contextLines = new List<string>();
-            if (P2)
-            {
-                IsitemAttr = false;
-            }
-            else
-            {
-                //add first context line (was set last to line in check of previous block)
-                contextLines.Add(ParseData.Line);
-            }
+            GetContextPre(contextLines);
 
             //add rest of context lines
-            bool wolftransfail = false;
-            while (ReadLine().StartsWith(P2 ? "# CONTEXT" : "> CONTEXT") || (W && (wolftransfail = ParseData.Line.EndsWith(" < UNTRANSLATED"))/*bug in wolftrans, sometime filenames placed in next line*/))
+            while (startsWinContext = ReadLine().StartsWith(ContextInfoID()) || ContextExtraCondition())
             {
-                if (wolftransfail)
+                if (!IsExtraConditionExecuted(contextLines))
                 {
-                    contextLines[contextLines.Count - 1] = contextLines[contextLines.Count - 1] + ParseData.Line;
-                }
-                else
-                {
-                    if (P2 && !IsitemAttr && ParseData.Line.EndsWith("itemAttr/UsageMessage"))
-                    {
-                        IsitemAttr = true;
-                    }
+                    PreContextAdd();
 
                     contextLines.Add(ParseData.Line);
                 }
             }
+        }
+
+        /// <summary>
+        /// pre context lines add action
+        /// add line for wolf,rpgm3
+        /// reset itemattr value for rpgm3
+        /// </summary>
+        /// <param name="contextLines"></param>
+        protected virtual void GetContextPre(List<string> contextLines)
+        {
+            //add first context line (was set last to line in check of previous block)
+            contextLines.Add(ParseData.Line);
+        }
+
+        /// <summary>
+        /// execute before context line add
+        /// no actions by default
+        /// </summary>
+        protected virtual void PreContextAdd()
+        {
+        }
+
+        /// <summary>
+        /// extra check for context line identify
+        /// false by default
+        /// using by wolf patch
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool ContextExtraCondition()
+        {
+            return false; //(W && (wolftransfail = (!startsWinContext && ParseData.Line.EndsWith(" < UNTRANSLATED"))
+        }
+
+        /// <summary>
+        /// action on extra condition execute
+        /// false by default
+        /// using by wolf patch
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool IsExtraConditionExecuted(List<string> contextLines)
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// context info identifier
+        /// default for wolf,rpgm3
+        /// </summary>
+        protected virtual string ContextInfoID()
+        {
+            return "> CONTEXT";
         }
 
         /// <summary>
@@ -187,10 +225,19 @@ namespace TranslationHelper.Formats.WolfRPG
                 //add last set line in check of previous context block
                 ParseData.Line
             };
-            while (!ReadLine().StartsWith(P2 ? "# END STRING" : "> END STRING"))
+            while (!ReadLine().StartsWith(EndTranslationID()))
             {
                 translationLines.Add(ParseData.Line);
             }
+        }
+
+        /// <summary>
+        /// string block and translation end identifier.
+        /// default for wolf,rpgm3
+        /// </summary>
+        protected virtual string EndTranslationID()
+        {
+            return "> END STRING";
         }
 
         /// <summary>
@@ -221,34 +268,9 @@ namespace TranslationHelper.Formats.WolfRPG
         /// <summary>
         /// read string block parts data
         /// </summary>
-        protected void ParseBeginEndBlock()
+        protected virtual void ParseBeginEndBlock()
         {
-            List<string> originalLines;
-            List<string> contextLines;
-            string advice = "";
-            if (P2)
-            {
-                //------------------------------------
-                //read context
-                GetContext(out contextLines);
-                //------------------------------------
-                //read advice
-                GetAdvice(out advice);
-                //------------------------------------
-                //read original
-                GetOriginal(out originalLines);
-                //------------------------------------
-            }
-            else
-            {
-                //------------------------------------
-                //read original
-                GetOriginal(out originalLines);
-                //------------------------------------
-                //read context
-                GetContext(out contextLines);
-                //------------------------------------
-            }
+            ParseOriginalAdviceContext(out List<string> originalLines, out List<string> contextLines, out string advice);
 
             //add translation if exists
             GetTranslation(out List<string> translationLines);
@@ -256,6 +278,24 @@ namespace TranslationHelper.Formats.WolfRPG
 
             //add begin end string block data
             GetSetBlock(originalLines, contextLines, translationLines, advice);
+        }
+
+        /// <summary>
+        /// Parse original, context and advice blocks
+        /// </summary>
+        /// <param name="originalLines"></param>
+        /// <param name="contextLines"></param>
+        /// <param name="advice"></param>
+        protected virtual void ParseOriginalAdviceContext(out List<string> originalLines, out List<string> contextLines, out string advice)
+        {
+            advice = "";
+            //------------------------------------
+            //read original
+            GetOriginal(out originalLines);
+            //------------------------------------
+            //read context
+            GetContext(out contextLines);
+            //------------------------------------
         }
 
         /// <summary>
@@ -268,7 +308,7 @@ namespace TranslationHelper.Formats.WolfRPG
 
             if (ProjectData.OpenFileMode)
             {
-                if (P2 && IsitemAttr)//skip itemAttr for p2
+                if (IsOpenModeSkipTheBlock())
                 {
                     return;
                 }
@@ -276,11 +316,11 @@ namespace TranslationHelper.Formats.WolfRPG
                 var context = string.Join("\r\n", contextLines);
                 if (string.IsNullOrEmpty(translation))
                 {
-                    AddRowData(original, context + (P2 ? "\r\n" + advice : ""), CheckInput: true);
+                    AddRowData(original, context + AdviceInfo(advice), CheckInput: true);
                 }
                 else
                 {
-                    AddRowData(new[] { original, translation }, context + (P2 ? "\r\n" + advice : ""), CheckInput: true);
+                    AddRowData(new[] { original, translation }, context + AdviceInfo(advice), CheckInput: true);
                 }
             }
             else
@@ -302,26 +342,41 @@ namespace TranslationHelper.Formats.WolfRPG
 
                 SetContext(contextLines, !string.IsNullOrEmpty(translation));
 
-                ParseData.Line =
-                    P2
-                    ?
-                                "# TEXT STRING"
-                                + "\n"
-                                + (!translated ? "# UNTRANSLATED" + "\n" : string.Empty)
-                                + string.Join("\n", contextLines)
-                                + "\n"
-                                + advice
-                                + "\n"
-                                + original
-                                + "\n"
-                                + "# TRANSLATION"
-                                + "\n"
-                                + translation
-                                + "\n"
-                                + "# END STRING"
+                ParseData.Line = GetNewTextBlockContent(translated, contextLines, advice, original, translation);
 
-                    :
-                                "> BEGIN STRING"
+                SaveModeAddLine(newline: "\n");//add endstring line
+            }
+        }
+
+        /// <summary>
+        /// advice info
+        /// using in rpgm2
+        /// </summary>
+        /// <param name="advice"></param>
+        /// <returns></returns>
+        protected virtual string AdviceInfo(string advice)
+        {
+            return "";
+        }
+
+        /// <summary>
+        /// check if block is invalid and must be skipped
+        /// need only for open file mode
+        /// default for wolf,rpgm3
+        /// </summary>
+        protected virtual bool IsOpenModeSkipTheBlock()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// text block set
+        /// default for wolf,rpgm3
+        /// </summary>
+        protected virtual string GetNewTextBlockContent(bool translated, List<string> contextLines, string advice, string original, string translation)
+        {
+            return
+                                StringBlockBeginId()
                                 + "\n" +
                                 original
                                 + "\n" +
@@ -329,25 +384,18 @@ namespace TranslationHelper.Formats.WolfRPG
                                 + "\n" +
                                 translation
                                 + "\n" +
-                                "> END STRING"
-                    ;
-
-                SaveModeAddLine(newline: "\n");//add endstring line
-            }
+                                EndTranslationID()
+                                ;
         }
 
         /// <summary>
         /// set context when with translated\untranslated tags
+        /// need only for wolftrans and rpgmtrans patch v3
         /// </summary>
         /// <param name="contextLines"></param>
         /// <param name="translated"></param>
-        protected void SetContext(List<string> contextLines, bool translated)
+        protected virtual void SetContext(List<string> contextLines, bool translated)
         {
-            if (P2)
-            {
-                return;//need only for wolftrans and rpgmtrans patch v3
-            }
-
             for (int i = 0; i < contextLines.Count; i++)
             {
                 var ends = contextLines[i].TrimEnd().EndsWith(" < UNTRANSLATED");

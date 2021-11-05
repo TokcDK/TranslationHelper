@@ -1,17 +1,12 @@
 ﻿using System.IO;
 using TranslationHelper.Data;
 
-namespace TranslationHelper.Formats.RPGMTrans
+namespace TranslationHelper.Formats.RPGMTransPatch
 {
-    class TXT : RPGMTransPatchBase
+    class TXTv3 : PatchTXTBase
     {
-        public TXT()
+        public TXTv3()
         {
-        }
-
-        internal override string Ext()
-        {
-            return ".txt";
         }
 
         internal override int ExtIdentifier()
@@ -25,9 +20,9 @@ namespace TranslationHelper.Formats.RPGMTrans
             return "RPGMTrans patch txt";
         }
 
-        protected override KeywordActionAfter ParseStringFileLine()
+        protected override string PatchFileID()
         {
-            return CheckAndParse();
+            return "> RPGMAKER TRANS PATCH FILE VERSION 3.2";
         }
     }
 }
