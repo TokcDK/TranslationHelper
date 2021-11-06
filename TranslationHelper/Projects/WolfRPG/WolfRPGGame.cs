@@ -267,6 +267,7 @@ namespace TranslationHelper.Projects.WolfRPG
                         try
                         {
                             BakRestore();//restore original files before patch creation
+                            ProjectData.Main.ProgressInfo(true, "Patching..");
                             ret = RubyWolfTrans.Start();
                             RubyWolfTrans.WaitForExit();
                         }
@@ -291,7 +292,7 @@ namespace TranslationHelper.Projects.WolfRPG
                             MessageBox.Show(T._("Error occured while patch execution."));
                             return false;
                         }
-                        if (RubyWolfTrans.ExitCode > 0)
+                        else if (RubyWolfTrans.ExitCode > 0)
                         {
                             MessageBox.Show(T._("Patch creation finished unsuccesfully.")
                                 + "Exit code="
@@ -331,10 +332,13 @@ namespace TranslationHelper.Projects.WolfRPG
 
         private void ReplaceFilesWithTranslated()
         {
+            //.mps,.dat,.project using in patcher
             var translatedDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(ProjectData.SelectedGameDir), "translated");
             if (Directory.Exists(translatedDir))
             {
-                foreach (var file in Directory.EnumerateFiles(translatedDir, "*", SearchOption.AllDirectories))
+                foreach (var file in _projectTranslatableFilesExtensionMasks
+                .SelectMany(f => Directory.GetFiles(translatedDir, f, searchOption: SearchOption.AllDirectories))
+                .Select(filePath => filePath.Replace(translatedDir, ProjectData.SelectedGameDir)))
                 {
                     try
                     {
@@ -360,10 +364,13 @@ namespace TranslationHelper.Projects.WolfRPG
             }
         }
 
+        readonly string[] _projectTranslatableFilesExtensionMasks = new[] { "*.mps", "*.dat", "*.project" };
         internal override bool BakCreate()
         {
+            //.mps,.dat,.project using in patcher
             var translatedDir = new DirectoryInfo(Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(ProjectData.SelectedGameDir), "translated"));
-            return translatedDir.Exists && BackupRestorePaths(translatedDir.GetFiles("*.*", SearchOption.AllDirectories).Select(filePath => filePath.FullName.Replace(translatedDir.FullName, ProjectData.SelectedGameDir)).ToArray());
+            var filePaths = _projectTranslatableFilesExtensionMasks.SelectMany(f => translatedDir.GetFiles(f, searchOption: SearchOption.AllDirectories)).Select(filePath => filePath.FullName.Replace(translatedDir.FullName, ProjectData.SelectedGameDir)).ToArray();
+            return translatedDir.Exists && BackupRestorePaths(filePaths);
         }
 
         internal override bool BakRestore()

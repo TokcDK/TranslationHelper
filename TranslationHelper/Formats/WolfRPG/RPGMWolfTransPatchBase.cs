@@ -259,7 +259,7 @@ namespace TranslationHelper.Formats.WolfRPG
             }
             else
             {
-                SaveModeAddLine(newline:"\n");
+                SaveModeAddLine(newline: "\n");
             }
 
             return KeywordActionAfter.Continue;
@@ -329,18 +329,18 @@ namespace TranslationHelper.Formats.WolfRPG
                 var translated =
                     ProjectData.SaveFileMode // save mode
                     && IsValidString(original) // valid original
-                    && SetTranslation(ref trans)  // translation found
-                    && (!string.IsNullOrEmpty(trans)) // translation not null and not empty
-                    && (original != trans && trans != translation) // translation not equal original and previous translation
+                    && SetTranslation(ref trans, translation)  // translation found
+                    // && trans != translation // new translation not equal to previous in case when was already old translation but it was removed
                     ;
 
                 if (translated)
                 {
-                    ParseData.Ret = true;
-                    translation = trans;
+                    ParseData.Ret = true; // even if new translation is empty or equal, it must be writed in file because it was changed
+                    translation = (trans == original) ? string.Empty : trans;
+                    translated = !string.IsNullOrEmpty(translation); // check if result translation is not empty and reset translated
                 }
 
-                SetContext(contextLines, !string.IsNullOrEmpty(translation));
+                SetContext(contextLines, translated); // here is again check translation because if it is empty or equals original must be added untranslated tag
 
                 ParseData.Line = GetNewTextBlockContent(translated, contextLines, advice, original, translation);
 
