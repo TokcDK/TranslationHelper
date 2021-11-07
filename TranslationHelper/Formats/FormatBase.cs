@@ -122,7 +122,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         internal virtual string TableName()
         {
-            return (ProjectData.CurrentProject.SubpathInTableName ? Path.GetDirectoryName(GetFilePath()).Replace(ProjectData.OpenedFilesDir, string.Empty) : string.Empty) + (UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(GetFilePath()) : Path.GetFileName(GetFilePath()));
+            return (ProjectData.CurrentProject.SubpathInTableName ? Path.GetDirectoryName(GetFilePath()).Replace(ProjectData.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar : string.Empty) + (UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(GetFilePath()) : Path.GetFileName(GetFilePath()));
         }
 
         /// <summary>

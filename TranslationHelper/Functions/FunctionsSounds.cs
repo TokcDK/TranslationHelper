@@ -7,6 +7,7 @@
         /// </summary>
         internal static void SaveDBComplete()
         {
+
             PlayBeep();
         }
 
@@ -42,19 +43,23 @@
             PlayExclamation();
         }
 
+        static object _soundLocker = new object();
         internal static void PlayBeep()
         {
-            System.Media.SystemSounds.Beep.Play();
+            lock(_soundLocker)
+            {
+                new System.Media.SoundPlayer(@"RES\sounds\complete.wav").Play();
+            }
         }
 
         internal static void PlayExclamation()
         {
-            System.Media.SystemSounds.Exclamation.Play();
+            //PlayBeep();
         }
 
         internal static void PlayAsterisk()
         {
-            System.Media.SystemSounds.Asterisk.Play();
+            //PlayBeep();
         }
     }
 }
