@@ -122,6 +122,7 @@
     <Compile Include="Extensions\ExtensionsString.cs" />
     <Compile Include="Extensions\ExtensionsTable.cs" />
     <Compile Include="Extensions\ExtensionsElements.cs" />
+    <Compile Include="ExternalAdditions\ConcurrentSet.cs" />
     <Compile Include="ExternalAdditions\CopyFolder.cs" />
     <Compile Include="ExternalAdditions\DataGridViewEx.cs" />
     <Compile Include="ExternalAdditions\GDI.cs" />

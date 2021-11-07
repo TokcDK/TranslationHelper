@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -19,7 +20,7 @@ namespace TranslationHelper.Projects
         {
             if (ProjectData.SaveFileMode && Properties.Settings.Default.DontLoadDuplicates)
             {
-                TablesLinesDict = new Dictionary<string, string>();
+                TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
         }
 
@@ -469,13 +470,13 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// For save mode. File the dictionary with row's original,translation values
         /// </summary>
-        internal Dictionary<string, string> TablesLinesDict;
+        internal ConcurrentDictionary<string, string> TablesLinesDict;
 
         /// <summary>
         /// Hash of adding original values to prevent duplicates to be added.
         /// filtering records duplicates while adding to main work data table.
         /// </summary>
-        internal HashSet<string> Hashes;
+        internal ConcurrentSet<string> Hashes;
 
         /// <summary>
         /// add equal lines to TablesLinesDict while save translation

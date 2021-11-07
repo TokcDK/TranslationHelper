@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
@@ -39,11 +40,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesL
             return IsAll && base.IsValidRow() && !string.IsNullOrWhiteSpace(SelectedRow[0].ToString()) && !string.IsNullOrWhiteSpace(SelectedRow[1] + string.Empty);
         }
 
-        internal Dictionary<string, string> Translations;
+        internal ConcurrentDictionary<string, string> Translations;
 
         protected FillEmptyTablesLinesDictBase()
         {
-            Translations = new Dictionary<string, string>();
+            Translations = new ConcurrentDictionary<string, string>();
         }
 
         protected override bool Apply()

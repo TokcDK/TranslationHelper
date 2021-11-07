@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -48,14 +49,14 @@ namespace TranslationHelper.Formats
             {
                 if (ProjectData.CurrentProject.TablesLinesDict == null)
                 {
-                    ProjectData.CurrentProject.TablesLinesDict = new Dictionary<string, string>();
+                    ProjectData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
                 }
             }
             else
             {
                 if (ProjectData.CurrentProject.Hashes == null)
                 {
-                    ProjectData.CurrentProject.Hashes = new HashSet<string>();
+                    ProjectData.CurrentProject.Hashes = new ConcurrentSet<string>();
                 }
             }
         }
@@ -308,7 +309,7 @@ namespace TranslationHelper.Formats
                 }
 
                 // add to hashes when only unique values
-                ProjectData.CurrentProject.Hashes.Add(original);
+                ProjectData.CurrentProject.Hashes.TryAdd(original);
             }
             else
             {
@@ -518,7 +519,7 @@ namespace TranslationHelper.Formats
 
             if (ProjectData.CurrentProject.TablesLinesDict == null)
             {
-                ProjectData.CurrentProject.TablesLinesDict = new Dictionary<string, string>();
+                ProjectData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
 
             if (ProjectData.CurrentProject.TablesLinesDict.Count > 0)
@@ -535,7 +536,7 @@ namespace TranslationHelper.Formats
                     continue;
                 }
 
-                ProjectData.CurrentProject.TablesLinesDict.Add(Original, Translation);
+                ProjectData.CurrentProject.TablesLinesDict.TryAdd(Original, Translation);
             }
         }
 
@@ -557,7 +558,7 @@ namespace TranslationHelper.Formats
 
             if (ProjectData.CurrentProject.TablesLinesDict == null)
             {
-                ProjectData.CurrentProject.TablesLinesDict = new Dictionary<string, string>();
+                ProjectData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
 
             if (onlyOneTable)
@@ -719,7 +720,7 @@ namespace TranslationHelper.Formats
                                             {
                                                 lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                                                 {
-                                                    ProjectData.CurrentProject.TablesLinesDict.Add(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                                    ProjectData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                                 }
                                             }
                                             catch (ArgumentException) { }
