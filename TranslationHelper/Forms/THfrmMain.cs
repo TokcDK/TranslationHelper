@@ -755,7 +755,7 @@ namespace TranslationHelper
             }
             await Task.Run(() => new FunctionsSave().PrepareToWrite()).ConfigureAwait(true);
             ProjectData.CurrentProject.AfterTranslationWriteActions();
-            if(Properties.Settings.Default.DontLoadDuplicates)
+            if (Properties.Settings.Default.DontLoadDuplicates)
             {
                 ProjectData.CurrentProject.TablesLinesDict = null;
             }
@@ -1105,34 +1105,36 @@ namespace TranslationHelper
 
         private void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            UnLockDBLoad(false);
             LoadDB();
+            Invoke((Action)(() => LoadTranslationToolStripMenuItem.Enabled = true));
+        }
+
+        private void UnLockDBLoad(bool unlock = true)
+        {
+            Invoke((Action)(() =>
+            {
+                LoadTranslationToolStripMenuItem.Enabled = unlock;
+                LoadTrasnlationAsToolStripMenuItem.Enabled = unlock;
+                LoadTrasnlationAsForcedToolStripMenuItem.Enabled = unlock;
+            }));
         }
 
         internal async void LoadDB(bool force = true)
         {
-            if (IsOpeningInProcess)//Do nothing if user will try to use Open menu before previous will be finished
+            var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
+            this.lastautosavepath = lastautosavepath;
+            if (File.Exists(lastautosavepath))
             {
+                await Task.Run(() => LoadTranslationFromDB(lastautosavepath, false, force)).ConfigureAwait(true);
             }
             else
             {
-                IsOpeningInProcess = true;
-
-                var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
-                this.lastautosavepath = lastautosavepath;
-                if (File.Exists(lastautosavepath))
+                var result = MessageBox.Show(T._("DB not found. Try to load from all exist?"), T._("DB not found"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
                 {
-                    await Task.Run(() => LoadTranslationFromDB(lastautosavepath, false, force)).ConfigureAwait(true);
+                    await Task.Run(() => ProjectData.Main.LoadTranslationFromDB(lastautosavepath, true)).ConfigureAwait(true);
                 }
-                else
-                {
-                    var result = MessageBox.Show(T._("DB not found. Try to load from all exist?"), T._("DB not found"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    if (result == DialogResult.Yes)
-                    {
-                        await Task.Run(() => ProjectData.Main.LoadTranslationFromDB(lastautosavepath, true)).ConfigureAwait(true);
-                    }
-                }
-
-                IsOpeningInProcess = false;
             }
         }
 
