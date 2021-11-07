@@ -19,9 +19,9 @@ namespace TranslationHelper.Extensions
             }
 
             var names = new List<string>(listBox.GetSelectedItemsCount());
-            foreach (var item in listBox.GetSelectedItems())
+            foreach (var index in listBox.CopySelectedIndexes())
             {
-                names.Add(item.ToString());
+                names.Add(ProjectData.FilesListControl.GetItemName(index));
             }
             return string.Join(Environment.NewLine, names);
         }

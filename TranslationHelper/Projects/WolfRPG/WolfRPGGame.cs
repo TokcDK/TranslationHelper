@@ -336,12 +336,11 @@ namespace TranslationHelper.Projects.WolfRPG
         private void ReplaceFilesWithTranslated()
         {
             //.mps,.dat,.project using in patcher
-            var translatedDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(ProjectData.SelectedGameDir), "translated");
+            var translatedDir = GetTranslatedDirPath();
             if (Directory.Exists(translatedDir))
             {
                 foreach (var file in _projectTranslatableFilesExtensionMasks
-                .SelectMany(f => Directory.GetFiles(translatedDir, f, searchOption: SearchOption.AllDirectories))
-                .Select(filePath => filePath.Replace(translatedDir, ProjectData.SelectedGameDir)))
+                .SelectMany(f => Directory.GetFiles(translatedDir, f, searchOption: SearchOption.AllDirectories)))
                 {
                     try
                     {
@@ -368,10 +367,14 @@ namespace TranslationHelper.Projects.WolfRPG
         }
 
         readonly string[] _projectTranslatableFilesExtensionMasks = new[] { "*.mps", "*.dat", "*.project" };
+        string GetTranslatedDirPath()
+        {
+            return Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(ProjectData.SelectedGameDir), "translated");
+        }
         internal override bool BakCreate()
         {
             //.mps,.dat,.project using in patcher
-            var translatedDir = new DirectoryInfo(Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(ProjectData.SelectedGameDir), "translated"));
+            var translatedDir = new DirectoryInfo(GetTranslatedDirPath());
             var filePaths = _projectTranslatableFilesExtensionMasks.SelectMany(f => translatedDir.GetFiles(f, searchOption: SearchOption.AllDirectories)).Select(filePath => filePath.FullName.Replace(translatedDir.FullName, ProjectData.SelectedGameDir)).ToArray();
             return translatedDir.Exists && BackupRestorePaths(filePaths);
         }
@@ -381,7 +384,7 @@ namespace TranslationHelper.Projects.WolfRPG
             foreach (var bak in Directory.EnumerateFiles(Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.wolf.bak", SearchOption.AllDirectories))
             {
                 var ExtractedDirPath = bak.Remove(bak.Length - 9, 9);
-                if (!Directory.Exists(ExtractedDirPath))
+                if (!Directory.Exists(ExtractedDirPath) && new FileInfo(bak).Length > 1000)
                 {
                     Directory.Move(bak, bak.Remove(bak.Length - 4, 4));
                 }

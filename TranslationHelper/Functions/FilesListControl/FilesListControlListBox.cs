@@ -27,7 +27,9 @@ namespace TranslationHelper.Functions.FilesListControl
 
         public override string GetItemName(int index)
         {
-            return _listBox.Items[index] + "";
+            var fullName = _listBox.Items[index] + "";
+            var subPathEndIndex = fullName.LastIndexOf('\\');
+            return subPathEndIndex == -1 ? fullName : fullName.Substring(subPathEndIndex + 1);
         }
 
         public override int GetItemsCount()
@@ -47,7 +49,7 @@ namespace TranslationHelper.Functions.FilesListControl
 
         public override void SetSelectedIndex(int index, bool clearSelected = true)
         {
-            if(clearSelected)
+            if (clearSelected)
             {
                 _listBox.ClearSelected();
             }
