@@ -483,6 +483,11 @@ namespace TranslationHelper.Projects
         internal virtual bool TablesLinesDictAddEqual => false;
 
         /// <summary>
+        /// include subpath in table name for project where is can be included files with identical names but different folders
+        /// </summary>
+        public virtual bool SubpathInTableName => false;
+
+        /// <summary>
         /// Hardcoded fixes for cells for specific projects
         /// </summary>
         /// <returns></returns>

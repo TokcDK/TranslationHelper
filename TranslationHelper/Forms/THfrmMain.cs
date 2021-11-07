@@ -291,7 +291,7 @@ namespace TranslationHelper
         private void SetDoublebuffered(bool value)
         {
             // Double buffering can make DGV slow in remote desktop
-            if (!System.Windows.Forms.SystemInformation.TerminalServerSession)
+            if (!SystemInformation.TerminalServerSession)
             {
                 //THFileElementsDataGridView
                 Type dgvType = THFileElementsDataGridView.GetType();

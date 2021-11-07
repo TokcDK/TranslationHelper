@@ -27,11 +27,12 @@ namespace TranslationHelper.Formats
             // set filepath from projectdata filepath
             if (string.IsNullOrWhiteSpace(FilePath))
             {
-                if (string.IsNullOrWhiteSpace(ProjectData.FilePath))
-                {
-                    FilePath = ProjectData.FilePath;
-                }
-                else if (string.IsNullOrWhiteSpace(ProjectData.SelectedFilePath))
+                //if (!string.IsNullOrWhiteSpace(ProjectData.FilePath))// wrong for threaded files open
+                //{
+                //    FilePath = ProjectData.FilePath;
+                //}
+                //else
+                if (!string.IsNullOrWhiteSpace(ProjectData.SelectedFilePath))
                 {
                     FilePath = ProjectData.SelectedFilePath;
                 }
@@ -115,14 +116,12 @@ namespace TranslationHelper.Formats
         /// </summary>
         internal virtual bool UseTableNameWithoutExtension => false;
 
-        
-
         /// <summary>
         /// table name
         /// </summary>
         internal virtual string TableName()
         {
-            return Path.GetDirectoryName(FilePath).Replace(ProjectData.OpenedFilesDir, string.Empty) + (UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(FilePath) : Path.GetFileName(FilePath));
+            return (ProjectData.CurrentProject.SubpathInTableName ? Path.GetDirectoryName(GetFilePath()).Replace(ProjectData.OpenedFilesDir, string.Empty) : string.Empty) + (UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(GetFilePath()) : Path.GetFileName(GetFilePath()));
         }
 
         /// <summary>
@@ -130,7 +129,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected void AddTables()
         {
-            if (!string.IsNullOrEmpty(FilePath))
+            if (!string.IsNullOrEmpty(GetFilePath()))
             {
                 AddTables(TableName());
             }
@@ -210,7 +209,7 @@ namespace TranslationHelper.Formats
         {
             if (ProjectData.OpenFileMode)
             {
-                return AddRowData(Path.GetFileName(FilePath), RowData, RowInfo, CheckInput);
+                return AddRowData(TableName(), RowData, RowInfo, CheckInput);
             }
             else
             {
@@ -415,7 +414,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual bool FilePreOpenActions()
         {
-            if (!string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(FilePath) != Ext()) // extension must be same as set, if set
+            if (!string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(GetFilePath()) != Ext()) // extension must be same as set, if set
             {
                 return false;
             }

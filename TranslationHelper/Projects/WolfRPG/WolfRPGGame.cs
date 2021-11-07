@@ -36,6 +36,8 @@ namespace TranslationHelper.Projects.WolfRPG
             return /*ExtractWolfFiles()*/ Patch() && OpenSaveFiles();
         }
 
+        public override bool SubpathInTableName => true;
+
         private bool OpenSaveFiles()
         {
             var OrigFolder = Path.Combine(THSettings.WorkDirPath()

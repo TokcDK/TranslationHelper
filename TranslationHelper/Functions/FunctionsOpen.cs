@@ -24,12 +24,6 @@ namespace TranslationHelper.Functions
     {
         internal static async void OpenProject(string filePath = null)
         {
-            if (ProjectData.Main.IsOpeningInProcess)//Do nothing if user will try to use Open menu before previous will be finished
-            {
-                return;
-            }
-
-            ProjectData.Main.IsOpeningInProcess = true;
             if (filePath == null || !File.Exists(filePath))
             {
                 using (var THFOpen = new OpenFileDialog())
