@@ -115,8 +115,23 @@ namespace TranslationHelper.Data
         /// </summary>
         internal static Dictionary<string, Dictionary<string, HashSet<int>>> OriginalsTableRowCoordinates { get; set; }
 
+        /// <summary>
+        /// Path for selected game dir which is translating
+        /// </summary>
         internal static string SelectedGameDir { get => CurrentProject.SelectedGameDir; set => CurrentProject.SelectedGameDir = value; }
+        /// <summary>
+        /// Path for selected dir where to translate.
+        /// In most causes it is game's dir.
+        /// </summary>
         internal static string SelectedDir { get => CurrentProject.SelectedDir; set => CurrentProject.SelectedDir = value; }
+        /// <summary>
+        /// Path for selected dir where to translate.
+        /// In most causes it is game's dir.
+        /// </summary>
+        internal static string OpenedFilesDir { get => CurrentProject.OpenedFilesDir; set => CurrentProject.OpenedFilesDir = value; }
+        /// <summary>
+        /// Path to dir where project's files are storing
+        /// </summary>
         internal static string ProjectWorkDir { get => CurrentProject.ProjectWorkDir; set => CurrentProject.ProjectWorkDir = value; }
 
         /// <summary>

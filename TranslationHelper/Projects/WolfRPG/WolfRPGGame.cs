@@ -208,6 +208,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 }
 
                 var patchdir = new DirectoryInfo(Path.Combine(WorkFolder, "patch"));
+                ProjectData.OpenedFilesDir = patchdir.FullName;
                 var translateddir = new DirectoryInfo(Path.Combine(WorkFolder, "translated"));
 
                 //if (translateddir.Exists)

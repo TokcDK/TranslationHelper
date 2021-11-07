@@ -27,7 +27,7 @@ namespace TranslationHelper.Formats
             // set filepath from projectdata filepath
             if (string.IsNullOrWhiteSpace(FilePath))
             {
-                if(string.IsNullOrWhiteSpace(ProjectData.FilePath))
+                if (string.IsNullOrWhiteSpace(ProjectData.FilePath))
                 {
                     FilePath = ProjectData.FilePath;
                 }
@@ -115,12 +115,14 @@ namespace TranslationHelper.Formats
         /// </summary>
         internal virtual bool UseTableNameWithoutExtension => false;
 
+        
+
         /// <summary>
         /// table name
         /// </summary>
         internal virtual string TableName()
         {
-            return UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(FilePath) : Path.GetFileName(FilePath);
+            return Path.GetDirectoryName(FilePath).Replace(ProjectData.OpenedFilesDir, string.Empty) + (UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(FilePath) : Path.GetFileName(FilePath));
         }
 
         /// <summary>
@@ -231,7 +233,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(string RowData, string RowInfo = "", bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(FilePath), RowData, RowInfo, CheckInput);
+            return AddRowData(TableName(), RowData, RowInfo, CheckInput);
         }
         /// <summary>
         /// Add string to table with options. In save mode will replace <paramref name="RowData"/>[0] as translation and will use <paramref name="RowData"/>[1] as default translation 
@@ -243,7 +245,7 @@ namespace TranslationHelper.Formats
         {
             if (ProjectData.OpenFileMode)
             {
-                return AddRowData(Path.GetFileName(FilePath), RowData, RowInfo, CheckInput);
+                return AddRowData(TableName(), RowData, RowInfo, CheckInput);
             }
             else
             {
@@ -267,7 +269,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(string[] RowData, string RowInfo = "", bool CheckInput = true)
         {
-            return AddRowData(Path.GetFileName(FilePath), RowData, RowInfo, CheckInput);
+            return AddRowData(TableName(), RowData, RowInfo, CheckInput);
         }
         /// <summary>
         /// Add string to table with options

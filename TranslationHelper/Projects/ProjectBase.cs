@@ -400,6 +400,7 @@ namespace TranslationHelper.Projects
 
         internal string SelectedGameDir;
         internal string SelectedDir;
+        internal string OpenedFilesDir;
         internal string ProjectWorkDir;
 
         internal string RestoreVARS(string str)
