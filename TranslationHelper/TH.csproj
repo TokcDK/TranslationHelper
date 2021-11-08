@@ -352,6 +352,13 @@
     <Compile Include="Projects\RPGMTrans\RPGMTransPatch.cs" />
     <Compile Include="Projects\RPGMTrans\RPGMTransOLD.cs" />
     <Compile Include="Projects\TyranoBuilder\Extracted\TyranoBuilderGame.cs" />
+    <Compile Include="Projects\WolfRPG\Menus\AddToStandaloneContextList.cs" />
+    <Compile Include="Projects\WolfRPG\Menus\AddToStandaloneContextListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projects\WolfRPG\Menus\AddToStandaloneContextListForm.Designer.cs">
+      <DependentUpon>AddToStandaloneContextListForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Projects\WolfRPG\WolfRPGGame.cs" />
     <Compile Include="Projects\WolfRPG\WolfRPGBase.cs" />
     <Compile Include="Projects\WolfRPG\WRPGOLDOpen.cs" />
@@ -417,6 +424,9 @@
     <EmbeddedResource Include="Forms\THfrmMain.resx">
       <DependentUpon>THfrmMain.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Projects\WolfRPG\Menus\AddToStandaloneContextListForm.resx">
+      <DependentUpon>AddToStandaloneContextListForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Projects\ZZZZFormats\FoundTypesbyExtensionForm.resx">
       <DependentUpon>FoundTypesbyExtensionForm.cs</DependentUpon>
