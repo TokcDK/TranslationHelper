@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesLinesDict;
+using TranslationHelper.Menus.ProjectMenus;
+using TranslationHelper.Projects.RPGMMV.Menus;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
@@ -139,7 +138,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
                         try
                         {
-                            if( (ProjectData.OpenFileMode && format.Open())
+                            if ((ProjectData.OpenFileMode && format.Open())
                                 || (ProjectData.SaveFileMode && format.Save()))
                             {
                                 isAnyFileCompleted = true;
@@ -498,92 +497,13 @@ namespace TranslationHelper.Projects.RPGMMV
             return str;
         }
 
-        internal override void CreateMenus()
+        internal override List<IFileListItemMenu> FilesListItemMenusList()
         {
-            var category = new System.Windows.Forms.ToolStripMenuItem
+            return new List<IFileListItemMenu>()
             {
-                Text = T._("Project")
+                new AddToSkipJS(),
+                new SkipJSFileOpen()
             };
-            var SkipJSMenuName = T._("Skip JS");
-            var SkipJSMenu = new System.Windows.Forms.ToolStripMenuItem
-            {
-                Text = "[" + ProjectData.CurrentProject.Name() + "]" + SkipJSMenuName
-            };
-            category.DropDownItems.Add(SkipJSMenu);
-            SkipJSMenu.Click += RPGMMVGameSkipJSMenu_Click;
-
-            var SkipJSFileOpen = new System.Windows.Forms.ToolStripMenuItem
-            {
-                Text = "[" + ProjectData.CurrentProject.Name() + "]" + SkipJSMenuName + "-->" + T._("Open")
-            };
-            category.DropDownItems.Add(SkipJSFileOpen);
-            SkipJSFileOpen.Click += RPGMMVGameSkipJSFileOpen_Click;
-
-            ProjectData.Main.Invoke((Action)(() => ProjectData.Main.CMSFilesList.Items.Add(category)));
-        }
-
-        /// <summary>
-        /// open skip js list txt file
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RPGMMVGameSkipJSFileOpen_Click(object sender, EventArgs e)
-        {
-            Process.Start(THSettings.RPGMakerMVSkipjsRulesFilePath());
-        }
-
-        /// <summary>
-        /// add js file from files list to skipjs rules file
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RPGMMVGameSkipJSMenu_Click(object sender, System.EventArgs e)
-        {
-            //read and check the name
-            var names = ProjectData.THFilesList.CopySelectedNames();
-            if (string.IsNullOrWhiteSpace(names) || names.ToUpperInvariant().IndexOf(".JS") == -1)
-            {
-                return;
-            }
-
-            //read only js names
-            var SkipJSList = new HashSet<string>();
-            SetSkipJSList(SkipJSList, THSettings.RPGMakerMVSkipjsRulesFilePath());
-
-            //read all list
-            List<string> SkipJSOveralList;
-            if (SkipJSList.Count == 0 || !File.Exists(THSettings.RPGMakerMVSkipjsRulesFilePath()))
-            {
-                SkipJSOveralList = new List<string>();
-            }
-            else
-            {
-                SkipJSOveralList = File.ReadAllLines(THSettings.RPGMakerMVSkipjsRulesFilePath()).ToList();
-            }
-
-            bool changed = false;
-            foreach (var jsname in names.SplitToLines())
-            {
-                if (string.IsNullOrWhiteSpace(jsname) || !string.Equals(Path.GetExtension(jsname), ".js", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    continue;
-                }
-
-                //check if name already exists in list
-                if (!SkipJSList.Contains(names) && !SkipJSOveralList.Contains(names))
-                {
-                    changed = true;
-                    SkipJSOveralList.Add(names);
-                }
-            }
-
-            if (!changed)
-            {
-                return;
-            }
-
-            //write list
-            File.WriteAllLines(THSettings.RPGMakerMVSkipjsRulesFilePath(), SkipJSOveralList);
         }
 
         internal override bool IsValidForTranslation(string inputString)

@@ -1207,7 +1207,7 @@
             this.addToCustomDBToolStripMenuItem,
             this.trimEndToolStripMenuItem1});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 444);
+            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 466);
             // 
             // OpenInWebContextToolStripMenuItem
             // 
@@ -1789,7 +1789,6 @@
         private System.Windows.Forms.SplitContainer THInfoEditSplitContainer;
         public System.Windows.Forms.DataGridView THFileElementsDataGridView;
         public System.Windows.Forms.ListBox THFilesList;
-        private System.Windows.Forms.ContextMenuStrip THFileElementsDataGridViewContextMenuStrip;
         private System.Windows.Forms.DataGridView THFiltersDataGridView;
         private System.Windows.Forms.ToolStripMenuItem tryToTranslateOnlineToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
@@ -1930,6 +1929,7 @@
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem CopyOriginalCMStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem CopyOriginalCellValuesToolStripMenuItem;
+        internal System.Windows.Forms.ContextMenuStrip THFileElementsDataGridViewContextMenuStrip;
     }
 }
 

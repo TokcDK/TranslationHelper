@@ -288,6 +288,10 @@
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlock.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Menus\MenusCreator.cs" />
+    <Compile Include="Menus\MenusExtensions.cs" />
+    <Compile Include="Menus\ProjectMenus\IMenu.cs" />
+    <Compile Include="Menus\ProjectMenus\IFileListItemMenu.cs" />
     <Compile Include="Old elements\DoubleBufferedListBox.cs" />
     <Compile Include="Functions\FunctionsAutoOperations.cs" />
     <Compile Include="Functions\FunctionsCopyPaste.cs" />
@@ -340,6 +344,8 @@
     <Compile Include="Projects\RJ263914\RJ263914OLD.cs" />
     <Compile Include="Projects\RPGMaker\RPGMGame.cs" />
     <Compile Include="Projects\RPGMaker\RPGMGameOLD.cs" />
+    <Compile Include="Projects\RPGMMV\Menus\AddToSkipJS.cs" />
+    <Compile Include="Projects\RPGMMV\Menus\SkipJSFileOpen.cs" />
     <Compile Include="Projects\RPGMMV\RPGMMVGame.cs" />
     <Compile Include="Projects\RPGMMV\RPGMMVJson.cs" />
     <Compile Include="Projects\RPGMMV\RPGMMVOLD.cs" />

@@ -10,6 +10,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Functions;
+using TranslationHelper.Menus.ProjectMenus;
 
 namespace TranslationHelper.Projects
 {
@@ -775,12 +776,9 @@ namespace TranslationHelper.Projects
             System.Diagnostics.Process.Start("explorer.exe", ProjectData.SelectedDir);
         }
 
-        /// <summary>
-        /// create project menus
-        /// </summary>
-        internal virtual void CreateMenus()
+        internal virtual List<IFileListItemMenu> FilesListItemMenusList()
         {
-
+            return new List<IFileListItemMenu>();
         }
 
         /// <summary>

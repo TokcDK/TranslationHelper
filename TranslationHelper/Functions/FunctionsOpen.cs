@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -8,15 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Formats.RPGMaker.Functions;
-using TranslationHelper.Main.Functions;
+using TranslationHelper.Menus;
 using TranslationHelper.Projects;
-using TranslationHelper.Projects.KiriKiri;
-using TranslationHelper.Projects.RJ263914;
-using TranslationHelper.Projects.RPGMaker;
-using TranslationHelper.Projects.RPGMMV;
-using TranslationHelper.Projects.RPGMTrans;
-using TranslationHelper.Projects.WolfRPG;
 
 namespace TranslationHelper.Functions
 {
@@ -313,7 +305,7 @@ namespace TranslationHelper.Functions
             ProjectData.OpenFileMode = true;
             if (ProjectData.CurrentProject.Open())
             {
-                ProjectData.CurrentProject.CreateMenus();//createmenus
+                MenusCreator.CreateMenus();//createmenus
 
                 return true;
             }
@@ -366,8 +358,8 @@ namespace TranslationHelper.Functions
                 var sortedtablesinfo = ProjectData.THFilesElementsDatasetInfo.Tables.Cast<DataTable>().OrderBy(table => table.TableName).ToArray();
                 ProjectData.THFilesElementsDatasetInfo.Tables.Clear();
                 ProjectData.THFilesElementsDatasetInfo.Tables.AddRange(sortedtablesinfo);
-                
-                
+
+
                 foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
                 {
                     ProjectData.Main.THFilesList.AddItem(table.TableName);
