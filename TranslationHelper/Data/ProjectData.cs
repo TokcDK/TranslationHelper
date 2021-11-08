@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
@@ -23,7 +24,7 @@ namespace TranslationHelper.Data
             THFilesElementsDataset = new DataSet();
             THFilesElementsDatasetInfo = new DataSet();
             THFilesElementsALLDataTable = new DataSet();
-            OriginalsTableRowCoordinates = new Dictionary<string, Dictionary<string, HashSet<int>>>();
+            OriginalsTableRowCoordinates = new ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>>();
             //THFilesElementsDictionary = new Dictionary<string, string>();
             //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
 
@@ -113,7 +114,7 @@ namespace TranslationHelper.Data
         ///         list of table names:
         ///             list of row numbers:
         /// </summary>
-        internal static Dictionary<string, Dictionary<string, HashSet<int>>> OriginalsTableRowCoordinates { get; set; }
+        internal static ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>> OriginalsTableRowCoordinates { get; set; }
 
         /// <summary>
         /// Path for selected game dir which is translating

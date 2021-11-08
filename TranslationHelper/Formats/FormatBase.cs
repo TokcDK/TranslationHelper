@@ -318,19 +318,19 @@ namespace TranslationHelper.Formats
                 // check if original exists
                 if (!ProjectData.OriginalsTableRowCoordinates.ContainsKey(original))
                 {
-                    ProjectData.OriginalsTableRowCoordinates.Add(original, new Dictionary<string, HashSet<int>>());
+                    ProjectData.OriginalsTableRowCoordinates.TryAdd(original, new ConcurrentDictionary<string, ConcurrentSet<int>>());
                 }
 
                 // check if tablename is exists
                 if (!ProjectData.OriginalsTableRowCoordinates[original].ContainsKey(tablename))
                 {
-                    ProjectData.OriginalsTableRowCoordinates[original].Add(tablename, new HashSet<int>());
+                    ProjectData.OriginalsTableRowCoordinates[original].TryAdd(tablename, new ConcurrentSet<int>());
                 }
 
                 // check if current row number is exists
                 if (!ProjectData.OriginalsTableRowCoordinates[original][tablename].Contains(RowNumber))
                 {
-                    ProjectData.OriginalsTableRowCoordinates[original][tablename].Add(RowNumber);
+                    ProjectData.OriginalsTableRowCoordinates[original][tablename].TryAdd(RowNumber);
                 }
 
                 // raise row number
