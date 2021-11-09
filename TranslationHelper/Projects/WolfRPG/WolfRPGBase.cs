@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using TranslationHelper.Data;
+using TranslationHelper.Menus.ProjectMenus;
+using TranslationHelper.Projects.WolfRPG.Menus;
 
 namespace TranslationHelper.Projects.WolfRPG
 {
@@ -49,6 +50,11 @@ namespace TranslationHelper.Projects.WolfRPG
                 }
             }
             return translation;
+        }
+
+        internal override List<IProjectMenu> GridItemMenusList()
+        {
+            return new List<IProjectMenu>() { new AddToStandaloneContextList() };
         }
     }
 }

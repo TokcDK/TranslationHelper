@@ -13,6 +13,7 @@ namespace TranslationHelper.Projects.WolfRPG.Menus
         public string ContextLine = "";
         private void button1_Click(object sender, EventArgs e)
         {
+            ContextLine = textBox1.Text;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
