@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using TranslationHelper.Data;
+using TranslationHelper.Projects.WolfRPG.Menus;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
@@ -17,6 +19,20 @@ namespace TranslationHelper.Formats.WolfRPG
         protected override void PreOpenExtraActions()
         {
             unused = false;
+
+            // check standalone context file exist
+            if (ProjectData.SaveFileMode && File.Exists(AddToStandaloneContextList.StandaloneContextFilePath))
+            {
+                _contextSplitInfo = AddToStandaloneContextList.LoadList(AddToStandaloneContextList.StandaloneContextFilePath);
+                if (_contextSplitInfo.Count > 0)
+                {
+                    _useContext = true;
+                }
+                else
+                {
+                    _contextSplitInfo = null;
+                }
+            }
         }
 
         /// <summary>
@@ -330,7 +346,7 @@ namespace TranslationHelper.Formats.WolfRPG
                     ProjectData.SaveFileMode // save mode
                     && IsValidString(original) // valid original
                     && SetTranslation(ref trans, translation)  // translation found
-                    // && trans != translation // new translation not equal to previous in case when was already old translation but it was removed
+                                                               // && trans != translation // new translation not equal to previous in case when was already old translation but it was removed
                     ;
 
                 if (translated)
@@ -342,9 +358,50 @@ namespace TranslationHelper.Formats.WolfRPG
 
                 SetContext(contextLines, translated); // here is again check translation because if it is empty or equals original must be added untranslated tag
 
+                var splittedContext = CheckContextAndSplit(translated, contextLines, advice, original, translation);
+
                 ParseData.Line = GetNewTextBlockContent(translated, contextLines, advice, original, translation);
 
+                if (_useContext && splittedContext.Length > 0)
+                {
+                    ParseData.Line = splittedContext + "\n\n" + ParseData.Line; // merge context lines
+                }
+
                 SaveModeAddLine(newline: "\n");//add endstring line
+            }
+        }
+
+        bool _useContext = false;
+        Dictionary<string, HashSet<string>> _contextSplitInfo;
+        private string CheckContextAndSplit(bool translated, List<string> contextLines, string advice, string original, string translation)
+        {
+            // skip if there is no context info
+            if (!_useContext /*|| _contextSplitInfo.Count == 0* already checked in preaction*/ || !_contextSplitInfo.ContainsKey(original) || contextLines.Count == 1/*dont need to split block where is one context line*/)
+            {
+                return "";
+            }
+
+            // check if context lines is exist in list
+            var newContextLines = new List<string>(); // new list of context lines
+            foreach (var line in new List<string>(contextLines)/*iterate copy of context lines list because it will be changed*/)
+            {
+                var line2check = line;
+                AddToStandaloneContextList.CleanContext(ref line2check); // clean context line from ntranslated tag
+                if (_contextSplitInfo[original].Contains(line2check))
+                {
+                    // split string's copy to standalone block with selected found context
+                    contextLines.Remove(line);
+                    newContextLines.Add(line);
+                }
+            }
+
+            if (newContextLines.Count > 0)
+            {
+                return GetNewTextBlockContent(translated, newContextLines, advice, original, translation);
+            }
+            else
+            {
+                return "";
             }
         }
 

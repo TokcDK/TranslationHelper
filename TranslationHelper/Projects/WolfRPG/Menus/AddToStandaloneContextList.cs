@@ -16,29 +16,12 @@ namespace TranslationHelper.Projects.WolfRPG.Menus
 
         public string Category => "";
 
+        public static string BeginStringMarker = "> BEGIN STRING\r\n";
+        public static string EndStringMarker = "\r\n> END STRING\r\n";
+        public static string StandaloneContextFilePath = Path.Combine(ProjectData.SelectedGameDir, "StandaloneContextList.thdata");
         public void OnClick(object sender, EventArgs e)
         {
-            var beginStringMarker = "> BEGIN STRING\r\n";
-            var endStringMarker = "\r\n> END STRING\r\n";
-
-            var standaloneContextFilePath = Path.Combine(ProjectData.SelectedGameDir, "StandaloneContextList.thdata");
-            var standaloneContextList = new Dictionary<string, HashSet<string>>();
-            if (File.Exists(standaloneContextFilePath))
-            {
-                // load exist
-                var blocks = File.ReadAllText(standaloneContextFilePath).Split(new[] { endStringMarker }, StringSplitOptions.None);
-                foreach (var block in blocks)
-                {
-                    var keyvalue = block.Split(new[] { beginStringMarker }, StringSplitOptions.None);
-                    if (keyvalue.Length != 2) // dont load invalid
-                    {
-                        continue;
-                    }
-                    var context = keyvalue[0];
-                    var originalString = keyvalue[1];
-                    AddPair(standaloneContextList, originalString, context);
-                }
-            }
+            var standaloneContextList = LoadList(StandaloneContextFilePath);
 
             using (var form = new AddToStandaloneContextListForm())
             {
@@ -64,18 +47,7 @@ namespace TranslationHelper.Projects.WolfRPG.Menus
                         continue;
                     }
 
-                    foreach (var mark in new[]
-                    {
-                        '<',
-                        '#'
-                    })
-                    {
-                        var tag = " " + mark + " UNTRANSLATED";
-                        if (addedContextLine.EndsWith(tag))
-                        {
-                            addedContextLine = addedContextLine.Replace(tag, string.Empty);
-                        }
-                    }
+                    CleanContext(ref addedContextLine);
 
                     AddPair(standaloneContextList, cellValue, addedContextLine);
                 }
@@ -89,12 +61,51 @@ namespace TranslationHelper.Projects.WolfRPG.Menus
                         {
                             str.AppendLine(context);
                         }
-                        str.Append(beginStringMarker + val.Key + endStringMarker);
+                        str.Append(BeginStringMarker + val.Key + EndStringMarker);
                     }
 
-                    File.WriteAllText(standaloneContextFilePath, str.ToString());
+                    File.WriteAllText(StandaloneContextFilePath, str.ToString());
                 }
             }
+        }
+
+        public static void CleanContext(ref string addedContextLine)
+        {
+            foreach (var mark in new[]
+            {
+                        '<',
+                        '#'
+                    })
+            {
+                var tag = " " + mark + " UNTRANSLATED";
+                if (addedContextLine.EndsWith(tag))
+                {
+                    addedContextLine = addedContextLine.Replace(tag, string.Empty);
+                }
+            }
+        }
+
+        public static Dictionary<string, HashSet<string>> LoadList(string standaloneContextFilePath)
+        {
+            var standaloneContextList = new Dictionary<string, HashSet<string>>();
+            if (File.Exists(standaloneContextFilePath))
+            {
+                // load exist
+                var blocks = File.ReadAllText(standaloneContextFilePath).Split(new[] { EndStringMarker }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var block in blocks)
+                {
+                    var keyvalue = block.Split(new[] { "\r\n" + BeginStringMarker }, StringSplitOptions.None);
+                    if (keyvalue.Length != 2) // dont load invalid
+                    {
+                        continue;
+                    }
+                    var context = keyvalue[0];
+                    var originalString = keyvalue[1];
+                    AddPair(standaloneContextList, originalString, context);
+                }
+            }
+
+            return standaloneContextList;
         }
 
         private static void AddPair(Dictionary<string, HashSet<string>> standaloneContextList, string stringValue, string contextLine)
