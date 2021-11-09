@@ -4,7 +4,7 @@ using TranslationHelper.Translators;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class OpenInWeb : ApplyAfterFillBufferithOriginalsBase
+    class OpenInWeb : ApplyAfterFillBufferWithOriginalsBase
     {
         /// <summary>
         /// open selected rows in web translator

@@ -217,7 +217,7 @@
     <Compile Include="Functions\DBSaveFormats\CMX.cs" />
     <Compile Include="Functions\DBSaveFormats\DBSaveBase.cs" />
     <Compile Include="Functions\DBSaveFormats\XML.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\ApplyAfterFillBufferithOriginalsBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\ApplyAfterFillBufferWithOriginalsBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\AutoSameForSimular\AutoSameForSimularForce.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\AutoSameForSimular\AutoSameForSimular.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\AutoSameForSimular\AutoSameForSimularBase.cs" />

@@ -2,9 +2,9 @@
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    abstract class ApplyAfterFillBufferithOriginalsBase : RowBase
+    abstract class ApplyAfterFillBufferWithOriginalsBase : RowBase
     {
-        public ApplyAfterFillBufferithOriginalsBase()
+        public ApplyAfterFillBufferWithOriginalsBase()
         {
         }
 

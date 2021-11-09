@@ -2,7 +2,7 @@
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    class CopyOriginals : ApplyAfterFillBufferithOriginalsBase
+    class CopyOriginals : ApplyAfterFillBufferWithOriginalsBase
     {
         protected override bool IsValidRow()
         {
