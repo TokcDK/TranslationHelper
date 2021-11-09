@@ -364,7 +364,7 @@ namespace TranslationHelper.Formats.WolfRPG
 
                 if (_useContext && splittedContext.Length > 0)
                 {
-                    ParseData.Line = splittedContext + "\n\n" + ParseData.Line; // merge context lines
+                    ParseData.Line += "\n\n" + splittedContext; // merge context lines
                 }
 
                 SaveModeAddLine(newline: "\n");//add endstring line
