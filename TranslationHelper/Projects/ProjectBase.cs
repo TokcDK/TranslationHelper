@@ -776,9 +776,14 @@ namespace TranslationHelper.Projects
             System.Diagnostics.Process.Start("explorer.exe", ProjectData.SelectedDir);
         }
 
-        internal virtual List<IFileListItemMenu> FilesListItemMenusList()
+        internal virtual List<IProjectMenu> FilesListItemMenusList()
         {
-            return new List<IFileListItemMenu>();
+            return new List<IProjectMenu>();
+        }
+
+        internal virtual List<IProjectMenu> GridItemMenusList()
+        {
+            return new List<IProjectMenu>();
         }
 
         /// <summary>

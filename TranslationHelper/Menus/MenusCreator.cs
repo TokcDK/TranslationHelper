@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Menus.ProjectMenus;
 
 namespace TranslationHelper.Menus
 {
@@ -11,47 +13,63 @@ namespace TranslationHelper.Menus
         /// </summary>
         internal static void CreateMenus()
         {
+            CreateContextMenuStrip();
+        }
+
+        private static void CreateContextMenuStrip()
+        {
             //Load Menus
-            string filesListItemMenuName = T._("Project");
+            string contextMenuName = T._("Project");
 
-            // remove old if exist
-            if (ProjectData.Main.CMSFilesList.Items.ContainsKey(filesListItemMenuName))
+            foreach (var parent in new Dictionary<ContextMenuStrip, List<IProjectMenu>>()
             {
-                var menu = ProjectData.Main.CMSFilesList.Items[filesListItemMenuName];
-                if (menu != null || !menu.IsDisposed)
+                { ProjectData.Main.CMSFilesList, ProjectData.CurrentProject.FilesListItemMenusList() },
+                { ProjectData.Main.THFileElementsDataGridViewContextMenuStrip, ProjectData.CurrentProject.GridItemMenusList() }
+            })
+            {
+                var contextMenuParent = parent.Key;
+
+                // remove old if exist
+                if (contextMenuParent.Items.ContainsKey(contextMenuName))
                 {
-                    menu.Dispose();
+                    var menu = contextMenuParent.Items[contextMenuName];
+                    if (menu != null || !menu.IsDisposed)
+                    {
+                        menu.Dispose();
+                    }
+                    ProjectData.Main.Invoke((Action)(() => contextMenuParent.Items.RemoveByKey(contextMenuName)));
                 }
-                ProjectData.Main.Invoke((Action)(() => ProjectData.Main.CMSFilesList.Items.RemoveByKey(filesListItemMenuName)));
-            }
 
-            var filesListItemMenusList = ProjectData.CurrentProject.FilesListItemMenusList();
+                var contextMenuList = parent.Value;
 
-            if (filesListItemMenusList.Count > 0)
-            {
-                // create main category
-                var filesListProjectCategory = new ToolStripMenuItem
+                if (contextMenuList.Count == 0)
                 {
-                    Text = filesListItemMenuName
+                    continue;
+                }
+
+                // create main category
+                var contextMenuProjectCategory = new ToolStripMenuItem
+                {
+                    Text = contextMenuName
                 };
 
-                foreach (var filesListItemMenu in filesListItemMenusList)
+                foreach (var contextMenu in contextMenuList)
                 {
                     //Create new menu
                     var menu = new ToolStripMenuItem
                     {
-                        Text = filesListItemMenu.Text,
-                        ToolTipText = filesListItemMenu.Description
+                        Text = contextMenu.Text,
+                        ToolTipText = contextMenu.Description
                     };
 
                     //Register click event
-                    menu.Click += filesListItemMenu.OnClick;
+                    menu.Click += contextMenu.OnClick;
 
                     //add result menu
-                    filesListProjectCategory.DropDownItems.Add(menu);
+                    contextMenuProjectCategory.DropDownItems.Add(menu);
                 }
 
-                ProjectData.Main.Invoke((Action)(() => ProjectData.Main.CMSFilesList.Items.Add(filesListProjectCategory)));
+                ProjectData.Main.Invoke((Action)(() => contextMenuParent.Items.Add(contextMenuProjectCategory)));
             }
         }
     }

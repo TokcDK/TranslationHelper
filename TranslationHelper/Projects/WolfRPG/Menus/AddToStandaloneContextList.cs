@@ -6,7 +6,7 @@ using TranslationHelper.Menus.ProjectMenus;
 
 namespace TranslationHelper.Projects.WolfRPG.Menus
 {
-    class AddToStandaloneContextList : IMenu
+    class AddToStandaloneContextList : IGridItemMenu
     {
         public string Text => "Add standalone context";
 
