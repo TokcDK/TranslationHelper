@@ -62,17 +62,17 @@ namespace TranslationHelper.Formats.Liar_soft
             else
             {
                 var ret = WriteFileData();
-                var gscPath = FilePath.Remove(FilePath.Length - 4, 4);
+                var gscPath = GetFilePath().Remove(GetFilePath().Length - 4, 4);
                 if (ret)
                 {
-                    var gscFile = TransFile.FromFile(FilePath).ToGSC(gscPath);
+                    var gscFile = TransFile.FromFile(GetFilePath()).ToGSC(gscPath);
                     gscFile.Save(gscPath);
                 }
                 else
                 {
                     File.Delete(gscPath);
                 }
-                File.Delete(FilePath);
+                File.Delete(GetFilePath());
 
                 return ret;
             }

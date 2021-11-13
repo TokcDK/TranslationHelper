@@ -108,10 +108,10 @@ namespace TranslationHelper.Formats
                 if (ProjectData.SaveFileMode // save mode
                     && ParseData.Ret // something translated
                     && ParseData.NewBinaryForWrite.Count > 0 // new bynary is not empty
-                    && !FunctionsFileFolder.FileInUse(FilePath) // file is not locked
+                    && !FunctionsFileFolder.FileInUse(GetFilePath()) // file is not locked
                     )
                 {
-                    File.WriteAllBytes(FilePath, ParseData.NewBinaryForWrite.ToArray());
+                    File.WriteAllBytes(GetFilePath(), ParseData.NewBinaryForWrite.ToArray());
                     return true;
                 }
             }

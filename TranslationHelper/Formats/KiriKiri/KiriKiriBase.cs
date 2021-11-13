@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.KiriKiri
         {
             //using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
             //    return FunctionsFileFolder.GetEncoding(fs);
-            return FunctionsFileFolder.GetEncoding(FilePath);
+            return FunctionsFileFolder.GetEncoding(GetFilePath());
             //return FunctionsFileFolder.GetEncoding(FilePath);
             //if (Enc == null && !string.IsNullOrEmpty(FilePath))
             //{

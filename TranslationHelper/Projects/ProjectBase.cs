@@ -210,9 +210,7 @@ namespace TranslationHelper.Projects
 
                 //ProjectData.FilePath = file.FullName;
 
-                var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
-
-                format.FilePath = file.FullName;
+                var format = (FormatBase)Activator.CreateInstance(formatType, file.FullName); // create instance of format
 
                 if (file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
                 {
@@ -226,8 +224,6 @@ namespace TranslationHelper.Projects
                         return;
                     }
                 }
-
-                format.FilePath = file.FullName;
 
                 ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
                 if (ProjectData.OpenFileMode ? format.Open() : format.Save())

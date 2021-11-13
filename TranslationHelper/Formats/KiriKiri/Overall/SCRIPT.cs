@@ -25,7 +25,7 @@ namespace TranslationHelper.Formats.KiriKiri
         {
             try
             {
-                string fileName = Path.GetFileName(FilePath);
+                string fileName = Path.GetFileName(GetFilePath());
 
                 //ks scn tjs open
                 KiriKiriVariableSearchRegexPattern = @"( |'|\(|\[|,|\.)o\.";
@@ -34,13 +34,13 @@ namespace TranslationHelper.Formats.KiriKiri
                 //string Quote2 = "\'";
                 KiriKiriQuotePattern = Quote1 + "(.+)" + Quote1 + ";$";
                 bool TeachingFeelingCS = false;
-                string tmpfile = File.ReadAllText(FilePath);
+                string tmpfile = File.ReadAllText(GetFilePath());
                 if (tmpfile.Contains("[p_]") || tmpfile.Contains("[lr_]"))
                 {
                     TeachingFeelingCS = true;
                 }
                 tmpfile = null;
-                using (StreamReader file = new StreamReader(FilePath, TeachingFeelingCS ? Encoding.UTF8 : Encoding.GetEncoding(932)))
+                using (StreamReader file = new StreamReader(GetFilePath(), TeachingFeelingCS ? Encoding.UTF8 : Encoding.GetEncoding(932)))
                 {
                     string line;
                     bool iscomment = false;

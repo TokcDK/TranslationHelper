@@ -21,7 +21,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
         {
             FormatBase format = new TXTv3
             {
-                FilePath = FilePath
+                FilePath = this.FilePath
             };
             return format.Open();
         }

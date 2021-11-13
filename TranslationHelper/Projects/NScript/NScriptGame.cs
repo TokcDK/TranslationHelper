@@ -9,6 +9,7 @@ namespace TranslationHelper.Projects.NScript
 {
     class NScriptGame : NScriptBase
     {
+        [Obsolete]
         public NScriptGame()
         {
         }

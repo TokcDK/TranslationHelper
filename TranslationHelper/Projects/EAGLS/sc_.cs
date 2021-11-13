@@ -8,6 +8,7 @@ namespace TranslationHelper.Projects.EAGLS
 {
     class sc_ : ProjectBase
     {
+        [Obsolete]
         public sc_()
         {
         }

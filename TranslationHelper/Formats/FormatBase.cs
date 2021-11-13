@@ -16,6 +16,14 @@ namespace TranslationHelper.Formats
             BaseInit();
         }
 
+        bool _filePathIsSet = false;
+        protected FormatBase(string filePath)
+        {
+            FilePath = filePath;
+            _filePathIsSet = true;
+            BaseInit();
+        }
+
         private void BaseInit()
         {
             if (ProjectData.CurrentProject == null)
@@ -26,7 +34,7 @@ namespace TranslationHelper.Formats
             ProjectData.CurrentProject.CurrentFormat = this; // set format
 
             // set filepath from projectdata filepath
-            if (string.IsNullOrWhiteSpace(FilePath))
+            if (!_filePathIsSet && string.IsNullOrWhiteSpace(FilePath))
             {
                 //if (!string.IsNullOrWhiteSpace(ProjectData.FilePath))// wrong for threaded files open
                 //{
@@ -122,7 +130,32 @@ namespace TranslationHelper.Formats
         /// </summary>
         internal virtual string TableName()
         {
-            return (ProjectData.CurrentProject.SubpathInTableName ? Path.GetDirectoryName(GetFilePath()).Replace(ProjectData.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar : string.Empty) + (UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(GetFilePath()) : Path.GetFileName(GetFilePath()));
+            string tableName = "";
+            string filePath = GetFilePath();
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+
+            }
+            if (ProjectData.CurrentProject.SubpathInTableName)
+            {
+                var dirPath = Path.GetDirectoryName(filePath);
+                if (dirPath == null)
+                {
+
+                }
+                tableName = dirPath.Replace(ProjectData.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar;
+            }
+
+            if (UseTableNameWithoutExtension)
+            {
+                tableName += Path.GetFileNameWithoutExtension(filePath);
+            }
+            else
+            {
+                tableName += Path.GetFileName(filePath);
+            }
+
+            return tableName;
         }
 
         /// <summary>

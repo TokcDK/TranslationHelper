@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.KiriKiri;
 
@@ -6,6 +7,7 @@ namespace TranslationHelper.Projects.KiriKiri
 {
     class TJSfile : ProjectBase
     {
+        [Obsolete]
         public TJSfile()
         {
         }

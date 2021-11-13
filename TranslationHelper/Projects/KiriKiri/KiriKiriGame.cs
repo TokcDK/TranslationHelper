@@ -80,7 +80,7 @@ namespace TranslationHelper.Projects.KiriKiri
             return false;
         }
 
-        private bool KiriKiriGameOpen(List<string> kiriKiriFiles)
+        private static bool KiriKiriGameOpen(List<string> kiriKiriFiles)
         {
             string filename;
 
@@ -113,7 +113,7 @@ namespace TranslationHelper.Projects.KiriKiri
                         format = new TSV();
                     }
 
-                    format.FilePath = ProjectData.FilePath;
+                    format.FilePath = kiriKiriFiles[i];
                     ret = format.Open();
 
                     //if (DT == null || DT.Rows.Count == 0)
