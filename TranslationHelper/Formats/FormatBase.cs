@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Threading;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
@@ -582,11 +583,21 @@ namespace TranslationHelper.Formats
         /// <param name="tableName"></param>
         /// <param name="makeLinesCountEqual">if true, line count will be made equal in translation before add original else it will be made only for multiline and rigth after line by line check</param>
         /// <param name="onlyOneTable">Parse only <paramref name="tableName"/></param>
-        internal void SplitTableCellValuesAndTheirLinesToDictionary(string tableName, bool makeLinesCountEqual = true, bool onlyOneTable = true)
+        internal void SplitTableCellValuesAndTheirLinesToDictionary(string tableName, bool makeLinesCountEqual = false, bool onlyOneTable = false)
         {
             if (!Properties.Settings.Default.DontLoadDuplicates) // skip if do not load duplicates option is disabled
             {
                 return;
+            }
+
+            if (!TablesLinesDictFilled && !onlyOneTable)
+            {
+                while (!TablesLinesDictFilled) // wait until dictionary will be filled
+                {
+                    Thread.Sleep(100);
+                }
+
+                return; // return when filled
             }
 
             if (ProjectData.CurrentProject.TablesLinesDict == null)
@@ -796,8 +807,8 @@ namespace TranslationHelper.Formats
         internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null)
         {
             var isTranslated = false;
-
-            if (!Properties.Settings.Default.DontLoadDuplicates
+            bool letDuplicates = !Properties.Settings.Default.DontLoadDuplicates;
+            if (letDuplicates
                 && ProjectData.OriginalsTableRowCoordinates != null
                 && ProjectData.OriginalsTableRowCoordinates.ContainsKey(valueToTranslate) // input value has original's value before it will be changed to translation
                 )
@@ -869,7 +880,7 @@ namespace TranslationHelper.Formats
 
                 RowNumber++;
             }
-            else if (ProjectData.CurrentProject.TablesLinesDict.ContainsKey(valueToTranslate))
+            else if (!letDuplicates && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(valueToTranslate))
             {
                 var control = valueToTranslate;
                 valueToTranslate = ProjectData.CurrentProject.TablesLinesDict[valueToTranslate];

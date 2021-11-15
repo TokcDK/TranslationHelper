@@ -61,7 +61,7 @@ namespace TranslationHelper.Projects
         /// return if selected file of project is exe
         /// </summary>
         /// <returns></returns>
-        protected bool IsExe()
+        protected static bool IsExe()
         {
             return Path.GetExtension(ProjectData.SelectedFilePath).ToUpperInvariant() == ".EXE";
         }
@@ -210,8 +210,8 @@ namespace TranslationHelper.Projects
 
                 //ProjectData.FilePath = file.FullName;
 
-                var format = (FormatBase)Activator.CreateInstance(formatType, file.FullName); // create instance of format
-
+                var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
+                format.FilePath = file.FullName;
                 if (file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
                 {
                     return;
