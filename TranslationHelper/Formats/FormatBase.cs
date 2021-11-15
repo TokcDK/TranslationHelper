@@ -135,7 +135,12 @@ namespace TranslationHelper.Formats
             string filePath = GetFilePath();
             if (string.IsNullOrWhiteSpace(filePath))
             {
-
+                int cnt = 10;
+                while (string.IsNullOrWhiteSpace(filePath) && cnt > 0)
+                {
+                    filePath = GetFilePath();
+                    cnt--;
+                }
             }
             if (ProjectData.CurrentProject.SubpathInTableName)
             {
