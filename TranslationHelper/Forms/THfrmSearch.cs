@@ -232,6 +232,7 @@ namespace TranslationHelper
                 if (SearchQueries != null && SearchQueries.Length > 0)
                 {
                     RemoveQuotesFromLoadedSearchValues(ref SearchQueries);
+                    UnEscapeSearchValues(ref SearchQueries);
                     SearchFormFindWhatComboBox.Items.Clear();
                     SearchFormFindWhatComboBox.Items.AddRange(SearchQueries);
                 }
@@ -239,12 +240,28 @@ namespace TranslationHelper
                 if (SearchReplacers != null && SearchReplacers.Length > 0)
                 {
                     RemoveQuotesFromLoadedSearchValues(ref SearchReplacers);
+                    UnEscapeSearchValues(ref SearchReplacers);
                     SearchFormReplaceWithComboBox.Items.Clear();
                     SearchFormReplaceWithComboBox.Items.AddRange(SearchReplacers);
                 }
             }
             catch
             {
+            }
+        }
+
+        private static void UnEscapeSearchValues(ref string[] arr, bool unescape = true)
+        {
+            for(int i = 0; i < arr.Length; i++)
+            {
+                if (unescape)
+                {
+                    Regex.Unescape(arr[i]);
+                }
+                else
+                {
+                    Regex.Escape(arr[i]);
+                }
             }
         }
 
@@ -276,6 +293,7 @@ namespace TranslationHelper
                     SearchQueries = new string[SearchFormFindWhatComboBox.Items.Count];
                     SearchFormFindWhatComboBox.Items.CopyTo(SearchQueries, 0);
                     AddQuotesToWritingSearchValues(ref SearchQueries);
+                    UnEscapeSearchValues(ref SearchQueries);
                     Config.SetArrayToSectionValues("Search Queries", SearchQueries);
                 }
                 if (SearchFormReplaceWithComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(SearchReplacers, SearchFormReplaceWithComboBox.Items))
@@ -283,6 +301,7 @@ namespace TranslationHelper
                     SearchReplacers = new string[SearchFormReplaceWithComboBox.Items.Count];
                     SearchFormReplaceWithComboBox.Items.CopyTo(SearchReplacers, 0);
                     AddQuotesToWritingSearchValues(ref SearchReplacers);
+                    UnEscapeSearchValues(ref SearchReplacers);
                     Config.SetArrayToSectionValues("Search Replacers", SearchReplacers);
                 }
             }
