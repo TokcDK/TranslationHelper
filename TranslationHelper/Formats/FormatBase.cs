@@ -117,9 +117,17 @@ namespace TranslationHelper.Formats
             return string.Empty;
         }
 
-        internal virtual bool Open() { return ParseFile(); }
+        /// <summary>
+        /// Open file strings actions executing here
+        /// </summary>
+        /// <returns></returns>
+        internal virtual bool Open() => ParseFile();
 
-        internal virtual bool Save() { return ParseFile(); }
+        /// <summary>
+        /// Save file strings actions executing here
+        /// </summary>
+        /// <returns></returns>
+        internal virtual bool Save() => ParseFile();
 
         /// <summary>
         /// Means use for table name name of file without extension
@@ -433,12 +441,6 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// add all original\translation pairs of datatable rows in Dictionary<br/>
-        /// also split multiline values and add all of their lines in Dictionary
-        /// </summary>
-        /// <param name="TableName"></param>
-
-        /// <summary>
         /// original string modification before add it with AddRowData.
         /// default will be returned same string
         /// </summary>
@@ -482,9 +484,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Pre open file extra actions
         /// </summary>
-        protected virtual void PreOpenExtraActions()
-        {
-        }
+        protected virtual void PreOpenExtraActions() { }
 
         /// <summary>
         /// Base Parse File function
@@ -513,9 +513,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Open file actions
         /// </summary>
-        protected virtual void FileOpen()
-        {
-        }
+        protected virtual void FileOpen() { }
 
         /// <summary>
         /// 
@@ -533,10 +531,7 @@ namespace TranslationHelper.Formats
             }
         }
 
-        protected virtual bool WriteFileData(string filePath = "")
-        {
-            return false;
-        }
+        protected virtual bool WriteFileData(string filePath = "") => false;
 
         /// <summary>
         /// Check string if it is valid for add to work table.
@@ -903,9 +898,10 @@ namespace TranslationHelper.Formats
             return isTranslated;
         }
 
-        protected virtual void SetTranslationIsTranslatedAction()
-        {
-        }
+        /// <summary>
+        /// action when string was translated
+        /// </summary>
+        protected virtual void SetTranslationIsTranslatedAction() { }
 
         /// <summary>
         /// remove invalid symbols for the project or replace them to some valid.
