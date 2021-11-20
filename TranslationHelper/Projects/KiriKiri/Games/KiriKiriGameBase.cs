@@ -81,7 +81,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 ret = true;
             }
 
-            if(ProjectData.SaveFileMode && Properties.Settings.Default.DontLoadDuplicates)
+            if(ProjectData.SaveFileMode && ProjectData.CurrentProject.DontLoadDuplicates)
             {
                 ProjectData.CurrentProject.TablesLinesDict.Clear();
             }

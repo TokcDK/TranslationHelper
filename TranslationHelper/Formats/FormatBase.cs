@@ -49,7 +49,7 @@ namespace TranslationHelper.Formats
             }
 
             // DontLoadDuplicates options
-            if (!Properties.Settings.Default.DontLoadDuplicates)
+            if (!ProjectData.CurrentProject.DontLoadDuplicates)
             {
                 return;
             }
@@ -348,7 +348,7 @@ namespace TranslationHelper.Formats
                 return false;
             }
 
-            if (Properties.Settings.Default.DontLoadDuplicates)
+            if (ProjectData.CurrentProject.DontLoadDuplicates)
             {
                 if (ProjectData.CurrentProject.Hashes == null || ProjectData.CurrentProject.Hashes.Contains(original))
                 {
@@ -548,7 +548,7 @@ namespace TranslationHelper.Formats
         }
         internal void SplitTableCellValuesToDictionaryLines(string TableName)
         {
-            if (!Properties.Settings.Default.DontLoadDuplicates || !ProjectData.SaveFileMode || !ProjectData.THFilesElementsDataset.Tables.Contains(TableName))
+            if (!ProjectData.CurrentProject.DontLoadDuplicates || !ProjectData.SaveFileMode || !ProjectData.THFilesElementsDataset.Tables.Contains(TableName))
                 return;
 
             if (ProjectData.CurrentProject.TablesLinesDict == null)
@@ -585,7 +585,7 @@ namespace TranslationHelper.Formats
         /// <param name="onlyOneTable">Parse only <paramref name="tableName"/></param>
         internal void SplitTableCellValuesAndTheirLinesToDictionary(string tableName, bool makeLinesCountEqual = false, bool onlyOneTable = false)
         {
-            if (!Properties.Settings.Default.DontLoadDuplicates) // skip if do not load duplicates option is disabled
+            if (!ProjectData.CurrentProject.DontLoadDuplicates) // skip if do not load duplicates option is disabled
             {
                 return;
             }
@@ -807,7 +807,7 @@ namespace TranslationHelper.Formats
         internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null)
         {
             var isTranslated = false;
-            bool letDuplicates = !Properties.Settings.Default.DontLoadDuplicates;
+            bool letDuplicates = !ProjectData.CurrentProject.DontLoadDuplicates;
             if (letDuplicates
                 && ProjectData.OriginalsTableRowCoordinates != null
                 && ProjectData.OriginalsTableRowCoordinates.ContainsKey(valueToTranslate) // input value has original's value before it will be changed to translation

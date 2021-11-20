@@ -16,14 +16,21 @@ namespace TranslationHelper.Projects
 {
     internal abstract class ProjectBase
     {
-
         protected ProjectBase()
         {
-            if (ProjectData.SaveFileMode && Properties.Settings.Default.DontLoadDuplicates)
+            DontLoadDuplicates = Properties.Settings.Default.DontLoadDuplicates; // set value of the parameter for the project work session
+
+            if (ProjectData.SaveFileMode && DontLoadDuplicates)
             {
                 TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
         }
+
+        /// <summary>
+        /// Set on project open and will be used for all project's session.
+        /// Even if value of original option was changed in program Settings after project was opened will be used this old value for the project.
+        /// </summary>
+        public readonly bool DontLoadDuplicates;
 
         /// <summary>
         /// In some cases like opened file by extension it can be useful to detect when need to save file n place where it was opened

@@ -134,7 +134,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     bool weUseDuplicates = false;
                     try
                     {
-                        weUseDuplicates = !Properties.Settings.Default.DontLoadDuplicates && ProjectData.OriginalsTableRowCoordinates != null && ProjectData.OriginalsTableRowCoordinates[inputOriginalValue].Values.Count > 1;
+                        weUseDuplicates = !ProjectData.CurrentProject.DontLoadDuplicates && ProjectData.OriginalsTableRowCoordinates != null && ProjectData.OriginalsTableRowCoordinates[inputOriginalValue].Values.Count > 1;
                     }
                     catch
                     {

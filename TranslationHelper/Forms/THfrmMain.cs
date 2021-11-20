@@ -749,13 +749,13 @@ namespace TranslationHelper
         internal bool FileDataWasChanged;
         private async void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.DontLoadDuplicates && ProjectData.CurrentProject.TablesLinesDict != null && ProjectData.CurrentProject.TablesLinesDict.Count > 0)
+            if (ProjectData.CurrentProject.DontLoadDuplicates && ProjectData.CurrentProject.TablesLinesDict != null && ProjectData.CurrentProject.TablesLinesDict.Count > 0)
             {
                 ProjectData.CurrentProject.TablesLinesDict.Clear();
             }
             await Task.Run(() => new FunctionsSave().PrepareToWrite()).ConfigureAwait(true);
             ProjectData.CurrentProject.AfterTranslationWriteActions();
-            if (Properties.Settings.Default.DontLoadDuplicates)
+            if (ProjectData.CurrentProject.DontLoadDuplicates)
             {
                 ProjectData.CurrentProject.TablesLinesDict = null;
             }
@@ -1228,7 +1228,7 @@ namespace TranslationHelper
                 //основную часть времени отнимал вывод информации о файлах!!
                 //00.051
                 //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionary(DBDataSet.ToDictionary(), forced);
-                if (Properties.Settings.Default.DontLoadDuplicates)
+                if (ProjectData.CurrentProject.DontLoadDuplicates)
                 {
                     new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary(), forced);
                 }
