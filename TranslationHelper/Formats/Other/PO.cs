@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace TranslationHelper.Formats.Other
 {
@@ -11,11 +12,16 @@ namespace TranslationHelper.Formats.Other
 
         bool FindOriginal = true;
         string original;
+        StringBuilder Info = new StringBuilder();
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (FindOriginal)
             {
-                if (ParseData.Line.StartsWith("msgid"))
+                if (ParseData.Line.StartsWith("#"))
+                {
+                    Info.AppendLine(ParseData.Line);
+                }
+                else if (ParseData.Line.StartsWith("msgid"))
                 {
                     original = Regex.Match(ParseData.Line, @"^msgid \""(.*)\""$").Groups[1].Value;
                     if (!string.IsNullOrEmpty(original))
@@ -29,8 +35,11 @@ namespace TranslationHelper.Formats.Other
                 if (ParseData.Line.StartsWith("msgstr"))
                 {
                     FindOriginal = true;
-                    AddRowData(ref original, Regex.Match(ParseData.Line, @"^msgstr \""(.*)\""$").Groups[1].Value, false);
-                    ParseData.Ret = true;
+                    var rowData = new[] { original, Regex.Match(ParseData.Line, @"^msgstr \""(.*)\""$").Groups[1].Value };
+                    if (AddRowData(ref rowData, Info.ToString(), false))
+                    {
+                        ParseData.Ret = true;
+                    }
                 }
             }
 
