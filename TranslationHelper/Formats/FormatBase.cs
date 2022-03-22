@@ -296,13 +296,7 @@ namespace TranslationHelper.Formats
             }
             else
             {
-                if (CheckInput)
-                {
-                    if (!IsValidString(RowData[0]))
-                    {
-                        return false;
-                    }
-                }
+                if (CheckInput && !IsValidString(RowData[0])) return false;
 
                 return SetTranslation(ref RowData[0], RowData[1]);
             }

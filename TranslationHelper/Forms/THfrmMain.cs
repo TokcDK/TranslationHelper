@@ -3030,7 +3030,7 @@ namespace TranslationHelper
                             t += Regex.Match(line, @"^\""(.*)\""$").Groups[1].Value;
                         }
                         if (string.IsNullOrWhiteSpace(t)) continue;
-                        if (t == o) continue;
+                        //if (t == o) continue;
 
                         pairs.Add(o, t);
                     }
