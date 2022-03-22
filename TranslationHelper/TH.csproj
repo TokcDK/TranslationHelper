@@ -178,6 +178,7 @@
     <Compile Include="Formats\LiveMaker\LSBCSV.cs" />
     <Compile Include="Formats\LiveMaker\LSBLNS.cs" />
     <Compile Include="Formats\NScriptGame\nscript.dat\NSCRIPT.cs" />
+    <Compile Include="Formats\Other\PO.cs" />
     <Compile Include="Formats\Raijin7\csv\CSV.cs" />
     <Compile Include="Formats\Raijin7\eve\TXT.cs" />
     <Compile Include="Formats\Raijin7\Rajiin7Base.cs" />
