@@ -7,34 +7,31 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <DockPanel LastChildFill="True">
-            <Menu DockPanel.Dock="Top" Height="20">
-                <MenuItem Header="File"></MenuItem>
-                <MenuItem Header="Edit"></MenuItem>
-                <MenuItem Header="View"></MenuItem>
-                <MenuItem Header="Options"></MenuItem>
-                <MenuItem Header="Help"> </MenuItem>
-            </Menu>
-            <DockPanel Height="20" DockPanel.Dock="Bottom"></DockPanel>
-            <DockPanel LastChildFill="True">
-                <DockPanel Height="100" DockPanel.Dock="Bottom" LastChildFill="True">
-                    <DockPanel Width="100" DockPanel.Dock="Left">                        
-                    </DockPanel>
-                    <DockPanel DockPanel.Dock="Right" LastChildFill="True">
-                        <TextBlock DockPanel.Dock="Left" Width="350"/>
-                        <TextBlock Width="350" DockPanel.Dock="Right"></TextBlock>
-                        <GridSplitter Width="2"></GridSplitter>
-                    </DockPanel>
-                </DockPanel>
-                <DockPanel DockPanel.Dock="Top">
-                    <ListView HorizontalAlignment="Stretch" Width="100" MaxWidth="300" DockPanel.Dock="Left">
-
-                    </ListView>
-                    <DataGrid DockPanel.Dock="Right">
-
-                    </DataGrid>
-                </DockPanel>
-            </DockPanel>
-        </DockPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.15*"/>
+            <ColumnDefinition Width="0.40*"/>
+            <ColumnDefinition Width="0.40*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="0,50*"/>
+            <RowDefinition Height="0,15*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" Grid.ColumnSpan="3" Height="20">
+            <MenuItem Header="File"></MenuItem>
+            <MenuItem Header="Edit"></MenuItem>
+            <MenuItem Header="View"></MenuItem>
+            <MenuItem Header="Options"></MenuItem>
+            <MenuItem Header="Help"></MenuItem>
+        </Menu>
+        <ListView Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" DockPanel.Dock="Left"/>
+        <DataGrid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
+        <TextBlock Grid.Row="2" Grid.Column="0"/>
+        <TextBlock Grid.Row="2" Grid.Column="1"/>
+        <TextBlock Grid.Row="2" Grid.Column="2"/>
+        <GridSplitter Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Background="Gray" Width="2"/>
+        <GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Background="Gray" Width="2"/>
+        <GridSplitter Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="Gray" Height="2"/>
     </Grid>
 </Window>
