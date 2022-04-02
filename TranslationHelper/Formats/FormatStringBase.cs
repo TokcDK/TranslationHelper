@@ -29,7 +29,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected override void FileOpen()
         {
-            using (ParseData.Reader = new StreamReader(GetFilePath(), ParseStringFileEncoding()))
+            using (ParseData.Reader = new StreamReader(GetOpenFilePath(), ParseStringFileEncoding()))
             {
                 ParseStringFileLines();
             }
@@ -41,7 +41,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual Encoding ParseStringFileEncoding()
         {
-            return FunctionsFileFolder.GetEncoding(GetFilePath()) ?? DefaultEncoding();
+            return FunctionsFileFolder.GetEncoding(GetOpenFilePath()) ?? DefaultEncoding();
         }
 
         /// <summary>
@@ -291,9 +291,9 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(GetFilePath()))
+                if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(GetSaveFilePath()))
                 {
-                    File.WriteAllText(filePath.Length > 0 ? filePath : ProjectData.CurrentProject.IsSaveToSourceFile ? base.GetFilePath() : GetFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
+                    File.WriteAllText(filePath.Length > 0 ? filePath : ProjectData.CurrentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
                     return true;
                 }
             }

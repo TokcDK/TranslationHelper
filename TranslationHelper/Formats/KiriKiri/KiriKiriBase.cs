@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.KiriKiri
         {
             //using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
             //    return FunctionsFileFolder.GetEncoding(fs);
-            return FunctionsFileFolder.GetEncoding(GetFilePath());
+            return FunctionsFileFolder.GetEncoding(GetOpenFilePath());
             //return FunctionsFileFolder.GetEncoding(FilePath);
             //if (Enc == null && !string.IsNullOrEmpty(FilePath))
             //{
@@ -56,7 +56,7 @@ namespace TranslationHelper.Formats.KiriKiri
 
         protected const string PatchDirName = "_patch";
 
-        protected override string GetFilePath()
+        protected override string GetSaveFilePath()
         {
             //write translated files to patch dir
             return Path.Combine(ProjectData.ProjectWorkDir, PatchDirName, Path.GetFileName(FilePath));

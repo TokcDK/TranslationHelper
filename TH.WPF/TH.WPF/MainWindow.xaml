@@ -31,8 +31,27 @@
             <MenuItem Header="Options"></MenuItem>
             <MenuItem Header="Help"></MenuItem>
         </Menu>
-        <ListView Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" DockPanel.Dock="Left"/>
-        <DataGrid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
+        <ListView ItemsSource="{Binding FilesList}" SelectedItem="{Binding SelectedItem}" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" DockPanel.Dock="Left">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <DataGrid 
+            ItemsSource="{Binding FileContent}" 
+            Grid.Row="1" 
+            Grid.Column="1" 
+            Grid.ColumnSpan="2"            
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
+            AutoGenerateColumns="False"
+            >
+            <DataGrid.Columns>
+                <DataGridTextColumn IsReadOnly="True" Header="Original" Binding="{Binding Original}" Width="0.5*"/>
+                <DataGridTextColumn Header="Translation" Binding="{Binding Translation}" Width="0.5*"/>
+            </DataGrid.Columns>
+        </DataGrid>
         <TextBlock Grid.Row="2" Grid.Column="0"/>
         <TextBlock Grid.Row="2" Grid.Column="1"/>
         <TextBlock Grid.Row="2" Grid.Column="2"/>

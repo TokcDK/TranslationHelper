@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.KiriKiri;
 using TranslationHelper.Formats.KiriKiri.Games.KSSyntax;
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
-    abstract class KSParserBase : FormatStringBase
+    abstract class KSParserBase : KiriKiriBase
     {
         public KSParserBase()
         {

@@ -18,8 +18,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             HideVarsBase = new Dictionary<string, string>()
             {
                 {"[emb exp=\"", @"\[emb exp\=\""[^\""]+\""\]"}
-            };
+            };            
         }
+
+        public override bool IsSaveToSourceFile => false; // save to patch dir
 
         protected bool CheckKiriKiriBase()
         {
@@ -350,7 +352,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                     File.Copy(Path.Combine(THSettings.ArcConvDirPath(), Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat"), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat"));
                 }
 
-                var targetPatchPath = Path.Combine(ProjectData.SelectedGameDir, PatchName + ".xp3");
+                var targetPatchPath = Path.Combine(ProjectData.SelectedDir, PatchName + ".xp3");
 
                 //kiririkiunpacker
                 var setdir =

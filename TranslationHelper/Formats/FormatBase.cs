@@ -76,6 +76,14 @@ namespace TranslationHelper.Formats
         internal string FilePath;
         protected virtual string GetFilePath()
         {
+            return ProjectData.OpenFileMode? GetOpenFilePath(): GetSaveFilePath();
+        }
+        protected virtual string GetOpenFilePath()
+        {
+            return FilePath;
+        }
+        protected virtual string GetSaveFilePath()
+        {
             return FilePath;
         }
 
@@ -140,13 +148,13 @@ namespace TranslationHelper.Formats
         internal virtual string TableName()
         {
             string tableName = "";
-            string filePath = GetFilePath();
+            string filePath = GetOpenFilePath();
             if (string.IsNullOrWhiteSpace(filePath))
             {
                 int cnt = 10;
                 while (string.IsNullOrWhiteSpace(filePath) && cnt > 0)
                 {
-                    filePath = GetFilePath();
+                    filePath = GetOpenFilePath();
                     cnt--;
                 }
             }
@@ -177,7 +185,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected void AddTables()
         {
-            if (!string.IsNullOrEmpty(GetFilePath()))
+            if (!string.IsNullOrEmpty(GetOpenFilePath()))
             {
                 AddTables(TableName());
             }
@@ -450,7 +458,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual bool FilePreOpenActions()
         {
-            if (!string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(GetFilePath()) != Ext()) // extension must be same as set, if set
+            if (!string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(GetOpenFilePath()) != Ext()) // extension must be same as set, if set
             {
                 return false;
             }

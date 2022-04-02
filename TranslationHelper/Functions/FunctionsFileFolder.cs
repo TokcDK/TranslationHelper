@@ -27,6 +27,8 @@ namespace TranslationHelper.Main.Functions
         {
             //FileStream stream = null;
 
+            if (!File.Exists(path)) return false;
+
             try
             {
                 using (FileStream stream = new FileInfo(path).Open(FileMode.Open, FileAccess.Read, FileShare.None))

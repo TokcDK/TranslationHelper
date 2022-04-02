@@ -34,13 +34,13 @@ namespace TranslationHelper.Formats.KiriKiri
                 //string Quote2 = "\'";
                 KiriKiriQuotePattern = Quote1 + "(.+)" + Quote1 + ";$";
                 bool TeachingFeelingCS = false;
-                string tmpfile = File.ReadAllText(GetFilePath());
+                string tmpfile = File.ReadAllText(GetOpenFilePath());
                 if (tmpfile.Contains("[p_]") || tmpfile.Contains("[lr_]"))
                 {
                     TeachingFeelingCS = true;
                 }
                 tmpfile = null;
-                using (StreamReader file = new StreamReader(GetFilePath(), TeachingFeelingCS ? Encoding.UTF8 : Encoding.GetEncoding(932)))
+                using (StreamReader file = new StreamReader(GetOpenFilePath(), TeachingFeelingCS ? Encoding.UTF8 : Encoding.GetEncoding(932)))
                 {
                     string line;
                     bool iscomment = false;

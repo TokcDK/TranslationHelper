@@ -23,9 +23,9 @@ namespace TranslationHelper.Formats.KiriKiri
         {
             FunctionsTable.SetTableAndColumns();
 
-            using (StreamReader file = new StreamReader(GetFilePath(), Encoding.GetEncoding(932)))
+            using (StreamReader file = new StreamReader(GetOpenFilePath(), Encoding.GetEncoding(932)))
             {
-                string fileName = Path.GetFileName(GetFilePath());
+                string fileName = Path.GetFileName(GetOpenFilePath());
                 string line;
                 //string original = string.Empty;
                 //_ = THFilesElementsDataset.Tables.Add(filename);
