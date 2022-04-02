@@ -26,7 +26,14 @@
         </Grid.RowDefinitions>
         
         <Menu Grid.Row="0" Grid.ColumnSpan="3" Height="20">
-            <MenuItem Header="File"></MenuItem>
+            <MenuItem Header="File">
+                <MenuItem Header="Open" Command="{Binding OnOpen}"/>
+                <MenuItem Header="Write"/>
+                <MenuItem Header="Save DB"/>
+                <MenuItem Header="Save DB as"/>
+                <MenuItem Header="Export"/>
+                <MenuItem Header="Import"/>
+            </MenuItem>
             <MenuItem Header="Edit"></MenuItem>
             <MenuItem Header="View"></MenuItem>
             <MenuItem Header="Options"></MenuItem>

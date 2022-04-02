@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
 
 namespace TH.WPF.ViewModels
 {
-    public class MainVM : INotifyPropertyChanged
+    public partial class MainVM : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -14,7 +12,11 @@ namespace TH.WPF.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        static FileInfo TestFile()
+        /// <summary>
+        /// Test file data
+        /// </summary>
+        /// <returns></returns>
+        public static FileInfo TestFile()
         {
             return new FileInfo() { Name = "test file1", Info = "some file info\ndfgdfgdfg\vvvvvvvv\ninfo\r\ninfoinfo\nIfileinfo",
             Content = new FileContent()
@@ -32,6 +34,9 @@ namespace TH.WPF.ViewModels
 
         public static FileInfo? GetSelectedFile() => _selectedFile;
 
+        /// <summary>
+        /// Files list. Selected file value
+        /// </summary>
         static FileInfo? _selectedFile;
         public FileInfo? SelectedFile
         {
@@ -46,6 +51,9 @@ namespace TH.WPF.ViewModels
             }
         }
 
+        /// <summary>
+        /// Rows list. Selected row value
+        /// </summary>
         static FileRow? _selectedRow;
         public FileRow? SelectedRow
         {
@@ -60,6 +68,9 @@ namespace TH.WPF.ViewModels
             }
         }
 
+        /// <summary>
+        /// Info about opened file
+        /// </summary>
         public class FileInfo
         {
             public string? Name { get; set; }
@@ -67,6 +78,9 @@ namespace TH.WPF.ViewModels
             public FileContent? Content { get; set; }
         }
 
+        /// <summary>
+        /// Files list item selected
+        /// </summary>
         private RelayCommand? onSelected;
         public RelayCommand OnSelected
         {
@@ -78,43 +92,35 @@ namespace TH.WPF.ViewModels
             }
         }
 
+        /// <summary>
+        /// Menu File\Open clicked
+        /// </summary>
+        private RelayCommand? onOpen;
+        public RelayCommand OnOpen
+        {
+            get
+            {
+                return onOpen ??= new RelayCommand(obj =>
+                {
+                });
+            }
+        }
+
+        /// <summary>
+        /// File's content. Rows
+        /// </summary>
         public class FileContent : ObservableCollection<FileRow>
         {
         }
 
+        /// <summary>
+        /// File's row nofo
+        /// </summary>
         public class FileRow
         {
             public string? Original { get; set; }
             public string? Translation { get; set; }
             public string Info { get; set; } = "";
-        }
-
-        public class RelayCommand : ICommand
-        {
-            private readonly Action<object?> execute;
-            private readonly Func<object?, bool>? canExecute;
-
-            public event EventHandler? CanExecuteChanged
-            {
-                add { CommandManager.RequerySuggested += value; }
-                remove { CommandManager.RequerySuggested -= value; }
-            }
-
-            public RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute = null)
-            {
-                this.execute = execute;
-                this.canExecute = canExecute;
-            }
-
-            public bool CanExecute(object? parameter)
-            {
-                return canExecute == null || canExecute(parameter!);
-            }
-
-            public void Execute(object? parameter)
-            {
-                execute(parameter);
-            }
         }
     }
 }
