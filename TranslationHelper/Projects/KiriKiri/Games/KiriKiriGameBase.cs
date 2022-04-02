@@ -164,10 +164,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                 foreach (var xp3File in ProjectXP3List.Xp3PatchList)
                 {
-                    if (!xp3File.FileInfo.Exists)
-                    {
-                        continue;
-                    }
+                    if (!xp3File.FileInfo.Exists) continue;
 
                     if (xp3File.IsTranslation)
                     {
@@ -192,10 +189,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                     targetSubFolder.Create();
 
-                    if (!FunctionsFileFolder.IsInDirExistsAnyFile(targetSubFolder.FullName, "*.*"))
-                    {
-                        continue;
-                    }
+                    if (!FunctionsFileFolder.IsInDirExistsAnyFile(targetSubFolder.FullName, "*.*")) continue;
 
                     if (usecrc && File.Exists(XP3crc32Path))
                     {
