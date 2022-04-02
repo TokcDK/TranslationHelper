@@ -151,17 +151,6 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 var SkipAlreadyExtracted = false;
                 var SkipAlreadyExtractedAsked = false;
 
-                foreach (var xp3 in new[] { "scripts", "scenario", "data" })
-                {
-                    var path = new FileInfo(Path.Combine(ProjectData.SelectedGameDir, xp3 + ".xp3"));
-                    if (!path.Exists) continue;
-
-                    var info = new Xp3Patch();
-                    info.FileInfo = path;
-
-                    ProjectXP3List.Xp3PatchList.Insert(0, info);
-                }
-
                 foreach (var xp3File in ProjectXP3List.Xp3PatchList)
                 {
                     if (!xp3File.FileInfo.Exists) continue;
@@ -324,24 +313,15 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 //PatchDir
                 var PatchDir = Directory.CreateDirectory(Path.Combine(ProjectData.ProjectWorkDir, PatchDirName));
 
-                if (!FunctionsFileFolder.IsInDirExistsAnyFile(PatchDir.FullName))
-                {
-                    return false;
-                }
+                if (!FunctionsFileFolder.IsInDirExistsAnyFile(PatchDir.FullName)) return false;
 
-                if (ProjectXP3List == null)
-                {
-                    ProjectXP3List = new Xp3PatchInfos();
-                }
+                if (ProjectXP3List == null) ProjectXP3List = new Xp3PatchInfos();
 
                 string PatchName = "patch" + ProjectXP3List.MaxIndexString;
 
                 var patch = Path.Combine(ProjectData.ProjectWorkDir, PatchName + ".xp3");
 
-                if (File.Exists(patch))
-                {
-                    File.Delete(patch);
-                }
+                if (File.Exists(patch)) File.Delete(patch);
 
                 string KiriKiriEXEargs = "-c -i \"" + PatchDir.FullName + "\" -o \"" + patch + "\"";
 
@@ -431,10 +411,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                 FunctionsProcess.RunProcess(arc_conv ? THSettings.ArcConvExePath() : LE, args, ProjectData.ProjectWorkDir);
 
-                if (!File.Exists(patch))
-                {
-                    Thread.Sleep(2000);
-                }
+                if (!File.Exists(patch)) Thread.Sleep(2000);
                 if (!File.Exists(patch))
                 {
                     FunctionsProcess.RunProcess(arc_conv ? THSettings.ArcConvExePath() : LE, args, ProjectData.ProjectWorkDir);

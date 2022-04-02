@@ -50,48 +50,38 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         /// <returns></returns>
         internal void Get()
         {
-            //var data = new FileInfo(Path.Combine(ProjectData.SelectedGameDir, "data.xp3"));
-            //if (data.Exists)
-            //{
-            //    // set data info
-            //    var info = new Xp3Patch
-            //    {
-            //        FileInfo = data
-            //    };
+            foreach (var xp3 in new[] { "scripts", "scenario", "data" })
+            {
+                var path = new FileInfo(Path.Combine(ProjectData.SelectedGameDir, xp3 + ".xp3"));
+                if (!path.Exists) continue;
 
-            //    Xp3PatchList.Add(info);
-            //}
+                var info = new Xp3Patch();
+                info.FileInfo = path;
+
+                if (!Xp3PatchList.Contains(info)) Xp3PatchList.Insert(0, info);
+            }
 
             foreach (var xp3Patch in new DirectoryInfo(ProjectData.SelectedGameDir).EnumerateFiles("patch*.xp3"))
             {
                 // get splitter and number
                 var patchMatch = Regex.Match(xp3Patch.Name, @"[Pp]atch([^0-9]*)([^0-9]*)\.xp3");
-                if (!patchMatch.Success)
-                {
-                    continue;
-                }
+                if (!patchMatch.Success) continue;
 
                 // set info
                 var info = new Xp3Patch();
                 info.FileInfo = xp3Patch;
+
                 var splitter = patchMatch.Result("$1");
-                if (!string.IsNullOrEmpty(splitter) && string.IsNullOrEmpty(Splitter))
-                {
-                    Splitter = patchMatch.Result(splitter);
-                }
+                if (!string.IsNullOrEmpty(splitter) && string.IsNullOrEmpty(Splitter)) Splitter = patchMatch.Result(splitter);
+
                 info.IndexString = patchMatch.Result("$2");
-                if (int.TryParse(info.IndexString, out int ind))
-                {
-                    info.Index = ind;
-                }
+                if (int.TryParse(info.IndexString, out int ind)) info.Index = ind;
+
                 info.IsTranslation = File.Exists(xp3Patch + KiriKiriGameUtils.KiriKiriTranslationSuffix);
                 MaxIndex = MaxIndex >= info.Index ? MaxIndex : info.Index;
 
                 // add info
-                if (!Xp3PatchList.Contains(info))
-                {
-                    Xp3PatchList.Add(info);
-                }
+                if (!Xp3PatchList.Contains(info)) Xp3PatchList.Add(info);
             }
         }
     }
