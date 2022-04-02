@@ -4,12 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TH.WPF"
-        xmlns:vm="clr-namespace:TH.WPF.ViewModel"
+        xmlns:vm="clr-namespace:TH.WPF.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
     <Window.DataContext>
-        <vm:VM/>
+        <vm:MainVM/>
     </Window.DataContext>
     
     <Grid>
@@ -24,6 +24,7 @@
             <RowDefinition Height="0,15*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
+        
         <Menu Grid.Row="0" Grid.ColumnSpan="3" Height="20">
             <MenuItem Header="File"></MenuItem>
             <MenuItem Header="Edit"></MenuItem>
@@ -31,15 +32,24 @@
             <MenuItem Header="Options"></MenuItem>
             <MenuItem Header="Help"></MenuItem>
         </Menu>
-        <ListView ItemsSource="{Binding FilesList}" SelectedItem="{Binding SelectedItem}" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" DockPanel.Dock="Left">
+        
+        <ListView 
+            ItemsSource="{Binding FilesList}" 
+            SelectedItem="{Binding SelectedFile}"
+            ToolTip="{Binding SelectedFile.Info}"
+            Grid.Row="1"
+            Grid.Column="0"
+            HorizontalAlignment="Stretch">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        
         <DataGrid 
-            ItemsSource="{Binding FileContent}" 
+            ItemsSource="{Binding SelectedFile.Content}" 
+            SelectedItem="{Binding SelectedRow}"
             Grid.Row="1" 
             Grid.Column="1" 
             Grid.ColumnSpan="2"            
@@ -49,15 +59,62 @@
             >
             <DataGrid.Columns>
                 <DataGridTextColumn IsReadOnly="True" Header="Original" Binding="{Binding Original}" Width="0.5*"/>
-                <DataGridTextColumn Header="Translation" Binding="{Binding Translation}" Width="0.5*"/>
+                <DataGridTextColumn Header="Translation" Binding="{Binding Translation, UpdateSourceTrigger=PropertyChanged}" Width="0.5*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBlock Grid.Row="2" Grid.Column="0"/>
-        <TextBlock Grid.Row="2" Grid.Column="1"/>
-        <TextBlock Grid.Row="2" Grid.Column="2"/>
+        
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="0">
+                <TextBlock
+                    Text="{Binding SelectedFile.Info}"
+                    ToolTip="{Binding SelectedFile.Info}"
+                    Width="Auto"
+                    TextWrapping="Wrap"/>
+            </ScrollViewer>
+            <ScrollViewer Grid.Row="1">
+                <TextBlock 
+                    Text="{Binding SelectedRow.Info}"
+                    ToolTip="{Binding SelectedRow.Info}"
+                    Width="Auto"
+                    TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </Grid>
+        
+        <ScrollViewer Grid.Row="2" Grid.Column="1">
+            <TextBlock 
+                Text="{Binding SelectedRow.Original}"
+                Width="Auto"
+                TextWrapping="Wrap"/>
+        </ScrollViewer>
+        <ScrollViewer Grid.Row="2" Grid.Column="2">
+            <TextBox 
+                Text="{Binding SelectedRow.Translation, UpdateSourceTrigger=PropertyChanged}"
+                Width="Auto"
+                TextWrapping="Wrap"/>
+        </ScrollViewer>
+        
         <GridSplitter Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Right" Background="Gray" Width="2"/>
-        <GridSplitter Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Right" Background="Gray" Width="2"/>
+        <GridSplitter Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Background="Gray" Width="2"/>
         <GridSplitter Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="Gray" Height="2"/>
-        <Separator Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="Gray" Height="2"/>
+        <Separator Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Gray" Height="1"/>
+
+        <Grid 
+            Grid.Column="0"
+            Grid.Row="3"
+            Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.2*"/>
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Column="2">
+                <TextBlock DockPanel.Dock="Left" Text="Rows: "/>
+                <TextBlock DockPanel.Dock="Right" Text="{Binding SelectedFile.Content.Count}"/>
+            </DockPanel>
+        </Grid>
     </Grid>
 </Window>
