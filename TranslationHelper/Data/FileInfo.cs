@@ -5,6 +5,7 @@ namespace TranslationHelper.Data
 {
     // Project creates shared List<ProjectFileInfo>
     // Format creates shared ProjectFileInfo
+    // In result creating Dataset or kind of which will be binding to files list and file content grid
 
     public class ProjectFileInfo
     {
@@ -33,7 +34,7 @@ namespace TranslationHelper.Data
                 File = new FileInfo(@"c:\file.txt"),
                 Content = new FileContent()
                 {
-                    new FileRow() { Original="original", Translation="translation"}
+                    new FileRow() { Original="original", Translation="translation", Info="some info about row"}
                 }
             };
         }
