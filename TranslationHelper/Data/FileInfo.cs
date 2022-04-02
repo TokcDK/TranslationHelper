@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.IO;
 
 namespace TranslationHelper.Data
 {
+    // Project creates shared List<ProjectFileInfo>
+    // Format creates shared ProjectFileInfo
+
     public class ProjectFileInfo
     {
         public FileInfo File;
@@ -17,7 +19,8 @@ namespace TranslationHelper.Data
 
     public class FileRow
     {
-        public DataRow Row;
+        public string Original;
+        public string Translation;
         public string Info = "";
     }
 
@@ -29,9 +32,9 @@ namespace TranslationHelper.Data
             {
                 File = new FileInfo(@"c:\file.txt"),
                 Content = new FileContent()
-            {
-                new FileRow(){ Row = null}
-            }
+                {
+                    new FileRow() { Original="original", Translation="translation"}
+                }
             };
         }
     }
