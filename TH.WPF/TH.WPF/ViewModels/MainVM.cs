@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace TH.WPF.ViewModels
@@ -16,9 +17,9 @@ namespace TH.WPF.ViewModels
         /// Test file data
         /// </summary>
         /// <returns></returns>
-        public static FileInfo TestFile()
+        public static ProjectFileInfo TestFile()
         {
-            return new FileInfo() { Name = "test file1", Info = "some file info\ndfgdfgdfg\vvvvvvvv\ninfo\r\ninfoinfo\nIfileinfo",
+            return new ProjectFileInfo() { File = new FileInfo(@"c:\file1.txt"), Info = "some file info\ndfgdfgdfg\vvvvvvvv\ninfo\r\ninfoinfo\nIfileinfo",
             Content = new FileContent()
             {
                 new FileRow(){Original="test o1", Translation="test t1", Info="some row info"},
@@ -27,18 +28,18 @@ namespace TH.WPF.ViewModels
             }};
         }
 
-        public static ObservableCollection<FileInfo> FilesList { get; set; } = new ObservableCollection<FileInfo>()
+        public static ObservableCollection<ProjectFileInfo> FilesList { get; set; } = new ObservableCollection<ProjectFileInfo>()
         {
             TestFile()
         };
 
-        public static FileInfo? GetSelectedFile() => _selectedFile;
+        public static ProjectFileInfo? GetSelectedFile() => _selectedFile;
 
         /// <summary>
         /// Files list. Selected file value
         /// </summary>
-        static FileInfo? _selectedFile;
-        public FileInfo? SelectedFile
+        static ProjectFileInfo? _selectedFile;
+        public ProjectFileInfo? SelectedFile
         {
             get
             {
@@ -71,9 +72,9 @@ namespace TH.WPF.ViewModels
         /// <summary>
         /// Info about opened file
         /// </summary>
-        public class FileInfo
+        public class ProjectFileInfo
         {
-            public string? Name { get; set; }
+            public FileInfo? File { get; set; }
             public string Info { get; set; } = "";
             public FileContent? Content { get; set; }
         }

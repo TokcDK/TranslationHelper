@@ -49,7 +49,7 @@
             HorizontalAlignment="Stretch">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}"/>
+                    <TextBlock Text="{Binding File.Name}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

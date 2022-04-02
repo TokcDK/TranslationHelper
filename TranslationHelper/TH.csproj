@@ -112,6 +112,7 @@
     <Compile Include="appSettings\Sections\General\CheckBox\SLineCharLimit.cs" />
     <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
     <Compile Include="Data\CleanupData.cs" />
+    <Compile Include="Data\FileInfo.cs" />
     <Compile Include="Data\FilesListData.cs" />
     <Compile Include="Data\ProjectData.cs" />
     <Compile Include="Data\THSettings.cs" />
