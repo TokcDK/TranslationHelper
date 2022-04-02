@@ -6,6 +6,7 @@ namespace TranslationHelper.Data
     // Project creates shared List<ProjectFileInfo>
     // Format creates shared ProjectFileInfo
     // In result creating Dataset or kind of which will be binding to files list and file content grid
+    // ProjectsParser<Project<Formats>>
 
     public class ProjectFileInfo
     {
