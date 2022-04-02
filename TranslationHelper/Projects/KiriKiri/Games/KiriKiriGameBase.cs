@@ -81,7 +81,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 ret = true;
             }
 
-            if(ProjectData.SaveFileMode && ProjectData.CurrentProject.DontLoadDuplicates)
+            if (ProjectData.SaveFileMode && ProjectData.CurrentProject.DontLoadDuplicates)
             {
                 ProjectData.CurrentProject.TablesLinesDict.Clear();
             }
@@ -150,6 +150,18 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 var progressMessageTitle = "XP3" + " " + T._("Extraction") + ".";
                 var SkipAlreadyExtracted = false;
                 var SkipAlreadyExtractedAsked = false;
+
+                foreach (var xp3 in new[] { "scripts", "scenario", "data" })
+                {
+                    var path = new FileInfo(Path.Combine(ProjectData.SelectedGameDir, xp3 + ".xp3"));
+                    if (!path.Exists) continue;
+
+                    var info = new Xp3Patch();
+                    info.FileInfo = path;
+
+                    ProjectXP3List.Xp3PatchList.Insert(0, info);
+                }
+
                 foreach (var xp3File in ProjectXP3List.Xp3PatchList)
                 {
                     if (!xp3File.FileInfo.Exists)
@@ -248,7 +260,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 }
 
                 // when files in data
-                var dataDir = new DirectoryInfo(Path.Combine(ProjectData.SelectedGameDir,"Data"));
+                var dataDir = new DirectoryInfo(Path.Combine(ProjectData.SelectedGameDir, "Data"));
                 if (dataDir.Exists)
                 {
                     var targetSubFolder = new DirectoryInfo(
@@ -257,7 +269,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                         + Path.GetFileNameWithoutExtension(dataDir.FullName)
                         );
 
-                    bool parseData=false;
+                    bool parseData = false;
                     if (targetSubFolder.Exists)
                     {
                         if (!SkipAlreadyExtracted)
@@ -277,16 +289,16 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                         var sourceFilePaths = KiriKiriGameUtils.GetKiriKiriScriptPaths(dataDir, Mask());
 
-                        foreach(var sourceFilePath in sourceFilePaths)
+                        foreach (var sourceFilePath in sourceFilePaths)
                         {
                             var targetFilePath = new FileInfo(sourceFilePath.FullName
                                 .Remove(0, dataDir.FullName.Length)
-                                .Insert(0, Path.Combine(KiriKiriWorkOrigFolder,"Data"))
+                                .Insert(0, Path.Combine(KiriKiriWorkOrigFolder, "Data"))
                                 );
 
                             if (targetFilePath.Exists)
                             {
-                                if(targetFilePath.LastWriteTime < sourceFilePath.LastWriteTime)
+                                if (targetFilePath.LastWriteTime < sourceFilePath.LastWriteTime)
                                 {
                                     // copy new file if target is older
                                     targetFilePath.Delete();
