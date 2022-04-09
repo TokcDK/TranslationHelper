@@ -21,9 +21,9 @@ namespace TranslationHelper.Data
 
             FilesListControl = new FilesListControlListBox(); // set using files list control
 
-            THFilesElementsDataset = new DataSet();
-            THFilesElementsDatasetInfo = new DataSet();
-            THFilesElementsALLDataTable = new DataSet();
+            FilesContent = new DataSet();
+            FilesContentInfo = new DataSet();
+            FilesContentAll = new DataSet();
             OriginalsTableRowCoordinates = new ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>>();
             //THFilesElementsDictionary = new Dictionary<string, string>();
             //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
@@ -95,17 +95,17 @@ namespace TranslationHelper.Data
         /// <summary>
         /// main work table data
         /// </summary>
-        internal static DataSet THFilesElementsDataset { get; set; }
+        internal static DataSet FilesContent { get; set; }
 
         /// <summary>
         /// main work table infos
         /// </summary>
-        internal static DataSet THFilesElementsDatasetInfo { get; set; }
+        internal static DataSet FilesContentInfo { get; set; }
 
         /// <summary>
         /// main work table data for all (wip)
         /// </summary>
-        internal static DataSet THFilesElementsALLDataTable { get; set; }
+        internal static DataSet FilesContentAll { get; set; }
 
         /// <summary>
         /// main table/row index coordinates data for same translation for identical and for write functions.
@@ -207,13 +207,13 @@ namespace TranslationHelper.Data
         /// add new <paramref name="tableData"/> in tables list
         /// </summary>
         /// <param name="tableData"></param>
-        internal static void AddTableData(DataTable tableData)
+        internal static void AddFileData(DataTable tableData)
         {
             lock (TableDataAddLocker)
             {
-                if (!THFilesElementsDataset.Tables.Contains(tableData.TableName))
+                if (!FilesContent.Tables.Contains(tableData.TableName))
                 {
-                    THFilesElementsDataset.Tables.Add(tableData);
+                    FilesContent.Tables.Add(tableData);
                 }
                 else
                 {
@@ -227,13 +227,13 @@ namespace TranslationHelper.Data
         /// add new <paramref name="tableInfo"/> in tables list
         /// </summary>
         /// <param name="tableInfo"></param>
-        internal static void AddTableInfo(DataTable tableInfo)
+        internal static void AddFileInfo(DataTable tableInfo)
         {
             lock (TableInfoAddLocker)
             {
-                if (!THFilesElementsDatasetInfo.Tables.Contains(tableInfo.TableName))
+                if (!FilesContentInfo.Tables.Contains(tableInfo.TableName))
                 {
-                    THFilesElementsDatasetInfo.Tables.Add(tableInfo);
+                    FilesContentInfo.Tables.Add(tableInfo);
                 }
                 else
                 {

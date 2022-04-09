@@ -135,9 +135,9 @@ namespace TranslationHelper.Functions
                         //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
 
                         bool changed = false;
-                        for (int r = 0; r < ProjectData.THFilesElementsDataset.Tables[f].Rows.Count; r++)
+                        for (int r = 0; r < ProjectData.FilesContent.Tables[f].Rows.Count; r++)
                         {
-                            if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r][THSettings.TranslationColumnName()] + string.Empty).Length == 0)
+                            if ((ProjectData.FilesContent.Tables[f].Rows[r][THSettings.TranslationColumnName()] + string.Empty).Length == 0)
                             {
                             }
                             else

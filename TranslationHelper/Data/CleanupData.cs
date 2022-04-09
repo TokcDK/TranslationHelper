@@ -49,9 +49,9 @@ namespace TranslationHelper.Data
 
                 //Clean data
                 ProjectData.Main.THFilesList.Items.Clear();
-                ProjectData.THFilesElementsDataset.Reset();
-                ProjectData.THFilesElementsDatasetInfo.Reset();
-                ProjectData.THFilesElementsALLDataTable.Reset();
+                ProjectData.FilesContent.Reset();
+                ProjectData.FilesContentInfo.Reset();
+                ProjectData.FilesContentAll.Reset();
                 ProjectData.Main.THFileElementsDataGridView.Columns.Clear();
                 ProjectData.AllDBmerged = null;
                 //THFileElementsDataGridView.Rows.Clear();

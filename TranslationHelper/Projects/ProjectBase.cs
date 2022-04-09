@@ -208,7 +208,7 @@ namespace TranslationHelper.Projects
             exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
 
             var ret = false;
-            var existsTables = ProjectData.THFilesElementsDataset.Tables;
+            var existsTables = ProjectData.FilesContent.Tables;
             var filesList = Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
             Parallel.ForEach(filesList, file =>
             {

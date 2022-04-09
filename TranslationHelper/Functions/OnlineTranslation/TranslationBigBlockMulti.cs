@@ -18,7 +18,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
 
         internal void TranslateByBlock()
         {
-            foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
+            foreach (DataTable table in ProjectData.FilesContent.Tables)
             {
                 foreach (DataRow row in table.Rows)
                 {

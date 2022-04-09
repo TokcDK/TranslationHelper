@@ -30,7 +30,7 @@ namespace TranslationHelper.Extensions
             int i =0;
             foreach (var index in selectedTablesIndexes)
             {
-                tables[i] = ProjectData.THFilesElementsDataset.Tables[index];
+                tables[i] = ProjectData.FilesContent.Tables[index];
                 i++;
             }
 

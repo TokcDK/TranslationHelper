@@ -378,7 +378,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (SelectedTable == null)
             {
-                SelectedTable = ProjectData.THFilesElementsDataset.Tables[SelectedTableIndex];
+                SelectedTable = ProjectData.FilesContent.Tables[SelectedTableIndex];
             }
 
             if (needToGetOrigTransColumnsNum)
@@ -494,7 +494,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 #endif
             DataTable[] tables = null;
 #if DEBUG
-            ProjectData.Main.Invoke((Action)(() => tables = ProjectData.THFilesElementsDataset.GetTablesByIndexes(tableindexes)));
+            ProjectData.Main.Invoke((Action)(() => tables = ProjectData.FilesContent.GetTablesByIndexes(tableindexes)));
 #else
             tables = ProjectData.THFilesElementsDataset.GetTablesByIndexes(tableindexes);
 #endif
@@ -576,7 +576,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             Init();
 
             int tindex = 0;
-            var tables = ProjectData.THFilesElementsDataset.Tables;
+            var tables = ProjectData.FilesContent.Tables;
             Tablescount = tables.Count;
             SetSelectedRowsCountForAll();
 
@@ -618,7 +618,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return;
             }
             SelectedRowsCount = 0;
-            foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
+            foreach (DataTable table in ProjectData.FilesContent.Tables)
             {
                 SelectedRowsCount += table.Rows.Count;
             }

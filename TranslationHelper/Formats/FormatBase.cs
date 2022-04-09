@@ -194,11 +194,11 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Main table with row data
         /// </summary>
-        DataTable TableData;
+        DataTable Data;
         /// <summary>
         /// info table for info box
         /// </summary>
-        DataTable TableInfo;
+        DataTable Info;
 
         /// <summary>
         /// Add table to work dataset
@@ -207,28 +207,28 @@ namespace TranslationHelper.Formats
         /// <param name="extraColumns"></param>
         internal void AddTables(string tablename, string[] extraColumns = null)
         {
-            if (TableData == null)
+            if (Data == null)
             {
-                TableData = new DataTable
+                Data = new DataTable
                 {
                     TableName = tablename
                 };
-                TableData.Columns.Add(THSettings.OriginalColumnName());
-                TableData.Columns.Add(THSettings.TranslationColumnName());
+                Data.Columns.Add(THSettings.OriginalColumnName());
+                Data.Columns.Add(THSettings.TranslationColumnName());
 
                 if (extraColumns != null && extraColumns.Length > 0)
                 {
                     foreach (var columnName in extraColumns)
                     {
-                        TableData.Columns.Add(columnName);
+                        Data.Columns.Add(columnName);
                     }
                 }
 
-                TableInfo = new DataTable
+                Info = new DataTable
                 {
                     TableName = tablename
                 };
-                TableInfo.Columns.Add("Info");
+                Info.Columns.Add("Info");
             }
 
             //var tables = ProjectData.THFilesElementsDataset.Tables;
@@ -388,8 +388,8 @@ namespace TranslationHelper.Formats
 
             try
             {
-                TableData.Rows.Add(RowData);
-                TableInfo.Rows.Add(RowInfo);
+                Data.Rows.Add(RowData);
+                Info.Rows.Add(RowInfo);
             }
             catch (Exception ex)
             {
@@ -411,10 +411,10 @@ namespace TranslationHelper.Formats
                 throw new NotImplementedException("Dictionary not implemented");
                 //return ProjectData.THFilesElementsDataset.Tables[tablename].FillWithDictionary(ProjectData.THFilesElementsDictionary);
             }
-            else if (TableData.Rows.Count > 0)
+            else if (Data.Rows.Count > 0)
             {
-                ProjectData.AddTableData(TableData);
-                ProjectData.AddTableInfo(TableInfo);
+                ProjectData.AddFileData(Data);
+                ProjectData.AddFileInfo(Info);
 
                 //#if DEBUG
                 //                ProjectData.Main.Invoke((Action)(() => ProjectData.AddTableData(TableData)));
@@ -550,7 +550,7 @@ namespace TranslationHelper.Formats
         }
         internal void SplitTableCellValuesToDictionaryLines(string TableName)
         {
-            if (!ProjectData.CurrentProject.DontLoadDuplicates || !ProjectData.SaveFileMode || !ProjectData.THFilesElementsDataset.Tables.Contains(TableName))
+            if (!ProjectData.CurrentProject.DontLoadDuplicates || !ProjectData.SaveFileMode || !ProjectData.FilesContent.Tables.Contains(TableName))
                 return;
 
             if (ProjectData.CurrentProject.TablesLinesDict == null)
@@ -563,7 +563,7 @@ namespace TranslationHelper.Formats
                 ProjectData.CurrentProject.TablesLinesDict.Clear();
             }
 
-            foreach (DataRow Row in ProjectData.THFilesElementsDataset.Tables[TableName].Rows)
+            foreach (DataRow Row in ProjectData.FilesContent.Tables[TableName].Rows)
             {
                 string Original;
                 string Translation;
@@ -609,7 +609,7 @@ namespace TranslationHelper.Formats
 
             if (onlyOneTable)
             {
-                if (!ProjectData.THFilesElementsDataset.Tables.Contains(tableName))
+                if (!ProjectData.FilesContent.Tables.Contains(tableName))
                     return;
 
                 if (ProjectData.CurrentProject.TablesLinesDict.Count > 0)
@@ -626,7 +626,7 @@ namespace TranslationHelper.Formats
             }
 
 
-            foreach (DataTable Table in ProjectData.THFilesElementsDataset.Tables)
+            foreach (DataTable Table in ProjectData.FilesContent.Tables)
             {
                 if (onlyOneTable && Table.TableName != tableName)
                 {
@@ -821,7 +821,7 @@ namespace TranslationHelper.Formats
                 {
                     if (ProjectData.OriginalsTableRowCoordinates[valueToTranslate][currentTableName].Contains(RowNumber))
                     {
-                        valueToTranslate = ProjectData.THFilesElementsDataset.Tables[currentTableName].Rows[RowNumber][1] + "";
+                        valueToTranslate = ProjectData.FilesContent.Tables[currentTableName].Rows[RowNumber][1] + "";
                         valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
                         isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
@@ -838,7 +838,7 @@ namespace TranslationHelper.Formats
 
                         foreach (var rowIndex in ProjectData.OriginalsTableRowCoordinates[valueToTranslate][currentTableName])
                         {
-                            valueToTranslate = ProjectData.THFilesElementsDataset.Tables[currentTableName].Rows[rowIndex][1] + "";
+                            valueToTranslate = ProjectData.FilesContent.Tables[currentTableName].Rows[rowIndex][1] + "";
                             valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
                             isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
@@ -859,7 +859,7 @@ namespace TranslationHelper.Formats
                     {
                         foreach (var existsRowIndex in existTableName)
                         {
-                            valueToTranslate = ProjectData.THFilesElementsDataset.Tables[currentTableName].Rows[existsRowIndex][1] + "";
+                            valueToTranslate = ProjectData.FilesContent.Tables[currentTableName].Rows[existsRowIndex][1] + "";
                             valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
                             isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);

@@ -87,8 +87,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[name]);
-                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("name");
+                                    _ = ProjectData.FilesContent.Tables[fileName].Rows.Add(columns[name]);
+                                    _ = ProjectData.FilesContentInfo.Tables[fileName].Rows.Add("name");
                                 }
                             }
                             if (detail > -1)
@@ -98,8 +98,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[detail]);
-                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("detail");
+                                    _ = ProjectData.FilesContent.Tables[fileName].Rows.Add(columns[detail]);
+                                    _ = ProjectData.FilesContentInfo.Tables[fileName].Rows.Add("detail");
                                 }
                             }
                             if (type > -1)
@@ -109,8 +109,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[type]);
-                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("type");
+                                    _ = ProjectData.FilesContent.Tables[fileName].Rows.Add(columns[type]);
+                                    _ = ProjectData.FilesContentInfo.Tables[fileName].Rows.Add("type");
                                 }
                             }
                             if (field > -1)
@@ -120,8 +120,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[field]);
-                                    _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("field");
+                                    _ = ProjectData.FilesContent.Tables[fileName].Rows.Add(columns[field]);
+                                    _ = ProjectData.FilesContentInfo.Tables[fileName].Rows.Add("field");
                                 }
                             }
                             if (comment > -1)
@@ -133,12 +133,12 @@ namespace TranslationHelper.Formats.KiriKiri
                                 {
                                     try
                                     {
-                                        _ = ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Add(columns[comment]);
-                                        _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Rows.Add("comment");
+                                        _ = ProjectData.FilesContent.Tables[fileName].Rows.Add(columns[comment]);
+                                        _ = ProjectData.FilesContentInfo.Tables[fileName].Rows.Add("comment");
                                     }
                                     catch
                                     {
-                                        MessageBox.Show("ProjectData.THFilesElementsDataset.Tables[fileName]=" + ProjectData.THFilesElementsDataset.Tables[fileName] + "\r\ncolumns[comment]=" + columns[comment]);
+                                        MessageBox.Show("ProjectData.THFilesElementsDataset.Tables[fileName]=" + ProjectData.FilesContent.Tables[fileName] + "\r\ncolumns[comment]=" + columns[comment]);
                                     }
                                 }
                             }

@@ -410,7 +410,7 @@ namespace TranslationHelper
                 {
                     Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
 
-                    BindToDataTableGridView(ProjectData.THFilesElementsDataset.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
+                    BindToDataTableGridView(ProjectData.FilesContent.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
                 }
 
                 ShowNonEmptyRowsCount();//Show how many rows have translation
@@ -454,7 +454,7 @@ namespace TranslationHelper
             {
                 try
                 {
-                    if (DT.TableName == "[ALL]" && ProjectData.THFilesElementsDataset.Tables.Count > 1)
+                    if (DT.TableName == "[ALL]" && ProjectData.FilesContent.Tables.Count > 1)
                     {
                         //отображение содержимого всех таблиц в одной
                         //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
@@ -668,9 +668,9 @@ namespace TranslationHelper
                 //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
                 //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
 
-                if (ProjectData.THFilesElementsDatasetInfo != null && ProjectData.THFilesElementsDatasetInfo.Tables.Count > tableIndex && ProjectData.THFilesElementsDatasetInfo.Tables[tableIndex].Rows.Count > rowIndex)
+                if (ProjectData.FilesContentInfo != null && ProjectData.FilesContentInfo.Tables.Count > tableIndex && ProjectData.FilesContentInfo.Tables[tableIndex].Rows.Count > rowIndex)
                 {
-                    THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + ProjectData.THFilesElementsDatasetInfo.Tables[tableIndex].Rows[rowIndex][0];
+                    THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + ProjectData.FilesContentInfo.Tables[tableIndex].Rows[rowIndex][0];
                 }
 
                 THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(SelectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(SelectedCellValue);
@@ -733,7 +733,7 @@ namespace TranslationHelper
 
         private void ShowNonEmptyRowsCount()
         {
-            int RowsCount = FunctionsTable.GetDatasetRowsCount(ProjectData.THFilesElementsDataset);
+            int RowsCount = FunctionsTable.GetDatasetRowsCount(ProjectData.FilesContent);
             if (RowsCount == 0)
             {
                 TableCompleteInfoLabel.Visible = false;
@@ -741,7 +741,7 @@ namespace TranslationHelper
             else
             {
                 TableCompleteInfoLabel.Visible = true;
-                TableCompleteInfoLabel.Text = FunctionsTable.GetDatasetNonEmptyRowsCount(ProjectData.THFilesElementsDataset) + "/" + RowsCount;
+                TableCompleteInfoLabel.Text = FunctionsTable.GetDatasetNonEmptyRowsCount(ProjectData.FilesContent) + "/" + RowsCount;
             }
         }
 
@@ -893,7 +893,7 @@ namespace TranslationHelper
                 //MessageBox.Show(string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value));
                 //https://10tec.com/articles/why-datagridview-slow.aspx
                 //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value);
-                ProjectData.THFilesElementsDataset.Tables[THFilesList.GetSelectedIndex()].DefaultView.RowFilter = OverallFilter;
+                ProjectData.FilesContent.Tables[THFilesList.GetSelectedIndex()].DefaultView.RowFilter = OverallFilter;
             }
             catch
             {
@@ -1003,7 +1003,7 @@ namespace TranslationHelper
             }
 
             await Task.Run(() => ProjectData.CurrentProject.PreSaveDB()).ConfigureAwait(true);
-            await Task.Run(() => WriteDBFileLite(ProjectData.THFilesElementsDataset, path)).ConfigureAwait(true);
+            await Task.Run(() => WriteDBFileLite(ProjectData.FilesContent, path)).ConfigureAwait(true);
 
             FunctionsSounds.SaveDBComplete();
             ProgressInfo(false);
@@ -1014,7 +1014,7 @@ namespace TranslationHelper
         bool AutosaveActivated;
         private void Autosave()
         {
-            if (!Properties.Settings.Default.EnableDBAutosave || AutosaveActivated || ProjectData.THFilesElementsDataset == null)
+            if (!Properties.Settings.Default.EnableDBAutosave || AutosaveActivated || ProjectData.FilesContent == null)
             {
             }
             else
@@ -1051,7 +1051,7 @@ namespace TranslationHelper
                 IndicateSave.Start();
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                Thread trans = new Thread(new ParameterizedThreadStart((obj) => SaveLoop(ProjectData.THFilesElementsDataset, autosavepath)));
+                Thread trans = new Thread(new ParameterizedThreadStart((obj) => SaveLoop(ProjectData.FilesContent, autosavepath)));
                 trans.Start();
 
                 //ProgressInfo(true);
@@ -1314,7 +1314,7 @@ namespace TranslationHelper
                 int tableind = THFilesList.GetSelectedIndex();
                 int rind = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), e.RowIndex);
 
-                if (rind > -1 && rind < ProjectData.THFilesElementsDataset.Tables[tableind].Rows.Count && (ProjectData.THFilesElementsDataset.Tables[tableind].Rows[rind][1] + string.Empty).Length > 0)
+                if (rind > -1 && rind < ProjectData.FilesContent.Tables[tableind].Rows.Count && (ProjectData.FilesContent.Tables[tableind].Rows[rind][1] + string.Empty).Length > 0)
                 {
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                     //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)));
@@ -1597,8 +1597,8 @@ namespace TranslationHelper
                 try
                 {
                     int tableIndex = THFilesList.GetSelectedIndex();
-                    int cind = ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
-                    int cindTrans = ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Original
+                    int cind = ProjectData.FilesContent.Tables[tableIndex].Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
+                    int cindTrans = ProjectData.FilesContent.Tables[tableIndex].Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Original
                     int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
@@ -1608,11 +1608,11 @@ namespace TranslationHelper
                     }
                     foreach (var rind in selectedRowIndexses)
                     {
-                        string origCellValue = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cind] as string;
-                        string transCellValue = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
+                        string origCellValue = ProjectData.FilesContent.Tables[tableIndex].Rows[rind][cind] as string;
+                        string transCellValue = ProjectData.FilesContent.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
                         if (transCellValue != origCellValue || transCellValue.Length == 0)
                         {
-                            ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows[rind][cindTrans] = origCellValue;
+                            ProjectData.FilesContent.Tables[tableIndex].Rows[rind][cindTrans] = origCellValue;
                         }
 
                     }
@@ -1797,7 +1797,7 @@ namespace TranslationHelper
 
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ProjectData.THFilesElementsDataset.Tables[THFilesList.GetSelectedIndex()].DefaultView.Sort = string.Empty;
+            ProjectData.FilesContent.Tables[THFilesList.GetSelectedIndex()].DefaultView.Sort = string.Empty;
         }
 
         private async void SaveTranslationAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1834,7 +1834,7 @@ namespace TranslationHelper
                         //SaveNEWDB(THFilesElementsDataset, THFSaveBDAs.FileName);
                         //WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
 
-                        await Task.Run(() => WriteDBFileLite(ProjectData.THFilesElementsDataset, THFSaveBDAs.FileName)).ConfigureAwait(true);
+                        await Task.Run(() => WriteDBFileLite(ProjectData.FilesContent, THFSaveBDAs.FileName)).ConfigureAwait(true);
                         //Task task = new Task(() => WriteDBFileLite(ProjectData.THFilesElementsDataset, THFSaveBDAs.FileName));
                         //task.Start();
                         //task.Wait();
@@ -2092,7 +2092,7 @@ namespace TranslationHelper
 
         private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsALLDataTable;
+            THFileElementsDataGridView.DataSource = ProjectData.FilesContentAll;
 
             //смотрел тут но в данном случае пришел к тому что отображает все также только одну таблицу
             //https://social.msdn.microsoft.com/Forums/en-US/f63f612f-20be-4bad-a91c-474396941800/display-dataset-data-in-gridview-from-multiple-data-tables?forum=adodotnetdataset
@@ -2177,7 +2177,7 @@ namespace TranslationHelper
                         THFiltersDataGridView.Rows[0].Cells[c].Value = string.Empty;
                     }
 
-                    var table = ProjectData.THFilesElementsDataset.Tables[tableindex];
+                    var table = ProjectData.FilesContent.Tables[tableindex];
                     table.DefaultView.RowFilter = string.Empty;
                     table.DefaultView.Sort = string.Empty;
                     THFileElementsDataGridView.Refresh();
@@ -2445,22 +2445,22 @@ namespace TranslationHelper
             }
             ProjectFilesList = ProjectFilesList.Distinct().ToArray();
 
-            int cind = ProjectData.THFilesElementsDataset.Tables[0].Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
-            int cindTrans = ProjectData.THFilesElementsDataset.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Original
+            int cind = ProjectData.FilesContent.Tables[0].Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
+            int cindTrans = ProjectData.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Original
             //string[] Files = Directory.GetFiles(Properties.Settings.Default.THWorkProjectDir, "*.*", SearchOption.AllDirectories);
             //string[] Dirs = Directory.GetDirectories(Properties.Settings.Default.THWorkProjectDir, "*", SearchOption.AllDirectories);
-            int tablesCount = ProjectData.THFilesElementsDataset.Tables.Count;
+            int tablesCount = ProjectData.FilesContent.Tables.Count;
             for (int t = 0; t < tablesCount; t++)
             {
-                int rowsCount = ProjectData.THFilesElementsDataset.Tables[t].Rows.Count;
+                int rowsCount = ProjectData.FilesContent.Tables[t].Rows.Count;
                 for (int r = 0; r < rowsCount; r++)
                 {
-                    string origCellValue = ProjectData.THFilesElementsDataset.Tables[t].Rows[r][cind] as string;
-                    string transCellValue = ProjectData.THFilesElementsDataset.Tables[t].Rows[r][cindTrans] + string.Empty;
+                    string origCellValue = ProjectData.FilesContent.Tables[t].Rows[r][cind] as string;
+                    string transCellValue = ProjectData.FilesContent.Tables[t].Rows[r][cindTrans] + string.Empty;
 
                     if ((transCellValue.Length == 0 || origCellValue != transCellValue) && FunctionsFileFolder.GetAnyFileWithTheNameExist(ProjectFilesList, origCellValue))
                     {
-                        ProjectData.THFilesElementsDataset.Tables[t].Rows[r][cindTrans] = origCellValue;
+                        ProjectData.FilesContent.Tables[t].Rows[r][cindTrans] = origCellValue;
                     }
                 }
             }
@@ -3036,7 +3036,7 @@ namespace TranslationHelper
                     }
                 }
 
-                foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
+                foreach (DataTable table in ProjectData.FilesContent.Tables)
                 {
                     foreach (DataRow row in table.Rows)
                     {

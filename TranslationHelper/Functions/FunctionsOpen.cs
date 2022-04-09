@@ -336,7 +336,7 @@ namespace TranslationHelper.Functions
                 ProjectData.Main.THWorkSpaceSplitContainer.Visible = true;
             }
 
-            if (ProjectData.Main.THFilesList.GetItemsCount() == 0 && ProjectData.THFilesElementsDataset.Tables.Count > 0)
+            if (ProjectData.Main.THFilesList.GetItemsCount() == 0 && ProjectData.FilesContent.Tables.Count > 0)
             {
                 //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
                 //foreach (DataColumn col in ProjectData.THFilesElementsDataset.Tables[0].Columns)
@@ -351,16 +351,16 @@ namespace TranslationHelper.Functions
                 //    ProjectData.THFilesElementsDataset.Merge(newdataset);
                 //}
 
-                var sortedtables = ProjectData.THFilesElementsDataset.Tables.Cast<DataTable>().OrderBy(table => table.TableName).ToArray();
-                ProjectData.THFilesElementsDataset.Tables.Clear();
-                ProjectData.THFilesElementsDataset.Tables.AddRange(sortedtables);
+                var sortedtables = ProjectData.FilesContent.Tables.Cast<DataTable>().OrderBy(table => table.TableName).ToArray();
+                ProjectData.FilesContent.Tables.Clear();
+                ProjectData.FilesContent.Tables.AddRange(sortedtables);
 
-                var sortedtablesinfo = ProjectData.THFilesElementsDatasetInfo.Tables.Cast<DataTable>().OrderBy(table => table.TableName).ToArray();
-                ProjectData.THFilesElementsDatasetInfo.Tables.Clear();
-                ProjectData.THFilesElementsDatasetInfo.Tables.AddRange(sortedtablesinfo);
+                var sortedtablesinfo = ProjectData.FilesContentInfo.Tables.Cast<DataTable>().OrderBy(table => table.TableName).ToArray();
+                ProjectData.FilesContentInfo.Tables.Clear();
+                ProjectData.FilesContentInfo.Tables.AddRange(sortedtablesinfo);
 
 
-                foreach (DataTable table in ProjectData.THFilesElementsDataset.Tables)
+                foreach (DataTable table in ProjectData.FilesContent.Tables)
                 {
                     ProjectData.Main.THFilesList.AddItem(table.TableName);
                 }

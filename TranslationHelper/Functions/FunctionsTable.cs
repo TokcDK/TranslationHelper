@@ -67,10 +67,10 @@ namespace TranslationHelper.Main.Functions
         /// <param name="projectData"></param>
         internal static void ShowFirstRowWithEmptyTranslation()
         {
-            int TCount = ProjectData.THFilesElementsDataset.Tables.Count;
+            int TCount = ProjectData.FilesContent.Tables.Count;
             for (int t = 0; t < TCount; t++)
             {
-                var table = ProjectData.THFilesElementsDataset.Tables[t];
+                var table = ProjectData.FilesContent.Tables[t];
 
                 int RCount = table.Rows.Count;
                 for (int r = 0; r < RCount; r++)
@@ -94,7 +94,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="rowIndex"></param>
         internal static void ShowSelectedRow(int tableIndex, string columnName, int rowIndex)
         {
-            if (tableIndex == -1 || tableIndex > ProjectData.THFilesElementsDataset.Tables.Count - 1 || string.IsNullOrEmpty(columnName) || !ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns.Contains(columnName))
+            if (tableIndex == -1 || tableIndex > ProjectData.FilesContent.Tables.Count - 1 || string.IsNullOrEmpty(columnName) || !ProjectData.FilesContent.Tables[tableIndex].Columns.Contains(columnName))
             {
                 return;
             }
@@ -102,14 +102,14 @@ namespace TranslationHelper.Main.Functions
             int RCount = 0;//for debug purposes
             try
             {
-                RCount = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
+                RCount = ProjectData.FilesContent.Tables[tableIndex].Rows.Count;
                 if (tableIndex == ProjectData.Main.THFilesList.GetSelectedIndex() && RCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
                 {
                     ProjectData.Main.THFilesList.SetSelectedIndex(tableIndex);
-                    ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[tableIndex];
+                    ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.FilesContent.Tables[tableIndex];
                 }
 
                 ProjectData.Main.THFileElementsDataGridView.CurrentCell = ProjectData.Main.THFileElementsDataGridView[columnName, rowIndex];
@@ -137,7 +137,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="rowIndex"></param>
         internal static void ShowSelectedRow(int tableIndex, int columnIndex, int rowIndex)
         {
-            if (tableIndex == -1 || tableIndex > ProjectData.THFilesElementsDataset.Tables.Count - 1 || columnIndex == -1 || columnIndex > ProjectData.THFilesElementsDataset.Tables[tableIndex].Columns.Count - 1)
+            if (tableIndex == -1 || tableIndex > ProjectData.FilesContent.Tables.Count - 1 || columnIndex == -1 || columnIndex > ProjectData.FilesContent.Tables[tableIndex].Columns.Count - 1)
             {
                 return;
             }
@@ -145,14 +145,14 @@ namespace TranslationHelper.Main.Functions
             int RCount = 0;//for debug purposes
             try
             {
-                RCount = ProjectData.THFilesElementsDataset.Tables[tableIndex].Rows.Count;
+                RCount = ProjectData.FilesContent.Tables[tableIndex].Rows.Count;
                 if (tableIndex == ProjectData.Main.THFilesList.GetSelectedIndex() && RCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
                 {
                     ProjectData.Main.THFilesList.SetSelectedIndex(tableIndex);
-                    ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.THFilesElementsDataset.Tables[tableIndex];
+                    ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.FilesContent.Tables[tableIndex];
 
                 }
 
@@ -183,26 +183,26 @@ namespace TranslationHelper.Main.Functions
 
             string fileName = Path.GetFileName(ProjectData.FilePath);
 
-            if (add && !ProjectData.THFilesElementsDataset.Tables.Contains(fileName))
+            if (add && !ProjectData.FilesContent.Tables.Contains(fileName))
             {
-                _ = ProjectData.THFilesElementsDataset.Tables.Add(fileName);
-                _ = ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
-                _ = ProjectData.THFilesElementsDatasetInfo.Tables.Add(fileName);
-                _ = ProjectData.THFilesElementsDatasetInfo.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
+                _ = ProjectData.FilesContent.Tables.Add(fileName);
+                _ = ProjectData.FilesContent.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
+                _ = ProjectData.FilesContentInfo.Tables.Add(fileName);
+                _ = ProjectData.FilesContentInfo.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
 
                 return true;
             }
             else
             {
-                if (ProjectData.THFilesElementsDataset.Tables[fileName].Rows.Count == 0)
+                if (ProjectData.FilesContent.Tables[fileName].Rows.Count == 0)
                 {
-                    ProjectData.THFilesElementsDataset.Tables.Remove(fileName);
-                    ProjectData.THFilesElementsDatasetInfo.Tables.Remove(fileName);
+                    ProjectData.FilesContent.Tables.Remove(fileName);
+                    ProjectData.FilesContentInfo.Tables.Remove(fileName);
                     return false;
                 }
                 else
                 {
-                    _ = ProjectData.THFilesElementsDataset.Tables[fileName].Columns.Add(THSettings.TranslationColumnName());
+                    _ = ProjectData.FilesContent.Tables[fileName].Columns.Add(THSettings.TranslationColumnName());
                     return true;
                 }
             }
@@ -429,7 +429,7 @@ namespace TranslationHelper.Main.Functions
         {
             try
             {
-                var table = ProjectData.THFilesElementsDataset.Tables[TableIndex];
+                var table = ProjectData.FilesContent.Tables[TableIndex];
                 if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
                 {
                     return rowIndex;

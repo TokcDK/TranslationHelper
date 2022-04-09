@@ -55,13 +55,13 @@ namespace TranslationHelper.Functions.OnlineTranslation
                     int TableMaxIndex;
                     int RowsCountInTable;
                     int CurrentRowIndex;
-                    TableMaxIndex = (Method == "a") ? ProjectData.THFilesElementsDataset.Tables.Count : TableMaxIndex = TableIndex + 1;
+                    TableMaxIndex = (Method == "a") ? ProjectData.FilesContent.Tables.Count : TableMaxIndex = TableIndex + 1;
 
                     //int tcount = ProjectData.THFilesElementsDataset.Tables.Count;
                     //for (int t = 0; t < tcount; t++)
                     for (int t = TableIndex; t < TableMaxIndex; t++)
                     {
-                        var Table = ProjectData.THFilesElementsDataset.Tables[t];
+                        var Table = ProjectData.FilesContent.Tables[t];
 
                         if (FunctionsTable.IsTableColumnCellsAll(Table))
                         {
@@ -132,7 +132,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
 
                                 if (InputOriginalLineFromCache.Length > 0)
                                 {
-                                    ProjectData.THFilesElementsDataset.Tables[t].Rows[CurrentRowIndex][OrigColIndex + 1] = InputOriginalLineFromCache;
+                                    ProjectData.FilesContent.Tables[t].Rows[CurrentRowIndex][OrigColIndex + 1] = InputOriginalLineFromCache;
                                     continue;
                                 }
                                 else
@@ -479,7 +479,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
             if (ResultValue.Length > 0 && PreviousTableIndex > -1 && PreviousRowIndex > -1)
             {
                 string s; //иногда значения без перевода и равны оригиналу, но отдельным переводом выбранной ячейки получается нормально
-                var Row = ProjectData.THFilesElementsDataset.Tables[PreviousTableIndex].Rows[PreviousRowIndex];
+                var Row = ProjectData.FilesContent.Tables[PreviousTableIndex].Rows[PreviousRowIndex];
                 var Cell = Row[0];
                 if (Equals(Cell, ResultValue))
                 {
