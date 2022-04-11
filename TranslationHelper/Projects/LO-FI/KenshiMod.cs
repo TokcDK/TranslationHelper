@@ -60,8 +60,10 @@ namespace TranslationHelper.Projects.LO_FI
 
             var modName = foundTypes[selectedIndex];
 
-            var format = new MOD();
-            format.FilePath = modName;
+            var format = new MOD
+            {
+                FilePath = modName
+            };
 
             return format.Open();
         }

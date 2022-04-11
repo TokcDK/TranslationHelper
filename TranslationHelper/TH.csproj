@@ -59,6 +59,9 @@
     <ApplicationIcon>thIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="KenshModTIO">
+      <HintPath>K:\0GIT\[TokcDK]\[Kenshi]\KenshiModTranslationExportImport\KenshModTIO\bin\Release\net6.0\KenshModTIO.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -90,6 +93,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="appSettings\Sections\General\ComboBox\SSourceLanguage.cs" />
     <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadDuplicates.cs" />
     <Compile Include="appSettings\Sections\Optimizations\CheckBox\SIgnoreOrigEqualTransLines.cs" />
     <Compile Include="appSettings\Sections\Tools\CheckBox\SSearchRowIssueOptionsCheckProjectSpecific.cs" />
@@ -178,7 +182,7 @@
     <Compile Include="Formats\LiveMaker\LiveMakerBase.cs" />
     <Compile Include="Formats\LiveMaker\LSBCSV.cs" />
     <Compile Include="Formats\LiveMaker\LSBLNS.cs" />
-    <Compile Include="Formats\LOFI\Kenshi\KenshModIO.cs" />
+    <Compile Include="Formats\LOFI\Kenshi\kensho-mod-strings.cs" />
     <Compile Include="Formats\LOFI\Kenshi\MOD.cs" />
     <Compile Include="Formats\NScriptGame\nscript.dat\NSCRIPT.cs" />
     <Compile Include="Formats\Other\PO.cs" />

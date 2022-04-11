@@ -236,14 +236,11 @@ namespace TranslationHelper.Formats.WolfRPG
         /// <param name="translationLines"></param>
         protected void GetTranslation(out List<string> translationLines)
         {
-            translationLines = new List<string>
-            {
-                //add last set line in check of previous context block
-                ParseData.Line
-            };
-            while (!ReadLine().StartsWith(EndTranslationID()))
+            translationLines = new List<string>();
+            while (!ParseData.Line.StartsWith(EndTranslationID()))
             {
                 translationLines.Add(ParseData.Line);
+                ReadLine();
             }
         }
 
@@ -332,11 +329,11 @@ namespace TranslationHelper.Formats.WolfRPG
                 var context = string.Join("\r\n", contextLines);
                 if (string.IsNullOrEmpty(translation))
                 {
-                    AddRowData(original, context + AdviceInfo(advice), CheckInput: true);
+                    AddRowData(original, context + AdviceInfo(advice), CheckInput: false);
                 }
                 else
                 {
-                    AddRowData(new[] { original, translation }, context + AdviceInfo(advice), CheckInput: true);
+                    AddRowData(new[] { original, translation }, context + AdviceInfo(advice), CheckInput: false);
                 }
             }
             else

@@ -60,6 +60,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTranslationLinkTextBox = new System.Windows.Forms.TextBox();
             this.cbxWebTranslatorsSelector = new System.Windows.Forms.ComboBox();
+            this.SourceLanguageComboBox = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -94,6 +96,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.SourceLanguageComboBox);
             this.panel1.Controls.Add(this.LineCharLimitTextBox);
             this.panel1.Controls.Add(this.THOptionLineCharLimitLabel);
             this.panel1.Controls.Add(this.THOptionAutotranslationForSimularCheckBox);
@@ -230,7 +234,7 @@
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Location = new System.Drawing.Point(401, 7);
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Name = "THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox";
-            this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Size = new System.Drawing.Size(77, 17);
+            this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Size = new System.Drawing.Size(79, 17);
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.TabIndex = 6;
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Text = "Translation";
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.UseVisualStyleBackColor = true;
@@ -464,6 +468,24 @@
             this.cbxWebTranslatorsSelector.TabIndex = 15;
             this.cbxWebTranslatorsSelector.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
+            // SourceLanguageComboBox
+            // 
+            this.SourceLanguageComboBox.FormattingEnabled = true;
+            this.SourceLanguageComboBox.Location = new System.Drawing.Point(106, 74);
+            this.SourceLanguageComboBox.Name = "SourceLanguageComboBox";
+            this.SourceLanguageComboBox.Size = new System.Drawing.Size(121, 21);
+            this.SourceLanguageComboBox.TabIndex = 17;
+            this.SourceLanguageComboBox.SelectionChangeCommitted += new System.EventHandler(this.SourceLanguageComboBox_SelectionChangeCommitted);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 77);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(94, 13);
+            this.label2.TabIndex = 18;
+            this.label2.Text = "Source Language:";
+            // 
             // THfrmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -524,5 +546,7 @@
         private System.Windows.Forms.Label SearchRowIssueOptionsLabel;
         internal System.Windows.Forms.CheckBox cbSearchRowIssueOptionsCheckAnyLineTranslatable;
         internal System.Windows.Forms.CheckBox cbSearchRowIssueOptionsCheckProjectSpecific;
+        private System.Windows.Forms.Label label2;
+        public System.Windows.Forms.ComboBox SourceLanguageComboBox;
     }
 }

@@ -1,4 +1,4 @@
-﻿//using KenshModTIO;
+﻿using KenshModTIO;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.LOFI.Kenshi
@@ -9,24 +9,17 @@ namespace TranslationHelper.Formats.LOFI.Kenshi
         {
             AddTables();
 
-            //var reader = new KenshModIO();
-
-            //foreach (var str in reader.GetStrings(ProjectData.SelectedGameDir, FilePath))
-            //{
-            //    AddRowData(str, CheckInput: false);
-            //}
+            GetStrings();
 
             return CheckTablesContent(FilePath);
         }
 
-        void OpenTHeFile()
+        void GetStrings()
         {
-            //var reader = new KenshModIO();
-
-            //foreach (var str in reader.GetStrings(ProjectData.SelectedGameDir, FilePath))
-            //{
-            //    AddRowData(str, CheckInput: false);
-            //}
+            foreach (var str in KenshModIO.GetStrings(ProjectData.SelectedGameDir, FilePath))
+            {
+                AddRowData(str, CheckInput: false);
+            }
         }
     }
 }
