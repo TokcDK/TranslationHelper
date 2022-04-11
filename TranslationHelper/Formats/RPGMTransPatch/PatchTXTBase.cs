@@ -1,4 +1,5 @@
-﻿using TranslationHelper.Formats.WolfRPG;
+﻿using System.Text;
+using TranslationHelper.Formats.WolfRPG;
 
 namespace TranslationHelper.Formats.RPGMTransPatch
 {
@@ -6,7 +7,11 @@ namespace TranslationHelper.Formats.RPGMTransPatch
     /// shared data for rpgmaker/wolfrpg trans patch txts
     /// </summary>
     abstract class PatchTXTBase : RPGMWolfTransPatchBase
-    {        
+    {
+        protected override Encoding WriteEncoding()
+        {
+            return Encoding.UTF8;
+        }
     }
 
 }
