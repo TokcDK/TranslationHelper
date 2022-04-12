@@ -1,6 +1,6 @@
 ﻿namespace ProjectBase
 {
-    interface IProject
+    public interface IProject
     {
         /// <summary>
         /// Title of the project
