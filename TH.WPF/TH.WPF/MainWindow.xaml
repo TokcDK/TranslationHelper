@@ -43,9 +43,9 @@
         </Menu>
         
         <ListView 
-            ItemsSource="{Binding FilesList}" 
-            SelectedItem="{Binding SelectedFile}"
-            ToolTip="{Binding SelectedFile.Info}"
+            ItemsSource="{Binding ProjectsList.SelectedProject.Files}" 
+            SelectedItem="{Binding ProjectsList.SelectedProject.SelectedFile}"
+            ToolTip="{Binding ProjectsList.SelectedProject.SelectedFile.Info}"
             Grid.Row="1"
             Grid.Column="0"
             HorizontalAlignment="Stretch">
@@ -57,8 +57,8 @@
         </ListView>
         
         <DataGrid 
-            ItemsSource="{Binding SelectedFile.Content}" 
-            SelectedItem="{Binding SelectedRow}"
+            ItemsSource="{Binding ProjectsList.SelectedProject.SelectedFile.Content}" 
+            SelectedItem="{Binding ProjectsList.SelectedProject.SelectedFile.SelectedRow}"
             Grid.Row="1" 
             Grid.Column="1" 
             Grid.ColumnSpan="2"            
@@ -85,15 +85,15 @@
             </Grid.RowDefinitions>
             <ScrollViewer Grid.Row="0">
                 <TextBlock
-                    Text="{Binding SelectedFile.Info}"
-                    ToolTip="{Binding SelectedFile.Info}"
+                    Text="{Binding ProjectsList.SelectedProject.SelectedFile.Info}"
+                    ToolTip="{Binding ProjectsList.SelectedProject.SelectedFile.Info}"
                     Width="Auto"
                     TextWrapping="Wrap"/>
             </ScrollViewer>
             <ScrollViewer Grid.Row="1">
                 <TextBlock 
-                    Text="{Binding SelectedRow.Info}"
-                    ToolTip="{Binding SelectedRow.Info}"
+                    Text="{Binding ProjectsList.SelectedProject.SelectedFile.SelectedRow.Info}"
+                    ToolTip="{Binding ProjectsList.SelectedProject.SelectedFile.SelectedRow.Info}"
                     Width="Auto"
                     TextWrapping="Wrap"/>
             </ScrollViewer>
@@ -101,13 +101,13 @@
         
         <ScrollViewer Grid.Row="2" Grid.Column="1">
             <TextBlock 
-                Text="{Binding SelectedRow.Original}"
+                Text="{Binding ProjectsList.SelectedProject.SelectedFile.SelectedRow.Original}"
                 Width="Auto"
                 TextWrapping="Wrap"/>
         </ScrollViewer>
         <ScrollViewer Grid.Row="2" Grid.Column="2">
             <TextBox 
-                Text="{Binding SelectedRow.Translation, UpdateSourceTrigger=PropertyChanged}"
+                Text="{Binding ProjectsList.SelectedProject.SelectedFile.SelectedRow.Translation, UpdateSourceTrigger=PropertyChanged}"
                 Width="Auto"
                 TextWrapping="Wrap"/>
         </ScrollViewer>
