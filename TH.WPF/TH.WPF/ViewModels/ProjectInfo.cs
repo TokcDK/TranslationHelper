@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -15,7 +16,9 @@ namespace TH.WPF.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public ObservableCollection<ProjectFileInfo> Files { get; set; }
+        public string? Name { get; set; }
+
+        public ObservableCollection<ProjectFileInfo>? Files { get; set; }
 
         /// <summary>
         /// Files list. Selected file value
@@ -46,7 +49,7 @@ namespace TH.WPF.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public ObservableCollection<ProjectInfo> Projects { get; set; }
+        public ObservableCollection<ProjectInfo>? Projects { get; set; }
 
         static ProjectInfo? selectedProject;
         public ProjectInfo? SelectedProject

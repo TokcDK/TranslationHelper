@@ -41,20 +41,34 @@
             <MenuItem Header="Options"></MenuItem>
             <MenuItem Header="Help"></MenuItem>
         </Menu>
-        
-        <ListView 
-            ItemsSource="{Binding ProjectsList.SelectedProject.Files}" 
-            SelectedItem="{Binding ProjectsList.SelectedProject.SelectedFile}"
-            ToolTip="{Binding ProjectsList.SelectedProject.SelectedFile.Info}"
-            Grid.Row="1"
-            Grid.Column="0"
-            HorizontalAlignment="Stretch">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding File.Name}"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+
+        <TabControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding ProjectsList.}">
+            <TabItem Header="Projects">
+                <ListView 
+                    ItemsSource="{Binding ProjectsList.Projects}" 
+                    SelectedItem="{Binding ProjectsList.SelectedProject}"
+                    HorizontalAlignment="Stretch">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </TabItem>
+            <TabItem Header="{Binding ProjectsList.SelectedProject.Name}">
+                <ListView 
+                    ItemsSource="{Binding ProjectsList.SelectedProject.Files}" 
+                    SelectedItem="{Binding ProjectsList.SelectedProject.SelectedFile}"
+                    ToolTip="{Binding ProjectsList.SelectedProject.SelectedFile.Info}"
+                    HorizontalAlignment="Stretch">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding File.Name}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </TabItem>
+        </TabControl>       
         
         <DataGrid 
             ItemsSource="{Binding ProjectsList.SelectedProject.SelectedFile.Content}" 
