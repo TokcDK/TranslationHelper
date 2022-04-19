@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TH.WPF"
         xmlns:vm="clr-namespace:TH.WPF.ViewModels"
+        xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
@@ -63,11 +65,17 @@
             CanUserAddRows="False"
             CanUserDeleteRows="False"
             AutoGenerateColumns="False"
+            dgx:DataGridFilter.IsAutoFilterEnabled="True"
+            dgx:Tools.ApplyInitialSorting="True"        
             >
             <DataGrid.Columns>
                 <DataGridTextColumn IsReadOnly="True" Header="Original" Binding="{Binding Original}" Width="0.5*"/>
                 <DataGridTextColumn Header="Translation" Binding="{Binding Translation, UpdateSourceTrigger=PropertyChanged}" Width="0.5*"/>
             </DataGrid.Columns>
+            <i:Interaction.Behaviors>
+                <dgx:BeginEditOnCtrlEnterBehavior/>
+                <dgx:ExtendedStarSizeBehavior/>
+            </i:Interaction.Behaviors>
         </DataGrid>
         
         <Grid Grid.Row="2" Grid.Column="0">
