@@ -1,8 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
-using static TH.WPF.ViewModels.MainVM;
 
 namespace TH.WPF.ViewModels
 {
@@ -15,6 +15,19 @@ namespace TH.WPF.ViewModels
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
+        private List<object> selectedItems = new();
+        public List<object> SelectedItems
+        {
+            get { return selectedItems; }
+            set
+            {
+                if (selectedItems == value) return;
+
+                selectedItems = value;
+                OnPropertyChanged(nameof(SelectedItems));
+            }
         }
 
         public FileInfo? File { get; set; }

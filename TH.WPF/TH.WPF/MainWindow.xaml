@@ -89,6 +89,7 @@
             <i:Interaction.Behaviors>
                 <dgx:BeginEditOnCtrlEnterBehavior/>
                 <dgx:ExtendedStarSizeBehavior/>
+                <vm:SelectedItemsBehavior SelectedItems="{Binding Mods.SelectedItems}" />
             </i:Interaction.Behaviors>
         </DataGrid>
         
