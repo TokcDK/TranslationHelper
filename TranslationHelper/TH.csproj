@@ -355,6 +355,7 @@
     <Compile Include="Projects\RPGMaker\RPGMGame.cs" />
     <Compile Include="Projects\RPGMaker\RPGMGameOLD.cs" />
     <Compile Include="Projects\RPGMMV\Menus\AddToSkipJS.cs" />
+    <Compile Include="Projects\RPGMMV\Menus\OpenJsonSkipCodesList.cs" />
     <Compile Include="Projects\RPGMMV\Menus\SkipJSFileOpen.cs" />
     <Compile Include="Projects\RPGMMV\RPGMMVGame.cs" />
     <Compile Include="Projects\RPGMMV\RPGMMVJson.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using TranslationHelper.Properties;
@@ -15,6 +16,12 @@ namespace TranslationHelper.Data
         internal static string ApplicationStartupPath()
         {
             return Settings.Default.ApplicationStartupPath;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string RPGMakerMVSkipCodesFilePath()
+        {
+            return Path.Combine(ProjectData.SelectedGameDir, "skipcodes.txt");
         }
 
         /// <summary>

@@ -502,7 +502,8 @@ namespace TranslationHelper.Projects.RPGMMV
             return new List<IProjectMenu>()
             {
                 new AddToSkipJS(),
-                new SkipJSFileOpen()
+                new SkipJSFileOpen(),
+                new OpenJsonSkipCodesList(),
             };
         }
 

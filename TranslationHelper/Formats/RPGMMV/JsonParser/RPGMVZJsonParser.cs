@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
@@ -11,6 +12,34 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 {
     class RPGMVZJsonParser : JsonParserBase
     {
+        protected override void Init()
+        {
+            var codesFile = THSettings.RPGMakerMVSkipCodesFilePath();
+            if (File.Exists(codesFile))
+            {
+                using (StreamReader sr = new StreamReader(codesFile))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        var line = sr.ReadLine();
+
+                        if (line.Trim().StartsWith(";")) continue;
+
+                        var codeInfo = line.Trim().Split(',');
+                        string commment = "";
+                        if (codeInfo.Length == 2 && codeInfo[1].Length > 0) commment = codeInfo[1];
+
+                        var code = codeInfo[0];
+                        if (!int.TryParse(code, out int codeValue)) continue;
+
+                        ExcludedCodes.TryAdd(codeValue, commment);
+                    }
+                }
+            }
+
+            base.Init();
+        }
+
         protected override void ParseValue(JValue jsonValue)
         {
 
