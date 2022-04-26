@@ -1,25 +1,25 @@
-﻿using KenshModTIO;
-using TranslationHelper.Data;
+﻿//using KenshModTIO;
+//using TranslationHelper.Data;
 
-namespace TranslationHelper.Formats.LOFI.Kenshi
-{
-    class MOD : FormatStringBase
-    {
-        internal override bool Open()
-        {
-            AddTables();
+//namespace TranslationHelper.Formats.LOFI.Kenshi
+//{
+//    class MOD : FormatStringBase
+//    {
+//        internal override bool Open()
+//        {
+//            AddTables();
 
-            GetStrings();
+//            GetStrings();
 
-            return CheckTablesContent(FilePath);
-        }
+//            return CheckTablesContent(FilePath);
+//        }
 
-        void GetStrings()
-        {
-            foreach (var str in KenshModIO.GetStrings(ProjectData.SelectedGameDir, FilePath))
-            {
-                AddRowData(str, CheckInput: false);
-            }
-        }
-    }
-}
+//        void GetStrings()
+//        {
+//            foreach (var str in KenshModIO.GetStrings(ProjectData.SelectedGameDir, FilePath))
+//            {
+//                AddRowData(str, CheckInput: false);
+//            }
+//        }
+//    }
+//}

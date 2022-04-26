@@ -76,7 +76,7 @@ namespace TranslationHelper.Formats
         internal string FilePath;
         protected virtual string GetFilePath()
         {
-            return ProjectData.OpenFileMode? GetOpenFilePath(): GetSaveFilePath();
+            return ProjectData.OpenFileMode ? GetOpenFilePath() : GetSaveFilePath();
         }
         protected virtual string GetOpenFilePath()
         {
@@ -578,6 +578,7 @@ namespace TranslationHelper.Formats
 
         object SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock = new object();
         bool TablesLinesDictFilled = false;
+        bool FirstPassOfDictionaryFilling = true;
         /// <summary>
         /// add all original\translation pairs of datatable rows in Dictionary<br/>
         /// also split multiline values and add all of their lines in Dictionary
@@ -592,9 +593,10 @@ namespace TranslationHelper.Formats
                 return;
             }
 
-            if (!TablesLinesDictFilled && !onlyOneTable)
+            if (!FirstPassOfDictionaryFilling && !TablesLinesDictFilled && !onlyOneTable)
             {
-                while (!TablesLinesDictFilled) // wait until dictionary will be filled
+                int i = 20;
+                while (!TablesLinesDictFilled && --i > 0) // wait until dictionary will be filled
                 {
                     Thread.Sleep(100);
                 }
@@ -602,6 +604,7 @@ namespace TranslationHelper.Formats
                 return; // return when filled
             }
 
+            FirstPassOfDictionaryFilling = false;
             if (ProjectData.CurrentProject.TablesLinesDict == null)
             {
                 ProjectData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
