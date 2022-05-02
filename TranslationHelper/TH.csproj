@@ -152,6 +152,7 @@
     <Compile Include="Formats\IrisField\TXT.cs" />
     <Compile Include="Formats\KiriKiri\Games\CSV\CSV.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup1\FGroup1Base.cs" />
+    <Compile Include="Formats\KiriKiri\Games\KSOther.cs" />
     <Compile Include="Formats\KiriKiri\Games\KS.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup1\RJ297684GoblinsCave\KS.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup2\FGroup2Base.cs" />
