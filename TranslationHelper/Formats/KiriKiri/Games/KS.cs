@@ -3,7 +3,7 @@ using TranslationHelper.Formats.TyranoBuilder.Extracted;
 
 namespace TranslationHelper.Formats.KiriKiri.Games
 {
-    class KS : KSOther//KSParserBase//
+    class KS : KSParserBase//KSOther//
     {
         public KS()
         {
