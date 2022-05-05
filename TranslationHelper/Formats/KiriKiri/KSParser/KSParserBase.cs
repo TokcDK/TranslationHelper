@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.KiriKiri;
 using TranslationHelper.Formats.KiriKiri.Games.KSSyntax;
 
@@ -184,41 +185,66 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                     {
 
                     }
-                    if (ParseData.Line.Contains("ゲームにもどる"))
+                    if (ParseData.Line.Contains("emb exp=\"f.愛情レベル\"]になった。"))
                     {
 
                     }
 
-                    var tagBeginIndexes = new List<int>();
-                    foreach (Match tagBegin in Regex.Matches(ParseData.Line, @"(?<!\[)\[\s*\w+\s+")) tagBeginIndexes.Add(tagBegin.Index);
+                    // get tag begin indexes
+                    var tagIndexes = new List<BracketCoordinates>();
+                    for (int i = ParseData.Line.IndexOf('['); i > -1; i = ParseData.Line.IndexOf('[', i + 1)) tagIndexes.Add(new BracketCoordinates(i));
+                    
+                    //foreach (Match tagBegin in Regex.Matches(ParseData.Line, @"(?<!\[)\[\s*\w+\s+")) tagIndexes.Add(new BracketCoordinates(tagBegin.Index));
 
-                    var tagEndIndexes = new List<int>();
-                    string searchLine = ParseData.Line;
-                    for (int i = tagBeginIndexes.Count - 1; i >= 0; i--)
+                    // get tag end indexes
+                    //var tagEndIndexes = new List<int>();
+                    //old way
+                    //string searchLine = ParseData.Line;
+                    //for (int i = tagBeginIndexes.Count - 1; i >= 0; i--)
+                    //{
+                    //    int tagBeginIndex = tagBeginIndexes[i];
+                    //    int reversSearchStartIndex = searchLine.Length - 1;
+                    //    var tagEndIndex = searchLine.LastIndexOf(']', reversSearchStartIndex);
+
+                    //    if (tagEndIndex == -1) tagEndIndex = reversSearchStartIndex;
+                    //    tagEndIndexes.Add(tagEndIndex);
+
+                    //    searchLine = searchLine.Remove(tagBeginIndex);
+                    //}
+                    //tagEndIndexes = tagEndIndexes.OrderBy(i => i).ToList();
+
+                    foreach(var tagIndex in tagIndexes)
                     {
-                        int tagBeginIndex = tagBeginIndexes[i];
-                        int reversSearchStartIndex = searchLine.Length - 1;
-                        var tagEndIndex = searchLine.LastIndexOf(']', reversSearchStartIndex);
-
-                        if (tagEndIndex == -1) tagEndIndex = reversSearchStartIndex;
-                        tagEndIndexes.Add(tagEndIndex);
-
-                        searchLine = searchLine.Remove(tagBeginIndex);
+                        tagIndex.CloseIndex = ParseData.Line.GetClosingBraketIndexFor(tagIndex.OpenIndex);
                     }
-                    tagEndIndexes = tagEndIndexes.OrderBy(i => i).ToList();
+                    foreach (var tagIndex in tagIndexes)
+                    {
+                        foreach (var tagIndex1 in tagIndexes)
+                        {
+                            if (tagIndex1 == tagIndex) continue;
+
+                            if (tagIndex1.OpenIndex > tagIndex.OpenIndex && tagIndex1.CloseIndex < tagIndex.CloseIndex)
+                            {
+                                tagIndex1.Parent.Add(tagIndex);
+                            }
+                        }
+                    }
 
                     var parts = new List<LinePart>();
                     int startIndex = 0;
                     int ii = 0;
-                    foreach (int tagBeginIndex in tagBeginIndexes)
+                    foreach (var tagIndex in tagIndexes)
                     {
-                        if (tagBeginIndex > startIndex)
+                        if (tagIndex.Parent.Any()) continue; // skip subbrackets
+                        if (tagIndex.CloseIndex==-1) continue; // alone bracked
+
+                        if (tagIndex.OpenIndex > startIndex)
                         {
-                            parts.Add(new LinePart(ParseData.Line.Substring(startIndex, tagBeginIndex - startIndex), true));
+                            parts.Add(new LinePart(ParseData.Line.Substring(startIndex, tagIndex.OpenIndex - startIndex), true));
                         }
-                        int tagEndIndex = tagEndIndexes[ii++];
-                        parts.Add(new LinePart(ParseData.Line.Substring(tagBeginIndex, tagEndIndex + 1 - tagBeginIndex), false));
-                        startIndex = tagEndIndex + 1;
+
+                        parts.Add(new LinePart(ParseData.Line.Substring(tagIndex.OpenIndex, tagIndex.CloseIndex + 1 - tagIndex.OpenIndex), false));
+                        startIndex = tagIndex.CloseIndex + 1;
                     }
                     if (startIndex != ParseData.Line.Length)
                     {

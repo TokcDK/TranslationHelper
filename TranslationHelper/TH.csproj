@@ -159,6 +159,7 @@
     <Compile Include="Formats\KiriKiri\Games\KSBase.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup2\NLoveImGoingToGetRidOfItAndLive\KS.cs" />
     <Compile Include="Formats\KiriKiri\Games\FGroup1\VirginLode2\KS.cs" />
+    <Compile Include="Formats\KiriKiri\KSParser\BracketCoordinates.cs" />
     <Compile Include="Formats\KiriKiri\KSParser\KSParserBase.cs" />
     <Compile Include="Formats\KiriKiri\KSParser\KSSyntax\Attribute.cs" />
     <Compile Include="Formats\KiriKiri\KSParser\KSSyntax\CSBySyntax.cs" />

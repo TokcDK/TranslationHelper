@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -698,6 +699,63 @@ namespace TranslationHelper.Extensions
             var regexed = Regex.Replace(str, THSettings.SoundsTextRegexPattern(), "");
             var trimmed = regexed.TrimAllExceptLettersOrDigits();
             return trimmed.Length == 0;
+        }
+
+        /// <summary>
+        /// Get closing bracket index for given opening bracket.
+        /// https://www.geeksforgeeks.org/find-index-closing-bracket-given-opening-bracket-expression/
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <param name="index"></param>
+
+        public static int GetClosingBraketIndexFor(this string inputString, int index)
+        {
+            int i;
+
+            // If index given is invalid and is
+            // not an opening bracket.
+            if (inputString[index] != '[')
+            {
+                //Console.Write(expression + ", "
+                //        + index + ": -1\n");
+                return -1;
+            }
+
+            // Stack to store opening brackets.
+            var st = new Stack();
+
+            // Traverse through string starting from
+            // given index.
+            for (i = index; i < inputString.Length; i++)
+            {
+
+                // If current character is an
+                // opening bracket push it in stack.
+                if (inputString[i] == '[')
+                {
+                    st.Push((int)inputString[i]);
+                }
+                // If current character is a closing
+                // bracket, pop from stack. If stack
+                // is empty, then this closing
+                // bracket is required bracket.
+                else if (inputString[i] == ']')
+                {
+                    st.Pop();
+                    if (st.Count == 0)
+                    {
+                        //Console.Write(inputString + ", "
+                        //        + index + ": " + i + "\n");
+                        return i;
+                    }
+                }
+            }
+
+            // If no matching closing bracket
+            // is found.
+            //Console.Write(inputString + ", "
+            //        + index + ": -1\n");
+            return -1;
         }
     }
 }

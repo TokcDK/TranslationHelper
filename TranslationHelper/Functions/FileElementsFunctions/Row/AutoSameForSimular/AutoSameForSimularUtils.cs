@@ -86,7 +86,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                 //если приложение закрылось
                 if (Properties.Settings.Default.IsTranslationHelperWasClosed)
                 {
-                    return;
+                    _autoSetSameTranslationForSimularDataStack.TryRemove(_tableRowPair);
+                    _autoSetSameTranslationForSimularIsBusy = false;
+                    continue;
                 }
 
                 _autoSetSameTranslationForSimularIsBusy = true;
@@ -115,6 +117,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
                     if (inputTableRowTranslationCell == null || string.IsNullOrEmpty(inputTableRowTranslationCell as string))
                     {
+                        _autoSetSameTranslationForSimularDataStack.TryRemove(_tableRowPair);
+                        _autoSetSameTranslationForSimularIsBusy = false;
                         continue;
                     }
 
@@ -129,7 +133,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
                     //Было исключение OutOfRangeException когда в оригинале присутствовали совпадения для regex, а входной перевод был пустой или равен \r\n, тогда попытка получить индекс совпадения из оригинала заканчивалась исключением, т.к. никаких совпадений не было. Похоже на неверный перевод от онлайн сервиса
                     if (string.IsNullOrWhiteSpace(inputTranslationValue) || inputTranslationValue == Environment.NewLine)
-                        return;
+                    {
+                        _autoSetSameTranslationForSimularDataStack.TryRemove(_tableRowPair);
+                        _autoSetSameTranslationForSimularIsBusy = false;
+                        continue;
+                    }
 
                     bool weUseDuplicates = false;
                     try
@@ -166,7 +174,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     if (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese" && Regex.Matches(inputTranslationValue, @"\d+").Count != Regex.Matches(inputOriginalValue, @"\d+").Count)
                     {
                         Properties.Settings.Default.THAutoSetSameTranslationForSimularIsBusy = false;
-                        return;
+                        _autoSetSameTranslationForSimularDataStack.Clear();
+                        _autoSetSameTranslationForSimularIsBusy = false;
+                        break;
                     }
 
                     MatchCollection inputOriginalMatches = reg.Matches(inputOriginalValue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
@@ -176,6 +186,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     int tablesCount = ProjectData.FilesContent.Tables.Count;
                     for (int targetTableIndex = 0; targetTableIndex < tablesCount; targetTableIndex++) //количество файлов
                     {
+                        //если приложение закрылось
+                        if (Properties.Settings.Default.IsTranslationHelperWasClosed)
+                        {
+                            break;
+                        }
+
                         var targetTable = ProjectData.FilesContent.Tables[targetTableIndex];
                         var rowsCount = targetTable.Rows.Count;
 
@@ -187,7 +203,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             //если приложение закрылось
                             if (Properties.Settings.Default.IsTranslationHelperWasClosed)
                             {
-                                return;
+                                break;
                             }
 
                             var targetRow = targetTable.Rows[targetRowIndex];
