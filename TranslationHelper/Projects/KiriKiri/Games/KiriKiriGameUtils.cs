@@ -63,6 +63,8 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
             foreach (var xp3Patch in new DirectoryInfo(ProjectData.SelectedGameDir).EnumerateFiles("patch*.xp3"))
             {
+                if (File.Exists(xp3Patch + ".translation")) continue;
+
                 // get splitter and number
                 var patchMatch = Regex.Match(xp3Patch.Name, @"[Pp]atch([^0-9]*)([^0-9]*)\.xp3");
                 if (!patchMatch.Success) continue;
