@@ -83,6 +83,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
             while (!_autoSetSameTranslationForSimularIsBusy && _autoSetSameTranslationForSimularDataStack.Count > 0)
             {
+                _autoSetSameTranslationForSimularIsBusy = true;
+
                 //если приложение закрылось
                 if (Properties.Settings.Default.IsTranslationHelperWasClosed)
                 {
@@ -91,17 +93,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     continue;
                 }
 
-                _autoSetSameTranslationForSimularIsBusy = true;
-
                 try
                 {
-                    {
+                    //{
                         //re-set input variables to prevent break of work while concurent execution
                         //forcevalue = ForceSetValue;
                         //iTableIndex = InputTableIndex;
                         //iRowIndex = InputRowIndex;
                         //iCellIndex = InputCellIndex;
-                    }
+                    //}
 
                     //присвоить значения для обработки
                     _tableRowPair = _autoSetSameTranslationForSimularDataStack.ElementAt(0).Key;
@@ -187,10 +187,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     for (int targetTableIndex = 0; targetTableIndex < tablesCount; targetTableIndex++) //количество файлов
                     {
                         //если приложение закрылось
-                        if (Properties.Settings.Default.IsTranslationHelperWasClosed)
-                        {
-                            break;
-                        }
+                        if (Properties.Settings.Default.IsTranslationHelperWasClosed) break;
 
                         var targetTable = ProjectData.FilesContent.Tables[targetTableIndex];
                         var rowsCount = targetTable.Rows.Count;
@@ -201,10 +198,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                         for (int targetRowIndex = 0; targetRowIndex < rowsCount; targetRowIndex++) //количество строк в каждом файле
                         {
                             //если приложение закрылось
-                            if (Properties.Settings.Default.IsTranslationHelperWasClosed)
-                            {
-                                break;
-                            }
+                            if (Properties.Settings.Default.IsTranslationHelperWasClosed) break;
 
                             var targetRow = targetTable.Rows[targetRowIndex];
                             var targetOriginalCell = targetRow[ProjectData.OriginalColumnIndex];
@@ -247,19 +241,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             //string TargetOriginallCellStringFixed = RomajiKana.THFixDigits(TargetOriginallCellString);
                             MatchCollection targetMatches = reg.Matches(targetOriginallCellString); //mc0 равно значениям цифр ячейки под номером y в файле i
                             int targetMatchesCount = targetMatches.Count;
-                            if (targetMatchesCount == 0) //если количество совпадений больше нуля(идти дальше), т.е. цифры были в поле untrans проверяемой на совпадение ячейки
-                            {
-                                continue;
-                            }
+                            if (targetMatchesCount == 0) continue; //если количество совпадений больше нуля(идти дальше), т.е. цифры были в поле untrans проверяемой на совпадение ячейки
 
                             string TargetTransCellValueWithRemovedPatternMatches = Regex.Replace(targetTranslationCellString, regexPattern, string.Empty, RegexOptions.Compiled);
                             string InputTransCellValueWithRemovedPatternMatches = Regex.Replace(inputTranslationValue, regexPattern, string.Empty, RegexOptions.Compiled);
 
                             //Если значение ячеек перевода без паттернов равны, идти дальше
-                            if (TargetTransCellValueWithRemovedPatternMatches == InputTransCellValueWithRemovedPatternMatches)
-                            {
-                                continue;
-                            }
+                            if (TargetTransCellValueWithRemovedPatternMatches == InputTransCellValueWithRemovedPatternMatches) continue;
 
                             string TargetOrigCellValueWithRemovedPatternMatches = Regex.Replace(targetOriginallCellString, regexPattern, string.Empty, RegexOptions.Compiled);
                             string InputOrigCellValueWithRemovedPatternMatches = Regex.Replace(inputOriginalValue, regexPattern, string.Empty, RegexOptions.Compiled);
@@ -269,12 +257,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             if (TargetOrigCellValueWithRemovedPatternMatches != InputOrigCellValueWithRemovedPatternMatches
                                 || inputOriginalMatchesCount != targetMatchesCount
                                 || !IsAllMatchesInIdenticalPlaces(inputOriginalMatches, targetMatches)
-                                )
-                            {
-                                continue;
-                            }
+                                ) continue;
 
-                            {
+                            //{
                                 ////инициализация основных целевого и входного массивов
                                 //string[] inputOrigMatches = new string[mccount];
                                 //string[] targetOrigMatches = new string[mccount];
@@ -290,15 +275,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
                                 //string inputresult = Regex.Replace(inputtranscellvalue, pattern, "{{$1}}");//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
                                 //переименовано и закомментировано, т.к. было убрано оборачивание в цифры. string inputtranscellvalue = inputtranscellvalue;//оборачивание цифры в {{}}, чтобы избежать ошибочных замен например замены 5 на 6 в значении, где есть 5 50
-                            }
+                            //}
 
                             MatchCollection tm = reg.Matches(inputTranslationValue);
 
                             //количество совпадений должно быть равное для избежания исключений и прочих неверных замен
-                            if (tm.Count != inputOriginalMatches.Count)
-                            {
-                                continue;
-                            }
+                            if (tm.Count != inputOriginalMatches.Count) continue;
 
                             int startindex;
                             int stringoverallength = 0;
@@ -309,10 +291,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             for (int m = 0; m < inputOriginalMatchesCount; m++)
                             {
                                 //проверка, ЧТОБЫ СОВПАДЕНИЯ ОТЛИЧАЛИСЬ, Т.Е. НЕ МЕНЯТЬ ! НА ! И ? НА ?, ТОЛЬКО ! НА ? И 1 НА 2
-                                if (inputOriginalMatches[m].Value == targetMatches[m].Value)
-                                {
-                                    continue;
-                                }
+                                if (inputOriginalMatches[m].Value == targetMatches[m].Value) continue;
 
                                 //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
                                 startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
