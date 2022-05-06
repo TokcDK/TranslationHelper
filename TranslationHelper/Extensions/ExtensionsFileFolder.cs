@@ -177,5 +177,15 @@ namespace TranslationHelper.Extensions
             }
             return xor;
         }
+
+        /// <summary>
+        /// Copies an existing file to a new file only if new file is not exists.
+        /// </summary>
+        /// <param name="sourceFileName"></param>
+        /// <param name="destFileName"></param>
+        public static void TryCopyTo(this string sourceFileName, string destFileName)
+        {
+            if (!File.Exists(destFileName)) File.Copy(sourceFileName, destFileName);
+        }
     }
 }

@@ -341,15 +341,19 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                 bool arc_conv = true;
 
-                if (!arc_conv && !File.Exists(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(kirikiriunpacker))))
+                var kirikiriUnpackerWorkDirPath = Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(kirikiriunpacker));
+                var kirikiriUnpackerDllWorkDirPath = Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.KiriKiriToolDllPath()));
+                var arcConverterWorkDirPath = Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath()));
+                var arcConverterDatWorkDirPath = Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat");
+                if (!arc_conv && !File.Exists(kirikiriUnpackerWorkDirPath))
                 {
-                    File.Copy(THSettings.KiriKiriToolExePath(), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(kirikiriunpacker)));
-                    File.Copy(THSettings.KiriKiriToolDllPath(), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.KiriKiriToolDllPath())));
+                    THSettings.KiriKiriToolExePath().TryCopyTo(kirikiriUnpackerWorkDirPath);
+                    THSettings.KiriKiriToolDllPath().TryCopyTo(kirikiriUnpackerDllWorkDirPath);
                 }
-                else if (arc_conv && !File.Exists(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath()))))
+                else if (arc_conv && !File.Exists(arcConverterWorkDirPath))
                 {
-                    File.Copy(THSettings.ArcConvExePath(), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath())));
-                    File.Copy(Path.Combine(THSettings.ArcConvDirPath(), Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat"), Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat"));
+                    THSettings.ArcConvExePath().TryCopyTo(arcConverterWorkDirPath);
+                    Path.Combine(THSettings.ArcConvDirPath(), Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat").TryCopyTo(arcConverterDatWorkDirPath);
                 }
 
                 var targetPatchPath = Path.Combine(ProjectData.SelectedDir, PatchName + ".xp3");
@@ -372,7 +376,8 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                     "\"" + LE + "\" " + args
                     ;
                 var copypatch =
-                    "if not exist \"" + targetPatchPath + "\" copy \"" + patch + "\" \"" + targetPatchPath + "\""
+                    "if exist \"" + targetPatchPath + "\" del \"" + targetPatchPath + "\""
+                    + "\r\nif not exist \"" + targetPatchPath + "\" copy \"" + patch + "\" \"" + targetPatchPath + "\""
                     + "\r\n"
                     + "if not exist \"" + targetPatchPath + KiriKiriGameUtils.KiriKiriTranslationSuffix + "\" echo translated files >\"" + targetPatchPath + KiriKiriGameUtils.KiriKiriTranslationSuffix + "\""
                     ;
@@ -431,20 +436,21 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 if (File.Exists(patch))
                 {
                     //var target = Path.Combine(ProjectData.SelectedGameDir, PatchName + ".xp3");
+                    if (!File.Exists(targetPatchPath)) File.Delete(targetPatchPath);
                     File.Copy(patch, targetPatchPath);
                     File.WriteAllText(targetPatchPath + KiriKiriGameUtils.KiriKiriTranslationSuffix, "translated files");//write check info txt file
                     ret = true;
                 }
 
-                if (!arc_conv && File.Exists(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(kirikiriunpacker))))
+                if (!arc_conv && File.Exists(kirikiriUnpackerWorkDirPath))
                 {
                     bool removed = false;
                     while (!removed)
                     {
                         try
                         {
-                            File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(kirikiriunpacker)));
-                            File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.KiriKiriToolDllPath())));
+                            File.Delete(kirikiriUnpackerWorkDirPath);
+                            File.Delete(kirikiriUnpackerDllWorkDirPath);
                             removed = true;
                         }
                         catch
@@ -453,10 +459,10 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                         }
                     }
                 }
-                else if (arc_conv && File.Exists(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath()))))
+                else if (arc_conv && File.Exists(arcConverterWorkDirPath))
                 {
-                    File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath())));
-                    File.Delete(Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat"));
+                    File.Delete(arcConverterWorkDirPath);
+                    File.Delete(arcConverterDatWorkDirPath);
                 }
             }
             catch
