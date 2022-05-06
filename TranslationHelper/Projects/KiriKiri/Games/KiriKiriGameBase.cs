@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -18,7 +19,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             HideVarsBase = new Dictionary<string, string>()
             {
                 {"[emb exp=\"", @"\[emb exp\=\""[^\""]+\""\]"}
-            };            
+            };
         }
 
         public override bool IsSaveToSourceFile => false; // save to patch dir
@@ -356,7 +357,9 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                     Path.Combine(THSettings.ArcConvDirPath(), Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat").TryCopyTo(arcConverterDatWorkDirPath);
                 }
 
-                var targetPatchPath = Path.Combine(ProjectData.SelectedDir, PatchName + ".xp3");
+                string foundTraslationPatchName = Directory.EnumerateFiles(ProjectData.SelectedDir, "patch*.xp3.translation").FirstOrDefault();
+
+                var targetPatchPath = foundTraslationPatchName != null ? foundTraslationPatchName.Replace(".translation", "") : Path.Combine(ProjectData.SelectedDir, PatchName + ".xp3");
 
                 //kiririkiunpacker
                 var setdir =
