@@ -29,6 +29,8 @@ namespace TranslationHelper.Formats.zzzOtherFormat
                 {
                     Dict[key] = value;
                 }
+
+                if (ProjectData.SaveFileMode && Dict[key] == key) Dict[key] = "";
             }
 
             if (ProjectData.SaveFileMode) ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(Dict, Formatting.Indented));
