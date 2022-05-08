@@ -439,7 +439,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 if (File.Exists(patch))
                 {
                     //var target = Path.Combine(ProjectData.SelectedGameDir, PatchName + ".xp3");
-                    if (!File.Exists(targetPatchPath)) File.Delete(targetPatchPath);
+                    if (File.Exists(targetPatchPath)) File.Delete(targetPatchPath);
                     File.Copy(patch, targetPatchPath);
                     File.WriteAllText(targetPatchPath + KiriKiriGameUtils.KiriKiriTranslationSuffix, "translated files");//write check info txt file
                     ret = true;

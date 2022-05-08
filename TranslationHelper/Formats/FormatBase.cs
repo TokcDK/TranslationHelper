@@ -261,7 +261,7 @@ namespace TranslationHelper.Formats
         /// <param name="RowData">reference to original string</param>
         /// <param name="RowInfo">info about the string</param>
         /// <returns></returns>
-        internal bool AddRowData(ref string RowData, string RowInfo = "", bool CheckInput = true)
+        internal bool AddRowData(ref string RowData, string RowInfo = "", bool CheckInput = true, string existsTranslation = null)
         {
             if (ProjectData.OpenFileMode)
             {
@@ -276,7 +276,7 @@ namespace TranslationHelper.Formats
                         return false;
                     }
                 }
-                return SetTranslation(ref RowData);
+                return SetTranslation(ref RowData, existsTranslation);
             }
         }
 
