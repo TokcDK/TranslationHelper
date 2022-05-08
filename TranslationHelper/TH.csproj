@@ -217,6 +217,7 @@
     <Compile Include="Formats\RPGMTransPatch\RPGMTransPatchBase.cs" />
     <Compile Include="Formats\RPGMTransPatch\TXTv2.cs" />
     <Compile Include="Formats\RPGMTransPatch\TXTv3.cs" />
+    <Compile Include="Formats\TxtFileBase.cs" />
     <Compile Include="Formats\TyranoBuilder\Extracted\ExportedCSV.cs" />
     <Compile Include="Formats\TyranoBuilder\Extracted\KS.cs" />
     <Compile Include="Formats\WolfRPG\RPGMWolfTransPatchBase.cs" />
@@ -224,6 +225,7 @@
     <Compile Include="Formats\WolfRPG\WolfTrans\TXT.cs" />
     <Compile Include="Formats\zzzOtherFormat\JsonDictionary.cs" />
     <Compile Include="Formats\zzzOtherFormat\OtherFormatBase.cs" />
+    <Compile Include="Formats\zzzOtherFormat\TXTStringPerLine.cs" />
     <Compile Include="Functions\DBSaveFormats\CMZ.cs" />
     <Compile Include="Functions\DBSaveFormats\CMX.cs" />
     <Compile Include="Functions\DBSaveFormats\DBSaveBase.cs" />
