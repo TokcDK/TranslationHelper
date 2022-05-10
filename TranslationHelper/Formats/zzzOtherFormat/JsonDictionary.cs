@@ -1,17 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Formats.IrisField;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.zzzOtherFormat
 {
-    internal class JsonDictionary:FormatStringBase
+    internal class JsonDictionary : FormatStringBase
     {
         internal override string Ext()
         {
@@ -27,7 +21,7 @@ namespace TranslationHelper.Formats.zzzOtherFormat
 
                 if (AddRowData(ref value, existsTranslation: Dict[key]) && ProjectData.SaveFileMode)
                 {
-                    Dict[key] = value;
+                    Dict[key] = Mod(key, value);
                 }
 
                 //if (ProjectData.SaveFileMode && Dict[key] == key) Dict[key] = "";
@@ -36,14 +30,32 @@ namespace TranslationHelper.Formats.zzzOtherFormat
             if (ProjectData.SaveFileMode) ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(Dict, Formatting.Indented));
         }
 
-        string Mod(string s)
+        string Mod(string o, string t)
         {
-            foreach(var c in ENtoJPReplacementPairsOneLetterDict)
+            if (t[0] == '【' && t.EndsWith("】")) return t;
+
+            string tempTrans = t;
+
+            var match = Regex.Match(t, @"^[a-zA-Z0-9_-]+:(.+)$");
+            if (match.Success)
             {
-                s = s.Replace(c.Key, c.Value);
+                return t;
+                //tempTrans = match.Groups[1].Value;
             }
 
-            return s;
+            foreach (var c in ENtoJPReplacementPairsOneLetterDict)
+            {
+                tempTrans = tempTrans.Replace(c.Key, c.Value);
+            }
+
+            //if (match.Success)
+            //{
+            //    tempTrans = t
+            //        .Remove(match.Groups[1].Index, match.Groups[1].Length)
+            //        .Insert(match.Groups[1].Index, tempTrans);
+            //}
+
+            return tempTrans.Replace("\\Ｎ","\\N");
         }
 
         readonly static Dictionary<char, char> ENtoJPReplacementPairsOneLetterDict = new Dictionary<char, char>
@@ -112,22 +124,28 @@ namespace TranslationHelper.Formats.zzzOtherFormat
                 { '9', '９' },
                 { ',', '、' },
                 { '.', '。' },
-                { '\'', ' ' },
-                { '”', ' ' },
-                { '’', ' ' },
+                //{ '\'', ' ' },
+                { '\'', 'ˈ' },
+                //{ '”', ' ' },
+                { '”', '”' },
+                //{ '’', ' ' },
+                { '’', 'ˈ' },
                 { '{', ' ' },
                 { '}', ' ' },
-                { '[', ' ' },
-                { ']', ' ' },
+                { '[', '【' },
+                { ']', '】' },
                 { '(', '（' },
                 { ')', '）' },
                 { '#', ' ' },
+                { '?', '？' },
+                { '!', '！' },
                 //{ '「', ' ' },
                 //{ '『', ' ' },
                 //{ '」', ' ' },
                 //{ '』', ' ' },
                 //{ '　', ' ' },
                 //{ ' ', '_' }
+                { ' ', '・' }
             };
     }
 
