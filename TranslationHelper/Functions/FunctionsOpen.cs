@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats;
 using TranslationHelper.Menus;
 using TranslationHelper.Projects;
 
@@ -21,7 +22,8 @@ namespace TranslationHelper.Functions
                 using (var THFOpen = new OpenFileDialog())
                 {
                     THFOpen.InitialDirectory = ProjectData.Main.Settings.THConfigINI.GetKey("Paths", "LastPath");
-                    THFOpen.Filter = "All compatible|*.exe;RPGMKTRANSPATCH;*.json;*.scn;*.ks|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
+                    var possibleExtensions = string.Join(";*", GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<FormatBase>().Where(f => !string.IsNullOrWhiteSpace(f.Ext()) && f.Ext()[0] == '.').Select(f => f.Ext()).Distinct());
+                    THFOpen.Filter = "All|*"+ possibleExtensions + ";RPGMKTRANSPATCH|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
 
                     if (THFOpen.ShowDialog() != DialogResult.OK || THFOpen.FileName == null)
                     {

@@ -119,7 +119,7 @@ namespace TranslationHelper.Data
         /// <summary>
         /// Path for selected game dir which is translating
         /// </summary>
-        internal static string SelectedGameDir { get => CurrentProject.SelectedGameDir; set => CurrentProject.SelectedGameDir = value; }
+        internal static string SelectedGameDir { get => CurrentProject == null ? null : CurrentProject.SelectedGameDir; set { if (CurrentProject.SelectedGameDir != value) CurrentProject.SelectedGameDir = value; } }
         /// <summary>
         /// Path for selected dir where to translate.
         /// In most causes it is game's dir.

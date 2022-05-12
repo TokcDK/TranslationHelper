@@ -19,9 +19,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 {
                     JsonName = Format.UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(Format.FilePath) : Path.GetFileName(Format.FilePath);
                 }
-            }
 
-            Init();
+                Init();
+            }
         }
 
         /// <summary>
@@ -136,9 +136,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             return true;
         }
 
-        protected virtual void Init()
-        {
-        }
+        protected virtual void Init() { }
 
         private void WriteJsonFileInSaveMode()
         {
