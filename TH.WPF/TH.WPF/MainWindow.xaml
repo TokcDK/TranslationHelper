@@ -49,14 +49,12 @@
             SelectedItem="{Binding ProjectsList.SelectedProject}"
             ItemsSource="{Binding ProjectsList.Projects}">
             <TabControl.ItemTemplate>
-                <!-- this is the header template-->
                 <DataTemplate>
                     <TextBlock
                     Text="{Binding Name}" />
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
-                <!-- this is the body of the TabItem template-->
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
