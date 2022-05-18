@@ -98,7 +98,7 @@
                             <i:Interaction.Behaviors>
                                 <dgx:BeginEditOnCtrlEnterBehavior/>
                                 <dgx:ExtendedStarSizeBehavior/>
-                                <vm:SelectedItemsBehavior SelectedItems="{Binding Mods.SelectedItems}" />
+                                <vm:SelectedItemsBehavior SelectedItems="{Binding SelectedFile.SelectedItems}" />
                             </i:Interaction.Behaviors>
                         </DataGrid>
                         <GridSplitter Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Right" Background="Gray" Width="2"/>
@@ -157,7 +157,7 @@
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="2">
                 <TextBlock DockPanel.Dock="Left" Text="Rows: "/>
-                <TextBlock DockPanel.Dock="Right" Text="{Binding SelectedFile.Content.Count}"/>
+                <TextBlock DockPanel.Dock="Right" Text="{Binding ProjectsList.SelectedProject.SelectedFile.Content.Count}"/>
             </DockPanel>
         </Grid>
     </Grid>
