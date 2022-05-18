@@ -65,10 +65,12 @@
                             <ColumnDefinition Width="0.40*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <ListView 
                             Grid.Column="0"
+                            Grid.RowSpan="2"
                             ItemsSource="{Binding Files}" 
                             SelectedItem="{Binding SelectedFile}"
                             ToolTip="{Binding SelectedFile.Info}"
@@ -79,6 +81,7 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
+                        <TextBlock Grid.Column="1" Grid.Row="0" TextAlignment="Justify" Margin="3,0,0,0" Text="{Binding SelectedFile.File.FullName}"/>
                         <DataGrid
                             ItemsSource="{Binding SelectedFile.Content}" 
                             SelectedItem="{Binding SelectedFile.SelectedRow}"
@@ -100,7 +103,7 @@
                                 <vm:SelectedItemsBehavior SelectedItems="{Binding Mods.SelectedItems}" />
                             </i:Interaction.Behaviors>
                         </DataGrid>
-                        <GridSplitter Grid.Column="0" Grid.Row="0" Grid.RowSpan="1" HorizontalAlignment="Right" Background="Gray" Width="2"/>
+                        <GridSplitter Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Right" Background="Gray" Width="2"/>
                     </Grid>
                 </DataTemplate>
             </TabControl.ContentTemplate>

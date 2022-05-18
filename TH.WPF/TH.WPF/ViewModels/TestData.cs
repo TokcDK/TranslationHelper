@@ -29,6 +29,18 @@ namespace TH.WPF.ViewModels
             }
         };
 
+        public static ProjectFileInfo TestFile3 { get; } = new ProjectFileInfo()
+        {
+            File = new FileInfo(@"c:\file3.txt"),
+            Info = "some file info22222\ndfgdfgdfg\vvvvvvvv\ninfo\r\ninfoinfo\nIfileinfo",
+            Content = new FileContent()
+            {
+                new FileRow(){Original="test3 o1", Translation="test3 t1", Info="some row info"},
+                new FileRow(){Original="test3 o2", Translation="test3 t2"},
+                new FileRow(){Original="test3 o3", Translation="test3 t3", Info="some row info 3\nsdfsdfds\nhhhhh\nddfffdfdf\n"},
+            }
+        };
+
         public static ProjectInfo TestProject { get; } = new ProjectInfo()
         {
             Name = "TestProject1",
@@ -38,7 +50,7 @@ namespace TH.WPF.ViewModels
         public static ProjectInfo TestProject2 { get; } = new ProjectInfo()
         {
             Name = "TestProject2",
-            Files = new ObservableCollection<ProjectFileInfo>() { TestFile2 }
+            Files = new ObservableCollection<ProjectFileInfo>() { TestFile2, TestFile3 }
         };
 
         public static ProjectsListInfo TestProjects { get; } = new ProjectsListInfo()
