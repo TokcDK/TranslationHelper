@@ -79,7 +79,10 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        <TextBlock Grid.Column="1" Grid.Row="0" TextAlignment="Justify" Margin="3,0,0,0" Text="{Binding SelectedFile.File.FullName}"/>
+                        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Margin="3,0,0,0" TextAlignment="Justify" Text="path:"/>
+                            <TextBlock Margin="3,0,0,0" TextAlignment="Justify" Text="{Binding SelectedFile.File.FullName}"/>
+                        </StackPanel>
                         <DataGrid
                             ItemsSource="{Binding SelectedFile.Content}" 
                             SelectedItem="{Binding SelectedFile.SelectedRow}"
