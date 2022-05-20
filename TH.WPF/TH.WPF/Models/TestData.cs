@@ -1,7 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using TH.WPF.ViewModels;
 
-namespace TH.WPF.ViewModels
+namespace TH.WPF.Models
 {
     public class TestData
     {
