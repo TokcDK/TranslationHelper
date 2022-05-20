@@ -92,13 +92,13 @@ namespace TranslationHelper.Functions
             //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
             //    return;
 
-            ProjectData.OnlineTranslationCache.UsersCount++;
-
             if (ProjectData.OnlineTranslationCache == null)
             {
                 ProjectData.OnlineTranslationCache = new FunctionsOnlineCache();
                 ProjectData.OnlineTranslationCache.Read();
             }
+
+            ProjectData.OnlineTranslationCache.UsersCount++;
         }
 
         /// <summary>
