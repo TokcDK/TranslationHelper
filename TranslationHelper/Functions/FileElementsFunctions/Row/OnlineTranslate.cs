@@ -150,16 +150,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
 
+                //init data
                 //add lineCoordinates and row data
-                if (!_buffer.ContainsKey(lineCoordinates))
-                {
-                    //init data
-                    _buffer.Add(lineCoordinates, new Dictionary<int, Dictionary<string, string>>());//add coordinates
-                }
-                if (!_buffer[lineCoordinates].ContainsKey(lineNum))
-                {
-                    _buffer[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
-                }
+                _buffer.TryAdd(lineCoordinates, new Dictionary<int, Dictionary<string, string>>());//add coordinates
+
+                _buffer[lineCoordinates].TryAdd(lineNum, new Dictionary<string, string>());//add linenum
 
                 //check for line valid
                 if (!line.IsValidForTranslation())
@@ -225,10 +220,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     //write cache periodically
                     ProjectData.OnlineTranslationCache.Write();
 
-                    if (Properties.Settings.Default.InterruptTtanslation) // stop translating after last pack of text when translation is interrupted
-                    {
-                        return;
-                    }
+                    // stop translating after last pack of text when translation is interrupted
+                    if (Properties.Settings.Default.InterruptTtanslation) return;
                 }
 
                 lineNum++;

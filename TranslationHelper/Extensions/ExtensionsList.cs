@@ -29,10 +29,9 @@ namespace TranslationHelper.Extensions
         /// <param name="value"></param>
         internal static void TryAdd<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue value)
         {
-            if (!dictionary.ContainsKey(key))
-            {
-                dictionary.Add(key, value);
-            }
+            if (dictionary.ContainsKey(key)) return;
+
+            dictionary.Add(key, value);
         }
 
         /// <summary>
