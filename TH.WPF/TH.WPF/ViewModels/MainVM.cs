@@ -9,6 +9,6 @@ namespace TH.WPF.ViewModels
 {
     public partial class MainVM
     {
-        public ProjectsListInfo ProjectsList { get; set; } = TestData.TestProjects;
+        public static ProjectsListInfo ProjectsList { get; set; } = TestData.TestProjects;
     }
 }

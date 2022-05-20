@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using TH.WPF.Models;
+using static TH.WPF.ViewModels.MainVM;
 
 namespace TH.WPF.ViewModels
 {
@@ -36,6 +38,9 @@ namespace TH.WPF.ViewModels
                 OnPropertyChanged(nameof(SelectedFile));
             }
         }
+
+        private RelayCommand? onProjectClose;
+        public RelayCommand OnProjectClose => onProjectClose ??= new RelayCommand(obj => { ModelProject.CloseProject(obj as ProjectInfo); });
     }
 
     /// <summary>

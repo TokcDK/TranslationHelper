@@ -43,6 +43,7 @@
         </Menu>
 
         <TabControl 
+            Name="TabMain"
             Grid.Row="1" 
             Grid.Column="0" 
             Grid.ColumnSpan="3" 
@@ -50,8 +51,10 @@
             ItemsSource="{Binding ProjectsList.Projects}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock
-                    Text="{Binding Name}" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}" />
+                        <Button BorderBrush="Gray" Margin="3,0,0,0" Height="10" Width="10" Command="{Binding OnProjectClose}" CommandParameter="{Binding}"/>
+                    </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
