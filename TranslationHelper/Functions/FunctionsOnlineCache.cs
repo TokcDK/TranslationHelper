@@ -92,10 +92,11 @@ namespace TranslationHelper.Functions
             //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
             //    return;
 
+            ProjectData.OnlineTranslationCache.UsersCount++;
+
             if (ProjectData.OnlineTranslationCache == null)
             {
                 ProjectData.OnlineTranslationCache = new FunctionsOnlineCache();
-                ProjectData.OnlineTranslationCache.UsersCount++;
                 ProjectData.OnlineTranslationCache.Read();
             }
         }
@@ -111,6 +112,7 @@ namespace TranslationHelper.Functions
         internal static void Unload()
         {
             ProjectData.OnlineTranslationCache.UsersCount--;
+
             if (ProjectData.OnlineTranslationCache != null && ProjectData.OnlineTranslationCache.UsersCount == 0)
             {
                 ProjectData.OnlineTranslationCache = null;

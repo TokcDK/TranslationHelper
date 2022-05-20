@@ -93,10 +93,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     //cache disabled but all db loading enabled. ask for load then. maybe not need
                     var result = MessageBox.Show(T._("Translation cache disabled but load all DB enabled. While all DB loading cache can be enabled in settings. Load all DB?"), T._("Translation cache disabled"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    if (result != DialogResult.Yes)
-                    {
-                        return;
-                    }
+                    if (result != DialogResult.Yes) return;
                 }
 
                 ProjectData.Main.ProgressInfo(true, "Get all DB");
@@ -108,7 +105,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 _allDbLoaded4All = true;
 
                 ProjectData.Main.ProgressInfo(false);
-
             }
         }
         protected override void ActionsFinalize()
@@ -121,10 +117,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             ProjectData.Main.ProgressInfo(false);
 
-            if (Properties.Settings.Default.InterruptTtanslation)
-            {
-                Properties.Settings.Default.InterruptTtanslation = false;
-            }
+            if (Properties.Settings.Default.InterruptTtanslation) Properties.Settings.Default.InterruptTtanslation = false;
         }
 
         protected override bool Apply()
