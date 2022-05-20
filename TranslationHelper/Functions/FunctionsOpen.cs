@@ -22,9 +22,14 @@ namespace TranslationHelper.Functions
                 using (var THFOpen = new OpenFileDialog())
                 {
                     THFOpen.InitialDirectory = ProjectData.Main.Settings.THConfigINI.GetKey("Paths", "LastPath");
+
+                    bool tempMode = ProjectData.OpenFileMode;
+                    ProjectData.OpenFileMode = true;// temporary set open file mode to true if on save mode trying to open files to prevent errors in time of get extensions for filter
+                    
                     var possibleExtensions = string.Join(";*", GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<FormatBase>().Where(f => !string.IsNullOrWhiteSpace(f.Ext()) && f.Ext()[0] == '.').Select(f => f.Ext()).Distinct());
                     THFOpen.Filter = "All|*"+ possibleExtensions + ";RPGMKTRANSPATCH|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
 
+                    ProjectData.OpenFileMode = tempMode;
                     if (THFOpen.ShowDialog() != DialogResult.OK || THFOpen.FileName == null)
                     {
                         ProjectData.Main.IsOpeningInProcess = false;

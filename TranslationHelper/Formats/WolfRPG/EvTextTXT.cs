@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.WolfRPG
 
         private void ReadMessage()
         {
-            if (ParseData.Line.Length == 0 && ParseData.Line[0] == '/') return;
+            if (ParseData.Line.Length == 0 || ParseData.Line[0] == '/') return;
 
             Buffer.Add(ParseData.Line);
 

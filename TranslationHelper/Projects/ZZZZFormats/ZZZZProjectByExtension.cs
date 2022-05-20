@@ -72,16 +72,24 @@ namespace TranslationHelper.Projects.ZZZZFormats
             return string.IsNullOrWhiteSpace(CurrentFormat.Name()) ? CurrentFormat.Ext() : CurrentFormat.Name();
         }
 
-        internal override bool Open()
-        {
-            ProjectData.FilePath = ProjectData.SelectedFilePath;
-            CurrentFormat.FilePath = ProjectData.SelectedFilePath;
-            return CurrentFormat.Open();
-        }
+        internal override bool Open() => OpenSave();
 
-        internal override bool Save()
+        internal override bool Save() => OpenSave();
+
+        bool OpenSave()
         {
-            return CurrentFormat.Save();
+            var dir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
+            var ext = CurrentFormat.Ext();
+            int extCnt = 0;
+            foreach (var i in Directory.EnumerateFiles(dir, "*" + ext)) if (++extCnt > 1) break;
+
+            bool getAll = false;
+            if (extCnt > 1 && (ProjectData.SaveFileMode || MessageBox.Show(T._("Found similar files. Open them too?"), T._("Found files with same extension"), MessageBoxButtons.YesNo) == DialogResult.Yes))
+            {
+                getAll = true;
+            }
+
+            return OpenSaveFilesBase(new DirectoryInfo(dir), CurrentFormat.GetType(), getAll ? "*" + ext : Path.GetFileName(CurrentFormat.FilePath), false, searchOption: SearchOption.TopDirectoryOnly);
         }
     }
 }
