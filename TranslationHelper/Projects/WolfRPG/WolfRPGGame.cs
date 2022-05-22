@@ -186,7 +186,6 @@ namespace TranslationHelper.Projects.WolfRPG
 
                 var progressMessageTitle = "Wolf archive" + " " + (ProjectData.OpenFileMode ? T._("Create patch") : T._("Write patch")) + ".";
 
-
                 var dataPath = Path.Combine(ProjectData.SelectedGameDir, "Data");
 
                 //decode wolf files
@@ -206,6 +205,7 @@ namespace TranslationHelper.Projects.WolfRPG
                             File.Move(wolfFile, wolfFile + ".bak");
                         }
                     }
+
                     if (!Directory.Exists(dataPath)) return false;
                 }
 
