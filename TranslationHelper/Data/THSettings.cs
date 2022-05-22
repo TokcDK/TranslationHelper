@@ -414,12 +414,6 @@ namespace TranslationHelper.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string DXADecodeWFolderName()
-        {
-            return "dxadecodew";
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string THTranslationCacheFileName()
         {
             return "THTranslationCache.cmx";
@@ -473,6 +467,30 @@ namespace TranslationHelper.Data
         internal static string DXExtractExePath()
         {
             return Path.Combine(DXExtractDirPath(), DXExtractExeName());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string DXADecodeWFolderName()
+        {
+            return "dxadecodew";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string WolfDecFolderName()
+        {
+            return "wolfdec";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string WolfdecDirPath()
+        {
+            return Path.Combine(ResDirPath(), WolfDecFolderName());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string WolfdecExePath()
+        {
+            return Path.Combine(WolfdecDirPath(), "wolfdec.exe");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

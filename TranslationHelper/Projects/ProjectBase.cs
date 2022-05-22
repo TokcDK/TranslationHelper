@@ -618,55 +618,33 @@ namespace TranslationHelper.Projects
         /// <param name="paths">file paths</param>
         /// <param name="bak">true = backup, false = restore</param>
         /// <returns>true if was processed atleast one file\dir</returns>
-        protected bool BackupRestorePaths(string[] paths, bool bak = true)
+        protected bool BackupRestorePaths(IEnumerable<string> paths, bool bak = true)
         {
-            if (paths == null || paths.Length == 0)
-            {
-                return false;
-            }
+            if (paths == null) return false;
 
             var ret = false;
 
-            var bakuped = new HashSet<string>(paths.Length);
+            var bakuped = new HashSet<string>();
 
             foreach (var subpath in paths)
             {
-                if (string.IsNullOrWhiteSpace(subpath))
-                {
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(subpath)) continue;
 
-                string path;
-                if (subpath.StartsWith(@".\") || subpath.StartsWith(@"..\"))
-                {
-                    path = Path.GetFullPath(Path.Combine(ProjectData.SelectedDir, subpath));
-                }
-                else
-                {
-                    path = subpath;
-                }
+                string path = (subpath.StartsWith(@".\") || subpath.StartsWith(@"..\")) ? Path.GetFullPath(Path.Combine(ProjectData.SelectedDir, subpath)) : subpath;
 
-                if (string.IsNullOrWhiteSpace(path) || bakuped.Contains(path))
-                {
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(path) || bakuped.Contains(path)) continue;
 
                 bakuped.Add(path);//add path to backuped
 
                 var target = path.EndsWith(".bak") ? path.Remove(path.Length - 4, 4) : path;
                 if (bak)
                 {
-                    if ((File.Exists(target) && BackupFile(target)) || (Directory.Exists(target) && BackupDir(target)))
-                    {
+                    if ((File.Exists(target) && BackupFile(target)) || (Directory.Exists(target) && BackupDir(target))) 
                         ret = true;
-                    }
                 }
-                else
+                else if((File.Exists(target + ".bak") && RestoreFile(target)) || (Directory.Exists(target + ".bak") && RestoreDir(target)))
                 {
-                    if ((File.Exists(target + ".bak") && RestoreFile(target)) || (Directory.Exists(target + ".bak") && RestoreDir(target)))
-                    {
-                        ret = true;
-                    }
+                    ret = true;
                 }
             }
 
