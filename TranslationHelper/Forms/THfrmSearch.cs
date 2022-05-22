@@ -1070,7 +1070,12 @@ namespace TranslationHelper
         {
             if (SearchModeRegexRadioButton.Checked)
             {
-                return Regex.Unescape(text);
+                try
+                {
+                    return Regex.Unescape(text);
+                }
+                catch { }
+                
             }
 
             return text;

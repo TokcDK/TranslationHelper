@@ -164,7 +164,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override void PreSaveDB()
         {
-            OpenSaveFiles();
+            //OpenSaveFiles();
         }
 
         internal override bool Save()
@@ -269,7 +269,7 @@ namespace TranslationHelper.Projects.WolfRPG
                     {
                         try
                         {
-                            BakRestore();//restore original files before patch creation
+                            if(ProjectData.OpenFileMode) BakRestore();//restore original files before patch creation
                             ProjectData.Main.ProgressInfo(true, "Patching..");
                             ret = RubyWolfTrans.Start();
                             RubyWolfTrans.WaitForExit();
@@ -284,7 +284,7 @@ namespace TranslationHelper.Projects.WolfRPG
                         {
                             ProjectData.Main.ProgressInfo(true, progressMessageTitle + " " + T._("Somethig wrong") + ".. " + T._("Trying again"));
                             //2nd try because was error sometime after 1st patch creation execution
-                            BakRestore();
+                            if (ProjectData.OpenFileMode) BakRestore();
                             ret = RubyWolfTrans.Start();
                             RubyWolfTrans.WaitForExit();
                         }

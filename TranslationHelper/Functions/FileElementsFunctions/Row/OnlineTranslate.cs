@@ -256,7 +256,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             var translated = TranslateOriginals(originals);
 
-            SetTranslationsToBuffer(originals, translated.Result);
+            SetTranslationsToBuffer(originals, translated);
 
             SetBufferToRows();
         }
@@ -342,7 +342,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         /// <param name="originals"></param>
         /// <returns></returns>
-        private async Task<string[]> TranslateOriginals(string[] originals)
+        private string[] TranslateOriginals(string[] originals)
         {
             string[] translated = null;
             try
@@ -350,11 +350,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var originalLinesArePreApplied = ApplyProjectPretranslationAction(originals);
                 if (originalLinesArePreApplied.Length > 0)
                 {
-                    var tr = await translator.TranslateLiteAsync(string.Join("\r\n", originalLinesArePreApplied), Language.Japanese, Language.English).ConfigureAwait(true);
+                    //var tr = await translator.TranslateLiteAsync(string.Join("\r\n", originalLinesArePreApplied), Language.Japanese, Language.English).ConfigureAwait(true);
 
-                    translated = tr.MergedTranslation.Split(new[] { "\r\n" }, StringSplitOptions.None);
+                    //translated = tr.MergedTranslation.Split(new[] { "\r\n" }, StringSplitOptions.None);
 
-                    //translated = _translator.Translate(originalLinesArePreApplied);
+                    translated = _translator.Translate(originalLinesArePreApplied);
                     if (translated == null || originals.Length != translated.Length)
                     {
                         return new string[1] { "" };
