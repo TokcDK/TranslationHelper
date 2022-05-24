@@ -191,9 +191,20 @@ namespace TranslationHelper.Projects.WolfRPG
                 //decode wolf files
                 if (ProjectData.OpenFileMode)
                 {
-                    var wolfextractor = THSettings.WolfRPGExtractorExePath();
+                    //var wolfextractor = THSettings.WolfRPGExtractorExePath();
+                    var wolfextractor = THSettings.WolfdecExePath();
                     foreach (var wolfFile in Directory.EnumerateFiles(ProjectData.SelectedGameDir, "*.wolf", SearchOption.AllDirectories))
                     {
+                        var nameNoExt = Path.GetFileNameWithoutExtension(wolfFile).ToLowerInvariant();
+                        if (nameNoExt.Contains("cg")
+                            || nameNoExt.Contains("anime")
+                            || nameNoExt.Contains("bgm")
+                            || nameNoExt.Contains("se")
+                            || nameNoExt.Contains("voice")
+                            || nameNoExt.Contains("picture")
+                            || nameNoExt.Contains("effect")
+                            ) continue;
+
                         var extractedDirPath = new DirectoryInfo(Path.Combine(dataPath, Path.GetFileNameWithoutExtension(wolfFile)));
                         if (extractedDirPath.Exists && !extractedDirPath.IsEmpty()) continue;
 
@@ -372,7 +383,7 @@ namespace TranslationHelper.Projects.WolfRPG
         {
             //.mps,.dat,.project using in patcher
             var translatedDir = new DirectoryInfo(TranslatedDirPath);
-            var filePaths = _projectTranslatableFilesExtensionMasks.SelectMany(f => translatedDir.GetFiles(f, searchOption: SearchOption.AllDirectories)).Select(filePath => filePath.FullName.Replace(translatedDir.FullName, ProjectData.SelectedGameDir)).ToArray();
+            var filePaths = _projectTranslatableFilesExtensionMasks.SelectMany(f => translatedDir.GetFiles(f, searchOption: SearchOption.AllDirectories)).Select(filePath => filePath.FullName.Replace(translatedDir.FullName, ProjectData.SelectedGameDir));
             return translatedDir.Exists && BackupRestorePaths(filePaths.Concat(new[] { Path.Combine(ProjectData.SelectedGameDir, "data", "Evtext") }));
         }
 
@@ -386,7 +397,7 @@ namespace TranslationHelper.Projects.WolfRPG
                     Directory.Move(bak, bak.Remove(bak.Length - 4, 4));
                 }
             }
-            return BackupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).Concat(new[] { Path.Combine(ProjectData.SelectedGameDir, "data", "Evtext") }).ToArray(), false);
+            return BackupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).Concat(new[] { Path.Combine(ProjectData.SelectedGameDir, "data", "Evtext") }), false);
         }
 
         internal override bool CheckForRowIssue(System.Data.DataRow row)
