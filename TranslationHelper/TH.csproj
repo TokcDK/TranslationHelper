@@ -223,6 +223,9 @@
     <Compile Include="Formats\WolfRPG\EvTextTXT.cs" />
     <Compile Include="Formats\WolfRPG\RPGMWolfTransPatchBase.cs" />
     <Compile Include="Formats\WolfRPG\WolfRPGPatchBase.cs" />
+    <Compile Include="Formats\WolfRPG\WolfTransCSharp\CommonEvents.cs" />
+    <Compile Include="Formats\WolfRPG\WolfTransCSharp\MPS.cs" />
+    <Compile Include="Formats\WolfRPG\WolfTransCSharp\Database.cs" />
     <Compile Include="Formats\WolfRPG\WolfTrans\TXT.cs" />
     <Compile Include="Formats\zzzOtherFormat\JsonDictionary.cs" />
     <Compile Include="Formats\zzzOtherFormat\OtherFormatBase.cs" />
@@ -378,6 +381,7 @@
     </Compile>
     <Compile Include="Projects\WolfRPG\WolfRPGGame.cs" />
     <Compile Include="Projects\WolfRPG\WolfRPGBase.cs" />
+    <Compile Include="Projects\WolfRPG\WolfTransTest.cs" />
     <Compile Include="Projects\WolfRPG\WRPGOLDOpen.cs" />
     <Compile Include="OnlineTranslators\DeepL.cs" />
     <Compile Include="OnlineTranslators\TranslatorsBase.cs" />
@@ -501,6 +505,10 @@
     <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\INIFileMan\INIFileMan.csproj">
       <Project>{40ac8009-cecd-44d0-b564-96e07237fd1a}</Project>
       <Name>INIFileMan</Name>
+    </ProjectReference>
+    <ProjectReference Include="K:\0GIT\[TokcDK]\wolftrans-csharp\WolfTrans.Net\WolfTrans.Net.csproj">
+      <Project>{494DB09B-C872-4E19-B6D8-3D2D5C1B44F0}</Project>
+      <Name>WolfTrans.Net</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

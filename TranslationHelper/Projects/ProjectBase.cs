@@ -219,7 +219,7 @@ namespace TranslationHelper.Projects
 
                 var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
                 format.FilePath = file.FullName;
-                if (file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
+                if (!string.IsNullOrWhiteSpace(format.Ext()) && file.Extension != format.Ext()) // check extension for case im mask was "*.*" or kind of
                 {
                     return;
                 }
