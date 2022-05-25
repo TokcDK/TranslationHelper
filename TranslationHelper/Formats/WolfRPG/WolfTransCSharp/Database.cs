@@ -14,18 +14,18 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class Database:FormatBinaryBase
     {
-        WTNet.Parsers.Database.Database DB=null;
+        WTNet.Parsers.Database.Database Data=null;
 
         protected override void FileOpen()
         {
             if (!File.Exists(FilePath)) return;
 
             var db_name = Path.GetFileNameWithoutExtension(FilePath);
-            DB = new WTNet.Parsers.Database.Database();
-            DB.Read(FilePath);
+            Data = new WTNet.Parsers.Database.Database();
+            Data.Read(FilePath);
 
             int type_index = 0;
-            foreach (var type in DB.Types)
+            foreach (var type in Data.Types)
             {
                 if (string.IsNullOrEmpty(type.Name)) continue;
 
@@ -56,15 +56,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 
         protected override bool WriteFileData(string filePath = "")
         {
-            try
-            {
-                DB.Write();
-            }
-            catch
-            {
-                return false;
-            }
-
+            try { Data.Write(); } catch { return false; }
             return true;
         }
     }
