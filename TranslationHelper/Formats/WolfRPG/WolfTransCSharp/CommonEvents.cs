@@ -55,6 +55,8 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 
         protected override bool WriteFileData(string filePath = "")
         {
+            if (!ParseData.Ret) return false;
+
             try { Data.Write(); } catch { return false; }
             return true;
         }

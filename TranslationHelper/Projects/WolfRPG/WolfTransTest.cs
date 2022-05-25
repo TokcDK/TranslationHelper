@@ -31,6 +31,8 @@ namespace TranslationHelper.Projects.WolfRPG
                 OpenSaveFilesBase(new DirectoryInfo(Path.Combine(ProjectData.SelectedGameDir, "Data", "BasicData")), typeof(Database), "*.project", exclusions: new string[] { "SysDataBaseBasic.project" })
                 ,
                 OpenSaveFilesBase(Path.Combine(ProjectData.SelectedGameDir, "Data", "BasicData"), typeof(CommonEvents), "CommonEvent.dat")
+                ,
+                OpenSaveFilesBase(Path.Combine(ProjectData.SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt")
                 };
             return b.Any(p => p == true);
 
