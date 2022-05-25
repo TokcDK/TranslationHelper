@@ -18,8 +18,6 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
             List<string> strings = new List<string>();
             foreach (var @event in map.Events)
             {
-                if (@event == null) continue;
-
                 foreach (var page in @event.Pages)
                 {
                     foreach (var command in page.Commands)
