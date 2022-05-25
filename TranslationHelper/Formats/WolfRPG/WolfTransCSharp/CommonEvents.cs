@@ -7,6 +7,7 @@ using WT = WolfTrans.Net;
 using WolfTrans.Net.Parsers;
 using WolfTrans.Net.Parsers.CommonEvents;
 using WolfTrans.Net.Parsers.Shared;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
@@ -19,25 +20,34 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
             Data = new CommonEventsParser();
             Data.Read(FilePath);
 
-            foreach (var @event in Data.Events)
+            var eventsCount = Data.Events.Count;
+            for (int e = 0; e < eventsCount; e++)
             {
-                var patch_filename = $"dump/common/{@event.ID}_{@event.Name}.txt";
+                var @event = Data.Events[e];
+                //var patch_filename = $"dump/common/{@event.ID}_{@event.Name}.txt";
 
-                foreach (var command in @event.Commands)
+                var commandsCount = @event.Commands.Count;
+                for (int c = 0; c < commandsCount; c++)
                 {
+                    var command = @event.Commands[c];
+                    var commandStrings = command.String_args;
                     foreach (var @string in CommandUtils.Strings_Of_Command(command))
                     {
                         var value = @string;
-                        if (AddRowData(ref value, $"Event ID: {@event.ID}\r\nEvent name: {@event.Name}\r\nCommand id: {command.CID}"))
+                        if (AddRowData(ref value, $"Event ID: {@event.ID}\r\nEvent name: {@event.Name}\r\nCommand id: {command.CID}") && ProjectData.SaveFileMode)
                         {
-                            for (int i = 0; i < command.String_args.Count; i++)
+                            for (int i = 0; i < commandStrings.Count; i++)
                             {
-                                if (command.String_args[i] == @string)
+                                if (commandStrings[i] == @string)
                                 {
-                                    command.String_args[i] = value;
+                                    commandStrings[i] = value;
                                 }
-                            }
+                            }                            
                         }
+                    }
+                    if(ProjectData.SaveFileMode && !command.String_args.SequenceEqual(commandStrings))
+                    {
+                        command.String_args = commandStrings;
                     }
                 }
             }

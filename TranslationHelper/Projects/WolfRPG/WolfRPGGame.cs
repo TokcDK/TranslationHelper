@@ -18,12 +18,13 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override bool Check()
         {
-            string d;
-            return Path.GetExtension(ProjectData.SelectedFilePath) == ".exe"
-                && (FunctionsFileFolder.IsInDirExistsAnyFile(d = Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.wolf", recursive: true)
-                || (Directory.Exists(d = Path.Combine(d, "Data")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.wolf", recursive: true))
-                || (Directory.Exists(d = Path.Combine(d, "MapData")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.mps", recursive: true))
-                );
+            return false; // disable
+            //string d;
+            //return Path.GetExtension(ProjectData.SelectedFilePath) == ".exe"
+            //    && (FunctionsFileFolder.IsInDirExistsAnyFile(d = Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.wolf", recursive: true)
+            //    || (Directory.Exists(d = Path.Combine(d, "Data")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.wolf", recursive: true))
+            //    || (Directory.Exists(d = Path.Combine(d, "MapData")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.mps", recursive: true))
+            //    );
         }
 
         internal override string Name()

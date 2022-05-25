@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TranslationHelper.Data;
 using WolfTrans.Net.Parsers;
 using WolfTrans.Net.Parsers.Shared;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
-    internal class MPS:FormatBinaryBase
+    internal class MPS : FormatBinaryBase
     {
         MapParser Data = null;
         protected override void FileOpen()
@@ -16,25 +14,36 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
             Data = new MapParser();
             Data.Read(FilePath);
 
-            foreach (var @event in Data.Events)
+            var eventsCount = Data.Events.Count;
+            for (int e = 0; e < eventsCount; e++)
             {
-                foreach (var page in @event.Pages)
+                var @event = Data.Events[e];
+                var pagesCount = @event.Pages.Count;
+                for (int p = 0; p < pagesCount; p++)
                 {
-                    foreach (var command in page.Commands)
+                    var page = @event.Pages[p];
+                    var commandsCount = page.Commands.Count;
+                    for (int c = 0; c < commandsCount; c++)
                     {
-                        foreach (string @string in CommandUtils.Strings_Of_Command(command))
+                        var command = page.Commands[c];
+                        var commandStrings = command.String_args;
+                        foreach (var @string in CommandUtils.Strings_Of_Command(command))
                         {
                             var value = @string;
-                            if (AddRowData(ref value, $"Event ID: {@event.ID}\r\nEvent name: {@event.Name}\r\nCommand id: {command.CID}"))
+                            if (AddRowData(ref value, $"Event ID: {@event.ID}\r\nEvent name: {@event.Name}\r\nCommand id: {command.CID}") && ProjectData.SaveFileMode)
                             {
-                                for(int i = 0; i < command.String_args.Count; i++)
+                                for (int i = 0; i < commandStrings.Count; i++)
                                 {
-                                    if(command.String_args[i] == @string)
+                                    if (commandStrings[i] == @string)
                                     {
-                                        command.String_args[i] = value;
+                                        commandStrings[i] = value;
                                     }
                                 }
                             }
+                        }
+                        if (ProjectData.SaveFileMode && !command.String_args.SequenceEqual(commandStrings))
+                        {
+                            command.String_args = commandStrings;
                         }
                     }
                 }

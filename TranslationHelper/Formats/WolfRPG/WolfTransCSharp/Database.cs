@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WTNet = WolfTrans.Net;
-using WolfTrans.Net.Parsers;
-using WolfTrans.Net.Parsers.Shared;
-using WolfTrans.Net.Parsers.Database;
+﻿using System.IO;
 using TranslationHelper.Data;
+using WolfTrans.Net.Parsers.Database;
+using WTNet = WolfTrans.Net;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
-    internal class Database:FormatBinaryBase
+    internal class Database : FormatBinaryBase
     {
-        WTNet.Parsers.Database.Database Data=null;
+        WTNet.Parsers.Database.Database Data = null;
 
         protected override void FileOpen()
         {
@@ -24,33 +17,29 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
             Data = new WTNet.Parsers.Database.Database();
             Data.Read(FilePath);
 
-            int type_index = 0;
-            foreach (var type in Data.Types)
+            int dataTypesCount = Data.Types.Count;
+            for (int t = 0; t < dataTypesCount; t++)
             {
+                var type = Data.Types[t];
+
                 if (string.IsNullOrEmpty(type.Name)) continue;
 
                 var patch_filename = $"dump/db/{db_name}/{type.Name}.txt";
 
-                int data_index = 0;
-                foreach (var data in type.Data)
+                int dataTypeDataCount = type.Data.Count;
+                for (int d=0;d< dataTypeDataCount;d++)
                 {
-                    var dataName = data.Name;
-
-                    // if (CommandUtils.IsTranslatable(data.Name)) strings.Add(data.Name);
+                    var data = type.Data[d];
 
                     foreach ((string s, DBField f) in data.GetTranslatable())
                     {
                         var value = s;
-                        if(AddRowData(ref value, $"DB name: {db_name}\r\nType name: {type.Name} \r\nField index:{f.Index}") && ProjectData.SaveFileMode)
+                        if (AddRowData(ref value, $"DB name: {db_name}\r\nType name: {type.Name} \r\nField index:{f.Index}") && ProjectData.SaveFileMode)
                         {
                             data.String_values[f.Index] = value;
                         }
                     }
-
-                    data_index++;
                 }
-
-                type_index++;
             }
         }
 
