@@ -37,5 +37,27 @@ namespace TranslationHelper.Projects.WolfRPG
             return b.Any(p => p == true);
 
         }
+
+
+        internal override bool BakCreate()
+        {
+            return BackupRestorePaths(new[] { Path.Combine(ProjectData.SelectedGameDir, "Data", "Evtext") });
+        }
+
+        internal override bool BakRestore()
+        {
+            return BackupRestorePaths(new[] { Path.Combine(ProjectData.SelectedGameDir, "Data", "Evtext") });
+        }
+
+        //bool bakrestore()
+        //{
+        //    bool[] b = new bool[3] {
+        //          BackupRestorePaths(new[] { Path.Combine(ProjectData.SelectedGameDir, "Data", "Evtext") })
+        //        , BackupRestorePaths(new[] { Path.Combine(ProjectData.SelectedGameDir, "Data", "MapData") })
+        //        , BackupRestorePaths(new[] { Path.Combine(ProjectData.SelectedGameDir, "Data", "BasicData") })
+        //    };
+
+        //    return b.All(r => r == true);
+        //}
     }
 }
