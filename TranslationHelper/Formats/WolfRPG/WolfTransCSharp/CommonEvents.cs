@@ -11,7 +11,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
-    internal class CommonEvents:FormatBinaryBase
+    internal class CommonEvents: CommandUserBase
     {
         CommonEventsParser Data = null;
 
@@ -24,32 +24,8 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
             for (int e = 0; e < eventsCount; e++)
             {
                 var @event = Data.Events[e];
-                //var patch_filename = $"dump/common/{@event.ID}_{@event.Name}.txt";
 
-                var commandsCount = @event.Commands.Count;
-                for (int c = 0; c < commandsCount; c++)
-                {
-                    var command = @event.Commands[c];
-                    var commandStrings = command.String_args;
-                    foreach (var @string in CommandUtils.Strings_Of_Command(command))
-                    {
-                        var value = @string;
-                        if (AddRowData(ref value, $"Event ID: {@event.ID}\r\nEvent name: {@event.Name}\r\nCommand id: {command.CID}") && ProjectData.SaveFileMode)
-                        {
-                            for (int i = 0; i < commandStrings.Count; i++)
-                            {
-                                if (commandStrings[i] == @string)
-                                {
-                                    commandStrings[i] = value;
-                                }
-                            }                            
-                        }
-                    }
-                    if(ProjectData.SaveFileMode && !command.String_args.SequenceEqual(commandStrings))
-                    {
-                        command.String_args = commandStrings;
-                    }
-                }
+                ParseCommandStrings(@event.Commands, $"Event ID: {@event.ID}\r\nEvent name: {@event.Name}");
             }
         }
 

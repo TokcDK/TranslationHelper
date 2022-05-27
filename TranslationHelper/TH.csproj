@@ -223,6 +223,7 @@
     <Compile Include="Formats\WolfRPG\EvTextTXT.cs" />
     <Compile Include="Formats\WolfRPG\RPGMWolfTransPatchBase.cs" />
     <Compile Include="Formats\WolfRPG\WolfRPGPatchBase.cs" />
+    <Compile Include="Formats\WolfRPG\WolfTransCSharp\CommandUserBase.cs" />
     <Compile Include="Formats\WolfRPG\WolfTransCSharp\CommonEvents.cs" />
     <Compile Include="Formats\WolfRPG\WolfTransCSharp\MPS.cs" />
     <Compile Include="Formats\WolfRPG\WolfTransCSharp\Database.cs" />

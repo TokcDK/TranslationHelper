@@ -358,11 +358,11 @@ namespace TranslationHelper.Functions
                 //    ProjectData.THFilesElementsDataset.Merge(newdataset);
                 //}
 
-                var sortedtables = ProjectData.FilesContent.Tables.Cast<DataTable>().OrderBy(table => table.TableName).ToArray();
+                var sortedtables = ProjectData.FilesContent.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
                 ProjectData.FilesContent.Tables.Clear();
                 ProjectData.FilesContent.Tables.AddRange(sortedtables);
 
-                var sortedtablesinfo = ProjectData.FilesContentInfo.Tables.Cast<DataTable>().OrderBy(table => table.TableName).ToArray();
+                var sortedtablesinfo = ProjectData.FilesContentInfo.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
                 ProjectData.FilesContentInfo.Tables.Clear();
                 ProjectData.FilesContentInfo.Tables.AddRange(sortedtablesinfo);
 
