@@ -24,7 +24,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 
                 if (string.IsNullOrEmpty(type.Name)) continue;
 
-                var patch_filename = $"dump/db/{db_name}/{type.Name}.txt";
+                //var patch_filename = $"dump/db/{db_name}/{type.Name}.txt";
 
                 int dataTypeDataCount = type.Data.Count;
                 for (int d = 0; d < dataTypeDataCount; d++)
@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
                     foreach ((string s, DBField f) in data.GetTranslatable(filterValue: false))
                     {
                         var value = s;
-                        if (AddRowData(ref value, $"DB name: {db_name}\r\nType name: {type.Name} \r\nField index:{f.Index}") && ProjectData.SaveFileMode)
+                        if (AddRowData(ref value, $"DB name: {db_name}\r\nType name: {type.Name} \r\nField index: {f.Index}") && ProjectData.SaveFileMode)
                         {
                             data.String_values[f.Index] = value;
                         }
