@@ -8,7 +8,7 @@ using WolfTrans.Net.Parsers.Shared;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
-    internal abstract class CommandUserBase: FormatBinaryBase
+    internal abstract class CommandUserBase: WolftransCSharpBase
     {
         protected void ParseCommandStrings(List<Command> commands, string info)
         {

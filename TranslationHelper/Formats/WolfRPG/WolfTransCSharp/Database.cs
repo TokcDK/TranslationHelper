@@ -5,7 +5,7 @@ using WTNet = WolfTrans.Net;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
-    internal class Database : FormatBinaryBase
+    internal class Database : WolftransCSharpBase
     {
         WTNet.Parsers.Database.Database Data = null;
 
