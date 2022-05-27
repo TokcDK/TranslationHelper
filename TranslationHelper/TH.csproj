@@ -227,6 +227,7 @@
     <Compile Include="Formats\WolfRPG\WolfTransCSharp\CommonEvents.cs" />
     <Compile Include="Formats\WolfRPG\WolfTransCSharp\MPS.cs" />
     <Compile Include="Formats\WolfRPG\WolfTransCSharp\Database.cs" />
+    <Compile Include="Formats\WolfRPG\WolfTransCSharp\WolftransCSharpBase.cs" />
     <Compile Include="Formats\WolfRPG\WolfTrans\TXT.cs" />
     <Compile Include="Formats\zzzOtherFormat\JsonDictionary.cs" />
     <Compile Include="Formats\zzzOtherFormat\OtherFormatBase.cs" />
