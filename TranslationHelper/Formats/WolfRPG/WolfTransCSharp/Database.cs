@@ -27,11 +27,11 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
                 var patch_filename = $"dump/db/{db_name}/{type.Name}.txt";
 
                 int dataTypeDataCount = type.Data.Count;
-                for (int d=0;d< dataTypeDataCount;d++)
+                for (int d = 0; d < dataTypeDataCount; d++)
                 {
                     var data = type.Data[d];
 
-                    foreach ((string s, DBField f) in data.GetTranslatable())
+                    foreach ((string s, DBField f) in data.GetTranslatable(filterValue: false))
                     {
                         var value = s;
                         if (AddRowData(ref value, $"DB name: {db_name}\r\nType name: {type.Name} \r\nField index:{f.Index}") && ProjectData.SaveFileMode)
