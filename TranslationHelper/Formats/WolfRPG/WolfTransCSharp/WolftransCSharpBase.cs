@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WolfTrans.Net.Parsers;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
@@ -12,6 +13,16 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
         {
             return base.IsValidString(inputString) 
                 && inputString != "\u25A0";// from wolftrans ruby
+        }
+
+        protected ParserBase Data = null;
+
+        protected override bool WriteFileData(string filePath = "")
+        {
+            if (!ParseData.Ret) return false;
+
+            try { Data.Write(); } catch { return false; }
+            return true;
         }
     }
 }

@@ -13,28 +13,19 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class CommonEvents: CommandUserBase
     {
-        CommonEventsParser Data = null;
-
         protected override void FileOpen()
         {
             Data = new CommonEventsParser();
             Data.Read(FilePath);
 
-            var eventsCount = Data.Events.Count;
+            var events = ((CommonEventsParser)Data).Events;
+            var eventsCount = events.Count;
             for (int e = 0; e < eventsCount; e++)
             {
-                var @event = Data.Events[e];
+                var @event = events[e];
 
                 ParseCommandStrings(@event.Commands, $"Event ID: {@event.ID}\r\nEvent name: {@event.Name}");
             }
-        }
-
-        protected override bool WriteFileData(string filePath = "")
-        {
-            if (!ParseData.Ret) return false;
-
-            try { Data.Write(); } catch { return false; }
-            return true;
         }
     }
 }

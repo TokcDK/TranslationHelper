@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using TranslationHelper.Data;
+using WolfTrans.Net.Parsers;
 using WolfTrans.Net.Parsers.Database;
 using WTNet = WolfTrans.Net;
 
@@ -7,7 +8,6 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class Database : WolftransCSharpBase
     {
-        WTNet.Parsers.Database.Database Data = null;
 
         protected override void FileOpen()
         {
@@ -17,10 +17,11 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
             Data = new WTNet.Parsers.Database.Database();
             Data.Read(FilePath);
 
-            int dataTypesCount = Data.Types.Count;
+            var types = ((WTNet.Parsers.Database.Database)Data).Types;
+            int dataTypesCount = types.Count;
             for (int t = 0; t < dataTypesCount; t++)
             {
-                var type = Data.Types[t];
+                var type = types[t];
 
                 if (string.IsNullOrEmpty(type.Name)) continue;
 
@@ -41,14 +42,6 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
                     }
                 }
             }
-        }
-
-        protected override bool WriteFileData(string filePath = "")
-        {
-            if (!ParseData.Ret) return false;
-
-            try { Data.Write(); } catch { return false; }
-            return true;
         }
     }
 }
