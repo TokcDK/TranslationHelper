@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -358,11 +359,13 @@ namespace TranslationHelper.Functions
                 //    ProjectData.THFilesElementsDataset.Merge(newdataset);
                 //}
 
-                var sortedtables = ProjectData.FilesContent.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
+                //var sortedtables = ProjectData.FilesContent.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
+                var sortedtables = Sort(ProjectData.FilesContent.Tables);
                 ProjectData.FilesContent.Tables.Clear();
                 ProjectData.FilesContent.Tables.AddRange(sortedtables);
 
-                var sortedtablesinfo = ProjectData.FilesContentInfo.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
+                //var sortedtablesinfo = ProjectData.FilesContentInfo.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
+                var sortedtablesinfo = Sort(ProjectData.FilesContentInfo.Tables);
                 ProjectData.FilesContentInfo.Tables.Clear();
                 ProjectData.FilesContentInfo.Tables.AddRange(sortedtablesinfo);
 
@@ -428,6 +431,36 @@ namespace TranslationHelper.Functions
             FunctionsSounds.OpenProjectComplete();
 
             FunctionsLoadTranslationDB.LoadTranslationIfNeed();
+        }
+
+        static DataTable[] Sort(DataTableCollection tables)
+        {
+            Dictionary<string, List<DataTable>> sortedByExt = new Dictionary<string, List<DataTable>>();
+            List<DataTable> sortedNoExt = new List<DataTable>();
+            foreach(DataTable table in tables)
+            {
+                var ext = Path.GetExtension(table.TableName);
+                if (string.IsNullOrWhiteSpace(ext))
+                {
+                    sortedNoExt.Add(table);
+                }
+                else
+                {
+                    if (!sortedByExt.ContainsKey(ext)) sortedByExt.Add(ext, new List<DataTable>());
+
+                    sortedByExt[ext].Add(table);
+                }
+            }
+
+            List<DataTable> result = new List<DataTable>();
+            result.AddRange(sortedNoExt.OrderBy(t=>t.TableName));
+            sortedByExt = sortedByExt.OrderBy(p => p.Key).ToDictionary(p=>p.Key,p=>p.Value);
+            foreach (var list in sortedByExt.Values)
+            {
+                result.AddRange(list.OrderBy(t => t.TableName));
+            }
+
+            return result.ToArray();
         }
 
         /// <summary>

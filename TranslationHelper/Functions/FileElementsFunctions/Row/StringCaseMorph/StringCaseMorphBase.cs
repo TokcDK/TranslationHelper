@@ -107,7 +107,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                 }
                 else
                 {
-                    SelectedRow[1] = ChangeRegistryCaseForTheCell(trans, Variant);
+                    try
+                    {
+                        SelectedRow[1] = ChangeRegistryCaseForTheCell(trans, Variant);
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
 
