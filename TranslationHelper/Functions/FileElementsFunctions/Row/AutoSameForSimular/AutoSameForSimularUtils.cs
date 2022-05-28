@@ -155,6 +155,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                         foreach (var storedTableName in ProjectData.OriginalsTableRowCoordinates[inputOriginalValue])
                         {
                             var table = ProjectData.FilesContent.Tables[storedTableName.Key];
+                            if (table != null) continue;
+
                             foreach (var storedRowIndex in storedTableName.Value)
                             {
                                 var row = table.Rows[storedRowIndex];
