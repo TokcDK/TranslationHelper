@@ -2,7 +2,7 @@
 using System.Linq;
 using TranslationHelper.Data;
 using WolfTrans.Net.Parsers;
-using WolfTrans.Net.Parsers.Shared;
+using WolfTrans.Net.Parsers.Events;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
@@ -10,10 +10,10 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
     {
         protected override void FileOpen()
         {
-            Data = new MapParser();
+            Data = new ParserMap();
             Data.Read(FilePath);
 
-            var events = ((MapParser)Data).Events;
+            var events = ((ParserMap)Data).Events;
             var eventsCount = events.Count;
             for (int e = 0; e < eventsCount; e++)
             {

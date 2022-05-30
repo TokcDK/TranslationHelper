@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
-using WolfTrans.Net.Parsers.Shared;
+using WolfTrans.Net.Parsers.Events;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
