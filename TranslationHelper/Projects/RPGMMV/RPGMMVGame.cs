@@ -196,24 +196,21 @@ namespace TranslationHelper.Projects.RPGMMV
             ProjectData.FilePath = Path.Combine(ProjectData.SelectedDir, "www", "fonts", "gamefont.css");
 
             if (File.Exists(ProjectData.FilePath)) return false;
-            {
-                var format = new GAMEFONTCSS
-                {
-                    FilePath = ProjectData.FilePath
-                };
 
-                try
+            var format = new GAMEFONTCSS
+            {
+                FilePath = ProjectData.FilePath
+            };
+
+            try
+            {
+                if ((ProjectData.OpenFileMode && format.Open())
+                    || (ProjectData.SaveFileMode && format.Save()))
                 {
-                    if ((ProjectData.OpenFileMode && format.Open())
-                        || (ProjectData.SaveFileMode && format.Save()))
-                    {
-                        return true;
-                    }
-                }
-                catch
-                {
+                    return true;
                 }
             }
+            catch { }
 
             return false;
         }
