@@ -4,11 +4,13 @@ using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesLinesDict;
+using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.ProjectMenus;
 using TranslationHelper.Projects.RPGMMV.Menus;
 
@@ -138,7 +140,7 @@ namespace TranslationHelper.Projects.RPGMMV
                     try
                     {
                         if ((ProjectData.OpenFileMode && format.Open())
-                            || (ProjectData.SaveFileMode && format.Save()))
+                            || (ProjectData.SaveFileMode && format.TableName().HasAnyTranslated() && format.Save()))
                         {
                             isAnyFileCompleted = true;
                         }
@@ -173,7 +175,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 try
                 {
                     if ((ProjectData.OpenFileMode && format.Open())
-                        || (ProjectData.SaveFileMode && format.Save()))
+                        || (ProjectData.SaveFileMode && format.TableName().HasAnyTranslated() && format.Save()))
                     {
                         isAnyFileCompleted = true;
                     }
@@ -205,7 +207,7 @@ namespace TranslationHelper.Projects.RPGMMV
             try
             {
                 if ((ProjectData.OpenFileMode && format.Open())
-                    || (ProjectData.SaveFileMode && format.Save()))
+                    || (ProjectData.SaveFileMode && format.TableName().HasAnyTranslated() && format.Save()))
                 {
                     return true;
                 }
@@ -274,7 +276,7 @@ namespace TranslationHelper.Projects.RPGMMV
                     FilePath = ProjectData.FilePath
                 };
 
-                ret = ProjectData.SaveFileMode ? format.Save() : format.Open();
+                ret = ProjectData.SaveFileMode ? (format.TableName().HasAnyTranslated() && format.Save()) : format.Open();
 
                 return ret;
             }

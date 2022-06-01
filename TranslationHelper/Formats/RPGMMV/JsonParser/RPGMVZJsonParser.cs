@@ -144,7 +144,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <returns></returns>
         private string CorrectJsonFormatToRPGMMV()
         {
-            return JsonRoot.ToString(Formatting.Indented);
+            //return JsonRoot.ToString(Formatting.Indented);
+            return JsonRoot.ToString(Formatting.None);
             //return Regex.Replace(root.ToString(Formatting.None), @"^\[null,(.+)\]$", "[\r\nnull,\r\n$1\r\n]");//regex нужен только для Formatting.None
         }
 

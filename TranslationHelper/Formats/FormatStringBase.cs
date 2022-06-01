@@ -58,7 +58,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected override bool FilePreOpenActions()
         {
-            ParseData = new ParseFileData();
+            ParseData = new ParseFileData(this);
 
             return base.FilePreOpenActions();
         }
@@ -311,8 +311,11 @@ namespace TranslationHelper.Formats
 
         internal class ParseFileData
         {
-            public ParseFileData()
+            FormatBase format;
+            public ParseFileData(FormatBase format)
             {
+                this.format = format;
+
                 TableName = ProjectData.CurrentProject?.CurrentFormat != null ? ProjectData.CurrentProject.CurrentFormat.TableName() : Path.GetFileName(ProjectData.FilePath);
 
                 if (ProjectData.SaveFileMode)
@@ -328,7 +331,7 @@ namespace TranslationHelper.Formats
             /// <summary>
             /// result of parsing. Must be set to true if any value was translated.
             /// </summary>
-            internal bool Ret;
+            internal bool Ret { get => format.RET; set { if (format.RET != value) format.RET = value; } }
             /// <summary>
             /// line value
             /// </summary>

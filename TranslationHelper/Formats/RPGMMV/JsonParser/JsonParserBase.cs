@@ -140,7 +140,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
         private void WriteJsonFileInSaveMode()
         {
-            if (ProjectData.SaveFileMode)
+            if (ProjectData.SaveFileMode && Format.RET || (Format is FormatStringBase s && s.ParseData.Ret))
             {
                 File.WriteAllText(Json.FullName, ResultJson());
             }
@@ -148,7 +148,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
         protected virtual string ResultJson()
         {
-            return JsonRoot.ToString(Formatting.Indented);
+            return JsonRoot.ToString(Formatting.None);//.ToString(Formatting.Indented);
         }
 
         /// <summary>

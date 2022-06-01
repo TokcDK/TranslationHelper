@@ -801,6 +801,8 @@ namespace TranslationHelper.Formats
             TablesLinesDictFilled = true;
         }
 
+        public bool RET { get; internal set; }
+
         /// <summary>
         /// check if translation is exists and set str return true if found.
         /// <paramref name="valueToTranslate"/> = input string, must contain original value for search.
@@ -830,6 +832,7 @@ namespace TranslationHelper.Formats
                         isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
                         if (isTranslated)
                         {
+                            RET = true;
                             SetTranslationIsTranslatedAction();
                         }
 
@@ -847,6 +850,7 @@ namespace TranslationHelper.Formats
                             isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
                             if (isTranslated)
                             {
+                                RET = true;
                                 SetTranslationIsTranslatedAction();
                             }
 
@@ -868,6 +872,7 @@ namespace TranslationHelper.Formats
                             isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
                             if (isTranslated)
                             {
+                                RET = true;
                                 SetTranslationIsTranslatedAction();
                                 break; // translated, dont need to iterate rows anymore
                             }
@@ -877,6 +882,7 @@ namespace TranslationHelper.Formats
 
                         if (isTranslated)
                         {
+                            RET = true;
                             SetTranslationIsTranslatedAction();
                             break; // translated, dont need to iterate table names anymore
                         }
@@ -894,6 +900,7 @@ namespace TranslationHelper.Formats
                 isTranslated = control != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
                 if (isTranslated)
                 {
+                    RET = true;
                     SetTranslationIsTranslatedAction();
                 }
 
