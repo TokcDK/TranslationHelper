@@ -83,20 +83,89 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <returns></returns>
         private bool ParseProjectFiles()
         {
-            if (ProjectData.OpenFileMode)
-            {
-                BakRestore();
-            }
+            if (ProjectData.OpenFileMode) BakRestore();
 
             ParseFileMessage = ProjectData.SaveFileMode ? T._("write file: ") : T._("opening file: ");
             bool isAnyFileCompleted = false;
             try
             {
-                //gamefont.css to be possible to change font
-                ProjectData.Main.ProgressInfo(true, ParseFileMessage + "gamefont.css");
-                ProjectData.FilePath = Path.Combine(ProjectData.SelectedDir, "www", "fonts", "gamefont.css");
+                if(ParseFontsCS()) isAnyFileCompleted = true;
 
-                FormatBase format = new GAMEFONTCSS
+                FormatBase format;
+                var hardcodedJS = new HashSet<string>();
+                //Proceeed js-files
+                if(ParsePlugins(hardcodedJS)) isAnyFileCompleted = true;
+
+                //hardcoded exclusions
+                var skipJSList = new HashSet<string>();
+
+                //add exclusions from skipjs file
+                SetSkipJSLists(skipJSList);
+
+                //Proceeed other js-files with quotes search
+                if (ParseOtherQuotedJsPlugins(hardcodedJS, skipJSList)) isAnyFileCompleted = true;
+
+                //Proceed json-files
+                var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(ProjectData.SelectedDir, "www", "data/")));
+                foreach (FileInfo file in mvdatadir.GetFiles("*.json")) try { if (ParseRPGMakerMVjson(file.FullName)) isAnyFileCompleted = true; } catch { }
+            }
+            catch { }
+
+            ProjectData.Main.ProgressInfo(false);
+            return isAnyFileCompleted; ;
+        }
+
+        private bool ParsePlugins(HashSet<string> hardcodedJS)
+        {
+            bool isAnyFileCompleted = false;
+            foreach (var jsType in ListOfJS)
+            {
+                var js = (IUseJSLocationInfo)Activator.CreateInstance(jsType); // create instance of class using JSLocationInfo
+
+                ProjectData.FilePath = Path.Combine(ProjectData.SelectedDir, "www", "js", js.JSSubfolder, js.JSName);
+
+                if (!File.Exists(ProjectData.FilePath)) continue;
+
+                try
+                {
+                    hardcodedJS.Add(js.JSName);//add js to exclude from parsing of other js
+
+                    var format = (FormatBase)Activator.CreateInstance(jsType); // create format instance for open or save
+                    format.FilePath = ProjectData.FilePath;
+
+                    ProjectData.Main.ProgressInfo(true, ParseFileMessage + js.JSName);
+
+                    try
+                    {
+                        if ((ProjectData.OpenFileMode && format.Open())
+                            || (ProjectData.SaveFileMode && format.Save()))
+                        {
+                            isAnyFileCompleted = true;
+                        }
+                    }
+                    catch { }
+                }
+                catch { }
+            }
+
+            return isAnyFileCompleted;
+        }
+
+        private bool ParseOtherQuotedJsPlugins(HashSet<string> hardcodedJS, HashSet<string> skipJSList)
+        {
+            bool isAnyFileCompleted = false;
+            foreach (var jsFileInfo in Directory.EnumerateFiles(Path.Combine(ProjectData.SelectedGameDir, "www", "js", "plugins"), "*.js"))
+            {
+                string jsName = Path.GetFileName(jsFileInfo);
+
+                if (hardcodedJS.Contains(jsName) || skipJSList.Contains(jsName)) continue;
+
+                ProjectData.Main.ProgressInfo(true, ParseFileMessage + jsName);
+                ProjectData.FilePath = jsFileInfo;
+
+                if (!File.Exists(ProjectData.FilePath)) continue;
+
+                var format = new ZZZOtherJS
                 {
                     FilePath = ProjectData.FilePath
                 };
@@ -112,116 +181,41 @@ namespace TranslationHelper.Projects.RPGMMV
                 catch
                 {
                 }
+            }
 
-                var hardcodedJS = new HashSet<string>();
-                //Proceeed js-files
-                foreach (var jsType in ListOfJS)
+            return isAnyFileCompleted;
+        }
+
+        /// <summary>
+        /// gamefont.css to be possible to change font
+        /// </summary>
+        /// <returns></returns>
+        private bool ParseFontsCS()
+        {
+            ProjectData.Main.ProgressInfo(true, ParseFileMessage + "gamefont.css");
+            ProjectData.FilePath = Path.Combine(ProjectData.SelectedDir, "www", "fonts", "gamefont.css");
+
+            if (File.Exists(ProjectData.FilePath)) return false;
+            {
+                var format = new GAMEFONTCSS
                 {
-                    var js = (IUseJSLocationInfo)Activator.CreateInstance(jsType); // create instance of class using JSLocationInfo
-
-                    ProjectData.FilePath = Path.Combine(ProjectData.SelectedDir, "www", "js", js.JSSubfolder, js.JSName);
-
-                    if (!File.Exists(ProjectData.FilePath))
-                    {
-                        continue;
-                    }
-
-                    try
-                    {
-
-                        hardcodedJS.Add(js.JSName);//add js to exclude from parsing of other js
-
-                        format = (FormatBase)Activator.CreateInstance(jsType); // create format instance for open or save
-                        format.FilePath = ProjectData.FilePath;
-
-                        ProjectData.Main.ProgressInfo(true, ParseFileMessage + js.JSName);
-
-                        try
-                        {
-                            if ((ProjectData.OpenFileMode && format.Open())
-                                || (ProjectData.SaveFileMode && format.Save()))
-                            {
-                                isAnyFileCompleted = true;
-                            }
-                        }
-                        catch
-                        {
-                        }
-                    }
-                    catch
-                    {
-                    }
-                }
-
-                //hardcoded exclusions
-                var skipJSList = new HashSet<string>
-                {
-                    "ConditionallyCore.js",//translation of text in quotes will make skills not executable
-                    //---
-                    //----//
+                    FilePath = ProjectData.FilePath
                 };
 
-                //add exclusions from skipjs file
-                SetSkipJSLists(skipJSList);
-
-                //Proceeed other js-files with quotes search
-                foreach (var jsFileInfo in Directory.EnumerateFiles(Path.Combine(ProjectData.SelectedGameDir, "www", "js", "plugins"), "*.js"))
+                try
                 {
-                    string jsName = Path.GetFileName(jsFileInfo);
-
-                    if (hardcodedJS.Contains(jsName) || skipJSList.Contains(jsName))
-                        continue;
-
-                    ProjectData.Main.ProgressInfo(true, ParseFileMessage + jsName);
-                    ProjectData.FilePath = jsFileInfo;
-
-                    if (!File.Exists(ProjectData.FilePath))
+                    if ((ProjectData.OpenFileMode && format.Open())
+                        || (ProjectData.SaveFileMode && format.Save()))
                     {
-                        continue;
-                    }
-
-                    format = new ZZZOtherJS
-                    {
-                        FilePath = ProjectData.FilePath
-                    };
-
-                    try
-                    {
-                        if ((ProjectData.OpenFileMode && format.Open())
-                            || (ProjectData.SaveFileMode && format.Save()))
-                        {
-                            isAnyFileCompleted = true;
-                        }
-                    }
-                    catch
-                    {
+                        return true;
                     }
                 }
-
-
-
-                //Proceed json-files
-                var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(ProjectData.SelectedDir, "www", "data/")));
-                foreach (FileInfo file in mvdatadir.GetFiles("*.json"))
+                catch
                 {
-                    try
-                    {
-                        if (ParseRPGMakerMVjson(file.FullName))
-                        {
-                            isAnyFileCompleted = true;
-                        }
-                    }
-                    catch
-                    {
-                    }
                 }
             }
-            catch
-            {
-            }
 
-            ProjectData.Main.ProgressInfo(false);
-            return isAnyFileCompleted; ;
+            return false;
         }
 
         /// <summary>
