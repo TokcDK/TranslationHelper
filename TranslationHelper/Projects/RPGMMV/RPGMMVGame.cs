@@ -195,7 +195,7 @@ namespace TranslationHelper.Projects.RPGMMV
             ProjectData.Main.ProgressInfo(true, ParseFileMessage + "gamefont.css");
             ProjectData.FilePath = Path.Combine(ProjectData.SelectedDir, "www", "fonts", "gamefont.css");
 
-            if (File.Exists(ProjectData.FilePath)) return false;
+            if (!File.Exists(ProjectData.FilePath)) return false;
 
             var format = new GAMEFONTCSS
             {
