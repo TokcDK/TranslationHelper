@@ -44,7 +44,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                     {
                         IsJsonNotLast = false;
                     }
-
+                    JsonParser.JsonName = TableName();
                     JsonParser.ParseString(ParseData.Line);
 
                     //PluginsJsNameFound = false;

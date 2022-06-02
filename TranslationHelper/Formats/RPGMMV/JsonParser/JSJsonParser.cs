@@ -8,8 +8,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 {
     class JSJsonParser : JsonParserBase
     {
-        protected bool IsPluginsJS;//for some specific to plugins.js operations
         private bool PluginsJsNameFound;
+
+        public bool IsPluginsJS { get => string.Equals(JsonName, "Plugins.js", StringComparison.InvariantCultureIgnoreCase); }
+
         //protected int rowindex = 0;
         //private bool UseHashSet;
 
@@ -19,17 +21,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
         protected override void Init()
         {
-            IsPluginsJS = string.Equals(JsonName, "Plugins.js", StringComparison.InvariantCultureIgnoreCase);
         }
 
         protected override void ParseValue(JValue jsonValue)
         {
             var tokenValue = (string)jsonValue.Value;
-            if (tokenValue.Contains("豚田フトシ") && IsPluginsJS /*&& ProjectData.SaveFileMode*/)
-            {
-
-            }
-
             if (tokenValue.StartsWith("{") && tokenValue.EndsWith("}") || tokenValue.StartsWith("[\"") && tokenValue.EndsWith("\"]"))
             {
                 var root = JToken.Parse(tokenValue);
@@ -85,11 +81,21 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         }
         protected bool IsValidToken(JValue value)
         {
-            return value.Type == JTokenType.String
-                && (!IsPluginsJS || (value.Path != "Modelname" && !value.Path.Contains("parameters.picName") && !value.Path.Contains("imageName")))
-                //&& (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game
-                && !string.IsNullOrWhiteSpace(value + "")
-                && !(THSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars());
+            if (value.Type != JTokenType.String) return false;
+            if (string.IsNullOrWhiteSpace(value + "")) return false;
+            if (THSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars()) return false;
+
+            bool b = (!IsPluginsJS ||
+                !(string.Equals(value.Path, "Modelname", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(value.Path, "imageName", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(value.Path, "ImageFile", StringComparison.InvariantCultureIgnoreCase)
+                || value.Path.ToLowerInvariant().Contains("picname")
+                || value.Path.ToLowerInvariant().Contains("file")
+                )
+                );
+
+            return b;
+            //(!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game
         }
 
         protected override void ParseJsonObject(JObject jsonObject)
