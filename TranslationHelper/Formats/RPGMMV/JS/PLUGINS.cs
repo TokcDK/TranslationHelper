@@ -21,7 +21,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         protected override bool JSTokenValid(JValue value)
         {
-            return value.Path != "Modelname";
+            return !value.Path.Contains("Modelname") && !value.Path.Contains("imageName");
         }
 
         //internal override bool Open()

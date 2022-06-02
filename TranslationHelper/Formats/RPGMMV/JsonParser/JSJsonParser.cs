@@ -40,8 +40,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             }
             else
             {
-                if (!IsValidToken(jsonValue))
-                    return;
+                if (!IsValidToken(jsonValue)) return;
 
                 if (ProjectData.OpenFileMode)
                 {
@@ -55,10 +54,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 else
                 {
                     string translation = tokenValue;
-                    if (!Format.SetTranslation(ref translation))
-                    {
-                        return;
-                    }
+                    if (!Format.SetTranslation(ref translation)) return;
 
                     jsonValue.Value = translation;
 
@@ -86,7 +82,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         protected bool IsValidToken(JValue value)
         {
             return value.Type == JTokenType.String
-                && (!IsPluginsJS || (value.Path != "Modelname" && !value.Path.Contains("parameters.picName")))
+                && (!IsPluginsJS || (value.Path != "Modelname" && !value.Path.Contains("parameters.picName") && !value.Path.Contains("imageName")))
                 //&& (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game
                 && !string.IsNullOrWhiteSpace(value + "")
                 && !(THSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars());
