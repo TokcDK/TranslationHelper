@@ -477,7 +477,7 @@ namespace TranslationHelper.Functions
             }
             else
             {
-                var values = ProjectData.ConfigIni.GetSectionValues("RecentFiles").ToList();
+                var values = ProjectData.ConfigIni.GetSectionValues("RecentFiles").Where(path => File.Exists(path) || Directory.Exists(path)).ToList();
 
                 // max 20 items
                 while (values.Count >= 20)
