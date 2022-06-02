@@ -11,6 +11,7 @@ using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Menus;
 using TranslationHelper.Projects;
+using TranslationHelper.Projects.ZZZZFormats;
 
 namespace TranslationHelper.Functions
 {
@@ -26,9 +27,9 @@ namespace TranslationHelper.Functions
 
                     bool tempMode = ProjectData.OpenFileMode;
                     ProjectData.OpenFileMode = true;// temporary set open file mode to true if on save mode trying to open files to prevent errors in time of get extensions for filter
-                    
+
                     var possibleExtensions = string.Join(";*", GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<FormatBase>().Where(f => !string.IsNullOrWhiteSpace(f.Ext()) && f.Ext()[0] == '.').Select(f => f.Ext()).Distinct());
-                    THFOpen.Filter = "All|*"+ possibleExtensions + ";RPGMKTRANSPATCH|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
+                    THFOpen.Filter = "All|*" + possibleExtensions + ";RPGMKTRANSPATCH|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
 
                     ProjectData.OpenFileMode = tempMode;
                     if (THFOpen.ShowDialog() != DialogResult.OK || THFOpen.FileName == null)
@@ -113,6 +114,8 @@ namespace TranslationHelper.Functions
 
             ProjectData.Main.frmMainPanel.Invoke((Action)(() => ProjectData.Main.frmMainPanel.Visible = true));
 
+            List<Type> foundTypes = new List<Type>();
+
             //Try detect and open new type projects
             foreach (Type Project in ProjectData.ProjectsList) // iterate projectbase types
             {
@@ -123,15 +126,41 @@ namespace TranslationHelper.Functions
                 ProjectData.SelectedDir = dir.FullName;
                 ProjectData.SelectedGameDir = dir.FullName;
 
-                if (TryDetectProject(ProjectData.CurrentProject) && TryOpenProject())
-                {
-                    return true;
-                }
-                ProjectData.CurrentProject = null;
+                if (TryDetectProject(ProjectData.CurrentProject)) foundTypes.Add(Project); // add all project which check returned true
+
+                //ProjectData.CurrentProject = null;
             }
 
-            //Old projects
-            return false; //TryDetectOpenOldProjects(sPath); // disabled because obsolete code
+            if (foundTypes.Count == 0) return false; // nothing found
+
+            if (foundTypes.Count == 1) return TryOpenSelectedProject(foundTypes[0], sPath, dir); // try open with found project when only one found
+
+            int selectedIndex = -1;
+            var foundForm = new FoundTypesbyExtensionForm(); // use form from formats
+            foreach (var type in foundTypes) foundForm.listBox1.Items.Add(type.FullName);
+
+            var result = foundForm.ShowDialog();
+            if (result == DialogResult.OK) selectedIndex = foundForm.SelectedTypeIndex;
+
+            foundForm.Dispose();
+
+            if (selectedIndex > -1) return TryOpenSelectedProject(foundTypes[selectedIndex], sPath, dir); // try open with selected project
+
+            return TryOpenSelectedProject(foundTypes[0], sPath, dir); // try open with first of project if not selected
+        }
+
+        private static bool TryOpenSelectedProject(Type type, string sPath, DirectoryInfo dir)
+        {
+            ProjectData.CurrentProject = (ProjectBase)Activator.CreateInstance(type);// create instance of project
+            ProjectData.OpenFileMode = true;
+            ProjectData.SelectedFilePath = sPath;
+            ProjectData.OpenedFilesDir = dir.FullName;
+            ProjectData.SelectedDir = dir.FullName;
+            ProjectData.SelectedGameDir = dir.FullName;
+
+            if (!TryOpenProject()) return false;
+
+            return true;
         }
 
         //private string TryDetectOpenOldProjects(string sPath)
@@ -437,7 +466,7 @@ namespace TranslationHelper.Functions
         {
             Dictionary<string, List<DataTable>> sortedByExt = new Dictionary<string, List<DataTable>>();
             List<DataTable> sortedNoExt = new List<DataTable>();
-            foreach(DataTable table in tables)
+            foreach (DataTable table in tables)
             {
                 var ext = Path.GetExtension(table.TableName);
                 if (string.IsNullOrWhiteSpace(ext))
@@ -453,8 +482,8 @@ namespace TranslationHelper.Functions
             }
 
             List<DataTable> result = new List<DataTable>();
-            result.AddRange(sortedNoExt.OrderBy(t=>t.TableName));
-            sortedByExt = sortedByExt.OrderBy(p => p.Key).ToDictionary(p=>p.Key,p=>p.Value);
+            result.AddRange(sortedNoExt.OrderBy(t => t.TableName));
+            sortedByExt = sortedByExt.OrderBy(p => p.Key).ToDictionary(p => p.Key, p => p.Value);
             foreach (var list in sortedByExt.Values)
             {
                 result.AddRange(list.OrderBy(t => t.TableName));
