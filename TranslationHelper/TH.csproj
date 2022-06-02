@@ -194,6 +194,7 @@
     <Compile Include="Formats\RPGMaker\Functions\RPGMFunctions.cs" />
     <Compile Include="Formats\RPGMMV\GAMEFONTCSS.cs" />
     <Compile Include="Formats\RPGMMV\JsonParser\IUseJsonParser.cs" />
+    <Compile Include="Formats\RPGMMV\JsonParser\PluginsJSJsonParser.cs" />
     <Compile Include="Formats\RPGMMV\JsonParser\JSJsonParser.cs" />
     <Compile Include="Formats\RPGMMV\JsonParser\JsonParserBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\IUseJSLocationInfo.cs" />

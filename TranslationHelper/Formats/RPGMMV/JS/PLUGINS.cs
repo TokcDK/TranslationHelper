@@ -10,6 +10,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
     {
         public PLUGINS()
         {
+            JsonParser = new PluginsJSJsonParser();
         }
 
         internal override int ExtIdentifier()
