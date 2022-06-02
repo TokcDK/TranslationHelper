@@ -25,6 +25,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         protected override void ParseValue(JValue jsonValue)
         {
             var tokenValue = (string)jsonValue.Value;
+            if (tokenValue.Contains("豚田フトシ") && IsPluginsJS /*&& ProjectData.SaveFileMode*/)
+            {
+
+            }
 
             if (tokenValue.StartsWith("{") && tokenValue.EndsWith("}") || tokenValue.StartsWith("[\"") && tokenValue.EndsWith("\"]"))
             {
