@@ -86,7 +86,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             if (THSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars()) return false;
 
             bool b = (!IsPluginsJS ||
-                !(string.Equals(value.Path, "Modelname", StringComparison.InvariantCultureIgnoreCase)
+                !(
+                   string.Equals(value.Path, "description", StringComparison.InvariantCulture)
+                || string.Equals(value.Path, "Modelname", StringComparison.InvariantCultureIgnoreCase)
                 || string.Equals(value.Path, "imageName", StringComparison.InvariantCultureIgnoreCase)
                 || string.Equals(value.Path, "ImageFile", StringComparison.InvariantCultureIgnoreCase)
                 || value.Path.ToLowerInvariant().Contains("picname")
