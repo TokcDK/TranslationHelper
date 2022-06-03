@@ -18,19 +18,33 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         public override bool IsSaveToSourceFile => true; // we opened standalone file and will write in it
 
-        private void GetValidOpenable()
-        {
-            formatsTypes = GetListOfSubClasses.Inherited.GetListOfInheritedTypes(typeof(FormatStringBase));
-        }
-
-        List<Type> formatsTypes;
         internal override bool Check()
         {
-            GetValidOpenable();
+            var fileExt = Path.GetExtension(ProjectData.SelectedFilePath);
+            foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatStringBase)))
+            {
+                var format = (FormatBase)Activator.CreateInstance(formatType);
+                if (format.Ext() == fileExt && format.ExtIdentifier() > -1)
+                {
+                    return true;
+                }
+            }
 
+            return false;
+        }
+
+        FormatBase Format;
+
+        internal override string Name()
+        {
+            return string.IsNullOrWhiteSpace(Format.Name()) ? Format.Ext() : Format.Name();
+        }
+
+        internal override bool Open()
+        {
             var fileExt = Path.GetExtension(ProjectData.SelectedFilePath);
             List<Type> foundTypes = new List<Type>();
-            foreach (var formatType in formatsTypes)
+            foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatStringBase)))
             {
                 var format = (FormatBase)Activator.CreateInstance(formatType);
                 if (format.Ext() == fileExt && format.ExtIdentifier() > -1)
@@ -39,47 +53,36 @@ namespace TranslationHelper.Projects.ZZZZFormats
                 }
             }
 
+            if (foundTypes.Count == 0) return false;
+
             int selectedIndex = -1;
-            if (foundTypes.Count > 0)
+            var foundForm = new FoundTypesbyExtensionForm();
+            foreach (var type in foundTypes)
             {
-                var foundForm = new FoundTypesbyExtensionForm();
-
-                foreach (var type in foundTypes)
-                {
-                    foundForm.listBox1.Items.Add(type.FullName);
-                }
-
-                var result = foundForm.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    selectedIndex = foundForm.SelectedTypeIndex;
-                }
-
-                foundForm.Dispose();
+                foundForm.listBox1.Items.Add(type.FullName);
             }
 
-            if (selectedIndex > -1)
+            var result = foundForm.ShowDialog();
+            if (result == DialogResult.OK)
             {
-                CurrentFormat = (FormatBase)Activator.CreateInstance(foundTypes[selectedIndex]);
-                return true;
+                selectedIndex = foundForm.SelectedTypeIndex;
             }
 
-            return false;
-        }
+            foundForm.Dispose();
 
-        internal override string Name()
-        {
-            return string.IsNullOrWhiteSpace(CurrentFormat.Name()) ? CurrentFormat.Ext() : CurrentFormat.Name();
-        }
+            if (selectedIndex == -1) return false;
 
-        internal override bool Open() => OpenSave();
+            Format = (FormatBase)Activator.CreateInstance(foundTypes[selectedIndex]);
+
+            return OpenSave();
+        }
 
         internal override bool Save() => OpenSave();
 
         bool OpenSave()
         {
             var dir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
-            var ext = CurrentFormat.Ext();
+            var ext = Format.Ext();
             int extCnt = 0;
             foreach (var i in Directory.EnumerateFiles(dir, "*" + ext)) if (++extCnt > 1) break;
 
@@ -89,7 +92,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
                 getAll = true;
             }
 
-            return OpenSaveFilesBase(new DirectoryInfo(dir), CurrentFormat.GetType(), getAll ? "*" + ext : Path.GetFileName(CurrentFormat.FilePath), false, searchOption: SearchOption.TopDirectoryOnly);
+            return OpenSaveFilesBase(new DirectoryInfo(dir), Format.GetType(), getAll ? "*" + ext : Path.GetFileName(Format.FilePath), false, searchOption: SearchOption.TopDirectoryOnly);
         }
     }
 }
