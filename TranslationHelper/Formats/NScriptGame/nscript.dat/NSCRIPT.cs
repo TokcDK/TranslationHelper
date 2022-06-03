@@ -197,21 +197,21 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     //ONSCRIPTER
                     {
                         //copy onscripter
-                        if (!Directory.Exists(Path.Combine(ProjectData.SelectedGameDir, "onscripter")))
-                            Path.Combine(THSettings.ResDirPath(), "onscripter").CopyAll(Path.Combine(ProjectData.SelectedGameDir, "onscripter"));
+                        if (!Directory.Exists(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "onscripter")))
+                            Path.Combine(THSettings.ResDirPath(), "onscripter").CopyAll(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "onscripter"));
 
                         //write run.bat
                         //onscripter -r "gamedir" --dll "dllpath" -f fontpath --window
-                        var g = Directory.GetFiles(ProjectData.SelectedGameDir, "*.dll");
-                        var ls = g.Select(fn => "--dll \"" + Path.Combine(ProjectData.SelectedGameDir, Path.GetFileName(fn)) + "\" ");
+                        var g = Directory.GetFiles(ProjectData.CurrentProject.SelectedGameDir, "*.dll");
+                        var ls = g.Select(fn => "--dll \"" + Path.Combine(ProjectData.CurrentProject.SelectedGameDir, Path.GetFileName(fn)) + "\" ");
                         string dlls = string.Join("", ls);
                         var batcontent = "ONScripter "
-                            + "-r \"" + ProjectData.SelectedGameDir + "\" "
+                            + "-r \"" + ProjectData.CurrentProject.SelectedGameDir + "\" "
                             + dlls
                             + "-f C:\\Windows\\Fonts\\msgothic.ttc "
                             + "--window"
                         ;
-                        File.WriteAllText(Path.Combine(ProjectData.SelectedGameDir, "onscripter", "Run.bat"), batcontent);
+                        File.WriteAllText(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "onscripter", "Run.bat"), batcontent);
                     }
                     return true;
                 }

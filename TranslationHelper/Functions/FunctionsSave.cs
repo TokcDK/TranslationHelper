@@ -50,7 +50,7 @@ namespace TranslationHelper.Functions
                 //else 
                 if (ProjectData.CurrentProject.Name() == "RubyRPGGame")
                 {
-                    new RJ263914OLD().ProceedRubyRPGGame(ProjectData.SelectedGameDir, true);
+                    new RJ263914OLD().ProceedRubyRPGGame(ProjectData.CurrentProject.SelectedGameDir, true);
                     //MessageBox.Show("Finished");
                 }
                 else if (ProjectData.CurrentProject.Name() == "Wolf RPG txt")
@@ -73,14 +73,14 @@ namespace TranslationHelper.Functions
                     //THInfoTextBox.Text = "Saving...";
 
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    //Thread save = new Thread(new ParameterizedThreadStart((obj) => SaveRPGMTransPatchFiles(ProjectData.SelectedDir, THRPGMTransPatchver)));
+                    //Thread save = new Thread(new ParameterizedThreadStart((obj) => SaveRPGMTransPatchFiles(ProjectData.CurrentProject.SelectedDir, THRPGMTransPatchver)));
                     //save.Start();
 
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(ProjectData.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+                    await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(ProjectData.CurrentProject.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
 
-                    //MessageBox.Show("ProjectData.SelectedDir=" + ProjectData.SelectedDir);
-                    //SaveRPGMTransPatchFiles(ProjectData.SelectedDir, THRPGMTransPatchver);
+                    //MessageBox.Show("ProjectData.CurrentProject.SelectedDir=" + ProjectData.CurrentProject.SelectedDir);
+                    //SaveRPGMTransPatchFiles(ProjectData.CurrentProject.SelectedDir, THRPGMTransPatchver);
 
                     //THInfoTextBox.Text = string.Empty;
 
@@ -109,7 +109,7 @@ namespace TranslationHelper.Functions
                         //        help = "Dump labels to patch file")
                         //parser.add_argument('--dump-scripts', type = str, default = None,
                         //        help = "Dump scripts to given directory")
-                        string rpgmakertranscliargs = "\"" + ProjectData.SelectedGameDir + "\" -p \"" + ProjectData.SelectedDir + "\"" + " -o \"" + ProjectData.SelectedDir.Remove(ProjectData.SelectedDir.Length - "_patch".Length, "_patch".Length) + "_translated\"";
+                        string rpgmakertranscliargs = "\"" + ProjectData.CurrentProject.SelectedGameDir + "\" -p \"" + ProjectData.CurrentProject.SelectedDir + "\"" + " -o \"" + ProjectData.CurrentProject.SelectedDir.Remove(ProjectData.CurrentProject.SelectedDir.Length - "_patch".Length, "_patch".Length) + "_translated\"";
 
                         if (FunctionsProcess.RunProgram(rpgmakertranscli, rpgmakertranscliargs))
                         {
@@ -124,8 +124,8 @@ namespace TranslationHelper.Functions
                 }
                 else if (ProjectData.CurrentProject.Name() == "RPG Maker MV json")
                 {
-                    ///*THMsg*/MessageBox.Show(ProjectData.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                    await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.GetItemName(0), ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".json")).ConfigureAwait(true);
+                    ///*THMsg*/MessageBox.Show(ProjectData.CurrentProject.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                    await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.GetItemName(0), ProjectData.CurrentProject.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".json")).ConfigureAwait(true);
                 }
                 else if (ProjectData.CurrentProject.Name() == "RPG Maker MV")
                 {
@@ -146,14 +146,14 @@ namespace TranslationHelper.Functions
                                 break;
                             }
                         }
-                        ///*THMsg*/MessageBox.Show(ProjectData.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
+                        ///*THMsg*/MessageBox.Show(ProjectData.CurrentProject.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
                         if (changed)
                         {
 
                             ///*THMsg*/MessageBox.Show("start writing");
                             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                            await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.GetItemName(f), ProjectData.SelectedDir + "\\www\\data\\" + ProjectData.Main.THFilesList.GetItemName(f) + ".json")).ConfigureAwait(true);
-                            //WriteJson(THFilesListBox.Items[f].ToString(), ProjectData.SelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
+                            await Task.Run(() => new RPGMMVOLD().WriteJson(ProjectData.Main.THFilesList.GetItemName(f), ProjectData.CurrentProject.SelectedDir + "\\www\\data\\" + ProjectData.Main.THFilesList.GetItemName(f) + ".json")).ConfigureAwait(true);
+                            //WriteJson(THFilesListBox.Items[f].ToString(), ProjectData.CurrentProject.SelectedDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                         }
                     }
                     /*THMsg*/
@@ -162,13 +162,13 @@ namespace TranslationHelper.Functions
                 else if (ProjectData.CurrentProject.Name() == "KiriKiri scenario")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    //await Task.Run(() => KiriKiriScenarioWrite(ProjectData.SelectedDir + "\\" + THFilesList.GetItemName(0) + ".scn"));
-                    await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".scn")).ConfigureAwait(true);
+                    //await Task.Run(() => KiriKiriScenarioWrite(ProjectData.CurrentProject.SelectedDir + "\\" + THFilesList.GetItemName(0) + ".scn"));
+                    await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.CurrentProject.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".scn")).ConfigureAwait(true);
                 }
                 else if (ProjectData.CurrentProject.Name() == "KiriKiri script")
                 {
                     //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".ks")).ConfigureAwait(true);
+                    await Task.Run(() => new KiriKiriOLD().KiriKiriScriptScenarioWrite(ProjectData.CurrentProject.SelectedDir + "\\" + ProjectData.Main.THFilesList.GetItemName(0) + ".ks")).ConfigureAwait(true);
                 }
             }
 

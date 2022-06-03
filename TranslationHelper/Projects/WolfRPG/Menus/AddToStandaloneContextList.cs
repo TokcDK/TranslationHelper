@@ -18,7 +18,7 @@ namespace TranslationHelper.Projects.WolfRPG.Menus
 
         public static string BeginStringMarker = "> BEGIN STRING\r\n";
         public static string EndStringMarker = "\r\n> END STRING\r\n";
-        public static string StandaloneContextFilePath = Path.Combine(ProjectData.SelectedGameDir, "StandaloneContextList.thdata");
+        public static string StandaloneContextFilePath = Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "StandaloneContextList.thdata");
         public void OnClick(object sender, EventArgs e)
         {
             var standaloneContextList = LoadList(StandaloneContextFilePath);

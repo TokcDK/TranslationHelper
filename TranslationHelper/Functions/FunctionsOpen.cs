@@ -95,7 +95,7 @@ namespace TranslationHelper.Functions
         {
             if (tHSelectedGameDir.Length == 0)
             {
-                tHSelectedGameDir = ProjectData.SelectedDir;
+                tHSelectedGameDir = ProjectData.CurrentProject.SelectedDir;
             }
 
             //для rpgmaker mv. если была папка data, которая в папке www
@@ -122,9 +122,9 @@ namespace TranslationHelper.Functions
                 ProjectData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project);// create instance of project
                 ProjectData.OpenFileMode = true;
                 ProjectData.SelectedFilePath = sPath;
-                ProjectData.OpenedFilesDir = dir.FullName;
-                ProjectData.SelectedDir = dir.FullName;
-                ProjectData.SelectedGameDir = dir.FullName;
+                ProjectData.CurrentProject.OpenedFilesDir = dir.FullName;
+                ProjectData.CurrentProject.SelectedDir = dir.FullName;
+                ProjectData.CurrentProject.SelectedGameDir = dir.FullName;
 
                 if (TryDetectProject(ProjectData.CurrentProject)) foundTypes.Add(Project); // add all project which check returned true
 
@@ -154,9 +154,9 @@ namespace TranslationHelper.Functions
             ProjectData.CurrentProject = (ProjectBase)Activator.CreateInstance(type);// create instance of project
             ProjectData.OpenFileMode = true;
             ProjectData.SelectedFilePath = sPath;
-            ProjectData.OpenedFilesDir = dir.FullName;
-            ProjectData.SelectedDir = dir.FullName;
-            ProjectData.SelectedGameDir = dir.FullName;
+            ProjectData.CurrentProject.OpenedFilesDir = dir.FullName;
+            ProjectData.CurrentProject.SelectedDir = dir.FullName;
+            ProjectData.CurrentProject.SelectedGameDir = dir.FullName;
 
             if (!TryOpenProject()) return false;
 
@@ -165,7 +165,7 @@ namespace TranslationHelper.Functions
 
         //private string TryDetectOpenOldProjects(string sPath)
         //{
-        //    var dir = ProjectData.SelectedDir;
+        //    var dir = ProjectData.CurrentProject.SelectedDir;
 
         //    if (new KiriKiriOLD().OpenDetect())
         //    {
@@ -209,13 +209,13 @@ namespace TranslationHelper.Functions
         //                return "KiriKiri game";
         //            }
         //        }
-        //        else if (File.Exists(Path.Combine(ProjectData.SelectedDir, "www", "data", "system.json")))
+        //        else if (File.Exists(Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "data", "system.json")))
         //        {
         //            try
         //            {
-        //                //ProjectData.SelectedDir += "\\www\\data";
+        //                //ProjectData.CurrentProject.SelectedDir += "\\www\\data";
         //                //var MVJsonFIles = new List<string>();
-        //                mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(ProjectData.SelectedDir, "www", "data/")));
+        //                mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "data/")));
         //                foreach (FileInfo file in mvdatadir.EnumerateFiles("*.json"))
         //                {
         //                    //MessageBox.Show("file.FullName=" + file.FullName);
@@ -317,8 +317,8 @@ namespace TranslationHelper.Functions
         //                        //dGFiles.Rows[i].Cells[0].Value = THRPGMTransPatchFiles[i].Name;
         //                    }
 
-        //                    ProjectData.SelectedGameDir = ProjectData.SelectedDir;
-        //                    ProjectData.SelectedDir = ProjectData.Main.extractedpatchpath.Replace(Path.DirectorySeparatorChar + "patch", string.Empty);
+        //                    ProjectData.CurrentProject.SelectedGameDir = ProjectData.CurrentProject.SelectedDir;
+        //                    ProjectData.CurrentProject.SelectedDir = ProjectData.Main.extractedpatchpath.Replace(Path.DirectorySeparatorChar + "patch", string.Empty);
         //                    //MessageBox.Show(THSelectedSourceType + " loaded!");
         //                    //ProgressInfo(false, string.Empty);
         //                    return "RPG Maker game with RPGMTransPatch";
@@ -407,17 +407,17 @@ namespace TranslationHelper.Functions
 
             UpdateRecentFiles();
 
-            ProjectData.SelectedGameDir = GetCorrectedGameDIr(ProjectData.SelectedGameDir);
+            ProjectData.CurrentProject.SelectedGameDir = GetCorrectedGameDIr(ProjectData.CurrentProject.SelectedGameDir);
 
             if (ProjectData.CurrentProject.Name().Contains("RPG Maker game with RPGMTransPatch") || ProjectData.CurrentProject.Name().Contains("KiriKiri game"))
             {
-                ProjectData.Main.Settings.THConfigINI.SetKey("Paths", "LastPath", ProjectData.SelectedGameDir);
+                ProjectData.Main.Settings.THConfigINI.SetKey("Paths", "LastPath", ProjectData.CurrentProject.SelectedGameDir);
             }
             else
             {
                 try
                 {
-                    ProjectData.Main.Settings.THConfigINI.SetKey("Paths", "LastPath", ProjectData.SelectedDir);
+                    ProjectData.Main.Settings.THConfigINI.SetKey("Paths", "LastPath", ProjectData.CurrentProject.SelectedDir);
                 }
                 catch (Exception ex)
                 {

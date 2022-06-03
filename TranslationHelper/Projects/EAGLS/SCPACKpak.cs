@@ -29,7 +29,7 @@ namespace TranslationHelper.Projects.EAGLS
         private bool UnpackSCPACK()
         {
             ProjectName = "SCPACK" + (ISpak ? "pak" : "idx") + "_" + ProjectData.SelectedFilePath.GetCrc32();
-            ScriptDir = ProjectData.SelectedGameDir;
+            ScriptDir = ProjectData.CurrentProject.SelectedGameDir;
             return PackUnpackFiles() && OpenFiles();
         }
 

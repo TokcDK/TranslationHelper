@@ -16,7 +16,7 @@
 
 //        void GetStrings()
 //        {
-//            foreach (var str in KenshModIO.GetStrings(ProjectData.SelectedGameDir, FilePath))
+//            foreach (var str in KenshModIO.GetStrings(ProjectData.CurrentProject.SelectedGameDir, FilePath))
 //            {
 //                AddRowData(str, CheckInput: false);
 //            }

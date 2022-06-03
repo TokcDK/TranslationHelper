@@ -490,7 +490,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
         //                ResultForWrite.AppendLine(line);
         //            }
 
-        //            File.WriteAllText(Path.Combine(ProjectData.ProjectWorkDir, PatchDirName, tablename), ResultForWrite.ToString(), Encoding.GetEncoding(932));
+        //            File.WriteAllText(Path.Combine(ProjectData.CurrentProject.ProjectWorkDir, PatchDirName, tablename), ResultForWrite.ToString(), Encoding.GetEncoding(932));
         //        }
         //    }
         //    catch

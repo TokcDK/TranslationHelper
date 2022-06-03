@@ -49,9 +49,9 @@ namespace TranslationHelper.Projects
         {
             if (!string.IsNullOrWhiteSpace(ProjectData.SelectedFilePath))
             {
-                ProjectData.SelectedGameDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
-                ProjectData.SelectedDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
-                ProjectData.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName(), ProjectName());
+                ProjectData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
+                ProjectData.CurrentProject.SelectedDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
+                ProjectData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName(), ProjectName());
             }
         }
 
@@ -403,9 +403,23 @@ namespace TranslationHelper.Projects
 
         int mcArrNum;
 
+        /// <summary>
+        /// Path for selected game dir which is translating
+        /// </summary>
         internal string SelectedGameDir;
+        /// <summary>
+        /// Path for selected dir where to translate.
+        /// In most causes it is game's dir.
+        /// </summary>
         internal string SelectedDir;
+        /// <summary>
+        /// Path for selected dir where to translate.
+        /// In most causes it is game's dir.
+        /// </summary>
         internal string OpenedFilesDir;
+        /// <summary>
+        /// Path to dir where project's files are located
+        /// </summary>
         internal string ProjectWorkDir;
 
         internal string RestoreVARS(string str)
@@ -630,7 +644,7 @@ namespace TranslationHelper.Projects
             {
                 if (string.IsNullOrWhiteSpace(subpath)) continue;
 
-                string path = (subpath.StartsWith(@".\") || subpath.StartsWith(@"..\")) ? Path.GetFullPath(Path.Combine(ProjectData.SelectedDir, subpath)) : subpath;
+                string path = (subpath.StartsWith(@".\") || subpath.StartsWith(@"..\")) ? Path.GetFullPath(Path.Combine(ProjectData.CurrentProject.SelectedDir, subpath)) : subpath;
 
                 if (string.IsNullOrWhiteSpace(path) || bakuped.Contains(path)) continue;
 
@@ -754,7 +768,7 @@ namespace TranslationHelper.Projects
         /// </summary>
         internal virtual void AfterTranslationWriteActions()
         {
-            System.Diagnostics.Process.Start("explorer.exe", ProjectData.SelectedDir);
+            System.Diagnostics.Process.Start("explorer.exe", ProjectData.CurrentProject.SelectedDir);
         }
 
         internal virtual List<IProjectMenu> FilesListItemMenusList()

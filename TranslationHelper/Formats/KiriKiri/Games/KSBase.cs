@@ -141,7 +141,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         //        {
         //            if (ParseData.Ret)
         //            {
-        //                File.WriteAllText(Path.Combine(ProjectData.ProjectWorkDir, PatchDirName, ParseData.tablename), ParseData.ResultForWrite.ToString(), encoding /*FileEncoding()*/);
+        //                File.WriteAllText(Path.Combine(ProjectData.CurrentProject.ProjectWorkDir, PatchDirName, ParseData.tablename), ParseData.ResultForWrite.ToString(), encoding /*FileEncoding()*/);
         //            }
         //        }
         //        catch

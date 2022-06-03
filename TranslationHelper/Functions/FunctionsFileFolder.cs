@@ -86,8 +86,8 @@ namespace TranslationHelper.Main.Functions
                 return true;
             }
 
-            //MessageBox.Show("ProjectData.SelectedDir=" + ProjectData.SelectedDir.Replace("\\www\\data", "\\www") + "\r\n, name=" + name + "\r\n, Count=" + Directory.EnumerateFiles(ProjectData.SelectedDir, name + ".*", SearchOption.AllDirectories).Count());
-            //foreach (var f in Directory.EnumerateFiles(ProjectData.SelectedDir, name + ".*", SearchOption.AllDirectories))
+            //MessageBox.Show("ProjectData.CurrentProject.SelectedDir=" + ProjectData.CurrentProject.SelectedDir.Replace("\\www\\data", "\\www") + "\r\n, name=" + name + "\r\n, Count=" + Directory.EnumerateFiles(ProjectData.CurrentProject.SelectedDir, name + ".*", SearchOption.AllDirectories).Count());
+            //foreach (var f in Directory.EnumerateFiles(ProjectData.CurrentProject.SelectedDir, name + ".*", SearchOption.AllDirectories))
             //{
             //    //MessageBox.Show("GetAnyFileWithTheNameExist Returns True! name="+ name);
             //    return true;

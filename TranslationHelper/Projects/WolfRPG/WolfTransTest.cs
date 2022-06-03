@@ -26,13 +26,13 @@ namespace TranslationHelper.Projects.WolfRPG
 
         private bool OpenSave()
         {
-            bool[] b = new bool[] { OpenSaveFilesBase(Path.Combine(ProjectData.SelectedGameDir, "Data", "MapData"), typeof(MPS), "*.mps")
+            bool[] b = new bool[] { OpenSaveFilesBase(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "MapData"), typeof(MPS), "*.mps")
                 ,
-                OpenSaveFilesBase(new DirectoryInfo(Path.Combine(ProjectData.SelectedGameDir, "Data", "BasicData")), typeof(Database), "*.project", exclusions: new string[] { "SysDataBaseBasic.project" })
+                OpenSaveFilesBase(new DirectoryInfo(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "BasicData")), typeof(Database), "*.project", exclusions: new string[] { "SysDataBaseBasic.project" })
                 ,
-                OpenSaveFilesBase(Path.Combine(ProjectData.SelectedGameDir, "Data", "BasicData"), typeof(CommonEvents), "CommonEvent.dat")
+                OpenSaveFilesBase(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "BasicData"), typeof(CommonEvents), "CommonEvent.dat")
                 ,
-                OpenSaveFilesBase(Path.Combine(ProjectData.SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt")
+                OpenSaveFilesBase(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt")
                 };
             return b.Any(p => p == true);
 
@@ -41,20 +41,20 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override bool BakCreate()
         {
-            return BackupRestorePaths(new[] { Path.Combine(ProjectData.SelectedGameDir, "Data", "Evtext") });
+            return BackupRestorePaths(new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "Evtext") });
         }
 
         internal override bool BakRestore()
         {
-            return BackupRestorePaths(new[] { Path.Combine(ProjectData.SelectedGameDir, "Data", "Evtext") });
+            return BackupRestorePaths(new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "Evtext") });
         }
 
         //bool bakrestore()
         //{
         //    bool[] b = new bool[3] {
-        //          BackupRestorePaths(new[] { Path.Combine(ProjectData.SelectedGameDir, "Data", "Evtext") })
-        //        , BackupRestorePaths(new[] { Path.Combine(ProjectData.SelectedGameDir, "Data", "MapData") })
-        //        , BackupRestorePaths(new[] { Path.Combine(ProjectData.SelectedGameDir, "Data", "BasicData") })
+        //          BackupRestorePaths(new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "Evtext") })
+        //        , BackupRestorePaths(new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "MapData") })
+        //        , BackupRestorePaths(new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "BasicData") })
         //    };
 
         //    return b.All(r => r == true);

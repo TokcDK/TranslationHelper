@@ -46,7 +46,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 Folder = Path.Combine(parentFolder, "TextP");
                 ProceedTextEHPFolders(Folder);
 
-                ProjectData.SelectedDir = parentFolder;
+                ProjectData.CurrentProject.SelectedDir = parentFolder;
 
                 return ProjectData.Main.THFilesList.GetItemsCount() > 0 ? "Wolf RPG txt" : string.Empty;
             }
@@ -186,7 +186,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(table.TableName)));
             }
 
-            ProjectData.SelectedDir = FolderPath;
+            ProjectData.CurrentProject.SelectedDir = FolderPath;
             return "WOLF TRANS PATCH";
         }
 
@@ -283,7 +283,7 @@ namespace TranslationHelper.Projects.WolfRPG
         {
             for (int t = 0; t < ProjectData.FilesContent.Tables.Count; t++)
             {
-                string FilePath = Path.Combine(ProjectData.SelectedDir, ProjectData.FilesContentInfo.Tables[t].Rows[0][0].ToString(), ProjectData.FilesContent.Tables[t].TableName);
+                string FilePath = Path.Combine(ProjectData.CurrentProject.SelectedDir, ProjectData.FilesContentInfo.Tables[t].Rows[0][0].ToString(), ProjectData.FilesContent.Tables[t].TableName);
 
                 WriteWolfRPGMakerTextEHP(FilePath);
                 //for (int r=0;r< THFilesElementsDataset.Tables[t].Rows.Count; r++)
@@ -346,7 +346,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal void WriteWOLFTRANSPATCH()
         {
-            foreach (var file in Directory.EnumerateFiles(ProjectData.SelectedDir, "*.txt", SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles(ProjectData.CurrentProject.SelectedDir, "*.txt", SearchOption.AllDirectories))
             {
                 string fileName = Path.GetFileName(file);
                 if (ProjectData.FilesContent.Tables[fileName] == null)

@@ -52,7 +52,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         {
             foreach (var xp3 in new[] { "scripts", "scenario", "data" })
             {
-                var path = new FileInfo(Path.Combine(ProjectData.SelectedGameDir, xp3 + ".xp3"));
+                var path = new FileInfo(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, xp3 + ".xp3"));
                 if (!path.Exists) continue;
 
                 var info = new Xp3Patch();
@@ -61,7 +61,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 if (!Xp3PatchList.Contains(info)) Xp3PatchList.Insert(0, info);
             }
 
-            foreach (var xp3Patch in new DirectoryInfo(ProjectData.SelectedGameDir).EnumerateFiles("patch*.xp3"))
+            foreach (var xp3Patch in new DirectoryInfo(ProjectData.CurrentProject.SelectedGameDir).EnumerateFiles("patch*.xp3"))
             {
                 if (File.Exists(xp3Patch + ".translation")) continue;
 

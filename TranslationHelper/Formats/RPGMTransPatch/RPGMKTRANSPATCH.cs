@@ -71,7 +71,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                         LinesToWrite.Add("> END STRING");
                     }
 
-                    var path = Path.Combine(ProjectData.ProjectWorkDir, Path.GetFileName(ProjectData.ProjectWorkDir) + "_patch", "patch", table.TableName);
+                    var path = Path.Combine(ProjectData.CurrentProject.ProjectWorkDir, Path.GetFileName(ProjectData.CurrentProject.ProjectWorkDir) + "_patch", "patch", table.TableName);
                     File.WriteAllLines(path, LinesToWrite);
                     ret = true;
                 }

@@ -38,10 +38,10 @@ namespace TranslationHelper.Projects.Liar_soft
         bool OpenSaveXFL()
         {
             //set vars
-            var scrxfl = Path.Combine(ProjectData.SelectedGameDir, "scr.xfl");
+            var scrxfl = Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "scr.xfl");
             var archive = XflArchive.FromFile(scrxfl);
-            ProjectData.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(ProjectData.SelectedGameDir));
-            var dir = ProjectData.ProjectWorkDir;
+            ProjectData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(ProjectData.CurrentProject.SelectedGameDir));
+            var dir = ProjectData.CurrentProject.ProjectWorkDir;
 
             archive.ExtractToDirectory(dir);//extract all gsc to work dir
 

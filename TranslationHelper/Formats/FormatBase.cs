@@ -165,7 +165,7 @@ namespace TranslationHelper.Formats
                 {
 
                 }
-                tableName = dirPath.Replace(ProjectData.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar;
+                tableName = dirPath.Replace(ProjectData.CurrentProject.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar;
             }
 
             if (UseTableNameWithoutExtension)
