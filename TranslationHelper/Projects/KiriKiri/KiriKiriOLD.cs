@@ -35,20 +35,20 @@ namespace TranslationHelper.Projects.KiriKiri
             string filename = Path.GetFileNameWithoutExtension(ProjectData.SelectedFilePath);
             string extension = Path.GetExtension(ProjectData.SelectedFilePath);
 
-            _ = ProjectData.FilesContent.Tables.Add(filename);
-            _ = ProjectData.FilesContent.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
-            _ = ProjectData.FilesContentInfo.Tables.Add(filename);
-            _ = ProjectData.FilesContentInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
+            _ = ProjectData.CurrentProject.FilesContent.Tables.Add(filename);
+            _ = ProjectData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
+            _ = ProjectData.CurrentProject.FilesContentInfo.Tables.Add(filename);
+            _ = ProjectData.CurrentProject.FilesContentInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
 
-            DataTable DT = KiriKiriScriptScenarioOpen(ProjectData.SelectedFilePath, ProjectData.FilesContent.Tables[0], ProjectData.FilesContentInfo.Tables[0]);
+            DataTable DT = KiriKiriScriptScenarioOpen(ProjectData.SelectedFilePath, ProjectData.CurrentProject.FilesContent.Tables[0], ProjectData.CurrentProject.FilesContentInfo.Tables[0]);
             if (DT == null || DT.Rows.Count == 0)
             {
-                ProjectData.FilesContent.Tables.Remove(filename);
-                ProjectData.FilesContentInfo.Tables.Remove(filename);
+                ProjectData.CurrentProject.FilesContent.Tables.Remove(filename);
+                ProjectData.CurrentProject.FilesContentInfo.Tables.Remove(filename);
             }
             else
             {
-                _ = ProjectData.FilesContent.Tables[0].Columns.Add(THSettings.TranslationColumnName());
+                _ = ProjectData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.TranslationColumnName());
                 ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(filename)));
                 if (extension == ".ks")
                 {
@@ -121,35 +121,35 @@ namespace TranslationHelper.Projects.KiriKiri
                 {
                     filename = Path.GetFileName(kiriKiriFiles[i]);
 
-                    _ = ProjectData.FilesContent.Tables.Add(filename);
-                    _ = ProjectData.FilesContent.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
-                    _ = ProjectData.FilesContentInfo.Tables.Add(filename);
-                    _ = ProjectData.FilesContentInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
+                    _ = ProjectData.CurrentProject.FilesContent.Tables.Add(filename);
+                    _ = ProjectData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
+                    _ = ProjectData.CurrentProject.FilesContentInfo.Tables.Add(filename);
+                    _ = ProjectData.CurrentProject.FilesContentInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
 
                     DataTable DT = null;
 
                     if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
                     {
-                        DT = KiriKiriScriptScenarioOpen(kiriKiriFiles[i], ProjectData.FilesContent.Tables[filename], ProjectData.FilesContentInfo.Tables[filename]);
+                        DT = KiriKiriScriptScenarioOpen(kiriKiriFiles[i], ProjectData.CurrentProject.FilesContent.Tables[filename], ProjectData.CurrentProject.FilesContentInfo.Tables[filename]);
                     }
                     else if (filename.EndsWith(".csv"))
                     {
-                        DT = CSVOld.KiriKiriCSVOpen(kiriKiriFiles[i], ProjectData.FilesContent.Tables[filename], ProjectData.FilesContentInfo.Tables[filename]);
+                        DT = CSVOld.KiriKiriCSVOpen(kiriKiriFiles[i], ProjectData.CurrentProject.FilesContent.Tables[filename], ProjectData.CurrentProject.FilesContentInfo.Tables[filename]);
                     }
                     else if (filename.EndsWith(".tsv"))
                     {
-                        DT = TSVOld.KiriKiriTSVOpen(kiriKiriFiles[i], ProjectData.FilesContent.Tables[filename], ProjectData.FilesContentInfo.Tables[filename]);
+                        DT = TSVOld.KiriKiriTSVOpen(kiriKiriFiles[i], ProjectData.CurrentProject.FilesContent.Tables[filename], ProjectData.CurrentProject.FilesContentInfo.Tables[filename]);
                     }
 
                     if (DT == null || DT.Rows.Count == 0)
                     {
-                        ProjectData.FilesContent.Tables.Remove(filename);
-                        ProjectData.FilesContentInfo.Tables.Remove(filename);
+                        ProjectData.CurrentProject.FilesContent.Tables.Remove(filename);
+                        ProjectData.CurrentProject.FilesContentInfo.Tables.Remove(filename);
                     }
                     else
                     {
                         ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(filename)));
-                        _ = ProjectData.FilesContent.Tables[filename].Columns.Add(THSettings.TranslationColumnName());
+                        _ = ProjectData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.TranslationColumnName());
                     }
                 }
 
@@ -399,8 +399,8 @@ namespace TranslationHelper.Projects.KiriKiri
                     string line;
                     //string original = string.Empty;
                     string filename = Path.GetFileNameWithoutExtension(sPath);
-                    _ = ProjectData.FilesContent.Tables.Add(filename);
-                    _ = ProjectData.FilesContent.Tables[0].Columns.Add(THSettings.OriginalColumnName());
+                    _ = ProjectData.CurrentProject.FilesContent.Tables.Add(filename);
+                    _ = ProjectData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.OriginalColumnName());
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
@@ -412,15 +412,15 @@ namespace TranslationHelper.Projects.KiriKiri
                         {
                             if (line.EndsWith("[k]"))
                             {
-                                ProjectData.FilesContent.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
+                                ProjectData.CurrentProject.FilesContent.Tables[0].Rows.Add(line.Remove(line.Length - 3, 3));
 
                             }
                         }
                     }
 
-                    if (ProjectData.FilesContent.Tables[0].Rows.Count > 0)
+                    if (ProjectData.CurrentProject.FilesContent.Tables[0].Rows.Count > 0)
                     {
-                        _ = ProjectData.FilesContent.Tables[0].Columns.Add(THSettings.TranslationColumnName());
+                        _ = ProjectData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.TranslationColumnName());
                         ProjectData.Main.THFilesList.Invoke((Action)(() => ProjectData.Main.THFilesList.AddItem(filename)));
                     }
                     else
@@ -481,7 +481,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 }
                                 else
                                 {
-                                    var row = ProjectData.FilesContent.Tables[0].Rows[elementnumber];
+                                    var row = ProjectData.CurrentProject.FilesContent.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
                                         || string.IsNullOrEmpty(row[1] as string)
@@ -502,7 +502,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 }
                                 else
                                 {
-                                    var row = ProjectData.FilesContent.Tables[0].Rows[elementnumber];
+                                    var row = ProjectData.CurrentProject.FilesContent.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
                                         || string.IsNullOrEmpty(row[1] as string)
@@ -523,7 +523,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 }
                                 else
                                 {
-                                    var row = ProjectData.FilesContent.Tables[0].Rows[elementnumber];
+                                    var row = ProjectData.CurrentProject.FilesContent.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
                                         || string.IsNullOrEmpty(row[1] as string)
@@ -543,7 +543,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 bool startswith = line.StartsWith("o.");
                                 for (int m = 0; m < matches.Count; m++)
                                 {
-                                    var row = ProjectData.FilesContent.Tables[0].Rows[elementnumber];
+                                    var row = ProjectData.CurrentProject.FilesContent.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
                                         || string.IsNullOrEmpty(row[1] as string)
@@ -568,7 +568,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                 }
                                 else
                                 {
-                                    var row = ProjectData.FilesContent.Tables[0].Rows[elementnumber];
+                                    var row = ProjectData.CurrentProject.FilesContent.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
                                         || string.IsNullOrEmpty(row[1] as string)

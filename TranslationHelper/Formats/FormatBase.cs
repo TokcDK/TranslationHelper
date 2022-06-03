@@ -413,8 +413,8 @@ namespace TranslationHelper.Formats
             }
             else if (Data.Rows.Count > 0)
             {
-                ProjectData.AddFileData(Data);
-                ProjectData.AddFileInfo(Info);
+                ProjectData.CurrentProject.AddFileData(Data);
+                ProjectData.CurrentProject.AddFileInfo(Info);
 
                 //#if DEBUG
                 //                ProjectData.Main.Invoke((Action)(() => ProjectData.AddTableData(TableData)));
@@ -550,7 +550,7 @@ namespace TranslationHelper.Formats
         }
         internal void SplitTableCellValuesToDictionaryLines(string TableName)
         {
-            if (!ProjectData.CurrentProject.DontLoadDuplicates || !ProjectData.SaveFileMode || !ProjectData.FilesContent.Tables.Contains(TableName))
+            if (!ProjectData.CurrentProject.DontLoadDuplicates || !ProjectData.SaveFileMode || !ProjectData.CurrentProject.FilesContent.Tables.Contains(TableName))
                 return;
 
             if (ProjectData.CurrentProject.TablesLinesDict == null)
@@ -563,7 +563,7 @@ namespace TranslationHelper.Formats
                 ProjectData.CurrentProject.TablesLinesDict.Clear();
             }
 
-            foreach (DataRow Row in ProjectData.FilesContent.Tables[TableName].Rows)
+            foreach (DataRow Row in ProjectData.CurrentProject.FilesContent.Tables[TableName].Rows)
             {
                 string Original;
                 string Translation;
@@ -612,7 +612,7 @@ namespace TranslationHelper.Formats
 
             if (onlyOneTable)
             {
-                if (!ProjectData.FilesContent.Tables.Contains(tableName))
+                if (!ProjectData.CurrentProject.FilesContent.Tables.Contains(tableName))
                     return;
 
                 if (ProjectData.CurrentProject.TablesLinesDict.Count > 0)
@@ -629,7 +629,7 @@ namespace TranslationHelper.Formats
             }
 
 
-            foreach (DataTable Table in ProjectData.FilesContent.Tables)
+            foreach (DataTable Table in ProjectData.CurrentProject.FilesContent.Tables)
             {
                 if (onlyOneTable && Table.TableName != tableName)
                 {
@@ -826,7 +826,7 @@ namespace TranslationHelper.Formats
                 {
                     if (ProjectData.OriginalsTableRowCoordinates[valueToTranslate][currentTableName].Contains(RowNumber))
                     {
-                        valueToTranslate = ProjectData.FilesContent.Tables[currentTableName].Rows[RowNumber][1] + "";
+                        valueToTranslate = ProjectData.CurrentProject.FilesContent.Tables[currentTableName].Rows[RowNumber][1] + "";
                         valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
                         isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
@@ -844,7 +844,7 @@ namespace TranslationHelper.Formats
 
                         foreach (var rowIndex in ProjectData.OriginalsTableRowCoordinates[valueToTranslate][currentTableName])
                         {
-                            valueToTranslate = ProjectData.FilesContent.Tables[currentTableName].Rows[rowIndex][1] + "";
+                            valueToTranslate = ProjectData.CurrentProject.FilesContent.Tables[currentTableName].Rows[rowIndex][1] + "";
                             valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
                             isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
@@ -866,7 +866,7 @@ namespace TranslationHelper.Formats
                     {
                         foreach (var existsRowIndex in existTableName)
                         {
-                            valueToTranslate = ProjectData.FilesContent.Tables[currentTableName].Rows[existsRowIndex][1] + "";
+                            valueToTranslate = ProjectData.CurrentProject.FilesContent.Tables[currentTableName].Rows[existsRowIndex][1] + "";
                             valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
                             isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);

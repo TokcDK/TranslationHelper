@@ -373,7 +373,7 @@ namespace TranslationHelper.Functions
                 ProjectData.Main.THWorkSpaceSplitContainer.Visible = true;
             }
 
-            if (ProjectData.Main.THFilesList.GetItemsCount() == 0 && ProjectData.FilesContent.Tables.Count > 0)
+            if (ProjectData.Main.THFilesList.GetItemsCount() == 0 && ProjectData.CurrentProject.FilesContent.Tables.Count > 0)
             {
                 //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
                 //foreach (DataColumn col in ProjectData.THFilesElementsDataset.Tables[0].Columns)
@@ -388,18 +388,18 @@ namespace TranslationHelper.Functions
                 //    ProjectData.THFilesElementsDataset.Merge(newdataset);
                 //}
 
-                //var sortedtables = ProjectData.FilesContent.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
-                var sortedtables = Sort(ProjectData.FilesContent.Tables);
-                ProjectData.FilesContent.Tables.Clear();
-                ProjectData.FilesContent.Tables.AddRange(sortedtables);
+                //var sortedtables = ProjectData.CurrentProject.FilesContent.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
+                var sortedtables = Sort(ProjectData.CurrentProject.FilesContent.Tables);
+                ProjectData.CurrentProject.FilesContent.Tables.Clear();
+                ProjectData.CurrentProject.FilesContent.Tables.AddRange(sortedtables);
 
-                //var sortedtablesinfo = ProjectData.FilesContentInfo.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
-                var sortedtablesinfo = Sort(ProjectData.FilesContentInfo.Tables);
-                ProjectData.FilesContentInfo.Tables.Clear();
-                ProjectData.FilesContentInfo.Tables.AddRange(sortedtablesinfo);
+                //var sortedtablesinfo = ProjectData.CurrentProject.FilesContentInfo.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
+                var sortedtablesinfo = Sort(ProjectData.CurrentProject.FilesContentInfo.Tables);
+                ProjectData.CurrentProject.FilesContentInfo.Tables.Clear();
+                ProjectData.CurrentProject.FilesContentInfo.Tables.AddRange(sortedtablesinfo);
 
 
-                foreach (DataTable table in ProjectData.FilesContent.Tables)
+                foreach (DataTable table in ProjectData.CurrentProject.FilesContent.Tables)
                 {
                     ProjectData.Main.THFilesList.AddItem(table.TableName);
                 }

@@ -177,7 +177,7 @@ namespace TranslationHelper.Main.Functions
                 //LogToFile("1 rule=" + rule + ",tableindex=" + initialtableindex);
                 if (Method == "a")
                 {
-                    tablescount = ProjectData.FilesContent.Tables.Count;//все таблицы в dataset
+                    tablescount = ProjectData.CurrentProject.FilesContent.Tables.Count;//все таблицы в dataset
                 }
                 else
                 {
@@ -192,7 +192,7 @@ namespace TranslationHelper.Main.Functions
                     if (Method == "a" || Method == "t")
                     {
                         //все строки в выбранной таблице
-                        rowscount = ProjectData.FilesContent.Tables[t].Rows.Count;
+                        rowscount = ProjectData.CurrentProject.FilesContent.Tables[t].Rows.Count;
                     }
                     else
                     {
@@ -216,7 +216,7 @@ namespace TranslationHelper.Main.Functions
                         }
 
                         //LogToFile("5 selected i row index=" + i + ", value of THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "]=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind]);
-                        var row = ProjectData.FilesContent.Tables[t].Rows[rowindex];
+                        var row = ProjectData.CurrentProject.FilesContent.Tables[t].Rows[rowindex];
                         string cvalue = row[cind] + string.Empty;
                         //не трогать строку перевода, если она пустая
                         if (cvalue.Length > 0 && (forceApply || cvalue != row[cind - 1] as string))

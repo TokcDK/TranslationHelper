@@ -39,12 +39,12 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                 "> RPGMAKER TRANS PATCH FILE VERSION 3.2"//v3
             };
 
-            var TablesCount = ProjectData.FilesContent.Tables.Count;
+            var TablesCount = ProjectData.CurrentProject.FilesContent.Tables.Count;
             for (int t = 0; t < TablesCount; t++)
             {
                 try
                 {
-                    var table = ProjectData.FilesContent.Tables[t];
+                    var table = ProjectData.CurrentProject.FilesContent.Tables[t];
                     var tableRowsCount = table.Rows.Count;
                     for (int r = 0; r < tableRowsCount; r++)
                     {
@@ -54,7 +54,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                         var translation = row[1] as string;
 
                         List<string> context = new List<string>();
-                        var infoRow = ProjectData.FilesContentInfo.Tables[t].Rows[r] + string.Empty;
+                        var infoRow = ProjectData.CurrentProject.FilesContentInfo.Tables[t].Rows[r] + string.Empty;
                         foreach (var line in infoRow.SplitToLines())
                         {
                             if (line.StartsWith("> CONTEXT"))

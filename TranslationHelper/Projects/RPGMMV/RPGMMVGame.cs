@@ -68,7 +68,7 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             if (tind != -1 && rind != -1)
             {
-                string cell = ProjectData.FilesContentInfo.Tables[tind].Rows[rind][0] + string.Empty;
+                string cell = ProjectData.CurrentProject.FilesContentInfo.Tables[tind].Rows[rind][0] + string.Empty;
                 if (cell.Contains("Code=655") || cell.Contains("Code=355") /*|| ProjectData.THFilesElementsDataset.Tables[tind].TableName.ToUpperInvariant().EndsWith(".JS")*/)
                 {
                     return true;

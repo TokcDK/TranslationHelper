@@ -420,7 +420,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var tr = coordinate.Key.Split(',');
                 var tindex = int.Parse(tr[0]);
                 var rindex = int.Parse(tr[1]);
-                var row = ProjectData.FilesContent.Tables[tindex].Rows[rindex];
+                var row = ProjectData.CurrentProject.FilesContent.Tables[tindex].Rows[rindex];
                 //var linenumMax = (Row[0] + "").GetLinesCount();
 
                 var cellTranslationEqualOriginal = Equals(row[1], row[0]);

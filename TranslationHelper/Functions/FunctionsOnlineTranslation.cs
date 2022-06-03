@@ -51,7 +51,7 @@ namespace TranslationHelper.Functions
             int TableMaxIndex;
             int RowsCountInTable;
             int CurrentRowIndex;
-            TableMaxIndex = (Method == "a") ? ProjectData.FilesContent.Tables.Count : TableMaxIndex = TableIndex + 1;
+            TableMaxIndex = (Method == "a") ? ProjectData.CurrentProject.FilesContent.Tables.Count : TableMaxIndex = TableIndex + 1;
             //if (method == "a")
             //{
             //    tablescount = THFilesElementsDataset.Tables.Count;//все таблицы в dataset
@@ -67,7 +67,7 @@ namespace TranslationHelper.Functions
             //перебор таблиц dataset
             for (int tableIndex = TableIndex; tableIndex < TableMaxIndex; tableIndex++)
             {
-                RowsCountInTable = (Method == "a" || Method == "t") ? ProjectData.FilesContent.Tables[tableIndex].Rows.Count : SelectedIndexes.Length;
+                RowsCountInTable = (Method == "a" || Method == "t") ? ProjectData.CurrentProject.FilesContent.Tables[tableIndex].Rows.Count : SelectedIndexes.Length;
                 //if (method == "a" || method == "t")
                 //{
                 //    //все строки в выбранной таблице
@@ -123,9 +123,9 @@ namespace TranslationHelper.Functions
                     //LogToFile("111=" + 111, true);
                     //проверка пустого значения поля для перевода
                     //if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
-                    if ((ProjectData.FilesContent.Tables[tableIndex].Rows[CurrentRowIndex][OrigColIndex + 1] + string.Empty).Length == 0)
+                    if ((ProjectData.CurrentProject.FilesContent.Tables[tableIndex].Rows[CurrentRowIndex][OrigColIndex + 1] + string.Empty).Length == 0)
                     {
-                        var row = ProjectData.FilesContent.Tables[tableIndex].Rows[CurrentRowIndex];
+                        var row = ProjectData.CurrentProject.FilesContent.Tables[tableIndex].Rows[CurrentRowIndex];
                         string InputValue = row[OrigColIndex] + string.Empty;
                         //LogToFile("1 inputvalue=" + inputvalue, true);
                         //проверка наличия заданного процента romaji или other в оригинале
@@ -362,13 +362,13 @@ namespace TranslationHelper.Functions
                     int TableMaxIndex;
                     int RowsCountInTable;
                     int CurrentRowIndex;
-                    TableMaxIndex = (Method == "a") ? ProjectData.FilesContent.Tables.Count : TableMaxIndex = TableIndex + 1;
+                    TableMaxIndex = (Method == "a") ? ProjectData.CurrentProject.FilesContent.Tables.Count : TableMaxIndex = TableIndex + 1;
 
                     //int tcount = ProjectData.THFilesElementsDataset.Tables.Count;
                     //for (int t = 0; t < tcount; t++)
                     for (int t = TableIndex; t < TableMaxIndex; t++)
                     {
-                        var Table = ProjectData.FilesContent.Tables[t];
+                        var Table = ProjectData.CurrentProject.FilesContent.Tables[t];
 
                         if (FunctionsTable.IsTableColumnCellsAll(Table))
                         {
@@ -439,7 +439,7 @@ namespace TranslationHelper.Functions
 
                                 if (InputOriginalLineFromCache.Length > 0)
                                 {
-                                    ProjectData.FilesContent.Tables[t].Rows[CurrentRowIndex][OrigColIndex + 1] = InputOriginalLineFromCache;
+                                    ProjectData.CurrentProject.FilesContent.Tables[t].Rows[CurrentRowIndex][OrigColIndex + 1] = InputOriginalLineFromCache;
                                     continue;
                                 }
                                 else
@@ -736,7 +736,7 @@ namespace TranslationHelper.Functions
             if (ResultValue.Length > 0 && PreviousTableIndex > -1 && PreviousRowIndex > -1)
             {
                 string s; //иногда значения без перевода и равны оригиналу, но отдельным переводом выбранной ячейки получается нормально
-                var Row = ProjectData.FilesContent.Tables[PreviousTableIndex].Rows[PreviousRowIndex];
+                var Row = ProjectData.CurrentProject.FilesContent.Tables[PreviousTableIndex].Rows[PreviousRowIndex];
                 var Cell = Row[0];
                 if (Equals(Cell, ResultValue))
                 {

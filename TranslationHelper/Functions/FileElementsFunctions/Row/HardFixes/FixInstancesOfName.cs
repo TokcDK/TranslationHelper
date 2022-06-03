@@ -13,7 +13,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             if (needInit)
             {
                 needInit = false;
-                _cache = new Dictionary<string, string>(ProjectData.FilesContent.GetRowsCount());
+                _cache = new Dictionary<string, string>(ProjectData.CurrentProject.FilesContent.GetRowsCount());
             }
         }
 

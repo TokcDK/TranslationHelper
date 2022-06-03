@@ -21,9 +21,6 @@ namespace TranslationHelper.Data
 
             FilesListControl = new FilesListControlListBox(); // set using files list control
 
-            FilesContent = new DataSet();
-            FilesContentInfo = new DataSet();
-            FilesContentAll = new DataSet();
             OriginalsTableRowCoordinates = new ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>>();
             //THFilesElementsDictionary = new Dictionary<string, string>();
             //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
@@ -91,21 +88,6 @@ namespace TranslationHelper.Data
             get { return string.IsNullOrWhiteSpace(filepath) ? SelectedFilePath : filepath; }
             set { filepath = value; }
         }
-
-        /// <summary>
-        /// main work table data
-        /// </summary>
-        internal static DataSet FilesContent { get; set; }
-
-        /// <summary>
-        /// main work table infos
-        /// </summary>
-        internal static DataSet FilesContentInfo { get; set; }
-
-        /// <summary>
-        /// main work table data for all (wip)
-        /// </summary>
-        internal static DataSet FilesContentAll { get; set; }
 
         /// <summary>
         /// main table/row index coordinates data for same translation for identical and for write functions.
@@ -182,45 +164,5 @@ namespace TranslationHelper.Data
         /// Index of main Translation column
         /// </summary>
         internal static int TranslationColumnIndex = 1;
-
-        static readonly object TableDataAddLocker = new object();
-        /// <summary>
-        /// add new <paramref name="tableData"/> in tables list
-        /// </summary>
-        /// <param name="tableData"></param>
-        internal static void AddFileData(DataTable tableData)
-        {
-            lock (TableDataAddLocker)
-            {
-                if (!FilesContent.Tables.Contains(tableData.TableName))
-                {
-                    FilesContent.Tables.Add(tableData);
-                }
-                else
-                {
-
-                }
-            }
-        }
-
-        static readonly object TableInfoAddLocker = new object();
-        /// <summary>
-        /// add new <paramref name="tableInfo"/> in tables list
-        /// </summary>
-        /// <param name="tableInfo"></param>
-        internal static void AddFileInfo(DataTable tableInfo)
-        {
-            lock (TableInfoAddLocker)
-            {
-                if (!FilesContentInfo.Tables.Contains(tableInfo.TableName))
-                {
-                    FilesContentInfo.Tables.Add(tableInfo);
-                }
-                else
-                {
-
-                }
-            }
-        }
     }
 }

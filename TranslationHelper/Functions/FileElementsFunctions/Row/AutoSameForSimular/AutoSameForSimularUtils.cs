@@ -35,7 +35,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
         public static void Set(this DataRow dataRow, bool inputForceSetValue = false)
         {
             var table = dataRow.Table;
-            Set(inputTableIndex: ProjectData.FilesContent.Tables.IndexOf(table), inputRowIndex: table.Rows.IndexOf(dataRow), inputForceSetValue: inputForceSetValue);
+            Set(inputTableIndex: ProjectData.CurrentProject.FilesContent.Tables.IndexOf(table), inputRowIndex: table.Rows.IndexOf(dataRow), inputForceSetValue: inputForceSetValue);
         }
 
         static bool _autoSetSameTranslationForSimularIsBusy;
@@ -68,10 +68,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
             if (inputTableIndex == -1
                 || inputRowIndex == -1
                 //|| inputOriginalColumnIndex == -1
-                || ProjectData.FilesContent == null
-                || inputTableIndex > ProjectData.FilesContent.Tables.Count - 1
-                || inputRowIndex > ProjectData.FilesContent.Tables[inputTableIndex].Rows.Count - 1
-                || (ProjectData.FilesContent.Tables[inputTableIndex].Rows[inputRowIndex][ProjectData.TranslationColumnIndex] + string.Empty).Length == 0)
+                || ProjectData.CurrentProject.FilesContent == null
+                || inputTableIndex > ProjectData.CurrentProject.FilesContent.Tables.Count - 1
+                || inputRowIndex > ProjectData.CurrentProject.FilesContent.Tables[inputTableIndex].Rows.Count - 1
+                || (ProjectData.CurrentProject.FilesContent.Tables[inputTableIndex].Rows[inputRowIndex][ProjectData.TranslationColumnIndex] + string.Empty).Length == 0)
             {
                 return;
             }
@@ -109,7 +109,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     _inputRowIndexFromStack = int.Parse(_tableRowPair.Split('|')[1], CultureInfo.InvariantCulture);
                     _forceSetValueFromStack = _autoSetSameTranslationForSimularDataStack[_tableRowPair];
 
-                    var inputTable = ProjectData.FilesContent.Tables[_inputTableIndexFromStack];
+                    var inputTable = ProjectData.CurrentProject.FilesContent.Tables[_inputTableIndexFromStack];
                     var inputTableRow = inputTable.Rows[_inputRowIndexFromStack];
                     var inputTableRowOriginalCell = inputTableRow[ProjectData.OriginalColumnIndex];
                     int translationColumnIndex = ProjectData.TranslationColumnIndex;
@@ -154,7 +154,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                         var inputTableName = inputTable.TableName;
                         foreach (var storedTableName in ProjectData.OriginalsTableRowCoordinates[inputOriginalValue])
                         {
-                            var table = ProjectData.FilesContent.Tables[storedTableName.Key];
+                            var table = ProjectData.CurrentProject.FilesContent.Tables[storedTableName.Key];
                             if (table == null) continue;
 
                             foreach (var storedRowIndex in storedTableName.Value)
@@ -185,13 +185,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     int inputOriginalMatchesCount = inputOriginalMatches.Count;
 
                     // Standart rows scan
-                    int tablesCount = ProjectData.FilesContent.Tables.Count;
+                    int tablesCount = ProjectData.CurrentProject.FilesContent.Tables.Count;
                     for (int targetTableIndex = 0; targetTableIndex < tablesCount; targetTableIndex++) //количество файлов
                     {
                         //если приложение закрылось
                         if (Properties.Settings.Default.IsTranslationHelperWasClosed) break;
 
-                        var targetTable = ProjectData.FilesContent.Tables[targetTableIndex];
+                        var targetTable = ProjectData.CurrentProject.FilesContent.Tables[targetTableIndex];
                         var rowsCount = targetTable.Rows.Count;
 
                         var useSkipped = weUseDuplicates && ProjectData.OriginalsTableRowCoordinates[inputOriginalValue].ContainsKey(targetTable.TableName);
@@ -309,7 +309,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
                             }
                             //только если ячейка пустая
-                            targetTranslationCell = ProjectData.FilesContent.Tables[targetTableIndex].Rows[targetRowIndex][translationColumnIndex];
+                            targetTranslationCell = ProjectData.CurrentProject.FilesContent.Tables[targetTableIndex].Rows[targetRowIndex][translationColumnIndex];
                             if (!failed && (_forceSetValueFromStack || targetTranslationCell == null || string.IsNullOrEmpty(targetTranslationCell as string)))
                             {
                                 //ProjectData.THFilesElementsDataset.Tables[Tindx].Rows[Rindx][TranslationColumnIndex] = InputTransCellValue;

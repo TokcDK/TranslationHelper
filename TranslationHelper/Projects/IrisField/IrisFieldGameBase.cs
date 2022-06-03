@@ -55,7 +55,7 @@ namespace TranslationHelper.Projects.IrisField
         private bool OpenFiles()
         {
             OpenFilesSerial();
-            return ProjectData.FilesContent.Tables.Count > 0;
+            return ProjectData.CurrentProject.FilesContent.Tables.Count > 0;
         }
 
         private bool OpenFilesSerial()

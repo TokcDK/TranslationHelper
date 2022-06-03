@@ -27,6 +27,62 @@ namespace TranslationHelper.Projects
         }
 
         /// <summary>
+        /// main work table data
+        /// </summary>
+        public DataSet FilesContent { get; set; } = new DataSet();
+
+        /// <summary>
+        /// main work table infos
+        /// </summary>
+        public DataSet FilesContentInfo { get; set; } = new DataSet();
+
+        /// <summary>
+        /// main work table data for all (wip)
+        /// </summary>
+        public DataSet FilesContentAll { get; set; }
+
+        readonly object TableDataAddLocker = new object();
+        /// <summary>
+        /// add new <paramref name="tableData"/> in tables list
+        /// </summary>
+        /// <param name="tableData"></param>
+        internal void AddFileData(DataTable tableData)
+        {
+            lock (TableDataAddLocker)
+            {
+                if (!FilesContent.Tables.Contains(tableData.TableName))
+                {
+                    FilesContent.Tables.Add(tableData);
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        readonly object TableInfoAddLocker = new object();
+        /// <summary>
+        /// add new <paramref name="tableInfo"/> in tables list
+        /// </summary>
+        /// <param name="tableInfo"></param>
+        internal void AddFileInfo(DataTable tableInfo)
+        {
+            lock (TableInfoAddLocker)
+            {
+                if (!FilesContentInfo.Tables.Contains(tableInfo.TableName))
+                {
+                    FilesContentInfo.Tables.Add(tableInfo);
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+
+        /// <summary>
         /// Set on project open and will be used for all project's session.
         /// Even if value of original option was changed in program Settings after project was opened will be used this old value for the project.
         /// </summary>
@@ -208,7 +264,7 @@ namespace TranslationHelper.Projects
             exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
 
             var ret = false;
-            var existsTables = ProjectData.FilesContent.Tables;
+            var existsTables = ProjectData.CurrentProject.FilesContent.Tables;
             var filesList = Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
             Parallel.ForEach(filesList, file =>
             {
