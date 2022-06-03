@@ -581,15 +581,19 @@ namespace TranslationHelper
         {
             try
             {
-                if (THFileElementsDataGridView.CurrentCell == null)
-                {
-                    return;
-                }
+                if (THFileElementsDataGridView.CurrentCell == null) return;
 
                 var tableIndex = Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
+                if (tableIndex == -1) return;
+
                 var columnIndex = Properties.Settings.Default.DGVSelectedColumnIndex = THFileElementsDataGridView.CurrentCell.ColumnIndex;
+                if (columnIndex == -1) return;
+
                 var rowIndex = Properties.Settings.Default.DGVSelectedRowIndex = THFileElementsDataGridView.CurrentCell.RowIndex;
+                if (rowIndex == -1) return;
+
                 var realrowIndex = Properties.Settings.Default.DGVSelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(tableIndex, rowIndex);
+                if (realrowIndex == -1) return;
 
                 if (THFileElementsDataGridView.DataSource == null || rowIndex == -1 || tableIndex == -1)
                 {
@@ -691,16 +695,11 @@ namespace TranslationHelper
         //https://stackoverflow.com/a/31150444
         private void FormatTextBox()
         {
-            if (THTargetRichTextBox == null)
-            {
-                return;
-            }
+            if (THTargetRichTextBox == null) return;
+
             int tl = 0;
             _ = this.Invoke((Action)(() => tl = THTargetRichTextBox.Text.Length));
-            if (tl == 0)
-            {
-                return;
-            }
+            if (tl == 0) return;
 
 
             // Loop over each line
@@ -713,21 +712,20 @@ namespace TranslationHelper
                 _ = this.Invoke((Action)(() => currentLine = THTargetRichTextBox.Lines[i]));
 
                 // Ignore the non-assembly lines
-                if (currentLine.Length > Properties.Settings.Default.THOptionLineCharLimit)
-                {
-                    // Start position
-                    int start = Properties.Settings.Default.THOptionLineCharLimit;
+                if (currentLine.Length <= Properties.Settings.Default.THOptionLineCharLimit) continue;
 
-                    // Length
-                    int length = currentLine.Length - start;
+                // Start position
+                int start = Properties.Settings.Default.THOptionLineCharLimit;
 
-                    // Make the selection
-                    THTargetRichTextBox.SelectionStart = start;
-                    THTargetRichTextBox.SelectionLength = length;
+                // Length
+                int length = currentLine.Length - start;
 
-                    // Change the colour
-                    THTargetRichTextBox.SelectionColor = Color.DarkRed;
-                }
+                // Make the selection
+                THTargetRichTextBox.SelectionStart = start;
+                THTargetRichTextBox.SelectionLength = length;
+
+                // Change the colour
+                THTargetRichTextBox.SelectionColor = Color.DarkRed;
             }
         }
 
