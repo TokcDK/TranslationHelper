@@ -589,7 +589,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             { 353, "Game Over" },
             { 354, "Return to Title Screen" },
             { 355, "Script" },
-            { 356, "Plugin" },
+            { 356, "Plugin command" },
+            { 357, "Plugin command" },
             { 401, "Show Text" },
             { 402, "When [**] Choice" },
             { 403, "When Cancel" },
@@ -603,6 +604,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             { 603, "If Lose" },
             { 604, "End Battle Result" },
             { 655, "Script" },
+            { 657, "Plugin command" },
         };
 
         /// <summary>
@@ -627,6 +629,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             { 250, "Play SE" }, // file name
             { 251, "Stop SE" }, // file name
             { 261, "Play Movie" }, // file name
+            { 357, "Plugin command" }, // file name
+            { 657, "Plugin command" }, // file name
             //{ 108, "Comment" }, // not to skip in some games
             //{ 408, "Comment" }, // not to skip in some games
         };
