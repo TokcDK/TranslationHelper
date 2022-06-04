@@ -41,6 +41,15 @@ namespace TranslationHelper.Projects
         /// </summary>
         public DataSet FilesContentAll { get; set; }
 
+        /// <summary>
+        /// main table/row index coordinates data for same translation for identical and for write functions.
+        /// Format:
+        ///     original value:
+        ///         list of table names:
+        ///             list of row numbers:
+        /// </summary>
+        internal ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>> OriginalsTableRowCoordinates { get; set; } = new ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>>();
+
         readonly object TableDataAddLocker = new object();
         /// <summary>
         /// add new <paramref name="tableData"/> in tables list

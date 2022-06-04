@@ -142,7 +142,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     bool weUseDuplicates = false;
                     try
                     {
-                        weUseDuplicates = !ProjectData.CurrentProject.DontLoadDuplicates && ProjectData.OriginalsTableRowCoordinates != null /*&& ProjectData.OriginalsTableRowCoordinates[inputOriginalValue].Values.Count > 1*/;
+                        weUseDuplicates = !ProjectData.CurrentProject.DontLoadDuplicates && ProjectData.CurrentProject.OriginalsTableRowCoordinates != null /*&& ProjectData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue].Values.Count > 1*/;
                     }
                     catch
                     {
@@ -152,7 +152,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     if (weUseDuplicates)
                     {
                         var inputTableName = inputTable.TableName;
-                        foreach (var storedTableName in ProjectData.OriginalsTableRowCoordinates[inputOriginalValue])
+                        foreach (var storedTableName in ProjectData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue])
                         {
                             var table = ProjectData.CurrentProject.FilesContent.Tables[storedTableName.Key];
                             if (table == null) continue;
@@ -194,7 +194,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                         var targetTable = ProjectData.CurrentProject.FilesContent.Tables[targetTableIndex];
                         var rowsCount = targetTable.Rows.Count;
 
-                        var useSkipped = weUseDuplicates && ProjectData.OriginalsTableRowCoordinates[inputOriginalValue].ContainsKey(targetTable.TableName);
+                        var useSkipped = weUseDuplicates && ProjectData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue].ContainsKey(targetTable.TableName);
 
                         //LogToFile("Table "+Tindx+" proceed");
                         for (int targetRowIndex = 0; targetRowIndex < rowsCount; targetRowIndex++) //количество строк в каждом файле

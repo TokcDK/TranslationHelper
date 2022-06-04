@@ -21,7 +21,7 @@ namespace TranslationHelper.Data
 
             FilesListControl = new FilesListControlListBox(); // set using files list control
 
-            OriginalsTableRowCoordinates = new ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>>();
+            //OriginalsTableRowCoordinates = new ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>>();
             //THFilesElementsDictionary = new Dictionary<string, string>();
             //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
 
@@ -89,15 +89,6 @@ namespace TranslationHelper.Data
             set { filepath = value; }
         }
 
-        /// <summary>
-        /// main table/row index coordinates data for same translation for identical and for write functions.
-        /// Format:
-        ///     original value:
-        ///         list of table names:
-        ///             list of row numbers:
-        /// </summary>
-        internal static ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>> OriginalsTableRowCoordinates { get; set; }
-                
         /// <summary>
         /// target textbox control value
         /// </summary>
