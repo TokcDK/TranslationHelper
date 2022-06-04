@@ -27,6 +27,15 @@ namespace TranslationHelper.Projects
         }
 
         /// <summary>
+        /// Index of Original column
+        /// </summary>
+        internal int OriginalColumnIndex = 0;
+        /// <summary>
+        /// Index of main Translation column
+        /// </summary>
+        internal int TranslationColumnIndex = 1;
+
+        /// <summary>
         /// main work table data
         /// </summary>
         public DataSet FilesContent { get; set; } = new DataSet();

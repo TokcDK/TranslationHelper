@@ -1348,7 +1348,7 @@ namespace TranslationHelper
             //    IsTranslating = true;
 
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
-            //    int cind = ProjectData.OriginalColumnIndex;//-поле untrans
+            //    int cind = ProjectData.CurrentProject.OriginalColumnIndex;//-поле untrans
             //    int tableindex = THFilesList.GetSelectedIndex();
             //    int[] selindexes = FunctionsTable.GetDGVRowIndexsesInDataSetTable();
 

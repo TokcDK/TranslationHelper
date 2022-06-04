@@ -71,7 +71,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                 || ProjectData.CurrentProject.FilesContent == null
                 || inputTableIndex > ProjectData.CurrentProject.FilesContent.Tables.Count - 1
                 || inputRowIndex > ProjectData.CurrentProject.FilesContent.Tables[inputTableIndex].Rows.Count - 1
-                || (ProjectData.CurrentProject.FilesContent.Tables[inputTableIndex].Rows[inputRowIndex][ProjectData.TranslationColumnIndex] + string.Empty).Length == 0)
+                || (ProjectData.CurrentProject.FilesContent.Tables[inputTableIndex].Rows[inputRowIndex][ProjectData.CurrentProject.TranslationColumnIndex] + string.Empty).Length == 0)
             {
                 return;
             }
@@ -111,8 +111,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
                     var inputTable = ProjectData.CurrentProject.FilesContent.Tables[_inputTableIndexFromStack];
                     var inputTableRow = inputTable.Rows[_inputRowIndexFromStack];
-                    var inputTableRowOriginalCell = inputTableRow[ProjectData.OriginalColumnIndex];
-                    int translationColumnIndex = ProjectData.TranslationColumnIndex;
+                    var inputTableRowOriginalCell = inputTableRow[ProjectData.CurrentProject.OriginalColumnIndex];
+                    int translationColumnIndex = ProjectData.CurrentProject.TranslationColumnIndex;
                     var inputTableRowTranslationCell = inputTableRow[translationColumnIndex];
 
                     if (inputTableRowTranslationCell == null || string.IsNullOrEmpty(inputTableRowTranslationCell as string))
@@ -203,7 +203,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                             if (Properties.Settings.Default.IsTranslationHelperWasClosed) break;
 
                             var targetRow = targetTable.Rows[targetRowIndex];
-                            var targetOriginalCell = targetRow[ProjectData.OriginalColumnIndex];
+                            var targetOriginalCell = targetRow[ProjectData.CurrentProject.OriginalColumnIndex];
                             var targetTranslationCell = targetRow[translationColumnIndex];
                             string targetOriginallCellString = targetOriginalCell as string;
                             string targetTranslationCellString = targetTranslationCell + string.Empty;
@@ -377,7 +377,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
             if (parsedWithMultyExtract)
             {
-                targetRow[ProjectData.TranslationColumnIndex] = targetTranslationCellString;
+                targetRow[ProjectData.CurrentProject.TranslationColumnIndex] = targetTranslationCellString;
                 return true; ;
             }
 

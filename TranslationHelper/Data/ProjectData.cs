@@ -102,7 +102,7 @@ namespace TranslationHelper.Data
         /// <summary>
         /// Buffer temp value. String type.
         /// </summary>
-        internal static string BufferValueString;
+        internal static string BufferValueString; // used in settings
 
         /// <summary>
         /// true when settings is loading
@@ -146,14 +146,5 @@ namespace TranslationHelper.Data
         /// Files list
         /// </summary>
         internal static ListBox THFilesList { get => Main.THFilesList; }
-
-        /// <summary>
-        /// Index of Original column
-        /// </summary>
-        internal static int OriginalColumnIndex = 0;
-        /// <summary>
-        /// Index of main Translation column
-        /// </summary>
-        internal static int TranslationColumnIndex = 1;
     }
 }
