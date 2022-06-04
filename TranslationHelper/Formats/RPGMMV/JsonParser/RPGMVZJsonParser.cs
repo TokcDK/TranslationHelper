@@ -613,6 +613,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         static readonly Dictionary<int, string> ExcludedCodes = new Dictionary<int, string>(19)
         {
             { 41, "Image name?" }, // file name
+            { 44, "" }, // file name
+            { 45, "" }, // file name
+            { 102, "" }, // file name
+            { 118, "" }, // file name
+            { 122, "" }, // file name
+            { 123, "" }, // file name
+            { 132, "" }, // file name
             { 231, "Show Picture" }, // file name
             { 232, "Move Picture" }, // file name
             { 233, "Rotate Picture" }, // file name
@@ -629,7 +636,15 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             { 250, "Play SE" }, // file name
             { 251, "Stop SE" }, // file name
             { 261, "Play Movie" }, // file name
+            { 283, "" }, // file name
+            { 320, "" }, // file name
+            { 322, "" }, // file name
+            { 323, "" }, // file name
+            { 355, "" }, // file name
+            { 356, "" }, // file name
             { 357, "Plugin command" }, // file name
+            { 302, "" }, // file name
+            { 405, "" }, // file name
             { 657, "Plugin command" }, // file name
             //{ 108, "Comment" }, // not to skip in some games
             //{ 408, "Comment" }, // not to skip in some games
