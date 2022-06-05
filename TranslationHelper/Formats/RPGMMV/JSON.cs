@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.RPGMMV
     {
         public JSON()
         {
-            JsonParser = new RPGMVZJsonParser();
+            JsonParser = new RPGMVZJsonParser(this);
         }
 
         internal override string Ext()

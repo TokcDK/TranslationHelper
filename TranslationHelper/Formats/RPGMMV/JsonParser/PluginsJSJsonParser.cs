@@ -10,7 +10,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
     {
         private bool PluginsJsNameFound;
 
-        public PluginsJSJsonParser() { }
+        public PluginsJSJsonParser(FormatBase format) : base(format)
+        {
+        }
 
         protected override void Init() { }
 

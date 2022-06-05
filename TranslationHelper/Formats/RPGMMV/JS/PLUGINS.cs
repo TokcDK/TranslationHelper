@@ -10,7 +10,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
     {
         public PLUGINS()
         {
-            JsonParser = new PluginsJSJsonParser();
+            JsonParser = new PluginsJSJsonParser(this);
         }
 
         internal override int ExtIdentifier()
@@ -46,7 +46,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                         IsJsonNotLast = false;
                     }
                     JsonParser.JsonName = TableName();
-                    JsonParser.ParseString(ParseData.Line);
+                    JsonParser.ParseString(ParseData.Line, this);
 
                     //PluginsJsNameFound = false;
 
