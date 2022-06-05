@@ -124,16 +124,16 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 var js = (IUseJSLocationInfo)Activator.CreateInstance(jsType); // create instance of class using JSLocationInfo
 
-                ProjectData.FilePath = Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "js", js.JSSubfolder, js.JSName);
+                var filePath = Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "js", js.JSSubfolder, js.JSName);
 
-                if (!File.Exists(ProjectData.FilePath)) continue;
+                if (!File.Exists(filePath)) continue;
 
                 try
                 {
                     hardcodedJS.Add(js.JSName);//add js to exclude from parsing of other js
 
                     var format = (FormatBase)Activator.CreateInstance(jsType); // create format instance for open or save
-                    format.FilePath = ProjectData.FilePath;
+                    format.FilePath = filePath;
 
                     ProjectData.Main.ProgressInfo(true, ParseFileMessage + js.JSName);
 
@@ -163,13 +163,12 @@ namespace TranslationHelper.Projects.RPGMMV
                 if (hardcodedJS.Contains(jsName) || skipJSList.Contains(jsName)) continue;
 
                 ProjectData.Main.ProgressInfo(true, ParseFileMessage + jsName);
-                ProjectData.FilePath = jsFileInfo;
 
-                if (!File.Exists(ProjectData.FilePath)) continue;
+                if (!File.Exists(jsFileInfo)) continue;
 
                 var format = new ZZZOtherJS
                 {
-                    FilePath = ProjectData.FilePath
+                    FilePath = jsFileInfo
                 };
 
                 try
@@ -195,13 +194,13 @@ namespace TranslationHelper.Projects.RPGMMV
         private bool ParseFontsCS()
         {
             ProjectData.Main.ProgressInfo(true, ParseFileMessage + "gamefont.css");
-            ProjectData.FilePath = Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "fonts", "gamefont.css");
+            var filePath = Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "fonts", "gamefont.css");
 
-            if (!File.Exists(ProjectData.FilePath)) return false;
+            if (!File.Exists(filePath)) return false;
 
             var format = new GAMEFONTCSS
             {
-                FilePath = ProjectData.FilePath
+                FilePath = filePath
             };
 
             try
@@ -253,14 +252,14 @@ namespace TranslationHelper.Projects.RPGMMV
             }
         }
 
-        private bool ParseRPGMakerMVjson(string FilePath)
+        private bool ParseRPGMakerMVjson(string filePath)
         {
             try
             {
                 //Вроде прочитало в DGV
                 //источник: https://stackoverflow.com/questions/23763446/how-to-display-the-json-data-in-datagridview-in-c-sharp-windows-application-from
 
-                string Jsonname = Path.GetFileNameWithoutExtension(FilePath); // get json file name
+                string Jsonname = Path.GetFileNameWithoutExtension(filePath); // get json file name
 
                 ProjectData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
 
@@ -268,12 +267,11 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 bool ret = true;
 
-                ProjectData.FilePath = FilePath;
                 //ret = ReadJson(Jsonname, sPath);
 
                 var format = new JSON
                 {
-                    FilePath = ProjectData.FilePath
+                    FilePath = filePath
                 };
 
                 ret = ProjectData.SaveFileMode ? (format.TableName().HasAnyTranslated() && format.Save()) : format.Open();

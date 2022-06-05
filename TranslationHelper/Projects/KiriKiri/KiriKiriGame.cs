@@ -92,7 +92,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
                     bool ret = false;
 
-                    ProjectData.FilePath = kiriKiriFiles[i];
+                    //ProjectData.FilePath = kiriKiriFiles[i];
 
                     //_ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
                     //_ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add(THSettings.OriginalColumnName());

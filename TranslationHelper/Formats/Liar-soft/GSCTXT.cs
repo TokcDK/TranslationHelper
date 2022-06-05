@@ -57,7 +57,7 @@ namespace TranslationHelper.Formats.Liar_soft
         {
             if (ProjectData.OpenFileMode)
             {
-                return CheckTablesContent(ParseData.TableName);
+                return CheckTablesContent(TableName());
             }
             else
             {

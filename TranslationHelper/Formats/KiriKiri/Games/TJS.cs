@@ -17,7 +17,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         protected override void ReadLineMod()
         {
-            ProjectData.CurrentProject.ReadLineMod(ref ParseData.Line);
+            //ProjectData.CurrentProject.ReadLineMod(ref ParseData.Line);
         }
 
         protected override KeywordActionAfter ParseStringFileLine()

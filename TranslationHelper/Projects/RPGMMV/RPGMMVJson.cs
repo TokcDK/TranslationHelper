@@ -67,11 +67,11 @@ namespace TranslationHelper.Projects.RPGMMV
             return false;
         }
 
-        private bool ParseRPGMakerMVjson(string FilePath, bool Write = false)
+        private bool ParseRPGMakerMVjson(string filePath, bool Write = false)
         {
             try
             {
-                string Jsonname = Path.GetFileNameWithoutExtension(FilePath); // get json file name
+                string Jsonname = Path.GetFileNameWithoutExtension(filePath); // get json file name
 
                 ProjectData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
 
@@ -79,11 +79,10 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 bool ret = true;
 
-                ProjectData.FilePath = FilePath;
                 //ret = ReadJson(Jsonname, sPath);
                 var format = new JSON
                 {
-                    FilePath = ProjectData.FilePath
+                    FilePath = filePath
                 };
 
                 ret = Write ? format.Save() : format.Open();

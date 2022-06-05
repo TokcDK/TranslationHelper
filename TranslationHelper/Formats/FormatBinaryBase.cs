@@ -131,18 +131,12 @@ namespace TranslationHelper.Formats
         {
             public ParseFileData()
             {
-                TableName = ProjectData.CurrentProject?.CurrentFormat != null ? ProjectData.CurrentProject.CurrentFormat.TableName() : Path.GetFileName(ProjectData.FilePath);
-
                 if (ProjectData.SaveFileMode)
                 {
                     NewBinaryForWrite = new List<byte>();
                 }
             }
 
-            /// <summary>
-            /// tablename/filename
-            /// </summary>
-            internal string TableName;
             /// <summary>
             /// result of parsing. Must be set to true if any value was translated.
             /// </summary>

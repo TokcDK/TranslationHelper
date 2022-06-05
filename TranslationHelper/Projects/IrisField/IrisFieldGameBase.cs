@@ -63,7 +63,6 @@ namespace TranslationHelper.Projects.IrisField
             var ret = false;
 
             ProjectData.Main.ProgressInfo(true, Path.GetFileName(ProjectData.SelectedFilePath));
-            ProjectData.FilePath = ProjectData.SelectedFilePath;
             var openPath = new DirectoryInfo(Path.GetDirectoryName(ProjectData.SelectedFilePath));
             if (OpenSaveFilesBase(openPath, GameExeFormatType, GameExeName + ".exe", searchOption: SearchOption.TopDirectoryOnly))
             {

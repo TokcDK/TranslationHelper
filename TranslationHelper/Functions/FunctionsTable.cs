@@ -176,12 +176,12 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="projectData"></param>
         /// <returns></returns>
-        public static bool SetTableAndColumns(bool add = true)
+        public static bool SetTableAndColumns(string filePath, bool add = true)
         {
-            if (ProjectData.FilePath.Length == 0)
+            if (filePath.Length == 0)
                 return false;
 
-            string fileName = Path.GetFileName(ProjectData.FilePath);
+            string fileName = Path.GetFileName(filePath);
 
             if (add && !ProjectData.CurrentProject.FilesContent.Tables.Contains(fileName))
             {

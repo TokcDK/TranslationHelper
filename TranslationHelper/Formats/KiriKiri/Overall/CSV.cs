@@ -21,7 +21,7 @@ namespace TranslationHelper.Formats.KiriKiri
 
         public bool KiriKiriCSVOpen()
         {
-            FunctionsTable.SetTableAndColumns();
+            FunctionsTable.SetTableAndColumns(FilePath);
 
             using (StreamReader file = new StreamReader(GetOpenFilePath(), Encoding.GetEncoding(932)))
             {
@@ -147,7 +147,7 @@ namespace TranslationHelper.Formats.KiriKiri
                 }
             }
 
-            return FunctionsTable.SetTableAndColumns(false);
+            return FunctionsTable.SetTableAndColumns(FilePath, false);
         }
 
         internal override bool Save()

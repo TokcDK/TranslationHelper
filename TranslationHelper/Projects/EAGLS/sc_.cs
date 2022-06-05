@@ -25,11 +25,9 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override bool Open()
         {
-            ProjectData.FilePath = ProjectData.SelectedFilePath;
-
             var format = new SC_TXT
             {
-                FilePath = ProjectData.FilePath
+                FilePath = ProjectData.SelectedFilePath
             };
 
             return format.Open();

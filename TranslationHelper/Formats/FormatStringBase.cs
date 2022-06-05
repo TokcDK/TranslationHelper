@@ -316,18 +316,12 @@ namespace TranslationHelper.Formats
             {
                 this.format = format;
 
-                TableName = ProjectData.CurrentProject?.CurrentFormat != null ? ProjectData.CurrentProject.CurrentFormat.TableName() : Path.GetFileName(ProjectData.FilePath);
-
                 if (ProjectData.SaveFileMode)
                 {
                     ResultForWrite = new StringBuilder();
                 }
             }
 
-            /// <summary>
-            /// tablename/filename
-            /// </summary>
-            internal string TableName;
             /// <summary>
             /// result of parsing. Must be set to true if any value was translated.
             /// </summary>

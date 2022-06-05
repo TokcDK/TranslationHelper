@@ -26,7 +26,6 @@ namespace TranslationHelper.Data
             //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
 
             SelectedFilePath = string.Empty;
-            FilePath = string.Empty;
 
             ProjectsList = ProjectBase.GetListOfProjectTypes();
         }
@@ -72,7 +71,7 @@ namespace TranslationHelper.Data
         internal static List<Type> ProjectsList;
 
         /// <summary>
-        /// usually 'S'elected file 'Path' in file browse dialog
+        /// usually 'S'elected file 'Path' in file browse dialog when open project
         /// </summary>
         internal static string SelectedFilePath { get; set; }
 
@@ -80,14 +79,6 @@ namespace TranslationHelper.Data
         /// Online Translation Cache
         /// </summary>
         internal static FunctionsOnlineCache OnlineTranslationCache;
-
-        static string filepath;
-        //current processing file for open/save
-        internal static string FilePath
-        {
-            get { return string.IsNullOrWhiteSpace(filepath) ? SelectedFilePath : filepath; }
-            set { filepath = value; }
-        }
 
         /// <summary>
         /// target textbox control value

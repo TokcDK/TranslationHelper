@@ -29,20 +29,22 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Open()
         {
-            var format = new TJSOld
-            {
-                FilePath = ProjectData.FilePath
-            };
-            return format.Open();
+            return false;
+            //var format = new TJSOld
+            //{
+            //    FilePath = ProjectData.SelectedFilePath
+            //};
+            //return format.Open();
         }
 
         internal override bool Save()
         {
-            var format = new TJSOld
-            {
-                FilePath = ProjectData.FilePath
-            };
-            return format.Save();
+            return false;
+            //        var format = new TJSOld
+            //        {
+            //            FilePath = ProjectData.SelectedFilePath
+            //};
+            //        return format.Save();
         }
     }
 }

@@ -33,18 +33,18 @@ namespace TranslationHelper.Projects.NScript
         private bool OpenSaveNScript()
         {
             ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
-            ProjectData.FilePath = Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "nscript.dat");
+            var filePath = Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "nscript.dat");
             bool ret;
             var format = new NSCRIPT
             {
-                FilePath = ProjectData.FilePath
+                FilePath = filePath
             };
 
             if (ProjectData.OpenFileMode)
             {
-                if (!File.Exists(ProjectData.FilePath + ".orig"))//backup for manual restore
+                if (!File.Exists(filePath + ".orig"))//backup for manual restore
                 {
-                    File.Copy(ProjectData.FilePath, ProjectData.FilePath + ".orig");
+                    File.Copy(filePath, filePath + ".orig");
                 }
 
                 ret = format.Open();

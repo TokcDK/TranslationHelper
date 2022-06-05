@@ -595,7 +595,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakCreate()
         {
-            return BackupRestorePaths(new[] { ProjectData.SelectedFilePath, ProjectData.FilePath });
+            return BackupRestorePaths(new[] { ProjectData.SelectedFilePath });
         }
 
         /// <summary>
@@ -604,7 +604,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakRestore()
         {
-            return BackupRestorePaths(new[] { ProjectData.SelectedFilePath, ProjectData.FilePath }, false);
+            return BackupRestorePaths(new[] { ProjectData.SelectedFilePath }, false);
         }
 
         /// <summary>
@@ -853,14 +853,6 @@ namespace TranslationHelper.Projects
         internal virtual List<IProjectMenu> GridItemMenusList()
         {
             return new List<IProjectMenu>();
-        }
-
-        /// <summary>
-        /// project specific string file's line modification
-        /// </summary>
-        /// <param name="line"></param>
-        internal virtual void ReadLineMod(ref string line)
-        {
         }
     }
 }
