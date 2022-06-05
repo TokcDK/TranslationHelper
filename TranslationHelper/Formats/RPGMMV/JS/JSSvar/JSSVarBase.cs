@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
 
                     try
                     {
-                        JsonParser.ParseString(Svar.ToString());
+                        JsonParser.ParseString(Svar.ToString(), this);
                     }
                     catch
                     {
@@ -31,7 +31,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                     try
                     {
                         //SplitTableCellValuesAndTheirLinesToDictionary(tablename, false, false);
-                        var parseSuccess = JsonParser.ParseString(Svar.ToString());
+                        var parseSuccess = JsonParser.ParseString(Svar.ToString(), this);
 
                         if (!ParseData.Ret)
                         {

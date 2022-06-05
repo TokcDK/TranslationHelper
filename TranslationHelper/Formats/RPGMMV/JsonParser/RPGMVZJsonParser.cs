@@ -12,32 +12,40 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 {
     class RPGMVZJsonParser : JsonParserBase
     {
+        public RPGMVZJsonParser(FormatBase format) : base(format)
+        {
+        }
+
         protected override void Init()
         {
-            var codesFile = THSettings.RPGMakerMVSkipCodesFilePath();
-            if (File.Exists(codesFile))
-            {
-                using (StreamReader sr = new StreamReader(codesFile))
-                {
-                    while (!sr.EndOfStream)
-                    {
-                        var line = sr.ReadLine();
-
-                        if (line.Trim().StartsWith(";")) continue;
-
-                        var codeInfo = line.Trim().Split(',');
-                        string commment = "";
-                        if (codeInfo.Length == 2 && codeInfo[1].Length > 0) commment = codeInfo[1];
-
-                        var code = codeInfo[0];
-                        if (!int.TryParse(code, out int codeValue)) continue;
-
-                        ExcludedCodes.TryAdd(codeValue, commment);
-                    }
-                }
-            }
+            GetSkipCodes();
 
             base.Init();
+        }
+
+        private void GetSkipCodes()
+        {
+            var codesFile = THSettings.RPGMakerMVSkipCodesFilePath();
+            if (!File.Exists(codesFile)) return;
+
+            using (StreamReader sr = new StreamReader(codesFile))
+            {
+                while (!sr.EndOfStream)
+                {
+                    var line = sr.ReadLine();
+
+                    if (line.Trim().StartsWith(";")) continue;
+
+                    var codeInfo = line.Trim().Split(',');
+                    string commment = "";
+                    if (codeInfo.Length == 2 && codeInfo[1].Length > 0) commment = codeInfo[1];
+
+                    var code = codeInfo[0];
+                    if (!int.TryParse(code, out int codeValue)) continue;
+
+                    ExcludedCodes.TryAdd(codeValue, commment);
+                }
+            }
         }
 
         protected override void ParseValue(JValue jsonValue)
@@ -617,7 +625,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             { 45, "" }, // file name
             { 102, "" }, // file name
             { 118, "" }, // file name
-            { 122, "" }, // file name
+            //{ 122, "" }, // file name
             { 123, "" }, // file name
             { 132, "" }, // file name
             { 231, "Show Picture" }, // file name

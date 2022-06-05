@@ -9,19 +9,18 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 {
     abstract class JsonParserBase
     {
-        protected JsonParserBase()
+        protected JsonParserBase(FormatBase format)
         {
-            if (ProjectData.CurrentProject != null)
+            if (ProjectData.CurrentProject == null) return;
+
+            Format = format;
+
+            if (!string.IsNullOrWhiteSpace(Format.FilePath))
             {
-                Format = ProjectData.CurrentProject.CurrentFormat;
-
-                if (!string.IsNullOrWhiteSpace(Format.FilePath))
-                {
-                    JsonName = Format.UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(Format.FilePath) : Path.GetFileName(Format.FilePath);
-                }
-
-                Init();
+                JsonName = Format.UseTableNameWithoutExtension ? Path.GetFileNameWithoutExtension(Format.FilePath) : Path.GetFileName(Format.FilePath);
             }
+
+            Init();
         }
 
         /// <summary>
@@ -53,9 +52,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// Parse selected <paramref name="json"/> and then write
         /// </summary>
         /// <param name="json"></param>
-        internal bool ParseFile(FileInfo json)
+        internal bool ParseFile(FileInfo json, FormatBase format)
         {
-            Format = ProjectData.CurrentProject.CurrentFormat;
+            Format = format;
             return Load(json);
         }
 
@@ -63,9 +62,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// Parse selected <paramref name="jsonString"/>
         /// </summary>
         /// <param name="jsonString"></param>
-        internal bool ParseString(string jsonString)
+        internal bool ParseString(string jsonString, FormatBase format)
         {
-            Format = ProjectData.CurrentProject.CurrentFormat;
+            Format = format;
             JsonRoot = JToken.Parse(jsonString);
 
             try

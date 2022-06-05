@@ -8,12 +8,12 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 {
     class JSJsonParser : JsonParserBase
     {
-        //protected int rowindex = 0;
-        //private bool UseHashSet;
-
-        public JSJsonParser()
+        public JSJsonParser(FormatBase format) : base(format)
         {
         }
+
+        //protected int rowindex = 0;
+        //private bool UseHashSet;
 
         protected override void Init() { }
 

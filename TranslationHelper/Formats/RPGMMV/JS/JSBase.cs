@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
     {
         protected JSBase()
         {
-            JsonParser = new JSJsonParser();
+            JsonParser = new JSJsonParser(this);
         }
 
         internal override bool UseTableNameWithoutExtension => false;
