@@ -39,7 +39,7 @@ namespace TranslationHelper.Data
                 Properties.Settings.Default.ProjectIsOpened = false;
 
                 //Reset vars
-                AppData.Main.Text = "Translation Helper by Dev";
+                AppData.Main.Text = "Translation Helper";
                 AppData.Main.THInfoTextBox.Text = string.Empty;
                 AppData.Main.THSourceRichTextBox.Text = string.Empty;
                 AppData.Main.THTargetRichTextBox.Text = string.Empty;
