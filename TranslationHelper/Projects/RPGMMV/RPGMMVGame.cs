@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
@@ -10,15 +13,14 @@ using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesLinesDict;
-using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.ProjectMenus;
 using TranslationHelper.Projects.RPGMMV.Menus;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
-    class RPGMMVGame : ProjectBase
+    internal class RPGMMVGame : ProjectBase
     {
-        readonly List<Type> ListOfJS;
+        protected readonly List<Type> ListOfJS;
         public RPGMMVGame()
         {
             ListOfJS = JSBase.GetListOfJSTypes();
@@ -63,7 +65,6 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             return table.TableName.ToUpperInvariant().EndsWith(".JS");
         }
-
         internal override bool LineSplitProjectSpecificSkipForLine(string o, string t, int tind = -1, int rind = -1)
         {
             if (tind != -1 && rind != -1)
@@ -77,7 +78,7 @@ namespace TranslationHelper.Projects.RPGMMV
             return false;
         }
 
-        string ParseFileMessage;
+        protected string ParseFileMessage;
         /// <summary>
         /// Parsing the Project files
         /// </summary>
@@ -91,12 +92,12 @@ namespace TranslationHelper.Projects.RPGMMV
             bool isAnyFileCompleted = false;
             try
             {
-                if(ParseFontsCS()) isAnyFileCompleted = true;
+                if (ParseFontsCS()) isAnyFileCompleted = true;
 
-                FormatBase format;
+                //FormatBase format;
                 var hardcodedJS = new HashSet<string>();
                 //Proceeed js-files
-                if(ParsePlugins(hardcodedJS)) isAnyFileCompleted = true;
+                if (ParsePlugins(hardcodedJS)) isAnyFileCompleted = true;
 
                 //hardcoded exclusions
                 var skipJSList = new HashSet<string>();
@@ -108,13 +109,29 @@ namespace TranslationHelper.Projects.RPGMMV
                 if (ParseOtherQuotedJsPlugins(hardcodedJS, skipJSList)) isAnyFileCompleted = true;
 
                 //Proceed json-files
-                var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "data/")));
-                foreach (FileInfo file in mvdatadir.GetFiles("*.json")) try { if (ParseRPGMakerMVjson(file.FullName)) isAnyFileCompleted = true; } catch { }
+                ParseJsons();
             }
             catch { }
 
             ProjectData.Main.ProgressInfo(false);
-            return isAnyFileCompleted; ;
+            return isAnyFileCompleted;
+        }
+
+        protected virtual void ParseJsons()
+        {
+            var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "data/")));
+            OpenSaveFilesBase(mvdatadir, MVJsonFormats(), MVJsonFormatsMasks());
+            //foreach (FileInfo file in mvdatadir.GetFiles("*.json")) try { if (ParseRPGMakerMVjson(file.FullName)) isAnyFileCompleted = true; } catch { }
+        }
+
+        protected virtual List<Type> MVJsonFormats()
+        {
+            return new List<Type>() { typeof(JSON) };
+        }
+
+        protected virtual string[] MVJsonFormatsMasks()
+        {
+            return new[] { "*.json" };
         }
 
         private bool ParsePlugins(HashSet<string> hardcodedJS)
@@ -506,4 +523,3 @@ namespace TranslationHelper.Projects.RPGMMV
         }
     }
 }
-

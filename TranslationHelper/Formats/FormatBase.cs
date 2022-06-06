@@ -813,6 +813,8 @@ namespace TranslationHelper.Formats
         /// <returns>true if translation was set and not equal to input original</returns>
         internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null)
         {
+            if (ProjectData.OpenFileMode) return false;
+
             var isTranslated = false;
             bool letDuplicates = !ProjectData.CurrentProject.DontLoadDuplicates;
             if (letDuplicates

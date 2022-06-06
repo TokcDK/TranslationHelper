@@ -197,6 +197,15 @@
     <Compile Include="Formats\RPGMMV\JsonParser\PluginsJSJsonParser.cs" />
     <Compile Include="Formats\RPGMMV\JsonParser\JSJsonParser.cs" />
     <Compile Include="Formats\RPGMMV\JsonParser\JsonParserBase.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\CommandUserBase.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\EventCommandParseBase.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonArmors.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonCommonEvents.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonItemTypeBase.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonItems.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonMap.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonTypeBase.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonWeapons.cs" />
     <Compile Include="Formats\RPGMMV\JS\IUseJSLocationInfo.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\JSQuotedStringsBase.cs" />
     <Compile Include="Formats\RPGMMV\JS\JSQuotedStringsBase\ZZZOtherJS.cs" />
@@ -370,6 +379,7 @@
     <Compile Include="Projects\RPGMMV\Menus\OpenJsonSkipCodesList.cs" />
     <Compile Include="Projects\RPGMMV\Menus\SkipJSFileOpen.cs" />
     <Compile Include="Projects\RPGMMV\RPGMMVGame.cs" />
+    <Compile Include="Projects\RPGMMV\RPGMMVGameByType.cs" />
     <Compile Include="Projects\RPGMMV\RPGMMVJson.cs" />
     <Compile Include="Projects\RPGMMV\RPGMMVOLD.cs" />
     <Compile Include="Projects\RPGMTrans\RPGMTransPatch.cs" />
@@ -508,6 +518,10 @@
     <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\INIFileMan\INIFileMan.csproj">
       <Project>{40ac8009-cecd-44d0-b564-96e07237fd1a}</Project>
       <Name>INIFileMan</Name>
+    </ProjectReference>
+    <ProjectReference Include="K:\0GIT\[TokcDK]\LoadRPGMVJson\RPGMVJsonParser\RPGMVJsonParser.csproj">
+      <Project>{449a8a59-1ba7-4e70-8f41-95527f4d39a6}</Project>
+      <Name>RPGMVJsonParser</Name>
     </ProjectReference>
     <ProjectReference Include="K:\0GIT\[TokcDK]\wolftrans-csharp\WolfTrans.Net\WolfTrans.Net.csproj">
       <Project>{494DB09B-C872-4E19-B6D8-3D2D5C1B44F0}</Project>

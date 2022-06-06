@@ -58,6 +58,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Patch", "Patch", "{98BBA726
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WolfTrans.Net", "K:\0GIT\[TokcDK]\wolftrans-csharp\WolfTrans.Net\WolfTrans.Net.csproj", "{494DB09B-C872-4E19-B6D8-3D2D5C1B44F0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPGMVJsonParser", "K:\0GIT\[TokcDK]\LoadRPGMVJson\RPGMVJsonParser\RPGMVJsonParser.csproj", "{449A8A59-1BA7-4E70-8F41-95527F4D39A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +118,10 @@ Global
 		{494DB09B-C872-4E19-B6D8-3D2D5C1B44F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{494DB09B-C872-4E19-B6D8-3D2D5C1B44F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{494DB09B-C872-4E19-B6D8-3D2D5C1B44F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{449A8A59-1BA7-4E70-8F41-95527F4D39A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{449A8A59-1BA7-4E70-8F41-95527F4D39A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{449A8A59-1BA7-4E70-8F41-95527F4D39A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{449A8A59-1BA7-4E70-8F41-95527F4D39A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -145,6 +151,7 @@ Global
 		{E04E33D4-A1F6-4FD6-8AD3-F3AE9B9B2012} = {23F66F17-AC76-425D-A870-23960A2AF4E2}
 		{98BBA726-F879-4FFB-8417-628F05C7CBBF} = {4ECA54E8-34E2-49EA-A5A1-A655E70935E4}
 		{494DB09B-C872-4E19-B6D8-3D2D5C1B44F0} = {82EBA20C-9643-4BDE-91E1-9F800109A39C}
+		{449A8A59-1BA7-4E70-8F41-95527F4D39A6} = {82EBA20C-9643-4BDE-91E1-9F800109A39C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69618983-1A21-49E5-BCF7-5C12FF8C2E7C}
