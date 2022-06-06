@@ -21,24 +21,34 @@ namespace TranslationHelper.Projects.RPGMMV
     {
         protected override List<Type> MVJsonFormats()
         {
-            return new List<Type>() 
-            { 
-                typeof(JsonMap),
-                typeof(JsonCommonEvents),
+            return new List<Type>()
+            {
+                typeof(JsonActors),
                 typeof(JsonArmors),
+                typeof(JsonCommonEvents),
                 typeof(JsonItems),
+                typeof(JsonMap),
+                typeof(JsonSkills),
+                typeof(JsonStates),
+                typeof(JsonSystem),
+                typeof(JsonTroops),
                 typeof(JsonWeapons),
             };
         }
 
         protected override string[] MVJsonFormatsMasks()
         {
-            return new[] 
-            { 
-                "Map*.json",
-                "CommonEvents.json",
+            return new[]
+            {
+                "Actors.json",
                 "Armors.json",
+                "CommonEvents.json",
                 "Items.json",
+                "Map*.json",
+                "Skills.json",
+                "States.json",
+                "System.json",
+                "Troops.json",
                 "Weapons.json",
             };
         }

@@ -494,6 +494,8 @@ namespace TranslationHelper.Projects.RPGMMV
         }
         internal override string CleanStringForCheck(string str)
         {
+            if (str == null) return str;
+
             if (Regex.IsMatch(str, @"<Mini Label: ([^>]+)>"))
             {
                 //<Mini Label: \\c[10]バット Lv\\v[981]>
