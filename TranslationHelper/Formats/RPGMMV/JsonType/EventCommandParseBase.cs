@@ -77,9 +77,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
         /// <param name="commands"></param>
         /// <param name="message"></param>
         /// <param name="info"></param>
-        /// <param name="lasIndex"> last index of command</param>
+        /// <param name="lastIndex"> last index of command</param>
         /// <returns></returns>
-        private int ParseMessage(List<Command> commands, List<Command> message, string info, int lasIndex)
+        private int ParseMessage(List<Command> commands, List<Command> message, string info, int lastIndex)
         {
             var s = string.Join("\r\n", message.Select(m => m.Parameters[0]));
             int extraLinesCount = 0;
@@ -91,7 +91,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 {
                     if (lineIndex < message.Count)
                     {
-                        message[lineIndex].Parameters[0] = line;
+                        message[lineIndex++].Parameters[0] = line;
                     }
                     else
                     {
@@ -105,7 +105,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                         foreach (var o in message[0].Parameters) newCommand.Parameters[i++] = o;
                         newCommand.Parameters[0] = line;
 
-                        commands.Insert(lasIndex++, newCommand); // insert new line as command
+                        commands.Insert(lastIndex++, newCommand); // insert new line as command
                         extraLinesCount++; // raise count and index
                     }
                 }
