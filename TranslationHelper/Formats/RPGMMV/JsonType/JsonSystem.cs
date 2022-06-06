@@ -85,8 +85,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             if (AddRowData(ref u, $"Title1Name") && ProjectData.SaveFileMode) data.Title1Name = u;
             u = data.Title2Name;
             if (AddRowData(ref u, $"Title1Name") && ProjectData.SaveFileMode) data.Title2Name = u;
-            u = data.TitleBgm.Name;
-            if (AddRowData(ref u, $"TitleBgm.Name") && ProjectData.SaveFileMode) data.TitleBgm.Name = u;
+            //u = data.TitleBgm.Name; // bgm file name
+            //if (AddRowData(ref u, $"TitleBgm.Name") && ProjectData.SaveFileMode) data.TitleBgm.Name = u;
 
             count = data.Variables.Length;
             for (int i = 0; i < count; i++)

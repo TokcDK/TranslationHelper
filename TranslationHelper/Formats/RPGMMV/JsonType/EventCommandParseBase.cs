@@ -1,6 +1,8 @@
-﻿using RPGMVJsonParser;
+﻿using Newtonsoft.Json.Linq;
+using RPGMVJsonParser;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -32,14 +34,29 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 else
                 {
                     int extra;
-                    if (message.Any()) { extra= ParseMessage(commands, message, info, c); c += extra; commandsCount += extra; };
+                    if (message.Any()) { extra = ParseMessage(commands, message, info, c); c += extra; commandsCount += extra; };
 
                     if (ExcludedCodes.ContainsKey(command.Code)) continue;
 
                     int parametersCount = command.Parameters.Length;
                     for (int i = 0; i < parametersCount; i++)
                     {
-                        if (command.Parameters[i] is string s)
+                        var type = command.Parameters[i].GetType();
+                        if (command.Parameters[i] is JArray a)
+                        {
+                            int count = a.Count;
+                            for (int i1 = 0; i1 < count; i1++)
+                            {
+                                if (a[i1] is JValue v) { } else continue;
+                                if (v.Value is string s) { } else continue;
+
+                                if (AddRowData(ref s, info + $"\r\nCommand code: {command.Code}{RPGMVUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}") && ProjectData.SaveFileMode)
+                                {
+                                    v.Value = s;
+                                }
+                            }
+                        }
+                        else if (command.Parameters[i] is string s)
                         {
                             if (AddRowData(ref s, info + $"\r\nCommand code: {command.Code}{RPGMVUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}") && ProjectData.SaveFileMode)
                             {
