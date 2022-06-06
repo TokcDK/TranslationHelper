@@ -1,24 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Text.RegularExpressions;
-using TranslationHelper.Data;
-using TranslationHelper.Extensions;
-using TranslationHelper.Formats;
-using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Formats.RPGMMV.JsonType;
-using TranslationHelper.Functions;
-using TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesLinesDict;
-using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.ProjectMenus;
-using TranslationHelper.Projects.RPGMMV.Menus;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
     class RPGMMVGameByType : RPGMMVGame
     {
+        protected override bool IsTypeExcluded(Type jsType)
+        {
+            return jsType == typeof(PLUGINS);// use by type version
+        }
+
         protected override List<Type> MVJsonFormats()
         {
             return new List<Type>()

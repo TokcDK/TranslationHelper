@@ -139,6 +139,8 @@ namespace TranslationHelper.Projects.RPGMMV
             bool isAnyFileCompleted = false;
             foreach (var jsType in ListOfJS)
             {
+                if (IsTypeExcluded(jsType)) continue;
+
                 var js = (IUseJSLocationInfo)Activator.CreateInstance(jsType); // create instance of class using JSLocationInfo
 
                 var filePath = Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "js", js.JSSubfolder, js.JSName);
@@ -168,6 +170,11 @@ namespace TranslationHelper.Projects.RPGMMV
             }
 
             return isAnyFileCompleted;
+        }
+
+        protected virtual bool IsTypeExcluded(Type jsType)
+        {
+            return false;
         }
 
         private bool ParseOtherQuotedJsPlugins(HashSet<string> hardcodedJS, HashSet<string> skipJSList)
