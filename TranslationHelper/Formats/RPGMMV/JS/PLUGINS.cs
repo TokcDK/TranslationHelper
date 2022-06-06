@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         internal override int ExtIdentifier()
         {
-            return (Path.GetFileName(ProjectData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)).ToUpperInvariant() == "JS" ? 1 : -1);
+            return (Path.GetFileName(AppData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)).ToUpperInvariant() == "JS" ? 1 : -1);
         }
 
         //protected static bool IsPluginsJS = false; //for some specific to plugins.js operations
@@ -41,7 +41,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                         IsJsonNotLast = true;
                         ParseData.Line = ParseData.Line.Remove(ParseData.Line.Length - 1, 1);
                     }
-                    else if (ProjectData.SaveFileMode)
+                    else if (AppData.SaveFileMode)
                     {
                         IsJsonNotLast = false;
                     }
@@ -50,7 +50,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
                     //PluginsJsNameFound = false;
 
-                    if (ProjectData.SaveFileMode)
+                    if (AppData.SaveFileMode)
                     {
                         ParseData.Line = JsonParser.JsonRoot.ToString(Formatting.None) + (IsJsonNotLast ? "," : string.Empty);
                         ParseData.Ret = true;

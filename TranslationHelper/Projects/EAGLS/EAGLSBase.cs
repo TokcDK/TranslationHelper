@@ -17,11 +17,11 @@ namespace TranslationHelper.Projects.EAGLS
         {
             base.Init();
             ProjectName = ProjectName();
-            ProjectData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), ProjectName);
-            WorkTXTDir = Path.Combine(ProjectData.CurrentProject.ProjectWorkDir, "txt");
-            ScriptDir = Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Script");
-            SCPACKpak = Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "Script", "SCPACK.pak");
-            SCPACKidx = Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "Script", "SCPACK.idx");
+            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), ProjectName);
+            WorkTXTDir = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "txt");
+            ScriptDir = Path.Combine(AppData.CurrentProject.SelectedGameDir, "Script");
+            SCPACKpak = Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "Script", "SCPACK.pak");
+            SCPACKidx = Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "Script", "SCPACK.idx");
         }
 
         internal override string ProjectFolderName()
@@ -45,22 +45,22 @@ namespace TranslationHelper.Projects.EAGLS
         {
             try
             {
-                ProjectData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), ProjectName);
-                var workdir = ProjectData.CurrentProject.ProjectWorkDir;
+                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), ProjectName);
+                var workdir = AppData.CurrentProject.ProjectWorkDir;
 
                 var pythonexe = THSettings.PythonExePath();
                 var scpacker = THSettings.SCPackerPYPath();
                 var scriptdir = ScriptDir;
 
-                WorkTXTDir = Path.Combine(ProjectData.CurrentProject.ProjectWorkDir, "txt");
-                var mode = (ProjectData.SaveFileMode ? string.Empty : "un") + "pack";
+                WorkTXTDir = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "txt");
+                var mode = (AppData.SaveFileMode ? string.Empty : "un") + "pack";
                 //var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t -o";
                 var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\"";
 
                 Directory.CreateDirectory(WorkTXTDir);
 
                 //write command file
-                File.WriteAllText(Path.Combine(ProjectData.CurrentProject.ProjectWorkDir, mode + "1.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
+                File.WriteAllText(Path.Combine(AppData.CurrentProject.ProjectWorkDir, mode + "1.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
 
                 var code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
                 if (!code || WorkTXTDir.IsNullOrEmptyDirectory(scriptsMask))
@@ -86,7 +86,7 @@ namespace TranslationHelper.Projects.EAGLS
                 {
                     MessageBox.Show(T._("Errors was occcured while packing") + "." + T._("Will be opened log and work dir") + ".");
                     FunctionsProcess.RunProcess(errorslog, "");
-                    FunctionsProcess.RunProcess(ProjectData.CurrentProject.ProjectWorkDir, "");
+                    FunctionsProcess.RunProcess(AppData.CurrentProject.ProjectWorkDir, "");
                 }
             }
             catch

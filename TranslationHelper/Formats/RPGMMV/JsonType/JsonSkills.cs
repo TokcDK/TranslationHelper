@@ -22,11 +22,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (skill == null) continue;
 
                 var s = skill.Name;
-                if (AddRowData(ref s, $"\r\nID: {skill.Id}\r\nNote: \"{skill.Note}\"") && ProjectData.SaveFileMode) skill.Name = s;
+                if (AddRowData(ref s, $"\r\nID: {skill.Id}\r\nNote: \"{skill.Note}\"") && AppData.SaveFileMode) skill.Name = s;
                 s = skill.Message1;
-                if (AddRowData(ref s, $"\r\nID: {skill.Id}\r\nName: {skill.Name}\r\nNote: \"{skill.Note}\"") && ProjectData.SaveFileMode) skill.Message1 = s;
+                if (AddRowData(ref s, $"\r\nID: {skill.Id}\r\nName: {skill.Name}\r\nNote: \"{skill.Note}\"") && AppData.SaveFileMode) skill.Message1 = s;
                 s = skill.Message2;
-                if (AddRowData(ref s, $"\r\nID: {skill.Id}\r\nName: {skill.Name}\r\nNote: \"{skill.Note}\"") && ProjectData.SaveFileMode) skill.Message2 = s;
+                if (AddRowData(ref s, $"\r\nID: {skill.Id}\r\nName: {skill.Name}\r\nNote: \"{skill.Note}\"") && AppData.SaveFileMode) skill.Message2 = s;
             }
 
             return data;

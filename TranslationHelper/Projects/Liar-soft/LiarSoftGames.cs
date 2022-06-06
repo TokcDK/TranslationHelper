@@ -13,7 +13,7 @@ namespace TranslationHelper.Projects.Liar_soft
 
         internal override bool Check()
         {
-            return Path.GetExtension(ProjectData.SelectedFilePath).ToUpperInvariant()==".EXE" && File.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "scr.xfl"));
+            return Path.GetExtension(AppData.SelectedFilePath).ToUpperInvariant()==".EXE" && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "scr.xfl"));
         }
 
         internal override string Name()
@@ -38,10 +38,10 @@ namespace TranslationHelper.Projects.Liar_soft
         bool OpenSaveXFL()
         {
             //set vars
-            var scrxfl = Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "scr.xfl");
+            var scrxfl = Path.Combine(AppData.CurrentProject.SelectedGameDir, "scr.xfl");
             var archive = XflArchive.FromFile(scrxfl);
-            ProjectData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(ProjectData.CurrentProject.SelectedGameDir));
-            var dir = ProjectData.CurrentProject.ProjectWorkDir;
+            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
+            var dir = AppData.CurrentProject.ProjectWorkDir;
 
             archive.ExtractToDirectory(dir);//extract all gsc to work dir
 
@@ -55,7 +55,7 @@ namespace TranslationHelper.Projects.Liar_soft
             //open or save txt/gsc
             var ret = OpenSaveFilesBase(dir, typeof(GSCTXT), "*.txt");
 
-            if(ProjectData.SaveFileMode && ret)
+            if(AppData.SaveFileMode && ret)
             {
                 //replace gsc entries with translated
                 for (int i=0; i< archive.Entries.Count; i++)

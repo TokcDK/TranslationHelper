@@ -41,7 +41,7 @@ namespace TranslationHelper.Extensions
             var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
             try
             {
-                foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
+                foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
                 {
                     try
                     {
@@ -53,7 +53,7 @@ namespace TranslationHelper.Extensions
                     catch (System.ArgumentException ex)
                     {
                         log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
-                        ProjectData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
+                        AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
                         continue;
                     }
 
@@ -116,7 +116,7 @@ namespace TranslationHelper.Extensions
         internal static string[] ExtractMulty(this string line, bool onlyOne = false, List<int> outIndexes = null)
         {
             var GroupValues = (onlyOne ? new List<string>(1) : new List<string>());//list of values for captured groups which containing in PatternReplacementPair.Value
-            foreach (var PatternReplacementPair in ProjectData.TranslationRegexRules)
+            foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
             {
                 Match m = Regex.Match(line, PatternReplacementPair.Key);
                 if (!m.Success)
@@ -672,7 +672,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool IsValidForTranslation(this string inputString)
         {
-            return !string.IsNullOrWhiteSpace(inputString) && ProjectData.CurrentProject.IsValidForTranslation(inputString) && !inputString.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther() && inputString.HasLetters() && !inputString.IsSoundsText();
+            return !string.IsNullOrWhiteSpace(inputString) && AppData.CurrentProject.IsValidForTranslation(inputString) && !inputString.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther() && inputString.HasLetters() && !inputString.IsSoundsText();
         }
 
         /// <summary>

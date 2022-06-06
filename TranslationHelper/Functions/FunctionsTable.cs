@@ -21,10 +21,10 @@ namespace TranslationHelper.Main.Functions
             //int[] selindexes = new int[ProjectData.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
 
             var tableIndex = 0;
-            ProjectData.Main.Invoke((Action)(() => tableIndex = ProjectData.Main.THFilesList.GetSelectedIndex()));
+            AppData.Main.Invoke((Action)(() => tableIndex = AppData.Main.THFilesList.GetSelectedIndex()));
 
 
-            int[] selindexes = GetRowIndexesOfSelectedDGVCells(ProjectData.Main.THFileElementsDataGridView.SelectedCells);
+            int[] selindexes = GetRowIndexesOfSelectedDGVCells(AppData.Main.THFileElementsDataGridView.SelectedCells);
             var selindexesLength = selindexes.Length;
             for (int i = 0; i < selindexesLength; i++)
             {
@@ -67,10 +67,10 @@ namespace TranslationHelper.Main.Functions
         /// <param name="projectData"></param>
         internal static void ShowFirstRowWithEmptyTranslation()
         {
-            int TCount = ProjectData.CurrentProject.FilesContent.Tables.Count;
+            int TCount = AppData.CurrentProject.FilesContent.Tables.Count;
             for (int t = 0; t < TCount; t++)
             {
-                var table = ProjectData.CurrentProject.FilesContent.Tables[t];
+                var table = AppData.CurrentProject.FilesContent.Tables[t];
 
                 int RCount = table.Rows.Count;
                 for (int r = 0; r < RCount; r++)
@@ -94,7 +94,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="rowIndex"></param>
         internal static void ShowSelectedRow(int tableIndex, string columnName, int rowIndex)
         {
-            if (tableIndex == -1 || tableIndex > ProjectData.CurrentProject.FilesContent.Tables.Count - 1 || string.IsNullOrEmpty(columnName) || !ProjectData.CurrentProject.FilesContent.Tables[tableIndex].Columns.Contains(columnName))
+            if (tableIndex == -1 || tableIndex > AppData.CurrentProject.FilesContent.Tables.Count - 1 || string.IsNullOrEmpty(columnName) || !AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns.Contains(columnName))
             {
                 return;
             }
@@ -102,23 +102,23 @@ namespace TranslationHelper.Main.Functions
             int RCount = 0;//for debug purposes
             try
             {
-                RCount = ProjectData.CurrentProject.FilesContent.Tables[tableIndex].Rows.Count;
-                if (tableIndex == ProjectData.Main.THFilesList.GetSelectedIndex() && RCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
+                RCount = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows.Count;
+                if (tableIndex == AppData.Main.THFilesList.GetSelectedIndex() && RCount > 0 && AppData.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
                 {
-                    ProjectData.Main.THFilesList.SetSelectedIndex(tableIndex);
-                    ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.CurrentProject.FilesContent.Tables[tableIndex];
+                    AppData.Main.THFilesList.SetSelectedIndex(tableIndex);
+                    AppData.Main.THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableIndex];
                 }
 
-                ProjectData.Main.THFileElementsDataGridView.CurrentCell = ProjectData.Main.THFileElementsDataGridView[columnName, rowIndex];
+                AppData.Main.THFileElementsDataGridView.CurrentCell = AppData.Main.THFileElementsDataGridView[columnName, rowIndex];
 
                 //scrool to selected cell
                 //https://stackoverflow.com/a/51399750
-                ProjectData.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
+                AppData.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
 
-                ProjectData.Main.UpdateTextboxes();
+                AppData.Main.UpdateTextboxes();
             }
             catch (Exception ex)
             {
@@ -137,7 +137,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="rowIndex"></param>
         internal static void ShowSelectedRow(int tableIndex, int columnIndex, int rowIndex)
         {
-            if (tableIndex == -1 || tableIndex > ProjectData.CurrentProject.FilesContent.Tables.Count - 1 || columnIndex == -1 || columnIndex > ProjectData.CurrentProject.FilesContent.Tables[tableIndex].Columns.Count - 1)
+            if (tableIndex == -1 || tableIndex > AppData.CurrentProject.FilesContent.Tables.Count - 1 || columnIndex == -1 || columnIndex > AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns.Count - 1)
             {
                 return;
             }
@@ -145,22 +145,22 @@ namespace TranslationHelper.Main.Functions
             int RCount = 0;//for debug purposes
             try
             {
-                RCount = ProjectData.CurrentProject.FilesContent.Tables[tableIndex].Rows.Count;
-                if (tableIndex == ProjectData.Main.THFilesList.GetSelectedIndex() && RCount > 0 && ProjectData.Main.THFileElementsDataGridView.DataSource != null)
+                RCount = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows.Count;
+                if (tableIndex == AppData.Main.THFilesList.GetSelectedIndex() && RCount > 0 && AppData.Main.THFileElementsDataGridView.DataSource != null)
                 {
                 }
                 else
                 {
-                    ProjectData.Main.THFilesList.SetSelectedIndex(tableIndex);
-                    ProjectData.Main.THFileElementsDataGridView.DataSource = ProjectData.CurrentProject.FilesContent.Tables[tableIndex];
+                    AppData.Main.THFilesList.SetSelectedIndex(tableIndex);
+                    AppData.Main.THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableIndex];
 
                 }
 
-                ProjectData.Main.THFileElementsDataGridView.CurrentCell = ProjectData.Main.THFileElementsDataGridView[columnIndex, rowIndex];
+                AppData.Main.THFileElementsDataGridView.CurrentCell = AppData.Main.THFileElementsDataGridView[columnIndex, rowIndex];
 
                 //scrool to selected cell
                 //https://stackoverflow.com/a/51399750
-                ProjectData.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
+                AppData.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
             }
             catch (Exception ex)
             {
@@ -183,26 +183,26 @@ namespace TranslationHelper.Main.Functions
 
             string fileName = Path.GetFileName(filePath);
 
-            if (add && !ProjectData.CurrentProject.FilesContent.Tables.Contains(fileName))
+            if (add && !AppData.CurrentProject.FilesContent.Tables.Contains(fileName))
             {
-                _ = ProjectData.CurrentProject.FilesContent.Tables.Add(fileName);
-                _ = ProjectData.CurrentProject.FilesContent.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
-                _ = ProjectData.CurrentProject.FilesContentInfo.Tables.Add(fileName);
-                _ = ProjectData.CurrentProject.FilesContentInfo.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
+                _ = AppData.CurrentProject.FilesContent.Tables.Add(fileName);
+                _ = AppData.CurrentProject.FilesContent.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
+                _ = AppData.CurrentProject.FilesContentInfo.Tables.Add(fileName);
+                _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
 
                 return true;
             }
             else
             {
-                if (ProjectData.CurrentProject.FilesContent.Tables[fileName].Rows.Count == 0)
+                if (AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Count == 0)
                 {
-                    ProjectData.CurrentProject.FilesContent.Tables.Remove(fileName);
-                    ProjectData.CurrentProject.FilesContentInfo.Tables.Remove(fileName);
+                    AppData.CurrentProject.FilesContent.Tables.Remove(fileName);
+                    AppData.CurrentProject.FilesContentInfo.Tables.Remove(fileName);
                     return false;
                 }
                 else
                 {
-                    _ = ProjectData.CurrentProject.FilesContent.Tables[fileName].Columns.Add(THSettings.TranslationColumnName());
+                    _ = AppData.CurrentProject.FilesContent.Tables[fileName].Columns.Add(THSettings.TranslationColumnName());
                     return true;
                 }
             }
@@ -429,13 +429,13 @@ namespace TranslationHelper.Main.Functions
         {
             try
             {
-                var table = ProjectData.CurrentProject.FilesContent.Tables[TableIndex];
+                var table = AppData.CurrentProject.FilesContent.Tables[TableIndex];
                 if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
                 {
                     return rowIndex;
                 }
 
-                var dataRow = ProjectData.Main.THFileElementsDataGridView.Rows[rowIndex];
+                var dataRow = AppData.Main.THFileElementsDataGridView.Rows[rowIndex];
                 var dataBoundItem = (DataRowView)dataRow.DataBoundItem;
                 var dataBoundItemRow = dataBoundItem.Row;
                 var realIndex = table.Rows.IndexOf(dataBoundItemRow);
@@ -457,7 +457,7 @@ namespace TranslationHelper.Main.Functions
         internal static HashSet<int> GetDGVRowsIndexesHashesInDT(int tableindex, bool IsVisible = false)
         {
             DataGridView DGV = null;
-            ProjectData.Main.Invoke((Action)(() => DGV = ProjectData.Main.THFileElementsDataGridView));
+            AppData.Main.Invoke((Action)(() => DGV = AppData.Main.THFileElementsDataGridView));
 
             var selected = new HashSet<int>();
             if (IsVisible)

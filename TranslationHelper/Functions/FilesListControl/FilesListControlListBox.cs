@@ -17,7 +17,7 @@ namespace TranslationHelper.Functions.FilesListControl
         {
             //_listBox = new ListBox();
             //_listBox = ProjectData.FilesList as ListBox;
-            _listBox = ProjectData.THFilesList;
+            _listBox = AppData.THFilesList;
 
             // register events
             _listBox.DrawItem += ListBox_DrawItem;
@@ -93,10 +93,10 @@ namespace TranslationHelper.Functions.FilesListControl
 
         private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ProjectData.Main.ActionsOnTHFIlesListElementSelected();
-            if (!ProjectData.Main.TableCompleteInfoLabel.Visible)
+            AppData.Main.ActionsOnTHFIlesListElementSelected();
+            if (!AppData.Main.TableCompleteInfoLabel.Visible)
             {
-                ProjectData.Main.TableCompleteInfoLabel.Visible = false;
+                AppData.Main.TableCompleteInfoLabel.Visible = false;
             }
         }
 
@@ -108,7 +108,7 @@ namespace TranslationHelper.Functions.FilesListControl
                 if (item >= 0)
                 {
                     //_listBox.SetSelectedIndex(item);
-                    ProjectData.Main.CMSFilesList.Show(_listBox, e.Location);
+                    AppData.Main.CMSFilesList.Show(_listBox, e.Location);
                 }
             }
         }
@@ -130,7 +130,7 @@ namespace TranslationHelper.Functions.FilesListControl
             e.DrawBackground();
 
             int index = e.Index;
-            if (index >= 0 && index < ProjectData.THFilesList.GetItemsCount())
+            if (index >= 0 && index < AppData.THFilesList.GetItemsCount())
             {
                 bool selected = ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
                 string text = _listBox.GetItemNameWithIndex(index);
@@ -144,7 +144,7 @@ namespace TranslationHelper.Functions.FilesListControl
                 }
                 else if ((index % 2) == 0)
                 {
-                    if (FunctionsTable.IsTableColumnCellsAll(ProjectData.CurrentProject.FilesContent.Tables[e.Index]))
+                    if (FunctionsTable.IsTableColumnCellsAll(AppData.CurrentProject.FilesContent.Tables[e.Index]))
                     {
                         backgroundBrush = ListBoxItemBackgroundBrush1Complete;
                     }
@@ -155,7 +155,7 @@ namespace TranslationHelper.Functions.FilesListControl
                 }
                 else
                 {
-                    if (FunctionsTable.IsTableColumnCellsAll(ProjectData.CurrentProject.FilesContent.Tables[e.Index]))
+                    if (FunctionsTable.IsTableColumnCellsAll(AppData.CurrentProject.FilesContent.Tables[e.Index]))
                     {
                         backgroundBrush = ListBoxItemBackgroundBrush2Complete;
                     }
@@ -169,7 +169,7 @@ namespace TranslationHelper.Functions.FilesListControl
 
                 //text:
                 SolidBrush foregroundBrush = (selected) ? ListBoxItemForegroundBrushSelected : ListBoxItemForegroundBrush;
-                g.DrawString(text, e.Font, foregroundBrush, ProjectData.THFilesList.GetItemRectangle(index).Location);
+                g.DrawString(text, e.Font, foregroundBrush, AppData.THFilesList.GetItemRectangle(index).Location);
             }
 
             e.DrawFocusRectangle();

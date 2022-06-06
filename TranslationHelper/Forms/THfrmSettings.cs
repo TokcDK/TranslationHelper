@@ -91,12 +91,12 @@ namespace TranslationHelper
 
         public void GetSettings()
         {
-            if (ProjectData.SettingsIsLoading)
+            if (AppData.SettingsIsLoading)
             {
                 return;
             }
 
-            ProjectData.SettingsIsLoading = true;
+            AppData.SettingsIsLoading = true;
 
             //try
             //{
@@ -121,11 +121,11 @@ namespace TranslationHelper
             {
                 if (THConfigINI.KeyExists(SettingsList[setting].Key, SettingsList[setting].Section))
                 {
-                    ProjectData.BufferValueString = THConfigINI.GetKey(SettingsList[setting].Section, SettingsList[setting].Key);
+                    AppData.BufferValueString = THConfigINI.GetKey(SettingsList[setting].Section, SettingsList[setting].Key);
                 }
                 else
                 {
-                    ProjectData.BufferValueString = SettingsList[setting].Default;
+                    AppData.BufferValueString = SettingsList[setting].Default;
                 }
                 SettingsList[setting].Set(true);
             }
@@ -134,7 +134,7 @@ namespace TranslationHelper
 
             AddQuickWebTranslators();
 
-            ProjectData.SettingsIsLoading = false;
+            AppData.SettingsIsLoading = false;
         }
 
         private void AddQuickWebTranslators()

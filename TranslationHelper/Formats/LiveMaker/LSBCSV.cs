@@ -39,7 +39,7 @@ namespace TranslationHelper.Formats.LiveMaker
                 }
             }
 
-            if (ProjectData.SaveFileMode && ParseData.Ret)
+            if (AppData.SaveFileMode && ParseData.Ret)
             {
                 var m = Regex.Match(ParseData.ResultForWrite.ToString(), @"^([\s\S]+\r\n)\r\n$");
                 if (m.Success)
@@ -64,7 +64,7 @@ namespace TranslationHelper.Formats.LiveMaker
                 if (IsValidString(original))
                 {
                     var translation = dataarray[4];
-                    if (ProjectData.OpenFileMode)
+                    if (AppData.OpenFileMode)
                     {
                         if (!string.IsNullOrEmpty(translation))
                         {

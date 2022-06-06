@@ -256,7 +256,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                         if (part.IsString)
                         {
                             var value = part.Value;
-                            if (AddRowData(ref value, ParseData.Line) && ProjectData.SaveFileMode)
+                            if (AddRowData(ref value, ParseData.Line) && AppData.SaveFileMode)
                             {
                                 part.Value = value;
                             }
@@ -273,7 +273,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 
                                 var mValue = match.Groups[1].Value;
 
-                                if (AddRowData(ref mValue, "(tag regex:" + r.ToString() + ")\r\n" + ParseData.Line) && ProjectData.SaveFileMode)
+                                if (AddRowData(ref mValue, "(tag regex:" + r.ToString() + ")\r\n" + ParseData.Line) && AppData.SaveFileMode)
                                 {
                                     int index = match.Groups[1].Index;
                                     part.Value = part.Value
@@ -291,7 +291,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 
                                     var mValue = match.Groups[1].Value;
 
-                                    if (AddRowData(ref mValue, "(tag regex:" + r.ToString() + ")\r\n" + ParseData.Line) && ProjectData.SaveFileMode)
+                                    if (AddRowData(ref mValue, "(tag regex:" + r.ToString() + ")\r\n" + ParseData.Line) && AppData.SaveFileMode)
                                     {
                                         int index = match.Groups[1].Index;
                                         part.Value = part.Value
@@ -303,7 +303,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                         }
                     }
 
-                    if (ProjectData.SaveFileMode) ParseData.Line = string.Join("", parts.Select(p => p.Value));
+                    if (AppData.SaveFileMode) ParseData.Line = string.Join("", parts.Select(p => p.Value));
                 }
                 else if (new Regex(Tag.StartsWith).IsMatch(ParseData.Line) && string.IsNullOrWhiteSpace(tff = new Regex(Tag.StartsWith).Replace(new Regex(@"[A-Za-z]+\s*\=\s*([^\s]*)").Replace(ParseData.Line, ""), "").TrimEnd(']')))
                 {
@@ -328,7 +328,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 
                             var mValue = match.Groups[1].Value;
 
-                            if (AddRowData(ref mValue, "(Regex:" + r.ToString() + ")\r\n" + ParseData.Line) && ProjectData.SaveFileMode)
+                            if (AddRowData(ref mValue, "(Regex:" + r.ToString() + ")\r\n" + ParseData.Line) && AppData.SaveFileMode)
                             {
                                 int index = match.Groups[1].Index;
                                 ParseData.Line = ParseData.Line
@@ -526,7 +526,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                             parts.Add(value);
                         }
 
-                        if (ProjectData.SaveFileMode) ParseData.Line = string.Join("", parts);
+                        if (AppData.SaveFileMode) ParseData.Line = string.Join("", parts);
                     }
                 }
                 //else if(!IsScript)

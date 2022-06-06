@@ -10,7 +10,7 @@ namespace TranslationHelper.Projects
 
         internal override bool Check()
         {
-            if (Path.GetFileName(ProjectData.SelectedFilePath) == "RPGMKTRANSPATCH")
+            if (Path.GetFileName(AppData.SelectedFilePath) == "RPGMKTRANSPATCH")
             {
                 return true;
             }
@@ -30,12 +30,12 @@ namespace TranslationHelper.Projects
 
         internal override bool Open()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(TXTv3), "*.txt");
+            return OpenSaveFilesBase(Path.GetDirectoryName(AppData.SelectedFilePath), typeof(TXTv3), "*.txt");
         }
 
         internal override bool Save()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(ProjectData.SelectedFilePath), typeof(TXTv3), "*.txt");
+            return OpenSaveFilesBase(Path.GetDirectoryName(AppData.SelectedFilePath), typeof(TXTv3), "*.txt");
         }
     }
 }

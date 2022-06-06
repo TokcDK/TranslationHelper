@@ -56,7 +56,7 @@ namespace TranslationHelper.Formats.KiriKiri
                                     continue;
                                 }
 
-                                if (ProjectData.OpenFileMode)
+                                if (AppData.OpenFileMode)
                                 {
                                     AddRowData(dataSubValueArray[1], "Parent array:" + lineArray[0] + ", Member name:" + dataSubValueArray[0], CheckInput: false);
                                 }
@@ -76,7 +76,7 @@ namespace TranslationHelper.Formats.KiriKiri
                             {
                                 if (IsValidString(dataSubValue))
                                 {
-                                    if (ProjectData.OpenFileMode)
+                                    if (AppData.OpenFileMode)
                                     {
                                         AddRowData(dataSubValue, "Parent array:" + lineArray[0], CheckInput: false);
                                     }
@@ -92,7 +92,7 @@ namespace TranslationHelper.Formats.KiriKiri
                             }
                         }
 
-                        if (ProjectData.SaveFileMode)
+                        if (AppData.SaveFileMode)
                         {
                             lineArray[1] = string.Join(",", dataArray); // merge all value members
                         }
@@ -102,7 +102,7 @@ namespace TranslationHelper.Formats.KiriKiri
                     {
                         if (IsValidString(lineArray[1]))
                         {
-                            if (ProjectData.OpenFileMode)
+                            if (AppData.OpenFileMode)
                             {
                                 AddRowData(lineArray[1], "Varname: " + lineArray[0], CheckInput: false);
                             }

@@ -36,7 +36,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             continue;
                         }
 
-                        if (ProjectData.OpenFileMode)
+                        if (AppData.OpenFileMode)
                         {
                             AddRowData(result, ParseData.Line, CheckInput: false);
                         }

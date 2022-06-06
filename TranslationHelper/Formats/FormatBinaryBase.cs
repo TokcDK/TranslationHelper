@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected override void FileOpen()
         {
-            using (ParseData.FStream = new FileStream(ProjectData.SelectedFilePath, FileMode.Open, FileAccess.Read))
+            using (ParseData.FStream = new FileStream(AppData.SelectedFilePath, FileMode.Open, FileAccess.Read))
             using (ParseData.BReader = new BinaryReader(ParseData.FStream, DefaultEncoding()))
             {
                 PreParseBytes();
@@ -37,7 +37,7 @@ namespace TranslationHelper.Formats
 
         private void PostParseBytesRequired()
         {
-            if (ProjectData.SaveFileMode)
+            if (AppData.SaveFileMode)
             {
                 //add rest bytes of the stream
                 while (ParseData.FStream.Length > ParseData.FStream.Position)
@@ -105,7 +105,7 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                if (ProjectData.SaveFileMode // save mode
+                if (AppData.SaveFileMode // save mode
                     && ParseData.Ret // something translated
                     && ParseData.NewBinaryForWrite.Count > 0 // new bynary is not empty
                     && !FunctionsFileFolder.FileInUse(GetSaveFilePath()) // file is not locked
@@ -131,7 +131,7 @@ namespace TranslationHelper.Formats
         {
             public ParseFileData()
             {
-                if (ProjectData.SaveFileMode)
+                if (AppData.SaveFileMode)
                 {
                     NewBinaryForWrite = new List<byte>();
                 }

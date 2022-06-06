@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         internal override int ExtIdentifier()
         {
-            return (Path.GetFileName(ProjectData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)).ToUpperInvariant() == "JS" ? 1 : -1);
+            return (Path.GetFileName(AppData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)).ToUpperInvariant() == "JS" ? 1 : -1);
         }
 
         protected override bool JSTokenValid(JValue value)
@@ -42,7 +42,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 {
                     if (plugin.Parameters[key] is string s) { } else continue;
 
-                    if (ParseList(ref s, $"Plugin name:{plugin.Name}\r\nKey: {key}\r\nNote: Be careful with translating this!") && ProjectData.SaveFileMode)
+                    if (ParseList(ref s, $"Plugin name:{plugin.Name}\r\nKey: {key}\r\nNote: Be careful with translating this!") && AppData.SaveFileMode)
                     {
                         plugin.Parameters[key] = s;
                     }
@@ -93,7 +93,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
             }
 
-            if (ProjectData.SaveFileMode && RET) ParseData.ResultForWrite.Append("var $plugins =" + Helper.Json2String(plugins) + ";$");
+            if (AppData.SaveFileMode && RET) ParseData.ResultForWrite.Append("var $plugins =" + Helper.Json2String(plugins) + ";$");
         }
 
         //protected override KeywordActionAfter ParseStringFileLine()

@@ -14,14 +14,14 @@ namespace TranslationHelper.Formats.Other
         StringBuilder Info = new StringBuilder();
         protected override KeywordActionAfter ParseStringFileLine()
         {
-            if (ProjectData.OpenFileMode && ParseData.Line.StartsWith("#"))
+            if (AppData.OpenFileMode && ParseData.Line.StartsWith("#"))
             {
                 Info.AppendLine(ParseData.Line); // save string info
                 return KeywordActionAfter.Continue;
             }
             else if (!ParseData.Line.StartsWith("msgid"))
             {
-                if (ProjectData.OpenFileMode) Info.Clear();
+                if (AppData.OpenFileMode) Info.Clear();
                 return Continue();
             }
 
@@ -50,11 +50,11 @@ namespace TranslationHelper.Formats.Other
 
             // add row data or set translation
             var rowData = new[] { o, t };
-            if (!AddRowData(ref rowData, ProjectData.OpenFileMode ? Info.ToString() : "", false)) return Continue();
+            if (!AddRowData(ref rowData, AppData.OpenFileMode ? Info.ToString() : "", false)) return Continue();
 
             // set new line value istead of old
-            if (ProjectData.SaveFileMode) ParseData.Line = "msgid \"" + o + "\"\n" + "msgstr \"" + rowData[0] + "\"\n" + ParseData.Line;
-            if (ProjectData.OpenFileMode) Info.Clear();
+            if (AppData.SaveFileMode) ParseData.Line = "msgid \"" + o + "\"\n" + "msgstr \"" + rowData[0] + "\"\n" + ParseData.Line;
+            if (AppData.OpenFileMode) Info.Clear();
             ParseData.Ret = true; // must autoset to true when any translation set of line added but in any case
 
             return Continue();

@@ -18,7 +18,7 @@ namespace TranslationHelper.Projects.WolfRPG.Menus
 
         public static string BeginStringMarker = "> BEGIN STRING\r\n";
         public static string EndStringMarker = "\r\n> END STRING\r\n";
-        public static string StandaloneContextFilePath = Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "StandaloneContextList.thdata");
+        public static string StandaloneContextFilePath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "StandaloneContextList.thdata");
         public void OnClick(object sender, EventArgs e)
         {
             var standaloneContextList = LoadList(StandaloneContextFilePath);
@@ -31,17 +31,17 @@ namespace TranslationHelper.Projects.WolfRPG.Menus
                     return;
                 }
 
-                if (ProjectData.THFilesList.SelectedIndex == -1)
+                if (AppData.THFilesList.SelectedIndex == -1)
                 {
                     return;
                 }
 
                 var addedContextLine = form.ContextLine;
 
-                var selectedCells = ProjectData.Main.THFileElementsDataGridView.SelectedCells;
+                var selectedCells = AppData.Main.THFileElementsDataGridView.SelectedCells;
                 foreach (DataGridViewCell selectedCell in selectedCells)
                 {
-                    var cellValue = ProjectData.Main.THFileElementsDataGridView.Rows[selectedCell.RowIndex].Cells[0].Value + "";
+                    var cellValue = AppData.Main.THFileElementsDataGridView.Rows[selectedCell.RowIndex].Cells[0].Value + "";
                     if (string.IsNullOrWhiteSpace(cellValue))
                     {
                         continue;

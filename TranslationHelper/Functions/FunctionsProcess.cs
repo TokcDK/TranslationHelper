@@ -103,12 +103,12 @@ namespace TranslationHelper.Main.Functions
         internal static void OpenProjectsDir()
         {
             string folder;
-            if (Directory.Exists(folder = ProjectData.CurrentProject.ProjectWorkDir))
+            if (Directory.Exists(folder = AppData.CurrentProject.ProjectWorkDir))
             {
             }
             else
             {
-                folder = ProjectData.CurrentProject.SelectedDir;
+                folder = AppData.CurrentProject.SelectedDir;
             }
             Process.Start("explorer.exe", folder);
         }

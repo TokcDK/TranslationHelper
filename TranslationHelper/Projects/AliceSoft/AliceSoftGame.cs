@@ -16,8 +16,8 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override bool Check()
         {
-            string dirPath = Path.GetDirectoryName(ProjectData.SelectedFilePath);
-            return Path.GetExtension(ProjectData.SelectedFilePath) == ".exe"
+            string dirPath = Path.GetDirectoryName(AppData.SelectedFilePath);
+            return Path.GetExtension(AppData.SelectedFilePath) == ".exe"
                 && new DirectoryInfo(dirPath).HasAnyFiles("*.ain")
                 ;
         }
@@ -29,32 +29,32 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override bool Open()
         {
-            return PackUnpack() && OpenSaveFilesBase(ProjectData.CurrentProject.ProjectWorkDir, typeof(AINTXT), "*.ain.txt");
+            return PackUnpack() && OpenSaveFilesBase(AppData.CurrentProject.ProjectWorkDir, typeof(AINTXT), "*.ain.txt");
         }
 
         private bool PackUnpack()
         {
-            if (ProjectData.OpenFileMode)
+            if (AppData.OpenFileMode)
             {
-                ProjectData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)));
+                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)));
             }
 
             var ret = false;
 
             var first = false;
-            foreach (var ain in Directory.GetFiles(Path.GetDirectoryName(ProjectData.SelectedFilePath), "*.ain"))
+            foreach (var ain in Directory.GetFiles(Path.GetDirectoryName(AppData.SelectedFilePath), "*.ain"))
             {
                 //only 1st file, for any case
                 if (first)
                     continue;
                 first = true;
 
-                var targetworkainpath = Path.Combine(ProjectData.CurrentProject.ProjectWorkDir, "orig.ain");
+                var targetworkainpath = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "orig.ain");
                 var targetworkaintxtpath = targetworkainpath + ".txt";
 
-                if (ProjectData.OpenFileMode)
+                if (AppData.OpenFileMode)
                 {
-                    Directory.CreateDirectory(ProjectData.CurrentProject.ProjectWorkDir);
+                    Directory.CreateDirectory(AppData.CurrentProject.ProjectWorkDir);
 
                     var args = "ain dump -t -o \"" + targetworkaintxtpath + "\" \"" + targetworkainpath + "\"";
 
@@ -77,7 +77,7 @@ namespace TranslationHelper.Projects.AliceSoft
 
                         var args = "ain edit -t \"" + targetworkaintxtpath + "\" -o \"" + outain + "\" \"" + targetworkainpath + "\"";
 
-                        File.WriteAllText(Path.Combine(ProjectData.CurrentProject.ProjectWorkDir, "write.bat"),
+                        File.WriteAllText(Path.Combine(AppData.CurrentProject.ProjectWorkDir, "write.bat"),
                             " \"" + THSettings.AliceToolsExePath() + "\" " + args
                             + "\r\npause"
 
@@ -122,10 +122,10 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override bool Save()
         {
-            ProjectData.OpenFileMode = true;
+            AppData.OpenFileMode = true;
             PackUnpack();//restore original txt before each writing because it will be writed with translated strings while 1st write and will be need to restore it
-            ProjectData.SaveFileMode = true;
-            return OpenSaveFilesBase(ProjectData.CurrentProject.ProjectWorkDir, typeof(AINTXT), "*.ain.txt") && PackUnpack();
+            AppData.SaveFileMode = true;
+            return OpenSaveFilesBase(AppData.CurrentProject.ProjectWorkDir, typeof(AINTXT), "*.ain.txt") && PackUnpack();
         }
     }
 }

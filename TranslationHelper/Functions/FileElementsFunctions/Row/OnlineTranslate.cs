@@ -97,7 +97,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     if (result != DialogResult.Yes) return;
                 }
 
-                ProjectData.Main.ProgressInfo(true, "Get all DB");
+                AppData.Main.ProgressInfo(true, "Get all DB");
 
                 var mergingAllDb = new Task(() => FunctionsDBFile.MergeAllDBtoOne());
                 mergingAllDb.ConfigureAwait(true);
@@ -105,7 +105,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 mergingAllDb.Wait();
                 _allDbLoaded4All = true;
 
-                ProjectData.Main.ProgressInfo(false);
+                AppData.Main.ProgressInfo(false);
             }
         }
         protected override void ActionsFinalize()
@@ -113,10 +113,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             TranslateStrings();
             Size = 0;
             _buffer.Clear();
-            ProjectData.OnlineTranslationCache.Write();
+            AppData.OnlineTranslationCache.Write();
             FunctionsOnlineCache.Unload();
 
-            ProjectData.Main.ProgressInfo(false);
+            AppData.Main.ProgressInfo(false);
 
             if (Properties.Settings.Default.InterruptTtanslation) Properties.Settings.Default.InterruptTtanslation = false;
         }
@@ -128,11 +128,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 //if (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "") || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//translate only empty rows or rows where can be something translated
                 {
-                    ProjectData.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
+                    AppData.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
 
                     SetRowLinesToBuffer();
 
-                    ProjectData.Main.ProgressInfo(false);
+                    AppData.Main.ProgressInfo(false);
                     return true;
                 }
             }
@@ -167,7 +167,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
 
                 //check line value in cache
-                var linecache = ProjectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
+                var linecache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
                 if (!string.IsNullOrEmpty(linecache))
                 {
                     _buffer[lineCoordinates][lineNum].Add(line, linecache);
@@ -184,7 +184,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
                         if (!_buffer[lineCoordinates][lineNum].ContainsKey(val))
                         {
-                            var valcache = ProjectData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val);
+                            var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val);
 
                             if (!string.IsNullOrEmpty(valcache))
                             {
@@ -219,7 +219,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     _buffer.Clear();
 
                     //write cache periodically
-                    ProjectData.OnlineTranslationCache.Write();
+                    AppData.OnlineTranslationCache.Write();
 
                     // stop translating after last pack of text when translation is interrupted
                     if (Properties.Settings.Default.InterruptTtanslation) return;
@@ -242,7 +242,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 _buffer.Clear();
 
                 //write cache periodically
-                ProjectData.OnlineTranslationCache.Write();
+                AppData.OnlineTranslationCache.Write();
             }
         }
 
@@ -292,16 +292,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private string[] ApplyProjectPretranslationAction(string[] originalLines)
         {
-            if (ProjectData.CurrentProject.HideVARSMatchCollectionsList != null && ProjectData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
+            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
             {
-                ProjectData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+                AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
             }
 
             var newOriginalLines = new string[originalLines.Length];
             Array.Copy(originalLines, newOriginalLines, originalLines.Length);
             for (int i = 0; i < newOriginalLines.Length; i++)
             {
-                var s = ProjectData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
+                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
                 if (!string.IsNullOrEmpty(s))
                 {
                     newOriginalLines[i] = s;
@@ -320,16 +320,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             for (int i = 0; i < translatedLines.Length; i++)
             {
-                var s = ProjectData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
+                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
                 if (!string.IsNullOrEmpty(s) && s != translatedLines[i])
                 {
                     translatedLines[i] = s;
                 }
             }
 
-            if (ProjectData.CurrentProject.HideVARSMatchCollectionsList != null && ProjectData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
+            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
             {
-                ProjectData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+                AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
             }
 
             return translatedLines;
@@ -420,7 +420,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var tr = coordinate.Key.Split(',');
                 var tindex = int.Parse(tr[0]);
                 var rindex = int.Parse(tr[1]);
-                var row = ProjectData.CurrentProject.FilesContent.Tables[tindex].Rows[rindex];
+                var row = AppData.CurrentProject.FilesContent.Tables[tindex].Rows[rindex];
                 //var linenumMax = (Row[0] + "").GetLinesCount();
 
                 var cellTranslationEqualOriginal = Equals(row[1], row[0]);

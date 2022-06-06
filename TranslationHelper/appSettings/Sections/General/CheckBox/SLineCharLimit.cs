@@ -14,7 +14,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultInt + string.Empty;
         internal override int DefaultInt => 60;
 
-        object SObject { get => ProjectData.Main.Settings.LineCharLimitTextBox; }
+        object SObject { get => AppData.Main.Settings.LineCharLimitTextBox; }
 
         static int SVar
         {
@@ -30,7 +30,7 @@ namespace TranslationHelper.INISettings
             }
             else
             {
-                SVar = int.TryParse(ProjectData.BufferValueString, out int result) ? result : DefaultInt;
+                SVar = int.TryParse(AppData.BufferValueString, out int result) ? result : DefaultInt;
                 (SObject as System.Windows.Forms.TextBox).Text = SVar + string.Empty;
             }
         }

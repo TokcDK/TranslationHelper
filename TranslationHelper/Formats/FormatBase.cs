@@ -27,12 +27,12 @@ namespace TranslationHelper.Formats
 
         private void BaseInit()
         {
-            if (ProjectData.CurrentProject == null)
+            if (AppData.CurrentProject == null)
             {
                 return;
             }
 
-            ProjectData.CurrentProject.CurrentFormat = this; // set format
+            AppData.CurrentProject.CurrentFormat = this; // set format
 
             // set filepath from projectdata filepath
             if (!_filePathIsSet && string.IsNullOrWhiteSpace(FilePath))
@@ -42,30 +42,30 @@ namespace TranslationHelper.Formats
                 //    FilePath = ProjectData.FilePath;
                 //}
                 //else
-                if (!string.IsNullOrWhiteSpace(ProjectData.SelectedFilePath))
+                if (!string.IsNullOrWhiteSpace(AppData.SelectedFilePath))
                 {
-                    FilePath = ProjectData.SelectedFilePath;
+                    FilePath = AppData.SelectedFilePath;
                 }
             }
 
             // DontLoadDuplicates options
-            if (!ProjectData.CurrentProject.DontLoadDuplicates)
+            if (!AppData.CurrentProject.DontLoadDuplicates)
             {
                 return;
             }
 
-            if (ProjectData.SaveFileMode)
+            if (AppData.SaveFileMode)
             {
-                if (ProjectData.CurrentProject.TablesLinesDict == null)
+                if (AppData.CurrentProject.TablesLinesDict == null)
                 {
-                    ProjectData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
+                    AppData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
                 }
             }
             else
             {
-                if (ProjectData.CurrentProject.Hashes == null)
+                if (AppData.CurrentProject.Hashes == null)
                 {
-                    ProjectData.CurrentProject.Hashes = new ConcurrentSet<string>();
+                    AppData.CurrentProject.Hashes = new ConcurrentSet<string>();
                 }
             }
         }
@@ -76,7 +76,7 @@ namespace TranslationHelper.Formats
         internal string FilePath;
         protected virtual string GetFilePath()
         {
-            return ProjectData.OpenFileMode ? GetOpenFilePath() : GetSaveFilePath();
+            return AppData.OpenFileMode ? GetOpenFilePath() : GetSaveFilePath();
         }
         protected virtual string GetOpenFilePath()
         {
@@ -158,14 +158,14 @@ namespace TranslationHelper.Formats
                     cnt--;
                 }
             }
-            if (ProjectData.CurrentProject.SubpathInTableName)
+            if (AppData.CurrentProject.SubpathInTableName)
             {
                 var dirPath = Path.GetDirectoryName(filePath);
                 if (dirPath == null)
                 {
 
                 }
-                tableName = dirPath.Replace(ProjectData.CurrentProject.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar;
+                tableName = dirPath.Replace(AppData.CurrentProject.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar;
             }
 
             if (UseTableNameWithoutExtension)
@@ -263,7 +263,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(ref string RowData, string RowInfo = "", bool CheckInput = true, string existsTranslation = null)
         {
-            if (ProjectData.OpenFileMode)
+            if (AppData.OpenFileMode)
             {
                 return AddRowData(TableName(), RowData, RowInfo, CheckInput);
             }
@@ -298,7 +298,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(ref string[] RowData, string RowInfo = "", bool CheckInput = true)
         {
-            if (ProjectData.OpenFileMode)
+            if (AppData.OpenFileMode)
             {
                 return AddRowData(TableName(), RowData, RowInfo, CheckInput);
             }
@@ -350,36 +350,36 @@ namespace TranslationHelper.Formats
                 return false;
             }
 
-            if (ProjectData.CurrentProject.DontLoadDuplicates)
+            if (AppData.CurrentProject.DontLoadDuplicates)
             {
-                if (ProjectData.CurrentProject.Hashes == null || ProjectData.CurrentProject.Hashes.Contains(original))
+                if (AppData.CurrentProject.Hashes == null || AppData.CurrentProject.Hashes.Contains(original))
                 {
                     return false;
                 }
 
                 // add to hashes when only unique values
-                ProjectData.CurrentProject.Hashes.TryAdd(original);
+                AppData.CurrentProject.Hashes.TryAdd(original);
             }
             else
             {
                 // variant with duplicates
 
                 // check if original exists
-                if (!ProjectData.CurrentProject.OriginalsTableRowCoordinates.ContainsKey(original))
+                if (!AppData.CurrentProject.OriginalsTableRowCoordinates.ContainsKey(original))
                 {
-                    ProjectData.CurrentProject.OriginalsTableRowCoordinates.TryAdd(original, new ConcurrentDictionary<string, ConcurrentSet<int>>());
+                    AppData.CurrentProject.OriginalsTableRowCoordinates.TryAdd(original, new ConcurrentDictionary<string, ConcurrentSet<int>>());
                 }
 
                 // check if tablename is exists
-                if (!ProjectData.CurrentProject.OriginalsTableRowCoordinates[original].ContainsKey(tablename))
+                if (!AppData.CurrentProject.OriginalsTableRowCoordinates[original].ContainsKey(tablename))
                 {
-                    ProjectData.CurrentProject.OriginalsTableRowCoordinates[original].TryAdd(tablename, new ConcurrentSet<int>());
+                    AppData.CurrentProject.OriginalsTableRowCoordinates[original].TryAdd(tablename, new ConcurrentSet<int>());
                 }
 
                 // check if current row number is exists
-                if (!ProjectData.CurrentProject.OriginalsTableRowCoordinates[original][tablename].Contains(RowNumber))
+                if (!AppData.CurrentProject.OriginalsTableRowCoordinates[original][tablename].Contains(RowNumber))
                 {
-                    ProjectData.CurrentProject.OriginalsTableRowCoordinates[original][tablename].TryAdd(RowNumber);
+                    AppData.CurrentProject.OriginalsTableRowCoordinates[original][tablename].TryAdd(RowNumber);
                 }
 
                 // raise row number
@@ -413,8 +413,8 @@ namespace TranslationHelper.Formats
             }
             else if (Data.Rows.Count > 0)
             {
-                ProjectData.CurrentProject.AddFileData(Data);
-                ProjectData.CurrentProject.AddFileInfo(Info);
+                AppData.CurrentProject.AddFileData(Data);
+                AppData.CurrentProject.AddFileInfo(Info);
 
                 //#if DEBUG
                 //                ProjectData.Main.Invoke((Action)(() => ProjectData.AddTableData(TableData)));
@@ -463,17 +463,17 @@ namespace TranslationHelper.Formats
                 return false;
             }
 
-            if (ProjectData.SaveFileMode && !ProjectData.THFilesList.Items.Contains(TableName()))
+            if (AppData.SaveFileMode && !AppData.THFilesList.Items.Contains(TableName()))
             {
                 return false;
             }
 
-            if (ProjectData.OpenFileMode)
+            if (AppData.OpenFileMode)
             {
                 AddTables();
             }
 
-            if (ProjectData.SaveFileMode)
+            if (AppData.SaveFileMode)
             {
                 SplitTableCellValuesAndTheirLinesToDictionary(TableName(), false, false);
             }
@@ -523,7 +523,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual bool FilePostOpen()
         {
-            if (ProjectData.OpenFileMode)
+            if (AppData.OpenFileMode)
             {
                 return CheckTablesContent(TableName());
             }
@@ -544,35 +544,35 @@ namespace TranslationHelper.Formats
         internal virtual bool IsValidString(string inputString)
         {
             //preclean string
-            inputString = ProjectData.CurrentProject.CleanStringForCheck(inputString);
+            inputString = AppData.CurrentProject.CleanStringForCheck(inputString);
 
             return !string.IsNullOrWhiteSpace(inputString) && !inputString.ForJPLangHaveMostOfRomajiOtherChars();
         }
         internal void SplitTableCellValuesToDictionaryLines(string TableName)
         {
-            if (!ProjectData.CurrentProject.DontLoadDuplicates || !ProjectData.SaveFileMode || !ProjectData.CurrentProject.FilesContent.Tables.Contains(TableName))
+            if (!AppData.CurrentProject.DontLoadDuplicates || !AppData.SaveFileMode || !AppData.CurrentProject.FilesContent.Tables.Contains(TableName))
                 return;
 
-            if (ProjectData.CurrentProject.TablesLinesDict == null)
+            if (AppData.CurrentProject.TablesLinesDict == null)
             {
-                ProjectData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
+                AppData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
 
-            if (ProjectData.CurrentProject.TablesLinesDict.Count > 0)
+            if (AppData.CurrentProject.TablesLinesDict.Count > 0)
             {
-                ProjectData.CurrentProject.TablesLinesDict.Clear();
+                AppData.CurrentProject.TablesLinesDict.Clear();
             }
 
-            foreach (DataRow Row in ProjectData.CurrentProject.FilesContent.Tables[TableName].Rows)
+            foreach (DataRow Row in AppData.CurrentProject.FilesContent.Tables[TableName].Rows)
             {
                 string Original;
                 string Translation;
-                if (ProjectData.CurrentProject.TablesLinesDict.ContainsKey(Original = Row[0] + string.Empty) || (Translation = Row[1] + string.Empty).Length == 0 || Translation == Original)
+                if (AppData.CurrentProject.TablesLinesDict.ContainsKey(Original = Row[0] + string.Empty) || (Translation = Row[1] + string.Empty).Length == 0 || Translation == Original)
                 {
                     continue;
                 }
 
-                ProjectData.CurrentProject.TablesLinesDict.TryAdd(Original, Translation);
+                AppData.CurrentProject.TablesLinesDict.TryAdd(Original, Translation);
             }
         }
 
@@ -588,7 +588,7 @@ namespace TranslationHelper.Formats
         /// <param name="onlyOneTable">Parse only <paramref name="tableName"/></param>
         internal void SplitTableCellValuesAndTheirLinesToDictionary(string tableName, bool makeLinesCountEqual = false, bool onlyOneTable = false)
         {
-            if (!ProjectData.CurrentProject.DontLoadDuplicates) // skip if do not load duplicates option is disabled
+            if (!AppData.CurrentProject.DontLoadDuplicates) // skip if do not load duplicates option is disabled
             {
                 return;
             }
@@ -605,19 +605,19 @@ namespace TranslationHelper.Formats
             }
 
             FirstPassOfDictionaryFilling = false;
-            if (ProjectData.CurrentProject.TablesLinesDict == null)
+            if (AppData.CurrentProject.TablesLinesDict == null)
             {
-                ProjectData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
+                AppData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
 
             if (onlyOneTable)
             {
-                if (!ProjectData.CurrentProject.FilesContent.Tables.Contains(tableName))
+                if (!AppData.CurrentProject.FilesContent.Tables.Contains(tableName))
                     return;
 
-                if (ProjectData.CurrentProject.TablesLinesDict.Count > 0)
+                if (AppData.CurrentProject.TablesLinesDict.Count > 0)
                 {
-                    ProjectData.CurrentProject.TablesLinesDict.Clear();
+                    AppData.CurrentProject.TablesLinesDict.Clear();
                 }
             }
             else
@@ -629,7 +629,7 @@ namespace TranslationHelper.Formats
             }
 
 
-            foreach (DataTable Table in ProjectData.CurrentProject.FilesContent.Tables)
+            foreach (DataTable Table in AppData.CurrentProject.FilesContent.Tables)
             {
                 if (onlyOneTable && Table.TableName != tableName)
                 {
@@ -640,7 +640,7 @@ namespace TranslationHelper.Formats
                 {
                     string Original = (Row[0] + string.Empty);
                     int OriginalLinesCount = Original.GetLinesCount();
-                    if (OriginalLinesCount == 1 && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(Original))
+                    if (OriginalLinesCount == 1 && AppData.CurrentProject.TablesLinesDict.ContainsKey(Original))
                     {
                         continue;
                     }
@@ -664,13 +664,13 @@ namespace TranslationHelper.Formats
                     }
 
                     //Сначала добавить полный вариант
-                    if (!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(Original) /*&& ((!ProjectData.CurrentProject.ProjectData.CurrentProject.TablesLinesDictAddEqual && Translation != Original) || ProjectData.CurrentProject.ProjectData.CurrentProject.TablesLinesDictAddEqual)*/)
+                    if (!AppData.CurrentProject.TablesLinesDict.ContainsKey(Original) /*&& ((!ProjectData.CurrentProject.ProjectData.CurrentProject.TablesLinesDictAddEqual && Translation != Original) || ProjectData.CurrentProject.ProjectData.CurrentProject.TablesLinesDictAddEqual)*/)
                     {
                         try
                         {
                             lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                             {
-                                ProjectData.CurrentProject.TablesLinesDict.TryAdd(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                AppData.CurrentProject.TablesLinesDict.TryAdd(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                             }
                         }
                         catch (ArgumentException) { }
@@ -680,9 +680,9 @@ namespace TranslationHelper.Formats
                             continue;//когда одна строка не тратить время на её разбор
                         }
                     }
-                    else if (Translation != Original && Original == ProjectData.CurrentProject.TablesLinesDict[Original])
+                    else if (Translation != Original && Original == AppData.CurrentProject.TablesLinesDict[Original])
                     {
-                        ProjectData.CurrentProject.TablesLinesDict[Original] = Translation;
+                        AppData.CurrentProject.TablesLinesDict[Original] = Translation;
                         if (OriginalLinesCount == 1)
                         {
                             continue;//когда одна строка не тратить время на её разбор
@@ -707,13 +707,13 @@ namespace TranslationHelper.Formats
                     {
                         if (LinesCountisEqual) //когда количество строк равно, просто добавлять валидные строки в словарь
                         {
-                            if (!ProjectData.CurrentProject.TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
+                            if (!AppData.CurrentProject.TablesLinesDict.ContainsKey(OriginalLines[lineNumber]) && TranslationLines[lineNumber].Length > 0 && OriginalLines[lineNumber] != TranslationLines[lineNumber])
                             {
                                 try
                                 {
                                     lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                                     {
-                                        ProjectData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                        AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                     }
                                 }
                                 catch (ArgumentException) { }
@@ -729,7 +729,7 @@ namespace TranslationHelper.Formats
                                     {
                                         lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                                         {
-                                            ProjectData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                            AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                         }
                                     }
                                     catch (ArgumentException) { }
@@ -754,7 +754,7 @@ namespace TranslationHelper.Formats
                                                 lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                                                 {
                                                     //добавить оригинал с переводом содержащим больше строк, чем в оригинале
-                                                    ProjectData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[OriginalLinesCount - 1], result/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                                    AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[OriginalLinesCount - 1], result/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                                 }
                                             }
                                             catch (ArgumentException) { }
@@ -769,7 +769,7 @@ namespace TranslationHelper.Formats
                                             {
                                                 lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                                                 {
-                                                    ProjectData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                                    AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
                                                 }
                                             }
                                             catch (ArgumentException) { }
@@ -813,22 +813,22 @@ namespace TranslationHelper.Formats
         /// <returns>true if translation was set and not equal to input original</returns>
         internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null)
         {
-            if (ProjectData.OpenFileMode) return false;
+            if (AppData.OpenFileMode) return false;
 
             var isTranslated = false;
-            bool letDuplicates = !ProjectData.CurrentProject.DontLoadDuplicates;
+            bool letDuplicates = !AppData.CurrentProject.DontLoadDuplicates;
             if (letDuplicates
-                && ProjectData.CurrentProject.OriginalsTableRowCoordinates != null
-                && ProjectData.CurrentProject.OriginalsTableRowCoordinates.ContainsKey(valueToTranslate) // input value has original's value before it will be changed to translation
+                && AppData.CurrentProject.OriginalsTableRowCoordinates != null
+                && AppData.CurrentProject.OriginalsTableRowCoordinates.ContainsKey(valueToTranslate) // input value has original's value before it will be changed to translation
                 )
             {
                 var currentTableName = TableName();
                 var pretranslatedOriginal = valueToTranslate;
-                if (ProjectData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate].ContainsKey(currentTableName))
+                if (AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate].ContainsKey(currentTableName))
                 {
-                    if (ProjectData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate][currentTableName].Contains(RowNumber))
+                    if (AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate][currentTableName].Contains(RowNumber))
                     {
-                        valueToTranslate = ProjectData.CurrentProject.FilesContent.Tables[currentTableName].Rows[RowNumber][1] + "";
+                        valueToTranslate = AppData.CurrentProject.FilesContent.Tables[currentTableName].Rows[RowNumber][1] + "";
                         valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
                         isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
@@ -842,11 +842,11 @@ namespace TranslationHelper.Formats
                     }
                     else // set 1st value from avalaible values
                     {
-                        ProjectData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + TableName() + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
+                        AppData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + TableName() + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
 
-                        foreach (var rowIndex in ProjectData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate][currentTableName])
+                        foreach (var rowIndex in AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate][currentTableName])
                         {
-                            valueToTranslate = ProjectData.CurrentProject.FilesContent.Tables[currentTableName].Rows[rowIndex][1] + "";
+                            valueToTranslate = AppData.CurrentProject.FilesContent.Tables[currentTableName].Rows[rowIndex][1] + "";
                             valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
                             isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
@@ -862,13 +862,13 @@ namespace TranslationHelper.Formats
                 }
                 else // set 1st value from avalaible values
                 {
-                    ProjectData.AppLog.LogToFile("Warning! Table not found. row number=" + RowNumber + ". table name=" + TableName() + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
+                    AppData.AppLog.LogToFile("Warning! Table not found. row number=" + RowNumber + ". table name=" + TableName() + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
 
-                    foreach (var existTableName in ProjectData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate].Values)
+                    foreach (var existTableName in AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate].Values)
                     {
                         foreach (var existsRowIndex in existTableName)
                         {
-                            valueToTranslate = ProjectData.CurrentProject.FilesContent.Tables[currentTableName].Rows[existsRowIndex][1] + "";
+                            valueToTranslate = AppData.CurrentProject.FilesContent.Tables[currentTableName].Rows[existsRowIndex][1] + "";
                             valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
                             isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
@@ -893,10 +893,10 @@ namespace TranslationHelper.Formats
 
                 RowNumber++;
             }
-            else if (!letDuplicates && ProjectData.CurrentProject.TablesLinesDict.ContainsKey(valueToTranslate))
+            else if (!letDuplicates && AppData.CurrentProject.TablesLinesDict.ContainsKey(valueToTranslate))
             {
                 var control = valueToTranslate;
-                valueToTranslate = ProjectData.CurrentProject.TablesLinesDict[valueToTranslate];
+                valueToTranslate = AppData.CurrentProject.TablesLinesDict[valueToTranslate];
                 valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
                 isTranslated = control != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);

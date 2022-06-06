@@ -12,7 +12,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool IsValidTable(DataTable table)
         {
-            return !ProjectData.CurrentProject.LineSplitProjectSpecificSkipForTable(table);
+            return !AppData.CurrentProject.LineSplitProjectSpecificSkipForTable(table);
         }
 
         protected override bool Apply()
@@ -23,7 +23,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 && transCellValue != origCellValue
                 && FunctionsString.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit
                 /*&& !FunctionsString.IsStringContainsSpecialSymbols(transCellValue)*/
-                && !ProjectData.CurrentProject.LineSplitProjectSpecificSkipForLine(origCellValue, transCellValue, SelectedTableIndex, SelectedRowIndex))
+                && !AppData.CurrentProject.LineSplitProjectSpecificSkipForLine(origCellValue, transCellValue, SelectedTableIndex, SelectedRowIndex))
             {
                 SelectedRow[ColumnIndexTranslation] = transCellValue.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit);
                 //row[1] = transCellValue.Wrap(Properties.Settings.Default.THOptionLineCharLimit);

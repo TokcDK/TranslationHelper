@@ -14,9 +14,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (IsAll || IsTables || IsTable)
             {
                 //отключение датасорса для убирания тормозов с параллельной прорисовкой
-                ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = null));
-                ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Update()));
-                ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
+                AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.DataSource = null));
+                AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Update()));
+                AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
             }
         }
 
@@ -24,7 +24,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (IsAll || IsTables || IsTable)
             {
-                ProjectData.Main.Invoke((Action)(() => ProjectData.Main.ActionsOnTHFIlesListElementSelected()));
+                AppData.Main.Invoke((Action)(() => AppData.Main.ActionsOnTHFIlesListElementSelected()));
             }
         }
 

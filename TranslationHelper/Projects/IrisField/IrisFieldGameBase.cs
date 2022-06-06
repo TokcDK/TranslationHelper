@@ -35,11 +35,11 @@ namespace TranslationHelper.Projects.IrisField
 
         internal override bool Check()
         {
-            return Path.GetExtension(ProjectData.SelectedFilePath) == ".exe"
+            return Path.GetExtension(AppData.SelectedFilePath) == ".exe"
                 &&
-                Path.GetFileNameWithoutExtension(ProjectData.SelectedFilePath) == GameExeName
+                Path.GetFileNameWithoutExtension(AppData.SelectedFilePath) == GameExeName
                 &&
-                Directory.Exists(Path.Combine(Path.GetDirectoryName(ProjectData.SelectedFilePath), "data", "Script"));
+                Directory.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "data", "Script"));
         }
 
         internal override string Filters()
@@ -55,15 +55,15 @@ namespace TranslationHelper.Projects.IrisField
         private bool OpenFiles()
         {
             OpenFilesSerial();
-            return ProjectData.CurrentProject.FilesContent.Tables.Count > 0;
+            return AppData.CurrentProject.FilesContent.Tables.Count > 0;
         }
 
         private bool OpenFilesSerial()
         {
             var ret = false;
 
-            ProjectData.Main.ProgressInfo(true, Path.GetFileName(ProjectData.SelectedFilePath));
-            var openPath = new DirectoryInfo(Path.GetDirectoryName(ProjectData.SelectedFilePath));
+            AppData.Main.ProgressInfo(true, Path.GetFileName(AppData.SelectedFilePath));
+            var openPath = new DirectoryInfo(Path.GetDirectoryName(AppData.SelectedFilePath));
             if (OpenSaveFilesBase(openPath, GameExeFormatType, GameExeName + ".exe", searchOption: SearchOption.TopDirectoryOnly))
             {
                 ret = true;
@@ -79,7 +79,7 @@ namespace TranslationHelper.Projects.IrisField
                 }
             }
 
-            ProjectData.Main.ProgressInfo(false);
+            AppData.Main.ProgressInfo(false);
             return ret;
         }
 

@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (troop == null) continue;
 
                 var s = troop.Name;
-                if (AddRowData(ref s, $"\r\nID: {troop.Id}") && ProjectData.SaveFileMode) troop.Name = s;
+                if (AddRowData(ref s, $"\r\nID: {troop.Id}") && AppData.SaveFileMode) troop.Name = s;
             }
 
             return data;

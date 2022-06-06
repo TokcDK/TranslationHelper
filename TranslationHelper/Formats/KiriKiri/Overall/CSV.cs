@@ -87,8 +87,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(columns[name]);
-                                    _ = ProjectData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("name");
+                                    _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(columns[name]);
+                                    _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("name");
                                 }
                             }
                             if (detail > -1)
@@ -98,8 +98,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(columns[detail]);
-                                    _ = ProjectData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("detail");
+                                    _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(columns[detail]);
+                                    _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("detail");
                                 }
                             }
                             if (type > -1)
@@ -109,8 +109,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(columns[type]);
-                                    _ = ProjectData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("type");
+                                    _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(columns[type]);
+                                    _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("type");
                                 }
                             }
                             if (field > -1)
@@ -120,8 +120,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ProjectData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(columns[field]);
-                                    _ = ProjectData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("field");
+                                    _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(columns[field]);
+                                    _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("field");
                                 }
                             }
                             if (comment > -1)
@@ -133,12 +133,12 @@ namespace TranslationHelper.Formats.KiriKiri
                                 {
                                     try
                                     {
-                                        _ = ProjectData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(columns[comment]);
-                                        _ = ProjectData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("comment");
+                                        _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(columns[comment]);
+                                        _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("comment");
                                     }
                                     catch
                                     {
-                                        MessageBox.Show("ProjectData.THFilesElementsDataset.Tables[fileName]=" + ProjectData.CurrentProject.FilesContent.Tables[fileName] + "\r\ncolumns[comment]=" + columns[comment]);
+                                        MessageBox.Show("ProjectData.THFilesElementsDataset.Tables[fileName]=" + AppData.CurrentProject.FilesContent.Tables[fileName] + "\r\ncolumns[comment]=" + columns[comment]);
                                     }
                                 }
                             }

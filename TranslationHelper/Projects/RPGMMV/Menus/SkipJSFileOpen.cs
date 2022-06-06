@@ -7,7 +7,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 {
     class SkipJSFileOpen : IFileListItemMenu
     {
-        public string Text => "[" + ProjectData.CurrentProject.Name() + "]" + T._("Skip JS") + "-->" + T._("Open");
+        public string Text => "[" + AppData.CurrentProject.Name() + "]" + T._("Skip JS") + "-->" + T._("Open");
 
         public string Description => "Open Skip.js file in text editor";
 

@@ -30,7 +30,7 @@ namespace TranslationHelper.Formats.WolfRPG
             var value = string.Join(Environment.NewLine, Buffer);
             AddRowData(ref value);
 
-            if (ProjectData.SaveFileMode) ParseData.Line = value + Environment.NewLine + ParseData.Line;
+            if (AppData.SaveFileMode) ParseData.Line = value + Environment.NewLine + ParseData.Line;
 
             Buffer.Clear();
         }

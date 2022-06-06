@@ -169,9 +169,9 @@ namespace TranslationHelper.Main.Functions
         internal static string GetProjectDBFolder()
         {
             string ret = string.Empty;
-            if (ProjectData.CurrentProject != null)
+            if (AppData.CurrentProject != null)
             {
-                ret = ProjectData.CurrentProject.ProjectFolderName();
+                ret = AppData.CurrentProject.ProjectFolderName();
             }
             //else if (ProjectData.CurrentProject.Name().Contains("RPG Maker MV"))
             //{
@@ -190,29 +190,29 @@ namespace TranslationHelper.Main.Functions
 
         internal static string GetDBFileName(bool saveAs = false)
         {
-            string fName = Path.GetFileName(ProjectData.CurrentProject.SelectedDir);
-            if (ProjectData.CurrentProject != null && ProjectData.CurrentProject.GetProjectDBFileName().Length > 0)
+            string fName = Path.GetFileName(AppData.CurrentProject.SelectedDir);
+            if (AppData.CurrentProject != null && AppData.CurrentProject.GetProjectDBFileName().Length > 0)
             {
-                fName = ProjectData.CurrentProject.GetProjectDBFileName();
+                fName = AppData.CurrentProject.GetProjectDBFileName();
             }
-            else if (ProjectData.CurrentProject.Name().Contains(new RPGMMVGame().Name()))
+            else if (AppData.CurrentProject.Name().Contains(new RPGMMVGame().Name()))
             {
-                if (ProjectData.Main.THFilesList.GetItemsCount() == 1 && ProjectData.Main.THFilesList.GetItemName(0) != null && !string.IsNullOrWhiteSpace(ProjectData.Main.THFilesList.GetItemName(0).ToString()))
+                if (AppData.Main.THFilesList.GetItemsCount() == 1 && AppData.Main.THFilesList.GetItemName(0) != null && !string.IsNullOrWhiteSpace(AppData.Main.THFilesList.GetItemName(0).ToString()))
                 {
                     if (fName == "data")
                     {
-                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(ProjectData.CurrentProject.SelectedDir))) + "_" + Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.GetItemName(0).ToString());
+                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(AppData.CurrentProject.SelectedDir))) + "_" + Path.GetFileNameWithoutExtension(AppData.Main.THFilesList.GetItemName(0).ToString());
                     }
                     else
                     {
-                        fName = Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.GetItemName(0).ToString());
+                        fName = Path.GetFileNameWithoutExtension(AppData.Main.THFilesList.GetItemName(0).ToString());
                     }
                 }
             }
-            else if (ProjectData.Main.THFilesList.GetItemsCount() == 1 && ProjectData.Main.THFilesList.GetItemName(0) != null && !string.IsNullOrWhiteSpace(ProjectData.Main.THFilesList.GetItemName(0).ToString()))
+            else if (AppData.Main.THFilesList.GetItemsCount() == 1 && AppData.Main.THFilesList.GetItemName(0) != null && !string.IsNullOrWhiteSpace(AppData.Main.THFilesList.GetItemName(0).ToString()))
             {
                 //dbfilename as name of single file in files list
-                fName = Path.GetFileNameWithoutExtension(ProjectData.Main.THFilesList.GetItemName(0).ToString());
+                fName = Path.GetFileNameWithoutExtension(AppData.Main.THFilesList.GetItemName(0).ToString());
             }
             //else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
             //{
@@ -575,9 +575,9 @@ namespace TranslationHelper.Main.Functions
 
         internal static void MergeAllDBtoOne()
         {
-            if (ProjectData.AllDBmerged == null)
+            if (AppData.AllDBmerged == null)
             {
-                ProjectData.AllDBmerged = new Dictionary<string, string>();
+                AppData.AllDBmerged = new Dictionary<string, string>();
             }
 
             var newestFilesList = GetNewestFIlesList(THSettings.DBDirPath());
@@ -589,10 +589,10 @@ namespace TranslationHelper.Main.Functions
                 {
                     using (var dbDataSet = new DataSet())
                     {
-                        ProjectData.Main.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(dbFile.Value.Name));
+                        AppData.Main.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(dbFile.Value.Name));
 
                         ReadDBFile(dataSet: dbDataSet, dbFilePath: dbFile.Value.FullName, useOriginaldbFilePath: true);
-                        dbDataSet.ToDictionary(inputDB: ProjectData.AllDBmerged, dontAddEmptyTranslation: true, dontAddEqualTranslation: true, _dbDataSetToDictionaryAddLocker);
+                        dbDataSet.ToDictionary(inputDB: AppData.AllDBmerged, dontAddEmptyTranslation: true, dontAddEqualTranslation: true, _dbDataSetToDictionaryAddLocker);
                     }
                 }
                 catch

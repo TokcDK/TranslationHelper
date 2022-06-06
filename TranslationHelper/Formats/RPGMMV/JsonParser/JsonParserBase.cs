@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
     {
         protected JsonParserBase(FormatBase format)
         {
-            if (ProjectData.CurrentProject == null) return;
+            if (AppData.CurrentProject == null) return;
 
             Format = format;
 
@@ -121,12 +121,12 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             }
             catch (JsonReaderException ex)
             {
-                ProjectData.AppLog.LogToFile("Error occured while json read (json is empty or corrupted): \r\n" + ex);
+                AppData.AppLog.LogToFile("Error occured while json read (json is empty or corrupted): \r\n" + ex);
                 return false;
             }
             catch (Exception ex)
             {
-                ProjectData.AppLog.LogToFile("Error occured while json parse: \r\n" + ex);
+                AppData.AppLog.LogToFile("Error occured while json parse: \r\n" + ex);
                 return false;
             }
 
@@ -139,7 +139,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
         private void WriteJsonFileInSaveMode()
         {
-            if (ProjectData.SaveFileMode && Format.RET || (Format is FormatStringBase s && s.ParseData.Ret))
+            if (AppData.SaveFileMode && Format.RET || (Format is FormatStringBase s && s.ParseData.Ret))
             {
                 File.WriteAllText(Json.FullName, ResultJson());
             }

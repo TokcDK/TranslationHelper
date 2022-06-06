@@ -17,7 +17,7 @@ namespace TranslationHelper.Extensions
         internal static void SetValue(this DataRow selectedRow, int columnIndex, object value)
         {
 #if DEBUG
-            ProjectData.Main.Invoke((Action)(() => selectedRow[columnIndex] = value));
+            AppData.Main.Invoke((Action)(() => selectedRow[columnIndex] = value));
 #else
             selectedRow[columnIndex] = value
 #endif

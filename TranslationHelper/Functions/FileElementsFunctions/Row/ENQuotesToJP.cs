@@ -9,13 +9,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     {
         public EnQuotesToJp()
         {
-            if (ProjectData.ENQuotesToJPLearnDataFoundPrev == null)
+            if (AppData.ENQuotesToJPLearnDataFoundPrev == null)
             {
-                ProjectData.ENQuotesToJPLearnDataFoundPrev = new System.Collections.Generic.Dictionary<char, int>();
+                AppData.ENQuotesToJPLearnDataFoundPrev = new System.Collections.Generic.Dictionary<char, int>();
             }
-            if (ProjectData.ENQuotesToJPLearnDataFoundNext == null)
+            if (AppData.ENQuotesToJPLearnDataFoundNext == null)
             {
-                ProjectData.ENQuotesToJPLearnDataFoundNext = new System.Collections.Generic.Dictionary<char, int>();
+                AppData.ENQuotesToJPLearnDataFoundNext = new System.Collections.Generic.Dictionary<char, int>();
             }
         }
 
@@ -316,24 +316,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (IsAll || IsTable)
                 if (prev)
                 {
-                    if (ProjectData.ENQuotesToJPLearnDataFoundPrev.ContainsKey(c))
+                    if (AppData.ENQuotesToJPLearnDataFoundPrev.ContainsKey(c))
                     {
-                        ProjectData.ENQuotesToJPLearnDataFoundPrev[c]++;
+                        AppData.ENQuotesToJPLearnDataFoundPrev[c]++;
                     }
                     else
                     {
-                        ProjectData.ENQuotesToJPLearnDataFoundPrev.Add(c, 1);
+                        AppData.ENQuotesToJPLearnDataFoundPrev.Add(c, 1);
                     }
                 }
                 else
                 {
-                    if (ProjectData.ENQuotesToJPLearnDataFoundNext.ContainsKey(c))
+                    if (AppData.ENQuotesToJPLearnDataFoundNext.ContainsKey(c))
                     {
-                        ProjectData.ENQuotesToJPLearnDataFoundNext[c]++;
+                        AppData.ENQuotesToJPLearnDataFoundNext[c]++;
                     }
                     else
                     {
-                        ProjectData.ENQuotesToJPLearnDataFoundNext.Add(c, 1);
+                        AppData.ENQuotesToJPLearnDataFoundNext.Add(c, 1);
                     }
                 }
 

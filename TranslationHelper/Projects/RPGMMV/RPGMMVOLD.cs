@@ -53,18 +53,18 @@ namespace TranslationHelper.Projects.RPGMMV
                 //источник: https://stackoverflow.com/questions/23763446/how-to-display-the-json-data-in-datagridview-in-c-sharp-windows-application-from
 
                 string Jsonname = Path.GetFileNameWithoutExtension(sPath); // get json file name
-                if (ProjectData.CurrentProject.FilesContent.Tables.Contains(Jsonname))
+                if (AppData.CurrentProject.FilesContent.Tables.Contains(Jsonname))
                 {
                     //MessageBox.Show("true!");
                     return true;
                 }
-                ProjectData.Main.ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
+                AppData.Main.ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
                 string jsondata = File.ReadAllText(sPath); // get json data
 
-                ProjectData.CurrentProject.FilesContent.Tables.Add(Jsonname); // create table with json name
-                ProjectData.CurrentProject.FilesContent.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName()); //create Original column
-                ProjectData.CurrentProject.FilesContentInfo.Tables.Add(Jsonname); // create table with json name
-                ProjectData.CurrentProject.FilesContentInfo.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName()); //create Original column
+                AppData.CurrentProject.FilesContent.Tables.Add(Jsonname); // create table with json name
+                AppData.CurrentProject.FilesContent.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName()); //create Original column
+                AppData.CurrentProject.FilesContentInfo.Tables.Add(Jsonname); // create table with json name
+                AppData.CurrentProject.FilesContentInfo.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName()); //create Original column
                 //MessageBox.Show("Added table:"+Jsonname);
 
                 /*
@@ -201,14 +201,14 @@ namespace TranslationHelper.Projects.RPGMMV
                 //THFileElementsDataGridView.DataSource = ds.Tables[0];
                 //THFileElementsDataGridView.Columns[0].ReadOnly = true;
 
-                if (ProjectData.CurrentProject.FilesContent.Tables[Jsonname].Rows.Count > 0)
+                if (AppData.CurrentProject.FilesContent.Tables[Jsonname].Rows.Count > 0)
                 {
-                    ProjectData.CurrentProject.FilesContent.Tables[Jsonname].Columns.Add(THSettings.TranslationColumnName());
+                    AppData.CurrentProject.FilesContent.Tables[Jsonname].Columns.Add(THSettings.TranslationColumnName());
                 }
                 else
                 {
-                    ProjectData.CurrentProject.FilesContent.Tables.Remove(Jsonname); // remove table if was no items added
-                    ProjectData.CurrentProject.FilesContentInfo.Tables.Remove(Jsonname); // remove table if was no items added
+                    AppData.CurrentProject.FilesContent.Tables.Remove(Jsonname); // remove table if was no items added
+                    AppData.CurrentProject.FilesContentInfo.Tables.Remove(Jsonname); // remove table if was no items added
                 }
 
                 return ret;
@@ -349,10 +349,10 @@ namespace TranslationHelper.Projects.RPGMMV
                             {
                                 //LogToFile("textsb is not empty. add. value=" + mergedstring + ", curcode=" + curcode);
 
-                                ProjectData.CurrentProject.FilesContent.Tables[Jsonname].Rows.Add(mergedstring);
+                                AppData.CurrentProject.FilesContent.Tables[Jsonname].Rows.Add(mergedstring);
                                 //TempList.Add(mergedstring);//много быстрее
 
-                                ProjectData.CurrentProject.FilesContentInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
+                                AppData.CurrentProject.FilesContentInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
                                 //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                             }
                             textsb.Clear();
@@ -366,9 +366,9 @@ namespace TranslationHelper.Projects.RPGMMV
                     else
                     {
 
-                        ProjectData.CurrentProject.FilesContent.Tables[Jsonname].Rows.Add(tokenvalue);
+                        AppData.CurrentProject.FilesContent.Tables[Jsonname].Rows.Add(tokenvalue);
 
-                        ProjectData.CurrentProject.FilesContentInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
+                        AppData.CurrentProject.FilesContentInfo.Tables[Jsonname].Rows.Add("JsonPath: " + token.Path);
                         //TempListInfo.Add("JsonPath: " + token.Path);//много быстрее
                     }
                     //}
@@ -435,10 +435,10 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal bool WriteJson(string Jsonname, string sPath)
         {
-            ProjectData.Main.ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
+            AppData.Main.ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
 
             //skip file if table with same name has translation cells in all lines empty
-            if (FunctionsTable.IsTableColumnCellsAll(ProjectData.CurrentProject.FilesContent.Tables[Jsonname], complete: false))
+            if (FunctionsTable.IsTableColumnCellsAll(AppData.CurrentProject.FilesContent.Tables[Jsonname], complete: false))
                 return true;
 
             try
@@ -472,14 +472,14 @@ namespace TranslationHelper.Projects.RPGMMV
             catch
             {
                 //LogToFile(string.Empty, true);
-                ProjectData.Main.ProgressInfo(false);
+                AppData.Main.ProgressInfo(false);
                 return false;
             }
             finally
             {
             }
             //LogToFile(string.Empty, true);
-            ProjectData.Main.ProgressInfo(false);
+            AppData.Main.ProgressInfo(false);
             return true;
 
         }
@@ -514,9 +514,9 @@ namespace TranslationHelper.Projects.RPGMMV
                     {
                         //ЕСЛИ ПОЗЖЕ СДЕЛАЮ ВТОРОЙ DATASET С ДАННЫМИ ID, CODE И TYPE (ДЛЯ ДОП. ИНФЫ В ТАБЛИЦЕ) , ТО МОЖНО БУДЕТ УСКОРИТЬ СОХРАНЕНИЕ ЗА СЧЕТ СЧИТЫВАНИЯ ЗНАЧЕНИЙ ТОЛЬКО ИЗ СООТВЕТСТВУЮЩИХ РАЗДЕЛОВ
 
-                        for (int i1 = startingrow; i1 < ProjectData.CurrentProject.FilesContent.Tables[Jsonname].Rows.Count; i1++)
+                        for (int i1 = startingrow; i1 < AppData.CurrentProject.FilesContent.Tables[Jsonname].Rows.Count; i1++)
                         {
-                            var row = ProjectData.CurrentProject.FilesContent.Tables[Jsonname].Rows[i1];
+                            var row = AppData.CurrentProject.FilesContent.Tables[Jsonname].Rows[i1];
                             if ((row[1] + string.Empty).Length == 0)
                             {
                             }

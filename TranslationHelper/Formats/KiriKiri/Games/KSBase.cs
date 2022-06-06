@@ -279,7 +279,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
                     if (IsValidString(CleanedStr))
                     {
-                        if (ProjectData.OpenFileMode)
+                        if (AppData.OpenFileMode)
                         {
                             AddRowData(str, string.Empty, CheckInput: false);
                         }
@@ -304,10 +304,10 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     }
                     else
                     {
-                        ProjectData.CurrentProject.HideVARSMatchCollectionsList?.Clear();//clear list of matches for hidevarbase
+                        AppData.CurrentProject.HideVARSMatchCollectionsList?.Clear();//clear list of matches for hidevarbase
                     }
                 }
-                if (ProjectData.SaveFileMode && transApplied && ParseData.Ret)
+                if (AppData.SaveFileMode && transApplied && ParseData.Ret)
                 {
                     //character name correction
                     var s = string.Join(newlineSymbol, strarr);
@@ -410,7 +410,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         internal string CleanVars(string str)
         {
             var keyfound = false;
-            foreach (var key in ProjectData.CurrentProject.HideVarsBase.Keys)
+            foreach (var key in AppData.CurrentProject.HideVarsBase.Keys)
             {
                 if (str.Contains(key))
                 {
@@ -423,7 +423,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                 return str;
             }
 
-            var mc = Regex.Matches(str, "(" + string.Join(")|(", ProjectData.CurrentProject.HideVarsBase.Values) + ")");
+            var mc = Regex.Matches(str, "(" + string.Join(")|(", AppData.CurrentProject.HideVarsBase.Values) + ")");
             if (mc.Count == 0)
             {
                 return str;
@@ -464,8 +464,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         /// <returns></returns>
         protected override string FixInvalidSymbols(string str)
         {
-            return ProjectData.CurrentProject.RestoreVARS(
-                ProjectData.CurrentProject.HideVARSBase(str)
+            return AppData.CurrentProject.RestoreVARS(
+                AppData.CurrentProject.HideVARSBase(str)
                 .Replace("[r]", "{R}")
                 .Replace("[p]", "{P}")
                 .Replace("[lr]", "{LR}")

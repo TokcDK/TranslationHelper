@@ -16,9 +16,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (actor == null) continue;
 
                 var s = actor.Name;
-                if (AddRowData(ref s, $"\r\nID: {actor.Id}\r\nbattlerName: {actor.BattlerName}") && ProjectData.SaveFileMode) actor.Name = s;
+                if (AddRowData(ref s, $"\r\nID: {actor.Id}\r\nbattlerName: {actor.BattlerName}") && AppData.SaveFileMode) actor.Name = s;
                 s = actor.Profile;
-                if (AddRowData(ref s, $"\r\nID: {actor.Id}\r\nName: {actor.Name}\r\nbattlerName: {actor.BattlerName}") && ProjectData.SaveFileMode) actor.Profile = s;
+                if (AddRowData(ref s, $"\r\nID: {actor.Id}\r\nName: {actor.Name}\r\nbattlerName: {actor.BattlerName}") && AppData.SaveFileMode) actor.Profile = s;
             }
 
             return data;

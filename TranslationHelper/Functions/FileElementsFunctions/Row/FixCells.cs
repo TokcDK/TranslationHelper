@@ -40,7 +40,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     string rule;
                     string result;
-                    foreach (var patternReplacementPair in ProjectData.CellFixesRegexRules)
+                    foreach (var patternReplacementPair in AppData.CellFixesRegexRules)
                     {
                         //читать правило и результат
                         rule = patternReplacementPair.Key;
@@ -60,7 +60,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         catch (System.ArgumentException ex)
                         {
                            _log.LogToFile("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
-                            ProjectData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
+                            AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
                             continue;
                         }
 

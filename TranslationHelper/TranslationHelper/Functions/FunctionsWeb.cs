@@ -10,7 +10,7 @@ namespace TranslationHelper.Functions
         /// <returns></returns>
         internal static string GetUserAgent()
         {
-            var ini = Data.ProjectData.ConfigIni;
+            var ini = Data.AppData.ConfigIni;
             if (!ini.KeyExists("UserAgent", "Translation"))
             {
                 ini.SetKey("Translation", "UserAgent", UserAgents.Chrome_Win7);

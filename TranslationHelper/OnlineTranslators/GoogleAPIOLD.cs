@@ -48,7 +48,7 @@ namespace TranslationHelper
                     string address = GetUrlAddress(LanguageFrom, LanguageTo, arg);
 
                     if (webClient == null)
-                        webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
+                        webClient = new WebClientEx(AppData.OnlineTranslatorCookies ?? new CookieContainer());
 
                     webClient.Encoding = Encoding.UTF8;
                     webClient.Headers.Add(HttpRequestHeader.UserAgent, Functions.FunctionsWeb.GetUserAgent());
@@ -79,7 +79,7 @@ namespace TranslationHelper
                     catch (WebException ex)
                     {
                         new Functions.FunctionsLogs().LogToFile("google translation web error:" + Environment.NewLine + ex);
-                        ProjectData.OnlineTranslatorCookies = null;
+                        AppData.OnlineTranslatorCookies = null;
                     }
                     catch (Exception ex)
                     {
@@ -140,7 +140,7 @@ namespace TranslationHelper
 
             if (webClient == null)
             {
-                webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies ?? new CookieContainer());
+                webClient = new WebClientEx(AppData.OnlineTranslatorCookies ?? new CookieContainer());
             }
 
             webClient.Encoding = Encoding.UTF8;
@@ -161,8 +161,8 @@ namespace TranslationHelper
                 }
                 catch (WebException)
                 {
-                    ProjectData.OnlineTranslatorCookies = null;
-                    ProjectData.OnlineTranslatorCookies = new CookieContainer();
+                    AppData.OnlineTranslatorCookies = null;
+                    AppData.OnlineTranslatorCookies = new CookieContainer();
 
                     while (ErrorsWebCnt > 0 && ErrorsWebCntOverall < 10)
                     {
@@ -197,7 +197,7 @@ namespace TranslationHelper
             catch (WebException ex)
             {
                 new Functions.FunctionsLogs().LogToFile("google array translation web error:" + Environment.NewLine + ex + Environment.NewLine + "uri=" + uri);
-                ProjectData.OnlineTranslatorCookies = null;
+                AppData.OnlineTranslatorCookies = null;
                 ErrorsWebCnt++;
             }
             catch (Exception ex)

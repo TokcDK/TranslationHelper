@@ -22,15 +22,15 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (state == null) continue;
 
                 var s = state.Name;
-                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nNote: \"{state.Note}\"") && ProjectData.SaveFileMode) state.Name = s;
+                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nNote: \"{state.Note}\"") && AppData.SaveFileMode) state.Name = s;
                 s = state.Message1;
-                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && ProjectData.SaveFileMode) state.Message1 = s;
+                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && AppData.SaveFileMode) state.Message1 = s;
                 s = state.Message2;
-                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && ProjectData.SaveFileMode) state.Message2 = s;
+                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && AppData.SaveFileMode) state.Message2 = s;
                 s = state.Message3;
-                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && ProjectData.SaveFileMode) state.Message3 = s;
+                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && AppData.SaveFileMode) state.Message3 = s;
                 s = state.Message4;
-                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && ProjectData.SaveFileMode) state.Message4 = s;
+                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && AppData.SaveFileMode) state.Message4 = s;
             }
 
             return data;

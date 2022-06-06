@@ -64,7 +64,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
             {
                 var Values = ParseData.Line.Split(',');
                 var RestOfText = ParseData.Reader.ReadToEnd();
-                if (ProjectData.OpenFileMode)
+                if (AppData.OpenFileMode)
                 {
                     AddRowData(Values[1], "", CheckInput: true);
                     AddRowData(RestOfText, "", CheckInput: true);
@@ -75,13 +75,13 @@ namespace TranslationHelper.Formats.Raijin7.eve
                     if (IsValid(Values[1], ref trans))
                     {
                         ParseData.Ret = true;
-                        Values[1] = FixInvalidSymbols(ProjectData.CurrentProject.TablesLinesDict[Values[1]]);
+                        Values[1] = FixInvalidSymbols(AppData.CurrentProject.TablesLinesDict[Values[1]]);
                     }
 
                     if (IsValid(RestOfText, ref trans))
                     {
                         ParseData.Ret = true;
-                        RestOfText = FixInvalidSymbols(ProjectData.CurrentProject.TablesLinesDict[RestOfText]);
+                        RestOfText = FixInvalidSymbols(AppData.CurrentProject.TablesLinesDict[RestOfText]);
                     }
 
                     ParseData.Line = string.Join(",", Values) + Environment.NewLine + RestOfText;

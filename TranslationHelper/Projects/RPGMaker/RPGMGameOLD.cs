@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.RPGMaker
 
             if (extractdir == "Work")
             {
-                ProjectData.Main.extractedpatchpath = outdir + "_patch";// Распаковывать в Work\ProjectDir\
+                AppData.Main.extractedpatchpath = outdir + "_patch";// Распаковывать в Work\ProjectDir\
             }
 
             //if (!Directory.Exists(outdir))

@@ -10,7 +10,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 {
     class AddToSkipJS : IFileListItemMenu
     {
-        public string Text => "[" + ProjectData.CurrentProject.Name() + "]" + T._("Skip JS");
+        public string Text => "[" + AppData.CurrentProject.Name() + "]" + T._("Skip JS");
 
         public string Description => T._("Add selected item to Skip.js file");
 
@@ -19,7 +19,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
         public void OnClick(object sender, EventArgs e)
         {
             //read and check the name
-            var names = ProjectData.THFilesList.CopySelectedNames();
+            var names = AppData.THFilesList.CopySelectedNames();
             if (string.IsNullOrWhiteSpace(names) || names.ToUpperInvariant().IndexOf(".JS") == -1)
             {
                 return;

@@ -22,7 +22,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 using (var dbDataSet = new System.Data.DataSet())
                 {
-                    ProjectData.Main.ProgressInfo(true, "Load custom DB");
+                    AppData.Main.ProgressInfo(true, "Load custom DB");
 
                     var loadcustom = new Task(() => FunctionsDBFile.ReadDBFile(dbDataSet, _custom));
                     loadcustom.ConfigureAwait(true);
@@ -31,7 +31,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     _dict = dbDataSet.ToDictionary();
 
-                    ProjectData.Main.ProgressInfo(false);
+                    AppData.Main.ProgressInfo(false);
                 }
             }
         }
@@ -39,14 +39,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override void ActionsFinalize()
         {
             //save DB
-            ProjectData.Main.ProgressInfo(true, "Save custom DB");
+            AppData.Main.ProgressInfo(true, "Save custom DB");
 
             var loadcustom = new Task(() => FunctionsDBFile.WriteDBFile(_dict.ToDataSet(), _custom));
             loadcustom.ConfigureAwait(true);
             loadcustom.Start();
             loadcustom.Wait();
 
-            ProjectData.Main.ProgressInfo(false);
+            AppData.Main.ProgressInfo(false);
         }
 
         protected override bool Apply()

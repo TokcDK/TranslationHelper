@@ -79,7 +79,7 @@ namespace TranslationHelper.Functions
                 //translation = LuaLiaFix(original, translation);
 
                 //Project's specific fixes
-                translation = ProjectData.CurrentProject.HardcodedFixes(original, translation);
+                translation = AppData.CurrentProject.HardcodedFixes(original, translation);
             }
             catch (Exception ex)
             {

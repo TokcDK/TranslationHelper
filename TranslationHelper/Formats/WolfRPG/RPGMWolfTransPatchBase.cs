@@ -21,7 +21,7 @@ namespace TranslationHelper.Formats.WolfRPG
             unused = false;
 
             // check standalone context file exist
-            if (ProjectData.SaveFileMode && File.Exists(AddToStandaloneContextList.StandaloneContextFilePath))
+            if (AppData.SaveFileMode && File.Exists(AddToStandaloneContextList.StandaloneContextFilePath))
             {
                 _contextSplitInfo = AddToStandaloneContextList.LoadList(AddToStandaloneContextList.StandaloneContextFilePath);
                 if (_contextSplitInfo.Count > 0)
@@ -319,7 +319,7 @@ namespace TranslationHelper.Formats.WolfRPG
             var original = string.Join("\n", originalLines);
             var translation = string.Join("\n", translationLines);
 
-            if (ProjectData.OpenFileMode)
+            if (AppData.OpenFileMode)
             {
                 if (IsOpenModeSkipTheBlock())
                 {
@@ -340,7 +340,7 @@ namespace TranslationHelper.Formats.WolfRPG
             {
                 var trans = original;
                 var translated =
-                    ProjectData.SaveFileMode // save mode
+                    AppData.SaveFileMode // save mode
                     && IsValidString(original) // valid original
                     && SetTranslation(ref trans, translation)  // translation found
                                                                // && trans != translation // new translation not equal to previous in case when was already old translation but it was removed

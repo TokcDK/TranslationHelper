@@ -14,7 +14,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override bool Check()
         {
-            return ProjectData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TJS");
+            return AppData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TJS");
         }
 
         internal override string ProjectFolderName()

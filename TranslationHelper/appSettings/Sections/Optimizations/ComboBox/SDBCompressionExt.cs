@@ -9,12 +9,12 @@ namespace TranslationHelper.INISettings
     {
         public SDBCompressionExt()
         {
-            if (ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Count == 0)
+            if (AppData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Count == 0)
             {
                 formats = FunctionsInterfaces.GetDBSaveFormats();
                 foreach (var ext in formats)
                 {
-                    ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add(ext.Description);
+                    AppData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add(ext.Description);
                 }
 
                 //ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.Items.Add("XML (none)");
@@ -34,12 +34,12 @@ namespace TranslationHelper.INISettings
         {
             if (!SetObject)
             {
-                Properties.Settings.Default.DBCompressionExt = ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.SelectedItem.ToString();
+                Properties.Settings.Default.DBCompressionExt = AppData.Main.Settings.THOptionDBCompressionExtComboBox.SelectedItem.ToString();
             }
             else
             {
-                Properties.Settings.Default.DBCompressionExt = IsExistsInFormats(ProjectData.BufferValueString) ? ProjectData.BufferValueString : Default;
-                ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.SelectedItem = Properties.Settings.Default.DBCompressionExt;
+                Properties.Settings.Default.DBCompressionExt = IsExistsInFormats(AppData.BufferValueString) ? AppData.BufferValueString : Default;
+                AppData.Main.Settings.THOptionDBCompressionExtComboBox.SelectedItem = Properties.Settings.Default.DBCompressionExt;
             }
         }
 
@@ -66,7 +66,7 @@ namespace TranslationHelper.INISettings
 
         internal override string ID()
         {
-            return ProjectData.Main.Settings.THOptionDBCompressionExtComboBox.Name;
+            return AppData.Main.Settings.THOptionDBCompressionExtComboBox.Name;
         }
     }
 }

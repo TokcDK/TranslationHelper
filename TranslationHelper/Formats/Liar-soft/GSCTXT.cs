@@ -35,7 +35,7 @@ namespace TranslationHelper.Formats.Liar_soft
             var str = message.ToString().Remove(0, 1);//remove 1st # symbol
             if (IsValidString(str))
             {
-                if (ProjectData.OpenFileMode)
+                if (AppData.OpenFileMode)
                 {
                     AddRowData(str, "", CheckInput: false);
                 }
@@ -45,7 +45,7 @@ namespace TranslationHelper.Formats.Liar_soft
                 }
             }
 
-            if (ProjectData.SaveFileMode)
+            if (AppData.SaveFileMode)
             {
                 ParseData.ResultForWrite.AppendLine("#"+str);
                 ParseData.ResultForWrite.AppendLine(">");
@@ -55,7 +55,7 @@ namespace TranslationHelper.Formats.Liar_soft
         }
         protected override bool FilePostOpen()
         {
-            if (ProjectData.OpenFileMode)
+            if (AppData.OpenFileMode)
             {
                 return CheckTablesContent(TableName());
             }

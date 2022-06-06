@@ -21,7 +21,7 @@ namespace TranslationHelper.Data
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string RPGMakerMVSkipCodesFilePath()
         {
-            return Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "skipcodes.txt");
+            return Path.Combine(AppData.CurrentProject.SelectedGameDir, "skipcodes.txt");
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace TranslationHelper.Data
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string RPGMakerMVProjectSkipjsRulesFilePath()
         {
-            return Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "www", "js", RPGMakerMVProjectSkipjsRulesFileName());
+            return Path.Combine(AppData.CurrentProject.SelectedGameDir, "www", "js", RPGMakerMVProjectSkipjsRulesFileName());
         }
 
         /// <summary>

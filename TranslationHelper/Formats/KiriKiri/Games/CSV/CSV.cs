@@ -58,7 +58,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
                 ParseValue(ref valuesArray[valueIndex], InfoLine[valueIndex]);
             }
 
-            if (ProjectData.SaveFileMode)
+            if (AppData.SaveFileMode)
             {
                 ParseData.Line = string.Join("\t", valuesArray);
             }
@@ -120,7 +120,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
                 ParseValue(ref valueArray[valueArrayIndex], info);
             }
 
-            if (ProjectData.SaveFileMode)
+            if (AppData.SaveFileMode)
             {
                 value = string.Join(",", valueArray);
             }
@@ -137,7 +137,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
 
             AddRowData(ref subvalueArray[0], info);
 
-            if (ProjectData.SaveFileMode)
+            if (AppData.SaveFileMode)
             {
                 value = string.Join(":", subvalueArray);
             }

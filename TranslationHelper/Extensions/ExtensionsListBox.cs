@@ -21,7 +21,7 @@ namespace TranslationHelper.Extensions
             var names = new List<string>(listBox.GetSelectedItemsCount());
             foreach (var index in listBox.CopySelectedIndexes())
             {
-                names.Add(ProjectData.FilesListControl.GetItemName(index));
+                names.Add(AppData.FilesListControl.GetItemName(index));
             }
             return string.Join(Environment.NewLine, names);
         }
@@ -39,7 +39,7 @@ namespace TranslationHelper.Extensions
 
             var indexes = new int[listBox.GetSelectedItemsCount()];
             int i = 0;
-            foreach (var index in ProjectData.FilesListControl.GetSelectedIndexes())
+            foreach (var index in AppData.FilesListControl.GetSelectedIndexes())
             {
                 indexes[i] = (int)index;
                 i++;
@@ -56,7 +56,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static string GetItemName(this ListControl listControl, int index)
         {
-            return ProjectData.FilesListControl.GetItemName(index);
+            return AppData.FilesListControl.GetItemName(index);
             //return (listControl as ListBox).Items[index] + "";
             //return ((listControl as ListBox).Items[itemIndex] as FilesListData).FIleName;
         }
@@ -70,7 +70,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static string GetItemNameWithIndex(this ListControl listControl, int index)
         {
-            return (index + 1) + " " + ProjectData.FilesListControl.GetItemName(index);
+            return (index + 1) + " " + AppData.FilesListControl.GetItemName(index);
             //return (listControl as ListBox).Items[index] + "";
             //return ((listControl as ListBox).Items[itemIndex] as FilesListData).FIleName;
         }
@@ -82,7 +82,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static int GetItemsCount(this ListControl listControl)
         {
-            return ProjectData.FilesListControl.GetItemsCount();
+            return AppData.FilesListControl.GetItemsCount();
             //return (listControl as ListBox).Items.Count;
         }
 
@@ -93,7 +93,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static int GetSelectedItemsCount(this ListControl listControl)
         {
-            return ProjectData.FilesListControl.GetSelectedItemsCount();
+            return AppData.FilesListControl.GetSelectedItemsCount();
             //return (listControl as ListBox).SelectedItems.Count;
         }
 
@@ -104,7 +104,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static object[] GetSelectedItems(this ListControl listControl)
         {
-            return ProjectData.FilesListControl.GetSelectedItems();
+            return AppData.FilesListControl.GetSelectedItems();
             //return (listControl as ListBox).SelectedItems.Count;
         }
 
@@ -115,7 +115,7 @@ namespace TranslationHelper.Extensions
         /// <param name="item"></param>
         internal static void AddItem(this ListControl listControl, object item)
         {
-            ProjectData.FilesListControl.AddItem(item);
+            AppData.FilesListControl.AddItem(item);
             //(listControl as ListBox).Items.Add(item);
         }
 
@@ -126,7 +126,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static int GetSelectedIndex(this ListControl listControl)
         {
-            return ProjectData.FilesListControl.GetSelectedIndex();
+            return AppData.FilesListControl.GetSelectedIndex();
             //return (listControl as ListBox).SelectedIndex;
         }
 
@@ -137,7 +137,7 @@ namespace TranslationHelper.Extensions
         /// <param name="index"></param>
         internal static void SetSelectedIndex(this ListControl listControl, int index, bool clearSelected = true)
         {
-            ProjectData.FilesListControl.SetSelectedIndex(index, clearSelected);
+            AppData.FilesListControl.SetSelectedIndex(index, clearSelected);
 
             //(listControl as ListBox).ClearSelected();
             //(listControl as ListBox).SelectedIndex = index;
@@ -150,7 +150,7 @@ namespace TranslationHelper.Extensions
         /// <param name="drawMode"></param>
         internal static void SetDrawMode(this ListControl listControl, DrawMode drawMode)
         {
-            ProjectData.FilesListControl.SetDrawMode(drawMode);
+            AppData.FilesListControl.SetDrawMode(drawMode);
             //(listControl as ListBox).DrawMode = drawMode;
         }
     }

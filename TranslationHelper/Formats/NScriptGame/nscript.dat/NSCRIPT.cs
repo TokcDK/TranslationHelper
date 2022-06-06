@@ -52,7 +52,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
             if (IsComment())
             {
-                if (ProjectData.SaveFileMode)
+                if (AppData.SaveFileMode)
                     ParseData.ResultForWrite.Append(ParseData.Line + '\n');
                 return 0;
             }
@@ -67,7 +67,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     {
                         var str = array[i];
 
-                        if (ProjectData.OpenFileMode)
+                        if (AppData.OpenFileMode)
                         {
                             AddRowData(str, "", CheckInput: true);
                         }
@@ -81,18 +81,18 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                             }
                         }
                     }
-                    if (ProjectData.SaveFileMode)
+                    if (AppData.SaveFileMode)
                     {
                         lines.Add(array[i]);
                     }
                 }
-                if (ProjectData.SaveFileMode && lines.Count > 0)
+                if (AppData.SaveFileMode && lines.Count > 0)
                 {
                     ParseData.Line = string.Join(":", lines);
                 }
             }
 
-            if (ProjectData.SaveFileMode)
+            if (AppData.SaveFileMode)
                 ParseData.ResultForWrite.Append(ParseData.Line + '\n');
             return KeywordActionAfter.ReadToEnd;
         }
@@ -178,7 +178,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
         {
             try
             {
-                if (ParseData.Ret && ProjectData.SaveFileMode && ParseData.ResultForWrite.Length > 0)
+                if (ParseData.Ret && AppData.SaveFileMode && ParseData.ResultForWrite.Length > 0)
                 {
                     var Enc = System.Text.Encoding.GetEncoding(932);
                     var nscripttxtTranslated = ParseData.ResultForWrite.ToString();
@@ -197,21 +197,21 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     //ONSCRIPTER
                     {
                         //copy onscripter
-                        if (!Directory.Exists(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "onscripter")))
-                            Path.Combine(THSettings.ResDirPath(), "onscripter").CopyAll(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "onscripter"));
+                        if (!Directory.Exists(Path.Combine(AppData.CurrentProject.SelectedGameDir, "onscripter")))
+                            Path.Combine(THSettings.ResDirPath(), "onscripter").CopyAll(Path.Combine(AppData.CurrentProject.SelectedGameDir, "onscripter"));
 
                         //write run.bat
                         //onscripter -r "gamedir" --dll "dllpath" -f fontpath --window
-                        var g = Directory.GetFiles(ProjectData.CurrentProject.SelectedGameDir, "*.dll");
-                        var ls = g.Select(fn => "--dll \"" + Path.Combine(ProjectData.CurrentProject.SelectedGameDir, Path.GetFileName(fn)) + "\" ");
+                        var g = Directory.GetFiles(AppData.CurrentProject.SelectedGameDir, "*.dll");
+                        var ls = g.Select(fn => "--dll \"" + Path.Combine(AppData.CurrentProject.SelectedGameDir, Path.GetFileName(fn)) + "\" ");
                         string dlls = string.Join("", ls);
                         var batcontent = "ONScripter "
-                            + "-r \"" + ProjectData.CurrentProject.SelectedGameDir + "\" "
+                            + "-r \"" + AppData.CurrentProject.SelectedGameDir + "\" "
                             + dlls
                             + "-f C:\\Windows\\Fonts\\msgothic.ttc "
                             + "--window"
                         ;
-                        File.WriteAllText(Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "onscripter", "Run.bat"), batcontent);
+                        File.WriteAllText(Path.Combine(AppData.CurrentProject.SelectedGameDir, "onscripter", "Run.bat"), batcontent);
                     }
                     return true;
                 }

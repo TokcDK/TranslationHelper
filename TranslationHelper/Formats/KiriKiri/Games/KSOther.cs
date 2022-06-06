@@ -30,7 +30,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         bool IsScript = false;
         protected override KeywordActionAfter ParseStringFileLine()
         {
-            if (ProjectData.SaveFileMode) return base.ParseStringFileLine(); // temp
+            if (AppData.SaveFileMode) return base.ParseStringFileLine(); // temp
 
             if (IsScript)
             {

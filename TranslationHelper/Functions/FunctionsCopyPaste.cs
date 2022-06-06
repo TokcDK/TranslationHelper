@@ -40,7 +40,7 @@ namespace TranslationHelper.Main.Functions
             }
 
             //LogToFile("PasteClipboardValue Enter 1");
-            int origcolindex = ProjectData.CurrentProject.OriginalColumnIndex;
+            int origcolindex = AppData.CurrentProject.OriginalColumnIndex;
             //int transcolindex = THFileElementsDataGridView.Columns[THSettings.TranslationColumnName()].Index;
 
             //Get the starting Cell

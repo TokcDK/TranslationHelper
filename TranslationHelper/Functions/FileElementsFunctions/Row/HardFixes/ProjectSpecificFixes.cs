@@ -11,7 +11,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         protected override bool Apply()
         {
             var translation = SelectedRow[ColumnIndexTranslation] + "";
-            var newtranslation = ProjectData.CurrentProject.HardcodedFixes(SelectedRow[ColumnIndexOriginal] as string, translation);
+            var newtranslation = AppData.CurrentProject.HardcodedFixes(SelectedRow[ColumnIndexOriginal] as string, translation);
             if (newtranslation != translation)
             {
                 SelectedRow[ColumnIndexTranslation] = newtranslation;

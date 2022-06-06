@@ -9,7 +9,7 @@ using TranslationHelper.Projects;
 
 namespace TranslationHelper.Data
 {
-    public static class ProjectData
+    public static class AppData
     {
         /// <summary>
         /// init values and set references

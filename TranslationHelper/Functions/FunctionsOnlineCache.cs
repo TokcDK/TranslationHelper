@@ -20,12 +20,12 @@ namespace TranslationHelper.Functions
                 return string.Empty;
 
             if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll
-                && ProjectData.AllDBmerged != null
-                && ProjectData.AllDBmerged.Count > 0
-                && ProjectData.AllDBmerged.ContainsKey(keyValue)
-                && !string.IsNullOrWhiteSpace(ProjectData.AllDBmerged[keyValue]))
+                && AppData.AllDBmerged != null
+                && AppData.AllDBmerged.Count > 0
+                && AppData.AllDBmerged.ContainsKey(keyValue)
+                && !string.IsNullOrWhiteSpace(AppData.AllDBmerged[keyValue]))
             {
-                return ProjectData.AllDBmerged[keyValue];
+                return AppData.AllDBmerged[keyValue];
             }
             else if (cache != null
                 && cache.Count > 0
@@ -39,13 +39,13 @@ namespace TranslationHelper.Functions
                 var trimmed = keyValue.TrimAllExceptLettersOrDigits();
                 if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll
                    && trimmed.Length > 0
-                   && ProjectData.AllDBmerged != null
-                   && ProjectData.AllDBmerged.Count > 0
-                   && ProjectData.AllDBmerged.ContainsKey(trimmed)
-                   && !string.IsNullOrWhiteSpace(ProjectData.AllDBmerged[trimmed]))
+                   && AppData.AllDBmerged != null
+                   && AppData.AllDBmerged.Count > 0
+                   && AppData.AllDBmerged.ContainsKey(trimmed)
+                   && !string.IsNullOrWhiteSpace(AppData.AllDBmerged[trimmed]))
                 {
                     var ind = keyValue.IndexOf(trimmed);
-                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, ProjectData.AllDBmerged[trimmed]);
+                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, AppData.AllDBmerged[trimmed]);
                 }
                 else if (
                     trimmed.Length > 0
@@ -92,13 +92,13 @@ namespace TranslationHelper.Functions
             //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
             //    return;
 
-            if (ProjectData.OnlineTranslationCache == null)
+            if (AppData.OnlineTranslationCache == null)
             {
-                ProjectData.OnlineTranslationCache = new FunctionsOnlineCache();
-                ProjectData.OnlineTranslationCache.Read();
+                AppData.OnlineTranslationCache = new FunctionsOnlineCache();
+                AppData.OnlineTranslationCache.Read();
             }
 
-            ProjectData.OnlineTranslationCache.UsersCount++;
+            AppData.OnlineTranslationCache.UsersCount++;
         }
 
         /// <summary>
@@ -111,11 +111,11 @@ namespace TranslationHelper.Functions
         /// </summary>
         internal static void Unload()
         {
-            ProjectData.OnlineTranslationCache.UsersCount--;
+            AppData.OnlineTranslationCache.UsersCount--;
 
-            if (ProjectData.OnlineTranslationCache != null && ProjectData.OnlineTranslationCache.UsersCount == 0)
+            if (AppData.OnlineTranslationCache != null && AppData.OnlineTranslationCache.UsersCount == 0)
             {
-                ProjectData.OnlineTranslationCache = null;
+                AppData.OnlineTranslationCache = null;
             }
         }
 
@@ -163,13 +163,13 @@ namespace TranslationHelper.Functions
         {
             if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed)
             {
-                if (string.IsNullOrWhiteSpace(Translation) || string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || ProjectData.OnlineTranslationCache.cache.ContainsKey(Original) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
+                if (string.IsNullOrWhiteSpace(Translation) || string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || AppData.OnlineTranslationCache.cache.ContainsKey(Original) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
                 {
                 }
                 else
                 {
                     //THTranslationCache.Tables[0].Rows.Add(Original, Translation);
-                    ProjectData.OnlineTranslationCache.cache.Add(Original, Translation);
+                    AppData.OnlineTranslationCache.cache.Add(Original, Translation);
                 }
             }
         }

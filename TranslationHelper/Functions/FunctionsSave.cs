@@ -25,21 +25,21 @@ namespace TranslationHelper.Functions
 
         internal async Task PrepareToWrite()
         {
-            if (ProjectData.Main.SaveInAction /*|| !ProjectData.Main.FIleDataWasChanged*/)
+            if (AppData.Main.SaveInAction /*|| !ProjectData.Main.FIleDataWasChanged*/)
             {
                 //MessageBox.Show("Saving still in progress. Please wait a little.");
                 return;
             }
-            ProjectData.Main.SaveInAction = true;
-            ProjectData.Main.FileDataWasChanged = false;
-            ProjectData.SaveFileMode = true;
+            AppData.Main.SaveInAction = true;
+            AppData.Main.FileDataWasChanged = false;
+            AppData.SaveFileMode = true;
 
             //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
 
-            if (ProjectData.CurrentProject != null)
+            if (AppData.CurrentProject != null)
             {
-                ProjectData.CurrentProject.BakCreate();
-                await Task.Run(() => ProjectData.CurrentProject.Save()).ConfigureAwait(true);
+                AppData.CurrentProject.BakCreate();
+                await Task.Run(() => AppData.CurrentProject.Save()).ConfigureAwait(true);
             }
             else
             {
@@ -173,7 +173,7 @@ namespace TranslationHelper.Functions
             }
 
 
-            ProjectData.Main.SaveInAction = false;
+            AppData.Main.SaveInAction = false;
             FunctionsSounds.PlayAsterisk();
         }
 
@@ -182,21 +182,21 @@ namespace TranslationHelper.Functions
         /// </summary>
         public static void WriteRPGMakerMVStats()
         {
-            if (ProjectData.RpgMVAddedCodesStat.Count > 0 || ProjectData.RpgMVSkippedCodesStat.Count > 0)
+            if (AppData.RpgMVAddedCodesStat.Count > 0 || AppData.RpgMVSkippedCodesStat.Count > 0)
             {
-                ProjectData.RpgMVAddedCodesStat = ProjectData.RpgMVAddedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
-                ProjectData.RpgMVSkippedCodesStat = ProjectData.RpgMVSkippedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
+                AppData.RpgMVAddedCodesStat = AppData.RpgMVAddedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
+                AppData.RpgMVSkippedCodesStat = AppData.RpgMVSkippedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
 
                 foreach (var dict in new Dictionary<string, Dictionary<int, int>>()
                     {
-                        {"RPGMakerMV Added codes stats", ProjectData.RpgMVAddedCodesStat },
-                        {"RPGMakerMV Skipped codes stats", ProjectData.RpgMVSkippedCodesStat }
+                        {"RPGMakerMV Added codes stats", AppData.RpgMVAddedCodesStat },
+                        {"RPGMakerMV Skipped codes stats", AppData.RpgMVSkippedCodesStat }
                     }
                 )
                 {
-                    if (ProjectData.Main.Settings.THConfigINI.SectionExistsAndNotEmpty(dict.Key))
+                    if (AppData.Main.Settings.THConfigINI.SectionExistsAndNotEmpty(dict.Key))
                     {
-                        foreach (var pair in ProjectData.Main.Settings.THConfigINI.GetSectionKeyValuePairs(dict.Key))
+                        foreach (var pair in AppData.Main.Settings.THConfigINI.GetSectionKeyValuePairs(dict.Key))
                         {
                             var key = int.Parse(pair.Key);
                             var value = int.Parse(pair.Value);
@@ -213,11 +213,11 @@ namespace TranslationHelper.Functions
 
                     foreach (var pair in dict.Value)
                     {
-                        ProjectData.Main.Settings.THConfigINI.SetKey(dict.Key, pair.Key + "", pair.Value + "");
+                        AppData.Main.Settings.THConfigINI.SetKey(dict.Key, pair.Key + "", pair.Value + "");
                     }
                 }
 
-                ProjectData.Main.Settings.THConfigINI.WriteFile();
+                AppData.Main.Settings.THConfigINI.WriteFile();
             }
         }
     }

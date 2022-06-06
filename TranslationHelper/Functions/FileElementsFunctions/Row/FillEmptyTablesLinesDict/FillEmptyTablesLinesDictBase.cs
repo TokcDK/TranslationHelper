@@ -25,14 +25,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesL
         bool _checked;
         protected override bool IsOkAll()
         {
-            if (!_checked && Translations == null && ProjectData.CurrentProject.TablesLinesDict != null && ProjectData.CurrentProject.TablesLinesDict.Count > 0)
+            if (!_checked && Translations == null && AppData.CurrentProject.TablesLinesDict != null && AppData.CurrentProject.TablesLinesDict.Count > 0)
             {
                 _checked= true;
-                Translations = ProjectData.CurrentProject.TablesLinesDict;
+                Translations = AppData.CurrentProject.TablesLinesDict;
                 return false;
             }
 
-            return (!ForceRun || (ProjectData.SaveFileMode && ProjectData.CurrentProject.DontLoadDuplicates)) && (Translations == null || Translations.Count == 0);
+            return (!ForceRun || (AppData.SaveFileMode && AppData.CurrentProject.DontLoadDuplicates)) && (Translations == null || Translations.Count == 0);
         }
 
         protected override bool IsValidRow()

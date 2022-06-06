@@ -10,11 +10,11 @@ namespace TranslationHelper.INISettings
     {
         public SSourceLanguage()
         {
-            if (ProjectData.Main.Settings.SourceLanguageComboBox.Items.Count == 0)
+            if (AppData.Main.Settings.SourceLanguageComboBox.Items.Count == 0)
             {
-                ProjectData.Main.Settings.SourceLanguageComboBox.DataSource = TranslatorsBase.Languages;
+                AppData.Main.Settings.SourceLanguageComboBox.DataSource = TranslatorsBase.Languages;
             }
-            ProjectData.Main.Settings.SourceLanguageComboBox.SelectedIndex = TranslatorsBase.Languages.IndexOf(Properties.Settings.Default.OnlineTranslationSourceLanguage);
+            AppData.Main.Settings.SourceLanguageComboBox.SelectedIndex = TranslatorsBase.Languages.IndexOf(Properties.Settings.Default.OnlineTranslationSourceLanguage);
         }
 
         internal override string Key => "SourceLanguage";
@@ -25,13 +25,13 @@ namespace TranslationHelper.INISettings
         {
             if (!SetObject)
             {
-                Properties.Settings.Default.OnlineTranslationSourceLanguage = ProjectData.Main.Settings.SourceLanguageComboBox.SelectedItem.ToString();
+                Properties.Settings.Default.OnlineTranslationSourceLanguage = AppData.Main.Settings.SourceLanguageComboBox.SelectedItem.ToString();
                 
             }
             else
             {
-                Properties.Settings.Default.OnlineTranslationSourceLanguage = ProjectData.BufferValueString;
-                ProjectData.Main.Settings.SourceLanguageComboBox.SelectedItem = Properties.Settings.Default.OnlineTranslationSourceLanguage;
+                Properties.Settings.Default.OnlineTranslationSourceLanguage = AppData.BufferValueString;
+                AppData.Main.Settings.SourceLanguageComboBox.SelectedItem = Properties.Settings.Default.OnlineTranslationSourceLanguage;
             }
         }
 
@@ -42,7 +42,7 @@ namespace TranslationHelper.INISettings
 
         internal override string ID()
         {
-            return ProjectData.Main.Settings.SourceLanguageComboBox.Name;
+            return AppData.Main.Settings.SourceLanguageComboBox.Name;
         }
     }
 }

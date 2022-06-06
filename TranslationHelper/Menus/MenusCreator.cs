@@ -23,8 +23,8 @@ namespace TranslationHelper.Menus
 
             foreach (var parent in new Dictionary<ContextMenuStrip, List<IProjectMenu>>()
             {
-                { ProjectData.Main.CMSFilesList, ProjectData.CurrentProject.FilesListItemMenusList() },
-                { ProjectData.Main.THFileElementsDataGridViewContextMenuStrip, ProjectData.CurrentProject.GridItemMenusList() }
+                { AppData.Main.CMSFilesList, AppData.CurrentProject.FilesListItemMenusList() },
+                { AppData.Main.THFileElementsDataGridViewContextMenuStrip, AppData.CurrentProject.GridItemMenusList() }
             })
             {
                 var contextMenuParent = parent.Key;
@@ -37,7 +37,7 @@ namespace TranslationHelper.Menus
                     {
                         menu.Dispose();
                     }
-                    ProjectData.Main.Invoke((Action)(() => contextMenuParent.Items.RemoveByKey(contextMenuName)));
+                    AppData.Main.Invoke((Action)(() => contextMenuParent.Items.RemoveByKey(contextMenuName)));
                 }
 
                 var contextMenuList = parent.Value;
@@ -69,7 +69,7 @@ namespace TranslationHelper.Menus
                     contextMenuProjectCategory.DropDownItems.Add(menu);
                 }
 
-                ProjectData.Main.Invoke((Action)(() => contextMenuParent.Items.Add(contextMenuProjectCategory)));
+                AppData.Main.Invoke((Action)(() => contextMenuParent.Items.Add(contextMenuProjectCategory)));
             }
         }
     }

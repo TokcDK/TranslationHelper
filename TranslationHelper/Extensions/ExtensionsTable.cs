@@ -17,7 +17,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         public static bool HasAnyTranslated(this string tableName)
         {
-            return ProjectData.CurrentProject.FilesContent.Tables[tableName].HasAnyTranslated();
+            return AppData.CurrentProject.FilesContent.Tables[tableName].HasAnyTranslated();
         }
 
         /// <summary>

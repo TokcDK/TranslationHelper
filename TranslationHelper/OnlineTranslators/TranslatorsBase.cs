@@ -36,11 +36,11 @@ namespace TranslationHelper.Translators
             
             if (webClient == null)
             {
-                if (ProjectData.OnlineTranslatorCookies == null)
+                if (AppData.OnlineTranslatorCookies == null)
                 {
-                    ProjectData.OnlineTranslatorCookies = new System.Net.CookieContainer();
+                    AppData.OnlineTranslatorCookies = new System.Net.CookieContainer();
                 }
-                webClient = new WebClientEx(ProjectData.OnlineTranslatorCookies);
+                webClient = new WebClientEx(AppData.OnlineTranslatorCookies);
                 //webClient = new ScrapingBrowser
             }
             //webClient.UseDefaultCredentials = false;            

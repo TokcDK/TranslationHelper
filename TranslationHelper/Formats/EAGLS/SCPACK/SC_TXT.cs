@@ -51,7 +51,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                     continue;
                 }
 
-                if (ProjectData.OpenFileMode)
+                if (AppData.OpenFileMode)
                 {
                     foreach (Match match in mc)
                     {
@@ -74,7 +74,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                 }
             }
 
-            if (ProjectData.SaveFileMode)
+            if (AppData.SaveFileMode)
             {
                 ParseData.ResultForWrite.Append(file);
             }

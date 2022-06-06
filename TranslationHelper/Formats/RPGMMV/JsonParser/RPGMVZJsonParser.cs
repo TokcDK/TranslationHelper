@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 return;
             }
 
-            if (ProjectData.OpenFileMode)
+            if (AppData.OpenFileMode)
             {
                 AddToStats();
 
@@ -199,7 +199,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 var messageparts = GetNextTokensWithSameCode(jsonObject);
                 var fullmessage = GetMessageLinesFrom(messageparts);
 
-                if (ProjectData.OpenFileMode)
+                if (AppData.OpenFileMode)
                 {
                     bool HasCurCode = true; // message code parse
                     Format.AddRowData(tablename: JsonName, RowData: fullmessage, RowInfo: "JsonPath: "
@@ -428,7 +428,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <param name="add">for added strings else for skipped</param>
         private void AddToStats(bool add = true)
         {
-            var dict = add ? ProjectData.RpgMVAddedCodesStat : ProjectData.RpgMVSkippedCodesStat;
+            var dict = add ? AppData.RpgMVAddedCodesStat : AppData.RpgMVSkippedCodesStat;
             if (CurrentEventCode > -1)
             {
                 if (!dict.ContainsKey(CurrentEventCode))

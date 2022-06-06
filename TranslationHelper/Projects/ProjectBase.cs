@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects
         {
             DontLoadDuplicates = Properties.Settings.Default.DontLoadDuplicates; // set value of the parameter for the project work session
 
-            if (ProjectData.SaveFileMode && DontLoadDuplicates)
+            if (AppData.SaveFileMode && DontLoadDuplicates)
             {
                 TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
@@ -121,11 +121,11 @@ namespace TranslationHelper.Projects
         /// </summary>
         public virtual void Init()
         {
-            if (!string.IsNullOrWhiteSpace(ProjectData.SelectedFilePath))
+            if (!string.IsNullOrWhiteSpace(AppData.SelectedFilePath))
             {
-                ProjectData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
-                ProjectData.CurrentProject.SelectedDir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
-                ProjectData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName(), ProjectName());
+                AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedFilePath);
+                AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedFilePath);
+                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName(), ProjectName());
             }
         }
 
@@ -135,7 +135,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual string ProjectName()
         {
-            return Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath));
+            return Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected static bool IsExe()
         {
-            return Path.GetExtension(ProjectData.SelectedFilePath).ToUpperInvariant() == ".EXE";
+            return Path.GetExtension(AppData.SelectedFilePath).ToUpperInvariant() == ".EXE";
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace TranslationHelper.Projects
             exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
 
             var ret = false;
-            var existsTables = ProjectData.CurrentProject.FilesContent.Tables;
+            var existsTables = AppData.CurrentProject.FilesContent.Tables;
             var filesList = Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
             Parallel.ForEach(filesList, file =>
             {
@@ -298,7 +298,7 @@ namespace TranslationHelper.Projects
                     return;
                 }
 
-                if (ProjectData.SaveFileMode && existsTables.Contains(format.TableName())) // check if exist table has any translated
+                if (AppData.SaveFileMode && existsTables.Contains(format.TableName())) // check if exist table has any translated
                 {
                     if (!format.TableName().HasAnyTranslated())
                     {
@@ -306,14 +306,14 @@ namespace TranslationHelper.Projects
                     }
                 }
 
-                ProjectData.Main.ProgressInfo(true, (ProjectData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
-                if (ProjectData.OpenFileMode ? format.Open() : format.Save())
+                AppData.Main.ProgressInfo(true, (AppData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
+                if (AppData.OpenFileMode ? format.Open() : format.Save())
                 {
                     ret = true;
                 }
             });
 
-            ProjectData.Main.ProgressInfo(false);
+            AppData.Main.ProgressInfo(false);
 
             return ret;
         }
@@ -425,7 +425,7 @@ namespace TranslationHelper.Projects
         internal List<MatchCollection> HideVARSMatchCollectionsList;
         internal string HideVARSBase(string str, Dictionary<string, string> HideVARSPatterns = null)
         {
-            HideVARSPatterns = HideVARSPatterns ?? ProjectData.CurrentProject.HideVarsBase;
+            HideVARSPatterns = HideVARSPatterns ?? AppData.CurrentProject.HideVarsBase;
 
             if (HideVARSPatterns == null || HideVARSPatterns.Count == 0)
             {
@@ -595,7 +595,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakCreate()
         {
-            return BackupRestorePaths(new[] { ProjectData.SelectedFilePath });
+            return BackupRestorePaths(new[] { AppData.SelectedFilePath });
         }
 
         /// <summary>
@@ -604,7 +604,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakRestore()
         {
-            return BackupRestorePaths(new[] { ProjectData.SelectedFilePath }, false);
+            return BackupRestorePaths(new[] { AppData.SelectedFilePath }, false);
         }
 
         /// <summary>
@@ -658,7 +658,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool RestoreFile(string file)
         {
-            ProjectData.Main.ProgressInfo(true, T._("restore") + ":" + Path.GetFileName(file));
+            AppData.Main.ProgressInfo(true, T._("restore") + ":" + Path.GetFileName(file));
 
             try
             {
@@ -682,12 +682,12 @@ namespace TranslationHelper.Projects
                     {
                         new FileInfo(file + ".tmp").Attributes = FileAttributes.Normal;
                         File.Delete(file + ".tmp");
-                        ProjectData.Main.ProgressInfo(false);
+                        AppData.Main.ProgressInfo(false);
                         return true;
                     }
                     else if (!tmp && File.Exists(file))
                     {
-                        ProjectData.Main.ProgressInfo(false);
+                        AppData.Main.ProgressInfo(false);
                         return true;
                     }
                 }
@@ -696,7 +696,7 @@ namespace TranslationHelper.Projects
             {
             }
 
-            ProjectData.Main.ProgressInfo(false);
+            AppData.Main.ProgressInfo(false);
             return false;
         }
 
@@ -718,7 +718,7 @@ namespace TranslationHelper.Projects
             {
                 if (string.IsNullOrWhiteSpace(subpath)) continue;
 
-                string path = (subpath.StartsWith(@".\") || subpath.StartsWith(@"..\")) ? Path.GetFullPath(Path.Combine(ProjectData.CurrentProject.SelectedDir, subpath)) : subpath;
+                string path = (subpath.StartsWith(@".\") || subpath.StartsWith(@"..\")) ? Path.GetFullPath(Path.Combine(AppData.CurrentProject.SelectedDir, subpath)) : subpath;
 
                 if (string.IsNullOrWhiteSpace(path) || bakuped.Contains(path)) continue;
 
@@ -791,7 +791,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool BackupFile(string file)
         {
-            ProjectData.Main.ProgressInfo(true, T._("backup") + ":" + Path.GetFileName(file));
+            AppData.Main.ProgressInfo(true, T._("backup") + ":" + Path.GetFileName(file));
 
             try
             {
@@ -805,14 +805,14 @@ namespace TranslationHelper.Projects
                 }
                 if (File.Exists(file + ".bak"))
                 {
-                    ProjectData.Main.ProgressInfo(false);
+                    AppData.Main.ProgressInfo(false);
                     return true;
                 }
             }
             catch
             {
             }
-            ProjectData.Main.ProgressInfo(false);
+            AppData.Main.ProgressInfo(false);
             return false;
         }
 
@@ -842,7 +842,7 @@ namespace TranslationHelper.Projects
         /// </summary>
         internal virtual void AfterTranslationWriteActions()
         {
-            System.Diagnostics.Process.Start("explorer.exe", ProjectData.CurrentProject.SelectedDir);
+            System.Diagnostics.Process.Start("explorer.exe", AppData.CurrentProject.SelectedDir);
         }
 
         internal virtual List<IProjectMenu> FilesListItemMenusList()

@@ -13,7 +13,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => true;
 
-        object SObject { get => ProjectData.Main.Settings.cbSearchRowIssueOptionsCheckAnyLineTranslatable; }
+        object SObject { get => AppData.Main.Settings.cbSearchRowIssueOptionsCheckAnyLineTranslatable; }
 
         static bool SVar
         {
@@ -29,7 +29,7 @@ namespace TranslationHelper.INISettings
             }
             else
             {
-                SVar = bool.TryParse(ProjectData.BufferValueString, out bool result) ? result : DefaultBool;
+                SVar = bool.TryParse(AppData.BufferValueString, out bool result) ? result : DefaultBool;
                 (SObject as System.Windows.Forms.CheckBox).Checked = SVar;
             }
         }

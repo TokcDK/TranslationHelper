@@ -12,9 +12,9 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override bool Check()
         {
-            if (Path.GetExtension(ProjectData.SelectedFilePath).ToUpperInvariant() == ".JSON")
+            if (Path.GetExtension(AppData.SelectedFilePath).ToUpperInvariant() == ".JSON")
             {
-                if (Path.GetFileName(Path.GetDirectoryName(ProjectData.SelectedFilePath)) == "data")
+                if (Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)) == "data")
                 {
                     return true;
                 }
@@ -54,7 +54,7 @@ namespace TranslationHelper.Projects.RPGMMV
             ParseFileMessage = Write ? T._("write file: ") : T._("opening file: ");
             try
             {
-                if (ParseRPGMakerMVjson(ProjectData.SelectedFilePath, Write))
+                if (ParseRPGMakerMVjson(AppData.SelectedFilePath, Write))
                 {
                     return true;
                 }
@@ -63,7 +63,7 @@ namespace TranslationHelper.Projects.RPGMMV
             {
             }
 
-            ProjectData.Main.ProgressInfo(false);
+            AppData.Main.ProgressInfo(false);
             return false;
         }
 
@@ -73,7 +73,7 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 string Jsonname = Path.GetFileNameWithoutExtension(filePath); // get json file name
 
-                ProjectData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
+                AppData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
 
                 //string jsondata = File.ReadAllText(FilePath); // get json data
 

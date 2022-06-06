@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         internal override bool Check()
         {
-            var fileExt = Path.GetExtension(ProjectData.SelectedFilePath);
+            var fileExt = Path.GetExtension(AppData.SelectedFilePath);
             foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatStringBase)))
             {
                 var format = (FormatBase)Activator.CreateInstance(formatType);
@@ -42,7 +42,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         internal override bool Open()
         {
-            var fileExt = Path.GetExtension(ProjectData.SelectedFilePath);
+            var fileExt = Path.GetExtension(AppData.SelectedFilePath);
             List<Type> foundTypes = new List<Type>();
             foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatStringBase)))
             {
@@ -81,13 +81,13 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         bool OpenSave()
         {
-            var dir = Path.GetDirectoryName(ProjectData.SelectedFilePath);
+            var dir = Path.GetDirectoryName(AppData.SelectedFilePath);
             var ext = Format.Ext();
             int extCnt = 0;
             foreach (var i in Directory.EnumerateFiles(dir, "*" + ext)) if (++extCnt > 1) break;
 
             bool getAll = false;
-            if (extCnt > 1 && (ProjectData.SaveFileMode || MessageBox.Show(T._("Found similar files. Open them too?"), T._("Found files with same extension"), MessageBoxButtons.YesNo) == DialogResult.Yes))
+            if (extCnt > 1 && (AppData.SaveFileMode || MessageBox.Show(T._("Found similar files. Open them too?"), T._("Found files with same extension"), MessageBoxButtons.YesNo) == DialogResult.Yes))
             {
                 getAll = true;
             }
