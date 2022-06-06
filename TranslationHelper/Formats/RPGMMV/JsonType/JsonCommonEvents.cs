@@ -26,11 +26,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 var @event = data[e];
                 if (@event == null) continue;
 
-                int commandsCount = @event.Commands.Length;
-                for (int c = 0; c < commandsCount; c++)
-                {
-                    ParseCommandStrings(@event.Commands, $"Event ID: {@event.Id}\r\nEvent name: {@event.Name}");
-                }
+                ParseCommandStrings(@event.Commands, $"Event ID: {@event.Id}\r\nEvent name: {@event.Name}");
             }
 
             return data;
