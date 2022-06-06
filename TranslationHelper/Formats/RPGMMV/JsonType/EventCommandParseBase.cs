@@ -9,6 +9,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class EventCommandParseBase : JsonTypeBase
     {
+        Dictionary<int, string> ExcludedCodes;
+
+        public EventCommandParseBase()
+        {
+            ExcludedCodes = RPGMVUtils.GetSkipCodes();
+        }
+
         protected void ParseCommandStrings(List<Command> commands, string info)
         {
             int commandsCount = commands.Count;
@@ -27,12 +34,14 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                     int extra;
                     if (message.Any()) { extra= ParseMessage(commands, message, info, c); c += extra; commandsCount += extra; };
 
+                    if (ExcludedCodes.ContainsKey(command.Code)) continue;
+
                     int parametersCount = command.Parameters.Length;
                     for (int i = 0; i < parametersCount; i++)
                     {
                         if (command.Parameters[i] is string s)
                         {
-                            if (AddRowData(ref s, info + $"\r\nCommand code: {command.Code}\r\n Parameter #: {i}") && ProjectData.SaveFileMode)
+                            if (AddRowData(ref s, info + $"\r\nCommand code: {command.Code}{RPGMVUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}") && ProjectData.SaveFileMode)
                             {
                                 command.Parameters[i] = s;
                             }
@@ -58,7 +67,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             var s = string.Join("\r\n", message.Select(m => m.Parameters[0]));
             int extraLinesCount = 0;
             var newMessage = new List<Command>();
-            if (AddRowData(ref s, info + $"\r\nCommand code: {message[0].Code}\r\n Parameter #: {0}") && ProjectData.SaveFileMode)
+            if (AddRowData(ref s, info + $"\r\nCommand code: {message[0].Code}{RPGMVUtils.GetCodeName(message[0].Code)}\r\nParameter #: {0}") && ProjectData.SaveFileMode)
             {
                 int lineIndex = 0;
                 foreach (var line in s.SplitToLines())
