@@ -157,6 +157,17 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 foreach (var xp3File in ProjectXP3List.Xp3PatchList)
                 {
                     if (!xp3File.FileInfo.Exists) continue;
+                    var name = Path.GetFileNameWithoutExtension(xp3File.FileInfo.FullName);
+                    if (string.Equals(name, "video", StringComparison.InvariantCultureIgnoreCase)) continue;
+                    if (string.Equals(name, "voice", StringComparison.InvariantCultureIgnoreCase)) continue;
+                    if (string.Equals(name, "voices", StringComparison.InvariantCultureIgnoreCase)) continue;
+                    if (string.Equals(name, "sound", StringComparison.InvariantCultureIgnoreCase)) continue;
+                    if (string.Equals(name, "sounds", StringComparison.InvariantCultureIgnoreCase)) continue;
+                    if (string.Equals(name, "bgm", StringComparison.InvariantCultureIgnoreCase)) continue;
+                    if (string.Equals(name, "music", StringComparison.InvariantCultureIgnoreCase)) continue;
+
+                    if (File.Exists(xp3File.FileInfo.FullName+".skip")) continue;
+                    if (File.Exists(xp3File.FileInfo.FullName+".ignore")) continue;
 
                     if (xp3File.IsTranslation)
                     {

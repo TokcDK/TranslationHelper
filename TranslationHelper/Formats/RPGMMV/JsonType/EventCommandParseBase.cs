@@ -15,6 +15,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 
         public EventCommandParseBase()
         {
+            if (AppData.CurrentProject == null) return;
+
             ExcludedCodes = RPGMVUtils.GetSkipCodes();
         }
 
