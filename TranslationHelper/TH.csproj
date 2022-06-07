@@ -202,6 +202,9 @@
     <Compile Include="Formats\RPGMMV\JsonType\JsonArmors.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonCommonEvents.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonActors.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonClasses.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonMapInfos.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonTilesets.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonSystem.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonTroops.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonSkills.cs" />

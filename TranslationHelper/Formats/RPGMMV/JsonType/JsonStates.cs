@@ -18,19 +18,19 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             int count = data.Count;
             for (int e = 0; e < count; e++)
             {
-                var state = data[e];
-                if (state == null) continue;
+                var item = data[e];
+                if (item == null) continue;
 
-                var s = state.Name;
-                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nNote: \"{state.Note}\"") && AppData.SaveFileMode) state.Name = s;
-                s = state.Message1;
-                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && AppData.SaveFileMode) state.Message1 = s;
-                s = state.Message2;
-                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && AppData.SaveFileMode) state.Message2 = s;
-                s = state.Message3;
-                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && AppData.SaveFileMode) state.Message3 = s;
-                s = state.Message4;
-                if (AddRowData(ref s, $"\r\nID: {state.Id}\r\nName: {state.Name}\r\nNote: \"{state.Note}\"") && AppData.SaveFileMode) state.Message4 = s;
+                var s = item.Name;
+                if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Name = s;
+                s = item.Message1;
+                if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Message1 = s;
+                s = item.Message2;
+                if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Message2 = s;
+                s = item.Message3;
+                if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Message3 = s;
+                s = item.Message4;
+                if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Message4 = s;
             }
 
             return data;

@@ -18,15 +18,15 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             int count = data.Count;
             for (int e = 0; e < count; e++)
             {
-                var skill = data[e];
-                if (skill == null) continue;
+                var item = data[e];
+                if (item == null) continue;
 
-                var s = skill.Name;
-                if (AddRowData(ref s, $"\r\nID: {skill.Id}\r\nNote: \"{skill.Note}\"") && AppData.SaveFileMode) skill.Name = s;
-                s = skill.Message1;
-                if (AddRowData(ref s, $"\r\nID: {skill.Id}\r\nName: {skill.Name}\r\nNote: \"{skill.Note}\"") && AppData.SaveFileMode) skill.Message1 = s;
-                s = skill.Message2;
-                if (AddRowData(ref s, $"\r\nID: {skill.Id}\r\nName: {skill.Name}\r\nNote: \"{skill.Note}\"") && AppData.SaveFileMode) skill.Message2 = s;
+                var s = item.Name;
+                if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Name = s;
+                s = item.Message1;
+                if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Message1 = s;
+                s = item.Message2;
+                if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Message2 = s;
             }
 
             return data;

@@ -18,11 +18,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             int count = data.Count;
             for (int e = 0; e < count; e++)
             {
-                var enemy = data[e];
-                if (enemy == null) continue;
+                var item = data[e];
+                if (item == null) continue;
 
-                var s = enemy.Name;
-                if (AddRowData(ref s, $"\r\nID: {enemy.Id}\r\nbattlerName: {enemy.BattlerName}") && AppData.SaveFileMode) enemy.Name = s;
+                var s = item.Name;
+                if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nbattlerName: {item.BattlerName}") && AppData.SaveFileMode) item.Name = s;
             }
 
             return data;

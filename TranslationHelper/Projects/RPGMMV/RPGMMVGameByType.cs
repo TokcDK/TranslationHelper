@@ -18,12 +18,16 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 typeof(JsonActors),
                 typeof(JsonArmors),
+                typeof(JsonClasses),
                 typeof(JsonCommonEvents),
+                typeof(JsonEnemies),
                 typeof(JsonItems),
                 typeof(JsonMap),
+                typeof(JsonMapInfos),
                 typeof(JsonSkills),
                 typeof(JsonStates),
                 typeof(JsonSystem),
+                typeof(JsonTilesets),
                 typeof(JsonTroops),
                 typeof(JsonWeapons),
             };
@@ -35,12 +39,16 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 "Actors.json",
                 "Armors.json",
+                "Classes.json",
                 "CommonEvents.json",
+                "Enemies.json",
                 "Items.json",
                 "Map*.json",
+                "MapInfos.json",
                 "Skills.json",
                 "States.json",
                 "System.json",
+                "Tilesets.json",
                 "Troops.json",
                 "Weapons.json",
             };

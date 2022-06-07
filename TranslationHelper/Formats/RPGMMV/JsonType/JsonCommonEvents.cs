@@ -24,10 +24,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             int eventsCount = data.Count;
             for (int e = 0; e < eventsCount; e++)
             {
-                var @event = data[e];
-                if (@event == null) continue;
+                var item = data[e];
+                if (item == null) continue;
 
-                ParseCommandStrings(@event.Commands, $"Event ID: {@event.Id}\r\nEvent name: {@event.Name}");
+                ParseCommandStrings(item.Commands, $"Event ID: {item.Id}\r\nEvent name: {item.Name}");
             }
 
             return data;
