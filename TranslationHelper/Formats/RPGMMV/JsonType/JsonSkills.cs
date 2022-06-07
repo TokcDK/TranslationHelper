@@ -23,6 +23,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 
                 var s = item.Name;
                 if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Name = s;
+                s = item.Description;
+                if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Description = s;
                 s = item.Message1;
                 if (AddRowData(ref s, $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Message1 = s;
                 s = item.Message2;
