@@ -11,6 +11,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             if (string.Equals(Path.GetFileNameWithoutExtension(path), "MapInfos", System.StringComparison.InvariantCultureIgnoreCase)) return null;
 
             var data = Helper.LoadMap(path);
+            if (data == null) return null;
 
             int eventsCount = data.Events.Length;
             for (int e = 0; e < eventsCount; e++)

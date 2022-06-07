@@ -19,6 +19,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
         protected override object ParseJson(string path)
         {
             var data = Helper.LoadCommonEvents(path);
+            if (data == null) return null;
 
             int eventsCount = data.Count;
             for (int e = 0; e < eventsCount; e++)

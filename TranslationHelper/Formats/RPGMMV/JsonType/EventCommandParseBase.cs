@@ -41,7 +41,6 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                     int parametersCount = command.Parameters.Length;
                     for (int i = 0; i < parametersCount; i++)
                     {
-                        var type = command.Parameters[i].GetType();
                         if (command.Parameters[i] is JArray a)
                         {
                             int count = a.Count;
