@@ -25,13 +25,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (item == null) continue;
 
                 var name = item.Name;
-                if (AddRowData(ref name, $"{ItemTypeName} #: {item.Id}") && AppData.SaveFileMode)
+                if (AddRowData(ref name, AppData.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}") && AppData.SaveFileMode)
                 {
                     item.Name = name;
                 }
 
                 var description = item.Description;
-                if (AddRowData(ref description, $"{ItemTypeName} #: {item.Id}\r\nName: {name}") && AppData.SaveFileMode)
+                if (AddRowData(ref description, AppData.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nName: {name}") && AppData.SaveFileMode)
                 {
                     item.Description = description;
                 }

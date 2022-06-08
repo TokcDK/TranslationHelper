@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (item == null) continue;
 
                 var s = item.Name;
-                if (AddRowData(ref s, $"\r\nID: {item.Id}") && AppData.SaveFileMode) item.Name = s;
+                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}") && AppData.SaveFileMode) item.Name = s;
             }
 
             return data;

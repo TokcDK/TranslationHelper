@@ -14,7 +14,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             if (data == null) return null;
 
             var dsplayName = data.DisplayName;
-            if (AddRowData(ref dsplayName, $"Map Note: {data.Note}") && AppData.SaveFileMode)
+            if (AddRowData(ref dsplayName, AppData.SaveFileMode ? "" : $"Map DisplayName\r\nMap Note: \"{data.Note}\"") && AppData.SaveFileMode)
             {
                 data.DisplayName = dsplayName;
             }
