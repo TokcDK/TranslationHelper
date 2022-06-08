@@ -6,6 +6,6 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
     {
         protected override string ItemTypeName => "Weapon";
 
-        protected override IItemType[] GetJsonData(string path) => Helper.LoadArmorsArray(path);
+        protected override IItemType[] GetJsonData(string path) => Helper.LoadWeaponsArray(path);
     }
 }
