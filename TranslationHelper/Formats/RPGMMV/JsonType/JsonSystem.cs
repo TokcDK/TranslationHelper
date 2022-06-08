@@ -17,6 +17,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 
             bool isSave = AppData.SaveFileMode;
 
+            var u = data.GameTitle;
+            if (AddRowData(ref u, isSave ? "" : $"GameTitle") && isSave) data.GameTitle = u;
+
             int count = data.ArmorTypes.Length;
             for (int i = 0; i < count; i++)
             {
@@ -24,7 +27,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (AddRowData(ref s, isSave ? "" : $"ArmorType {i}") && isSave) data.ArmorTypes[i] = s;
             }
 
-            var u = data.CurrencyUnit;
+            u = data.CurrencyUnit;
             if (AddRowData(ref u, isSave ? "" : $"CurrencyUnit") && isSave) data.CurrencyUnit = u;
 
             count = data.Elements.Length;
