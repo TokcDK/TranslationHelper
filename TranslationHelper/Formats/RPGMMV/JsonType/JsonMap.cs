@@ -13,11 +13,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             var data = Helper.LoadMap(path);
             if (data == null) return null;
 
-            var dsplayName = data.DisplayName;
-            if (AddRowData(ref dsplayName, AppData.SaveFileMode ? "" : $"Map DisplayName\r\nMap Note: \"{data.Note}\"") && AppData.SaveFileMode)
-            {
-                data.DisplayName = dsplayName;
-            }
+            var s = data.DisplayName;
+            if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"Map DisplayName \r\nMap Note: \"{data.Note}\"") && AppData.SaveFileMode) data.DisplayName = s;
+
+            s = data.Note;
+            if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"Map Note") && AppData.SaveFileMode) data.Note = s;
 
             int eventsCount = data.Events.Length;
             for (int e = 0; e < eventsCount; e++)

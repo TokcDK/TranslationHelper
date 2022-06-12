@@ -24,17 +24,14 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 var item = data[a];
                 if (item == null) continue;
 
-                var name = item.Name;
-                if (AddRowData(ref name, AppData.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}") && AppData.SaveFileMode)
-                {
-                    item.Name = name;
-                }
+                var s = item.Name;
+                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Name = s;
 
-                var description = item.Description;
-                if (AddRowData(ref description, AppData.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nName: {name}") && AppData.SaveFileMode)
-                {
-                    item.Description = description;
-                }
+                s = item.Description;
+                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Description = s;
+
+                s = item.Note;
+                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nName: {item.Name}") && AppData.SaveFileMode) item.Note = s;
             }
 
             return data;

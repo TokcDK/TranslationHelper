@@ -31,6 +31,8 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Message3 = s;
                 s = item.Message4;
                 if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Message4 = s;
+                s = item.Note;
+                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}\r\nName: {item.Name}\r\nNote") && AppData.SaveFileMode) item.Note = s;
             }
 
             return data;
