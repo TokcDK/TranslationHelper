@@ -9,7 +9,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
-    internal class JsonTroops:JsonTypeBase
+    internal class JsonTroops : EventCommandParseBase
     {
         protected override object ParseJson(string path)
         {
@@ -23,6 +23,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 
                 var s = item.Name;
                 if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}") && AppData.SaveFileMode) item.Name = s;
+
+                int pagesCount = item.Pages.Length;
+                for (int p = 0;p< pagesCount; p++)
+                {
+                    var page = item.Pages[p];
+                    ParseCommandStrings(page.Commands, AppData.SaveFileMode ? "" : $"Troop name: \"{item.Name}\"\r\nPage number: {p}");
+                }
             }
 
             return data;
