@@ -25,6 +25,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 var @event = data.Events[e];
                 if (@event == null) continue;
 
+                s = @event.Note;
+                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"Map Note") && AppData.SaveFileMode) data.Note = s;
+
                 int pagesCount = @event.Pages.Length;
                 for (int p = 0; p < pagesCount; p++)
                 {
