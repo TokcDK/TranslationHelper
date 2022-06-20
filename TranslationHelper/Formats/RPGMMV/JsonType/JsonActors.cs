@@ -16,11 +16,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (item == null) continue;
 
                 var s = item.Name;
-                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}\r\nbattlerName: \"{item.BattlerName}\"\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Name = s;
+                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}\r\nbattlerName: \"{item.BattlerName}\"\r\nCharacterName: \"{item.CharacterName}\"\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Name = s;
+                s = item.CharacterName;
+                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}\r\nName: \"{item.Name}\"\r\nbattlerName: \"{item.BattlerName}\"") && AppData.SaveFileMode) item.CharacterName = s;
                 s = item.Profile;
-                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}\r\nName: \"{item.Name}\"\r\nbattlerName: \"{item.BattlerName}\"") && AppData.SaveFileMode) item.Profile = s;
+                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}\r\nName: \"{item.Name}\"\r\nCharacterName: \"{item.CharacterName}\"\r\nbattlerName: \"{item.BattlerName}\"") && AppData.SaveFileMode) item.Profile = s;
                 s = item.Note;
-                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}\r\nName: \"{item.Name}\"\r\nbattlerName: \"{item.BattlerName}") && AppData.SaveFileMode) item.Note = s;
+                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}\r\nName: \"{item.Name}\"\r\nCharacterName: \"{item.CharacterName}\"\r\nbattlerName: \"{item.BattlerName}") && AppData.SaveFileMode) item.Note = s;
             }
 
             return data;
