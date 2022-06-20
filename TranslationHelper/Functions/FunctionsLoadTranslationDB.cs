@@ -13,11 +13,11 @@ namespace TranslationHelper.Functions
 {
     class FunctionsLoadTranslationDB
     {
-        
+
 
         public FunctionsLoadTranslationDB()
         {
-            
+
         }
 
         internal void THLoadDBCompare(DataSet THTempDS)
@@ -193,7 +193,7 @@ namespace TranslationHelper.Functions
         /// </summary>
         /// <param name="db"></param>
         /// <param name="forced"></param>
-        internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db, bool forced=false)
+        internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db, bool forced = false)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
@@ -301,7 +301,7 @@ namespace TranslationHelper.Functions
         /// </summary>
         /// <param name="db"></param>
         /// <param name="forced"></param>
-        internal void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string, string> db, bool forced=false)
+        internal void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string, string> db, bool forced = false)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
@@ -350,7 +350,8 @@ namespace TranslationHelper.Functions
                     if (!forced && CellTranslation != null && !string.IsNullOrEmpty(CellTranslation as string)) continue;
 
                     var origCellValue = Row[0] as string;
-                    if (db.ContainsKey(origCellValue) && db[origCellValue].Length > 0)
+                    var isRN = origCellValue.IndexOf("\r\n") != -1;
+                    if ((db.ContainsKey(origCellValue) && db[origCellValue].Length > 0) || (db.ContainsKey(origCellValue = origCellValue.Replace(isRN ? "\r\n" : "\n", isRN ? "\n" : "\r\n")) && db[origCellValue].Length > 0))
                     {
                         //ProjectData.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
                         Row[otranscol] = db[origCellValue];
@@ -458,7 +459,8 @@ namespace TranslationHelper.Functions
                         {
                             var origCellValue = Row[0] as string;
                             var found = false;
-                            if (db.ContainsKey(origCellValue))
+                            bool isRN = origCellValue.IndexOf("\r\n") != -1;
+                            if (db.ContainsKey(origCellValue) || db.ContainsKey(origCellValue = origCellValue.Replace(isRN ? "\r\n" : "\n", isRN ? "\n" : "\r\n")))
                             {
                                 var dbo = db[origCellValue];
                                 if (dbo.ContainsKey(Table.TableName))
@@ -507,7 +509,7 @@ namespace TranslationHelper.Functions
                                 }
                                 else
                                 {
-                                    foreach(var tn in db[origCellValue].Values)
+                                    foreach (var tn in db[origCellValue].Values)
                                     {
                                         foreach (var tr in tn.Values)
                                         {
@@ -697,7 +699,7 @@ namespace TranslationHelper.Functions
                 var LoadFoundDBQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (LoadFoundDBQuestion == DialogResult.Yes)
                 {
-                    await Task.Run(()=>AppData.Main.LoadTranslationFromDB(DBPath, false, true)).ConfigureAwait(false);
+                    await Task.Run(() => AppData.Main.LoadTranslationFromDB(DBPath, false, true)).ConfigureAwait(false);
                 }
                 else
                 {
