@@ -308,15 +308,16 @@ namespace TranslationHelper.Functions
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
             int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;
-            if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
-            {
-                return;
-            }
+
+            //если вдруг колонка была только одна
+            if (otranscol == 0 || otranscol == -1) return;
 
             //int RecordsCounter = 1;
             int tcount = AppData.CurrentProject.FilesContent.Tables.Count;
             string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName()) + ":";
             //проход по всем таблицам рабочего dataset
+
+            bool DBTryToCheckLinesOfEachMultilineValue = Properties.Settings.Default.DBTryToCheckLinesOfEachMultilineValue;
 
             Parallel.For(0, tcount, t =>
             //for (int t = 0; t < tcount; t++)
@@ -331,60 +332,54 @@ namespace TranslationHelper.Functions
                     AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
                 }
 
-                using (var Table = AppData.CurrentProject.FilesContent.Tables[t])
+                var Table = AppData.CurrentProject.FilesContent.Tables[t];
+
+                //skip table if there is no untranslated lines
+                if (!forced && FunctionsTable.IsTableColumnCellsAll(Table)) return;
+
+                string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
+                AppData.Main.ProgressInfo(true, tableprogressinfo);
+
+                int rcount = Table.Rows.Count;
+                //проход по всем строкам таблицы рабочего dataset
+                for (int r = 0; r < rcount; r++)
                 {
-                    //skip table if there is no untranslated lines
-                    if (!forced && FunctionsTable.IsTableColumnCellsAll(Table))
-                        return;
+                    //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
+                    var Row = Table.Rows[r];
+                    var CellTranslation = Row[otranscol];
+                    if (!forced && CellTranslation != null && !string.IsNullOrEmpty(CellTranslation as string)) continue;
 
-                    string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
-                    AppData.Main.ProgressInfo(true, tableprogressinfo);
-
-                    int rcount = Table.Rows.Count;
-                    //проход по всем строкам таблицы рабочего dataset
-                    for (int r = 0; r < rcount; r++)
+                    var origCellValue = Row[0] as string;
+                    if (db.ContainsKey(origCellValue) && db[origCellValue].Length > 0)
                     {
-                        //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
-                        var Row = Table.Rows[r];
-                        var CellTranslation = Row[otranscol];
-                        if (forced || CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                        //ProjectData.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
+                        Row[otranscol] = db[origCellValue];
+                    }
+                    else if (DBTryToCheckLinesOfEachMultilineValue && origCellValue.IsMultiline())
+                    {
+                        bool IsAllLinesTranslated = true;
+                        var mergedlines = new List<string>();
+                        foreach (var line in origCellValue.SplitToLines())
                         {
-                            var origCellValue = Row[0] as string;
-                            if (db.ContainsKey(origCellValue) && db[origCellValue].Length > 0)
+                            if (line.HaveMostOfRomajiOtherChars())
                             {
-                                //ProjectData.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
-                                Row[otranscol] = db[origCellValue];
+                                mergedlines.Add(line);
                             }
-                            else if (Properties.Settings.Default.DBTryToCheckLinesOfEachMultilineValue)
+                            else if (db.ContainsKey(line) && db[line].Length > 0)
                             {
-                                if (origCellValue.IsMultiline())
-                                {
-                                    bool IsAllLinesTranslated = true;
-                                    List<string> mergedlines = new List<string>();
-                                    foreach (var line in origCellValue.SplitToLines())
-                                    {
-                                        if (line.HaveMostOfRomajiOtherChars())
-                                        {
-                                            mergedlines.Add(line);
-                                        }
-                                        else if (db.ContainsKey(line) && db[line].Length > 0)
-                                        {
-                                            mergedlines.Add(db[line]);
-                                        }
-                                        else
-                                        {
-                                            IsAllLinesTranslated = false;
-                                        }
-                                    }
-                                    if (IsAllLinesTranslated && mergedlines.Count > 0)
-                                    {
-                                        Row[otranscol] = string.Join(Environment.NewLine, mergedlines);
-                                    }
-                                }
+                                mergedlines.Add(db[line]);
+                            }
+                            else
+                            {
+                                IsAllLinesTranslated = false;
                             }
                         }
+
+                        if (IsAllLinesTranslated && mergedlines.Count > 0) Row[otranscol] = string.Join(Environment.NewLine, mergedlines);
                     }
                 }
+
+                Table.Dispose();
 
                 if (b)
                 {
