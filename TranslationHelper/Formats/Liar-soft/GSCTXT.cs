@@ -32,7 +32,7 @@ namespace TranslationHelper.Formats.Liar_soft
             var str = message.ToString().Remove(0, 1);//remove 1st # symbol
             if (IsValidString(str))
             {
-                if (AppData.CurrentProject.OpenFileMode)
+                if (OpenFileMode)
                 {
                     AddRowData(str, "", CheckInput: false);
                 }
@@ -42,7 +42,7 @@ namespace TranslationHelper.Formats.Liar_soft
                 }
             }
 
-            if (AppData.CurrentProject.SaveFileMode)
+            if (SaveFileMode)
             {
                 ParseData.ResultForWrite.AppendLine("#"+str);
                 ParseData.ResultForWrite.AppendLine(">");
@@ -52,7 +52,7 @@ namespace TranslationHelper.Formats.Liar_soft
         }
         protected override bool FilePostOpen()
         {
-            if (AppData.CurrentProject.OpenFileMode)
+            if (OpenFileMode)
             {
                 return CheckTablesContent(FileName);
             }

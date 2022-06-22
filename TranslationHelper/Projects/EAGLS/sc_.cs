@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override string Filters => "EAGLS SCPACK sc_txt|sc_*.txt";
 
-        protected override bool TryOpen()
+        public override bool Open()
         {
             var format = new SC_TXT
             {
@@ -34,7 +34,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override string ProjectFolderName => "EAGLS";
 
-        protected override bool TrySave()
+        public override bool Save()
         {
             throw new NotImplementedException();
         }

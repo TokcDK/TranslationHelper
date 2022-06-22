@@ -27,7 +27,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 //parse subtoken
                 Parse(root);
 
-                if (AppData.CurrentProject.SaveFileMode)
+                if (Format.SaveFileMode)
                 {
                     jsonValue.Value = root.ToString(Formatting.None);
                 }
@@ -36,7 +36,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             {
                 if (!IsValidToken(jsonValue)) return;
 
-                if (AppData.CurrentProject.OpenFileMode)
+                if (Format.OpenFileMode)
                 {
                     Format.AddRowData(JsonName, tokenValue,
                         jsonValue.Path

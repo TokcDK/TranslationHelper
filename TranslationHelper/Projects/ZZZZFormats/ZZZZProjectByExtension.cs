@@ -37,7 +37,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         internal override string Name => string.IsNullOrWhiteSpace(Format.Name) ? Format.Ext: Format.Name;
 
-        protected override bool TryOpen()
+        public override bool Open()
         {
             var fileExt = Path.GetExtension(AppData.SelectedFilePath);
             List<Type> foundTypes = new List<Type>();
@@ -74,7 +74,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             return OpenSave();
         }
 
-        protected override bool TrySave() => OpenSave();
+        public override bool Save() => OpenSave();
 
         bool OpenSave()
         {
@@ -84,7 +84,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             foreach (var i in Directory.EnumerateFiles(dir, "*" + ext)) if (++extCnt > 1) break;
 
             bool getAll = false;
-            if (extCnt > 1 && (AppData.CurrentProject.SaveFileMode || MessageBox.Show(T._("Found similar files. Open them too?"), T._("Found files with same extension"), MessageBoxButtons.YesNo) == DialogResult.Yes))
+            if (extCnt > 1 && (SaveFileMode || MessageBox.Show(T._("Found similar files. Open them too?"), T._("Found files with same extension"), MessageBoxButtons.YesNo) == DialogResult.Yes))
             {
                 getAll = true;
             }

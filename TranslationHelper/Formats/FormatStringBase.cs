@@ -129,7 +129,7 @@ namespace TranslationHelper.Formats
         /// <param name="newLineAfter">last line must be empty</param>
         protected virtual void SaveModeAddLine(string line, string newline = "\r\n", bool newLineAfter = false)
         {
-            if (AppData.CurrentProject.OpenFileMode)
+            if (OpenFileMode)
             {
                 return;
             }
@@ -237,7 +237,7 @@ namespace TranslationHelper.Formats
                 if (mc.Count > 0)
                 {
                     var IsSet = false;
-                    if (AppData.CurrentProject.OpenFileMode)
+                    if (OpenFileMode)
                     {
                         foreach (Match m in mc)
                         {
@@ -287,7 +287,7 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                if (ParseData.Ret && AppData.CurrentProject.SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(GetSaveFilePath()))
+                if (ParseData.Ret && SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(GetSaveFilePath()))
                 {
                     File.WriteAllText(filePath.Length > 0 ? filePath : AppData.CurrentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
                     return true;
@@ -312,7 +312,7 @@ namespace TranslationHelper.Formats
             {
                 this.format = format;
 
-                if (AppData.CurrentProject.SaveFileMode)
+                if (format.SaveFileMode)
                 {
                     ResultForWrite = new StringBuilder();
                 }

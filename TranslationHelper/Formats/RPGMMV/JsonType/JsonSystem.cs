@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
         {
             var data = Helper.LoadSystem(path);
 
-            bool isSave = AppData.CurrentProject.SaveFileMode;
+            bool isSave = SaveFileMode;
 
             var u = data.GameTitle;
             if (AddRowData(ref u, isSave ? "" : $"GameTitle") && isSave) data.GameTitle = u;

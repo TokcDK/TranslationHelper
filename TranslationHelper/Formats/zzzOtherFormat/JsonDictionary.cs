@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.zzzOtherFormat
             {
                 var value = key;
 
-                if (AddRowData(ref value, existsTranslation: Dict[key]) && AppData.CurrentProject.SaveFileMode)
+                if (AddRowData(ref value, existsTranslation: Dict[key]) && SaveFileMode)
                 {
                     Dict[key] = Mod(key, value);
                 }
@@ -24,7 +24,7 @@ namespace TranslationHelper.Formats.zzzOtherFormat
                 //if (ProjectData.SaveFileMode && Dict[key] == key) Dict[key] = "";
             }
 
-            if (AppData.CurrentProject.SaveFileMode) ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(Dict, Formatting.Indented));
+            if (SaveFileMode) ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(Dict, Formatting.Indented));
         }
 
         string Mod(string o, string t)

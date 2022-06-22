@@ -49,7 +49,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
                             AddRowData(ref value, ParseData.Line);
 
-                            if (AppData.CurrentProject.SaveFileMode)
+                            if (SaveFileMode)
                                 ParseData.Line = ParseData.Line
                                     .Remove(mc[i].Index, mc[i].Length)
                                     .Insert(mc[i].Index, "\"" + value + "\"");

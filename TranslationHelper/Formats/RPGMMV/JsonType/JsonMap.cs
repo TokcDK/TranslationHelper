@@ -14,10 +14,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             if (data == null) return null;
 
             var s = data.DisplayName;
-            if (AddRowData(ref s, AppData.CurrentProject.SaveFileMode ? "" : $"Map DisplayName \r\nMap Note: \"{data.Note}\"") && AppData.CurrentProject.SaveFileMode) data.DisplayName = s;
+            if (AddRowData(ref s, SaveFileMode ? "" : $"Map DisplayName \r\nMap Note: \"{data.Note}\"") && SaveFileMode) data.DisplayName = s;
 
             s = data.Note;
-            if (AddRowData(ref s, AppData.CurrentProject.SaveFileMode ? "" : $"Map Note") && AppData.CurrentProject.SaveFileMode) data.Note = s;
+            if (AddRowData(ref s, SaveFileMode ? "" : $"Map Note") && SaveFileMode) data.Note = s;
 
             int eventsCount = data.Events.Length;
             for (int e = 0; e < eventsCount; e++)
@@ -26,13 +26,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (@event == null) continue;
 
                 s = @event.Note;
-                if (AddRowData(ref s, AppData.CurrentProject.SaveFileMode ? "" : $"Map Note") && AppData.CurrentProject.SaveFileMode) data.Note = s;
+                if (AddRowData(ref s, SaveFileMode ? "" : $"Map Note") && SaveFileMode) data.Note = s;
 
                 int pagesCount = @event.Pages.Length;
                 for (int p = 0; p < pagesCount; p++)
                 {
                     var page = @event.Pages[p];
-                    ParseCommandStrings(page.Commands, AppData.CurrentProject.SaveFileMode ? "" : $"Map DisplayName: \"{data.DisplayName}\"\r\nMap Note: \"{data.Note}\"\r\nEvent ID: {@event.Id}\r\nEvent name: \"{@event.Name}\"\r\nPage number: {p}");
+                    ParseCommandStrings(page.Commands, SaveFileMode ? "" : $"Map DisplayName: \"{data.DisplayName}\"\r\nMap Note: \"{data.Note}\"\r\nEvent ID: {@event.Id}\r\nEvent name: \"{@event.Name}\"\r\nPage number: {p}");
                 }
             }
 

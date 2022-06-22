@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 }
                 else if ((r = Regex.Match(ParseData.Line, @"src: url\(\""([^\""]+)\""\)")).Success)
                 {
-                    if (AppData.CurrentProject.OpenFileMode)
+                    if (OpenFileMode)
                     {
                         ParseData.Ret = AddRowData(r.Result("$1"), T._("GameFont.\r\nFont must be installed in system or file placed in folder %GAME%\\www\\fonts\\ \r\n or use absolute path. \r\n Change font to smaller is more preferable than line split function\r\nexample: c:/windows/fonts/browa.ttf"), CheckInput: false);
 
@@ -66,7 +66,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
         protected override bool TrySave()
         {
-            AppData.CurrentProject.SaveFileMode = true;
+            SaveFileMode = true;
             return ParseFile();
         }
 

@@ -16,10 +16,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (item == null) continue;
 
                 var s = item.Name;
-                if (AddRowData(ref s, AppData.CurrentProject.SaveFileMode ? "" : $"\r\nID: {item.Id}") && AppData.CurrentProject.SaveFileMode) item.Name = s;
+                if (AddRowData(ref s, SaveFileMode ? "" : $"\r\nID: {item.Id}") && SaveFileMode) item.Name = s;
 
                 s = item.Note;
-                if (AddRowData(ref s, AppData.CurrentProject.SaveFileMode ? "" : $"\r\nID: {item.Id}") && AppData.CurrentProject.SaveFileMode) item.Note = s;
+                if (AddRowData(ref s, SaveFileMode ? "" : $"\r\nID: {item.Id}") && SaveFileMode) item.Note = s;
             }
 
             return data;

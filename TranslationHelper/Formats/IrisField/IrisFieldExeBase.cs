@@ -67,7 +67,7 @@ namespace TranslationHelper.Formats.IrisField
             readstring = false;
             strtranslated = false;
 
-            if (AppData.CurrentProject.SaveFileMode)
+            if (SaveFileMode)
             {
                 translatedbytesControlPosition = 0;
             }
@@ -77,7 +77,7 @@ namespace TranslationHelper.Formats.IrisField
 
         protected override void PreParseBytes()
         {
-            if (AppData.CurrentProject.OpenFileMode)
+            if (OpenFileMode)
             {
                 br.BaseStream.Position = startpos; // go to strings part
             }
@@ -160,7 +160,7 @@ namespace TranslationHelper.Formats.IrisField
                             }
                         }
 
-                        if (AppData.CurrentProject.OpenFileMode)
+                        if (OpenFileMode)
                         {
                             //recalculate maxbytes
                             if (strhaveotherbytes)
@@ -185,7 +185,7 @@ namespace TranslationHelper.Formats.IrisField
                     //<<--check string
 
                     //write all bytes-->>
-                    if (AppData.CurrentProject.SaveFileMode)
+                    if (SaveFileMode)
                     {
                         if (!strtranslated)
                         {
@@ -360,7 +360,7 @@ namespace TranslationHelper.Formats.IrisField
                     if (ParseData.FStream.Position >= EndPos)
                     {
 
-                        if (AppData.CurrentProject.SaveFileMode)
+                        if (SaveFileMode)
                         {
                             //add currentbyte to translation because it was already read but cyrcle will over
                             NewEXEBytesForWrite.Add(currentbyte);

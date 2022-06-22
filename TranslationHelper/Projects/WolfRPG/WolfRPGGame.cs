@@ -29,7 +29,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override string Name => "Wolf RPG";
 
-        protected override bool TryOpen()
+        public override bool Open()
         {
             return /*ExtractWolfFiles()*/ Patch() && OpenSaveFiles();
         }
@@ -163,7 +163,7 @@ namespace TranslationHelper.Projects.WolfRPG
             //OpenSaveFiles();
         }
 
-        protected override bool TrySave()
+        public override bool Save()
         {
             return OpenSaveFiles() && Patch();
         }
@@ -179,12 +179,12 @@ namespace TranslationHelper.Projects.WolfRPG
 
                 AppData.CurrentProject.ProjectWorkDir = WorkFolder;
 
-                var progressMessageTitle = "Wolf archive" + " " + (AppData.CurrentProject.OpenFileMode ? T._("Create patch") : T._("Write patch")) + ".";
+                var progressMessageTitle = "Wolf archive" + " " + (OpenFileMode ? T._("Create patch") : T._("Write patch")) + ".";
 
                 var dataPath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data");
 
                 //decode wolf files
-                if (AppData.CurrentProject.OpenFileMode)
+                if (OpenFileMode)
                 {
                     //var wolfextractor = THSettings.WolfRPGExtractorExePath();
                     var wolfextractor = THSettings.WolfdecExePath();
@@ -242,7 +242,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
                 Directory.CreateDirectory(WorkFolder);
 
-                var needpatch = AppData.CurrentProject.SaveFileMode || (AppData.CurrentProject.OpenFileMode && (!patchdir.Exists || !patchdir.HasAnyFiles("*.txt")));
+                var needpatch = SaveFileMode || (OpenFileMode && (!patchdir.Exists || !patchdir.HasAnyFiles("*.txt")));
 
                 if (needpatch)
                 {
@@ -275,7 +275,7 @@ namespace TranslationHelper.Projects.WolfRPG
                     {
                         try
                         {
-                            if (AppData.CurrentProject.OpenFileMode) BakRestore();//restore original files before patch creation
+                            if (OpenFileMode) BakRestore();//restore original files before patch creation
                             AppData.Main.ProgressInfo(true, "Patching..");
                             ret = RubyWolfTrans.Start();
                             RubyWolfTrans.WaitForExit();
@@ -290,7 +290,7 @@ namespace TranslationHelper.Projects.WolfRPG
                         {
                             AppData.Main.ProgressInfo(true, progressMessageTitle + " " + T._("Somethig wrong") + ".. " + T._("Trying again"));
                             //2nd try because was error sometime after 1st patch creation execution
-                            if (AppData.CurrentProject.OpenFileMode) BakRestore();
+                            if (OpenFileMode) BakRestore();
                             ret = RubyWolfTrans.Start();
                             RubyWolfTrans.WaitForExit();
                         }
@@ -317,11 +317,11 @@ namespace TranslationHelper.Projects.WolfRPG
                     }
                 }
 
-                var checkdir = AppData.CurrentProject.OpenFileMode ? translateddir : patchdir;
+                var checkdir = OpenFileMode ? translateddir : patchdir;
                 checkdir.Refresh();
                 ret = checkdir.Exists && checkdir.HasAnyFiles();
 
-                if (ret && AppData.CurrentProject.SaveFileMode)
+                if (ret && SaveFileMode)
                 {
                     AppData.Main.ProgressInfo(true, T._("Create buckup of original files"));
                     BakCreate();

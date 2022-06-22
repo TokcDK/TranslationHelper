@@ -48,7 +48,7 @@ namespace TranslationHelper.Projects
 
         string extractedpatchpath;
 
-        protected override bool TryOpen()
+        public override bool Open()
         {
             extractedpatchpath = string.Empty;
 
@@ -82,7 +82,7 @@ namespace TranslationHelper.Projects
 
             FixOldPatchDirsLocation(workdir);
 
-            if (AppData.CurrentProject.OpenFileMode && IsPatchFilesExist(patchdirPath))
+            if (OpenFileMode && IsPatchFilesExist(patchdirPath))
             {
                 DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
@@ -197,7 +197,7 @@ namespace TranslationHelper.Projects
                 }
 
                 //extract Game.rgss
-                if (AppData.CurrentProject.OpenFileMode && !ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
+                if (OpenFileMode && !ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
                 {
                     new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
                     AppData.Main.ProgressInfo(true, T._("Last try"));
@@ -342,7 +342,7 @@ namespace TranslationHelper.Projects
             return Path.Combine(patchdir, "patch").ContainsFiles("*.txt");
         }
 
-        protected override bool TrySave()
+        public override bool Save()
         {
             OpenSaveFilesBase(patchdir, typeof(TXTv3), "*.txt");//not need to check return value here
 

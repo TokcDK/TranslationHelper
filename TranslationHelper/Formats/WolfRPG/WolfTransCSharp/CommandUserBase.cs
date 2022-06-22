@@ -20,7 +20,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
                 foreach (var arg in command.GetText())
                 {
                     var value = arg.Value;
-                    if (AddRowData(ref value, info + $"\r\nCommand id: {command.CID}\r\nCommand name: {command.GetType().Name}\r\nString index: {command.String_args.IndexOf(arg)}") && AppData.CurrentProject.SaveFileMode)
+                    if (AddRowData(ref value, info + $"\r\nCommand id: {command.CID}\r\nCommand name: {command.GetType().Name}\r\nString index: {command.String_args.IndexOf(arg)}") && SaveFileMode)
                     {
                         command.SetText(arg, value);
                     }

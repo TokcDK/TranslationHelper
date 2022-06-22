@@ -19,12 +19,12 @@ namespace TranslationHelper.Projects.Liar_soft
         internal override string Name => "Liar-Soft";
         internal override string ProjectFolderName => "Liar-Soft";
 
-        protected override bool TryOpen()
+        public override bool Open()
         {
             return OpenSaveXFL();
         }
 
-        protected override bool TrySave()
+        public override bool Save()
         {
             return OpenSaveXFL();
         }
@@ -49,7 +49,7 @@ namespace TranslationHelper.Projects.Liar_soft
             //open or save txt/gsc
             var ret = OpenSaveFilesBase(dir, typeof(GSCTXT), "*.txt");
 
-            if(AppData.CurrentProject.SaveFileMode && ret)
+            if(SaveFileMode && ret)
             {
                 //replace gsc entries with translated
                 for (int i=0; i< archive.Entries.Count; i++)

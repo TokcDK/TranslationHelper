@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.IrisField
     {
         public TXT()
         {
-            if (AppData.CurrentProject.SaveFileMode)
+            if (SaveFileMode)
             {
                 MaxLineLength = (AppData.CurrentProject as IrisFieldGameBase).MaxLineLength;
             }
@@ -89,7 +89,7 @@ namespace TranslationHelper.Formats.IrisField
 
                     _messageReadMode = false;
 
-                    if (AppData.CurrentProject.OpenFileMode)
+                    if (OpenFileMode)
                     {
                         AddRowData(RowData: mergedMessage.TrimEnd(), RowInfo: LastMSGType, CheckInput: true);
                     }
@@ -135,7 +135,7 @@ namespace TranslationHelper.Formats.IrisField
                 var choiceMatch = Regex.Match(choice, _choiceTextExtractionRegex);
                 var choiceText = choiceMatch.Groups[1].Value;
 
-                if (AddRowData(RowData: ref choiceText, RowInfo: "Choice: " + i) && AppData.CurrentProject.SaveFileMode)
+                if (AddRowData(RowData: ref choiceText, RowInfo: "Choice: " + i) && SaveFileMode)
                 {
                     // only when translated
                     choiceText = choiceText.Replace(' ', '_'); // need to remove spaces in choice variants

@@ -21,8 +21,8 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override string Name => "Wolftrans open test";
 
-        protected override bool TryOpen() => OpenSave();
-        protected override bool TrySave() => OpenSave();
+        public override bool Open() => OpenSave();
+        public override bool Save() => OpenSave();
 
         private bool OpenSave()
         {

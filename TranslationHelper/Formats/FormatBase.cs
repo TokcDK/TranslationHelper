@@ -45,7 +45,7 @@ namespace TranslationHelper.Formats
             // DontLoadDuplicates options
             if (!AppData.CurrentProject.DontLoadDuplicates) return;
 
-            if (AppData.CurrentProject.SaveFileMode)
+            if (SaveFileMode)
             {
                 if (AppData.CurrentProject.TablesLinesDict == null) AppData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
@@ -61,7 +61,7 @@ namespace TranslationHelper.Formats
         internal string FilePath;
         protected virtual string GetFilePath()
         {
-            return AppData.CurrentProject.OpenFileMode ? GetOpenFilePath() : GetSaveFilePath();
+            return OpenFileMode ? GetOpenFilePath() : GetSaveFilePath();
         }
         protected virtual string GetOpenFilePath()
         {
@@ -101,8 +101,8 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal virtual string Name => string.Empty;
 
-        protected bool OpenFileMode { get; set; } = true;
-        protected bool SaveFIleMode { get => !OpenFileMode; set => OpenFileMode = !value; }
+        public bool OpenFileMode { get; set; } = true;
+        public bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }
 
         /// <summary>
         /// Open file strings actions executing here
@@ -250,7 +250,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(ref string RowData, string RowInfo = "", bool CheckInput = true, string existsTranslation = null)
         {
-            if (AppData.CurrentProject.OpenFileMode)
+            if (OpenFileMode)
             {
                 return AddRowData(FileName, RowData, RowInfo, CheckInput);
             }
@@ -285,7 +285,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(ref string[] RowData, string RowInfo = "", bool CheckInput = true)
         {
-            if (AppData.CurrentProject.OpenFileMode)
+            if (OpenFileMode)
             {
                 return AddRowData(FileName, RowData, RowInfo, CheckInput);
             }
@@ -450,17 +450,17 @@ namespace TranslationHelper.Formats
                 return false;
             }
 
-            if (AppData.CurrentProject.SaveFileMode && !AppData.THFilesList.Items.Contains(FileName))
+            if (SaveFileMode && !AppData.THFilesList.Items.Contains(FileName))
             {
                 return false;
             }
 
-            if (AppData.CurrentProject.OpenFileMode)
+            if (OpenFileMode)
             {
                 AddTables();
             }
 
-            if (AppData.CurrentProject.SaveFileMode)
+            if (SaveFileMode)
             {
                 SplitTableCellValuesAndTheirLinesToDictionary(FileName, false, false);
             }
@@ -510,7 +510,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual bool FilePostOpen()
         {
-            if (AppData.CurrentProject.OpenFileMode)
+            if (OpenFileMode)
             {
                 return CheckTablesContent(FileName);
             }
@@ -537,7 +537,7 @@ namespace TranslationHelper.Formats
         }
         internal void SplitTableCellValuesToDictionaryLines(string TableName)
         {
-            if (!AppData.CurrentProject.DontLoadDuplicates || !AppData.CurrentProject.SaveFileMode || !AppData.CurrentProject.FilesContent.Tables.Contains(TableName))
+            if (!AppData.CurrentProject.DontLoadDuplicates || !SaveFileMode || !AppData.CurrentProject.FilesContent.Tables.Contains(TableName))
                 return;
 
             if (AppData.CurrentProject.TablesLinesDict == null)
@@ -800,7 +800,7 @@ namespace TranslationHelper.Formats
         /// <returns>true if translation was set and not equal to input original</returns>
         internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null)
         {
-            if (AppData.CurrentProject.OpenFileMode) return false;
+            if (OpenFileMode) return false;
 
             var isTranslated = false;
             bool letDuplicates = !AppData.CurrentProject.DontLoadDuplicates;

@@ -23,7 +23,7 @@ namespace TranslationHelper.Projects
 
             if (AppData.CurrentProject == null) return;
 
-            if (AppData.CurrentProject.SaveFileMode && DontLoadDuplicates)
+            if (SaveFileMode && DontLoadDuplicates)
             {
                 TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
@@ -205,13 +205,13 @@ namespace TranslationHelper.Projects
         /// Open project files
         /// </summary>        
         /// <returns></returns>
-        internal abstract bool Open();
+        public abstract bool Open();
 
         /// <summary>
         /// Save project files
         /// </summary>        
         /// <returns></returns>
-        internal abstract bool Save();
+        public abstract bool Save();
 
         /// <summary>
         /// open or save project files
@@ -290,11 +290,11 @@ namespace TranslationHelper.Projects
                 if (!string.IsNullOrWhiteSpace(format.Ext) && file.Extension != format.Ext) return;
 
                 // check if exist table has any translated
-                if (AppData.CurrentProject.SaveFileMode && existsTables.Contains(format.FileName) && !format.FileName.HasAnyTranslated()) return;
+                if (SaveFileMode && existsTables.Contains(format.FileName) && !format.FileName.HasAnyTranslated()) return;
 
-                AppData.Main.ProgressInfo(true, (AppData.CurrentProject.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
+                AppData.Main.ProgressInfo(true, (OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
                 
-                if (AppData.CurrentProject.OpenFileMode ? format.Open() : format.Save()) ret = true;
+                if (OpenFileMode ? format.Open() : format.Save()) ret = true;
             });
 
             AppData.Main.ProgressInfo(false);

@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.AliceSoft
 
                 if (IsValidString(orig))
                 {
-                    if (AppData.CurrentProject.OpenFileMode)
+                    if (OpenFileMode)
                     {
                         AddRowData(orig, T._("Last group") + ": " + lastgroupname, CheckInput: false);
                     }

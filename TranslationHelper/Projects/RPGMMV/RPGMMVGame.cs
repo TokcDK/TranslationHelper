@@ -47,7 +47,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override bool IsTestRunEnabled => true;
 
-        protected override bool TryOpen()
+        public override bool Open()
         {
             return ParseProjectFiles();
         }
@@ -77,9 +77,9 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <returns></returns>
         private bool ParseProjectFiles()
         {
-            if (AppData.CurrentProject.OpenFileMode) BakRestore();
+            if (OpenFileMode) BakRestore();
 
-            ParseFileMessage = AppData.CurrentProject.SaveFileMode ? T._("write file: ") : T._("opening file: ");
+            ParseFileMessage = SaveFileMode ? T._("write file: ") : T._("opening file: ");
             bool isAnyFileCompleted = false;
             try
             {
@@ -149,8 +149,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
                     try
                     {
-                        if ((AppData.CurrentProject.OpenFileMode && format.Open())
-                            || (AppData.CurrentProject.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
+                        if ((OpenFileMode && format.Open())
+                            || (SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
                         {
                             isAnyFileCompleted = true;
                         }
@@ -188,8 +188,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 try
                 {
-                    if ((AppData.CurrentProject.OpenFileMode && format.Open())
-                        || (AppData.CurrentProject.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
+                    if ((OpenFileMode && format.Open())
+                        || (SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
                     {
                         isAnyFileCompleted = true;
                     }
@@ -220,8 +220,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
             try
             {
-                if ((AppData.CurrentProject.OpenFileMode && format.Open())
-                    || (AppData.CurrentProject.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
+                if ((OpenFileMode && format.Open())
+                    || (SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
                 {
                     return true;
                 }
@@ -289,7 +289,7 @@ namespace TranslationHelper.Projects.RPGMMV
                     FilePath = filePath
                 };
 
-                ret = AppData.CurrentProject.SaveFileMode ? (format.FileName.HasAnyTranslated() && format.Save()) : format.Open();
+                ret = SaveFileMode ? (format.FileName.HasAnyTranslated() && format.Save()) : format.Open();
 
                 return ret;
             }
@@ -299,7 +299,7 @@ namespace TranslationHelper.Projects.RPGMMV
             }
         }
 
-        protected override bool TrySave()
+        public override bool Save()
         {
             return ParseProjectFiles();
         }

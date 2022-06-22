@@ -22,14 +22,14 @@ namespace TranslationHelper.Projects.NScript
 
         internal override string Name => "NScript";
 
-        protected override bool TryOpen()
+        public override bool Open()
         {
             return /*ExtractNScriptDAT() &&*/ OpenSaveNScript();
         }
 
         private bool OpenSaveNScript()
         {
-            AppData.Main.ProgressInfo(true, (AppData.CurrentProject.OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
+            AppData.Main.ProgressInfo(true, (OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
             var filePath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat");
             bool ret;
             var format = new NSCRIPT
@@ -37,7 +37,7 @@ namespace TranslationHelper.Projects.NScript
                 FilePath = filePath
             };
 
-            if (AppData.CurrentProject.OpenFileMode)
+            if (OpenFileMode)
             {
                 if (!File.Exists(filePath + ".orig"))//backup for manual restore
                 {
@@ -129,7 +129,7 @@ namespace TranslationHelper.Projects.NScript
             return ret;
         }
 
-        protected override bool TrySave()
+        public override bool Save()
         {
             return OpenSaveNScript();
         }

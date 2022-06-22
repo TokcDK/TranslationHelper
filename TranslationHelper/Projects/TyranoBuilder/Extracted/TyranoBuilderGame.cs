@@ -18,7 +18,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
 
         internal override string Name => "TyranoBuilder";
 
-        protected override bool TryOpen()
+        public override bool Open()
         {
             var export = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "export"));
 
@@ -36,7 +36,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
             }
         }
 
-        protected override bool TrySave()
+        public override bool Save()
         {
             var export = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "export"));
 

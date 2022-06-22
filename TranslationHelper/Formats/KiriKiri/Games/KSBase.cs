@@ -276,7 +276,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
                     if (IsValidString(CleanedStr))
                     {
-                        if (AppData.CurrentProject.OpenFileMode)
+                        if (OpenFileMode)
                         {
                             AddRowData(str, string.Empty, CheckInput: false);
                         }
@@ -304,7 +304,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                         AppData.CurrentProject.HideVARSMatchCollectionsList?.Clear();//clear list of matches for hidevarbase
                     }
                 }
-                if (AppData.CurrentProject.SaveFileMode && transApplied && ParseData.Ret)
+                if (SaveFileMode && transApplied && ParseData.Ret)
                 {
                     //character name correction
                     var s = string.Join(newlineSymbol, strarr);

@@ -18,14 +18,14 @@ namespace TranslationHelper.Formats.RPGMMV
                 {
                     if (parameterData[i1] is string s1) { } else continue;
 
-                    if (ParseList(ref s1, info) && AppData.CurrentProject.SaveFileMode)
+                    if (ParseList(ref s1, info) && SaveFileMode)
                     {
                         RET = ret = true;
                         parameterData[i1] = s1;
                     }
                 }
 
-                if (AppData.CurrentProject.SaveFileMode && ret) s = Helper.Json2String(parameterData);
+                if (SaveFileMode && ret) s = Helper.Json2String(parameterData);
             }
             else if (s.StartsWith("{") && s.EndsWith("}")) // is json array
             {
@@ -36,18 +36,18 @@ namespace TranslationHelper.Formats.RPGMMV
                 {
                     if (parameterData[parameterKey] is string s1) { } else continue;
 
-                    if (ParseList(ref s1, info + $"\r\nSubkey: {parameterKey}") && AppData.CurrentProject.SaveFileMode)
+                    if (ParseList(ref s1, info + $"\r\nSubkey: {parameterKey}") && SaveFileMode)
                     {
                         RET = ret = true;
                         parameterData[parameterKey] = s1;
                     }
                 }
 
-                if (AppData.CurrentProject.SaveFileMode && ret) s = Helper.Json2String(parameterData);
+                if (SaveFileMode && ret) s = Helper.Json2String(parameterData);
             }
             else
             {
-                if (AddRowData(ref s, info) && AppData.CurrentProject.SaveFileMode)
+                if (AddRowData(ref s, info) && SaveFileMode)
                 {
                     RET = true;
                     //plugin.Parameters[key] = s;

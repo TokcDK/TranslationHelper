@@ -35,12 +35,12 @@ namespace TranslationHelper.Projects
 
         internal override string Name => "Raijin 7";
 
-        protected override bool TryOpen()
+        public override bool Open()
         {
             return OpenSave();
         }
 
-        protected override bool TrySave()
+        public override bool Save()
         {
             return OpenSave();
         }

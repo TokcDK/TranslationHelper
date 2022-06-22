@@ -39,7 +39,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 {
                     if (plugin.Parameters[key] is string s) { } else continue;
 
-                    if (ParseList(ref s, $"Plugin name:{plugin.Name}\r\nKey: {key}\r\nNote: Be careful with translating this!") && AppData.CurrentProject.SaveFileMode)
+                    if (ParseList(ref s, $"Plugin name:{plugin.Name}\r\nKey: {key}\r\nNote: Be careful with translating this!") && SaveFileMode)
                     {
                         plugin.Parameters[key] = s;
                     }
@@ -90,7 +90,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
             }
 
-            if (AppData.CurrentProject.SaveFileMode && RET) ParseData.ResultForWrite.Append("var $plugins =" + Helper.Json2String(plugins) + ";$");
+            if (SaveFileMode && RET) ParseData.ResultForWrite.Append("var $plugins =" + Helper.Json2String(plugins) + ";$");
         }
 
         //protected override KeywordActionAfter ParseStringFileLine()
