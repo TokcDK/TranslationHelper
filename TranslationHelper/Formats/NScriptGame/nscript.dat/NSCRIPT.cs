@@ -14,10 +14,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
         {
         }
 
-        internal override string Ext()
-        {
-            return ".dat";
-        }
+        internal override string Ext => ".dat";
 
         internal override bool Open()
         {

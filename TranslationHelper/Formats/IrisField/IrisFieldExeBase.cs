@@ -18,10 +18,7 @@ namespace TranslationHelper.Formats.IrisField
         //    return crc=="23424234234234";
         //}
 
-        internal override string Ext()
-        {
-            return ".exe";
-        }
+        internal override string Ext => ".exe";
 
         //internal override bool Open()
         //{

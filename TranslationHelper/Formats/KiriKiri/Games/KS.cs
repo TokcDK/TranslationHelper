@@ -9,10 +9,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         {
         }
 
-        internal override string Ext()
-        {
-            return ".ks";
-        }
+        internal override string Ext => ".ks";
 
         protected override Encoding DefaultEncoding()
         {

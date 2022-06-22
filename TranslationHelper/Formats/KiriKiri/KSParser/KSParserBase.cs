@@ -19,10 +19,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             textOnMessage = new List<string>();
         }
 
-        internal override string Ext()
-        {
-            return ".ks";
-        }
+        internal override string Ext => ".ks";
 
         bool IsScript = false;
         bool TextOn = false;

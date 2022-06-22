@@ -10,10 +10,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         {
         }
 
-        internal override string Ext()
-        {
-            return ".tjs";
-        }
+        internal override string Ext => ".tjs";
 
         protected override void ReadLineMod()
         {

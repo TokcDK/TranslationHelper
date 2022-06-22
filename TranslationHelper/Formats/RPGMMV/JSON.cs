@@ -9,10 +9,7 @@ namespace TranslationHelper.Formats.RPGMMV
             JsonParser = new RPGMVZJsonParser(this);
         }
 
-        internal override string Ext()
-        {
-            return ".json";
-        }
+        internal override string Ext => ".json";
 
         internal override bool UseTableNameWithoutExtension => true;
 

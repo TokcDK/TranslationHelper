@@ -9,16 +9,16 @@ namespace TranslationHelper.Formats.RPGMTransPatch
         {
         }
 
-        internal override int ExtIdentifier()
+        internal override int ExtIdentifier
         {
-            var patchfile = Path.GetFullPath(Path.GetDirectoryName(AppData.SelectedFilePath) + @"\..\RPGMKTRANSPATCH");
-            return File.Exists(patchfile) && Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)) == "patch" ? 1 : -1;
+            get
+            {
+                var patchfile = Path.GetFullPath(Path.GetDirectoryName(AppData.SelectedFilePath) + @"\..\RPGMKTRANSPATCH");
+                return File.Exists(patchfile) && Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)) == "patch" ? 1 : -1;
+            }
         }
 
-        internal override string Name()
-        {
-            return "RPGMTrans patch txt";
-        }
+        internal override string Name => "RPGMTrans patch txt";
 
         protected override string PatchFileID()
         {

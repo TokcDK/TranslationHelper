@@ -24,7 +24,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatStringBase)))
             {
                 var format = (FormatBase)Activator.CreateInstance(formatType);
-                if (format.Ext() == fileExt && format.ExtIdentifier() > -1)
+                if (format.Ext== fileExt && format.ExtIdentifier> -1)
                 {
                     return true;
                 }
@@ -35,7 +35,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         FormatBase Format;
 
-        internal override string Name => string.IsNullOrWhiteSpace(Format.Name()) ? Format.Ext() : Format.Name();
+        internal override string Name => string.IsNullOrWhiteSpace(Format.Name) ? Format.Ext: Format.Name;
 
         internal override bool Open()
         {
@@ -44,7 +44,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatStringBase)))
             {
                 var format = (FormatBase)Activator.CreateInstance(formatType);
-                if (format.Ext() == fileExt && format.ExtIdentifier() > -1)
+                if (format.Ext== fileExt && format.ExtIdentifier> -1)
                 {
                     foundTypes.Add(formatType);
                 }
@@ -79,7 +79,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
         bool OpenSave()
         {
             var dir = Path.GetDirectoryName(AppData.SelectedFilePath);
-            var ext = Format.Ext();
+            var ext = Format.Ext;
             int extCnt = 0;
             foreach (var i in Directory.EnumerateFiles(dir, "*" + ext)) if (++extCnt > 1) break;
 

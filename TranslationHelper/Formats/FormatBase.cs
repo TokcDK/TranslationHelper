@@ -86,29 +86,20 @@ namespace TranslationHelper.Formats
         /// override ExtIdentifier() to determine when a file with the extension can be opened
         /// </summary>
         /// <returns></returns>
-        internal virtual string Ext()
-        {
-            return null;
-        }
+        internal virtual string Ext => null;
 
         /// <summary>
         /// identifier to check how to identify if selected extension must be parsed with this format.
         /// in result can be added new project which will be used Ext and this identifier to open valid standalone files.
         /// </summary>
         /// <returns></returns>
-        internal virtual int ExtIdentifier()
-        {
-            return 0; // 0 means not use identifier
-        }
+        internal virtual int ExtIdentifier => 0; // 0 means not use identifier
 
         /// <summary>
         /// name of format
         /// </summary>
         /// <returns></returns>
-        internal virtual string Name()
-        {
-            return string.Empty;
-        }
+        internal virtual string Name => string.Empty;
 
         /// <summary>
         /// Open file strings actions executing here
@@ -443,7 +434,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual bool FilePreOpenActions()
         {
-            if (!string.IsNullOrWhiteSpace(Ext()) && Path.GetExtension(GetOpenFilePath()) != Ext()) // extension must be same as set, if set
+            if (!string.IsNullOrWhiteSpace(Ext) && Path.GetExtension(GetOpenFilePath()) != Ext) // extension must be same as set, if set
             {
                 return false;
             }

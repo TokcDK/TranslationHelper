@@ -5,10 +5,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class JsonTypeBase : RPGMMVBase
     {
-        internal override string Ext()
-        {
-            return ".json";
-        }
+        internal override string Ext => ".json";
 
         protected override void FileOpen()
         {

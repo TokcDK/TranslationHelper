@@ -7,10 +7,7 @@ namespace TranslationHelper.Formats.zzzOtherFormat
 {
     internal class JsonDictionary : FormatStringBase
     {
-        internal override string Ext()
-        {
-            return ".json";
-        }
+        internal override string Ext => ".json";
         protected override void ParseStringFileLines()
         {
             var Dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(ParseData.Reader.ReadToEnd());

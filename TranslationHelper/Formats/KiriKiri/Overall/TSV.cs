@@ -8,10 +8,7 @@ namespace TranslationHelper.Formats.KiriKiri
         {
         }
 
-        internal override string Ext()
-        {
-            return ".tsv";
-        }
+        internal override string Ext => ".tsv";
 
         protected override KeywordActionAfter ParseStringFileLine()
         {

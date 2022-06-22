@@ -4,10 +4,7 @@ namespace TranslationHelper.Formats.LOFI.Kenshi
 {
     internal class kensho_mod_strings : FormatStringBase
     {
-        internal override string Ext()
-        {
-            return ".kenshi-mod-strings";
-        }
+        internal override string Ext => ".kenshi-mod-strings";
 
         bool reading = false;
         bool readingOriginal = true;

@@ -16,10 +16,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         {
         }
 
-        internal override string Ext()
-        {
-            return ".txt";
-        }
+        internal override string Ext => ".txt";
 
         internal override bool Open()
         {

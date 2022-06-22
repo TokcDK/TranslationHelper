@@ -9,10 +9,7 @@ namespace TranslationHelper.Formats.Raijin7
         {
         }
 
-        internal override string Ext()
-        {
-            return ".csv";
-        }
+        internal override string Ext => ".csv";
 
         internal override bool Open()
         {

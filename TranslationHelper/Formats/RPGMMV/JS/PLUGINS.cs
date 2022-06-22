@@ -13,10 +13,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             JsonParser = new PluginsJSJsonParser(this);
         }
 
-        internal override int ExtIdentifier()
-        {
-            return (Path.GetFileName(AppData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)).ToUpperInvariant() == "JS" ? 1 : -1);
-        }
+        internal override int ExtIdentifier => (Path.GetFileName(AppData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)).ToUpperInvariant() == "JS" ? 1 : -1);
 
         //protected static bool IsPluginsJS = false; //for some specific to plugins.js operations
 
