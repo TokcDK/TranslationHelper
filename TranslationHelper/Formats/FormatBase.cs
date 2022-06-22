@@ -27,12 +27,9 @@ namespace TranslationHelper.Formats
 
         private void BaseInit()
         {
-            if (AppData.CurrentProject == null)
-            {
-                return;
-            }
+            if (AppData.CurrentProject == null) return;
 
-            //AppData.CurrentProject.CurrentFormat = this; // set format
+            //AppData.CurrentProject.CurrentFormat = this; // set format , wrong for threaded open of files
 
             // set filepath from projectdata filepath
             if (!_filePathIsSet && string.IsNullOrWhiteSpace(FilePath))
@@ -42,31 +39,19 @@ namespace TranslationHelper.Formats
                 //    FilePath = ProjectData.FilePath;
                 //}
                 //else
-                if (!string.IsNullOrWhiteSpace(AppData.SelectedFilePath))
-                {
-                    FilePath = AppData.SelectedFilePath;
-                }
+                if (!string.IsNullOrWhiteSpace(AppData.SelectedFilePath)) FilePath = AppData.SelectedFilePath;
             }
 
             // DontLoadDuplicates options
-            if (!AppData.CurrentProject.DontLoadDuplicates)
-            {
-                return;
-            }
+            if (!AppData.CurrentProject.DontLoadDuplicates) return;
 
             if (AppData.SaveFileMode)
             {
-                if (AppData.CurrentProject.TablesLinesDict == null)
-                {
-                    AppData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
-                }
+                if (AppData.CurrentProject.TablesLinesDict == null) AppData.CurrentProject.TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
-            else
+            else if (AppData.CurrentProject.Hashes == null)
             {
-                if (AppData.CurrentProject.Hashes == null)
-                {
-                    AppData.CurrentProject.Hashes = new ConcurrentSet<string>();
-                }
+                AppData.CurrentProject.Hashes = new ConcurrentSet<string>();
             }
         }
 
