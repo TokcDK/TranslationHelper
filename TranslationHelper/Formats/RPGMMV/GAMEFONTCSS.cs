@@ -64,7 +64,7 @@ namespace TranslationHelper.Formats.RPGMMV
             return KeywordActionAfter.ReadToEnd;
         }
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             AppData.CurrentProject.SaveFileMode = true;
             return ParseFile();

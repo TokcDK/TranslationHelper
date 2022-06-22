@@ -22,7 +22,7 @@ namespace TranslationHelper.Projects.NScript
 
         internal override string Name => "NScript";
 
-        internal override bool Open()
+        internal override bool TryOpen()
         {
             return /*ExtractNScriptDAT() &&*/ OpenSaveNScript();
         }
@@ -129,7 +129,7 @@ namespace TranslationHelper.Projects.NScript
             return ret;
         }
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             return OpenSaveNScript();
         }

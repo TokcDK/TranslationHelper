@@ -17,7 +17,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override string Filters => GameExeFilter;
 
-        internal override bool Open()
+        internal override bool TryOpen()
         {
             BakRestore();
             return UnpackSCPACK();
@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             BakCreate();
             if (SaveFiles())

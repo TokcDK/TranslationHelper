@@ -14,7 +14,7 @@ namespace TranslationHelper.Formats.KiriKiri
         {
         }
 
-        internal override bool Open()
+        internal override bool TryOpen()
         {
             return KiriKiriCSVOpen();
         }
@@ -150,7 +150,7 @@ namespace TranslationHelper.Formats.KiriKiri
             return FunctionsTable.SetTableAndColumns(FilePath, false);
         }
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             throw new NotImplementedException();
         }

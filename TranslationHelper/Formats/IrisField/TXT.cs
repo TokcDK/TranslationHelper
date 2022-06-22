@@ -23,7 +23,7 @@ namespace TranslationHelper.Formats.IrisField
 
         internal override string Ext => ".txt";
 
-        //internal override bool Open()
+        //internal override bool TryOpen()
         //{
         //    return ParseFile();
         //}
@@ -333,7 +333,7 @@ namespace TranslationHelper.Formats.IrisField
                 (ParseData.Line.StartsWith("//") || ParseData.Line.StartsWith("[") || ParseData.Line.StartsWith("}") || ParseData.Line.StartsWith("#"));
         }
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             return ParseFile();
         }

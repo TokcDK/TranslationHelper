@@ -20,7 +20,7 @@ namespace TranslationHelper.Formats.IrisField
 
         internal override string Ext => ".exe";
 
-        //internal override bool Open()
+        //internal override bool TryOpen()
         //{
         //    return OpenSaveEXE();
         //}
@@ -764,7 +764,7 @@ namespace TranslationHelper.Formats.IrisField
             return str;
         }
 
-        //internal override bool Save()
+        //internal override bool TrySave()
         //{
         //    return OpenSaveEXE();
         //}

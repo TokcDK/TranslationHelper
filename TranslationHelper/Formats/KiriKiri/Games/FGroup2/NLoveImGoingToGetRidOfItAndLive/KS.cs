@@ -16,12 +16,12 @@ namespace TranslationHelper.Formats.KiriKiri.Games.NLoveImGoingToGetRidOfItAndLi
 
         //old code
 
-        //internal override bool Open()
+        //internal override bool TryOpen()
         //{
         //    return OpenKS();
         //}
 
-        //internal override bool Save()
+        //internal override bool TrySave()
         //{
         //    return SaveKS();
         //}

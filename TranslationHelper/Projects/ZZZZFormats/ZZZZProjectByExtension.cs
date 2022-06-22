@@ -37,7 +37,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         internal override string Name => string.IsNullOrWhiteSpace(Format.Name) ? Format.Ext: Format.Name;
 
-        internal override bool Open()
+        internal override bool TryOpen()
         {
             var fileExt = Path.GetExtension(AppData.SelectedFilePath);
             List<Type> foundTypes = new List<Type>();
@@ -74,7 +74,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             return OpenSave();
         }
 
-        internal override bool Save() => OpenSave();
+        internal override bool TrySave() => OpenSave();
 
         bool OpenSave()
         {

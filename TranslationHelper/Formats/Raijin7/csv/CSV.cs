@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.Raijin7
 
         internal override string Ext => ".csv";
 
-        internal override bool Open()
+        internal override bool TryOpen()
         {
             return ParseFile();
         }
@@ -78,7 +78,7 @@ namespace TranslationHelper.Formats.Raijin7
             return ret;
         }
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             return ParseFile();
         }

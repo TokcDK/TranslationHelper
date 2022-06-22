@@ -116,12 +116,12 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return new string[3] { "*.ks", "*.tjs", "*.csv" };
         }
 
-        internal override bool Open()
+        internal override bool TryOpen()
         {
             return OpenSaveFiles();
         }
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             return OpenSaveFiles();
         }

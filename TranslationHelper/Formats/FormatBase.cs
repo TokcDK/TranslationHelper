@@ -10,7 +10,7 @@ using TranslationHelper.Functions;
 
 namespace TranslationHelper.Formats
 {
-    abstract class FormatBase
+    public abstract class FormatBase
     {
         protected FormatBase()
         {
@@ -101,17 +101,32 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal virtual string Name => string.Empty;
 
+        protected bool OpenFileMode { get; set; } = true;
+        protected bool SaveFIleMode { get => !OpenFileMode; set => OpenFileMode = !value; }
+
         /// <summary>
         /// Open file strings actions executing here
         /// </summary>
         /// <returns></returns>
-        internal virtual bool Open() => ParseFile();
+        internal bool Open() { OpenFileMode = true; return TryOpen(); }
 
         /// <summary>
         /// Save file strings actions executing here
         /// </summary>
         /// <returns></returns>
-        internal virtual bool Save() => ParseFile();
+        internal bool Save() { OpenFileMode = false; return TrySave(); }
+
+        /// <summary>
+        /// Open file strings actions executing here
+        /// </summary>
+        /// <returns></returns>
+        internal virtual bool TryOpen() => ParseFile();
+
+        /// <summary>
+        /// Save file strings actions executing here
+        /// </summary>
+        /// <returns></returns>
+        internal virtual bool TrySave() => ParseFile();
 
         /// <summary>
         /// Means use for table name name of file without extension
@@ -814,7 +829,7 @@ namespace TranslationHelper.Formats
                     }
                     else // set 1st value from avalaible values
                     {
-                        AppData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + FileName+ ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
+                        AppData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + FileName + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
 
                         foreach (var rowIndex in AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate][currentTableName])
                         {
@@ -834,7 +849,7 @@ namespace TranslationHelper.Formats
                 }
                 else // set 1st value from avalaible values
                 {
-                    AppData.AppLog.LogToFile("Warning! Table not found. row number=" + RowNumber + ". table name=" + FileName+ ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
+                    AppData.AppLog.LogToFile("Warning! Table not found. row number=" + RowNumber + ". table name=" + FileName + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
 
                     foreach (var existTableName in AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate].Values)
                     {

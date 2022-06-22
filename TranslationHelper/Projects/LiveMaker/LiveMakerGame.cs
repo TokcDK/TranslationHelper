@@ -24,7 +24,7 @@ namespace TranslationHelper.Projects.LiveMaker
 
         internal override string ProjectFolderName => Name;
 
-        internal override bool Open()
+        internal override bool TryOpen()
         {
             return ExtractRes() && OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Extracted"), Format(), Mask(), false);
         }
@@ -157,7 +157,7 @@ namespace TranslationHelper.Projects.LiveMaker
             return false;
         }
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             return OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Extracted"), Format(), Mask())
                 && WriteTranslation();

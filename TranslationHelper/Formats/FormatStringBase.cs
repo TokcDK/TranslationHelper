@@ -15,10 +15,6 @@ namespace TranslationHelper.Formats
             RowNumber = 0;
         }
 
-        internal override bool Open() { return ParseFile(); }
-
-        internal override bool Save() { return ParseFile(); }
-
         /// <summary>
         /// Parse Data
         /// </summary>

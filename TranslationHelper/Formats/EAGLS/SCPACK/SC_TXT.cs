@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
 
         internal override string Ext => ".txt";
 
-        internal override bool Open()
+        internal override bool TryOpen()
         {
             return ParseFile(); //OpenSC();
         }
@@ -431,7 +431,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         //    return !FunctionsRomajiKana.LocalePercentIsNotValid(line);
         //}
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             return ParseFile();// SaveSC();
         }

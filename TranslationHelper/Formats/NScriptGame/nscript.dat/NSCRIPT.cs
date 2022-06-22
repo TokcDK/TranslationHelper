@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         internal override string Ext => ".dat";
 
-        internal override bool Open()
+        internal override bool TryOpen()
         {
             return ParseFile();
         }
@@ -166,7 +166,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             return ParseData.Line.TrimStart().StartsWith(";");
         }
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             return ParseFile();
         }

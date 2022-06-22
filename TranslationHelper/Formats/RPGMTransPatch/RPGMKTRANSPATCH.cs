@@ -17,7 +17,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
             return "> RPGMAKER TRANS PATCH FILE VERSION 3.2";
         }
 
-        internal override bool Open()
+        internal override bool TryOpen()
         {
             FormatBase format = new TXTv3
             {
@@ -26,7 +26,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
             return format.Open();
         }
 
-        internal override bool Save()
+        internal override bool TrySave()
         {
             return WritePatchV3();
         }
