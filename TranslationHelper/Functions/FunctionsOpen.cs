@@ -409,7 +409,7 @@ namespace TranslationHelper.Functions
 
             AppData.CurrentProject.SelectedGameDir = GetCorrectedGameDIr(AppData.CurrentProject.SelectedGameDir);
 
-            if (AppData.CurrentProject.Name().Contains("RPG Maker game with RPGMTransPatch") || AppData.CurrentProject.Name().Contains("KiriKiri game"))
+            if (AppData.CurrentProject.Name.Contains("RPG Maker game with RPGMTransPatch") || AppData.CurrentProject.Name.Contains("KiriKiri game"))
             {
                 AppData.Main.Settings.THConfigINI.SetKey("Paths", "LastPath", AppData.CurrentProject.SelectedGameDir);
             }
@@ -440,7 +440,7 @@ namespace TranslationHelper.Functions
 
             if (AppData.Main.FVariant.Length == 0)
             {
-                AppData.Main.FVariant = " * " + AppData.CurrentProject.Name();
+                AppData.Main.FVariant = " * " + AppData.CurrentProject.Name;
             }
             try
             {

@@ -16,14 +16,8 @@ namespace TranslationHelper.Projects.Liar_soft
             return Path.GetExtension(AppData.SelectedFilePath).ToUpperInvariant()==".EXE" && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "scr.xfl"));
         }
 
-        internal override string Name()
-        {
-            return "Liar-Soft";
-        }
-        internal override string ProjectFolderName()
-        {
-            return "Liar-Soft";
-        }
+        internal override string Name => "Liar-Soft";
+        internal override string ProjectFolderName => "Liar-Soft";
 
         internal override bool Open()
         {
@@ -40,7 +34,7 @@ namespace TranslationHelper.Projects.Liar_soft
             //set vars
             var scrxfl = Path.Combine(AppData.CurrentProject.SelectedGameDir, "scr.xfl");
             var archive = XflArchive.FromFile(scrxfl);
-            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
+            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
             var dir = AppData.CurrentProject.ProjectWorkDir;
 
             archive.ExtractToDirectory(dir);//extract all gsc to work dir

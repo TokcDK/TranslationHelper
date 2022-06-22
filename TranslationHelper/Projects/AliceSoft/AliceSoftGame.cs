@@ -22,10 +22,7 @@ namespace TranslationHelper.Projects.AliceSoft
                 ;
         }
 
-        internal override string Name()
-        {
-            return "AliceSoft";
-        }
+        internal override string Name => "AliceSoft";
 
         internal override bool Open()
         {
@@ -36,7 +33,7 @@ namespace TranslationHelper.Projects.AliceSoft
         {
             if (AppData.OpenFileMode)
             {
-                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName(), Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)));
+                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName, Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)));
             }
 
             var ret = false;

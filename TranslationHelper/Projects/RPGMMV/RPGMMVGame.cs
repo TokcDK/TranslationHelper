@@ -39,20 +39,11 @@ namespace TranslationHelper.Projects.RPGMMV
             return false;
         }
 
-        internal override string Filters()
-        {
-            return GameExeFilter;
-        }
+        internal override string Filters => GameExeFilter;
 
-        internal override string Name()
-        {
-            return "RPG Maker MV";
-        }
+        internal override string Name => "RPG Maker MV";
 
-        internal override string ProjectFolderName()
-        {
-            return "RPGMakerMV";
-        }
+        internal override string ProjectFolderName => "RPGMakerMV";
 
         internal override bool IsTestRunEnabled => true;
 

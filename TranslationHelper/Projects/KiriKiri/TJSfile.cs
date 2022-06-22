@@ -17,15 +17,9 @@ namespace TranslationHelper.Projects.KiriKiri
             return AppData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TJS");
         }
 
-        internal override string ProjectFolderName()
-        {
-            return "KiriKiri";
-        }
+        internal override string ProjectFolderName => "KiriKiri";
 
-        internal override string Name()
-        {
-            return "KiriKiri tjs";
-        }
+        internal override string Name => "KiriKiri tjs";
 
         internal override bool Open()
         {

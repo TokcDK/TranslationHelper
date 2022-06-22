@@ -14,15 +14,9 @@ namespace TranslationHelper.Projects.AliceSoft
         {
         }
 
-        internal override string ProjectTitlePrefix()
-        {
-            return "[AliceSoft]";
-        }
+        internal override string ProjectTitlePrefix => "[AliceSoft]";
 
-        internal override string ProjectFolderName()
-        {
-            return "AliceSoft";
-        }
+        internal override string ProjectFolderName => "AliceSoft";
 
         internal override bool BakCreate()
         {

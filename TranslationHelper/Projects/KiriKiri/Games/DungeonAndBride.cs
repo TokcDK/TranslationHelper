@@ -18,10 +18,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return CheckKiriKiriBase() && ExtensionsFileFolder.GetCrc32(AppData.SelectedFilePath) == "7c2bfd95";
         }
 
-        internal override string Name()
-        {
-            return "Dungeon & Bride";
-        }
+        internal override string Name => "Dungeon & Bride";
 
         protected override List<System.Type> FormatType()
         {

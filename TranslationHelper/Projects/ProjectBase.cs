@@ -125,7 +125,7 @@ namespace TranslationHelper.Projects
             {
                 AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedFilePath);
                 AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedFilePath);
-                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName(), ProjectName());
+                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName, ProjectName);
             }
         }
 
@@ -133,10 +133,7 @@ namespace TranslationHelper.Projects
         /// Name of selected project
         /// </summary>
         /// <returns></returns>
-        internal virtual string ProjectName()
-        {
-            return Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
-        }
+        internal virtual string ProjectName => Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
 
         /// <summary>
         /// return if selected file of project is exe
@@ -161,10 +158,7 @@ namespace TranslationHelper.Projects
         /// Project's filter for fileopen dialog
         /// </summary>
         /// <returns></returns>
-        internal virtual string Filters()
-        {
-            return string.Empty;
-        }
+        internal virtual string Filters => string.Empty;
 
         /// <summary>
         /// executed before DB will be saved
@@ -177,34 +171,25 @@ namespace TranslationHelper.Projects
         /// Project's Title prefix
         /// </summary>
         /// <returns></returns>
-        internal virtual string ProjectTitlePrefix()
-        {
-            return string.Empty;
-        }
+        internal virtual string ProjectTitlePrefix => string.Empty;
 
         /// <summary>
         /// Project title
         /// </summary>
         /// <returns></returns>
-        internal abstract string Name();
+        internal abstract string Name { get; }
 
         /// <summary>
         /// Project folder name to locate files in DB and Work folders
         /// </summary>
         /// <returns></returns>
-        internal virtual string ProjectFolderName()
-        {
-            return "Other";
-        }
+        internal virtual string ProjectFolderName => "Other";
 
         /// <summary>
         /// Returns project's DB file name for save/load
         /// </summary>
         /// <returns></returns>
-        internal virtual string GetProjectDBFileName()
-        {
-            return string.Empty;
-        }
+        internal virtual string ProjectDBFileName => string.Empty;
 
         /// <summary>
         /// Open project files

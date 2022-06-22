@@ -18,10 +18,7 @@ namespace TranslationHelper.Projects.EAGLS
             return AppData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TXT") && Path.GetFileName(AppData.SelectedFilePath).StartsWith("sc_");
         }
 
-        internal override string Filters()
-        {
-            return "EAGLS SCPACK sc_txt|sc_*.txt";
-        }
+        internal override string Filters => "EAGLS SCPACK sc_txt|sc_*.txt";
 
         internal override bool Open()
         {
@@ -33,15 +30,9 @@ namespace TranslationHelper.Projects.EAGLS
             return format.Open();
         }
 
-        internal override string Name()
-        {
-            return "EAGLS scenario (" + Path.GetFileNameWithoutExtension(AppData.SelectedFilePath) + ")";
-        }
+        internal override string Name => "EAGLS scenario (" + Path.GetFileNameWithoutExtension(AppData.SelectedFilePath) + ")";
 
-        internal override string ProjectFolderName()
-        {
-            return "EAGLS";
-        }
+        internal override string ProjectFolderName => "EAGLS";
 
         internal override bool Save()
         {

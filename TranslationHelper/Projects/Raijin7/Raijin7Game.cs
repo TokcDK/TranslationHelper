@@ -31,15 +31,9 @@ namespace TranslationHelper.Projects
                 ;
         }
 
-        internal override string Filters()
-        {
-            return GameExeFilter;
-        }
+        internal override string Filters => GameExeFilter;
 
-        internal override string Name()
-        {
-            return "Raijin 7";
-        }
+        internal override string Name => "Raijin 7";
 
         internal override bool Open()
         {

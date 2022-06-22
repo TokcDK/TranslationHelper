@@ -23,15 +23,9 @@ namespace TranslationHelper.Projects.RPGMMV
             return false;
         }
 
-        internal override string Name()
-        {
-            return "RPG Maker MV Json";
-        }
+        internal override string Name => "RPG Maker MV Json";
 
-        internal override string ProjectFolderName()
-        {
-            return "RPGMakerMV";
-        }
+        internal override string ProjectFolderName => "RPGMakerMV";
 
         internal override bool Open()
         {

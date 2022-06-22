@@ -679,7 +679,7 @@ namespace TranslationHelper
 
                 THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(SelectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(SelectedCellValue);
 
-                if (AppData.CurrentProject.Name() == "RPG Maker MV")
+                if (AppData.CurrentProject.Name== "RPG Maker MV")
                 {
                     THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
                 }
@@ -992,7 +992,7 @@ namespace TranslationHelper
 
             ProgressInfo(true);
 
-            switch (AppData.CurrentProject.Name())
+            switch (AppData.CurrentProject.Name)
             {
                 case "RPGMakerTransPatch":
                 case "RPG Maker game with RPGMTransPatch":
@@ -1821,7 +1821,7 @@ namespace TranslationHelper
 
                         ProgressInfo(true);
 
-                        switch (AppData.CurrentProject.Name())
+                        switch (AppData.CurrentProject.Name)
                         {
                             case "RPGMakerTransPatch":
                             case "RPG Maker game with RPGMTransPatch":

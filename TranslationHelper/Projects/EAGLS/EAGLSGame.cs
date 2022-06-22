@@ -15,10 +15,7 @@ namespace TranslationHelper.Projects.EAGLS
                 && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "Script", "SCPACK.idx"));
         }
 
-        internal override string Filters()
-        {
-            return GameExeFilter;
-        }
+        internal override string Filters => GameExeFilter;
 
         internal override bool Open()
         {
@@ -31,10 +28,7 @@ namespace TranslationHelper.Projects.EAGLS
             return PackUnpackFiles() && OpenFiles();
         }
 
-        internal override string Name()
-        {
-            return ProjectTitlePrefix() + Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
-        }
+        internal override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
 
         internal override bool Save()
         {

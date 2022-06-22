@@ -20,15 +20,9 @@ namespace TranslationHelper.Projects.LiveMaker
             return IsExe() && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "live.dll"));
         }
 
-        internal override string Name()
-        {
-            return "LiveMaker";
-        }
+        internal override string Name => "LiveMaker";
 
-        internal override string ProjectFolderName()
-        {
-            return Name();
-        }
+        internal override string ProjectFolderName => Name;
 
         internal override bool Open()
         {
@@ -51,7 +45,7 @@ namespace TranslationHelper.Projects.LiveMaker
         {
             //https://pylivemaker.readthedocs.io/en/latest/usage.html
             var GameDir = AppData.CurrentProject.SelectedGameDir;
-            var WorkDir = (AppData.CurrentProject.ProjectWorkDir = AppData.CurrentProject.ProjectWorkDir.Length == 0 ? Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName(), Path.GetFileName(GameDir)) : AppData.CurrentProject.ProjectWorkDir);
+            var WorkDir = (AppData.CurrentProject.ProjectWorkDir = AppData.CurrentProject.ProjectWorkDir.Length == 0 ? Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName, Path.GetFileName(GameDir)) : AppData.CurrentProject.ProjectWorkDir);
 
             try
             {

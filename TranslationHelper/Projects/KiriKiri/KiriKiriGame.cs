@@ -27,20 +27,11 @@ namespace TranslationHelper.Projects.KiriKiri
             //    FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(ProjectData.SPath), "*.xp3");
         }
 
-        internal override string Filters()
-        {
-            return GameExeFilter;
-        }
+        internal override string Filters => GameExeFilter;
 
-        internal override string Name()
-        {
-            return "KiriKiri Game";
-        }
+        internal override string Name => "KiriKiri Game";
 
-        internal override string ProjectFolderName()
-        {
-            return "KiriKiri";
-        }
+        internal override string ProjectFolderName => "KiriKiri";
 
         internal override bool Open()
         {

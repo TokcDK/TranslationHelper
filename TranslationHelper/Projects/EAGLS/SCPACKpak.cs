@@ -16,10 +16,7 @@ namespace TranslationHelper.Projects.EAGLS
             return (ISpak = Path.GetFileName(AppData.SelectedFilePath) == "SCPACK.pak") && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "SCPACK.idx")) || (Path.GetFileName(AppData.SelectedFilePath) == "SCPACK.idx") && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "SCPACK.pak"));
         }
 
-        internal override string Filters()
-        {
-            return "EAGLS SCPACK|SCPACK.pak;SCPACK.idx";
-        }
+        internal override string Filters => "EAGLS SCPACK|SCPACK.pak;SCPACK.idx";
 
         internal override bool Open()
         {
@@ -33,10 +30,7 @@ namespace TranslationHelper.Projects.EAGLS
             return PackUnpackFiles() && OpenFiles();
         }
 
-        internal override string Name()
-        {
-            return ProjectTitlePrefix() + Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
-        }
+        internal override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
 
         internal override bool Save()
         {

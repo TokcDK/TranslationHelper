@@ -8,7 +8,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 {
     class OpenJsonSkipCodesList : IFileListItemMenu
     {
-        public string Text => "[" + AppData.CurrentProject.Name() + "]" + T._(" Open SkipCodesList");
+        public string Text => "[" + AppData.CurrentProject.Name+ "]" + T._(" Open SkipCodesList");
 
         public string Description => "Open skipcodes.txt file in project dir to add codes which need to be skipped for the project";
 

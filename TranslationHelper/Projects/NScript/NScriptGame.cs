@@ -20,10 +20,7 @@ namespace TranslationHelper.Projects.NScript
                 && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "nscript.dat"));
         }
 
-        internal override string Name()
-        {
-            return "NScript";
-        }
+        internal override string Name => "NScript";
 
         internal override bool Open()
         {

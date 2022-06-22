@@ -16,10 +16,7 @@ namespace TranslationHelper.Projects.NScript
             };
         }
 
-        internal override string ProjectFolderName()
-        {
-            return "NScript";
-        }
+        internal override string ProjectFolderName => "NScript";
 
         internal override string OnlineTranslationProjectSpecificPretranslationAction(string o, string t, int tind = -1, int rind = -1)
         {

@@ -19,7 +19,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 );
         }
 
-        internal override string Name() => "Wolftrans open test";
+        internal override string Name => "Wolftrans open test";
 
         internal override bool Open() => OpenSave();
         internal override bool Save() => OpenSave();

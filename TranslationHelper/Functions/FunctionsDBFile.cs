@@ -171,7 +171,7 @@ namespace TranslationHelper.Main.Functions
             string ret = string.Empty;
             if (AppData.CurrentProject != null)
             {
-                ret = AppData.CurrentProject.ProjectFolderName();
+                ret = AppData.CurrentProject.ProjectFolderName;
             }
             //else if (ProjectData.CurrentProject.Name().Contains("RPG Maker MV"))
             //{
@@ -191,11 +191,11 @@ namespace TranslationHelper.Main.Functions
         internal static string GetDBFileName(bool saveAs = false)
         {
             string fName = Path.GetFileName(AppData.CurrentProject.SelectedDir);
-            if (AppData.CurrentProject != null && AppData.CurrentProject.GetProjectDBFileName().Length > 0)
+            if (AppData.CurrentProject != null && AppData.CurrentProject.ProjectDBFileName.Length > 0)
             {
-                fName = AppData.CurrentProject.GetProjectDBFileName();
+                fName = AppData.CurrentProject.ProjectDBFileName;
             }
-            else if (AppData.CurrentProject.Name().Contains(new RPGMMVGame().Name()))
+            else if (AppData.CurrentProject.Name.Contains(new RPGMMVGame().Name))
             {
                 if (AppData.Main.THFilesList.GetItemsCount() == 1 && AppData.Main.THFilesList.GetItemName(0) != null && !string.IsNullOrWhiteSpace(AppData.Main.THFilesList.GetItemName(0).ToString()))
                 {

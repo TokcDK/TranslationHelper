@@ -16,15 +16,9 @@ namespace TranslationHelper.Projects.IrisField
             };
         }
 
-        internal override string Name()
-        {
-            return "Irisfield game";
-        }
+        internal override string Name => "Irisfield game";
 
-        internal override string GetProjectDBFileName()
-        {
-            return Name();
-        }
+        internal override string ProjectDBFileName => Name;
 
         protected abstract string GameExeName { get; }
         protected abstract Type GameExeFormatType { get; }
@@ -42,10 +36,7 @@ namespace TranslationHelper.Projects.IrisField
                 Directory.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "data", "Script"));
         }
 
-        internal override string Filters()
-        {
-            return GameExeFilter;
-        }
+        internal override string Filters => GameExeFilter;
 
         internal override bool Open()
         {
