@@ -27,7 +27,7 @@ namespace TranslationHelper.Data
 
             SelectedFilePath = string.Empty;
 
-            ProjectsList = ProjectBase.GetListOfProjectTypes();
+            ProjectsList = ProjectUtils.GetListOfProjectTypes();
         }
 
         /// <summary>

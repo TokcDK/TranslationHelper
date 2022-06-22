@@ -14,7 +14,7 @@ using TranslationHelper.Menus.ProjectMenus;
 
 namespace TranslationHelper.Projects
 {
-    internal abstract class ProjectBase
+    public abstract class ProjectBase
     {
         protected ProjectBase()
         {
@@ -163,9 +163,7 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// executed before DB will be saved
         /// </summary>
-        internal virtual void PreSaveDB()
-        {
-        }
+        internal virtual void PreSaveDB() { }
 
         /// <summary>
         /// Project's Title prefix
@@ -259,10 +257,7 @@ namespace TranslationHelper.Projects
             //    mask += format.Ext();
             //}
 
-            if (!DirForSearch.Exists)
-            {
-                return false;
-            }
+            if (!DirForSearch.Exists) return false;
 
             exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
 
@@ -271,31 +266,23 @@ namespace TranslationHelper.Projects
             var filesList = Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
             Parallel.ForEach(filesList, file =>
             {
-                if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions))//skip exclusions
-                    return;
+                //skip exclusions
+                if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions)) return;
 
                 //ProjectData.FilePath = file.FullName;
 
                 var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
                 format.FilePath = file.FullName;
-                if (!string.IsNullOrWhiteSpace(format.Ext) && file.Extension != format.Ext) // check extension for case im mask was "*.*" or kind of
-                {
-                    return;
-                }
 
-                if (AppData.SaveFileMode && existsTables.Contains(format.FileName)) // check if exist table has any translated
-                {
-                    if (!format.FileName.HasAnyTranslated())
-                    {
-                        return;
-                    }
-                }
+                // check extension for case im mask was "*.*" or kind of
+                if (!string.IsNullOrWhiteSpace(format.Ext) && file.Extension != format.Ext) return;
+
+                // check if exist table has any translated
+                if (AppData.SaveFileMode && existsTables.Contains(format.FileName) && !format.FileName.HasAnyTranslated()) return;
 
                 AppData.Main.ProgressInfo(true, (AppData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
-                if (AppData.OpenFileMode ? format.Open() : format.Save())
-                {
-                    ret = true;
-                }
+                
+                if (AppData.OpenFileMode ? format.Open() : format.Save()) ret = true;
             });
 
             AppData.Main.ProgressInfo(false);
@@ -514,24 +501,6 @@ namespace TranslationHelper.Projects
         internal virtual bool OnlineTranslationProjectSpecificSkipLine(string o, string t, int tind = -1, int rind = -1)
         {
             return false;
-        }
-
-        /// <summary>
-        /// Get all types of inherited classes of ProjectBase class
-        /// </summary>
-        /// <returns></returns>
-        internal static List<Type> GetListOfProjectTypes()
-        {
-            return GetListOfSubClasses.Inherited.GetListOfInheritedTypes(typeof(ProjectBase));
-        }
-
-        /// <summary>
-        /// Get all inherited classes of an abstract class
-        /// </summary>
-        /// <returns></returns>
-        internal static List<ProjectBase> GetListOfProjects()
-        {
-            return GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ProjectBase>();
         }
 
         /// <summary>

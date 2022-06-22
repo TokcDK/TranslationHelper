@@ -115,7 +115,7 @@
     <Compile Include="Data\CleanupData.cs" />
     <Compile Include="Data\FileInfo.cs" />
     <Compile Include="Data\FilesListData.cs" />
-    <Compile Include="Data\ProjectData.cs" />
+    <Compile Include="Data\AppData.cs" />
     <Compile Include="Data\THSettings.cs" />
     <Compile Include="Extensions\ExtensionsArray.cs" />
     <Compile Include="Extensions\ExtensionsBytes.cs" />
@@ -382,6 +382,7 @@
     <Compile Include="Projects\NScript\NScriptBase.cs" />
     <Compile Include="Projects\NScript\NScriptGame.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
+    <Compile Include="Projects\ProjectUtils.cs" />
     <Compile Include="Projects\Raijin7\Raijin7Game.cs" />
     <Compile Include="Projects\RJ263914\RJ263914OLD.cs" />
     <Compile Include="Projects\RPGMaker\RPGMGame.cs" />
