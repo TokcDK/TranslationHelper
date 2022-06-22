@@ -150,7 +150,7 @@ namespace TranslationHelper.Projects.RPGMMV
                     try
                     {
                         if ((AppData.OpenFileMode && format.Open())
-                            || (AppData.SaveFileMode && format.TableName.HasAnyTranslated() && format.Save()))
+                            || (AppData.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
                         {
                             isAnyFileCompleted = true;
                         }
@@ -189,7 +189,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 try
                 {
                     if ((AppData.OpenFileMode && format.Open())
-                        || (AppData.SaveFileMode && format.TableName.HasAnyTranslated() && format.Save()))
+                        || (AppData.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
                     {
                         isAnyFileCompleted = true;
                     }
@@ -221,7 +221,7 @@ namespace TranslationHelper.Projects.RPGMMV
             try
             {
                 if ((AppData.OpenFileMode && format.Open())
-                    || (AppData.SaveFileMode && format.TableName.HasAnyTranslated() && format.Save()))
+                    || (AppData.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
                 {
                     return true;
                 }
@@ -289,7 +289,7 @@ namespace TranslationHelper.Projects.RPGMMV
                     FilePath = filePath
                 };
 
-                ret = AppData.SaveFileMode ? (format.TableName.HasAnyTranslated() && format.Save()) : format.Open();
+                ret = AppData.SaveFileMode ? (format.FileName.HasAnyTranslated() && format.Save()) : format.Open();
 
                 return ret;
             }

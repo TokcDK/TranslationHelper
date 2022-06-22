@@ -18,19 +18,19 @@ namespace TranslationHelper.Formats.Raijin7
         protected override void PreOpenExtraActions()
         {
             lineNumber = 0;
-            if (TableName.StartsWith("fship")
-                || TableName.StartsWith("pnet")
-                || TableName.StartsWith("pson")
-                || TableName.StartsWith("wapon")
+            if (FileName.StartsWith("fship")
+                || FileName.StartsWith("pnet")
+                || FileName.StartsWith("pson")
+                || FileName.StartsWith("wapon")
                 )
             {
                 variant = 1;
             }
-            else if (TableName.StartsWith("item"))
+            else if (FileName.StartsWith("item"))
             {
                 variant = 2;
             }
-            else if (TableName.StartsWith("spec_rate"))
+            else if (FileName.StartsWith("spec_rate"))
             {
                 variant = 3;
             }

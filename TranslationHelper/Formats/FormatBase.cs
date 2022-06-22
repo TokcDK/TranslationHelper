@@ -119,9 +119,9 @@ namespace TranslationHelper.Formats
         internal virtual bool UseTableNameWithoutExtension => false;
 
         /// <summary>
-        /// table name
+        /// file name
         /// </summary>
-        internal virtual string TableName
+        internal virtual string FileName
         {
             get
             {
@@ -139,10 +139,6 @@ namespace TranslationHelper.Formats
                 if (AppData.CurrentProject.SubpathInTableName)
                 {
                     var dirPath = Path.GetDirectoryName(filePath);
-                    if (dirPath == null)
-                    {
-
-                    }
                     tableName = dirPath.Replace(AppData.CurrentProject.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar;
                 }
 
@@ -164,10 +160,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected void AddTables()
         {
-            if (!string.IsNullOrEmpty(GetOpenFilePath()))
-            {
-                AddTables(TableName);
-            }
+            if (!string.IsNullOrEmpty(GetOpenFilePath())) AddTables(FileName);
         }
 
         /// <summary>
@@ -244,7 +237,7 @@ namespace TranslationHelper.Formats
         {
             if (AppData.OpenFileMode)
             {
-                return AddRowData(TableName, RowData, RowInfo, CheckInput);
+                return AddRowData(FileName, RowData, RowInfo, CheckInput);
             }
             else
             {
@@ -267,7 +260,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(string RowData, string RowInfo = "", bool CheckInput = true)
         {
-            return AddRowData(TableName, RowData, RowInfo, CheckInput);
+            return AddRowData(FileName, RowData, RowInfo, CheckInput);
         }
         /// <summary>
         /// Add string to table with options. In save mode will replace <paramref name="RowData"/>[0] as translation and will use <paramref name="RowData"/>[1] as default translation 
@@ -279,7 +272,7 @@ namespace TranslationHelper.Formats
         {
             if (AppData.OpenFileMode)
             {
-                return AddRowData(TableName, RowData, RowInfo, CheckInput);
+                return AddRowData(FileName, RowData, RowInfo, CheckInput);
             }
             else
             {
@@ -297,7 +290,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(string[] RowData, string RowInfo = "", bool CheckInput = true)
         {
-            return AddRowData(TableName, RowData, RowInfo, CheckInput);
+            return AddRowData(FileName, RowData, RowInfo, CheckInput);
         }
         /// <summary>
         /// Add string to table with options
@@ -442,7 +435,7 @@ namespace TranslationHelper.Formats
                 return false;
             }
 
-            if (AppData.SaveFileMode && !AppData.THFilesList.Items.Contains(TableName))
+            if (AppData.SaveFileMode && !AppData.THFilesList.Items.Contains(FileName))
             {
                 return false;
             }
@@ -454,7 +447,7 @@ namespace TranslationHelper.Formats
 
             if (AppData.SaveFileMode)
             {
-                SplitTableCellValuesAndTheirLinesToDictionary(TableName, false, false);
+                SplitTableCellValuesAndTheirLinesToDictionary(FileName, false, false);
             }
 
             PreOpenExtraActions();
@@ -504,7 +497,7 @@ namespace TranslationHelper.Formats
         {
             if (AppData.OpenFileMode)
             {
-                return CheckTablesContent(TableName);
+                return CheckTablesContent(FileName);
             }
             else
             {
@@ -801,7 +794,7 @@ namespace TranslationHelper.Formats
                 && AppData.CurrentProject.OriginalsTableRowCoordinates.ContainsKey(valueToTranslate) // input value has original's value before it will be changed to translation
                 )
             {
-                var currentTableName = TableName;
+                var currentTableName = FileName;
                 var pretranslatedOriginal = valueToTranslate;
                 if (AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate].ContainsKey(currentTableName))
                 {
@@ -821,7 +814,7 @@ namespace TranslationHelper.Formats
                     }
                     else // set 1st value from avalaible values
                     {
-                        AppData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + TableName+ ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
+                        AppData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + FileName+ ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
 
                         foreach (var rowIndex in AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate][currentTableName])
                         {
@@ -841,7 +834,7 @@ namespace TranslationHelper.Formats
                 }
                 else // set 1st value from avalaible values
                 {
-                    AppData.AppLog.LogToFile("Warning! Table not found. row number=" + RowNumber + ". table name=" + TableName+ ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
+                    AppData.AppLog.LogToFile("Warning! Table not found. row number=" + RowNumber + ". table name=" + FileName+ ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
 
                     foreach (var existTableName in AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate].Values)
                     {

@@ -57,7 +57,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
             {
                 SetValue(5);
             }
-            else if (TableName.StartsWith("sn"))
+            else if (FileName.StartsWith("sn"))
             {
                 var Values = ParseData.Line.Split(',');
                 var RestOfText = ParseData.Reader.ReadToEnd();
