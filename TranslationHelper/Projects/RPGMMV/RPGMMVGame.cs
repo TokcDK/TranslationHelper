@@ -47,7 +47,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override bool IsTestRunEnabled => true;
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return ParseProjectFiles();
         }
@@ -299,7 +299,7 @@ namespace TranslationHelper.Projects.RPGMMV
             }
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             return ParseProjectFiles();
         }

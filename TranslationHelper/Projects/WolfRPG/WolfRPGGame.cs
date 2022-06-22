@@ -29,7 +29,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
         internal override string Name => "Wolf RPG";
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return /*ExtractWolfFiles()*/ Patch() && OpenSaveFiles();
         }
@@ -163,7 +163,7 @@ namespace TranslationHelper.Projects.WolfRPG
             //OpenSaveFiles();
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             return OpenSaveFiles() && Patch();
         }

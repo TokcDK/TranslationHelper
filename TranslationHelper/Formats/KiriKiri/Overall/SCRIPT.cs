@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.KiriKiri
         {
         }
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return KiriKiriScriptScenarioOpen();
         }
@@ -246,7 +246,7 @@ namespace TranslationHelper.Formats.KiriKiri
             return false;
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             throw new NotImplementedException();
         }

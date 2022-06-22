@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return !value.Path.Contains("Modelname") && !value.Path.Contains("imageName");
         }
 
-        //internal override bool TryOpen()
+        //protected override bool TryOpen()
         //{
         //    return ParseJSArrayOfJsons();
         //}
@@ -105,7 +105,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         //    return CheckTablesContent(tablename);
         //}
 
-        //internal override bool TrySave()
+        //protected override bool TrySave()
         //{
         //    return ParseJSArrayOfJsonsWrite();
         //}

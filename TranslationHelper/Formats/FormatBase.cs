@@ -120,13 +120,13 @@ namespace TranslationHelper.Formats
         /// Open file strings actions executing here
         /// </summary>
         /// <returns></returns>
-        internal virtual bool TryOpen() => ParseFile();
+        protected virtual bool TryOpen() => ParseFile();
 
         /// <summary>
         /// Save file strings actions executing here
         /// </summary>
         /// <returns></returns>
-        internal virtual bool TrySave() => ParseFile();
+        protected virtual bool TrySave() => ParseFile();
 
         /// <summary>
         /// Means use for table name name of file without extension

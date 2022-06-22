@@ -14,7 +14,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
         {
         }
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return ParseJSVarInJsonGDM("var settings = {");
         }
@@ -104,7 +104,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
             }
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             return ParseJSVarInJsonWriteGDM("var settings = {");
             //return ParseJSVarInJsonWrite("var settings = {");

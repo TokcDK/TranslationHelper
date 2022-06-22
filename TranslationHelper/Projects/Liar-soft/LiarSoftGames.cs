@@ -19,12 +19,12 @@ namespace TranslationHelper.Projects.Liar_soft
         internal override string Name => "Liar-Soft";
         internal override string ProjectFolderName => "Liar-Soft";
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return OpenSaveXFL();
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             return OpenSaveXFL();
         }

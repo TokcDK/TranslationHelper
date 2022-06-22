@@ -5,7 +5,7 @@
 //{
 //    class MOD : FormatStringBase
 //    {
-//        internal override bool TryOpen()
+//        protected override bool TryOpen()
 //        {
 //            AddTables();
 

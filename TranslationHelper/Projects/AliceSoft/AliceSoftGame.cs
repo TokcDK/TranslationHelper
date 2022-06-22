@@ -24,7 +24,7 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override string Name => "AliceSoft";
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return PackUnpack() && OpenSaveFilesBase(AppData.CurrentProject.ProjectWorkDir, typeof(AINTXT), "*.ain.txt");
         }
@@ -117,7 +117,7 @@ namespace TranslationHelper.Projects.AliceSoft
             return ret;
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             AppData.CurrentProject.OpenFileMode = true;
             PackUnpack();//restore original txt before each writing because it will be writed with translated strings while 1st write and will be need to restore it

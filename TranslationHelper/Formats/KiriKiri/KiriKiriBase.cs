@@ -15,12 +15,12 @@ namespace TranslationHelper.Formats.KiriKiri
         {
         }
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return ParseFile();
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             return ParseFile();
         }

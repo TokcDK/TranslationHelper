@@ -27,7 +27,7 @@
 //            return "Kenshi mod";
 //        }
 
-//        internal override bool TryOpen()
+//        protected override bool TryOpen()
 //        {
 //            var gamePath = Path.GetDirectoryName(ProjectData.SelectedFilePath);
 //            List<string> foundTypes = new List<string>();
@@ -68,7 +68,7 @@
 //            return format.Open();
 //        }
 
-//        internal override bool TrySave()
+//        protected override bool TrySave()
 //        {
 //            throw new NotImplementedException();
 //        }

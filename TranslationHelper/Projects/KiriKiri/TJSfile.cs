@@ -21,7 +21,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override string Name => "KiriKiri tjs";
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return false;
             //var format = new TJSOld
@@ -31,7 +31,7 @@ namespace TranslationHelper.Projects.KiriKiri
             //return format.Open();
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             return false;
             //        var format = new TJSOld

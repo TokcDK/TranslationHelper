@@ -12,12 +12,12 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         protected override string PreQuoteRegexPattern => @"eventName[0-9]+\s*\=\s*"; // get only event names
 
-        //internal override bool TryOpen()
+        //protected override bool TryOpen()
         //{
         //    return ParseJSSingleLinesWithRegex(@".*var eventName[0-9]{1,2} \= ""([^""]+)"";.*");
         //}
 
-        //internal override bool TrySave()
+        //protected override bool TrySave()
         //{
         //    return ParseJSSingleLinesWithRegex(@".*var eventName[0-9]{1,2} \= ""([^""]+)"";.*");
         //}

@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
 
         internal override string Ext => ".txt";
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return ParseFile();
         }
@@ -102,7 +102,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
                 ;
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             return ParseFile();
         }

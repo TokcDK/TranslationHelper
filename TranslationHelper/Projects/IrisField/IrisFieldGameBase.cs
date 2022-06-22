@@ -38,7 +38,7 @@ namespace TranslationHelper.Projects.IrisField
 
         internal override string Filters => GameExeFilter;
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return OpenFiles();
         }
@@ -74,7 +74,7 @@ namespace TranslationHelper.Projects.IrisField
             return ret;
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             return SaveFiles();
         }

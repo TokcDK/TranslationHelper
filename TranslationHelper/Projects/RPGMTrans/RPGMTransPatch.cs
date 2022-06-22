@@ -22,12 +22,12 @@ namespace TranslationHelper.Projects
 
         internal override string ProjectFolderName => "RPGMakerTrans";
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return OpenSaveFilesBase(Path.GetDirectoryName(AppData.SelectedFilePath), typeof(TXTv3), "*.txt");
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             return OpenSaveFilesBase(Path.GetDirectoryName(AppData.SelectedFilePath), typeof(TXTv3), "*.txt");
         }

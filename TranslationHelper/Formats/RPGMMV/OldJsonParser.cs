@@ -20,7 +20,7 @@ namespace TranslationHelper.Formats.RPGMMV
         {
         }
 
-        internal override bool TryOpen()
+        protected override bool TryOpen()
         {
             return ReadJson(Path.GetFileNameWithoutExtension(FilePath), FilePath);
         }
@@ -30,7 +30,7 @@ namespace TranslationHelper.Formats.RPGMMV
             return ".json";
         }
 
-        internal override bool TrySave()
+        protected override bool TrySave()
         {
             return WriteJson(Path.GetFileNameWithoutExtension(FilePath), FilePath);
         }
