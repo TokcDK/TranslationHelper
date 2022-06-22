@@ -254,13 +254,20 @@ namespace TranslationHelper
         {
             for(int i = 0; i < arr.Length; i++)
             {
-                if (unescape)
+                try
                 {
-                    Regex.Unescape(arr[i]);
+                    if (unescape)
+                    {
+                        Regex.Unescape(arr[i]);
+                    }
+                    else
+                    {
+                        Regex.Escape(arr[i]);
+                    }
                 }
-                else
+                catch
                 {
-                    Regex.Escape(arr[i]);
+
                 }
             }
         }
@@ -293,7 +300,7 @@ namespace TranslationHelper
                     SearchQueries = new string[SearchFormFindWhatComboBox.Items.Count];
                     SearchFormFindWhatComboBox.Items.CopyTo(SearchQueries, 0);
                     AddQuotesToWritingSearchValues(ref SearchQueries);
-                    UnEscapeSearchValues(ref SearchQueries);
+                    UnEscapeSearchValues(ref SearchQueries, false);
                     Config.SetArrayToSectionValues("Search Queries", SearchQueries);
                 }
                 if (SearchFormReplaceWithComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(SearchReplacers, SearchFormReplaceWithComboBox.Items))
@@ -301,7 +308,7 @@ namespace TranslationHelper
                     SearchReplacers = new string[SearchFormReplaceWithComboBox.Items.Count];
                     SearchFormReplaceWithComboBox.Items.CopyTo(SearchReplacers, 0);
                     AddQuotesToWritingSearchValues(ref SearchReplacers);
-                    UnEscapeSearchValues(ref SearchReplacers);
+                    UnEscapeSearchValues(ref SearchReplacers, false);
                     Config.SetArrayToSectionValues("Search Replacers", SearchReplacers);
                 }
             }
