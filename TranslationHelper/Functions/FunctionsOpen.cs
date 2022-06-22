@@ -25,13 +25,13 @@ namespace TranslationHelper.Functions
                 {
                     THFOpen.InitialDirectory = AppData.Main.Settings.THConfigINI.GetKey("Paths", "LastPath");
 
-                    bool tempMode = AppData.OpenFileMode;
-                    AppData.OpenFileMode = true;// temporary set open file mode to true if on save mode trying to open files to prevent errors in time of get extensions for filter
+                    bool tempMode = AppData.CurrentProject.OpenFileMode;
+                    AppData.CurrentProject.OpenFileMode = true;// temporary set open file mode to true if on save mode trying to open files to prevent errors in time of get extensions for filter
 
                     var possibleExtensions = string.Join(";*", GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<FormatBase>().Where(f => !string.IsNullOrWhiteSpace(f.Ext) && f.Ext[0] == '.').Select(f => f.Ext).Distinct());
                     THFOpen.Filter = "All|*" + possibleExtensions + ";RPGMKTRANSPATCH|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
 
-                    AppData.OpenFileMode = tempMode;
+                    AppData.CurrentProject.OpenFileMode = tempMode;
                     if (THFOpen.ShowDialog() != DialogResult.OK || THFOpen.FileName == null)
                     {
                         AppData.Main.IsOpeningInProcess = false;
@@ -120,7 +120,7 @@ namespace TranslationHelper.Functions
             foreach (Type Project in AppData.ProjectsList) // iterate projectbase types
             {
                 AppData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project);// create instance of project
-                AppData.OpenFileMode = true;
+                AppData.CurrentProject.OpenFileMode = true;
                 AppData.SelectedFilePath = sPath;
                 AppData.CurrentProject.OpenedFilesDir = dir.FullName;
                 AppData.CurrentProject.SelectedDir = dir.FullName;
@@ -152,7 +152,7 @@ namespace TranslationHelper.Functions
         private static bool TryOpenSelectedProject(Type type, string sPath, DirectoryInfo dir)
         {
             AppData.CurrentProject = (ProjectBase)Activator.CreateInstance(type);// create instance of project
-            AppData.OpenFileMode = true;
+            AppData.CurrentProject.OpenFileMode = true;
             AppData.SelectedFilePath = sPath;
             AppData.CurrentProject.OpenedFilesDir = dir.FullName;
             AppData.CurrentProject.SelectedDir = dir.FullName;
@@ -339,7 +339,7 @@ namespace TranslationHelper.Functions
         {
             AppData.CurrentProject.Init();
             AppData.CurrentProject.BakRestore();
-            AppData.OpenFileMode = true;
+            AppData.CurrentProject.OpenFileMode = true;
             if (AppData.CurrentProject.Open())
             {
                 MenusCreator.CreateMenus();//createmenus
@@ -366,7 +366,7 @@ namespace TranslationHelper.Functions
 
         internal static void AfterOpenActions()
         {
-            AppData.SaveFileMode = true; // project opened. dont need to openfilemode
+            AppData.CurrentProject.SaveFileMode = true; // project opened. dont need to openfilemode
 
             if (!AppData.Main.THWorkSpaceSplitContainer.Visible)
             {

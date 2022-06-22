@@ -37,7 +37,7 @@ namespace TranslationHelper.Formats
 
         private void PostParseBytesRequired()
         {
-            if (AppData.SaveFileMode)
+            if (AppData.CurrentProject.SaveFileMode)
             {
                 //add rest bytes of the stream
                 while (ParseData.FStream.Length > ParseData.FStream.Position)
@@ -105,7 +105,7 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                if (AppData.SaveFileMode // save mode
+                if (AppData.CurrentProject.SaveFileMode // save mode
                     && ParseData.Ret // something translated
                     && ParseData.NewBinaryForWrite.Count > 0 // new bynary is not empty
                     && !FunctionsFileFolder.FileInUse(GetSaveFilePath()) // file is not locked
@@ -131,7 +131,7 @@ namespace TranslationHelper.Formats
         {
             public ParseFileData()
             {
-                if (AppData.SaveFileMode)
+                if (AppData.CurrentProject.SaveFileMode)
                 {
                     NewBinaryForWrite = new List<byte>();
                 }

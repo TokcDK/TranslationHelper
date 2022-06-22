@@ -22,13 +22,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (item == null) continue;
 
                 var s = item.Name;
-                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"\r\nID: {item.Id}") && AppData.SaveFileMode) item.Name = s;
+                if (AddRowData(ref s, AppData.CurrentProject.SaveFileMode ? "" : $"\r\nID: {item.Id}") && AppData.CurrentProject.SaveFileMode) item.Name = s;
 
                 int pagesCount = item.Pages.Length;
                 for (int p = 0;p< pagesCount; p++)
                 {
                     var page = item.Pages[p];
-                    ParseCommandStrings(page.Commands, AppData.SaveFileMode ? "" : $"Troop name: \"{item.Name}\"\r\nPage number: {p}");
+                    ParseCommandStrings(page.Commands, AppData.CurrentProject.SaveFileMode ? "" : $"Troop name: \"{item.Name}\"\r\nPage number: {p}");
                 }
             }
 

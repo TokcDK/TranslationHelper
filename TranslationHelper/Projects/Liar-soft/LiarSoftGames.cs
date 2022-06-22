@@ -49,7 +49,7 @@ namespace TranslationHelper.Projects.Liar_soft
             //open or save txt/gsc
             var ret = OpenSaveFilesBase(dir, typeof(GSCTXT), "*.txt");
 
-            if(AppData.SaveFileMode && ret)
+            if(AppData.CurrentProject.SaveFileMode && ret)
             {
                 //replace gsc entries with translated
                 for (int i=0; i< archive.Entries.Count; i++)

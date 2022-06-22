@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             if (!string.IsNullOrWhiteSpace(ParseData.Line) && !ParseData.Line.Contains("DO NOT EDIT"))//skip info lines
             {
                 var data = ParseData.Line.Split('\t');
-                if (AppData.OpenFileMode)
+                if (AppData.CurrentProject.OpenFileMode)
                 {
                     AddRowData(data[0], "", CheckInput: false);
                 }

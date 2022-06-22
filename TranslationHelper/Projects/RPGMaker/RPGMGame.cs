@@ -82,7 +82,7 @@ namespace TranslationHelper.Projects
 
             FixOldPatchDirsLocation(workdir);
 
-            if (AppData.OpenFileMode && IsPatchFilesExist(patchdirPath))
+            if (AppData.CurrentProject.OpenFileMode && IsPatchFilesExist(patchdirPath))
             {
                 DialogResult result = MessageBox.Show(T._("Found already extracted files in work dir. Continue with them?"), T._("Found extracted files"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
@@ -197,7 +197,7 @@ namespace TranslationHelper.Projects
                 }
 
                 //extract Game.rgss
-                if (AppData.OpenFileMode && !ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
+                if (AppData.CurrentProject.OpenFileMode && !ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
                 {
                     new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
                     AppData.Main.ProgressInfo(true, T._("Last try"));

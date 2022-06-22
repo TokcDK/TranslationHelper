@@ -46,7 +46,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
 
                     StartReadingSvar = false;
 
-                    if (AppData.SaveFileMode)
+                    if (AppData.CurrentProject.SaveFileMode)
                     {
                         return KeywordActionAfter.Continue;
                     }
@@ -89,7 +89,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                     else if (ParseData.Line.TrimStart().StartsWith(SvarIdentifier))
                     {
                         StartReadingSvar = true;
-                        if (AppData.SaveFileMode)
+                        if (AppData.CurrentProject.SaveFileMode)
                         {
                             // add line with identifier without "{" of json block
                             ParseData.Line = ParseData.Line.Remove(ParseData.Line.Length - 1, 1);

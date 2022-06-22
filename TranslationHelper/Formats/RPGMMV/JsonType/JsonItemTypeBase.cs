@@ -25,13 +25,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (item == null) continue;
 
                 var s = item.Name;
-                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Name = s;
+                if (AddRowData(ref s, AppData.CurrentProject.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nNote: \"{item.Note}\"") && AppData.CurrentProject.SaveFileMode) item.Name = s;
 
                 s = item.Description;
-                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.SaveFileMode) item.Description = s;
+                if (AddRowData(ref s, AppData.CurrentProject.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nName: {item.Name}\r\nNote: \"{item.Note}\"") && AppData.CurrentProject.SaveFileMode) item.Description = s;
 
                 s = item.Note;
-                if (AddRowData(ref s, AppData.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nName: {item.Name}") && AppData.SaveFileMode) item.Note = s;
+                if (AddRowData(ref s, AppData.CurrentProject.SaveFileMode ? "" : $"{ItemTypeName} #: {item.Id}\r\nName: {item.Name}") && AppData.CurrentProject.SaveFileMode) item.Note = s;
             }
 
             return data;

@@ -27,7 +27,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 var item = data[e];
                 if (item == null) continue;
 
-                ParseCommandStrings(item.Commands, AppData.SaveFileMode ? "" : $"Event ID: {item.Id}\r\nEvent name: \"{item.Name}\"");
+                ParseCommandStrings(item.Commands, AppData.CurrentProject.SaveFileMode ? "" : $"Event ID: {item.Id}\r\nEvent name: \"{item.Name}\"");
             }
 
             return data;

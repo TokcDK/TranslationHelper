@@ -47,7 +47,7 @@ namespace TranslationHelper.Projects.EAGLS
                 var scriptdir = ScriptDir;
 
                 WorkTXTDir = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "txt");
-                var mode = (AppData.SaveFileMode ? string.Empty : "un") + "pack";
+                var mode = (AppData.CurrentProject.SaveFileMode ? string.Empty : "un") + "pack";
                 //var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t -o";
                 var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\"";
 

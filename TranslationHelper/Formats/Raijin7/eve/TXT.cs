@@ -61,7 +61,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
             {
                 var Values = ParseData.Line.Split(',');
                 var RestOfText = ParseData.Reader.ReadToEnd();
-                if (AppData.OpenFileMode)
+                if (AppData.CurrentProject.OpenFileMode)
                 {
                     AddRowData(Values[1], "", CheckInput: true);
                     AddRowData(RestOfText, "", CheckInput: true);

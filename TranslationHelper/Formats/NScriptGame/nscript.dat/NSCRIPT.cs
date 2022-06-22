@@ -49,7 +49,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
             if (IsComment())
             {
-                if (AppData.SaveFileMode)
+                if (AppData.CurrentProject.SaveFileMode)
                     ParseData.ResultForWrite.Append(ParseData.Line + '\n');
                 return 0;
             }
@@ -64,7 +64,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     {
                         var str = array[i];
 
-                        if (AppData.OpenFileMode)
+                        if (AppData.CurrentProject.OpenFileMode)
                         {
                             AddRowData(str, "", CheckInput: true);
                         }
@@ -78,18 +78,18 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                             }
                         }
                     }
-                    if (AppData.SaveFileMode)
+                    if (AppData.CurrentProject.SaveFileMode)
                     {
                         lines.Add(array[i]);
                     }
                 }
-                if (AppData.SaveFileMode && lines.Count > 0)
+                if (AppData.CurrentProject.SaveFileMode && lines.Count > 0)
                 {
                     ParseData.Line = string.Join(":", lines);
                 }
             }
 
-            if (AppData.SaveFileMode)
+            if (AppData.CurrentProject.SaveFileMode)
                 ParseData.ResultForWrite.Append(ParseData.Line + '\n');
             return KeywordActionAfter.ReadToEnd;
         }
@@ -175,7 +175,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
         {
             try
             {
-                if (ParseData.Ret && AppData.SaveFileMode && ParseData.ResultForWrite.Length > 0)
+                if (ParseData.Ret && AppData.CurrentProject.SaveFileMode && ParseData.ResultForWrite.Length > 0)
                 {
                     var Enc = System.Text.Encoding.GetEncoding(932);
                     var nscripttxtTranslated = ParseData.ResultForWrite.ToString();

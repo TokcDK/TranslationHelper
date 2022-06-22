@@ -32,7 +32,7 @@ namespace TranslationHelper.Functions
             }
             AppData.Main.SaveInAction = true;
             AppData.Main.FileDataWasChanged = false;
-            AppData.SaveFileMode = true;
+            AppData.CurrentProject.SaveFileMode = true;
 
             //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
 

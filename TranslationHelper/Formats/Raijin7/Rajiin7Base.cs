@@ -30,7 +30,7 @@ namespace TranslationHelper.Formats.Raijin7
             foreach (var num in numbers)
             {
                 var trans="";
-                if (AppData.OpenFileMode)
+                if (AppData.CurrentProject.OpenFileMode)
                 {
                     AddRowData(Values[num], "", CheckInput: true);
                 }

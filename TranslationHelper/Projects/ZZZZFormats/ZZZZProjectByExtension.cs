@@ -84,7 +84,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             foreach (var i in Directory.EnumerateFiles(dir, "*" + ext)) if (++extCnt > 1) break;
 
             bool getAll = false;
-            if (extCnt > 1 && (AppData.SaveFileMode || MessageBox.Show(T._("Found similar files. Open them too?"), T._("Found files with same extension"), MessageBoxButtons.YesNo) == DialogResult.Yes))
+            if (extCnt > 1 && (AppData.CurrentProject.SaveFileMode || MessageBox.Show(T._("Found similar files. Open them too?"), T._("Found files with same extension"), MessageBoxButtons.YesNo) == DialogResult.Yes))
             {
                 getAll = true;
             }

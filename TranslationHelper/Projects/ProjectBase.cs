@@ -18,13 +18,25 @@ namespace TranslationHelper.Projects
     {
         protected ProjectBase()
         {
-            DontLoadDuplicates = Properties.Settings.Default.DontLoadDuplicates; // set value of the parameter for the project work session
+            // set value of the parameter for the project work session
+            DontLoadDuplicates = Properties.Settings.Default.DontLoadDuplicates;
 
-            if (AppData.SaveFileMode && DontLoadDuplicates)
+            if (AppData.CurrentProject == null) return;
+
+            if (AppData.CurrentProject.SaveFileMode && DontLoadDuplicates)
             {
                 TablesLinesDict = new ConcurrentDictionary<string, string>();
             }
         }
+
+        /// <summary>
+        /// true - when file open, false - when file writing
+        /// </summary>
+        public bool OpenFileMode = true;
+        /// <summary>
+        /// true - when file write, false - when file open
+        /// </summary>
+        public bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }
 
         /// <summary>
         /// Index of Original column
@@ -278,11 +290,11 @@ namespace TranslationHelper.Projects
                 if (!string.IsNullOrWhiteSpace(format.Ext) && file.Extension != format.Ext) return;
 
                 // check if exist table has any translated
-                if (AppData.SaveFileMode && existsTables.Contains(format.FileName) && !format.FileName.HasAnyTranslated()) return;
+                if (AppData.CurrentProject.SaveFileMode && existsTables.Contains(format.FileName) && !format.FileName.HasAnyTranslated()) return;
 
-                AppData.Main.ProgressInfo(true, (AppData.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
+                AppData.Main.ProgressInfo(true, (AppData.CurrentProject.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
                 
-                if (AppData.OpenFileMode ? format.Open() : format.Save()) ret = true;
+                if (AppData.CurrentProject.OpenFileMode ? format.Open() : format.Save()) ret = true;
             });
 
             AppData.Main.ProgressInfo(false);

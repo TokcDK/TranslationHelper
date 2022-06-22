@@ -77,9 +77,9 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <returns></returns>
         private bool ParseProjectFiles()
         {
-            if (AppData.OpenFileMode) BakRestore();
+            if (AppData.CurrentProject.OpenFileMode) BakRestore();
 
-            ParseFileMessage = AppData.SaveFileMode ? T._("write file: ") : T._("opening file: ");
+            ParseFileMessage = AppData.CurrentProject.SaveFileMode ? T._("write file: ") : T._("opening file: ");
             bool isAnyFileCompleted = false;
             try
             {
@@ -149,8 +149,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
                     try
                     {
-                        if ((AppData.OpenFileMode && format.Open())
-                            || (AppData.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
+                        if ((AppData.CurrentProject.OpenFileMode && format.Open())
+                            || (AppData.CurrentProject.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
                         {
                             isAnyFileCompleted = true;
                         }
@@ -188,8 +188,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 try
                 {
-                    if ((AppData.OpenFileMode && format.Open())
-                        || (AppData.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
+                    if ((AppData.CurrentProject.OpenFileMode && format.Open())
+                        || (AppData.CurrentProject.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
                     {
                         isAnyFileCompleted = true;
                     }
@@ -220,8 +220,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
             try
             {
-                if ((AppData.OpenFileMode && format.Open())
-                    || (AppData.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
+                if ((AppData.CurrentProject.OpenFileMode && format.Open())
+                    || (AppData.CurrentProject.SaveFileMode && format.FileName.HasAnyTranslated() && format.Save()))
                 {
                     return true;
                 }
@@ -289,7 +289,7 @@ namespace TranslationHelper.Projects.RPGMMV
                     FilePath = filePath
                 };
 
-                ret = AppData.SaveFileMode ? (format.FileName.HasAnyTranslated() && format.Save()) : format.Open();
+                ret = AppData.CurrentProject.SaveFileMode ? (format.FileName.HasAnyTranslated() && format.Save()) : format.Open();
 
                 return ret;
             }

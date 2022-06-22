@@ -29,7 +29,7 @@ namespace TranslationHelper.Projects.NScript
 
         private bool OpenSaveNScript()
         {
-            AppData.Main.ProgressInfo(true, (AppData.OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
+            AppData.Main.ProgressInfo(true, (AppData.CurrentProject.OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
             var filePath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat");
             bool ret;
             var format = new NSCRIPT
@@ -37,7 +37,7 @@ namespace TranslationHelper.Projects.NScript
                 FilePath = filePath
             };
 
-            if (AppData.OpenFileMode)
+            if (AppData.CurrentProject.OpenFileMode)
             {
                 if (!File.Exists(filePath + ".orig"))//backup for manual restore
                 {

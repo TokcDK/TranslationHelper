@@ -32,7 +32,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesL
                 return false;
             }
 
-            return (!ForceRun || (AppData.SaveFileMode && AppData.CurrentProject.DontLoadDuplicates)) && (Translations == null || Translations.Count == 0);
+            return (!ForceRun || (AppData.CurrentProject.SaveFileMode && AppData.CurrentProject.DontLoadDuplicates)) && (Translations == null || Translations.Count == 0);
         }
 
         protected override bool IsValidRow()

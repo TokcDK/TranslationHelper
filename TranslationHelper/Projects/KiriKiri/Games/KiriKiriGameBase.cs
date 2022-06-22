@@ -54,7 +54,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         {
             var ret = false;
 
-            if (AppData.OpenFileMode)
+            if (AppData.CurrentProject.OpenFileMode)
             {
                 ret = ExtractXP3Data();
 
@@ -84,12 +84,12 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 ret = true;
             }
 
-            if (AppData.SaveFileMode && AppData.CurrentProject.DontLoadDuplicates)
+            if (AppData.CurrentProject.SaveFileMode && AppData.CurrentProject.DontLoadDuplicates)
             {
                 AppData.CurrentProject.TablesLinesDict.Clear();
             }
 
-            if (ret && AppData.SaveFileMode)
+            if (ret && AppData.CurrentProject.SaveFileMode)
             {
                 AppData.Main.ProgressInfo(true, T._("Creating translation patch"));
                 ret = PackTranslatedFilesInPatch();

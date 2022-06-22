@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 return;
             }
 
-            if (AppData.OpenFileMode)
+            if (AppData.CurrentProject.OpenFileMode)
             {
                 AddToStats();
 
@@ -199,7 +199,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 var messageparts = GetNextTokensWithSameCode(jsonObject);
                 var fullmessage = GetMessageLinesFrom(messageparts);
 
-                if (AppData.OpenFileMode)
+                if (AppData.CurrentProject.OpenFileMode)
                 {
                     bool HasCurCode = true; // message code parse
                     Format.AddRowData(tablename: JsonName, RowData: fullmessage, RowInfo: "JsonPath: "

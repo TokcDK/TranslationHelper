@@ -139,7 +139,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
         private void WriteJsonFileInSaveMode()
         {
-            if (AppData.SaveFileMode && Format.RET || (Format is FormatStringBase s && s.ParseData.Ret))
+            if (AppData.CurrentProject.SaveFileMode && Format.RET || (Format is FormatStringBase s && s.ParseData.Ret))
             {
                 File.WriteAllText(Json.FullName, ResultJson());
             }

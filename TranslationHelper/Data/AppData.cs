@@ -36,15 +36,6 @@ namespace TranslationHelper.Data
         internal static INIFileMan.INIFile ConfigIni { get => Main.Settings.THConfigINI; set => Main.Settings.THConfigINI = value; }
 
         /// <summary>
-        /// true - when file open, false - when file writing
-        /// </summary>
-        internal static bool OpenFileMode = true;
-        /// <summary>
-        /// true - when file write, false - when file open
-        /// </summary>
-        internal static bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }
-
-        /// <summary>
         /// regex rules which appling to original to show what need to translate
         /// </summary>
         internal static Dictionary<string, string> TranslationRegexRules = new Dictionary<string, string>();

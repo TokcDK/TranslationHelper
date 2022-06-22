@@ -35,7 +35,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
                     foreach ((string s, DBField f) in data.GetTranslatable(filterValue: false))
                     {
                         var value = s;
-                        if (AddRowData(ref value, $"DB name: {db_name}\r\nType name: {type.Name} \r\nField index: {f.Index}") && AppData.SaveFileMode)
+                        if (AddRowData(ref value, $"DB name: {db_name}\r\nType name: {type.Name} \r\nField index: {f.Index}") && AppData.CurrentProject.SaveFileMode)
                         {
                             data.String_values[f.Index] = value;
                         }
