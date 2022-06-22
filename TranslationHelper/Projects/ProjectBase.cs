@@ -283,9 +283,9 @@ namespace TranslationHelper.Projects
                     return;
                 }
 
-                if (AppData.SaveFileMode && existsTables.Contains(format.TableName())) // check if exist table has any translated
+                if (AppData.SaveFileMode && existsTables.Contains(format.TableName)) // check if exist table has any translated
                 {
-                    if (!format.TableName().HasAnyTranslated())
+                    if (!format.TableName.HasAnyTranslated())
                     {
                         return;
                     }
