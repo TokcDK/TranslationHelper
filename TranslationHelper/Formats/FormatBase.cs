@@ -32,7 +32,7 @@ namespace TranslationHelper.Formats
                 return;
             }
 
-            AppData.CurrentProject.CurrentFormat = this; // set format
+            //AppData.CurrentProject.CurrentFormat = this; // set format
 
             // set filepath from projectdata filepath
             if (!_filePathIsSet && string.IsNullOrWhiteSpace(FilePath))

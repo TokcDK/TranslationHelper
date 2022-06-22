@@ -111,10 +111,10 @@ namespace TranslationHelper.Projects
         /// </summary>
         public virtual bool IsSaveToSourceFile => false;
 
-        /// <summary>
-        /// Current parsing format
-        /// </summary>
-        public FormatBase CurrentFormat;
+        ///// <summary>
+        ///// Current parsing format
+        ///// </summary>
+        //public FormatBase CurrentFormat;
 
         /// <summary>
         /// set here som vars before open or kind of
