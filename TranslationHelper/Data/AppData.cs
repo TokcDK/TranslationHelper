@@ -11,6 +11,15 @@ namespace TranslationHelper.Data
 {
     public static class AppData
     {
+        internal static THfrmSettings Settings;
+
+        //Settings
+        internal static void SetSettings()
+        {
+            Settings = new THfrmSettings();
+            Settings.GetSettings();
+        }
+
         /// <summary>
         /// init values and set references
         /// </summary>
@@ -33,7 +42,7 @@ namespace TranslationHelper.Data
         /// <summary>
         /// Application's loaded config ini
         /// </summary>
-        internal static INIFileMan.INIFile ConfigIni { get => Main.Settings.THConfigINI; set => Main.Settings.THConfigINI = value; }
+        internal static INIFileMan.INIFile ConfigIni { get => Settings.THConfigINI; set => Settings.THConfigINI = value; }
 
         /// <summary>
         /// regex rules which appling to original to show what need to translate

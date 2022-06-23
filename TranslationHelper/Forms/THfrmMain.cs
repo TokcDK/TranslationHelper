@@ -31,8 +31,6 @@ namespace TranslationHelper
 {
     public partial class FormMain : Form
     {
-        internal THfrmSettings Settings;
-
         internal string extractedpatchpath = string.Empty;
 
         internal string FVariant = string.Empty;
@@ -57,7 +55,7 @@ namespace TranslationHelper
 
             BindShortCuts();
 
-            SetSettings();
+            AppData.SetSettings();
 
             SetUIStrings();
 
@@ -168,13 +166,6 @@ namespace TranslationHelper
 
 
 
-        }
-
-        //Settings
-        private void SetSettings()
-        {
-            Settings = new THfrmSettings();
-            Settings.GetSettings();
         }
 
         private void SetUIStrings()
@@ -902,18 +893,18 @@ namespace TranslationHelper
         {
             try
             {
-                if (Settings == null || Settings.IsDisposed)
+                if (AppData.Settings == null || AppData.Settings.IsDisposed)
                 {
-                    Settings = new THfrmSettings();
+                    AppData.Settings = new THfrmSettings();
                 }
 
-                if (Settings.Visible)
+                if (AppData.Settings.Visible)
                 {
-                    Settings.Activate();
+                    AppData.Settings.Activate();
                 }
                 else
                 {
-                    Settings.Show();
+                    AppData.Settings.Show();
                 }
             }
             catch
@@ -1188,7 +1179,7 @@ namespace TranslationHelper
         {
             if (sPath.Length == 0)
             {
-                sPath = Settings.THConfigINI.GetKey("Paths", "LastAutoSavePath");
+                sPath = AppData.Settings.THConfigINI.GetKey("Paths", "LastAutoSavePath");
             }
 
             if (!File.Exists(sPath))
@@ -1871,7 +1862,7 @@ namespace TranslationHelper
                     await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(true);
                 }
 
-                Settings.THConfigINI.SetKey("Paths", "LastAutoSavePath", lastautosavepath);
+                AppData.Settings.THConfigINI.SetKey("Paths", "LastAutoSavePath", lastautosavepath);
             }
             catch
             {

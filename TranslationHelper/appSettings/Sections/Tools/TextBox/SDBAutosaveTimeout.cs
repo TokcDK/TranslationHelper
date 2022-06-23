@@ -14,7 +14,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultInt + string.Empty;
         internal override int DefaultInt => 300;
 
-        object SObject { get => AppData.Main.Settings.SettingsAutosaveTimeoutValueTextBox; }
+        object SObject { get => AppData.Settings.SettingsAutosaveTimeoutValueTextBox; }
 
         static int SVar
         {

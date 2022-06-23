@@ -13,7 +13,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => true;
 
-        object SObject { get => AppData.Main.Settings.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox; }
+        object SObject { get => AppData.Settings.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox; }
 
         static bool SVar
         {

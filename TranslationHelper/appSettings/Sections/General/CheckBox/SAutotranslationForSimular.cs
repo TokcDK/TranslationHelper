@@ -13,7 +13,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => true;
 
-        object SCheckBox { get => AppData.Main.Settings.THOptionAutotranslationForSimularCheckBox; }
+        object SCheckBox { get => AppData.Settings.THOptionAutotranslationForSimularCheckBox; }
 
         static bool SVar
         {

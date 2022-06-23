@@ -23,7 +23,7 @@ namespace TranslationHelper.Functions
             {
                 using (var THFOpen = new OpenFileDialog())
                 {
-                    THFOpen.InitialDirectory = AppData.Main.Settings.THConfigINI.GetKey("Paths", "LastPath");
+                    THFOpen.InitialDirectory = AppData.Settings.THConfigINI.GetKey("Paths", "LastPath");
 
                     //bool tempMode = AppData.CurrentProject.OpenFileMode;
                     //AppData.CurrentProject.OpenFileMode = true;// temporary set open file mode to true if on save mode trying to open files to prevent errors in time of get extensions for filter
@@ -411,13 +411,13 @@ namespace TranslationHelper.Functions
 
             if (AppData.CurrentProject.Name.Contains("RPG Maker game with RPGMTransPatch") || AppData.CurrentProject.Name.Contains("KiriKiri game"))
             {
-                AppData.Main.Settings.THConfigINI.SetKey("Paths", "LastPath", AppData.CurrentProject.SelectedGameDir);
+                AppData.Settings.THConfigINI.SetKey("Paths", "LastPath", AppData.CurrentProject.SelectedGameDir);
             }
             else
             {
                 try
                 {
-                    AppData.Main.Settings.THConfigINI.SetKey("Paths", "LastPath", AppData.CurrentProject.SelectedDir);
+                    AppData.Settings.THConfigINI.SetKey("Paths", "LastPath", AppData.CurrentProject.SelectedDir);
                 }
                 catch (Exception ex)
                 {

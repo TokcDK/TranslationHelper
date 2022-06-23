@@ -13,7 +13,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => false;
 
-        object SObject { get => AppData.Main.Settings.THOptionFullComprasionDBloadCheckBox; }
+        object SObject { get => AppData.Settings.THOptionFullComprasionDBloadCheckBox; }
 
         static bool SVar
         {
@@ -25,7 +25,7 @@ namespace TranslationHelper.INISettings
         {
             if (!SetObject)
             {
-                SVar = AppData.Main.Settings.THOptionDBCompressionCheckBox.Checked;
+                SVar = AppData.Settings.THOptionDBCompressionCheckBox.Checked;
             }
             else
             {

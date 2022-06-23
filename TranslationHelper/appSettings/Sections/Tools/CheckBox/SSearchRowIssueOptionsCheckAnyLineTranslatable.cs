@@ -13,7 +13,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultBool.ToString();
         internal override bool DefaultBool => true;
 
-        object SObject { get => AppData.Main.Settings.cbSearchRowIssueOptionsCheckAnyLineTranslatable; }
+        object SObject { get => AppData.Settings.cbSearchRowIssueOptionsCheckAnyLineTranslatable; }
 
         static bool SVar
         {

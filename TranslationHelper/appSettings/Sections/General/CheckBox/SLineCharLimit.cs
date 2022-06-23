@@ -14,7 +14,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultInt + string.Empty;
         internal override int DefaultInt => 60;
 
-        object SObject { get => AppData.Main.Settings.LineCharLimitTextBox; }
+        object SObject { get => AppData.Settings.LineCharLimitTextBox; }
 
         static int SVar
         {

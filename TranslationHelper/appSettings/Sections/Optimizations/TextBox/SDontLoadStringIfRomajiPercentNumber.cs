@@ -14,7 +14,7 @@ namespace TranslationHelper.INISettings
         internal override string Default => DefaultInt + string.Empty;
         internal override int DefaultInt => 90;
 
-        object SObject { get => AppData.Main.Settings.DontLoadStringIfRomajiPercentNumberTextBox; }
+        object SObject { get => AppData.Settings.DontLoadStringIfRomajiPercentNumberTextBox; }
 
         static int SVar
         {

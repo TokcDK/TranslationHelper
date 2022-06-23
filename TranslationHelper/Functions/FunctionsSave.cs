@@ -194,9 +194,9 @@ namespace TranslationHelper.Functions
                     }
                 )
                 {
-                    if (AppData.Main.Settings.THConfigINI.SectionExistsAndNotEmpty(dict.Key))
+                    if (AppData.Settings.THConfigINI.SectionExistsAndNotEmpty(dict.Key))
                     {
-                        foreach (var pair in AppData.Main.Settings.THConfigINI.GetSectionKeyValuePairs(dict.Key))
+                        foreach (var pair in AppData.Settings.THConfigINI.GetSectionKeyValuePairs(dict.Key))
                         {
                             var key = int.Parse(pair.Key);
                             var value = int.Parse(pair.Value);
@@ -213,11 +213,11 @@ namespace TranslationHelper.Functions
 
                     foreach (var pair in dict.Value)
                     {
-                        AppData.Main.Settings.THConfigINI.SetKey(dict.Key, pair.Key + "", pair.Value + "");
+                        AppData.Settings.THConfigINI.SetKey(dict.Key, pair.Key + "", pair.Value + "");
                     }
                 }
 
-                AppData.Main.Settings.THConfigINI.WriteFile();
+                AppData.Settings.THConfigINI.WriteFile();
             }
         }
     }

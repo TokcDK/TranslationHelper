@@ -12,7 +12,7 @@ namespace TranslationHelper.INISettings
 
         internal override string Default => "https://translate.google.com/?ie=UTF-8&op=translate&sl={from}&tl={to}&text={text}";
 
-        object SObject { get => AppData.Main.Settings.THSettingsWebTranslationLinkTextBox; }
+        object SObject { get => AppData.Settings.THSettingsWebTranslationLinkTextBox; }
 
         static string SVar
         {

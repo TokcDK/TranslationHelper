@@ -30,7 +30,7 @@ namespace TranslationHelper
             THFileElementsDataGridView = DGV;
             THTargetRichTextBox = TTB;
 
-            Config = AppData.Main.Settings.THConfigINI;
+            Config = AppData.Settings.THConfigINI;
 
             //translation
             this.THSearch1st.Text = T._("Find and Replace");

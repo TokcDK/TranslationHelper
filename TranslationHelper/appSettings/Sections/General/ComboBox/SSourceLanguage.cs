@@ -10,11 +10,11 @@ namespace TranslationHelper.INISettings
     {
         public SSourceLanguage()
         {
-            if (AppData.Main.Settings.SourceLanguageComboBox.Items.Count == 0)
+            if (AppData.Settings.SourceLanguageComboBox.Items.Count == 0)
             {
-                AppData.Main.Settings.SourceLanguageComboBox.DataSource = TranslatorsBase.Languages;
+                AppData.Settings.SourceLanguageComboBox.DataSource = TranslatorsBase.Languages;
             }
-            AppData.Main.Settings.SourceLanguageComboBox.SelectedIndex = TranslatorsBase.Languages.IndexOf(Properties.Settings.Default.OnlineTranslationSourceLanguage);
+            AppData.Settings.SourceLanguageComboBox.SelectedIndex = TranslatorsBase.Languages.IndexOf(Properties.Settings.Default.OnlineTranslationSourceLanguage);
         }
 
         internal override string Key => "SourceLanguage";
@@ -25,13 +25,13 @@ namespace TranslationHelper.INISettings
         {
             if (!SetObject)
             {
-                Properties.Settings.Default.OnlineTranslationSourceLanguage = AppData.Main.Settings.SourceLanguageComboBox.SelectedItem.ToString();
+                Properties.Settings.Default.OnlineTranslationSourceLanguage = AppData.Settings.SourceLanguageComboBox.SelectedItem.ToString();
                 
             }
             else
             {
                 Properties.Settings.Default.OnlineTranslationSourceLanguage = AppData.BufferValueString;
-                AppData.Main.Settings.SourceLanguageComboBox.SelectedItem = Properties.Settings.Default.OnlineTranslationSourceLanguage;
+                AppData.Settings.SourceLanguageComboBox.SelectedItem = Properties.Settings.Default.OnlineTranslationSourceLanguage;
             }
         }
 
@@ -42,7 +42,7 @@ namespace TranslationHelper.INISettings
 
         internal override string ID()
         {
-            return AppData.Main.Settings.SourceLanguageComboBox.Name;
+            return AppData.Settings.SourceLanguageComboBox.Name;
         }
     }
 }
