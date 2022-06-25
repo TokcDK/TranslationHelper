@@ -256,13 +256,8 @@ namespace TranslationHelper.Formats
             }
             else
             {
-                if (CheckInput)
-                {
-                    if (!IsValidString(RowData))
-                    {
-                        return false;
-                    }
-                }
+                if (CheckInput && !IsValidString(RowData)) return false;
+
                 return SetTranslation(ref RowData, existsTranslation);
             }
         }
@@ -818,7 +813,7 @@ namespace TranslationHelper.Formats
                         valueToTranslate = AppData.CurrentProject.FilesContent.Tables[currentTableName].Rows[RowNumber][1] + "";
                         valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
-                        isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
+                        isTranslated = string.IsNullOrEmpty(valueToTranslate) && (pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate));
                         if (isTranslated)
                         {
                             RET = true;
@@ -836,7 +831,7 @@ namespace TranslationHelper.Formats
                             valueToTranslate = AppData.CurrentProject.FilesContent.Tables[currentTableName].Rows[rowIndex][1] + "";
                             valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
-                            isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
+                            isTranslated = string.IsNullOrEmpty(valueToTranslate) && (pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate));
                             if (isTranslated)
                             {
                                 RET = true;
@@ -858,7 +853,7 @@ namespace TranslationHelper.Formats
                             valueToTranslate = AppData.CurrentProject.FilesContent.Tables[currentTableName].Rows[existsRowIndex][1] + "";
                             valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
-                            isTranslated = pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
+                            isTranslated = string.IsNullOrEmpty(valueToTranslate) && (pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate));
                             if (isTranslated)
                             {
                                 RET = true;

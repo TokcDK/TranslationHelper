@@ -1,5 +1,6 @@
 ﻿using RPGMVJsonParser;
 using System.IO;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
@@ -8,7 +9,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
     {
         protected override object ParseJson(string path)
         {
-            if (string.Equals(Path.GetFileNameWithoutExtension(path), "MapInfos", System.StringComparison.InvariantCultureIgnoreCase)) return null;
+            if (!Regex.IsMatch(Path.GetFileName(path).ToLowerInvariant(),@"map[0-9]+\.json")) return null;
 
             var data = Helper.LoadMap(path);
             if (data == null) return null;

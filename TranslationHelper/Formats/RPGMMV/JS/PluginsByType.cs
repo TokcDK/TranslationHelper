@@ -90,7 +90,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
             }
 
-            if (SaveFileMode && RET) ParseData.ResultForWrite.Append("var $plugins =" + Helper.Json2String(plugins) + ";$");
+            if (SaveFileMode && RET) ParseData.ResultForWrite.Append("var $plugins =\r\n" + Helper.Json2String(plugins) + ";");
         }
 
         //protected override KeywordActionAfter ParseStringFileLine()
