@@ -1613,11 +1613,11 @@ namespace TranslationHelper
         }
 
         bool cellchanged;
-        public void SetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, bool forcerun = true, bool forcevalue = false)
+        public async void SetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, bool forcerun = true, bool forcevalue = false)
         {
             if (forcevalue || (Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
-                AutoSameForSimularUtils.Set(InputTableIndex, InputRowIndex, forcevalue);
+                await Task.Run(()=> AutoSameForSimularUtils.Set(InputTableIndex, InputRowIndex, forcevalue)).ConfigureAwait(false);
 
                 cellchanged = false;
             }

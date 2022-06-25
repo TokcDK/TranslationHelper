@@ -1,4 +1,6 @@
-﻿using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
+﻿using System;
+using System.Threading.Tasks;
+using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -12,16 +14,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected virtual bool IsForce => false;
         protected override bool Apply()
         {
-            try
-            {
-                AutoSameForSimularUtils.Set(inputTableIndex: SelectedTableIndex, inputRowIndex: SelectedRowIndex, inputForceSetValue: IsForce);
-            }
-            catch
-            {
-                return false;
-            }
+            Set();
 
             return true;
+        }
+
+        private async void Set()
+        {
+            await Task.Run(() => AutoSameForSimularUtils.Set(inputTableIndex: SelectedTableIndex, inputRowIndex: SelectedRowIndex, inputForceSetValue: IsForce)).ConfigureAwait(false);
         }
     }
 }

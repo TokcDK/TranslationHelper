@@ -265,10 +265,7 @@ namespace TranslationHelper
                         Regex.Escape(arr[i]);
                     }
                 }
-                catch
-                {
-
-                }
+                catch { }
             }
         }
 
