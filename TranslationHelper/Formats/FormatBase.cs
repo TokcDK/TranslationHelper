@@ -867,8 +867,8 @@ namespace TranslationHelper.Formats
 
                         if (isTranslated)
                         {
-                            RET = true;
-                            SetTranslationIsTranslatedAction();
+                            //RET = true;
+                            //SetTranslationIsTranslatedAction();
                             break; // translated, dont need to iterate table names anymore
                         }
                     }
