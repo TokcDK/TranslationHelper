@@ -810,15 +810,7 @@ namespace TranslationHelper.Formats
                 {
                     if (AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate][currentTableName].Contains(RowNumber))
                     {
-                        valueToTranslate = AppData.CurrentProject.FilesContent.Tables[currentTableName].Rows[RowNumber][1] + "";
-                        valueToTranslate = FixInvalidSymbols(valueToTranslate);
-
-                        isTranslated = !string.IsNullOrEmpty(valueToTranslate) && (pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate));
-                        if (isTranslated)
-                        {
-                            RET = true;
-                            SetTranslationIsTranslatedAction();
-                        }
+                        isTranslated = SetIfTranslated(currentTableName, RowNumber, pretranslatedOriginal, existsTranslation, ref valueToTranslate);
 
                         //return ret;
                     }
@@ -828,16 +820,9 @@ namespace TranslationHelper.Formats
 
                         foreach (var rowIndex in AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate][currentTableName])
                         {
-                            valueToTranslate = AppData.CurrentProject.FilesContent.Tables[currentTableName].Rows[rowIndex][1] + "";
-                            valueToTranslate = FixInvalidSymbols(valueToTranslate);
+                            isTranslated = SetIfTranslated(currentTableName, rowIndex, pretranslatedOriginal, existsTranslation, ref valueToTranslate);
 
-                            isTranslated = !string.IsNullOrEmpty(valueToTranslate) && (pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate));
-                            if (isTranslated)
-                            {
-                                RET = true;
-                                SetTranslationIsTranslatedAction();
-                                break;
-                            }
+                            if (isTranslated) break;
 
                             //return ret;
                         }
@@ -851,26 +836,12 @@ namespace TranslationHelper.Formats
                     {
                         foreach (var existsRowIndex in existTableName)
                         {
-                            valueToTranslate = AppData.CurrentProject.FilesContent.Tables[currentTableName].Rows[existsRowIndex][1] + "";
-                            valueToTranslate = FixInvalidSymbols(valueToTranslate);
+                            isTranslated = SetIfTranslated(currentTableName, existsRowIndex, pretranslatedOriginal, existsTranslation, ref valueToTranslate);
 
-                            isTranslated = !string.IsNullOrEmpty(valueToTranslate) && (pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate));
-                            if (isTranslated)
-                            {
-                                RET = true;
-                                SetTranslationIsTranslatedAction();
-                                break; // translated, dont need to iterate rows anymore
-                            }
-
-                            //return ret;
+                            if (isTranslated) break; // translated, dont need to iterate rows anymore
                         }
 
-                        if (isTranslated)
-                        {
-                            //RET = true;
-                            //SetTranslationIsTranslatedAction();
-                            break; // translated, dont need to iterate table names anymore
-                        }
+                        if (isTranslated) break; // translated, dont need to iterate table names anymore
                     }
                 }
 
@@ -878,21 +849,25 @@ namespace TranslationHelper.Formats
             }
             else if (!letDuplicates && AppData.CurrentProject.TablesLinesDict.ContainsKey(valueToTranslate))
             {
-                var control = valueToTranslate;
-                valueToTranslate = AppData.CurrentProject.TablesLinesDict[valueToTranslate];
-                valueToTranslate = FixInvalidSymbols(valueToTranslate);
-
-                isTranslated = !string.IsNullOrEmpty(valueToTranslate) && control != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
-                if (isTranslated)
-                {
-                    RET = true;
-                    SetTranslationIsTranslatedAction();
-                }
-
-                //return ret;
+                isTranslated = SetIfTranslated(null, -1, valueToTranslate, existsTranslation, ref valueToTranslate);
             }
 
             return isTranslated;
+        }
+
+        private bool SetIfTranslated(string currentTableName, int RowNumber, string pretranslatedOriginal, string existsTranslation, ref string valueToTranslate)
+        {
+            valueToTranslate = currentTableName == null ? AppData.CurrentProject.TablesLinesDict[valueToTranslate] : AppData.CurrentProject.FilesContent.Tables[currentTableName].Rows[RowNumber][1] + "";
+            valueToTranslate = FixInvalidSymbols(valueToTranslate);
+
+            if (!string.IsNullOrEmpty(valueToTranslate) && (pretranslatedOriginal != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate)))
+            {
+                RET = true;
+                SetTranslationIsTranslatedAction();
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
