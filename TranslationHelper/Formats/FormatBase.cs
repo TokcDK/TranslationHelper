@@ -836,6 +836,7 @@ namespace TranslationHelper.Formats
                             {
                                 RET = true;
                                 SetTranslationIsTranslatedAction();
+                                break;
                             }
 
                             //return ret;
