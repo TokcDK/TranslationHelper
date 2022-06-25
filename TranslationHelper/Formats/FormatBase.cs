@@ -882,7 +882,7 @@ namespace TranslationHelper.Formats
                 valueToTranslate = AppData.CurrentProject.TablesLinesDict[valueToTranslate];
                 valueToTranslate = FixInvalidSymbols(valueToTranslate);
 
-                isTranslated = control != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
+                isTranslated = !string.IsNullOrEmpty(valueToTranslate) && control != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate);
                 if (isTranslated)
                 {
                     RET = true;
