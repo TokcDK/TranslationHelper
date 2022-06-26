@@ -166,23 +166,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                 for (int c = 0; c < dsTransCellLength; c++)
                 {
                     char @char = inputString[c];
-                    if (IsCustomSymbol(@char) || char.IsWhiteSpace(@char) || char.IsPunctuation(@char))
-                    {
-                    }
-                    else
-                    {
-                        string orig;
-                        if ((c > 0 && (@char == 's' && inputString[c - 1] == '\'' || inputString[c - 1] == '\\')) // 's or \s
-                            ||
-                            (orig = SelectedRow[0] as string).Length > c && orig[c] == inputString[c]) // skip if char in original equals char in translation with same index
-                        {
-                        }
-                        else
-                        {
-                            inputString = inputString.Substring(0, c) + char.ToUpper(inputString[c], CultureInfo.InvariantCulture) + (c == dsTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
-                        }
-                        break;
-                    }
+                    if (IsCustomSymbol(@char) || char.IsWhiteSpace(@char) || char.IsPunctuation(@char)) continue;
+
+                    string orig;
+                    if ((c > 0 && (@char == 's' && inputString[c - 1] == '\'' || inputString[c - 1] == '\\')) // 's or \s
+                        ||
+                        (orig = SelectedRow[0] as string).Length > c && orig[c] == inputString[c]) // skip if char in original equals char in translation with same index
+                    { }
+                    else inputString = inputString.Substring(0, c) + char.ToUpper(inputString[c], CultureInfo.InvariantCulture) + (c == dsTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
+
+                    break;
                 }
             }
 
