@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
@@ -150,10 +151,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 
         internal string StringToUpper(string inputString)
         {
-            if (string.IsNullOrWhiteSpace(inputString))
-            {
-                return inputString;
-            }
+            if (string.IsNullOrWhiteSpace(inputString)) return inputString;
 
             if (char.IsLetter(inputString[0]))
             {
@@ -214,6 +212,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                 }
                 inputString = resultLine;
             }
+
+            // upper case of first letter after jp bracket
+            foreach (Match m in Regex.Matches(inputString, "[「『][a-z]")) inputString = inputString.Remove(m.Index, 2).Insert(m.Index, m.Value.ToUpperInvariant());
 
             return inputString;
         }
