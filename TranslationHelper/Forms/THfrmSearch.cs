@@ -834,25 +834,23 @@ namespace TranslationHelper
             {
                 //было исключение, отсутствует позиция, хотя позицияприсутствовала
                 tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString(), CultureInfo.InvariantCulture);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error:\r\n" + ex + "e.RowIndex=" + e.RowIndex + "\r\noDsResultsCoordinates.Rows count=" + oDsResultsCoordinates.Rows.Count);
-            }
 
-            AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView.RowFilter = string.Empty;
-            AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView.Sort = string.Empty;
-            THFileElementsDataGridView.Refresh();
+                AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView.RowFilter = string.Empty;
+                AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView.Sort = string.Empty;
+                THFileElementsDataGridView.Refresh();
 
-            rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString(), CultureInfo.InvariantCulture);
-            FunctionsTable.ShowSelectedRow(tableindex, searchcolumn, rowindex);
+                rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString(), CultureInfo.InvariantCulture);
+                FunctionsTable.ShowSelectedRow(tableindex, searchcolumn, rowindex);
 
-            if (THFileElementsDataGridView != null && THFileElementsDataGridView.DataSource != null && THFileElementsDataGridView.CurrentCell != null)
-            {
-                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(THFileElementsDataGridView.CurrentCell.Value.ToString())));
-                selectstring.Start();
+                if (THFileElementsDataGridView != null && THFileElementsDataGridView.DataSource != null && THFileElementsDataGridView.CurrentCell != null)
+                {
+                    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                    Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(THFileElementsDataGridView.CurrentCell.Value.ToString())));
+                    selectstring.Start();
+                }
             }
+            catch { } // ignore errors
+
         }
 
         private void SearchFormFindWhatComboBox_SelectedValueChanged(object sender, EventArgs e)
