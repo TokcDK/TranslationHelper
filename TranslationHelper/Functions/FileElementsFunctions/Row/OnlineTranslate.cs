@@ -62,23 +62,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return !Properties.Settings.Default.InterruptTtanslation && base.IsValidRow()
                 && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "")
                 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine());
-
-            //return (b = base.IsValidRow()) || (!b && AnyLineValidForTranslation());
         }
-
-        //private bool AnyLineValidForTranslation()
-        //{
-        //    var t = SelectedRow[1] + "";
-        //    foreach (var line in t.SplitToLines())
-        //    {
-        //        if (line.IsValidForTranslation())
-        //        {
-        //            return true;
-        //        }
-        //    }
-
-        //    return false;
-        //}
 
         /// <summary>
         /// true if all DB was loaded
@@ -88,25 +72,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             FunctionsOnlineCache.Init();
 
-            if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && IsAll && !_allDbLoaded4All)
+            if (_allDbLoaded4All || !IsAll || !Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll) return;
+
+            if (!Properties.Settings.Default.EnableTranslationCache)
             {
-                if (!Properties.Settings.Default.EnableTranslationCache)
-                {
-                    //cache disabled but all db loading enabled. ask for load then. maybe not need
-                    var result = MessageBox.Show(T._("Translation cache disabled but load all DB enabled. While all DB loading cache can be enabled in settings. Load all DB?"), T._("Translation cache disabled"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    if (result != DialogResult.Yes) return;
-                }
-
-                AppData.Main.ProgressInfo(true, "Get all DB");
-
-                var mergingAllDb = new Task(() => FunctionsDBFile.MergeAllDBtoOne());
-                mergingAllDb.ConfigureAwait(true);
-                mergingAllDb.Start();
-                mergingAllDb.Wait();
-                _allDbLoaded4All = true;
-
-                AppData.Main.ProgressInfo(false);
+                //cache disabled but all db loading enabled. ask for load then. maybe not need
+                var result = MessageBox.Show(T._("Translation cache disabled but load all DB enabled. While all DB loading cache can be enabled in settings. Load all DB?"), T._("Translation cache disabled"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result != DialogResult.Yes) return;
             }
+
+            AppData.Main.ProgressInfo(true, "Get all DB");
+
+            var mergingAllDb = new Task(() => FunctionsDBFile.MergeAllDBtoOne());
+            mergingAllDb.ConfigureAwait(true);
+            mergingAllDb.Start();
+            mergingAllDb.Wait();
+            _allDbLoaded4All = true;
+
+            AppData.Main.ProgressInfo(false);
         }
         protected override void ActionsFinalize()
         {
@@ -123,18 +106,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply()
         {
-            //if (SelectedRow[1] == null || (SelectedRow[1] + string.Empty).Length == 0 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine())
             try
             {
-                //if (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "") || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//translate only empty rows or rows where can be something translated
-                {
-                    AppData.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
+                AppData.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
 
-                    SetRowLinesToBuffer();
+                SetRowLinesToBuffer();
 
-                    AppData.Main.ProgressInfo(false);
-                    return true;
-                }
+                AppData.Main.ProgressInfo(false);
+                return true;
             }
             catch
             {
@@ -180,41 +159,29 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 //parse all extracted values from original
                 foreach (var val in values)
                 {
-                    try
-                    {
-                        if (!_buffer[lineCoordinates][lineNum].ContainsKey(val))
-                        {
-                            var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val);
+                    if (_buffer[lineCoordinates][lineNum].ContainsKey(val)) continue;
 
-                            if (!string.IsNullOrEmpty(valcache))
-                            {
-                                _buffer[lineCoordinates][lineNum].Add(val, valcache);
-                            }
-                            else if (val.IsSoundsText())
-                            {
-                                _buffer[lineCoordinates][lineNum].Add(val, val);
-                            }
-                            else
-                            {
-                                _buffer[lineCoordinates][lineNum].Add(val, null);
-                                Size += val.Length;
-                            }
-                        }
-                    }
-                    catch
+                    var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val);
+
+                    if (!string.IsNullOrEmpty(valcache))
                     {
+                        _buffer[lineCoordinates][lineNum].Add(val, valcache);
+                    }
+                    else if (val.IsSoundsText())
+                    {
+                        _buffer[lineCoordinates][lineNum].Add(val, val);
+                    }
+                    else
+                    {
+                        _buffer[lineCoordinates][lineNum].Add(val, null);
+                        Size += val.Length;
                     }
                 }
 
                 if (IsMax())
                 {
-                    try
-                    {
-                        TranslateStrings();
-                    }
-                    catch
-                    {
-                    }
+                    TranslateStrings();
+
                     Size = 0;
                     _buffer.Clear();
 
@@ -229,21 +196,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             //translate if is last row or was added 300+ rows to buffer
-            if (IsLastRow || _buffer.Count >= 300)
-            {
-                try
-                {
-                    TranslateStrings();
-                }
-                catch
-                {
-                }
-                Size = 0;
-                _buffer.Clear();
+            if (!IsLastRow && _buffer.Count < 300) return;
 
-                //write cache periodically
-                AppData.OnlineTranslationCache.Write();
-            }
+            TranslateStrings();
+
+            Size = 0;
+            _buffer.Clear();
+
+            //write cache periodically
+            AppData.OnlineTranslationCache.Write();
         }
 
         readonly GoogleAPIOLD _translator;
@@ -274,10 +235,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     foreach (var linetext in lineNumber.Value) // get all sublines
                     {
-                        if (!orig.Contains(linetext.Key) && linetext.Value == null && linetext.Key.IsValidForTranslation())
-                        {
-                            orig.Add(linetext.Key);
-                        }
+                        if (!orig.Contains(linetext.Key) && linetext.Value == null && linetext.Key.IsValidForTranslation()) orig.Add(linetext.Key);
                     }
                 }
             }
@@ -292,20 +250,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private string[] ApplyProjectPretranslationAction(string[] originalLines)
         {
-            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
-            {
-                AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
-            }
+            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null 
+                && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0) AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
 
             var newOriginalLines = new string[originalLines.Length];
             Array.Copy(originalLines, newOriginalLines, originalLines.Length);
             for (int i = 0; i < newOriginalLines.Length; i++)
             {
                 var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
-                if (!string.IsNullOrEmpty(s))
-                {
-                    newOriginalLines[i] = s;
-                }
+                if (!string.IsNullOrEmpty(s)) newOriginalLines[i] = s;
             }
             return newOriginalLines;
         }
@@ -320,11 +273,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             for (int i = 0; i < translatedLines.Length; i++)
             {
-                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
-                if (!string.IsNullOrEmpty(s) && s != translatedLines[i])
-                {
-                    translatedLines[i] = s;
-                }
+                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);                
+                if (!string.IsNullOrEmpty(s) && s != translatedLines[i]) translatedLines[i] = s;
             }
 
             if (AppData.CurrentProject.HideVARSMatchCollectionsList != null && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
@@ -350,15 +300,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var originalLinesArePreApplied = ApplyProjectPretranslationAction(originals);
                 if (originalLinesArePreApplied.Length > 0)
                 {
-                    //var tr = await translator.TranslateLiteAsync(string.Join("\r\n", originalLinesArePreApplied), Language.Japanese, Language.English).ConfigureAwait(true);
-
-                    //translated = tr.MergedTranslation.Split(new[] { "\r\n" }, StringSplitOptions.None);
-
                     translated = _translator.Translate(originalLinesArePreApplied);
-                    if (translated == null || originals.Length != translated.Length)
-                    {
-                        return new string[1] { "" };
-                    }
+                    if (translated == null || originals.Length != translated.Length) return new string[1] { "" };                    
                     translated = ApplyProjectPosttranslationAction(originals, translated);
                 }
             }
@@ -415,71 +358,62 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private void SetBufferToRows()
         {
             var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(_buffer);
-            foreach (var coordinate in coordinates)//get all coordinate keys
+            
+            //get all coordinate keys
+            foreach (var coordinate in coordinates)
             {
                 var tr = coordinate.Key.Split(',');
                 var tindex = int.Parse(tr[0]);
                 var rindex = int.Parse(tr[1]);
                 var row = AppData.CurrentProject.FilesContent.Tables[tindex].Rows[rindex];
-                //var linenumMax = (Row[0] + "").GetLinesCount();
 
                 var cellTranslationEqualOriginal = Equals(row[1], row[0]);
-                if (Properties.Settings.Default.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal)//skip equal
-                {
-                    continue;
-                }
+
+                //skip equal
+                if (Properties.Settings.Default.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) continue;
 
                 var cellTranslationIsNotEmptyAndNotEqualOriginal = (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !cellTranslationEqualOriginal);
 
-                if (cellTranslationIsNotEmptyAndNotEqualOriginal && !row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))
-                {
-                    continue;
-                }
+                if (cellTranslationIsNotEmptyAndNotEqualOriginal && !row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) continue;
 
-                try
+                var newValue = new List<string>();
+                var lineNum = 0;
+                var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
+                foreach (var line in rowValue.SplitToLines())
                 {
-                    var newValue = new List<string>();
-                    var lineNum = 0;
-                    var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
-                    foreach (var line in rowValue.SplitToLines())
+                    if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0) || line.IsSoundsText())
                     {
-                        if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0) || line.IsSoundsText())
-                        {
-                            newValue.Add(line);
-                        }
-                        else if (_bufferExtracted != null
-                            && _bufferExtracted.Count > 0
-                            && _bufferExtracted.ContainsKey(coordinate.Key)
-                            && _bufferExtracted[coordinate.Key].ContainsKey(lineNum)
-                            && _bufferExtracted[coordinate.Key][lineNum].Count > 0
-                            )
-                        {
-                            newValue.Add(GetMergedValue(coordinate.Key, lineNum, line));
+                        newValue.Add(line);
+                    }
+                    else if (_bufferExtracted != null
+                        && _bufferExtracted.Count > 0
+                        && _bufferExtracted.ContainsKey(coordinate.Key)
+                        && _bufferExtracted[coordinate.Key].ContainsKey(lineNum)
+                        && _bufferExtracted[coordinate.Key][lineNum].Count > 0
+                        )
+                    {
+                        newValue.Add(GetMergedValue(coordinate.Key, lineNum, line));
 
-                        }
-                        else if (coordinate.Value[lineNum].ContainsKey(line))
-                        {
-                            newValue.Add(coordinate.Value[lineNum][line]);
-                        }
-                        else
-                        {
-                            newValue.Add(line);
-                        }
-
-                        lineNum++;
+                    }
+                    else if (coordinate.Value[lineNum].ContainsKey(line))
+                    {
+                        newValue.Add(coordinate.Value[lineNum][line]);
+                    }
+                    else
+                    {
+                        newValue.Add(line);
                     }
 
-                    row.SetValue(1, string.Join(Environment.NewLine, newValue));
-
-                    if (!row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//apply only for finished rows
-                    {
-                        //apply fixes for cell
-                        new AllHardFixes().Selected(row, tindex, rindex);
-                        new FixCells().Selected(row, tindex, rindex);
-                    }
+                    lineNum++;
                 }
-                catch
+
+                row.SetValue(1, string.Join(Environment.NewLine, newValue));
+
+                if (!row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//apply only for finished rows
                 {
+                    //apply fixes for cell
+                    new AllHardFixes().Selected(row, tindex, rindex);
+                    new FixCells().Selected(row, tindex, rindex);
                 }
             }
         }
@@ -497,13 +431,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 enumer.MoveNext();
                 var extractionkeyvalue = enumer.Current;
-                //var pattern = extractionkeyvalue.Key;
                 var replacement = extractionkeyvalue.Value;
-                //var regex = new Regex(pattern);
-                //var match = regex.Match(line);
-                //var replace = regex.Replace(line, replacement);
-
-                //var replacementmatches = Regex.Matches(replacement, @"\$[1,9]");
 
                 if (Regex.IsMatch(replacement.Trim(), @"^\$[1-9]$"))
                 {

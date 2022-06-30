@@ -105,28 +105,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                 catch { }
 
                 //set same value for duplicates from row coordinates list
-                if (weUseDuplicates)
-                {
-                    var inputTableName = inputTable.TableName;
-                    foreach (var storedTableName in AppData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue])
-                    {
-                        var table = AppData.CurrentProject.FilesContent.Tables[storedTableName.Key];
-                        if (table == null) continue;
-
-                        foreach (var storedRowIndex in storedTableName.Value)
-                        {
-                            var row = table.Rows[storedRowIndex];
-
-                            //skip if same table\row as input or row translation is not empty
-                            if ((storedTableName.Key == inputTableName && storedRowIndex == inputRowIndex) || (!inputForceSetValue && (row[1] + "").Length > 0))
-                            {
-                                continue;
-                            }
-
-                            row[1] = inputTranslationValue;
-                        }
-                    }
-                }
+                if (weUseDuplicates) SetSameIfUseDups(inputTable, inputOriginalValue, inputRowIndex, inputForceSetValue, inputTranslationValue);
 
                 //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменяется, т.к. 万 [man] переводится как 10000.
                 if (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese"
@@ -282,6 +261,29 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
             if (string.IsNullOrEmpty(inputTableRowOriginalCellValue) || !AutoSame4SimilarStack.Contains(inputTableRowOriginalCellValue)) return;
 
             AutoSame4SimilarStack.Remove(inputTableRowOriginalCellValue);
+        }
+
+        private static void SetSameIfUseDups(DataTable inputTable, string inputOriginalValue, int inputRowIndex, bool inputForceSetValue, string inputTranslationValue)
+        {
+            var inputTableName = inputTable.TableName;
+            foreach (var storedTableName in AppData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue])
+            {
+                var table = AppData.CurrentProject.FilesContent.Tables[storedTableName.Key];
+                if (table == null) continue;
+
+                foreach (var storedRowIndex in storedTableName.Value)
+                {
+                    var row = table.Rows[storedRowIndex];
+
+                    //skip if same table\row as input or row translation is not empty
+                    if ((storedTableName.Key == inputTableName && storedRowIndex == inputRowIndex) || (!inputForceSetValue && (row[1] + "").Any()))
+                    {
+                        continue;
+                    }
+
+                    row[1] = inputTranslationValue;
+                }
+            }
         }
 
         /// <summary>
