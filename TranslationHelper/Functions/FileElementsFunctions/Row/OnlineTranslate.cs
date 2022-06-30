@@ -13,6 +13,29 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class OnlineTranslate : RowBase
     {
+        public Dictionary<string, OriginalInfo> TranslationDataList = new Dictionary<string, OriginalInfo>();
+        public class OriginalInfo
+        {
+            /// <summary>
+            /// translation for original
+            /// </summary>
+            public string Translation { get; set; }
+
+            /// <summary>
+            /// table number / row data
+            /// </summary>
+            public Dictionary<int, List<RowData>> TableRowNumbers = new Dictionary<int, List<RowData>>();
+        }
+
+        public class RowData
+        {
+            public int RowNumber { get; set; }
+            public int LineNumber { get; set; }
+            public string RegexPattern { get; set; }
+            public string RegexReplacer { get; set; }
+            public int RegexGroupNumber { get; set; }
+        }
+
         /// <summary>
         /// buffer for lines
         /// </summary>
