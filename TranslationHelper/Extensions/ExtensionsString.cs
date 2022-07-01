@@ -6,12 +6,61 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
+using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Extensions
 {
     internal static class ExtensionsString
     {
+        /// <summary>
+        /// extract captured groups from string
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="lineCoordinates"></param>
+        /// <param name="lineNum"></param>
+        /// <returns></returns>
+        internal static Dictionary<string, ExtractRegexGroupInfo> ExtractMulty(this string line)
+        {
+            var log = new FunctionsLogs();
+            var ret = new Dictionary<string, ExtractRegexGroupInfo>();
+            try
+            {
+                foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
+                {
+                    try
+                    {
+                        if (!Regex.IsMatch(line, PatternReplacementPair.Key)) continue;
+                    }
+                    catch (System.ArgumentException ex)
+                    {
+                        log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
+                        AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
+                        continue;
+                    }
+
+                    foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
+                    {
+                        //if replacement contains the group name ($1,$2,$3...$99)
+                        if (!PatternReplacementPair.Value.Contains("$" + g.Name)) continue;
+                        if (!ret.ContainsKey(g.Value)) ret.Add(g.Value, new ExtractRegexGroupInfo(PatternReplacementPair.Key, PatternReplacementPair.Value));
+
+                        var groups = ret[g.Value].Groups;
+                        if (!groups.Contains(g.Index)) groups.Add(g.Index);
+                    }
+
+                    break;
+                }
+            }
+            catch (InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
+            {
+                // retry extraction
+                return line.ExtractMulty();
+            }
+
+            return ret;
+        }
+
         /// <summary>
         /// extract captured groups from string
         /// </summary>
