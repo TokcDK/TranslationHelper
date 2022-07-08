@@ -17,7 +17,9 @@ namespace TranslationHelper.Formats.RPGMMV.Other
 
                 if (block.Trim() == ",") continue;
 
-                Match blockMessageMatch = Regex.Match(block, @"[^,]+,\""([\s\S]+)\""\s*$");
+                Match blockMessageMatch = Regex.Match(block, @"[^,]+,\s*\""([\s\S]+)\""\s*$");
+
+                if (!blockMessageMatch.Success) blockMessageMatch = Regex.Match(block, @"[^,]+,\s*([\s\S]+)\s*$"); // no quotes
 
                 if (!blockMessageMatch.Success) continue;
 
@@ -28,7 +30,9 @@ namespace TranslationHelper.Formats.RPGMMV.Other
                 {
                     blocks[i] = block
                         .Remove(stringGroupMatch.Index, stringGroupMatch.Length)
-                        .Insert(stringGroupMatch.Index, messageString.Replace("\r\n", "\n"));
+                        .Insert(stringGroupMatch.Index, messageString
+                        .Replace("\r\n", "\n")
+                        );
                 }
             }
 
