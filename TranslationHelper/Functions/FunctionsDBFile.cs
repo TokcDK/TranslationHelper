@@ -116,9 +116,8 @@ namespace TranslationHelper.Main.Functions
                     {
                         dataSet.ReadXml(s);
                     }
-                    catch
-                    {
-                    }
+                    catch (InvalidDataException) { }
+                    catch (IOException) { }
                 }
                 else
                 {

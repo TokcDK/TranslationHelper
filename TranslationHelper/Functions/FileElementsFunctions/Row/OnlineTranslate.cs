@@ -147,14 +147,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 //check line value in cache
                 var linecache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
-                if (!string.IsNullOrEmpty(linecache))
+
+                var values = line.ExtractMulty(lineCoordinates, lineNum, _bufferExtracted);
+
+                //moved check cache here because when cache is enabled and value can be extracted then need to parse extracted instead of original vale
+                if (!string.IsNullOrEmpty(linecache) && values.Length == 0)
                 {
                     _buffer[lineCoordinates][lineNum].Add(line, linecache);
                     lineNum++;
                     continue;
                 }
-
-                var values = line.ExtractMulty(lineCoordinates, lineNum, _bufferExtracted);
 
                 //parse all extracted values from original
                 foreach (var val in values)
@@ -250,7 +252,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private string[] ApplyProjectPretranslationAction(string[] originalLines)
         {
-            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null 
+            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null
                 && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0) AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
 
             var newOriginalLines = new string[originalLines.Length];
@@ -273,7 +275,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             for (int i = 0; i < translatedLines.Length; i++)
             {
-                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);                
+                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
                 if (!string.IsNullOrEmpty(s) && s != translatedLines[i]) translatedLines[i] = s;
             }
 
@@ -301,7 +303,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (originalLinesArePreApplied.Length > 0)
                 {
                     translated = _translator.Translate(originalLinesArePreApplied);
-                    if (translated == null || originals.Length != translated.Length) return new string[1] { "" };                    
+                    if (translated == null || originals.Length != translated.Length) return new string[1] { "" };
                     translated = ApplyProjectPosttranslationAction(originals, translated);
                 }
             }
@@ -358,7 +360,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private void SetBufferToRows()
         {
             var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(_buffer);
-            
+
             //get all coordinate keys
             foreach (var coordinate in coordinates)
             {
