@@ -157,28 +157,28 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     continue;
                 }
 
-                var values = line.ExtractMulty(lineCoordinates, lineNum, _bufferExtracted);
+                var values = line.ExtractMulty();
 
                 //parse all extracted values from original
                 foreach (var val in values)
                 {
-                    if (_buffer[lineCoordinates][lineNum].ContainsKey(val)) continue;
+                    //if (_buffer[lineCoordinates][lineNum].ContainsKey(val)) continue;
 
-                    var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val);
+                    //var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val);
 
-                    if (!string.IsNullOrEmpty(valcache))
-                    {
-                        _buffer[lineCoordinates][lineNum].Add(val, valcache);
-                    }
-                    else if (val.IsSoundsText())
-                    {
-                        _buffer[lineCoordinates][lineNum].Add(val, val);
-                    }
-                    else
-                    {
-                        _buffer[lineCoordinates][lineNum].Add(val, null);
-                        Size += val.Length;
-                    }
+                    //if (!string.IsNullOrEmpty(valcache))
+                    //{
+                    //    _buffer[lineCoordinates][lineNum].Add(val, valcache);
+                    //}
+                    //else if (val.IsSoundsText())
+                    //{
+                    //    _buffer[lineCoordinates][lineNum].Add(val, val);
+                    //}
+                    //else
+                    //{
+                    //    _buffer[lineCoordinates][lineNum].Add(val, null);
+                    //    Size += val.Length;
+                    //}
                 }
 
                 if (IsMax())
