@@ -167,7 +167,9 @@ namespace TranslationHelper.Projects.RPGMMV
                     }
                     catch { }
                 }
-                catch { }
+                catch 
+                { 
+                }
             }
 
             return isAnyFileCompleted;
@@ -236,7 +238,9 @@ namespace TranslationHelper.Projects.RPGMMV
                     return true;
                 }
             }
-            catch { }
+            catch 
+            { 
+            }
 
             return false;
         }
@@ -260,19 +264,14 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <param name="skipjsfilePath"></param>
         private static void SetSkipJSList(HashSet<string> SkipJSList, string skipjsfilePath)
         {
-            if (!File.Exists(skipjsfilePath))
-            {
-                return;
-            }
+            if (!File.Exists(skipjsfilePath)) return;
 
             var skipjs = File.ReadAllLines(skipjsfilePath);
             foreach (var line in skipjs)
             {
                 var jsfile = line.Trim();
-                if (jsfile.Length == 0 || jsfile[0] == ';' || SkipJSList.Contains(jsfile))
-                {
-                    continue;
-                }
+                if (jsfile.Length == 0 || jsfile[0] == ';' || SkipJSList.Contains(jsfile)) continue;
+
                 SkipJSList.Add(jsfile);
             }
         }

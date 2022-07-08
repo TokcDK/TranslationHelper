@@ -145,10 +145,7 @@ namespace TranslationHelper.Main.Functions
             IDBSave Format = new XML();
             foreach (var f in GetListOfSubClasses.Inherited.GetListOfInterfaceImplimentations<IDBSave>())
             {
-                if (f.Description == Properties.Settings.Default.DBCompressionExt)
-                {
-                    return f;
-                }
+                if (f.Description == Properties.Settings.Default.DBCompressionExt) return f;
             }
 
             return Format;
@@ -157,10 +154,7 @@ namespace TranslationHelper.Main.Functions
         internal static string GetDBCompressionExt()
         {
             //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"));
-            if (TranslationHelper.Properties.Settings.Default.DBCompression)
-            {
-                return "." + FunctionsInterfaces.GetCurrentDBFormat().Ext;
-            }
+            if (TranslationHelper.Properties.Settings.Default.DBCompression) return "." + FunctionsInterfaces.GetCurrentDBFormat().Ext;
             //MessageBox.Show("Default .xml");
             return ".xml";
         }
@@ -168,17 +162,14 @@ namespace TranslationHelper.Main.Functions
         internal static string GetProjectDBFolder()
         {
             string ret = string.Empty;
-            if (AppData.CurrentProject != null)
-            {
-                ret = AppData.CurrentProject.ProjectFolderName;
-            }
+            if (AppData.CurrentProject != null) ret = AppData.CurrentProject.ProjectFolderName;
             //else if (ProjectData.CurrentProject.Name().Contains("RPG Maker MV"))
             //{
             //    ret = "RPGMakerMV";
             //}
             //else if (ProjectData.CurrentProject.Name().Contains("RPGMaker") || ProjectData.CurrentProject.Name().Contains("RPG Maker"))
             //{
-            //    ret = "RPGMakerTransPatch";
+            //    ret = "RMakerTranPGsPatch";
             //}
 
             ret = Path.Combine(Application.StartupPath, "DB", ret.Length > 0 ? ret : "Other");
@@ -261,51 +252,39 @@ namespace TranslationHelper.Main.Functions
                 reader.MoveToContent();
                 while (reader.Read())
                 {
-                    if (reader.NodeType == XmlNodeType.Element)
-                    {
-                        if (WaitingTranslation)
-                        {
-                            if (reader.Name == THSettings.TranslationColumnName())
-                            {
-                                if (XNode.ReadFrom(reader) is XElement el)
-                                {
-                                    db.Add(original, el.Value);
-                                    WaitingTranslation = false;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (reader.Name.Length != OriginalLength)
-                                continue;
+                    if (reader.NodeType != XmlNodeType.Element) continue;
 
-                            if (reader.Name == THSettings.OriginalColumnName())
+                    if (WaitingTranslation)
+                    {
+                        if (reader.Name != THSettings.TranslationColumnName()) continue;
+                        if (!(XNode.ReadFrom(reader) is XElement el)) continue;
+
+                        db.Add(original, el.Value);
+                        WaitingTranslation = false;
+                    }
+                    else
+                    {
+                        if (reader.Name.Length != OriginalLength) continue;
+                        if (reader.Name != THSettings.OriginalColumnName()) continue;
+
+                        try
+                        {
+                            if (!(XNode.ReadFrom(reader) is XElement el)) continue;
+
+                            if (!db.ContainsKey(el.Value))
                             {
-                                try
-                                {
-                                    if (XNode.ReadFrom(reader) is XElement el)
-                                    {
-                                        if (!db.ContainsKey(el.Value))
-                                        {
-                                            original = el.Value;
-                                            WaitingTranslation = true;
-                                        }
-                                        else
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                }
-                                catch
-                                {
-                                    continue;
-                                }
+                                original = el.Value;
+                                WaitingTranslation = true;
                             }
+                            else continue;
+                        }
+                        catch 
+                        { 
+                            continue; 
                         }
                     }
                 }
             }
-
 
             return db;
         }
@@ -533,10 +512,7 @@ namespace TranslationHelper.Main.Functions
                 dataSet.Tables["DB"].Columns.Add(THSettings.OriginalColumnName());
                 dataSet.Tables["DB"].Columns.Add(THSettings.TranslationColumnName());
 
-                foreach (var pair in dictionary)
-                {
-                    dataSet.Tables["DB"].Rows.Add(pair.Key, pair.Value);
-                }
+                foreach (var pair in dictionary) dataSet.Tables["DB"].Rows.Add(pair.Key, pair.Value);
 
                 return dataSet;
             }
@@ -574,10 +550,7 @@ namespace TranslationHelper.Main.Functions
 
         internal static void MergeAllDBtoOne()
         {
-            if (AppData.AllDBmerged == null)
-            {
-                AppData.AllDBmerged = new Dictionary<string, string>();
-            }
+            if (AppData.AllDBmerged == null) AppData.AllDBmerged = new Dictionary<string, string>();
 
             var newestFilesList = GetNewestFIlesList(THSettings.DBDirPath());
 
@@ -640,10 +613,8 @@ namespace TranslationHelper.Main.Functions
         private static string GetBaseDBFileName(string dbFilePath)
         {
             string baseName = Path.GetFileNameWithoutExtension(dbFilePath);
-            if (Regex.IsMatch(baseName, _baseNamePattern))
-            {
-                baseName = Regex.Replace(baseName, _baseNamePattern, "$1");
-            }
+            if (Regex.IsMatch(baseName, _baseNamePattern)) baseName = Regex.Replace(baseName, _baseNamePattern, "$1");
+
             return baseName;
         }
 
@@ -658,11 +629,10 @@ namespace TranslationHelper.Main.Functions
             foreach (var format in FunctionsInterfaces.GetDBSaveFormats())
             {
                 var PathForFormat = Path.Combine(dir, name + "." + format.Ext);
-                if (File.Exists(PathForFormat))
-                {
-                    dbDirPath = PathForFormat;
-                    return;
-                }
+                if (!File.Exists(PathForFormat)) continue;
+
+                dbDirPath = PathForFormat;
+                return;
             }
         }
     }
