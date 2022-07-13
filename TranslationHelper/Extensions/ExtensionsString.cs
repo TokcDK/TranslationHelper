@@ -53,7 +53,7 @@ namespace TranslationHelper.Extensions
                     catch (System.ArgumentException ex)
                     {
                         log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
-                        AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
+                        AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName);
                         continue;
                     }
 

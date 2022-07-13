@@ -552,7 +552,7 @@ namespace TranslationHelper.Main.Functions
         {
             if (AppData.AllDBmerged == null) AppData.AllDBmerged = new Dictionary<string, string>();
 
-            var newestFilesList = GetNewestFIlesList(THSettings.DBDirPath());
+            var newestFilesList = GetNewestFIlesList(THSettings.DBDirPath);
 
             object _dbDataSetToDictionaryAddLocker = new object();
             Parallel.ForEach(newestFilesList, dbFile =>

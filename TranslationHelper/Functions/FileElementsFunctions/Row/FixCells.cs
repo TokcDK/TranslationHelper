@@ -60,7 +60,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         catch (System.ArgumentException ex)
                         {
                            _log.LogToFile("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
-                            AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
+                            AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName);
                             continue;
                         }
 

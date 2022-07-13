@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.RPGMMV
     {
         public static Dictionary<int, string> GetSkipCodes()
         {
-            var codesFile = THSettings.RPGMakerMVSkipCodesFilePath();
+            var codesFile = THSettings.RPGMakerMVSkipCodesFilePath;
             if (!File.Exists(codesFile)) return new Dictionary<int, string>();
 
             var codes = new Dictionary<int, string>();

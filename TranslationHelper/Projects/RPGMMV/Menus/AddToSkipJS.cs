@@ -27,17 +27,17 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 
             //read only js names
             var SkipJSList = new HashSet<string>();
-            SetSkipJSList(SkipJSList, THSettings.RPGMakerMVSkipjsRulesFilePath());
+            SetSkipJSList(SkipJSList, THSettings.RPGMakerMVSkipjsRulesFilePath);
 
             //read all list
             List<string> SkipJSOveralList;
-            if (SkipJSList.Count == 0 || !File.Exists(THSettings.RPGMakerMVSkipjsRulesFilePath()))
+            if (SkipJSList.Count == 0 || !File.Exists(THSettings.RPGMakerMVSkipjsRulesFilePath))
             {
                 SkipJSOveralList = new List<string>();
             }
             else
             {
-                SkipJSOveralList = File.ReadAllLines(THSettings.RPGMakerMVSkipjsRulesFilePath()).ToList();
+                SkipJSOveralList = File.ReadAllLines(THSettings.RPGMakerMVSkipjsRulesFilePath).ToList();
             }
 
             bool changed = false;
@@ -62,7 +62,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
             }
 
             //write list
-            File.WriteAllLines(THSettings.RPGMakerMVSkipjsRulesFilePath(), SkipJSOveralList);
+            File.WriteAllLines(THSettings.RPGMakerMVSkipjsRulesFilePath, SkipJSOveralList);
         }
 
         /// <summary>

@@ -2905,7 +2905,7 @@ namespace TranslationHelper
                         }
                     }
 
-                    FunctionsDBFile.WriteDictToXMLDB(dict, Path.Combine(THSettings.DBDirPath(), "XUA.cmx"));
+                    FunctionsDBFile.WriteDictToXMLDB(dict, Path.Combine(THSettings.DBDirPath, "XUA.cmx"));
                 }
                 catch
                 {

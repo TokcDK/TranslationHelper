@@ -251,7 +251,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <param name="SkipJSList"></param>
         private void SetSkipJSLists(HashSet<string> SkipJSList)
         {
-            foreach (var skipjsfilePath in THSettings.RPGMakerMVSkipjsRulesFilesList())
+            foreach (var skipjsfilePath in THSettings.RPGMakerMVSkipjsRulesFilesList)
             {
                 SetSkipJSList(SkipJSList, skipjsfilePath);
             }

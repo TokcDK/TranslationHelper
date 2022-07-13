@@ -362,7 +362,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 else if (arc_conv && !File.Exists(arcConverterWorkDirPath))
                 {
                     THSettings.ArcConvExePath().TryCopyTo(arcConverterWorkDirPath);
-                    Path.Combine(THSettings.ArcConvDirPath(), Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat").TryCopyTo(arcConverterDatWorkDirPath);
+                    Path.Combine(THSettings.ArcConvDirPath, Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat").TryCopyTo(arcConverterDatWorkDirPath);
                 }
 
                 string foundTraslationPatchName = Directory.EnumerateFiles(AppData.CurrentProject.SelectedDir, "patch*.xp3.translation").FirstOrDefault();
@@ -398,16 +398,16 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 {
                     args = " --pack xp3 \"" + PatchDir.Name + "\" \"" + PatchName + ".xp3" + "\"";
                     copyutil =
-                        "if not exist \"" + THSettings.ArcConvExeName() + "\" copy \"" + THSettings.ArcConvExePath() + "\" \"" + AppData.CurrentProject.ProjectWorkDir + "\\\""
+                        "if not exist \"" + THSettings.ArcConvExeName+ "\" copy \"" + THSettings.ArcConvExePath() + "\" \"" + AppData.CurrentProject.ProjectWorkDir + "\\\""
                         + "\r\n"
                         + "if not exist arc_conv.dat copy \"" + Path.GetDirectoryName(THSettings.ArcConvExePath()) + "\\arc_conv.dat\" \"" + AppData.CurrentProject.ProjectWorkDir + "\\\""
                         ;
                     delutil =
-                        "if exist \"" + THSettings.ArcConvExeName() + "\" del \"" + THSettings.ArcConvExeName() + "\""
+                        "if exist \"" + THSettings.ArcConvExeName+ "\" del \"" + THSettings.ArcConvExeName+ "\""
                         + "\r\n"
                         + "if exist \"" + Path.GetDirectoryName(THSettings.ArcConvExePath()) + "\\arc_conv.dat\" del \"" + Path.GetDirectoryName(THSettings.ArcConvExePath()) + "\\arc_conv.dat\""
                         ;
-                    runpack = THSettings.ArcConvExeName() + args;
+                    runpack = THSettings.ArcConvExeName+ args;
                 }
 
                 var cmdContent =
