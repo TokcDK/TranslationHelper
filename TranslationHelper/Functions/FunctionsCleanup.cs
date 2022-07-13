@@ -4,7 +4,7 @@ using TranslationHelper.Functions;
 
 namespace TranslationHelper.Data
 {
-    class CleanupData
+    class FunctionsCleanup
     {
         internal static void THCleanupThings()
         {

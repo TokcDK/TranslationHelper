@@ -48,7 +48,7 @@ namespace TranslationHelper.Functions
                 return;
             }
 
-            CleanupData.THCleanupThings();
+            FunctionsCleanup.THCleanupThings();
 
             AppData.SelectedFilePath = filePath;
 
