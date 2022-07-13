@@ -25,7 +25,7 @@ namespace TranslationHelper.Main.Functions
 
         public static void WriteTranslationCacheIfValid(DataSet translationCacheDataSet, string translationCachePath)
         {
-            if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed && translationCacheDataSet.Tables[0].Rows.Count > 0)
+            if (AppSettings.EnableTranslationCache && !AppSettings.IsTranslationHelperWasClosed && translationCacheDataSet.Tables[0].Rows.Count > 0)
             {
                 WriteDBFile(translationCacheDataSet, translationCachePath);
                 //THTranslationCache.Reset();
@@ -145,7 +145,7 @@ namespace TranslationHelper.Main.Functions
             IDBSave Format = new XML();
             foreach (var f in GetListOfSubClasses.Inherited.GetListOfInterfaceImplimentations<IDBSave>())
             {
-                if (f.Description == Properties.Settings.Default.DBCompressionExt) return f;
+                if (f.Description == AppSettings.DBCompressionExt) return f;
             }
 
             return Format;
@@ -154,7 +154,7 @@ namespace TranslationHelper.Main.Functions
         internal static string GetDBCompressionExt()
         {
             //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"));
-            if (Properties.Settings.Default.DBCompression) return "." + FunctionsInterfaces.GetCurrentDBFormat().Ext;
+            if (AppSettings.DBCompression) return "." + FunctionsInterfaces.GetCurrentDBFormat().Ext;
             //MessageBox.Show("Default .xml");
             return ".xml";
         }

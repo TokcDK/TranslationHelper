@@ -82,7 +82,7 @@ namespace TranslationHelper.Functions
                 //перебор строк таблицы
                 for (int r = 0; r < RowsCountInTable; r++)
                 {
-                    if (Properties.Settings.Default.IsTranslationHelperWasClosed)
+                    if (AppSettings.IsTranslationHelperWasClosed)
                     {
                         FunctionsOnlineCache.Unload();
                         Thread.CurrentThread.Abort();
@@ -297,7 +297,7 @@ namespace TranslationHelper.Functions
             if (Translation.Length == 0 || Original.Length == 0 || Extracted.Length == 0 || Equals(Original, Extracted))
             {
                 return Translation;
-                //return Properties.Settings.Default.ApplyFixesOnTranslation ?
+                //return AppSettings.ApplyFixesOnTranslation ?
                 //    FunctionsStringFixes.ApplyHardFixes(Extracted, Translation.THFixCells()) : Translation;
             }
             //переделано через удаление и вставку строки, чтобы точно вставлялась нужная
@@ -314,14 +314,14 @@ namespace TranslationHelper.Functions
                 //return Original
                 //    .Remove(IndexOfTheString, Extracted.Length)
                 //    .Insert(IndexOfTheString,
-                //    Properties.Settings.Default.ApplyFixesOnTranslation ?
+                //    AppSettings.ApplyFixesOnTranslation ?
                 //    FunctionsStringFixes.ApplyHardFixes(Extracted, Translation.THFixCells()) : Translation
                 //    );
             }
             else
             {
                 return Translation;
-                //return Properties.Settings.Default.ApplyFixesOnTranslation ?
+                //return AppSettings.ApplyFixesOnTranslation ?
                 //    FunctionsStringFixes.ApplyHardFixes(Original, Translation.THFixCells()) : Translation;
             }
         }
@@ -337,7 +337,7 @@ namespace TranslationHelper.Functions
         {
             try
             {
-                if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll && Method == "a")
+                if (AppSettings.UseAllDBFilesForOnlineTranslationForAll && Method == "a")
                 {
                     AppData.Main.ProgressInfo(true, "Get all databases");
                     FunctionsDBFile.MergeAllDBtoOne();
@@ -383,7 +383,7 @@ namespace TranslationHelper.Functions
                         //for (int r = 0; r < rcount; r++)
                         for (int r = 0; r < RowsCountInTable; r++)
                         {
-                            if (Properties.Settings.Default.IsTranslationHelperWasClosed)
+                            if (AppSettings.IsTranslationHelperWasClosed)
                             {
                                 //Thread.CurrentThread.Abort();
                                 return;
@@ -624,7 +624,7 @@ namespace TranslationHelper.Functions
                             if (TranslatedLinesIndex < TranslatedLines.Length && InfoRow.GetOriginal != InfoRow.GetCachedTranslation && !InfoRow.GetCachedTranslation.HaveMostOfRomajiOtherChars())
                             {
                                 ResultValue.Append(
-                                Properties.Settings.Default.ApplyFixesOnTranslation ?
+                                AppSettings.ApplyFixesOnTranslation ?
                                     FunctionsStringFixes.ApplyHardFixes(TranslatedLines[TranslatedLinesIndex], InfoRow.GetCachedTranslation.THFixCells())
                                     : InfoRow.GetCachedTranslation
                                 );
@@ -753,7 +753,7 @@ namespace TranslationHelper.Functions
                     try
                     {
                         //apply fixes for translation
-                        if (Properties.Settings.Default.ApplyFixesOnTranslation)
+                        if (AppSettings.ApplyFixesOnTranslation)
                         {
                             s = s.THFixCells();//cell fixes
                             s = FunctionsStringFixes.ApplyHardFixes(Row[0] as string, s);//hardcoded fixes

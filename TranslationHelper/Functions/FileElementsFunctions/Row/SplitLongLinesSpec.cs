@@ -24,15 +24,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             string transCellValue = SelectedRow[ColumnIndexTranslation] + string.Empty;
             if (!string.IsNullOrWhiteSpace(transCellValue)
                 && transCellValue != origCellValue
-                && FunctionsString.GetLongestLineLength(transCellValue) > Properties.Settings.Default.THOptionLineCharLimit
+                && FunctionsString.GetLongestLineLength(transCellValue) > AppSettings.THOptionLineCharLimit
                 /*&& !FunctionsString.IsStringContainsSpecialSymbols(transCellValue)*/
                 && !AppData.CurrentProject.LineSplitProjectSpecificSkipForLine(origCellValue, transCellValue, SelectedTableIndex, SelectedRowIndex))
             {
                 SelectedRow[ColumnIndexTranslation] = SplitNew(transCellValue);
 
 
-                //SelectedRow[ColumnIndexTranslation] = transCellValue.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit);
-                //row[1] = transCellValue.Wrap(Properties.Settings.Default.THOptionLineCharLimit);
+                //SelectedRow[ColumnIndexTranslation] = transCellValue.SplitMultiLineIfBeyondOfLimit(AppSettings.THOptionLineCharLimit);
+                //row[1] = transCellValue.Wrap(AppSettings.THOptionLineCharLimit);
                 return true;
             }
             return false;
@@ -49,7 +49,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         private string SplitNew(string lines)
         {
-            var limit = Properties.Settings.Default.THOptionLineCharLimit;
+            var limit = AppSettings.THOptionLineCharLimit;
             var newlines = new List<string>();
             foreach(var line in lines.SplitToLines())
             {

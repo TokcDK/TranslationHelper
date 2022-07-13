@@ -652,7 +652,7 @@ namespace TranslationHelper.Formats
                         {
                             lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                             {
-                                AppData.CurrentProject.TablesLinesDict.TryAdd(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                AppData.CurrentProject.TablesLinesDict.TryAdd(Original, Translation/*.SplitMultiLineIfBeyondOfLimit(AppSettings.THOptionLineCharLimit)*/);
                             }
                         }
                         catch (ArgumentException) { }
@@ -695,7 +695,7 @@ namespace TranslationHelper.Formats
                                 {
                                     lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                                     {
-                                        AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                        AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(AppSettings.THOptionLineCharLimit)*/);
                                     }
                                 }
                                 catch (ArgumentException) { }
@@ -711,7 +711,7 @@ namespace TranslationHelper.Formats
                                     {
                                         lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                                         {
-                                            AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                            AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[lineNumber], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(AppSettings.THOptionLineCharLimit)*/);
                                         }
                                     }
                                     catch (ArgumentException) { }
@@ -736,7 +736,7 @@ namespace TranslationHelper.Formats
                                                 lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                                                 {
                                                     //добавить оригинал с переводом содержащим больше строк, чем в оригинале
-                                                    AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[OriginalLinesCount - 1], result/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                                    AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[OriginalLinesCount - 1], result/*.SplitMultiLineIfBeyondOfLimit(AppSettings.THOptionLineCharLimit)*/);
                                                 }
                                             }
                                             catch (ArgumentException) { }
@@ -751,7 +751,7 @@ namespace TranslationHelper.Formats
                                             {
                                                 lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
                                                 {
-                                                    AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(Properties.Settings.Default.THOptionLineCharLimit)*/);
+                                                    AppData.CurrentProject.TablesLinesDict.TryAdd(OriginalLines[OriginalLinesCount - 1], TranslationLines[lineNumber]/*.SplitMultiLineIfBeyondOfLimit(AppSettings.THOptionLineCharLimit)*/);
                                                 }
                                             }
                                             catch (ArgumentException) { }

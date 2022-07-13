@@ -693,7 +693,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         protected virtual bool IsValidRow()
         {
-            return Properties.Settings.Default.IgnoreOrigEqualTransLines || !Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation]);
+            return AppSettings.IgnoreOrigEqualTransLines || !Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation]);
         }
 
         protected abstract bool Apply();

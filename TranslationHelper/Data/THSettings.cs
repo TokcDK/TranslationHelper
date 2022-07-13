@@ -22,7 +22,7 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
 
-        internal static string ApplicationLogName => Settings.Default.ApplicationProductName + ".log";
+        internal static string ApplicationLogName => AppSettings.ApplicationProductName + ".log";
 
 
         internal static string DBDirName => "DB";
@@ -182,10 +182,10 @@ namespace TranslationHelper.Data
         internal static string NScriptDirName => "nscript";
 
 
-        internal static bool SourceLanguageIsJapanese => Settings.Default.OnlineTranslationSourceLanguage.EndsWith("ja");
+        internal static bool SourceLanguageIsJapanese => AppSettings.OnlineTranslationSourceLanguage.EndsWith("ja");
 
 
-        internal static string SourceLanguage => Settings.Default.OnlineTranslationSourceLanguage;
+        internal static string SourceLanguage => AppSettings.OnlineTranslationSourceLanguage;
 
 
         internal static string SourceLanguageName => SourceLanguage.Split(' ')[0];
@@ -194,7 +194,7 @@ namespace TranslationHelper.Data
         internal static string SourceLanguageCode => SourceLanguage.Split(' ')[1];
 
 
-        internal static string TargetLanguage => Settings.Default.OnlineTranslationTargetLanguage;
+        internal static string TargetLanguage => AppSettings.OnlineTranslationTargetLanguage;
 
 
         internal static string TargetLanguageName => TargetLanguage.Split(' ')[0];
@@ -309,7 +309,7 @@ namespace TranslationHelper.Data
         internal static string RubyPath => Path.Combine(ResDirPath, "ruby", "bin", "ruby.exe");
 
         
-        internal static string THLogPath => Path.Combine(ApplicationStartupPath, Settings.Default.ApplicationProductName + ".log");
+        internal static string THLogPath => Path.Combine(ApplicationStartupPath, AppSettings.ApplicationProductName + ".log");
 
 
         internal static string CellFixesRegexRulesFileName => "TranslationHelperCellFixesRegexRules.txt";

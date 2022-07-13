@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => Properties.Settings.Default.IgnoreOrigEqualTransLines;
-            set => Properties.Settings.Default.IgnoreOrigEqualTransLines = value;
+            get => AppSettings.IgnoreOrigEqualTransLines;
+            set => AppSettings.IgnoreOrigEqualTransLines = value;
         }
 
         internal override void Set(bool SetObject = false)

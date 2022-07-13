@@ -290,7 +290,7 @@ namespace TranslationHelper
         private void THSettingsWebTransLinkTextBox_Validated(object sender, EventArgs e)
         {
             SetValue((sender as TextBox).Name);
-            //Properties.Settings.Default.WebTranslationLink = THSettingsWebTranslationLinkTextBox.Text;
+            //AppSettings.WebTranslationLink = THSettingsWebTranslationLinkTextBox.Text;
             //WebTransLinkINI = THSettingsWebTranslationLinkTextBox.Text;
         }
 
@@ -317,7 +317,7 @@ namespace TranslationHelper
         private void THOptionEnableTranslationCacheCheckBox_Click(object sender, EventArgs e)
         {
             SetValue((sender as CheckBox).Name);
-            //Properties.Settings.Default.IsTranslationCacheEnabled = THOptionEnableTranslationCacheCheckBox.Checked;
+            //AppSettings.IsTranslationCacheEnabled = THOptionEnableTranslationCacheCheckBox.Checked;
             //EnableTranslationCacheINI = THOptionEnableTranslationCacheCheckBox.Checked;
         }
 

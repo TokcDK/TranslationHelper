@@ -19,7 +19,7 @@ namespace TranslationHelper.Projects
         protected ProjectBase()
         {
             // set value of the parameter for the project work session
-            DontLoadDuplicates = Properties.Settings.Default.DontLoadDuplicates;
+            DontLoadDuplicates = AppSettings.DontLoadDuplicates;
 
             if (AppData.CurrentProject == null) return;
 

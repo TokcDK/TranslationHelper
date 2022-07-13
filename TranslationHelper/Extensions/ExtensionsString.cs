@@ -251,17 +251,17 @@ namespace TranslationHelper.Extensions
             {
                 return Line;
             }
-            //return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+            //return string.Join(AppSettings.ProjectNewLineSymbol
             //    , SplitLineIfBeyondOfLimit(Trigger.Length > 0 ? newLine : Line, Limit)
             //    ) + Trigger;
-            //newLine = string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+            //newLine = string.Join(AppSettings.ProjectNewLineSymbol
             //    , SplitLineIfBeyondOfLimit(newLine, Limit)
             //    ) + Trigger;
-            //return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+            //return string.Join(AppSettings.ProjectNewLineSymbol
             //    , newLine.SplitLineIfBeyondOfLimit(Limit)
             //    ) + Trigger;
             //var newLineBefore = newLine;
-            return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+            return string.Join(AppSettings.ProjectNewLineSymbol
                 , newLine.Wrap(Limit)
                 ) + Trigger;
 

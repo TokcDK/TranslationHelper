@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions
 {
@@ -32,7 +33,7 @@ namespace TranslationHelper.Functions
             {
                 THsbLog = new StringBuilder();
             }
-            if (Properties.Settings.Default.THdebug)
+            if (AppSettings.THdebug)
             {
                 if (WriteNow)
                 {
@@ -43,7 +44,7 @@ namespace TranslationHelper.Functions
                             + DateTime.Now + " >>" + TextToLog
                             + Environment.NewLine
                             + (DebugData.Count > 0 ? "Debug data:" + Environment.NewLine + string.Join(Environment.NewLine, DebugData) : "")
-                            , Properties.Settings.Default.DebugMode);
+                            , AppSettings.DebugMode);
                     }
                     else
                     {
@@ -54,7 +55,7 @@ namespace TranslationHelper.Functions
                             + TextToLog
                             + Environment.NewLine
                             + (DebugData.Count > 0 ? "Debug data:" + Environment.NewLine + string.Join(Environment.NewLine, DebugData) : "")
-                            , Properties.Settings.Default.DebugMode);
+                            , AppSettings.DebugMode);
                         //File.Move(Application.StartupPath + "\\TranslationHelper.log", Application.StartupPath + "\\TranslationHelper" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") + ".log");
                         THsbLog.Clear();
                     }

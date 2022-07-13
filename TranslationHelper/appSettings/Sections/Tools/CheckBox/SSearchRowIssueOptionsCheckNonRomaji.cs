@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => Properties.Settings.Default.SearchRowIssueOptionsCheckNonRomaji;
-            set => Properties.Settings.Default.SearchRowIssueOptionsCheckNonRomaji = value;
+            get => AppSettings.SearchRowIssueOptionsCheckNonRomaji;
+            set => AppSettings.SearchRowIssueOptionsCheckNonRomaji = value;
         }
 
         internal override void Set(bool SetObject = false)

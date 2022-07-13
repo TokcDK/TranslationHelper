@@ -38,8 +38,8 @@ namespace TranslationHelper
 
         internal static string THTranslationCachePath
         {
-            get => Properties.Settings.Default.THTranslationCachePath;
-            set => Properties.Settings.Default.THTranslationCachePath = value;
+            get => AppSettings.THTranslationCachePath;
+            set => AppSettings.THTranslationCachePath = value;
         }
 
         public FormMain()
@@ -50,8 +50,8 @@ namespace TranslationHelper
             AppData.Init(this);
 
             AppSettings.ApplicationStartupPath = Application.StartupPath;
-            Properties.Settings.Default.ApplicationProductName = Application.ProductName;
-            Properties.Settings.Default.NewLine = Environment.NewLine;
+            AppSettings.ApplicationProductName = Application.ProductName;
+            AppSettings.NewLine = Environment.NewLine;
 
             BindShortCuts();
 
@@ -399,9 +399,9 @@ namespace TranslationHelper
 
                 if (THFilesList.GetSelectedIndex() > -1)
                 {
-                    Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
+                    AppSettings.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
 
-                    BindToDataTableGridView(AppData.CurrentProject.FilesContent.Tables[Properties.Settings.Default.THFilesListSelectedIndex]);
+                    BindToDataTableGridView(AppData.CurrentProject.FilesContent.Tables[AppSettings.THFilesListSelectedIndex]);
                 }
 
                 ShowNonEmptyRowsCount();//Show how many rows have translation
@@ -574,16 +574,16 @@ namespace TranslationHelper
             {
                 if (THFileElementsDataGridView.CurrentCell == null) return;
 
-                var tableIndex = Properties.Settings.Default.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
+                var tableIndex = AppSettings.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
                 if (tableIndex == -1) return;
 
-                var columnIndex = Properties.Settings.Default.DGVSelectedColumnIndex = THFileElementsDataGridView.CurrentCell.ColumnIndex;
+                var columnIndex = AppSettings.DGVSelectedColumnIndex = THFileElementsDataGridView.CurrentCell.ColumnIndex;
                 if (columnIndex == -1) return;
 
-                var rowIndex = Properties.Settings.Default.DGVSelectedRowIndex = THFileElementsDataGridView.CurrentCell.RowIndex;
+                var rowIndex = AppSettings.DGVSelectedRowIndex = THFileElementsDataGridView.CurrentCell.RowIndex;
                 if (rowIndex == -1) return;
 
-                var realrowIndex = Properties.Settings.Default.DGVSelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(tableIndex, rowIndex);
+                var realrowIndex = AppSettings.DGVSelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(tableIndex, rowIndex);
                 if (realrowIndex == -1) return;
 
                 if (THFileElementsDataGridView.DataSource == null || rowIndex == -1 || tableIndex == -1)
@@ -640,7 +640,7 @@ namespace TranslationHelper
 
                     FormatTextBox();
 
-                    //THTargetRichTextBox.Select(Properties.Settings.Default.THOptionLineCharLimit+1, THTargetRichTextBox.Text.Length);
+                    //THTargetRichTextBox.Select(AppSettings.THOptionLineCharLimit+1, THTargetRichTextBox.Text.Length);
                     //THTargetRichTextBox.SelectionColor = Color.Red;
 
                     TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength(TranslationCellValue.ToString(CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture);
@@ -703,10 +703,10 @@ namespace TranslationHelper
                 _ = this.Invoke((Action)(() => currentLine = THTargetRichTextBox.Lines[i]));
 
                 // Ignore the non-assembly lines
-                if (currentLine.Length <= Properties.Settings.Default.THOptionLineCharLimit) continue;
+                if (currentLine.Length <= AppSettings.THOptionLineCharLimit) continue;
 
                 // Start position
-                int start = Properties.Settings.Default.THOptionLineCharLimit;
+                int start = AppSettings.THOptionLineCharLimit;
 
                 // Length
                 int length = currentLine.Length - start;
@@ -920,7 +920,7 @@ namespace TranslationHelper
 
         private void PaintDigitInFrontOfRow(object sender, DataGridViewRowPostPaintEventArgs e)
         {
-            if (!Properties.Settings.Default.ProjectIsOpened || THFilesList.GetSelectedIndex() == -1)
+            if (!AppSettings.ProjectIsOpened || THFilesList.GetSelectedIndex() == -1)
                 return;
 
             var grid = sender as DataGridView;
@@ -961,7 +961,7 @@ namespace TranslationHelper
 
         private void UpdateTranslationTextBoxValue(object sender, DataGridViewCellEventArgs e)
         {
-            if (Properties.Settings.Default.DGVCellInEditMode && sender is DataGridView DGV)
+            if (AppSettings.DGVCellInEditMode && sender is DataGridView DGV)
             {
                 THTargetRichTextBox.Text = DGV.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty;
             }
@@ -1003,7 +1003,7 @@ namespace TranslationHelper
         bool AutosaveActivated;
         private void Autosave()
         {
-            if (!Properties.Settings.Default.EnableDBAutosave || AutosaveActivated || AppData.CurrentProject.FilesContent == null)
+            if (!AppSettings.EnableDBAutosave || AutosaveActivated || AppData.CurrentProject.FilesContent == null)
             {
             }
             else
@@ -1074,10 +1074,10 @@ namespace TranslationHelper
                 }
 
                 int i = 0;
-                while (i < Properties.Settings.Default.DBAutoSaveTimeout && Properties.Settings.Default.EnableDBAutosave)
+                while (i < AppSettings.DBAutoSaveTimeout && AppSettings.EnableDBAutosave)
                 {
                     Thread.Sleep(1000);
-                    if (Properties.Settings.Default.IsTranslationHelperWasClosed || this == null || IsDisposed/* || Data == null || Path.Length == 0*/)
+                    if (AppSettings.IsTranslationHelperWasClosed || this == null || IsDisposed/* || Data == null || Path.Length == 0*/)
                     {
                         AutosaveActivated = false;
                         return;
@@ -1086,7 +1086,7 @@ namespace TranslationHelper
                 }
                 while (IsOpeningInProcess || SaveInAction)//не запускать автосохранение, пока утилита занята
                 {
-                    Thread.Sleep(Properties.Settings.Default.DBAutoSaveTimeout * 1000);
+                    Thread.Sleep(AppSettings.DBAutoSaveTimeout * 1000);
                 }
                 WriteDBFileLite(Data, Path);
             }
@@ -1287,7 +1287,7 @@ namespace TranslationHelper
         internal bool SavemenusNOTenabled = true;
         private async void THFileElementsDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
-            if (!Properties.Settings.Default.ProjectIsOpened)
+            if (!AppSettings.ProjectIsOpened)
                 return;
 
             try
@@ -1877,20 +1877,20 @@ namespace TranslationHelper
             try
             {
                 bool THInfolabelEnabled = false;
-                if (!Properties.Settings.Default.IsTranslationHelperWasClosed && !THInfolabel.Enabled)
+                if (!AppSettings.IsTranslationHelperWasClosed && !THInfolabel.Enabled)
                 {
                     THInfolabelEnabled = true;
                     _ = THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = true));
                 }
 
-                if (!Properties.Settings.Default.IsTranslationHelperWasClosed)
+                if (!AppSettings.IsTranslationHelperWasClosed)
                 {
                     _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = InfoText));
                 }
 
                 FunctionsThreading.WaitThreaded(1000);
 
-                if (THInfolabelEnabled && !Properties.Settings.Default.IsTranslationHelperWasClosed && THInfolabel.Enabled)
+                if (THInfolabelEnabled && !AppSettings.IsTranslationHelperWasClosed && THInfolabel.Enabled)
                 {
                     _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
                     _ = THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
@@ -1971,7 +1971,7 @@ namespace TranslationHelper
                 //            {
                 //                break;
                 //            }
-                //            //success = WriteJson(THFilesListBox.Items[f].ToString(), Properties.Settings.Default.THWorkProjectDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
+                //            //success = WriteJson(THFilesListBox.Items[f].ToString(), AppSettings.THWorkProjectDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
                 //        }
                 //    }
                 //}
@@ -2051,15 +2051,15 @@ namespace TranslationHelper
         internal bool InteruptTranslation;
         private void InteruptToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.InterruptTtanslation = true;
+            AppSettings.InterruptTtanslation = true;
             InteruptTranslation = true;
         }
 
 
         private void THMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Properties.Settings.Default.IsTranslationHelperWasClosed = true;
-            Properties.Settings.Default.InterruptTtanslation = true;
+            AppSettings.IsTranslationHelperWasClosed = true;
+            AppSettings.InterruptTtanslation = true;
             InteruptTranslation = true;
             //THToolTip.Dispose();
             //ProjectData.THFilesElementsDataset.Dispose();
@@ -2201,8 +2201,8 @@ namespace TranslationHelper
 
         internal static bool DGVCellInEditMode
         {
-            get => Properties.Settings.Default.DGVCellInEditMode;
-            set => Properties.Settings.Default.DGVCellInEditMode = value;
+            get => AppSettings.DGVCellInEditMode;
+            set => AppSettings.DGVCellInEditMode = value;
         }
 
         private void THFileElementsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
@@ -2317,7 +2317,7 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (!Properties.Settings.Default.ProjectIsOpened)
+            if (!AppSettings.ProjectIsOpened)
                 return;
 
             if (ControlsSwitchActivated)
@@ -2357,7 +2357,7 @@ namespace TranslationHelper
 
         private void ShowCheckboxvalueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = MessageBox.Show(Properties.Settings.Default.EnableTranslationCache.ToString(CultureInfo.InvariantCulture));
+            _ = MessageBox.Show(AppSettings.EnableTranslationCache.ToString(CultureInfo.InvariantCulture));
         }
 
         private async void ForceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2436,8 +2436,8 @@ namespace TranslationHelper
 
             int cind = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
             int cindTrans = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Original
-            //string[] Files = Directory.GetFiles(Properties.Settings.Default.THWorkProjectDir, "*.*", SearchOption.AllDirectories);
-            //string[] Dirs = Directory.GetDirectories(Properties.Settings.Default.THWorkProjectDir, "*", SearchOption.AllDirectories);
+            //string[] Files = Directory.GetFiles(AppSettings.THWorkProjectDir, "*.*", SearchOption.AllDirectories);
+            //string[] Dirs = Directory.GetDirectories(AppSettings.THWorkProjectDir, "*", SearchOption.AllDirectories);
             int tablesCount = AppData.CurrentProject.FilesContent.Tables.Count;
             for (int t = 0; t < tablesCount; t++)
             {
@@ -2645,9 +2645,9 @@ namespace TranslationHelper
 
         private void THTargetRichTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (!Properties.Settings.Default.DGVCellInEditMode && (sender as RichTextBox).Focused && THFileElementsDataGridView.CurrentRow.Index > -1)
+            if (!AppSettings.DGVCellInEditMode && (sender as RichTextBox).Focused && THFileElementsDataGridView.CurrentRow.Index > -1)
             {
-                THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells[THSettings.TranslationColumnName].Value = (sender as RichTextBox).Text;
+                THFileElementsDataGridView.Rows[AppSettings.DGVSelectedRowIndex].Cells[THSettings.TranslationColumnName].Value = (sender as RichTextBox).Text;
             }
 
             TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength((sender as RichTextBox).Text).ToString(CultureInfo.InvariantCulture);
@@ -2686,17 +2686,17 @@ namespace TranslationHelper
                 {
                     int rowindex;
                     int realrowindex;
-                    //int i = Properties.Settings.Default.DGVSelectedRowIndex;
-                    //int r = Properties.Settings.Default.DGVSelectedRowRealIndex;
+                    //int i = AppSettings.DGVSelectedRowIndex;
+                    //int r = AppSettings.DGVSelectedRowRealIndex;
                     if (SelectedRowRealIndex ==
                         (realrowindex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(
-                        Properties.Settings.Default.THFilesListSelectedIndex,
+                        AppSettings.THFilesListSelectedIndex,
                         rowindex = row.Index))
                         )
                     {
-                        FunctionsTable.ShowSelectedRow(THFilesList.GetSelectedIndex(), Properties.Settings.Default.DGVSelectedColumnIndex, rowindex);
-                        Properties.Settings.Default.DGVSelectedRowIndex = rowindex;
-                        Properties.Settings.Default.DGVSelectedRowRealIndex = realrowindex;
+                        FunctionsTable.ShowSelectedRow(THFilesList.GetSelectedIndex(), AppSettings.DGVSelectedColumnIndex, rowindex);
+                        AppSettings.DGVSelectedRowIndex = rowindex;
+                        AppSettings.DGVSelectedRowRealIndex = realrowindex;
                         SelectedRowRealIndex = realrowindex;
                         break;
                     }

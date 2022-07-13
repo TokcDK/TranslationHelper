@@ -16,10 +16,10 @@ namespace TranslationHelper.Functions
 
         internal string GetValueFromCacheOrReturnEmpty(string keyValue)
         {
-            if (!Properties.Settings.Default.EnableTranslationCache)
+            if (!AppSettings.EnableTranslationCache)
                 return string.Empty;
 
-            if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll
+            if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
                 && AppData.AllDBmerged != null
                 && AppData.AllDBmerged.Count > 0
                 && AppData.AllDBmerged.ContainsKey(keyValue)
@@ -37,7 +37,7 @@ namespace TranslationHelper.Functions
             else
             {
                 var trimmed = keyValue.TrimAllExceptLettersOrDigits();
-                if (Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll
+                if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
                    && trimmed.Length > 0
                    && AppData.AllDBmerged != null
                    && AppData.AllDBmerged.Count > 0
@@ -80,7 +80,7 @@ namespace TranslationHelper.Functions
                         )
                     ));
                 //el.Save("cache.xml");
-                FunctionsDBFile.WriteXElementToXMLFile(el, Properties.Settings.Default.THTranslationCachePath);
+                FunctionsDBFile.WriteXElementToXMLFile(el, AppSettings.THTranslationCachePath);
             }
         }
 
@@ -89,7 +89,7 @@ namespace TranslationHelper.Functions
         /// </summary>
         internal static void Init()
         {
-            //if (!Properties.Settings.Default.IsTranslationCacheEnabled)
+            //if (!AppSettings.IsTranslationCacheEnabled)
             //    return;
 
             if (AppData.OnlineTranslationCache == null)
@@ -130,7 +130,7 @@ namespace TranslationHelper.Functions
 
             lock (cacheReadLocker)
             {
-                string xml = FunctionsDBFile.ReadXMLToString(Properties.Settings.Default.THTranslationCachePath);
+                string xml = FunctionsDBFile.ReadXMLToString(AppSettings.THTranslationCachePath);
                 if (xml.Length == 0)
                     return;
 
@@ -142,9 +142,9 @@ namespace TranslationHelper.Functions
                 catch (Exception ex)
                 {
                     //write exception, rename broken cache file and return
-                    string targetFilePath = FunctionsFileFolder.NewFilePathPlusIndex(Properties.Settings.Default.THTranslationCachePath + ".broken");
+                    string targetFilePath = FunctionsFileFolder.NewFilePathPlusIndex(AppSettings.THTranslationCachePath + ".broken");
                     File.WriteAllText(Path.Combine(Path.GetDirectoryName(targetFilePath), Path.GetFileName(targetFilePath) + ".log"), ex.ToString());
-                    File.Move(Properties.Settings.Default.THTranslationCachePath, targetFilePath);
+                    File.Move(AppSettings.THTranslationCachePath, targetFilePath);
                     return;
                 }
                 foreach (var el in rootElement.Elements())
@@ -161,7 +161,7 @@ namespace TranslationHelper.Functions
 
         public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/string Original, string Translation)
         {
-            if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed)
+            if (AppSettings.EnableTranslationCache && !AppSettings.IsTranslationHelperWasClosed)
             {
                 if (string.IsNullOrWhiteSpace(Translation) || string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || AppData.OnlineTranslationCache.cache.ContainsKey(Original) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
                 {
@@ -176,10 +176,10 @@ namespace TranslationHelper.Functions
 
         //private static string ReadXMLToString()
         //{
-        //    using (FileStream fs = new FileStream(Properties.Settings.Default.THTranslationCachePath, FileMode.Open))
+        //    using (FileStream fs = new FileStream(AppSettings.THTranslationCachePath, FileMode.Open))
         //    {
         //        Stream s;
-        //        string fileExtension = Path.GetExtension(Properties.Settings.Default.THTranslationCachePath);
+        //        string fileExtension = Path.GetExtension(AppSettings.THTranslationCachePath);
         //        if (fileExtension == ".cmx")
         //        {
         //            s = new GZipStream(fs, CompressionMode.Decompress);
@@ -204,10 +204,10 @@ namespace TranslationHelper.Functions
 
         //private static void WriteXElementToXMLFile(XElement el)
         //{
-        //    using (FileStream fs = new FileStream(Properties.Settings.Default.THTranslationCachePath, FileMode.Create))
+        //    using (FileStream fs = new FileStream(AppSettings.THTranslationCachePath, FileMode.Create))
         //    {
         //        Stream s;
-        //        string fileExtension = Path.GetExtension(Properties.Settings.Default.THTranslationCachePath);
+        //        string fileExtension = Path.GetExtension(AppSettings.THTranslationCachePath);
         //        if (fileExtension == ".cmx")
         //        {
         //            s = new GZipStream(fs, CompressionMode.Compress);

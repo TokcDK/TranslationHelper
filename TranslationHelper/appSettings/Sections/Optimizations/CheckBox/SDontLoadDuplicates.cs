@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => Properties.Settings.Default.DontLoadDuplicates;
-            set => Properties.Settings.Default.DontLoadDuplicates = value;
+            get => AppSettings.DontLoadDuplicates;
+            set => AppSettings.DontLoadDuplicates = value;
         }
 
         internal override void Set(bool SetObject = false)

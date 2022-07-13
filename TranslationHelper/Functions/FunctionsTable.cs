@@ -250,7 +250,7 @@ namespace TranslationHelper.Main.Functions
 
         public static string TranslationCacheFind(DataSet DS, string Input)
         {
-            if (Properties.Settings.Default.EnableTranslationCache)
+            if (AppSettings.EnableTranslationCache)
             {
                 if (!string.IsNullOrEmpty(Input) && DS != null)
                 {
@@ -397,9 +397,9 @@ namespace TranslationHelper.Main.Functions
             }
 
             DS.Reset();
-            if (File.Exists(Properties.Settings.Default.THTranslationCachePath))
+            if (File.Exists(AppSettings.THTranslationCachePath))
             {
-                FunctionsDBFile.ReadDBFile(DS, Properties.Settings.Default.THTranslationCachePath);
+                FunctionsDBFile.ReadDBFile(DS, AppSettings.THTranslationCachePath);
             }
             else
             {

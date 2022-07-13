@@ -18,11 +18,11 @@ namespace TranslationHelper.Translators
     {
         internal static string GetSourceLanguageID()
         {
-            return Properties.Settings.Default.OnlineTranslationSourceLanguage.Split(' ')[1];
+            return AppSettings.OnlineTranslationSourceLanguage.Split(' ')[1];
         }
         internal static string GetTargetLanguageID()
         {
-            return Properties.Settings.Default.OnlineTranslationTargetLanguage.Split(' ')[1];
+            return AppSettings.OnlineTranslationTargetLanguage.Split(' ')[1];
         }
     }
 
@@ -72,16 +72,16 @@ namespace TranslationHelper.Translators
             {
                 string languageFrom = "ja";
                 string languageTo = "en";
-                if (Properties.Settings.Default.OnlineTranslationSourceLanguage.Length > 0)
+                if (AppSettings.OnlineTranslationSourceLanguage.Length > 0)
                 {
-                    languageFrom = Properties.Settings.Default.OnlineTranslationSourceLanguage.Split(new char[]
+                    languageFrom = AppSettings.OnlineTranslationSourceLanguage.Split(new char[]
                     {
                         ' '
                     }).Last();
                 }
-                if (Properties.Settings.Default.OnlineTranslationTargetLanguage.Length > 0)
+                if (AppSettings.OnlineTranslationTargetLanguage.Length > 0)
                 {
-                    languageTo = Properties.Settings.Default.OnlineTranslationTargetLanguage.Split(new char[]
+                    languageTo = AppSettings.OnlineTranslationTargetLanguage.Split(new char[]
                     {
                         ' '
                     }).Last();
@@ -110,16 +110,16 @@ namespace TranslationHelper.Translators
             {
                 string languageFrom = "ja";
                 string languageTo = "en";
-                if (Properties.Settings.Default.OnlineTranslationSourceLanguage.Length > 0)
+                if (AppSettings.OnlineTranslationSourceLanguage.Length > 0)
                 {
-                    languageFrom = Properties.Settings.Default.OnlineTranslationSourceLanguage.Split(new char[]
+                    languageFrom = AppSettings.OnlineTranslationSourceLanguage.Split(new char[]
                     {
                         ' '
                     }).Last();
                 }
-                if (Properties.Settings.Default.OnlineTranslationTargetLanguage.Length > 0)
+                if (AppSettings.OnlineTranslationTargetLanguage.Length > 0)
                 {
-                    languageTo = Properties.Settings.Default.OnlineTranslationTargetLanguage.Split(new char[]
+                    languageTo = AppSettings.OnlineTranslationTargetLanguage.Split(new char[]
                     {
                         ' '
                     }).Last();

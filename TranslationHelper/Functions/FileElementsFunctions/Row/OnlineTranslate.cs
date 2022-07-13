@@ -59,7 +59,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool IsValidRow()
         {
-            return !Properties.Settings.Default.InterruptTtanslation && base.IsValidRow()
+            return !AppSettings.InterruptTtanslation && base.IsValidRow()
                 && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "")
                 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine());
         }
@@ -72,9 +72,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             FunctionsOnlineCache.Init();
 
-            if (_allDbLoaded4All || !IsAll || !Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll) return;
+            if (_allDbLoaded4All || !IsAll || !AppSettings.UseAllDBFilesForOnlineTranslationForAll) return;
 
-            if (!Properties.Settings.Default.EnableTranslationCache)
+            if (!AppSettings.EnableTranslationCache)
             {
                 //cache disabled but all db loading enabled. ask for load then. maybe not need
                 var result = MessageBox.Show(T._("Translation cache disabled but load all DB enabled. While all DB loading cache can be enabled in settings. Load all DB?"), T._("Translation cache disabled"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -101,7 +101,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             AppData.Main.ProgressInfo(false);
 
-            if (Properties.Settings.Default.InterruptTtanslation) Properties.Settings.Default.InterruptTtanslation = false;
+            if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
         }
 
         protected override bool Apply()
@@ -191,7 +191,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     AppData.OnlineTranslationCache.Write();
 
                     // stop translating after last pack of text when translation is interrupted
-                    if (Properties.Settings.Default.InterruptTtanslation) return;
+                    if (AppSettings.InterruptTtanslation) return;
                 }
 
                 lineNum++;
@@ -372,7 +372,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var cellTranslationEqualOriginal = Equals(row[1], row[0]);
 
                 //skip equal
-                if (Properties.Settings.Default.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) continue;
+                if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) continue;
 
                 var cellTranslationIsNotEmptyAndNotEqualOriginal = (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !cellTranslationEqualOriginal);
 

@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => Properties.Settings.Default.DBCompression;
-            set => Properties.Settings.Default.DBCompression = value;
+            get => AppSettings.DBCompression;
+            set => AppSettings.DBCompression = value;
         }
 
         internal override void Set(bool SetObject = false)

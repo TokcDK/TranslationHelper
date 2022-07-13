@@ -364,9 +364,9 @@ namespace TranslationHelper
             {
                 if (!ComboBox.Items.Contains(value))
                 {
-                    if (ItemsCount == Properties.Settings.Default.THSavedSearchQueriesReplacersCount)
+                    if (ItemsCount == AppSettings.THSavedSearchQueriesReplacersCount)
                     {
-                        ComboBox.Items.RemoveAt(Properties.Settings.Default.THSavedSearchQueriesReplacersCount - 1);
+                        ComboBox.Items.RemoveAt(AppSettings.THSavedSearchQueriesReplacersCount - 1);
                     }
 
                     AddRestComboBoxValuesWithNew(ComboBox.Items, value);
@@ -630,12 +630,12 @@ namespace TranslationHelper
         private bool IsTheRowHasPossibleIssues(DataRow row)
         {
             var rowTranslation = (row[1] + string.Empty);
-            if (rowTranslation.Length == 0 || (Properties.Settings.Default.IgnoreOrigEqualTransLines && Equals(row[0], row[1])))
+            if (rowTranslation.Length == 0 || (AppSettings.IgnoreOrigEqualTransLines && Equals(row[0], row[1])))
             {
                 return false;
             }
 
-            if (Properties.Settings.Default.SearchRowIssueOptionsCheckNonRomaji)
+            if (AppSettings.SearchRowIssueOptionsCheckNonRomaji)
             {
                 //translation contains non romaji symbols
                 if (Regex.IsMatch(row[1] + "", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*"))
@@ -646,14 +646,14 @@ namespace TranslationHelper
 
             //------------------------------
             //если длина любой из строк длиннее лимита
-            //if ((FunctionsString.GetLongestLineLength(rowTranslation) > Properties.Settings.Default.THOptionLineCharLimit))
+            //if ((FunctionsString.GetLongestLineLength(rowTranslation) > AppSettings.THOptionLineCharLimit))
             //{
             //    return true;
             //}
 
             //------------------------------
 
-            if (Properties.Settings.Default.SearchRowIssueOptionsCheckProjectSpecific)
+            if (AppSettings.SearchRowIssueOptionsCheckProjectSpecific)
             {
                 //project specific checks
                 if (AppData.CurrentProject.CheckForRowIssue(row))
@@ -662,7 +662,7 @@ namespace TranslationHelper
                 }
             }
 
-            if (Properties.Settings.Default.SearchRowIssueOptionsCheckActors)
+            if (AppSettings.SearchRowIssueOptionsCheckActors)
             {
                 //------------------------------
                 //Проверка актеров
@@ -693,7 +693,7 @@ namespace TranslationHelper
                 //--------------------------------
             }
 
-            if (Properties.Settings.Default.SearchRowIssueOptionsCheckAnyLineTranslatable)
+            if (AppSettings.SearchRowIssueOptionsCheckAnyLineTranslatable)
             {
                 //check if multiline and one of line equal to original and valide for translation
                 if (row.HasAnyTranslationLineValidAndEqualSameOrigLine())
@@ -728,7 +728,7 @@ namespace TranslationHelper
             LoadSearchQueriesReplacers();
 
             //set default values for search settings
-            chkbxDoNotTouchEqualOT.Checked = Properties.Settings.Default.IgnoreOrigEqualTransLines;
+            chkbxDoNotTouchEqualOT.Checked = AppSettings.IgnoreOrigEqualTransLines;
         }
 
         private void SelectTextinTextBox(string input)

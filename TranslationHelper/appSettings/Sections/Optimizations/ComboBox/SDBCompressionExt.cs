@@ -34,12 +34,12 @@ namespace TranslationHelper.INISettings
         {
             if (!SetObject)
             {
-                Properties.Settings.Default.DBCompressionExt = AppData.Settings.THOptionDBCompressionExtComboBox.SelectedItem.ToString();
+                AppSettings.DBCompressionExt = AppData.Settings.THOptionDBCompressionExtComboBox.SelectedItem.ToString();
             }
             else
             {
-                Properties.Settings.Default.DBCompressionExt = IsExistsInFormats(AppData.BufferValueString) ? AppData.BufferValueString : Default;
-                AppData.Settings.THOptionDBCompressionExtComboBox.SelectedItem = Properties.Settings.Default.DBCompressionExt;
+                AppSettings.DBCompressionExt = IsExistsInFormats(AppData.BufferValueString) ? AppData.BufferValueString : Default;
+                AppData.Settings.THOptionDBCompressionExtComboBox.SelectedItem = AppSettings.DBCompressionExt;
             }
         }
 
@@ -61,7 +61,7 @@ namespace TranslationHelper.INISettings
 
         internal override string Get()
         {
-            return Properties.Settings.Default.DBCompressionExt;
+            return AppSettings.DBCompressionExt;
         }
 
         internal override string ID()

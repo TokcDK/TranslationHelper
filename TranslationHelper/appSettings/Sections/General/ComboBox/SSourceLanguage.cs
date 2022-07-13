@@ -14,7 +14,7 @@ namespace TranslationHelper.INISettings
             {
                 AppData.Settings.SourceLanguageComboBox.DataSource = TranslatorsBase.Languages;
             }
-            AppData.Settings.SourceLanguageComboBox.SelectedIndex = TranslatorsBase.Languages.IndexOf(Properties.Settings.Default.OnlineTranslationSourceLanguage);
+            AppData.Settings.SourceLanguageComboBox.SelectedIndex = TranslatorsBase.Languages.IndexOf(AppSettings.OnlineTranslationSourceLanguage);
         }
 
         internal override string Key => "SourceLanguage";
@@ -25,19 +25,19 @@ namespace TranslationHelper.INISettings
         {
             if (!SetObject)
             {
-                Properties.Settings.Default.OnlineTranslationSourceLanguage = AppData.Settings.SourceLanguageComboBox.SelectedItem.ToString();
+                AppSettings.OnlineTranslationSourceLanguage = AppData.Settings.SourceLanguageComboBox.SelectedItem.ToString();
                 
             }
             else
             {
-                Properties.Settings.Default.OnlineTranslationSourceLanguage = AppData.BufferValueString;
-                AppData.Settings.SourceLanguageComboBox.SelectedItem = Properties.Settings.Default.OnlineTranslationSourceLanguage;
+                AppSettings.OnlineTranslationSourceLanguage = AppData.BufferValueString;
+                AppData.Settings.SourceLanguageComboBox.SelectedItem = AppSettings.OnlineTranslationSourceLanguage;
             }
         }
 
         internal override string Get()
         {
-            return Properties.Settings.Default.OnlineTranslationSourceLanguage;
+            return AppSettings.OnlineTranslationSourceLanguage;
         }
 
         internal override string ID()

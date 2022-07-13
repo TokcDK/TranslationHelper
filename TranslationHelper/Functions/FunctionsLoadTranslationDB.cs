@@ -245,7 +245,7 @@ namespace TranslationHelper.Functions
                                 //ProjectData.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
                                 Row[otranscol] = db[origCellValue];
                             }
-                            else if (Properties.Settings.Default.DBTryToCheckLinesOfEachMultilineValue)
+                            else if (AppSettings.DBTryToCheckLinesOfEachMultilineValue)
                             {
                                 if (origCellValue.IsMultiline())
                                 {
@@ -317,7 +317,7 @@ namespace TranslationHelper.Functions
             string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
             //проход по всем таблицам рабочего dataset
 
-            bool DBTryToCheckLinesOfEachMultilineValue = Properties.Settings.Default.DBTryToCheckLinesOfEachMultilineValue;
+            bool DBTryToCheckLinesOfEachMultilineValue = AppSettings.DBTryToCheckLinesOfEachMultilineValue;
 
             Parallel.For(0, tcount, t =>
             //for (int t = 0; t < tcount; t++)
@@ -522,7 +522,7 @@ namespace TranslationHelper.Functions
                                 }
                             }
 
-                            if (!found && Properties.Settings.Default.DBTryToCheckLinesOfEachMultilineValue)
+                            if (!found && AppSettings.DBTryToCheckLinesOfEachMultilineValue)
                             {
                                 if (origCellValue.IsMultiline())
                                 {

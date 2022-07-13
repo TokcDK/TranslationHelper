@@ -18,8 +18,8 @@ namespace TranslationHelper.INISettings
 
         static int SVar
         {
-            get => Properties.Settings.Default.THOptionLineCharLimit;
-            set => Properties.Settings.Default.THOptionLineCharLimit = value;
+            get => AppSettings.THOptionLineCharLimit;
+            set => AppSettings.THOptionLineCharLimit = value;
         }
 
         internal override void Set(bool SetObject = false)
@@ -40,7 +40,7 @@ namespace TranslationHelper.INISettings
             if (System.Text.RegularExpressions.Regex.IsMatch((SObject as System.Windows.Forms.TextBox).Text, "^[0-9]{1,4}$") && int.Parse((SObject as System.Windows.Forms.TextBox).Text, CultureInfo.InvariantCulture) <= 9999)
             {
                 int newvalue = int.Parse((SObject as System.Windows.Forms.TextBox).Text, CultureInfo.InvariantCulture);
-                //Properties.Settings.Default.THOptionLineCharLimit = newvalue;
+                //AppSettings.THOptionLineCharLimit = newvalue;
                 return newvalue;
             }
             else
