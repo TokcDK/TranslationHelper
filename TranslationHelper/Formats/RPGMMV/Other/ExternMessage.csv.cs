@@ -26,14 +26,13 @@ namespace TranslationHelper.Formats.RPGMMV.Other
                 var stringGroupMatch = blockMessageMatch.Groups[1];
                 var messageString = stringGroupMatch.Value;
 
-                if (AddRowData(ref messageString, "") && SaveFileMode)
-                {
-                    blocks[i] = block
-                        .Remove(stringGroupMatch.Index, stringGroupMatch.Length)
-                        .Insert(stringGroupMatch.Index, messageString
-                        .Replace("\r\n", "\n")
-                        );
-                }
+                if (!AddRowData(ref messageString, "") || !SaveFileMode) continue;
+
+                blocks[i] = block
+                    .Remove(stringGroupMatch.Index, stringGroupMatch.Length)
+                    .Insert(stringGroupMatch.Index, messageString
+                    .Replace("\r\n", "\n")
+                    );
             }
 
             if (SaveFileMode) ParseData.ResultForWrite.Append(string.Join("\r\n", blocks));
