@@ -2,12 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TranslationHelper.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="DontLoadStringIfRomajiPercent" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="DontLoadStringIfRomajiPercentNumber" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">90</Value>
-    </Setting>
     <Setting Name="AutotranslationForSimular" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -92,12 +86,6 @@
     <Setting Name="DBCompression" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="DontLoadStringIfRomajiPercentForOpen" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="DontLoadStringIfRomajiPercentForTranslation" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="DBCompressionExt" Type="System.String" Scope="User">
       <Value Profile="(Default)">"XML (none)"</Value>
     </Setting>
@@ -109,9 +97,6 @@
     </Setting>
     <Setting Name="EnableDBAutosave" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="ApplicationStartupPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ApplicationProductName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

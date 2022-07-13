@@ -9,5 +9,9 @@ namespace TranslationHelper.Data
     public static class AppSettings
     {
         public static string ApplicationStartupPath { get; set; }
+        public static bool DontLoadStringIfRomajiPercentForOpen { get; set; } = true;
+        public static bool DontLoadStringIfRomajiPercentForTranslation { get; set; } = true;
+        public static bool DontLoadStringIfRomajiPercent { get; set; } = false;
+        public static int DontLoadStringIfRomajiPercentNumber { get; set; } = 90;
     }
 }

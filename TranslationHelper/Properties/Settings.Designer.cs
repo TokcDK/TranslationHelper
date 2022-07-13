@@ -12,7 +12,7 @@ namespace TranslationHelper.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -20,30 +20,6 @@ namespace TranslationHelper.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool DontLoadStringIfRomajiPercent {
-            get {
-                return ((bool)(this["DontLoadStringIfRomajiPercent"]));
-            }
-            set {
-                this["DontLoadStringIfRomajiPercent"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("90")]
-        public int DontLoadStringIfRomajiPercentNumber {
-            get {
-                return ((int)(this["DontLoadStringIfRomajiPercentNumber"]));
-            }
-            set {
-                this["DontLoadStringIfRomajiPercentNumber"] = value;
             }
         }
         
@@ -385,30 +361,6 @@ namespace TranslationHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool DontLoadStringIfRomajiPercentForOpen {
-            get {
-                return ((bool)(this["DontLoadStringIfRomajiPercentForOpen"]));
-            }
-            set {
-                this["DontLoadStringIfRomajiPercentForOpen"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool DontLoadStringIfRomajiPercentForTranslation {
-            get {
-                return ((bool)(this["DontLoadStringIfRomajiPercentForTranslation"]));
-            }
-            set {
-                this["DontLoadStringIfRomajiPercentForTranslation"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\"XML (none)\"")]
         public string DBCompressionExt {
             get {
@@ -452,18 +404,6 @@ namespace TranslationHelper.Properties {
             }
             set {
                 this["EnableDBAutosave"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ApplicationStartupPath {
-            get {
-                return ((string)(this["ApplicationStartupPath"]));
-            }
-            set {
-                this["ApplicationStartupPath"] = value;
             }
         }
         

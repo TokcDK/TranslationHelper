@@ -188,7 +188,7 @@ namespace TranslationHelper
         //{
         //    get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercent", "Optimizations")
         //            ? int.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent"), CultureInfo.InvariantCulture)
-        //            : Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber;
+        //            : AppSettings.DontLoadStringIfRomajiPercentNumber;
         //    set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent", value.ToString(CultureInfo.InvariantCulture));
         //}
 
@@ -196,7 +196,7 @@ namespace TranslationHelper
         //{
         //    get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", "Optimizations")
         //            ? bool.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked"))
-        //            : Properties.Settings.Default.DontLoadStringIfRomajiPercent;
+        //            : AppSettings.DontLoadStringIfRomajiPercent;
         //    set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", value.ToString(CultureInfo.InvariantCulture));
         //}
 
@@ -271,7 +271,7 @@ namespace TranslationHelper
         {
             SetValue((sender as CheckBox).Name);
             //bool newvalue = THOptionDontLoadStringIfRomajiPercentCheckBox.Checked;
-            //Properties.Settings.Default.DontLoadStringIfRomajiPercent = newvalue;
+            //AppSettings.DontLoadStringIfRomajiPercent = newvalue;
             //DontLoadStringIfRomajiPercentINI = newvalue;
         }
 

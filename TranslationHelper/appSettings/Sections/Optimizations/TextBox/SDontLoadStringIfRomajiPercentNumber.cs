@@ -18,8 +18,8 @@ namespace TranslationHelper.INISettings
 
         static int SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber;
-            set => TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber = value;
+            get => AppSettings.DontLoadStringIfRomajiPercentNumber;
+            set => AppSettings.DontLoadStringIfRomajiPercentNumber = value;
         }
 
         internal override void Set(bool SetObject = false)
@@ -40,7 +40,7 @@ namespace TranslationHelper.INISettings
             if (System.Text.RegularExpressions.Regex.IsMatch((SObject as System.Windows.Forms.TextBox).Text, "^[0-9]{1,3}$") && int.Parse((SObject as System.Windows.Forms.TextBox).Text, CultureInfo.InvariantCulture) <= 100)
             {
                 int newvalue = int.Parse((SObject as System.Windows.Forms.TextBox).Text, CultureInfo.InvariantCulture);
-                //Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber = newvalue;
+                //AppSettings.DontLoadStringIfRomajiPercentNumber = newvalue;
                 return newvalue;
             }
             else
