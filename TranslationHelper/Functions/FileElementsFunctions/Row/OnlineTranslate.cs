@@ -36,25 +36,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         int Size { get; set; }
         static int MaxSize { get => 1000; }
 
-        bool IsMax()
-        {
-            return Size >= MaxSize;
-        }
+        bool IsMax() { return Size >= MaxSize; }
 
         public OnlineTranslate()
         {
-            if (_buffer == null)
-            {
-                _buffer = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
-            }
-            if (_bufferExtracted == null)
-            {
-                _bufferExtracted = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
-            }
-            if (_translator == null)
-            {
-                _translator = new GoogleAPIOLD();
-            }
+            if (_buffer == null) _buffer = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
+            if (_bufferExtracted == null) _bufferExtracted = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
+            if (_translator == null) _translator = new GoogleAPIOLD();
         }
 
         protected override bool IsValidRow()

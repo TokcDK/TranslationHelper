@@ -12,10 +12,7 @@ namespace TranslationHelper.Functions
         //readonly bool THdebug = true;
         StringBuilder THsbLog;// = new StringBuilder();
 
-        public FunctionsLogs()
-        {
-            DebugData = new List<string>();
-        }
+        public FunctionsLogs() { DebugData = new List<string>(); }
 
         /// <summary>
         /// some debug data can be added here

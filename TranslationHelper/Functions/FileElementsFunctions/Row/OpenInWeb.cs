@@ -10,9 +10,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// open selected rows in web translator
         /// </summary>
-        public OpenInWeb()
-        {
-        }
+        public OpenInWeb() { }
 
         protected override bool ApplyToBuffered()
         {
