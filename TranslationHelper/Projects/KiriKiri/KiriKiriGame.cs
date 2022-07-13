@@ -86,9 +86,9 @@ namespace TranslationHelper.Projects.KiriKiri
                     //ProjectData.FilePath = kiriKiriFiles[i];
 
                     //_ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
-                    //_ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
+                    //_ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add(THSettings.OriginalColumnName);
                     //_ = ProjectData.THFilesElementsDatasetInfo.Tables.Add(filename);
-                    //_ = ProjectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
+                    //_ = ProjectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName);
 
                     FormatBase format = null;
                     if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
@@ -115,7 +115,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     //else
                     //{
                     //    THFilesList.Invoke((Action)(() => THFilesList.AddItem(filename)));
-                    //    _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add(THSettings.TranslationColumnName());
+                    //    _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add(THSettings.TranslationColumnName);
                     //}
                 }
 

@@ -78,7 +78,7 @@ namespace TranslationHelper.Main.Functions
                     var cell = table.Rows[r][1];
                     if (cell == null || string.IsNullOrEmpty(cell as string))
                     {
-                        ShowSelectedRow(t, THSettings.TranslationColumnName(), r);
+                        ShowSelectedRow(t, THSettings.TranslationColumnName, r);
                         return;
                     }
                 }
@@ -186,9 +186,9 @@ namespace TranslationHelper.Main.Functions
             if (add && !AppData.CurrentProject.FilesContent.Tables.Contains(fileName))
             {
                 _ = AppData.CurrentProject.FilesContent.Tables.Add(fileName);
-                _ = AppData.CurrentProject.FilesContent.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
+                _ = AppData.CurrentProject.FilesContent.Tables[fileName].Columns.Add(THSettings.OriginalColumnName);
                 _ = AppData.CurrentProject.FilesContentInfo.Tables.Add(fileName);
-                _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Columns.Add(THSettings.OriginalColumnName());
+                _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Columns.Add(THSettings.OriginalColumnName);
 
                 return true;
             }
@@ -202,7 +202,7 @@ namespace TranslationHelper.Main.Functions
                 }
                 else
                 {
-                    _ = AppData.CurrentProject.FilesContent.Tables[fileName].Columns.Add(THSettings.TranslationColumnName());
+                    _ = AppData.CurrentProject.FilesContent.Tables[fileName].Columns.Add(THSettings.TranslationColumnName);
                     return true;
                 }
             }
@@ -404,8 +404,8 @@ namespace TranslationHelper.Main.Functions
             else
             {
                 DS.Tables.Add("TranslationCache");
-                DS.Tables["TranslationCache"].Columns.Add(THSettings.OriginalColumnName());
-                DS.Tables["TranslationCache"].Columns.Add(THSettings.TranslationColumnName());
+                DS.Tables["TranslationCache"].Columns.Add(THSettings.OriginalColumnName);
+                DS.Tables["TranslationCache"].Columns.Add(THSettings.TranslationColumnName);
             }
             //MessageBox.Show("TranslationCache Rows.Count=" + THTranslationCache.Tables["TranslationCache"].Rows.Count+ "TranslationCache Columns.Count=" + THTranslationCache.Tables["TranslationCache"].Columns.Count);
         }
@@ -501,8 +501,8 @@ namespace TranslationHelper.Main.Functions
                 var table = dataSet.Tables[t];
                 string tname = table.TableName;
                 retDS.Tables.Add(tname);
-                retDS.Tables[tname].Columns.Add(THSettings.OriginalColumnName());
-                retDS.Tables[tname].Columns.Add(THSettings.TranslationColumnName());
+                retDS.Tables[tname].Columns.Add(THSettings.OriginalColumnName);
+                retDS.Tables[tname].Columns.Add(THSettings.TranslationColumnName);
                 int rowsCount = table.Rows.Count;
                 for (int r = 0; r < rowsCount; r++)
                 {
@@ -564,7 +564,7 @@ namespace TranslationHelper.Main.Functions
                 return false;
             }
             int DTRowsCount = dataTabe.Rows.Count;
-            columnName = columnName ?? THSettings.TranslationColumnName();
+            columnName = columnName ?? THSettings.TranslationColumnName;
             for (int r = 0; r < DTRowsCount; r++)
             {
                 var cell = dataTabe.Rows[r]?[columnName];
@@ -614,7 +614,7 @@ namespace TranslationHelper.Main.Functions
             }
 
             int NonEmptyRowsCount = 0;
-            columnName = columnName ?? THSettings.TranslationColumnName();
+            columnName = columnName ?? THSettings.TranslationColumnName;
             int DTTablesCount = dataSet.Tables.Count;
             for (int t = 0; t < DTTablesCount; t++)
             {
@@ -639,7 +639,7 @@ namespace TranslationHelper.Main.Functions
 
             int NonEmptyRowsCount = 0;
             int DTRowsCount = dataTable.Rows.Count;
-            columnName = columnName ?? THSettings.TranslationColumnName();
+            columnName = columnName ?? THSettings.TranslationColumnName;
             for (int r = 0; r < DTRowsCount; r++)
             {
                 var cell = dataTable.Rows[r][columnName];

@@ -52,7 +52,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 && JSTokenValid(value)
                 //&& (!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game
                 && !string.IsNullOrWhiteSpace(value + "")
-                && !(THSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars());
+                && !(THSettings.SourceLanguageIsJapanese && value.ToString().HaveMostOfRomajiOtherChars());
         }
 
         protected virtual bool JSTokenValid(JValue value)

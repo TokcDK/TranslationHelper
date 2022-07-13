@@ -444,7 +444,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool ForJPLangHaveMostOfRomajiOtherChars(this string inputString)
         {
-            return THSettings.SourceLanguageIsJapanese() && inputString.HaveMostOfRomajiOtherChars();
+            return THSettings.SourceLanguageIsJapanese && inputString.HaveMostOfRomajiOtherChars();
         }
 
         /// <summary>
@@ -499,7 +499,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther(this string inputString)
         {
-            return THSettings.SourceLanguageIsJapanese() && inputString.HaveMostOfRomajiOtherChars();
+            return THSettings.SourceLanguageIsJapanese && inputString.HaveMostOfRomajiOtherChars();
         }
 
         /// <summary>
@@ -696,7 +696,7 @@ namespace TranslationHelper.Extensions
 
         internal static bool IsSoundsText(this string str)
         {
-            var regexed = Regex.Replace(str, THSettings.SoundsTextRegexPattern(), "");
+            var regexed = Regex.Replace(str, THSettings.SoundsTextRegexPattern, "");
             var trimmed = regexed.TrimAllExceptLettersOrDigits();
             return trimmed.Length == 0;
         }

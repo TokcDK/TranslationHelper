@@ -384,8 +384,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (needToGetOrigTransColumnsNum)
             {
                 needToGetOrigTransColumnsNum = false;
-                ColumnIndexOriginal = SelectedTable.Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
-                ColumnIndexTranslation = SelectedTable.Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Translation
+                ColumnIndexOriginal = SelectedTable.Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
+                ColumnIndexTranslation = SelectedTable.Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Translation
             }
         }
 

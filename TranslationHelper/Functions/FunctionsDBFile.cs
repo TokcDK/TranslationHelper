@@ -216,8 +216,8 @@ namespace TranslationHelper.Main.Functions
             XElement el = new XElement("TranslationCache",
                 db.Select(kv =>
                 new XElement("Value",
-                    new XElement(THSettings.OriginalColumnName(), kv.Key),
-                    new XElement(THSettings.TranslationColumnName(), kv.Value)
+                    new XElement(THSettings.OriginalColumnName, kv.Key),
+                    new XElement(THSettings.TranslationColumnName, kv.Value)
                     )
                 ));
 
@@ -225,8 +225,8 @@ namespace TranslationHelper.Main.Functions
             //foreach (var kv in db)
             //{
             //    el.Add(new XElement("Value",
-            //        new XElement(THSettings.OriginalColumnName(), kv.Key),
-            //        new XElement(THSettings.TranslationColumnName(), kv.Value)
+            //        new XElement(THSettings.OriginalColumnName, kv.Key),
+            //        new XElement(THSettings.TranslationColumnName, kv.Value)
             //        ));
             //}
 
@@ -237,7 +237,7 @@ namespace TranslationHelper.Main.Functions
 
         internal static Dictionary<string, string> ReadXMLDBToDictionary(string xmlPath)
         {
-            int OriginalLength = THSettings.OriginalColumnName().Length;
+            int OriginalLength = THSettings.OriginalColumnName.Length;
             Dictionary<string, string> db = new Dictionary<string, string>();
             //var settings = new XmlReaderSettings();
             string original = string.Empty;
@@ -256,7 +256,7 @@ namespace TranslationHelper.Main.Functions
 
                     if (WaitingTranslation)
                     {
-                        if (reader.Name != THSettings.TranslationColumnName()) continue;
+                        if (reader.Name != THSettings.TranslationColumnName) continue;
                         if (!(XNode.ReadFrom(reader) is XElement el)) continue;
 
                         db.Add(original, el.Value);
@@ -265,7 +265,7 @@ namespace TranslationHelper.Main.Functions
                     else
                     {
                         if (reader.Name.Length != OriginalLength) continue;
-                        if (reader.Name != THSettings.OriginalColumnName()) continue;
+                        if (reader.Name != THSettings.OriginalColumnName) continue;
 
                         try
                         {
@@ -395,7 +395,7 @@ namespace TranslationHelper.Main.Functions
                 try
                 {
                     var table = dbDataSet.Tables[t];
-                    if (!table.Columns.Contains(THSettings.OriginalColumnName()) || !table.Columns.Contains(THSettings.TranslationColumnName()))
+                    if (!table.Columns.Contains(THSettings.OriginalColumnName) || !table.Columns.Contains(THSettings.TranslationColumnName))
                     {
                         continue;
                     }
@@ -429,14 +429,14 @@ namespace TranslationHelper.Main.Functions
 
         private static void AddRecordToDictionary(Dictionary<string, string> db, DataRow row, bool dontAddEmptyTranslation, bool dontAddEqualTranslation)
         {
-            if (!db.ContainsKey(row[THSettings.OriginalColumnName()] as string))
+            if (!db.ContainsKey(row[THSettings.OriginalColumnName] as string))
             {
-                if ((dontAddEmptyTranslation && (row[THSettings.TranslationColumnName()] == null || string.IsNullOrEmpty(row[THSettings.TranslationColumnName()] as string))) || (dontAddEqualTranslation && row[THSettings.TranslationColumnName()] as string == row[THSettings.OriginalColumnName()] as string))
+                if ((dontAddEmptyTranslation && (row[THSettings.TranslationColumnName] == null || string.IsNullOrEmpty(row[THSettings.TranslationColumnName] as string))) || (dontAddEqualTranslation && row[THSettings.TranslationColumnName] as string == row[THSettings.OriginalColumnName] as string))
                 {
                     return;
                 }
 
-                db.Add(row[THSettings.OriginalColumnName()] as string, row[THSettings.TranslationColumnName()] + string.Empty);
+                db.Add(row[THSettings.OriginalColumnName] as string, row[THSettings.TranslationColumnName] + string.Empty);
             }
         }
 
@@ -465,7 +465,7 @@ namespace TranslationHelper.Main.Functions
                 try
                 {
                     var table = dbDataSet.Tables[t];
-                    if (!table.Columns.Contains(THSettings.OriginalColumnName()) || !table.Columns.Contains(THSettings.TranslationColumnName()))
+                    if (!table.Columns.Contains(THSettings.OriginalColumnName) || !table.Columns.Contains(THSettings.TranslationColumnName))
                     {
                         continue;
                     }
@@ -475,7 +475,7 @@ namespace TranslationHelper.Main.Functions
                     for (int r = 0; r < rowsCount; r++)
                     {
                         var row = table.Rows[r];
-                        var O = row[THSettings.OriginalColumnName()] as string;
+                        var O = row[THSettings.OriginalColumnName] as string;
 
                         if (!db.ContainsKey(O))
                         {
@@ -487,7 +487,7 @@ namespace TranslationHelper.Main.Functions
                             db[O].Add(table.TableName, new Dictionary<int, string>());
                         }
 
-                        db[O][table.TableName].Add(r, row[THSettings.TranslationColumnName()] + string.Empty);
+                        db[O][table.TableName].Add(r, row[THSettings.TranslationColumnName] + string.Empty);
                     }
                 }
                 catch
@@ -509,8 +509,8 @@ namespace TranslationHelper.Main.Functions
             {
                 var dataSet = new DataSet();
                 dataSet.Tables.Add("DB");
-                dataSet.Tables["DB"].Columns.Add(THSettings.OriginalColumnName());
-                dataSet.Tables["DB"].Columns.Add(THSettings.TranslationColumnName());
+                dataSet.Tables["DB"].Columns.Add(THSettings.OriginalColumnName);
+                dataSet.Tables["DB"].Columns.Add(THSettings.TranslationColumnName);
 
                 foreach (var pair in dictionary) dataSet.Tables["DB"].Rows.Add(pair.Key, pair.Value);
 
@@ -579,7 +579,7 @@ namespace TranslationHelper.Main.Functions
             foreach (var DBFile in Directory.EnumerateFiles(dbDir, "*", SearchOption.AllDirectories))
             {
                 var ext = Path.GetExtension(DBFile);
-                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBFile.Contains("THTranslationCache") || DBFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(DBFile)) == THSettings.DBAutoSavesDirName())
+                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBFile.Contains("THTranslationCache") || DBFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(DBFile)) == THSettings.DBAutoSavesDirName)
                 {
                     continue;
                 }

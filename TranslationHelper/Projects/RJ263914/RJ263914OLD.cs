@@ -109,13 +109,13 @@ namespace TranslationHelper.Projects.RJ263914
                     else
                     {
                         AppData.CurrentProject.FilesContent.Tables.Add(tableName);
-                        AppData.CurrentProject.FilesContent.Tables[tableName].Columns.Add(THSettings.OriginalColumnName());
+                        AppData.CurrentProject.FilesContent.Tables[tableName].Columns.Add(THSettings.OriginalColumnName);
 
-                        AppData.CurrentProject.FilesContent.Tables[tableName].Columns.Add(THSettings.TranslationColumnName());
+                        AppData.CurrentProject.FilesContent.Tables[tableName].Columns.Add(THSettings.TranslationColumnName);
                         AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.AddItem(tableName)));
 
                         AppData.CurrentProject.FilesContentInfo.Tables.Add(tableName);
-                        AppData.CurrentProject.FilesContentInfo.Tables[tableName].Columns.Add(THSettings.OriginalColumnName());
+                        AppData.CurrentProject.FilesContentInfo.Tables[tableName].Columns.Add(THSettings.OriginalColumnName);
                     }
                 }
 

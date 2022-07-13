@@ -25,9 +25,9 @@
 //        public string THStraboutToolStripMenuItemName { get; set; } = "About";
 
 //        //Elements Datagridview
-//        public string THStrDGTranslationColumnName { get; set; } = THSettings.TranslationColumnName();
+//        public string THStrDGTranslationColumnName { get; set; } = THSettings.TranslationColumnName;
 
-//        public string THStrDGOriginalColumnName { get; set; } = THSettings.OriginalColumnName();
+//        public string THStrDGOriginalColumnName { get; set; } = THSettings.OriginalColumnName;
 
 //        //RPGMTransPatch strings
 //        public string THStrRPGMTransPatchInvalidVersionMsg { get; set; } = "Failed to identify version of patch";

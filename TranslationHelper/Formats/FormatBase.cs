@@ -200,8 +200,8 @@ namespace TranslationHelper.Formats
                 {
                     TableName = tablename
                 };
-                Data.Columns.Add(THSettings.OriginalColumnName());
-                Data.Columns.Add(THSettings.TranslationColumnName());
+                Data.Columns.Add(THSettings.OriginalColumnName);
+                Data.Columns.Add(THSettings.TranslationColumnName);
 
                 if (extraColumns != null && extraColumns.Length > 0)
                 {
@@ -223,8 +223,8 @@ namespace TranslationHelper.Formats
             //{
             //    tables.Add(tablename);
             //    var table = tables[tablename];
-            //    table.Columns.Add(THSettings.OriginalColumnName());
-            //    table.Columns.Add(THSettings.TranslationColumnName());
+            //    table.Columns.Add(THSettings.OriginalColumnName);
+            //    table.Columns.Add(THSettings.TranslationColumnName);
 
             //    if (extraColumns != null && extraColumns.Length > 0)
             //    {

@@ -37,7 +37,7 @@ namespace TranslationHelper.Functions
             //Settings.THConfigINI.WriteINI("Paths", "LastAutoSavePath", lastautosavepath); // write lastsavedpath
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;
+            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
             {
                 return;
@@ -46,7 +46,7 @@ namespace TranslationHelper.Functions
             //LogToFile("ocol=" + ocol);
             //оптимизация. Не искать колонку перевода, если она по стандарту первая
 
-            int ttranscol = THTempDS.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;
+            int ttranscol = THTempDS.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
             if (ttranscol == 0 || ttranscol == -1)
             {
                 return;
@@ -57,7 +57,7 @@ namespace TranslationHelper.Functions
             int trowstartindex = 0;
 
             int tcount = AppData.CurrentProject.FilesContent.Tables.Count;
-            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName()) + ":";
+            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
@@ -145,7 +145,7 @@ namespace TranslationHelper.Functions
         private void CompareLiteIfIdentical(DataSet tHTempDS)
         {
             int tcount = AppData.CurrentProject.FilesContent.Tables.Count;
-            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName()) + ":";
+            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
@@ -199,7 +199,7 @@ namespace TranslationHelper.Functions
             //timer.Start();
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;
+            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
             {
                 return;
@@ -207,7 +207,7 @@ namespace TranslationHelper.Functions
 
             //int RecordsCounter = 1;
             int tcount = AppData.CurrentProject.FilesContent.Tables.Count;
-            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName()) + ":";
+            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
@@ -307,14 +307,14 @@ namespace TranslationHelper.Functions
             //timer.Start();
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;
+            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
 
             //если вдруг колонка была только одна
             if (otranscol == 0 || otranscol == -1) return;
 
             //int RecordsCounter = 1;
             int tcount = AppData.CurrentProject.FilesContent.Tables.Count;
-            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName()) + ":";
+            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
             //проход по всем таблицам рабочего dataset
 
             bool DBTryToCheckLinesOfEachMultilineValue = Properties.Settings.Default.DBTryToCheckLinesOfEachMultilineValue;
@@ -413,7 +413,7 @@ namespace TranslationHelper.Functions
             //timer.Start();
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;
+            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
             {
                 return;
@@ -421,7 +421,7 @@ namespace TranslationHelper.Functions
 
             //int RecordsCounter = 1;
             int tcount = AppData.CurrentProject.FilesContent.Tables.Count;
-            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName()) + ":";
+            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
             //проход по всем таблицам рабочего dataset
 
             Parallel.For(0, tcount, t =>
@@ -587,7 +587,7 @@ namespace TranslationHelper.Functions
             //timer.Start();
 
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;
+            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
             {
                 return;
@@ -595,7 +595,7 @@ namespace TranslationHelper.Functions
 
             //int RecordsCounter = 1;
             int tcount = AppData.CurrentProject.FilesContent.Tables.Count;
-            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName()) + ":";
+            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
             //проход по всем таблицам рабочего dataset
             for (int t = 0; t < tcount; t++)
             {
@@ -660,7 +660,7 @@ namespace TranslationHelper.Functions
             Dictionary<string, string> tableData = AppData.CurrentProject.FilesContent.GetTableRowsDataToDictionary();
 
             //проход по всем таблицам рабочего dataset
-            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName()) + ":";
+            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
             //int tableDataKeysCount = tableData.Keys.Count;
             //int cur/* = 0*/;
             AppData.Main.ProgressInfo(true, infomessage);

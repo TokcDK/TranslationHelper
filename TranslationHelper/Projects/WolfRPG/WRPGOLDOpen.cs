@@ -60,8 +60,8 @@ namespace TranslationHelper.Projects.WolfRPG
             //    string txtFilename = Path.GetFileName(txtFile);
             //    THFilesElementsDataset.Tables.Add(txtFilename);
             //    THFilesElementsDatasetInfo.Tables.Add(txtFilename);
-            //    THFilesElementsDataset.Tables[txtFilename].Columns.Add(THSettings.OriginalColumnName());
-            //    THFilesElementsDatasetInfo.Tables[txtFilename].Columns.Add(THSettings.OriginalColumnName());
+            //    THFilesElementsDataset.Tables[txtFilename].Columns.Add(THSettings.OriginalColumnName);
+            //    THFilesElementsDatasetInfo.Tables[txtFilename].Columns.Add(THSettings.OriginalColumnName);
 
             //    string line;
             //    using (StreamReader sr = new StreamReader(txtFile))
@@ -88,14 +88,14 @@ namespace TranslationHelper.Projects.WolfRPG
                     using (StreamReader _file = new StreamReader(txtFile))
                     {
                         AppData.CurrentProject.FilesContent.Tables.Add(fname);
-                        AppData.CurrentProject.FilesContent.Tables[fname].Columns.Add(THSettings.OriginalColumnName());
-                        AppData.CurrentProject.FilesContent.Tables[fname].Columns.Add(THSettings.TranslationColumnName());
+                        AppData.CurrentProject.FilesContent.Tables[fname].Columns.Add(THSettings.OriginalColumnName);
+                        AppData.CurrentProject.FilesContent.Tables[fname].Columns.Add(THSettings.TranslationColumnName);
                         //THFilesElementsDataset.Tables[fname].Columns.Add("Context");
                         //THFilesElementsDataset.Tables[fname].Columns.Add("Advice");
                         //THFilesElementsDataset.Tables[fname].Columns.Add("Status");
 
                         AppData.CurrentProject.FilesContentInfo.Tables.Add(fname);
-                        AppData.CurrentProject.FilesContentInfo.Tables[fname].Columns.Add(THSettings.OriginalColumnName());
+                        AppData.CurrentProject.FilesContentInfo.Tables[fname].Columns.Add(THSettings.OriginalColumnName);
 
                         while (!_file.EndOfStream)   //Читаем до конца
                         {
@@ -203,8 +203,8 @@ namespace TranslationHelper.Projects.WolfRPG
 
                 AppData.CurrentProject.FilesContent.Tables.Add(txtFilename);
                 AppData.CurrentProject.FilesContentInfo.Tables.Add(txtFilename);
-                AppData.CurrentProject.FilesContent.Tables[txtFilename].Columns.Add(THSettings.OriginalColumnName());
-                AppData.CurrentProject.FilesContentInfo.Tables[txtFilename].Columns.Add(THSettings.OriginalColumnName());
+                AppData.CurrentProject.FilesContent.Tables[txtFilename].Columns.Add(THSettings.OriginalColumnName);
+                AppData.CurrentProject.FilesContentInfo.Tables[txtFilename].Columns.Add(THSettings.OriginalColumnName);
 
                 OpenWolfRPGMakerTextEHP(txtFile);
 
@@ -215,7 +215,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 }
                 else
                 {
-                    AppData.CurrentProject.FilesContent.Tables[txtFilename].Columns.Add(THSettings.TranslationColumnName());
+                    AppData.CurrentProject.FilesContent.Tables[txtFilename].Columns.Add(THSettings.TranslationColumnName);
                     AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.AddItem(txtFilename)));
                 }
             }
@@ -229,7 +229,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
             if (FolderName == "TextE" || FolderName == "TextH")
             {
-                //THFilesElementsDataset.Tables[0].Columns.Add(THSettings.TranslationColumnName());
+                //THFilesElementsDataset.Tables[0].Columns.Add(THSettings.TranslationColumnName);
                 using (StreamReader sr = new StreamReader(sPath, Encoding.GetEncoding(932)))
                 {
                     string line;
@@ -302,7 +302,7 @@ namespace TranslationHelper.Projects.WolfRPG
             if (FolderName == "TextE" || FolderName == "TextH")
             {
                 StringBuilder sb = new StringBuilder();
-                //THFilesElementsDataset.Tables[0].Columns.Add(THSettings.TranslationColumnName());
+                //THFilesElementsDataset.Tables[0].Columns.Add(THSettings.TranslationColumnName);
                 using (StreamReader sr = new StreamReader(sPath, Encoding.GetEncoding(932)))
                 {
                     string line;
@@ -358,8 +358,8 @@ namespace TranslationHelper.Projects.WolfRPG
                 {
                     StringBuilder buffer = new StringBuilder();
 
-                    int originalcolumnindex = AppData.CurrentProject.FilesContent.Tables[fileName].Columns[THSettings.OriginalColumnName()].Ordinal;
-                    int translationcolumnindex = AppData.CurrentProject.FilesContent.Tables[fileName].Columns[THSettings.TranslationColumnName()].Ordinal;
+                    int originalcolumnindex = AppData.CurrentProject.FilesContent.Tables[fileName].Columns[THSettings.OriginalColumnName].Ordinal;
+                    int translationcolumnindex = AppData.CurrentProject.FilesContent.Tables[fileName].Columns[THSettings.TranslationColumnName].Ordinal;
                     //int contextcolumnindex = THFilesElementsDatasetInfo.Tables[fileName].Columns["Context"].Ordinal;
 
                     AppData.Main.ProgressInfo(true, T._("saving file: ") + fileName);

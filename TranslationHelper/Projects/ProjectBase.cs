@@ -137,7 +137,7 @@ namespace TranslationHelper.Projects
             {
                 AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedFilePath);
                 AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedFilePath);
-                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName, ProjectName);
+                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, this.ProjectFolderName, ProjectName);
             }
         }
 

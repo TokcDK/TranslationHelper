@@ -78,7 +78,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         {
             if (value.Type != JTokenType.String) return false;
             if (string.IsNullOrWhiteSpace(value + "")) return false;
-            if (THSettings.SourceLanguageIsJapanese() && value.ToString().HaveMostOfRomajiOtherChars()) return false;
+            if (THSettings.SourceLanguageIsJapanese && value.ToString().HaveMostOfRomajiOtherChars()) return false;
 
             return true;
             //(!IsPluginsJS || (IsPluginsJS && !token.Path.StartsWith("parameters.",StringComparison.InvariantCultureIgnoreCase)))//translation of some parameters can break game

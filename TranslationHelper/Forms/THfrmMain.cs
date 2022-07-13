@@ -49,7 +49,7 @@ namespace TranslationHelper
 
             AppData.Init(this);
 
-            Properties.Settings.Default.ApplicationStartupPath = Application.StartupPath;
+            AppSettings.ApplicationStartupPath = Application.StartupPath;
             Properties.Settings.Default.ApplicationProductName = Application.ProductName;
             Properties.Settings.Default.NewLine = Environment.NewLine;
 
@@ -62,13 +62,13 @@ namespace TranslationHelper
             //https://stackoverflow.com/questions/91747/background-color-of-a-listbox-item-winforms
             THFilesList.SetDrawMode(DrawMode.OwnerDrawFixed);
 
-            THTranslationCachePath = THSettings.THTranslationCacheFilePath();
+            THTranslationCachePath = THSettings.THTranslationCacheFilePath;
 
             //THFileElementsDataGridView set doublebuffered to true
             SetDoublebuffered(true);
-            if (File.Exists(THSettings.THLogPath()) && new FileInfo(THSettings.THLogPath()).Length > 1000000)
+            if (File.Exists(THSettings.THLogPath) && new FileInfo(THSettings.THLogPath).Length > 1000000)
             {
-                File.Delete(THSettings.THLogPath());
+                File.Delete(THSettings.THLogPath);
             }
 
             FunctionsOpen.UpdateRecentFiles();
@@ -432,7 +432,7 @@ namespace TranslationHelper
 
             foreach (DataGridViewColumn Column in THFileElementsDataGridView.Columns)
             {
-                if (Column.Name != THSettings.TranslationColumnName() && Column.Name != THSettings.OriginalColumnName())
+                if (Column.Name != THSettings.TranslationColumnName && Column.Name != THSettings.OriginalColumnName)
                 {
                     Column.Visible = false;
                 }
@@ -491,9 +491,9 @@ namespace TranslationHelper
 
             if (THFileElementsDataGridView != null && THFileElementsDataGridView.Columns.Count > 1)
             {
-                THFileElementsDataGridView.Columns[THSettings.OriginalColumnName()].HeaderText = T._("Original");//THMainDGVOriginalColumnName;
-                THFileElementsDataGridView.Columns[THSettings.TranslationColumnName()].HeaderText = T._("Translation");//THMainDGVTranslationColumnName;
-                THFileElementsDataGridView.Columns[THSettings.OriginalColumnName()].ReadOnly = true;
+                THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].HeaderText = T._("Original");//THMainDGVOriginalColumnName;
+                THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].HeaderText = T._("Translation");//THMainDGVTranslationColumnName;
+                THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].ReadOnly = true;
                 THFiltersDataGridView.Enabled = true;
                 THSourceRichTextBox.Enabled = true;
                 THTargetRichTextBox.Enabled = true;
@@ -606,14 +606,14 @@ namespace TranslationHelper
 
                 THTargetRichTextBox.Clear();
 
-                if (string.IsNullOrEmpty(THFileElementsDataGridView.Rows[THFileElementsDataGridView.CurrentCell.RowIndex].Cells[THSettings.OriginalColumnName()].Value + string.Empty))
+                if (string.IsNullOrEmpty(THFileElementsDataGridView.Rows[THFileElementsDataGridView.CurrentCell.RowIndex].Cells[THSettings.OriginalColumnName].Value + string.Empty))
                 {
                     THSourceRichTextBox.Clear();
                 }
                 else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
                 {
                     //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
-                    THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[rowIndex].Cells[THSettings.OriginalColumnName()].Value + string.Empty);
+                    THSourceRichTextBox.Text = (THFileElementsDataGridView.Rows[rowIndex].Cells[THSettings.OriginalColumnName].Value + string.Empty);
                     //https://github.com/caguiclajmg/WanaKanaSharp
                     //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
                     //{
@@ -625,7 +625,7 @@ namespace TranslationHelper
                     //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
                 }
                 string TranslationCellValue;
-                if (string.IsNullOrEmpty(TranslationCellValue = THFileElementsDataGridView.Rows[rowIndex].Cells[THSettings.TranslationColumnName()].Value + string.Empty))
+                if (string.IsNullOrEmpty(TranslationCellValue = THFileElementsDataGridView.Rows[rowIndex].Cells[THSettings.TranslationColumnName].Value + string.Empty))
                 {
                     THTargetRichTextBox.Clear();
                 }
@@ -1387,7 +1387,7 @@ namespace TranslationHelper
             //        return;
             //    }
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
-            //    int cind = ProjectData.THFilesElementsDataset.Tables[THFilesList.GetSelectedIndex()].Columns[THSettings.OriginalColumnName()].Ordinal;//-поле untrans
+            //    int cind = ProjectData.THFilesElementsDataset.Tables[THFilesList.GetSelectedIndex()].Columns[THSettings.OriginalColumnName].Ordinal;//-поле untrans
             //    int tableindex = THFilesList.GetSelectedIndex();
             //    int[] selindexes = new int[1];
 
@@ -1424,7 +1424,7 @@ namespace TranslationHelper
             //try
             //{
             //    //координаты стартовой строк, колонки оригинала и номера таблицы
-            //    int cind = ProjectData.THFilesElementsDataset.Tables[0].Columns[THSettings.OriginalColumnName()].Ordinal;//-поле untrans
+            //    int cind = ProjectData.THFilesElementsDataset.Tables[0].Columns[THSettings.OriginalColumnName].Ordinal;//-поле untrans
             //    int tableindex = 0;
             //    int[] selindexes = new int[1];
 
@@ -1463,7 +1463,7 @@ namespace TranslationHelper
             //    //не менять, если значение текстбокса не поменялось
             //    if (THTargetRichTextBox.Text != ProjectData.TargetTextBoxPreValue)
             //    {
-            //        THFileElementsDataGridView.CurrentRow.Cells[THSettings.TranslationColumnName()].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
+            //        THFileElementsDataGridView.CurrentRow.Cells[THSettings.TranslationColumnName].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
             //    }
             //}
         }
@@ -1586,8 +1586,8 @@ namespace TranslationHelper
                 try
                 {
                     int tableIndex = THFilesList.GetSelectedIndex();
-                    int cind = AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
-                    int cindTrans = AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Original
+                    int cind = AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
+                    int cindTrans = AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Original
                     int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
                     for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
                     {
@@ -1950,7 +1950,7 @@ namespace TranslationHelper
                 //        bool changed = false;
                 //        for (int r = 0; r < ProjectData.THFilesElementsDataset.Tables[f].Rows.Count; r++)
                 //        {
-                //            if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r][THSettings.TranslationColumnName()] + string.Empty).Length == 0)
+                //            if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r][THSettings.TranslationColumnName] + string.Empty).Length == 0)
                 //            {
                 //            }
                 //            else
@@ -2092,8 +2092,8 @@ namespace TranslationHelper
             //else
             //{
             //    DataRelation dr = new DataRelation("ALL",
-            //         new DataColumn[] { THFilesElementsDataset.Tables[0].Columns[THSettings.OriginalColumnName()], THFilesElementsDataset.Tables[0].Columns[THSettings.TranslationColumnName()] },
-            //         new DataColumn[] { THFilesElementsDataset.Tables[1].Columns[THSettings.OriginalColumnName()], THFilesElementsDataset.Tables[1].Columns[THSettings.TranslationColumnName()] },
+            //         new DataColumn[] { THFilesElementsDataset.Tables[0].Columns[THSettings.OriginalColumnName], THFilesElementsDataset.Tables[0].Columns[THSettings.TranslationColumnName] },
+            //         new DataColumn[] { THFilesElementsDataset.Tables[1].Columns[THSettings.OriginalColumnName], THFilesElementsDataset.Tables[1].Columns[THSettings.TranslationColumnName] },
             //         false
             //                                        );
 
@@ -2434,8 +2434,8 @@ namespace TranslationHelper
             }
             ProjectFilesList = ProjectFilesList.Distinct().ToArray();
 
-            int cind = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
-            int cindTrans = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Original
+            int cind = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
+            int cindTrans = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Original
             //string[] Files = Directory.GetFiles(Properties.Settings.Default.THWorkProjectDir, "*.*", SearchOption.AllDirectories);
             //string[] Dirs = Directory.GetDirectories(Properties.Settings.Default.THWorkProjectDir, "*", SearchOption.AllDirectories);
             int tablesCount = AppData.CurrentProject.FilesContent.Tables.Count;
@@ -2542,10 +2542,10 @@ namespace TranslationHelper
             var ProjectDataTranslationRegexRules = new Dictionary<string, string>();
 
             //если файл с правилами существует
-            if (File.Exists(THSettings.TranslationRegexRulesFilePath()))
+            if (File.Exists(THSettings.TranslationRegexRulesFilePath))
             {
                 //читать файл с правилами
-                using (var rules = new StreamReader(THSettings.TranslationRegexRulesFilePath()))
+                using (var rules = new StreamReader(THSettings.TranslationRegexRulesFilePath))
                 {
                     //regex правило и результат из файла
                     var regexPattern = string.Empty;
@@ -2595,10 +2595,10 @@ namespace TranslationHelper
             var ProjectDataCellFixesRegexRules = new Dictionary<string, string>();
 
             //если файл с правилами существует
-            if (File.Exists(THSettings.CellFixesRegexRulesFilePath()))
+            if (File.Exists(THSettings.CellFixesRegexRulesFilePath))
             {
                 //читать файл с правилами
-                using (var rules = new StreamReader(THSettings.CellFixesRegexRulesFilePath()))
+                using (var rules = new StreamReader(THSettings.CellFixesRegexRulesFilePath))
                 {
                     //regex правило и результат из файла
                     var regexPattern = string.Empty;
@@ -2647,7 +2647,7 @@ namespace TranslationHelper
         {
             if (!Properties.Settings.Default.DGVCellInEditMode && (sender as RichTextBox).Focused && THFileElementsDataGridView.CurrentRow.Index > -1)
             {
-                THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells[THSettings.TranslationColumnName()].Value = (sender as RichTextBox).Text;
+                THFileElementsDataGridView.Rows[Properties.Settings.Default.DGVSelectedRowIndex].Cells[THSettings.TranslationColumnName].Value = (sender as RichTextBox).Text;
             }
 
             TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength((sender as RichTextBox).Text).ToString(CultureInfo.InvariantCulture);
@@ -2711,17 +2711,17 @@ namespace TranslationHelper
 
         private void OpenTranslationRulesFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists(THSettings.TranslationRegexRulesFilePath()))
+            if (File.Exists(THSettings.TranslationRegexRulesFilePath))
             {
-                _ = Process.Start("explorer.exe", THSettings.TranslationRegexRulesFilePath());
+                _ = Process.Start("explorer.exe", THSettings.TranslationRegexRulesFilePath);
             }
         }
 
         private void OpenCellFixesFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists(THSettings.CellFixesRegexRulesFilePath()))
+            if (File.Exists(THSettings.CellFixesRegexRulesFilePath))
             {
-                _ = Process.Start("explorer.exe", THSettings.CellFixesRegexRulesFilePath());
+                _ = Process.Start("explorer.exe", THSettings.CellFixesRegexRulesFilePath);
             }
         }
 
@@ -3029,13 +3029,13 @@ namespace TranslationHelper
                 {
                     foreach (DataRow row in table.Rows)
                     {
-                        var cellValue = row[THSettings.TranslationColumnName()] + "";
+                        var cellValue = row[THSettings.TranslationColumnName] + "";
                         if (cellValue.Length > 0) continue;
 
-                        var cellOriginalValue = row[THSettings.OriginalColumnName()] + "";
+                        var cellOriginalValue = row[THSettings.OriginalColumnName] + "";
                         if (!pairs.ContainsKey(cellOriginalValue)) continue;
 
-                        row[THSettings.TranslationColumnName()] = pairs[cellOriginalValue];
+                        row[THSettings.TranslationColumnName] = pairs[cellOriginalValue];
                     }
                 }
             }

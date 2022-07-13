@@ -12,7 +12,7 @@ namespace TranslationHelper.Data
         /// startup path of the application
         /// </summary>
         /// <returns></returns>
-        internal static string ApplicationStartupPath => Settings.Default.ApplicationStartupPath;
+        internal static string ApplicationStartupPath => AppSettings.ApplicationStartupPath;
 
 
         internal static string RPGMakerMVSkipCodesFilePath => Path.Combine(AppData.CurrentProject.SelectedGameDir, "skipcodes.txt");

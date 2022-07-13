@@ -41,7 +41,7 @@ namespace TranslationHelper.Main.Functions
 
             //LogToFile("PasteClipboardValue Enter 1");
             int origcolindex = AppData.CurrentProject.OriginalColumnIndex;
-            //int transcolindex = THFileElementsDataGridView.Columns[THSettings.TranslationColumnName()].Index;
+            //int transcolindex = THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].Index;
 
             //Get the starting Cell
             DataGridViewCell startCell = GetStartCell(THFileElementsDataGridView);
