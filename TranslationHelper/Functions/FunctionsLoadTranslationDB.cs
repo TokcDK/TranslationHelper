@@ -22,7 +22,7 @@ namespace TranslationHelper.Functions
 
         internal void THLoadDBCompare(DataSet THTempDS)
         {
-            if (!Properties.Settings.Default.IsFullComprasionDBloadEnabled && FunctionsTable.IsDataSetsElementsCountIdentical(AppData.CurrentProject.FilesContent, THTempDS))
+            if (!AppSettings.IsFullComprasionDBloadEnabled && FunctionsTable.IsDataSetsElementsCountIdentical(AppData.CurrentProject.FilesContent, THTempDS))
             {
                 CompareLiteIfIdentical(THTempDS);
                 return;
@@ -112,7 +112,7 @@ namespace TranslationHelper.Functions
                                                         AppData.CurrentProject.FilesContent.Tables[t].Rows[r][otranscol] = DBCellTranslation;
                                                         TranslationWasSet = true;
 
-                                                        trowstartindex = Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
+                                                        trowstartindex = AppSettings.IsFullComprasionDBloadEnabled ? 0 : r1;//запоминание последнего индекса строки, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
                                                         break;
                                                     }
                                                 }
@@ -123,7 +123,7 @@ namespace TranslationHelper.Functions
                                         }
                                         if (TranslationWasSet)//если перевод был присвоен, выйти из цикла таблицы с переводом
                                         {
-                                            ttablestartindex = Properties.Settings.Default.IsFullComprasionDBloadEnabled ? 0 : t1;//запоминание последнего индекса таблицы, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
+                                            ttablestartindex = AppSettings.IsFullComprasionDBloadEnabled ? 0 : t1;//запоминание последнего индекса таблицы, если включена медленная полная рекурсивная проверка IsFullComprasionDBloadEnabled, сканировать с нуля
                                             break;
                                         }
                                         else

@@ -25,30 +25,6 @@ namespace TranslationHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AutotranslationForSimular {
-            get {
-                return ((bool)(this["AutotranslationForSimular"]));
-            }
-            set {
-                this["AutotranslationForSimular"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsFullComprasionDBloadEnabled {
-            get {
-                return ((bool)(this["IsFullComprasionDBloadEnabled"]));
-            }
-            set {
-                this["IsFullComprasionDBloadEnabled"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("https://translate.google.com/?ie=UTF-8&op=translate&sl=auto&tl=en&text={text}")]
         public string WebTranslationLink {
             get {

@@ -357,7 +357,7 @@ namespace TranslationHelper.Projects
 
         internal override void AfterTranslationWriteActions()
         {
-            System.Diagnostics.Process.Start("explorer.exe", Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(AppData.CurrentProject.ProjectWorkDir) + "_translated"));
+            Process.Start("explorer.exe", Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(AppData.CurrentProject.ProjectWorkDir) + "_translated"));
         }
     }
 }

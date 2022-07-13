@@ -18,8 +18,8 @@ namespace TranslationHelper.INISettings
 
         static int SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.THOptionLineCharLimit;
-            set => TranslationHelper.Properties.Settings.Default.THOptionLineCharLimit = value;
+            get => Properties.Settings.Default.THOptionLineCharLimit;
+            set => Properties.Settings.Default.THOptionLineCharLimit = value;
         }
 
         internal override void Set(bool SetObject = false)

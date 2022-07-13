@@ -27,7 +27,7 @@ namespace TranslationHelper.Main.Functions
         {
             if (Properties.Settings.Default.EnableTranslationCache && !Properties.Settings.Default.IsTranslationHelperWasClosed && translationCacheDataSet.Tables[0].Rows.Count > 0)
             {
-                FunctionsDBFile.WriteDBFile(translationCacheDataSet, translationCachePath);
+                WriteDBFile(translationCacheDataSet, translationCachePath);
                 //THTranslationCache.Reset();
             }
         }
@@ -154,7 +154,7 @@ namespace TranslationHelper.Main.Functions
         internal static string GetDBCompressionExt()
         {
             //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"));
-            if (TranslationHelper.Properties.Settings.Default.DBCompression) return "." + FunctionsInterfaces.GetCurrentDBFormat().Ext;
+            if (Properties.Settings.Default.DBCompression) return "." + FunctionsInterfaces.GetCurrentDBFormat().Ext;
             //MessageBox.Show("Default .xml");
             return ".xml";
         }

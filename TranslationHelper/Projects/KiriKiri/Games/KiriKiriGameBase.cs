@@ -436,7 +436,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                     if (!File.Exists(patch))
                     {
-                        System.Windows.Forms.MessageBox.Show("Patch was not created. Try to create it with bat file in work dir");
+                        MessageBox.Show("Patch was not created. Try to create it with bat file in work dir");
                         System.Diagnostics.Process.Start("Explorer.exe", AppData.CurrentProject.ProjectWorkDir);
                     }
                 }

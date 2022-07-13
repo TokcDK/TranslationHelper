@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.SearchRowIssueOptionsCheckProjectSpecific;
-            set => TranslationHelper.Properties.Settings.Default.SearchRowIssueOptionsCheckProjectSpecific = value;
+            get => Properties.Settings.Default.SearchRowIssueOptionsCheckProjectSpecific;
+            set => Properties.Settings.Default.SearchRowIssueOptionsCheckProjectSpecific = value;
         }
 
         internal override void Set(bool SetObject = false)

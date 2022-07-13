@@ -2,12 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TranslationHelper.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="AutotranslationForSimular" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="IsFullComprasionDBloadEnabled" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="WebTranslationLink" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://translate.google.com/?ie=UTF-8&amp;op=translate&amp;sl=auto&amp;tl=en&amp;text={text}</Value>
     </Setting>

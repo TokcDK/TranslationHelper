@@ -10,9 +10,9 @@ namespace TranslationHelper.tests
 
         internal static void DecryptXor()
         {
-            var nscripttxt = System.Text.Encoding.GetEncoding(932).GetString(File.ReadAllBytes(dat).XorUnxor())/*.Replace("\n", Environment.NewLine)*/;
+            var nscripttxt = Encoding.GetEncoding(932).GetString(File.ReadAllBytes(dat).XorUnxor())/*.Replace("\n", Environment.NewLine)*/;
 
-            File.WriteAllText(dat + ".OpenSaveTest.txt", nscripttxt, System.Text.Encoding.GetEncoding(932));
+            File.WriteAllText(dat + ".OpenSaveTest.txt", nscripttxt, Encoding.GetEncoding(932));
         }
         internal static void EncryptXor()
         {
@@ -20,7 +20,7 @@ namespace TranslationHelper.tests
             File.Move(dat + ".OpenSaveTest.txt", dat + ".OpenSaveTestOLD.txt");
             //File.WriteAllText(dat + ".OpenSaveTest.txt", filecontent, System.Text.Encoding.GetEncoding(932));
             //var nscriptdat = System.Text.Encoding.GetEncoding(932).GetString(System.Text.Encoding.GetEncoding(932).GetBytes(filecontent/*.Replace(Environment.NewLine, "\n")*/).XorUnxor());
-            var nscriptdatbytes = System.Text.Encoding.GetEncoding(932).GetBytes(filecontent.Replace(Environment.NewLine, "\n")).XorUnxor();
+            var nscriptdatbytes = Encoding.GetEncoding(932).GetBytes(filecontent.Replace(Environment.NewLine, "\n")).XorUnxor();
             File.WriteAllBytes(dat, nscriptdatbytes);
         }
 

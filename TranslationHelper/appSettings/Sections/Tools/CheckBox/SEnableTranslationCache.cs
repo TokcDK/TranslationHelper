@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.EnableTranslationCache;
-            set => TranslationHelper.Properties.Settings.Default.EnableTranslationCache = value;
+            get => Properties.Settings.Default.EnableTranslationCache;
+            set => Properties.Settings.Default.EnableTranslationCache = value;
         }
 
         internal override void Set(bool SetObject = false)

@@ -46,9 +46,9 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <returns></returns>
         public static string GetCodeName(int currentEventCode)
         {
-            if (RPGMVUtils.EventCommandCodes.ContainsKey(currentEventCode))
+            if (EventCommandCodes.ContainsKey(currentEventCode))
             {
-                var eventName = RPGMVUtils.EventCommandCodes[currentEventCode];
+                var eventName = EventCommandCodes[currentEventCode];
                 if (eventName.Length > 0)
                 {
                     return "\r\nCommand action: \"" + eventName + "\"";

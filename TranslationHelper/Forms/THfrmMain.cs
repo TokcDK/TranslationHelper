@@ -1615,7 +1615,7 @@ namespace TranslationHelper
         bool cellchanged;
         public async void SetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, bool forcerun = true, bool forcevalue = false)
         {
-            if (forcevalue || (Properties.Settings.Default.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
+            if (forcevalue || (AppSettings.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
                 await Task.Run(()=> AutoSameForSimularUtils.Set(InputTableIndex, InputRowIndex, forcevalue)).ConfigureAwait(false);
 
@@ -2890,7 +2890,7 @@ namespace TranslationHelper
                 {
                     var dict = new Dictionary<string, string>();
                     AppData.Main.ProgressInfo(true, T._("Loading") + ": " + T._("Static translations") + "-" + "XUA");
-                    System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//tls12 for github
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//tls12 for github
                     var xuaStatic = wc.DownloadString(new Uri("https://github.com/bbepis/XUnity.AutoTranslator/raw/master/src/XUnity.AutoTranslator.Plugin.Core/Translations/StaticTranslations.txt"));
                     foreach (var line in xuaStatic.SplitToLines())
                     {

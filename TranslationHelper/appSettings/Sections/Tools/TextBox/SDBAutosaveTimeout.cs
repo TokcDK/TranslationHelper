@@ -18,8 +18,8 @@ namespace TranslationHelper.INISettings
 
         static int SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.DBAutoSaveTimeout;
-            set => TranslationHelper.Properties.Settings.Default.DBAutoSaveTimeout = value;
+            get => Properties.Settings.Default.DBAutoSaveTimeout;
+            set => Properties.Settings.Default.DBAutoSaveTimeout = value;
         }
 
         internal override void Set(bool SetObject = false)

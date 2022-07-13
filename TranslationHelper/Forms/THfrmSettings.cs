@@ -236,7 +236,7 @@ namespace TranslationHelper
         //{
         //    get => THConfigINI.KeyExists("THOptionAutotranslationForIdenticalCheckBox.Checked", "Tools")
         //            ? bool.Parse(THConfigINI.ReadINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked"))
-        //            : Properties.Settings.Default.AutotranslationForSimular;
+        //            : AppSettings.AutotranslationForSimular;
         //    set => THConfigINI.WriteINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked", value.ToString(CultureInfo.InvariantCulture));
         //}
 
@@ -302,7 +302,7 @@ namespace TranslationHelper
         private void THOptionAutotranslationForIdenticalCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             SetValue((sender as CheckBox).Name);
-            //Properties.Settings.Default.AutotranslationForSimular = THOptionAutotranslationForSimularCheckBox.Checked;
+            //AppSettings.AutotranslationForSimular = THOptionAutotranslationForSimularCheckBox.Checked;
             //AutotranslationForIdenticalINI = THOptionAutotranslationForSimularCheckBox.Checked;
         }
 
@@ -329,7 +329,7 @@ namespace TranslationHelper
         private void FullComparasionDBload_CheckedChanged(object sender, EventArgs e)
         {
             SetValue((sender as CheckBox).Name);
-            //Properties.Settings.Default.IsFullComprasionDBloadEnabled = THOptionFullComprasionDBload.Checked;
+            //AppSettings.IsFullComprasionDBloadEnabled = THOptionFullComprasionDBload.Checked;
             //FullComprasionDBloadINI = THOptionFullComprasionDBload.Checked;
         }
 

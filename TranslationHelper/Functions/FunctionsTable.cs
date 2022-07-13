@@ -256,7 +256,7 @@ namespace TranslationHelper.Main.Functions
                 {
                     using (var Table = DS.Tables[0])
                     {
-                        if (FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(Table, Input))
+                        if (GetAlreadyAddedInTableAndTableHasRowsColumns(Table, Input))
                         {
                             var RowsCount = Table.Rows.Count;
                             for (int i = 0; i < RowsCount; i++)
