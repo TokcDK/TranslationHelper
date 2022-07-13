@@ -112,7 +112,7 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
 
-        internal static string ResDirPath2 => Path.GetFullPath(@".\" + ResDirName);
+        internal static string ResDirPathRelative => Path.GetFullPath(@".\" + ResDirName);
 
 
         internal static string WorkDirName => "Work";
@@ -125,7 +125,7 @@ namespace TranslationHelper.Data
         internal static string WorkDirPath => Path.Combine(ApplicationStartupPath, WorkDirName);
 
 
-        internal static string WorkDirPath2 => @".\" + WorkDirName;
+        internal static string WorkDirPathRelative => @".\" + WorkDirName;
 
 
         internal static string RulesDirName => "rules";
@@ -217,7 +217,7 @@ namespace TranslationHelper.Data
 
         internal static string PythonPath => Path.Combine(ResDirPath, PythonDirName);
 
-        internal static string PythonPath2 => @".\" + ResDirName + @"\" + PythonDirName;
+        internal static string PythonPathRelative => @".\" + ResDirName + @"\" + PythonDirName;
 
 
         internal static string PythonExePath => Path.Combine(PythonPath, "python.exe");
@@ -229,19 +229,19 @@ namespace TranslationHelper.Data
         internal static string TranslationColumnName => "Translation";
 
         
-        internal static string Python37ExePath2 => PythonPath2+ @"\python.exe";
+        internal static string Python37ExePathRelative => PythonPathRelative+ @"\python.exe";
 
         
         internal static string SCPackerPath => Path.Combine(ResDirPath, "scpacker");
 
 
-        internal static string SCPackerPath2 => @".\" + ResDirName + @"\scpacker";
+        internal static string SCPackerPathRelative => @".\" + ResDirName + @"\scpacker";
 
 
         internal static string SCPackerPYPath => Path.Combine(ResDirPath, "scpacker", "scpacker.py");
 
         
-        internal static string SCPackerPYPath2 => SCPackerPath2+ @"\scpacker.py";
+        internal static string SCPackerPYPath2 => SCPackerPathRelative+ @"\scpacker.py";
 
 
         internal static string THTranslationCacheFileName => "THTranslationCache.cmx";
