@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
@@ -27,17 +24,11 @@ namespace TranslationHelper.Projects.RPGMMV
             ListOfJS = JSBase.GetListOfJSTypes();
         }
 
+        protected virtual bool HasWWWDir { get; } = true;
+
         internal override bool Check()
         {
-            if (Path.GetExtension(AppData.SelectedFilePath) == ".exe")
-            {
-                if (File.Exists(Path.Combine(AppData.CurrentProject.SelectedDir, "www", "data", "system.json")))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return IsExe() && File.Exists(Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "", "data", "system.json"));
         }
 
         internal override string Filters => GameExeFilter;
@@ -48,8 +39,10 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override bool IsTestRunEnabled => true;
 
+        protected static string WWWDir;
         public override bool Open()
         {
+            WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
             return ParseProjectFiles();
         }
 
@@ -101,7 +94,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 if (ParseOtherQuotedJsPlugins(hardcodedJS, skipJSList)) isAnyFileCompleted = true;
 
                 //Proceed json-files
-                if(ParseJsons()) isAnyFileCompleted = true;
+                if (ParseJsons()) isAnyFileCompleted = true;
 
                 //other strings
                 if (ParseOther()) isAnyFileCompleted = true;
@@ -114,13 +107,13 @@ namespace TranslationHelper.Projects.RPGMMV
 
         private bool ParseOther()
         {
-            var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(AppData.CurrentProject.SelectedDir, "www", "data/")));
+            var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(WWWDir, "data/")));
             return OpenSaveFilesBase(mvdatadir, typeof(ExternMessageCSV), "*.csv");
         }
 
         protected virtual bool ParseJsons()
         {
-            var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(AppData.CurrentProject.SelectedDir, "www", "data/")));
+            var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(WWWDir, "data/")));
             return OpenSaveFilesBase(mvdatadir, MVJsonFormats(), MVJsonFormatsMasks());
             //foreach (FileInfo file in mvdatadir.GetFiles("*.json")) try { if (ParseRPGMakerMVjson(file.FullName)) isAnyFileCompleted = true; } catch { }
         }
@@ -144,7 +137,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 var js = (IUseJSLocationInfo)Activator.CreateInstance(jsType); // create instance of class using JSLocationInfo
 
-                var filePath = Path.Combine(AppData.CurrentProject.SelectedDir, "www", "js", js.JSSubfolder, js.JSName);
+                var filePath = Path.Combine(WWWDir, "js", js.JSSubfolder, js.JSName);
 
                 if (!File.Exists(filePath)) continue;
 
@@ -167,8 +160,8 @@ namespace TranslationHelper.Projects.RPGMMV
                     }
                     catch { }
                 }
-                catch 
-                { 
+                catch
+                {
                 }
             }
 
@@ -183,7 +176,7 @@ namespace TranslationHelper.Projects.RPGMMV
         private bool ParseOtherQuotedJsPlugins(HashSet<string> hardcodedJS, HashSet<string> skipJSList)
         {
             bool isAnyFileCompleted = false;
-            foreach (var jsFileInfo in Directory.EnumerateFiles(Path.Combine(AppData.CurrentProject.SelectedGameDir, "www", "js", "plugins"), "*.js"))
+            foreach (var jsFileInfo in Directory.EnumerateFiles(Path.Combine(WWWDir, "js", "plugins"), "*.js"))
             {
                 string jsName = Path.GetFileName(jsFileInfo);
 
@@ -221,7 +214,7 @@ namespace TranslationHelper.Projects.RPGMMV
         private bool ParseFontsCS()
         {
             AppData.Main.ProgressInfo(true, ParseFileMessage + "gamefont.css");
-            var filePath = Path.Combine(AppData.CurrentProject.SelectedDir, "www", "fonts", "gamefont.css");
+            var filePath = Path.Combine(WWWDir, "fonts", "gamefont.css");
 
             if (!File.Exists(filePath)) return false;
 
@@ -238,8 +231,8 @@ namespace TranslationHelper.Projects.RPGMMV
                     return true;
                 }
             }
-            catch 
-            { 
+            catch
+            {
             }
 
             return false;
@@ -310,6 +303,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
         public override bool Save()
         {
+            if(string.IsNullOrWhiteSpace(WWWDir)) WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
+            
             return ParseProjectFiles();
         }
 
@@ -337,6 +332,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override bool BakCreate()
         {
+            if (string.IsNullOrWhiteSpace(WWWDir)) WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
+
             BakRestore();
 
             return BackupRestorePaths(BakPaths);
@@ -382,6 +379,8 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override bool BakRestore()
         {
+            if (string.IsNullOrWhiteSpace(WWWDir)) WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
+
             RestoreFromBakIfNeedData();
             foreach (var JS in ListOfJS)
             {
@@ -396,7 +395,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// </summary>
         internal static void RestoreFromBakIfNeedData()
         {
-            var dataPath = Path.Combine(AppData.CurrentProject.SelectedDir, "www", "data");
+            var dataPath = Path.Combine(WWWDir, "data");
             if (Directory.Exists(dataPath + "_bak"))
             {
                 try
@@ -413,13 +412,13 @@ namespace TranslationHelper.Projects.RPGMMV
                 }
             }
 
-            if (File.Exists(Path.Combine(AppData.CurrentProject.SelectedDir, "www", "fonts", "gamefont.css.bak")))
+            if (File.Exists(Path.Combine(WWWDir, "fonts", "gamefont.css.bak")))
             {
                 try
                 {
-                    File.Delete(Path.Combine(AppData.CurrentProject.SelectedDir, "www", "fonts", "gamefont.css"));
-                    File.Move(Path.Combine(AppData.CurrentProject.SelectedDir, "www", "fonts", "gamefont.css.bak")
-                        , Path.Combine(AppData.CurrentProject.SelectedDir, "www", "fonts", "gamefont.css")
+                    File.Delete(Path.Combine(WWWDir, "fonts", "gamefont.css"));
+                    File.Move(Path.Combine(WWWDir, "fonts", "gamefont.css.bak")
+                        , Path.Combine(WWWDir, "fonts", "gamefont.css")
                         );
                 }
                 catch
@@ -435,7 +434,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <param name="JS"></param>
         internal static void RestoreFromBakIfNeedJS(JSBase JS)
         {
-            string jsPath = Path.Combine(AppData.CurrentProject.SelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
+            string jsPath = Path.Combine(WWWDir, "js", JS.JSSubfolder, JS.JSName);
             if (File.Exists(jsPath + ".bak"))
             {
                 try
