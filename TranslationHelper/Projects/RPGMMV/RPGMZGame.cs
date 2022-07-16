@@ -32,5 +32,12 @@ namespace TranslationHelper.Projects.RPGMMV
                 typeof(JsonWeapons),
             };
         }
+
+        protected override string[] BakPaths => new string[]
+        {
+                @".\data",
+                @".\fonts",
+                @".\js"
+        };
     }
 }

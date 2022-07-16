@@ -323,7 +323,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <summary>
         /// data, font and js folders
         /// </summary>
-        readonly string[] BakPaths = new string[]
+        protected virtual string[] BakPaths { get; } = new string[]
         {
                 @".\www\data",
                 @".\www\fonts",
