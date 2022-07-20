@@ -2,7 +2,6 @@
 using System.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.WolfRPG.WolfTransCSharp;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.WolfRPG
 {
@@ -16,13 +15,14 @@ namespace TranslationHelper.Projects.WolfRPG
         private bool OpenSave()
         {
             ExtractWolfFiles();
-            bool[] b = new bool[] { OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "MapData"), typeof(MPS), "*.mps")
-                ,
-                OpenSaveFilesBase(new DirectoryInfo(Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "BasicData")), typeof(Database), "*.project", exclusions: new string[] { "SysDataBaseBasic.project" })
-                ,
-                OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "BasicData"), typeof(CommonEvents), "CommonEvent.dat")
-                ,
-                OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt")
+            bool[] b = new bool[] { 
+                OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "MapData"), typeof(MPS), "*.mps")
+                ,OpenSaveFilesBase(new DirectoryInfo(Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "BasicData")), typeof(Database), "*.project", exclusions: new string[] { "SysDataBaseBasic.project" })
+                ,OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "BasicData"), typeof(CommonEvents), "CommonEvent.dat")
+                ,OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt")
+                ,OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "TextE"), typeof(Formats.WolfRPG.TextEPH), "*.txt")
+                ,OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "TextH"), typeof(Formats.WolfRPG.TextEPH), "*.txt")
+                ,OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "TextP"), typeof(Formats.WolfRPG.TextEPH), "*.txt")
                 };
             return b.Any(p => p == true);
 
