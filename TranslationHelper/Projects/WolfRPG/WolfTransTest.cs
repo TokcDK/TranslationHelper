@@ -15,6 +15,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
         private bool OpenSave()
         {
+            ExtractWolfFiles();
             bool[] b = new bool[] { OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "MapData"), typeof(MPS), "*.mps")
                 ,
                 OpenSaveFilesBase(new DirectoryInfo(Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "BasicData")), typeof(Database), "*.project", exclusions: new string[] { "SysDataBaseBasic.project" })
