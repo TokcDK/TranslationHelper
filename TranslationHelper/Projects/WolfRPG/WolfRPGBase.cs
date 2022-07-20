@@ -1,5 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using TranslationHelper.Data;
+using TranslationHelper.Extensions;
+using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.ProjectMenus;
 using TranslationHelper.Projects.WolfRPG.Menus;
 
@@ -16,6 +23,67 @@ namespace TranslationHelper.Projects.WolfRPG
                 {"\\cdb[", @"\\\\cdb\[[^:]+:[^:]+:[^:\]]+\]"},
                 {"\\udb[", @"\\\\udb\[[^:]+:[^:]+:[^:\]]+\]"}
             };
+        }
+        internal override bool Check()
+        {
+            string d;
+            return IsExe()
+                && (File.Exists(Path.Combine(d = Path.GetDirectoryName(AppData.SelectedFilePath), "DATA.wolf"))
+                || FunctionsFileFolder.IsInDirExistsAnyFile(d = Path.GetDirectoryName(AppData.SelectedFilePath), "*.wolf", recursive: true)
+                || (Directory.Exists(d = Path.Combine(d, "Data")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.wolf", recursive: true))
+                || (Directory.Exists(d = Path.Combine(d, "MapData")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.mps", recursive: true))
+                || (Directory.Exists(d = Path.Combine(d, "BasicData")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.dat", recursive: true))
+                );
+        }
+
+        protected bool ExtractWolfFiles()
+        {
+            var ret = false;
+
+            try
+            {
+                var progressMessageTitle = "Wolf archive" + " " + (OpenFileMode ? T._("Create patch") : T._("Write patch")) + ".";
+
+                var dataPath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data");
+
+                //decode wolf files
+                if (OpenFileMode)
+                {
+                    //var wolfextractor = THSettings.WolfRPGExtractorExePath();
+                    var wolfextractor = THSettings.WolfdecExePath;
+                    foreach (var wolfFile in Directory.EnumerateFiles(AppData.CurrentProject.SelectedGameDir, "*.wolf", SearchOption.AllDirectories))
+                    {
+                        var nameNoExt = Path.GetFileNameWithoutExtension(wolfFile).ToLowerInvariant();
+                        if (nameNoExt.Contains("cg")
+                            || nameNoExt.Contains("anime")
+                            || nameNoExt.Contains("bgm")
+                            || nameNoExt.Contains("se")
+                            || nameNoExt.Contains("me")
+                            || nameNoExt.Contains("voice")
+                            || nameNoExt.Contains("music")
+                            || nameNoExt.Contains("picture")
+                            || nameNoExt.Contains("graphic")
+                            || nameNoExt.Contains("effect")
+                            ) continue;
+
+                        var extractedDirPath = new DirectoryInfo(Path.Combine(dataPath, Path.GetFileNameWithoutExtension(wolfFile)));
+                        if (extractedDirPath.Exists && !extractedDirPath.IsEmpty()) continue;
+
+                        //.mps, .dat, .project
+                        AppData.Main.ProgressInfo(true, progressMessageTitle + T._("Extract") + " " + Path.GetFileName(wolfFile));
+                        if (FunctionsProcess.RunProcess(wolfextractor, "\"" + wolfFile + "\""))
+                        {
+                            ret = true;
+                            File.Move(wolfFile, wolfFile + ".bak");
+                        }
+                    }
+
+                    if (!Directory.Exists(dataPath)) return false;
+                }
+            }
+            catch { }
+
+            return ret;
         }
 
         internal override string ProjectFolderName => "WolfRPG";

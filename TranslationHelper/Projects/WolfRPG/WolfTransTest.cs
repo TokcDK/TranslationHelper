@@ -8,18 +8,7 @@ namespace TranslationHelper.Projects.WolfRPG
 {
     internal class WolfTransTest : WolfRPGBase
     {
-        internal override bool Check()
-        {
-            string d;
-            return Path.GetExtension(AppData.SelectedFilePath) == ".exe"
-                && (FunctionsFileFolder.IsInDirExistsAnyFile(d = Path.GetDirectoryName(AppData.SelectedFilePath), "*.wolf", recursive: true)
-                || (Directory.Exists(d = Path.Combine(d, "Data")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.wolf", recursive: true))
-                || (Directory.Exists(d = Path.Combine(d, "MapData")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.mps", recursive: true))
-                || (Directory.Exists(d = Path.Combine(d, "BasicData")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.dat", recursive: true))
-                );
-        }
-
-        internal override string Name => "Wolftrans open test";
+        internal override string Name => "Wolftrans new";
 
         public override bool Open() => OpenSave();
         public override bool Save() => OpenSave();
