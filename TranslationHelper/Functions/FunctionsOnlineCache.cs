@@ -44,8 +44,14 @@ namespace TranslationHelper.Functions
                    && AppData.AllDBmerged.ContainsKey(trimmed)
                    && !string.IsNullOrWhiteSpace(AppData.AllDBmerged[trimmed]))
                 {
-                    var ind = keyValue.IndexOf(trimmed);
-                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, AppData.AllDBmerged[trimmed]);
+                    var ind = keyValue.IndexOf(trimmed); //sometimes inex is -1 of 'え' in 'え゛？' for example
+                    try
+                    {
+                        return keyValue.Remove(ind, trimmed.Length).Insert(ind, AppData.AllDBmerged[trimmed]);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                    }
                 }
                 else if (
                     trimmed.Length > 0
@@ -55,7 +61,13 @@ namespace TranslationHelper.Functions
                     && !string.IsNullOrWhiteSpace(cache[trimmed]))
                 {
                     var ind = keyValue.IndexOf(trimmed);
-                    return keyValue.Remove(ind, trimmed.Length).Insert(ind, cache[trimmed]);
+                    try
+                    {
+                        return keyValue.Remove(ind, trimmed.Length).Insert(ind, cache[trimmed]);
+                    }
+                    catch(ArgumentException ex)
+                    {
+                    }
                 }
 
                 return string.Empty;
