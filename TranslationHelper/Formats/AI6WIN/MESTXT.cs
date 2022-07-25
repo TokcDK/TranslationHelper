@@ -13,6 +13,8 @@
                 if (SaveFileMode) ParseData.Line = "#1-STR_PRIMARY" + "\r\n" + "[\"" + s + "\"]";
             }
 
+            SaveModeAddLine();
+
             return KeywordActionAfter.Continue;
         }
     }
