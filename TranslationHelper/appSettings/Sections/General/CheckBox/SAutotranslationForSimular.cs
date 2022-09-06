@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.AutotranslationForSimular;
-            set => TranslationHelper.Properties.Settings.Default.AutotranslationForSimular = value;
+            get => AppSettings.AutotranslationForSimular;
+            set => AppSettings.AutotranslationForSimular = value;
         }
 
         internal override void Set(bool SetObject = false)

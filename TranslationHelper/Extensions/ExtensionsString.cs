@@ -102,7 +102,7 @@ namespace TranslationHelper.Extensions
                     catch (System.ArgumentException ex)
                     {
                         log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
-                        AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
+                        AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName);
                         continue;
                     }
 
@@ -300,17 +300,17 @@ namespace TranslationHelper.Extensions
             {
                 return Line;
             }
-            //return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+            //return string.Join(AppSettings.ProjectNewLineSymbol
             //    , SplitLineIfBeyondOfLimit(Trigger.Length > 0 ? newLine : Line, Limit)
             //    ) + Trigger;
-            //newLine = string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+            //newLine = string.Join(AppSettings.ProjectNewLineSymbol
             //    , SplitLineIfBeyondOfLimit(newLine, Limit)
             //    ) + Trigger;
-            //return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+            //return string.Join(AppSettings.ProjectNewLineSymbol
             //    , newLine.SplitLineIfBeyondOfLimit(Limit)
             //    ) + Trigger;
             //var newLineBefore = newLine;
-            return string.Join(Properties.Settings.Default.ProjectNewLineSymbol
+            return string.Join(AppSettings.ProjectNewLineSymbol
                 , newLine.Wrap(Limit)
                 ) + Trigger;
 
@@ -493,7 +493,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool ForJPLangHaveMostOfRomajiOtherChars(this string inputString)
         {
-            return THSettings.SourceLanguageIsJapanese() && inputString.HaveMostOfRomajiOtherChars();
+            return THSettings.SourceLanguageIsJapanese && inputString.HaveMostOfRomajiOtherChars();
         }
 
         /// <summary>
@@ -548,7 +548,7 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther(this string inputString)
         {
-            return THSettings.SourceLanguageIsJapanese() && inputString.HaveMostOfRomajiOtherChars();
+            return THSettings.SourceLanguageIsJapanese && inputString.HaveMostOfRomajiOtherChars();
         }
 
         /// <summary>
@@ -745,7 +745,7 @@ namespace TranslationHelper.Extensions
 
         internal static bool IsSoundsText(this string str)
         {
-            var regexed = Regex.Replace(str, THSettings.SoundsTextRegexPattern(), "");
+            var regexed = Regex.Replace(str, THSettings.SoundsTextRegexPattern, "");
             var trimmed = regexed.TrimAllExceptLettersOrDigits();
             return trimmed.Length == 0;
         }

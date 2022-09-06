@@ -126,7 +126,7 @@ namespace TranslationHelper
 
         private string GetSearchColumn()
         {
-            return SearchMethodTranslationRadioButton.Checked ? THSettings.TranslationColumnName() : THSettings.OriginalColumnName();
+            return SearchMethodTranslationRadioButton.Checked ? THSettings.TranslationColumnName : THSettings.OriginalColumnName;
         }
 
         int startrowsearchindex;        //Индекс стартовой ячейки для поиска
@@ -364,9 +364,9 @@ namespace TranslationHelper
             {
                 if (!ComboBox.Items.Contains(value))
                 {
-                    if (ItemsCount == Properties.Settings.Default.THSavedSearchQueriesReplacersCount)
+                    if (ItemsCount == AppSettings.THSavedSearchQueriesReplacersCount)
                     {
-                        ComboBox.Items.RemoveAt(Properties.Settings.Default.THSavedSearchQueriesReplacersCount - 1);
+                        ComboBox.Items.RemoveAt(AppSettings.THSavedSearchQueriesReplacersCount - 1);
                     }
 
                     AddRestComboBoxValuesWithNew(ComboBox.Items, value);
@@ -630,12 +630,12 @@ namespace TranslationHelper
         private bool IsTheRowHasPossibleIssues(DataRow row)
         {
             var rowTranslation = (row[1] + string.Empty);
-            if (rowTranslation.Length == 0 || (Properties.Settings.Default.IgnoreOrigEqualTransLines && Equals(row[0], row[1])))
+            if (rowTranslation.Length == 0 || (AppSettings.IgnoreOrigEqualTransLines && Equals(row[0], row[1])))
             {
                 return false;
             }
 
-            if (Properties.Settings.Default.SearchRowIssueOptionsCheckNonRomaji)
+            if (AppSettings.SearchRowIssueOptionsCheckNonRomaji)
             {
                 //translation contains non romaji symbols
                 if (Regex.IsMatch(row[1] + "", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*"))
@@ -646,14 +646,14 @@ namespace TranslationHelper
 
             //------------------------------
             //если длина любой из строк длиннее лимита
-            //if ((FunctionsString.GetLongestLineLength(rowTranslation) > Properties.Settings.Default.THOptionLineCharLimit))
+            //if ((FunctionsString.GetLongestLineLength(rowTranslation) > AppSettings.THOptionLineCharLimit))
             //{
             //    return true;
             //}
 
             //------------------------------
 
-            if (Properties.Settings.Default.SearchRowIssueOptionsCheckProjectSpecific)
+            if (AppSettings.SearchRowIssueOptionsCheckProjectSpecific)
             {
                 //project specific checks
                 if (AppData.CurrentProject.CheckForRowIssue(row))
@@ -662,7 +662,7 @@ namespace TranslationHelper
                 }
             }
 
-            if (Properties.Settings.Default.SearchRowIssueOptionsCheckActors)
+            if (AppSettings.SearchRowIssueOptionsCheckActors)
             {
                 //------------------------------
                 //Проверка актеров
@@ -693,7 +693,7 @@ namespace TranslationHelper
                 //--------------------------------
             }
 
-            if (Properties.Settings.Default.SearchRowIssueOptionsCheckAnyLineTranslatable)
+            if (AppSettings.SearchRowIssueOptionsCheckAnyLineTranslatable)
             {
                 //check if multiline and one of line equal to original and valide for translation
                 if (row.HasAnyTranslationLineValidAndEqualSameOrigLine())
@@ -728,7 +728,7 @@ namespace TranslationHelper
             LoadSearchQueriesReplacers();
 
             //set default values for search settings
-            chkbxDoNotTouchEqualOT.Checked = TranslationHelper.Properties.Settings.Default.IgnoreOrigEqualTransLines;
+            chkbxDoNotTouchEqualOT.Checked = AppSettings.IgnoreOrigEqualTransLines;
         }
 
         private void SelectTextinTextBox(string input)
@@ -885,7 +885,7 @@ namespace TranslationHelper
                             if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-                                THFileElementsDataGridView[THSettings.TranslationColumnName(), rowindex].Value = Regex.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView[THSettings.TranslationColumnName(), rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text), RegexOptions.IgnoreCase);
+                                THFileElementsDataGridView[THSettings.TranslationColumnName, rowindex].Value = Regex.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView[THSettings.TranslationColumnName, rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text), RegexOptions.IgnoreCase);
                             }
                         }
                         else
@@ -893,7 +893,7 @@ namespace TranslationHelper
                             if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-                                THFileElementsDataGridView[THSettings.TranslationColumnName(), rowindex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView[THSettings.TranslationColumnName(), rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                THFileElementsDataGridView[THSettings.TranslationColumnName, rowindex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView[THSettings.TranslationColumnName, rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                             }
                         }
                     }
@@ -1034,11 +1034,11 @@ namespace TranslationHelper
                 {
                     if (replacementUnescaped == "=")
                     {
-                        row[THSettings.TranslationColumnName()] = row[THSettings.OriginalColumnName()];
+                        row[THSettings.TranslationColumnName] = row[THSettings.OriginalColumnName];
                     }
                     else if (string.IsNullOrEmpty(replacementUnescaped))
                     {
-                        row[THSettings.TranslationColumnName()] = string.Empty;
+                        row[THSettings.TranslationColumnName] = string.Empty;
                     }
                 }
                 else
@@ -1048,7 +1048,7 @@ namespace TranslationHelper
                         if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                         {
                             StoreQueryAndReplacer = true;
-                            row[THSettings.TranslationColumnName()] = Regex.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, replacementUnescaped, RegexOptions.IgnoreCase);
+                            row[THSettings.TranslationColumnName] = Regex.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName] + string.Empty, value), SearchFormFindWhatTextBox.Text, replacementUnescaped, RegexOptions.IgnoreCase);
                         }
                     }
                     else
@@ -1056,7 +1056,7 @@ namespace TranslationHelper
                         if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                         {
                             StoreQueryAndReplacer = true;
-                            row[THSettings.TranslationColumnName()] = ReplaceEx.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName()] + string.Empty, value), SearchFormFindWhatTextBox.Text, replacementUnescaped, StringComparison.OrdinalIgnoreCase);
+                            row[THSettings.TranslationColumnName] = ReplaceEx.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName] + string.Empty, value), SearchFormFindWhatTextBox.Text, replacementUnescaped, StringComparison.OrdinalIgnoreCase);
                         }
                     }
                 }

@@ -36,30 +36,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         int Size { get; set; }
         static int MaxSize { get => 1000; }
 
-        bool IsMax()
-        {
-            return Size >= MaxSize;
-        }
+        bool IsMax() { return Size >= MaxSize; }
 
         public OnlineTranslate()
         {
-            if (_buffer == null)
-            {
-                _buffer = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
-            }
-            if (_bufferExtracted == null)
-            {
-                _bufferExtracted = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
-            }
-            if (_translator == null)
-            {
-                _translator = new GoogleAPIOLD();
-            }
+            if (_buffer == null) _buffer = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
+            if (_bufferExtracted == null) _bufferExtracted = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
+            if (_translator == null) _translator = new GoogleAPIOLD();
         }
 
         protected override bool IsValidRow()
         {
-            return !Properties.Settings.Default.InterruptTtanslation && base.IsValidRow()
+            return !AppSettings.InterruptTtanslation && base.IsValidRow()
                 && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "")
                 || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine());
         }
@@ -72,9 +60,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             FunctionsOnlineCache.Init();
 
-            if (_allDbLoaded4All || !IsAll || !Properties.Settings.Default.UseAllDBFilesForOnlineTranslationForAll) return;
+            if (_allDbLoaded4All || !IsAll || !AppSettings.UseAllDBFilesForOnlineTranslationForAll) return;
 
-            if (!Properties.Settings.Default.EnableTranslationCache)
+            if (!AppSettings.EnableTranslationCache)
             {
                 //cache disabled but all db loading enabled. ask for load then. maybe not need
                 var result = MessageBox.Show(T._("Translation cache disabled but load all DB enabled. While all DB loading cache can be enabled in settings. Load all DB?"), T._("Translation cache disabled"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -101,7 +89,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             AppData.Main.ProgressInfo(false);
 
-            if (Properties.Settings.Default.InterruptTtanslation) Properties.Settings.Default.InterruptTtanslation = false;
+            if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
         }
 
         protected override bool Apply()
@@ -147,14 +135,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 //check line value in cache
                 var linecache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
-                if (!string.IsNullOrEmpty(linecache))
+
+                var values = line.ExtractMulty(lineCoordinates, lineNum, _bufferExtracted);
+
+                //moved check cache here because when cache is enabled and value can be extracted then need to parse extracted instead of original vale
+                if (!string.IsNullOrEmpty(linecache) && values.Length == 0)
                 {
                     _buffer[lineCoordinates][lineNum].Add(line, linecache);
                     lineNum++;
                     continue;
                 }
-
-                var values = line.ExtractMulty(lineCoordinates, lineNum, _bufferExtracted);
 
                 //parse all extracted values from original
                 foreach (var val in values)
@@ -189,7 +179,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     AppData.OnlineTranslationCache.Write();
 
                     // stop translating after last pack of text when translation is interrupted
-                    if (Properties.Settings.Default.InterruptTtanslation) return;
+                    if (AppSettings.InterruptTtanslation) return;
                 }
 
                 lineNum++;
@@ -250,7 +240,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private string[] ApplyProjectPretranslationAction(string[] originalLines)
         {
-            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null 
+            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null
                 && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0) AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
 
             var newOriginalLines = new string[originalLines.Length];
@@ -273,7 +263,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             for (int i = 0; i < translatedLines.Length; i++)
             {
-                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);                
+                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
                 if (!string.IsNullOrEmpty(s) && s != translatedLines[i]) translatedLines[i] = s;
             }
 
@@ -301,7 +291,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (originalLinesArePreApplied.Length > 0)
                 {
                     translated = _translator.Translate(originalLinesArePreApplied);
-                    if (translated == null || originals.Length != translated.Length) return new string[1] { "" };                    
+                    if (translated == null || originals.Length != translated.Length) return new string[1] { "" };
                     translated = ApplyProjectPosttranslationAction(originals, translated);
                 }
             }
@@ -358,7 +348,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private void SetBufferToRows()
         {
             var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(_buffer);
-            
+
             //get all coordinate keys
             foreach (var coordinate in coordinates)
             {
@@ -370,7 +360,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var cellTranslationEqualOriginal = Equals(row[1], row[0]);
 
                 //skip equal
-                if (Properties.Settings.Default.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) continue;
+                if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) continue;
 
                 var cellTranslationIsNotEmptyAndNotEqualOriginal = (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !cellTranslationEqualOriginal);
 

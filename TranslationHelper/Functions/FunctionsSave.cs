@@ -137,7 +137,7 @@ namespace TranslationHelper.Functions
                 //        bool changed = false;
                 //        for (int r = 0; r < ProjectData.CurrentProject.FilesContent.Tables[f].Rows.Count; r++)
                 //        {
-                //            if ((ProjectData.CurrentProject.FilesContent.Tables[f].Rows[r][THSettings.TranslationColumnName()] + string.Empty).Length == 0)
+                //            if ((ProjectData.CurrentProject.FilesContent.Tables[f].Rows[r][THSettings.TranslationColumnName] + string.Empty).Length == 0)
                 //            {
                 //            }
                 //            else

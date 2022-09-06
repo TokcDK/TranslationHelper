@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.SearchRowIssueOptionsCheckAnyLineTranslatable;
-            set => TranslationHelper.Properties.Settings.Default.SearchRowIssueOptionsCheckAnyLineTranslatable = value;
+            get => AppSettings.SearchRowIssueOptionsCheckAnyLineTranslatable;
+            set => AppSettings.SearchRowIssueOptionsCheckAnyLineTranslatable = value;
         }
 
         internal override void Set(bool SetObject = false)

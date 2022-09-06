@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -21,7 +22,7 @@ namespace TranslationHelper.Main.Functions
                 {
                     if (Percent < 0)
                     {
-                        Percent = Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber;
+                        Percent = AppSettings.DontLoadStringIfRomajiPercentNumber;
                     }
 
                     if (Percent >= 100 || Percent < 0)
@@ -31,7 +32,7 @@ namespace TranslationHelper.Main.Functions
 
                     if (langlocale == "romaji")
                     {
-                        if (load && !Properties.Settings.Default.DontLoadStringIfRomajiPercent)
+                        if (load && !AppSettings.DontLoadStringIfRomajiPercent)
                         {
                             return false;
                         }

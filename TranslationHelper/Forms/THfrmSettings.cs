@@ -188,7 +188,7 @@ namespace TranslationHelper
         //{
         //    get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercent", "Optimizations")
         //            ? int.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent"), CultureInfo.InvariantCulture)
-        //            : Properties.Settings.Default.DontLoadStringIfRomajiPercentNumber;
+        //            : AppSettings.DontLoadStringIfRomajiPercentNumber;
         //    set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercent", value.ToString(CultureInfo.InvariantCulture));
         //}
 
@@ -196,7 +196,7 @@ namespace TranslationHelper
         //{
         //    get => THConfigINI.KeyExists("THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", "Optimizations")
         //            ? bool.Parse(THConfigINI.ReadINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked"))
-        //            : Properties.Settings.Default.DontLoadStringIfRomajiPercent;
+        //            : AppSettings.DontLoadStringIfRomajiPercent;
         //    set => THConfigINI.WriteINI("Optimizations", "THOptionDontLoadStringIfRomajiPercentCheckBox.Checked", value.ToString(CultureInfo.InvariantCulture));
         //}
 
@@ -236,7 +236,7 @@ namespace TranslationHelper
         //{
         //    get => THConfigINI.KeyExists("THOptionAutotranslationForIdenticalCheckBox.Checked", "Tools")
         //            ? bool.Parse(THConfigINI.ReadINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked"))
-        //            : Properties.Settings.Default.AutotranslationForSimular;
+        //            : AppSettings.AutotranslationForSimular;
         //    set => THConfigINI.WriteINI("Tools", "THOptionAutotranslationForIdenticalCheckBox.Checked", value.ToString(CultureInfo.InvariantCulture));
         //}
 
@@ -271,7 +271,7 @@ namespace TranslationHelper
         {
             SetValue((sender as CheckBox).Name);
             //bool newvalue = THOptionDontLoadStringIfRomajiPercentCheckBox.Checked;
-            //Properties.Settings.Default.DontLoadStringIfRomajiPercent = newvalue;
+            //AppSettings.DontLoadStringIfRomajiPercent = newvalue;
             //DontLoadStringIfRomajiPercentINI = newvalue;
         }
 
@@ -290,7 +290,7 @@ namespace TranslationHelper
         private void THSettingsWebTransLinkTextBox_Validated(object sender, EventArgs e)
         {
             SetValue((sender as TextBox).Name);
-            //Properties.Settings.Default.WebTranslationLink = THSettingsWebTranslationLinkTextBox.Text;
+            //AppSettings.WebTranslationLink = THSettingsWebTranslationLinkTextBox.Text;
             //WebTransLinkINI = THSettingsWebTranslationLinkTextBox.Text;
         }
 
@@ -302,7 +302,7 @@ namespace TranslationHelper
         private void THOptionAutotranslationForIdenticalCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             SetValue((sender as CheckBox).Name);
-            //Properties.Settings.Default.AutotranslationForSimular = THOptionAutotranslationForSimularCheckBox.Checked;
+            //AppSettings.AutotranslationForSimular = THOptionAutotranslationForSimularCheckBox.Checked;
             //AutotranslationForIdenticalINI = THOptionAutotranslationForSimularCheckBox.Checked;
         }
 
@@ -317,7 +317,7 @@ namespace TranslationHelper
         private void THOptionEnableTranslationCacheCheckBox_Click(object sender, EventArgs e)
         {
             SetValue((sender as CheckBox).Name);
-            //Properties.Settings.Default.IsTranslationCacheEnabled = THOptionEnableTranslationCacheCheckBox.Checked;
+            //AppSettings.IsTranslationCacheEnabled = THOptionEnableTranslationCacheCheckBox.Checked;
             //EnableTranslationCacheINI = THOptionEnableTranslationCacheCheckBox.Checked;
         }
 
@@ -329,7 +329,7 @@ namespace TranslationHelper
         private void FullComparasionDBload_CheckedChanged(object sender, EventArgs e)
         {
             SetValue((sender as CheckBox).Name);
-            //Properties.Settings.Default.IsFullComprasionDBloadEnabled = THOptionFullComprasionDBload.Checked;
+            //AppSettings.IsFullComprasionDBloadEnabled = THOptionFullComprasionDBload.Checked;
             //FullComprasionDBloadINI = THOptionFullComprasionDBload.Checked;
         }
 

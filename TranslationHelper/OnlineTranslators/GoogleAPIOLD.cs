@@ -51,7 +51,7 @@ namespace TranslationHelper
                         webClient = new WebClientEx(AppData.OnlineTranslatorCookies ?? new CookieContainer());
 
                     webClient.Encoding = Encoding.UTF8;
-                    webClient.Headers.Add(HttpRequestHeader.UserAgent, Functions.FunctionsWeb.GetUserAgent());
+                    webClient.Headers.Add(HttpRequestHeader.UserAgent, FunctionsWeb.GetUserAgent());
 
                     try
                     {

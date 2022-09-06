@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled;
-            set => TranslationHelper.Properties.Settings.Default.IsFullComprasionDBloadEnabled = value;
+            get => AppSettings.IsFullComprasionDBloadEnabled;
+            set => AppSettings.IsFullComprasionDBloadEnabled = value;
         }
 
         internal override void Set(bool SetObject = false)

@@ -74,7 +74,7 @@ namespace TranslationHelper.Projects
         private bool Patching()
         {
             var GameDirPath = new DirectoryInfo(AppData.CurrentProject.SelectedGameDir);
-            var workdir = new DirectoryInfo(Path.Combine(THSettings.WorkDirPath(), ProjectFolderName, GameDirPath.Name));
+            var workdir = new DirectoryInfo(Path.Combine(THSettings.WorkDirPath, ProjectFolderName, GameDirPath.Name));
             AppData.CurrentProject.ProjectWorkDir = workdir.FullName;
             var patchdirPath = Path.Combine(workdir.FullName, workdir.Name + "_patch");
 
@@ -118,7 +118,7 @@ namespace TranslationHelper.Projects
         private bool CreateUpdatePatch(string gamedirPath, DirectoryInfo workdir)
         {
             bool ret;
-            var rpgmakertranscli = THSettings.RPGMakerTransEXEPath();
+            var rpgmakertranscli = THSettings.RPGMakerTransEXEPath;
             //string projectname = Path.GetFileName(outdir);
 
             //rpg maker trans cli options
@@ -212,7 +212,7 @@ namespace TranslationHelper.Projects
 
                     tempExtractDir.Create();
 
-                    var rgssdecrypter = THSettings.RGSSDecrypterEXEPath();
+                    var rgssdecrypter = THSettings.RGSSDecrypterEXEPath;
 
                     var rgssdecrypterargs = "\"--output=" + tempExtractDir + "\" \"" + GameRgss3Path + "\"";
 
@@ -357,7 +357,7 @@ namespace TranslationHelper.Projects
 
         internal override void AfterTranslationWriteActions()
         {
-            System.Diagnostics.Process.Start("explorer.exe", Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(AppData.CurrentProject.ProjectWorkDir) + "_translated"));
+            Process.Start("explorer.exe", Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(AppData.CurrentProject.ProjectWorkDir) + "_translated"));
         }
     }
 }

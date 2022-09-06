@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.RPGMMV
     {
         public static Dictionary<int, string> GetSkipCodes()
         {
-            var codesFile = THSettings.RPGMakerMVSkipCodesFilePath();
+            var codesFile = THSettings.RPGMakerMVSkipCodesFilePath;
             if (!File.Exists(codesFile)) return new Dictionary<int, string>();
 
             var codes = new Dictionary<int, string>();
@@ -46,9 +46,9 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <returns></returns>
         public static string GetCodeName(int currentEventCode)
         {
-            if (RPGMVUtils.EventCommandCodes.ContainsKey(currentEventCode))
+            if (EventCommandCodes.ContainsKey(currentEventCode))
             {
-                var eventName = RPGMVUtils.EventCommandCodes[currentEventCode];
+                var eventName = EventCommandCodes[currentEventCode];
                 if (eventName.Length > 0)
                 {
                     return "\r\nCommand action: \"" + eventName + "\"";

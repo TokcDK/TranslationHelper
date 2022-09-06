@@ -85,7 +85,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
         /// modification of translation before add
         /// no modification by default
         /// </summary>
-        /// <param name=THSettings.TranslationColumnName()></param>
+        /// <param name=THSettings.TranslationColumnName></param>
         /// <returns></returns>
         protected virtual string TranslationMod(string translation)
         {

@@ -158,7 +158,7 @@ namespace TranslationHelper.Formats
         /// modification of translation before it will be added
         /// by default no modifications
         /// </summary>
-        /// <param name=THSettings.TranslationColumnName()></param>
+        /// <param name=THSettings.TranslationColumnName></param>
         /// <returns></returns>
         protected virtual string TranslationMod(string translation)
         {

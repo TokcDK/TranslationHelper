@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.EnableDBAutosave;
-            set => TranslationHelper.Properties.Settings.Default.EnableDBAutosave = value;
+            get => AppSettings.EnableDBAutosave;
+            set => AppSettings.EnableDBAutosave = value;
         }
 
         internal override void Set(bool SetObject = false)

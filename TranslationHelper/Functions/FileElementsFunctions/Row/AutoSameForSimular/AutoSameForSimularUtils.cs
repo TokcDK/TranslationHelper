@@ -49,7 +49,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
         /// <param name="inputForceSetValue"></param>
         public static void Set(int inputTableIndex, int inputRowIndex, bool inputForceSetValue = false)
         {
-            if (!Properties.Settings.Default.ProjectIsOpened) return;
+            if (!AppSettings.ProjectIsOpened) return;
 
             string inputTableRowOriginalCellValue = "";
             try
@@ -108,7 +108,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                 if (weUseDuplicates) SetSameIfUseDups(inputTable, inputOriginalValue, inputRowIndex, inputForceSetValue, inputTranslationValue);
 
                 //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменяется, т.к. 万 [man] переводится как 10000.
-                if (Properties.Settings.Default.OnlineTranslationSourceLanguage == "Japanese"
+                if (AppSettings.OnlineTranslationSourceLanguage == "Japanese"
                     && Regex.Matches(inputTranslationValue, @"\d+").Count != Regex.Matches(inputOriginalValue, @"\d+").Count)
                 {
                     AutoSame4SimilarStack.Remove(inputTableRowOriginalCellValue);
@@ -123,7 +123,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                 for (int targetTableIndex = 0; targetTableIndex < tablesCount; targetTableIndex++) //количество файлов
                 {
                     //если приложение закрылось
-                    if (Properties.Settings.Default.IsTranslationHelperWasClosed) break;
+                    if (AppSettings.IsTranslationHelperWasClosed) break;
 
                     var targetTable = AppData.CurrentProject.FilesContent.Tables[targetTableIndex];
                     var rowsCount = targetTable.Rows.Count;
@@ -134,7 +134,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     for (int targetRowIndex = 0; targetRowIndex < rowsCount; targetRowIndex++) //количество строк в каждом файле
                     {
                         //если приложение закрылось
-                        if (Properties.Settings.Default.IsTranslationHelperWasClosed)
+                        if (AppSettings.IsTranslationHelperWasClosed)
                         {
                             AutoSame4SimilarStack.Remove(inputTableRowOriginalCellValue);
                             return;

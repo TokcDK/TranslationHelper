@@ -19,7 +19,7 @@ namespace TranslationHelper.Projects
         protected ProjectBase()
         {
             // set value of the parameter for the project work session
-            DontLoadDuplicates = Properties.Settings.Default.DontLoadDuplicates;
+            DontLoadDuplicates = AppSettings.DontLoadDuplicates;
 
             if (AppData.CurrentProject == null) return;
 
@@ -137,7 +137,7 @@ namespace TranslationHelper.Projects
             {
                 AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedFilePath);
                 AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedFilePath);
-                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), this.ProjectFolderName, ProjectName);
+                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, this.ProjectFolderName, ProjectName);
             }
         }
 
@@ -217,9 +217,9 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(string DirForSearch, List<Type> formatType, string[] masks = null, bool Newest = false)
+        protected bool OpenSaveFilesBase(string DirForSearch, List<Type> formatType, string[] masks = null, bool getNewestFiles = false)
         {
-            return OpenSaveFilesBase(new DirectoryInfo(DirForSearch), formatType, masks, Newest);
+            return OpenSaveFilesBase(new DirectoryInfo(DirForSearch), formatType, masks, getNewestFiles);
         }
 
         /// <summary>
@@ -237,22 +237,18 @@ namespace TranslationHelper.Projects
         /// <param name="DirForSearch"></param>
         /// <param name="format"></param>
         /// <param name="masks"></param>
-        /// <param name="Newest"></param>
+        /// <param name="newest"></param>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, List<Type> format, string[] masks = null, bool Newest = false)
+        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, List<Type> format, string[] masks = null, bool getNewestFiles = false)
         {
-            if (masks == null || format == null || format.Count != masks.Length)
-            {
-                return false;
-            }
+            if (masks == null || format == null || (masks.Length != 1 && format.Count != masks.Length)) return false;
 
             var ret = false;
+            bool hasSingleMask = masks.Length == 1;
             for (int i = 0; i < masks.Length; i++)
             {
-                if (OpenSaveFilesBase(DirForSearch, format[i], masks[i], Newest))
-                {
-                    ret = true;
-                }
+                var mask = hasSingleMask ? masks[0] : masks[i];
+                if (OpenSaveFilesBase(DirForSearch, format[i], mask, getNewestFiles)) ret = true;
             }
 
             return ret;
@@ -262,7 +258,7 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, Type formatType, string mask = "*", bool Newest = false, string[] exclusions = null, SearchOption searchOption = SearchOption.AllDirectories)
+        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, Type formatType, string mask = "*", bool getNewestFiles = false, string[] exclusions = null, SearchOption searchOption = SearchOption.AllDirectories)
         {
             //if (mask == "*")
             //{
@@ -275,7 +271,7 @@ namespace TranslationHelper.Projects
 
             var ret = false;
             var existsTables = AppData.CurrentProject.FilesContent.Tables;
-            var filesList = Newest ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
+            var filesList = getNewestFiles ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
             Parallel.ForEach(filesList, file =>
             {
                 //skip exclusions
@@ -293,7 +289,7 @@ namespace TranslationHelper.Projects
                 if (SaveFileMode && existsTables.Contains(format.FileName) && !format.FileName.HasAnyTranslated()) return;
 
                 AppData.Main.ProgressInfo(true, (OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
-                
+
                 if (OpenFileMode ? format.Open() : format.Save()) ret = true;
             });
 
@@ -693,10 +689,10 @@ namespace TranslationHelper.Projects
                 var target = path.EndsWith(".bak") ? path.Remove(path.Length - 4, 4) : path;
                 if (bak)
                 {
-                    if ((File.Exists(target) && BackupFile(target)) || (Directory.Exists(target) && BackupDir(target))) 
+                    if ((File.Exists(target) && BackupFile(target)) || (Directory.Exists(target) && BackupDir(target)))
                         ret = true;
                 }
-                else if((File.Exists(target + ".bak") && RestoreFile(target)) || (Directory.Exists(target + ".bak") && RestoreDir(target)))
+                else if ((File.Exists(target + ".bak") && RestoreFile(target)) || (Directory.Exists(target + ".bak") && RestoreDir(target)))
                 {
                     ret = true;
                 }

@@ -4,7 +4,7 @@ using TranslationHelper.Functions;
 
 namespace TranslationHelper.Data
 {
-    class CleanupData
+    class FunctionsCleanup
     {
         internal static void THCleanupThings()
         {
@@ -36,7 +36,7 @@ namespace TranslationHelper.Data
                 //}
 
                 //to prevent some autooperations while project will not be opened
-                Properties.Settings.Default.ProjectIsOpened = false;
+                AppSettings.ProjectIsOpened = false;
 
                 //Reset vars
                 AppData.Main.Text = "Translation Helper";

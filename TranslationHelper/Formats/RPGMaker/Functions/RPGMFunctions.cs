@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMaker.Functions
 {
@@ -16,14 +17,14 @@ namespace TranslationHelper.Formats.RPGMaker.Functions
 
         public static string RPGMTransPatchVersion
         {
-            get => Properties.Settings.Default.RPGMTransPatchVersion;
-            set => Properties.Settings.Default.RPGMTransPatchVersion = value;
+            get => AppSettings.RPGMTransPatchVersion;
+            set => AppSettings.RPGMTransPatchVersion = value;
         }
 
         public static string THSelectedSourceType
         {
-            get => Properties.Settings.Default.THSelectedSourceType;
-            set => Properties.Settings.Default.THSelectedSourceType = value;
+            get => AppSettings.THSelectedSourceType;
+            set => AppSettings.THSelectedSourceType = value;
         }
     }
 }

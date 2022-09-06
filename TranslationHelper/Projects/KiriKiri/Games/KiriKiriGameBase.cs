@@ -137,7 +137,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             {
                 //ProjectData.CurrentProject.SelectedGameDir
 
-                KiriKiriWorkOrigFolder = Path.Combine(THSettings.WorkDirPath(), AppData.CurrentProject.ProjectFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir), "Orig");
+                KiriKiriWorkOrigFolder = Path.Combine(THSettings.WorkDirPath, AppData.CurrentProject.ProjectFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir), "Orig");
 
                 //string DirName = Path.GetFileName(ProjectData.CurrentProject.SelectedGameDir);;
                 AppData.CurrentProject.ProjectWorkDir = Path.GetDirectoryName(KiriKiriWorkOrigFolder);
@@ -313,7 +313,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return ret;
         }
 
-        readonly string kirikiriunpacker = THSettings.KiriKiriToolExePath();
+        readonly string kirikiriunpacker = THSettings.KiriKiriToolExePath;
 
         protected bool PackTranslatedFilesInPatch()
         {
@@ -336,7 +336,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                 string KiriKiriEXEargs = "-c -i \"" + PatchDir.FullName + "\" -o \"" + patch + "\"";
 
-                var LE = THSettings.LocaleEmulatorEXE();
+                var LE = THSettings.LocaleEmulatorEXE;
                 var args = Path.GetFileName(kirikiriunpacker) + " " + "-c -i \"" + PatchDir.Name + "\" -o \"" + PatchName + ".xp3" + "\"";
 
 
@@ -351,18 +351,18 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 bool arc_conv = true;
 
                 var kirikiriUnpackerWorkDirPath = Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(kirikiriunpacker));
-                var kirikiriUnpackerDllWorkDirPath = Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(THSettings.KiriKiriToolDllPath()));
-                var arcConverterWorkDirPath = Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath()));
-                var arcConverterDatWorkDirPath = Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat");
+                var kirikiriUnpackerDllWorkDirPath = Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(THSettings.KiriKiriToolDllPath));
+                var arcConverterWorkDirPath = Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(THSettings.ArcConvExePath));
+                var arcConverterDatWorkDirPath = Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath) + ".dat");
                 if (!arc_conv && !File.Exists(kirikiriUnpackerWorkDirPath))
                 {
-                    THSettings.KiriKiriToolExePath().TryCopyTo(kirikiriUnpackerWorkDirPath);
-                    THSettings.KiriKiriToolDllPath().TryCopyTo(kirikiriUnpackerDllWorkDirPath);
+                    THSettings.KiriKiriToolExePath.TryCopyTo(kirikiriUnpackerWorkDirPath);
+                    THSettings.KiriKiriToolDllPath.TryCopyTo(kirikiriUnpackerDllWorkDirPath);
                 }
                 else if (arc_conv && !File.Exists(arcConverterWorkDirPath))
                 {
-                    THSettings.ArcConvExePath().TryCopyTo(arcConverterWorkDirPath);
-                    Path.Combine(THSettings.ArcConvDirPath(), Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath()) + ".dat").TryCopyTo(arcConverterDatWorkDirPath);
+                    THSettings.ArcConvExePath.TryCopyTo(arcConverterWorkDirPath);
+                    Path.Combine(THSettings.ArcConvDirPath, Path.GetFileNameWithoutExtension(THSettings.ArcConvExePath) + ".dat").TryCopyTo(arcConverterDatWorkDirPath);
                 }
 
                 string foundTraslationPatchName = Directory.EnumerateFiles(AppData.CurrentProject.SelectedDir, "patch*.xp3.translation").FirstOrDefault();
@@ -398,16 +398,16 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 {
                     args = " --pack xp3 \"" + PatchDir.Name + "\" \"" + PatchName + ".xp3" + "\"";
                     copyutil =
-                        "if not exist \"" + THSettings.ArcConvExeName() + "\" copy \"" + THSettings.ArcConvExePath() + "\" \"" + AppData.CurrentProject.ProjectWorkDir + "\\\""
+                        "if not exist \"" + THSettings.ArcConvExeName+ "\" copy \"" + THSettings.ArcConvExePath + "\" \"" + AppData.CurrentProject.ProjectWorkDir + "\\\""
                         + "\r\n"
-                        + "if not exist arc_conv.dat copy \"" + Path.GetDirectoryName(THSettings.ArcConvExePath()) + "\\arc_conv.dat\" \"" + AppData.CurrentProject.ProjectWorkDir + "\\\""
+                        + "if not exist arc_conv.dat copy \"" + Path.GetDirectoryName(THSettings.ArcConvExePath) + "\\arc_conv.dat\" \"" + AppData.CurrentProject.ProjectWorkDir + "\\\""
                         ;
                     delutil =
-                        "if exist \"" + THSettings.ArcConvExeName() + "\" del \"" + THSettings.ArcConvExeName() + "\""
+                        "if exist \"" + THSettings.ArcConvExeName+ "\" del \"" + THSettings.ArcConvExeName+ "\""
                         + "\r\n"
-                        + "if exist \"" + Path.GetDirectoryName(THSettings.ArcConvExePath()) + "\\arc_conv.dat\" del \"" + Path.GetDirectoryName(THSettings.ArcConvExePath()) + "\\arc_conv.dat\""
+                        + "if exist \"" + Path.GetDirectoryName(THSettings.ArcConvExePath) + "\\arc_conv.dat\" del \"" + Path.GetDirectoryName(THSettings.ArcConvExePath) + "\\arc_conv.dat\""
                         ;
-                    runpack = THSettings.ArcConvExeName() + args;
+                    runpack = THSettings.ArcConvExeName+ args;
                 }
 
                 var cmdContent =
@@ -427,16 +427,16 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                     ;
                 File.WriteAllText(Path.Combine(AppData.CurrentProject.ProjectWorkDir, "MakePatch.cmd"), cmdContent);
 
-                FunctionsProcess.RunProcess(arc_conv ? THSettings.ArcConvExePath() : LE, args, AppData.CurrentProject.ProjectWorkDir);
+                FunctionsProcess.RunProcess(arc_conv ? THSettings.ArcConvExePath : LE, args, AppData.CurrentProject.ProjectWorkDir);
 
                 if (!File.Exists(patch)) Thread.Sleep(2000);
                 if (!File.Exists(patch))
                 {
-                    FunctionsProcess.RunProcess(arc_conv ? THSettings.ArcConvExePath() : LE, args, AppData.CurrentProject.ProjectWorkDir);
+                    FunctionsProcess.RunProcess(arc_conv ? THSettings.ArcConvExePath : LE, args, AppData.CurrentProject.ProjectWorkDir);
 
                     if (!File.Exists(patch))
                     {
-                        System.Windows.Forms.MessageBox.Show("Patch was not created. Try to create it with bat file in work dir");
+                        MessageBox.Show("Patch was not created. Try to create it with bat file in work dir");
                         System.Diagnostics.Process.Start("Explorer.exe", AppData.CurrentProject.ProjectWorkDir);
                     }
                 }

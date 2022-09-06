@@ -48,7 +48,7 @@ namespace TranslationHelper.Functions
                 return;
             }
 
-            CleanupData.THCleanupThings();
+            FunctionsCleanup.THCleanupThings();
 
             AppData.SelectedFilePath = filePath;
 
@@ -450,13 +450,13 @@ namespace TranslationHelper.Functions
             {
             }
 
-            Properties.Settings.Default.ProjectNewLineSymbol = (AppData.CurrentProject != null)
+            AppSettings.ProjectNewLineSymbol = (AppData.CurrentProject != null)
                 ? AppData.CurrentProject.NewlineSymbol
                 : Environment.NewLine;
 
             AfterOpenCleaning();
 
-            Properties.Settings.Default.ProjectIsOpened = true;
+            AppSettings.ProjectIsOpened = true;
             FunctionsSounds.OpenProjectComplete();
 
             FunctionsLoadTranslationDB.LoadTranslationIfNeed();

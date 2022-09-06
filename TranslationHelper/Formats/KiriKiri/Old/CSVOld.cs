@@ -18,10 +18,10 @@ namespace TranslationHelper.Formats.KiriKiri
                 string line;
                 //string original = string.Empty;
                 //_ = THFilesElementsDataset.Tables.Add(filename);
-                //_ = THFilesElementsDataset.Tables[0].Columns.Add(THSettings.OriginalColumnName());
+                //_ = THFilesElementsDataset.Tables[0].Columns.Add(THSettings.OriginalColumnName);
                 //_ = THFilesElementsDatasetInfo.Tables.Add(filename);
-                //_ = THFilesElementsDatasetInfo.Tables[0].Columns.Add(THSettings.OriginalColumnName());
-                //_ = THFilesElementsDataset.Tables[0].Columns.Add(THSettings.TranslationColumnName());
+                //_ = THFilesElementsDatasetInfo.Tables[0].Columns.Add(THSettings.OriginalColumnName);
+                //_ = THFilesElementsDataset.Tables[0].Columns.Add(THSettings.TranslationColumnName);
                 //THFilesList.Invoke((Action)(() => THFilesList.AddItem(filename)));
                 bool IsFirstLineWasNotRead = true;
                 int name = -1;

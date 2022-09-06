@@ -38,6 +38,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                     if (message.Any()) { extra = ParseMessage(commands, message, info, c); c += extra; commandsCount += extra; };
 
                     if (ExcludedCodes.ContainsKey(command.Code)) continue;
+                    if (command.Parameters == null) continue;
 
                     int parametersCount = command.Parameters.Length;
                     for (int i = 0; i < parametersCount; i++)

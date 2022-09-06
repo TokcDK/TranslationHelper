@@ -112,7 +112,11 @@
     <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadStringIfRomajiPercent.cs" />
     <Compile Include="appSettings\Sections\General\CheckBox\SLineCharLimit.cs" />
     <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
-    <Compile Include="Data\CleanupData.cs" />
+    <Compile Include="Data\AppSettings.cs" />
+    <Compile Include="Formats\AI6WIN\MESTXT.cs" />
+    <Compile Include="Formats\RPGMMV\JsonType\JsonSystemMZ.cs" />
+    <Compile Include="Formats\WolfRPG\TextEPH.cs" />
+    <Compile Include="Functions\FunctionsCleanup.cs" />
     <Compile Include="Data\FileInfo.cs" />
     <Compile Include="Data\FilesListData.cs" />
     <Compile Include="Data\AppData.cs" />
@@ -229,6 +233,7 @@
     <Compile Include="Formats\RPGMMV\JS\JSSharedDataRPGMMV.cs" />
     <Compile Include="Formats\RPGMMV\JS\PluginsByType.cs" />
     <Compile Include="Formats\RPGMMV\OldJsonParser.cs" />
+    <Compile Include="Formats\RPGMMV\Other\ExternMessage.csv.cs" />
     <Compile Include="Formats\RPGMMV\RPGMMVBase.cs" />
     <Compile Include="Formats\RPGMMV\JsonParser\RPGMVZJsonParser.cs" />
     <Compile Include="Formats\RPGMMV\RPGMVUtils.cs" />
@@ -398,6 +403,7 @@
     <Compile Include="Projects\RPGMMV\RPGMMVGameByType.cs" />
     <Compile Include="Projects\RPGMMV\RPGMMVJson.cs" />
     <Compile Include="Projects\RPGMMV\RPGMMVOLD.cs" />
+    <Compile Include="Projects\RPGMMV\RPGMZGame.cs" />
     <Compile Include="Projects\RPGMTrans\RPGMTransPatch.cs" />
     <Compile Include="Projects\RPGMTrans\RPGMTransOLD.cs" />
     <Compile Include="Projects\TyranoBuilder\Extracted\TyranoBuilderGame.cs" />

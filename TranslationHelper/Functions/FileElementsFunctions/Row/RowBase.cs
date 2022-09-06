@@ -384,8 +384,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (needToGetOrigTransColumnsNum)
             {
                 needToGetOrigTransColumnsNum = false;
-                ColumnIndexOriginal = SelectedTable.Columns[THSettings.OriginalColumnName()].Ordinal;// Колонка Original
-                ColumnIndexTranslation = SelectedTable.Columns[THSettings.TranslationColumnName()].Ordinal;// Колонка Translation
+                ColumnIndexOriginal = SelectedTable.Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
+                ColumnIndexTranslation = SelectedTable.Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Translation
             }
         }
 
@@ -693,7 +693,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         protected virtual bool IsValidRow()
         {
-            return Properties.Settings.Default.IgnoreOrigEqualTransLines || !Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation]);
+            return AppSettings.IgnoreOrigEqualTransLines || !Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation]);
         }
 
         protected abstract bool Apply();

@@ -15,7 +15,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 
         public void OnClick(object sender, EventArgs e)
         {
-            Process.Start(THSettings.RPGMakerMVSkipjsRulesFilePath());
+            Process.Start(THSettings.RPGMakerMVSkipjsRulesFilePath);
         }
     }
 }

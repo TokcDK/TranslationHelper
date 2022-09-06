@@ -16,8 +16,8 @@ namespace TranslationHelper.INISettings
 
         static string SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.WebTranslationLink;
-            set => TranslationHelper.Properties.Settings.Default.WebTranslationLink = value;
+            get => AppSettings.WebTranslationLink;
+            set => AppSettings.WebTranslationLink = value;
         }
 
         internal override void Set(bool SetObject = false)

@@ -34,7 +34,7 @@ namespace TranslationHelper.Projects.Liar_soft
             //set vars
             var scrxfl = Path.Combine(AppData.CurrentProject.SelectedGameDir, "scr.xfl");
             var archive = XflArchive.FromFile(scrxfl);
-            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath(), ProjectFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
+            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
             var dir = AppData.CurrentProject.ProjectWorkDir;
 
             archive.ExtractToDirectory(dir);//extract all gsc to work dir

@@ -50,7 +50,7 @@ namespace TranslationHelper.SimpleHelpers
         /// <returns></returns>
         public static Encoding DetectFileEncoding(string inputFilename, Encoding defaultIfNotDetected = null)
         {
-            using (var stream = new System.IO.FileStream(inputFilename, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite | System.IO.FileShare.Delete, DEFAULT_BUFFER_SIZE))
+            using (var stream = new System.IO.FileStream(inputFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, DEFAULT_BUFFER_SIZE))
             {
                 return DetectFileEncoding(stream) ?? defaultIfNotDetected;
             }

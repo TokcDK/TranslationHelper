@@ -130,8 +130,8 @@ namespace TranslationHelper.Projects.RPGMTrans
                 _file = new StreamReader(ListFiles[i]); //Задаем файл
                 //THRPGMTransPatchFiles.Add(new THRPGMTransPatchFile(Path.GetFileNameWithoutExtension(ListFiles[i]), ListFiles[i].ToString(), string.Empty));    //Добaвляем файл
                 _ = AppData.CurrentProject.FilesContent.Tables.Add(fname);
-                _ = AppData.CurrentProject.FilesContent.Tables[i].Columns.Add(THSettings.OriginalColumnName());
-                _ = AppData.CurrentProject.FilesContent.Tables[i].Columns.Add(THSettings.TranslationColumnName());
+                _ = AppData.CurrentProject.FilesContent.Tables[i].Columns.Add(THSettings.OriginalColumnName);
+                _ = AppData.CurrentProject.FilesContent.Tables[i].Columns.Add(THSettings.TranslationColumnName);
                 _ = AppData.CurrentProject.FilesContent.Tables[i].Columns.Add("Context");
                 _ = AppData.CurrentProject.FilesContent.Tables[i].Columns.Add("Advice");
                 _ = AppData.CurrentProject.FilesContent.Tables[i].Columns.Add("Status");
@@ -141,7 +141,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                 else
                 {
                     _ = AppData.CurrentProject.FilesContentInfo.Tables.Add(fname);
-                    _ = AppData.CurrentProject.FilesContentInfo.Tables[i].Columns.Add(THSettings.OriginalColumnName());
+                    _ = AppData.CurrentProject.FilesContentInfo.Tables[i].Columns.Add(THSettings.OriginalColumnName);
                 }
 
                 if (RPGMFunctions.RPGMTransPatchVersion == "3")
@@ -379,8 +379,8 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //MessageBox.Show(progressBar.Maximum.ToString());
                 //progressBar.Value = 0;
 
-                int originalcolumnindex = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.OriginalColumnName()].Ordinal;
-                int translationcolumnindex = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName()].Ordinal;
+                int originalcolumnindex = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.OriginalColumnName].Ordinal;
+                int translationcolumnindex = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
                 int contextcolumnindex = AppData.CurrentProject.FilesContent.Tables[0].Columns["Context"].Ordinal;
                 int advicecolumnindex = AppData.CurrentProject.FilesContent.Tables[0].Columns["Advice"].Ordinal;
                 int statuscolumnindex = AppData.CurrentProject.FilesContent.Tables[0].Columns["Status"].Ordinal;

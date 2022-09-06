@@ -62,9 +62,9 @@ namespace TranslationHelper.Projects.RPGMMV
                 string jsondata = File.ReadAllText(sPath); // get json data
 
                 AppData.CurrentProject.FilesContent.Tables.Add(Jsonname); // create table with json name
-                AppData.CurrentProject.FilesContent.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName()); //create Original column
+                AppData.CurrentProject.FilesContent.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName); //create Original column
                 AppData.CurrentProject.FilesContentInfo.Tables.Add(Jsonname); // create table with json name
-                AppData.CurrentProject.FilesContentInfo.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName()); //create Original column
+                AppData.CurrentProject.FilesContentInfo.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName); //create Original column
                 //MessageBox.Show("Added table:"+Jsonname);
 
                 /*
@@ -203,7 +203,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 if (AppData.CurrentProject.FilesContent.Tables[Jsonname].Rows.Count > 0)
                 {
-                    AppData.CurrentProject.FilesContent.Tables[Jsonname].Columns.Add(THSettings.TranslationColumnName());
+                    AppData.CurrentProject.FilesContent.Tables[Jsonname].Columns.Add(THSettings.TranslationColumnName);
                 }
                 else
                 {
@@ -240,7 +240,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 }
 
                 //ds.Tables.Add(Jsonname); // create table with json name
-                //ds.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName()); //create Original column
+                //ds.Tables[Jsonname].Columns.Add(THSettings.OriginalColumnName); //create Original column
 
 
                 //treeView1.BeginUpdate();
@@ -284,8 +284,8 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 //LogToFile(string.Empty, true);
                 //MessageBox.Show("sss");
-                //ds.Tables[Jsonname].Columns.Add(THSettings.TranslationColumnName());
-                //ds.Tables[Jsonname].Columns[THSettings.OriginalColumnName()].ReadOnly = true;
+                //ds.Tables[Jsonname].Columns.Add(THSettings.TranslationColumnName);
+                //ds.Tables[Jsonname].Columns[THSettings.OriginalColumnName].ReadOnly = true;
                 //DGV.DataSource = ds.Tables[0];
                 //treeView1.EndUpdate();
             }

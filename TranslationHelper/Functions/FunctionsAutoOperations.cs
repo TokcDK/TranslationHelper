@@ -143,7 +143,7 @@ namespace TranslationHelper.Main.Functions
                 }
 
                 //индекс столбца перевода, таблицы и массив индексов для варианта с несколькими выбранными ячейками
-                //int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns[THSettings.TranslationColumnName()].Ordinal;//-поле untrans;//-поле untrans
+                //int cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns[THSettings.TranslationColumnName].Ordinal;//-поле untrans;//-поле untrans
                 int initialtableindex = 0;
                 int[] selcellscnt;
 
@@ -154,14 +154,14 @@ namespace TranslationHelper.Main.Functions
 
                 if (Method == "s")
                 {
-                    //cind = THFileElementsDataGridView.Columns[THSettings.TranslationColumnName()].Index;//-поле untrans                            
+                    //cind = THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].Index;//-поле untrans                            
                     initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
                     selcellscnt = FunctionsTable.GetDGVRowIndexsesInDataSetTable();
                 }
                 else if (Method == "t")
                 {
                     initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-                                             //cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns[THSettings.TranslationColumnName()].Ordinal;
+                                             //cind = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].Columns[THSettings.TranslationColumnName].Ordinal;
                     selcellscnt = new int[1];//не будет использоваться с этим вариантом
                 }
                 else

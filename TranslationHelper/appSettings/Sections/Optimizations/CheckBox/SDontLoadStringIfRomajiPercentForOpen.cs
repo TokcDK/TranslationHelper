@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentForOpen;
-            set => TranslationHelper.Properties.Settings.Default.DontLoadStringIfRomajiPercentForOpen = value;
+            get => AppSettings.DontLoadStringIfRomajiPercentForOpen;
+            set => AppSettings.DontLoadStringIfRomajiPercentForOpen = value;
         }
 
         internal override void Set(bool SetObject = false)

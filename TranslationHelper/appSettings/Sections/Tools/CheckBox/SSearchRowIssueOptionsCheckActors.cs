@@ -17,8 +17,8 @@ namespace TranslationHelper.INISettings
 
         static bool SVar
         {
-            get => TranslationHelper.Properties.Settings.Default.SearchRowIssueOptionsCheckActors;
-            set => TranslationHelper.Properties.Settings.Default.SearchRowIssueOptionsCheckActors = value;
+            get => AppSettings.SearchRowIssueOptionsCheckActors;
+            set => AppSettings.SearchRowIssueOptionsCheckActors = value;
         }
 
         internal override void Set(bool SetObject = false)

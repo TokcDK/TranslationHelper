@@ -36,9 +36,9 @@ namespace TranslationHelper.Projects.KiriKiri
             string extension = Path.GetExtension(AppData.SelectedFilePath);
 
             _ = AppData.CurrentProject.FilesContent.Tables.Add(filename);
-            _ = AppData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
+            _ = AppData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.OriginalColumnName);
             _ = AppData.CurrentProject.FilesContentInfo.Tables.Add(filename);
-            _ = AppData.CurrentProject.FilesContentInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
+            _ = AppData.CurrentProject.FilesContentInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName);
 
             DataTable DT = KiriKiriScriptScenarioOpen(AppData.SelectedFilePath, AppData.CurrentProject.FilesContent.Tables[0], AppData.CurrentProject.FilesContentInfo.Tables[0]);
             if (DT == null || DT.Rows.Count == 0)
@@ -48,7 +48,7 @@ namespace TranslationHelper.Projects.KiriKiri
             }
             else
             {
-                _ = AppData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.TranslationColumnName());
+                _ = AppData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.TranslationColumnName);
                 AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.AddItem(filename)));
                 if (extension == ".ks")
                 {
@@ -122,9 +122,9 @@ namespace TranslationHelper.Projects.KiriKiri
                     filename = Path.GetFileName(kiriKiriFiles[i]);
 
                     _ = AppData.CurrentProject.FilesContent.Tables.Add(filename);
-                    _ = AppData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
+                    _ = AppData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.OriginalColumnName);
                     _ = AppData.CurrentProject.FilesContentInfo.Tables.Add(filename);
-                    _ = AppData.CurrentProject.FilesContentInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName());
+                    _ = AppData.CurrentProject.FilesContentInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName);
 
                     DataTable DT = null;
 
@@ -149,7 +149,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     else
                     {
                         AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.AddItem(filename)));
-                        _ = AppData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.TranslationColumnName());
+                        _ = AppData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.TranslationColumnName);
                     }
                 }
 
@@ -400,7 +400,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     //string original = string.Empty;
                     string filename = Path.GetFileNameWithoutExtension(sPath);
                     _ = AppData.CurrentProject.FilesContent.Tables.Add(filename);
-                    _ = AppData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.OriginalColumnName());
+                    _ = AppData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.OriginalColumnName);
                     while (!file.EndOfStream)
                     {
                         line = file.ReadLine();
@@ -420,7 +420,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
                     if (AppData.CurrentProject.FilesContent.Tables[0].Rows.Count > 0)
                     {
-                        _ = AppData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.TranslationColumnName());
+                        _ = AppData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.TranslationColumnName);
                         AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.AddItem(filename)));
                     }
                     else

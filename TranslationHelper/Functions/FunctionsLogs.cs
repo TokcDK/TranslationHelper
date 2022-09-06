@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions
 {
@@ -11,10 +12,7 @@ namespace TranslationHelper.Functions
         //readonly bool THdebug = true;
         StringBuilder THsbLog;// = new StringBuilder();
 
-        public FunctionsLogs()
-        {
-            DebugData = new List<string>();
-        }
+        public FunctionsLogs() { DebugData = new List<string>(); }
 
         /// <summary>
         /// some debug data can be added here
@@ -28,44 +26,38 @@ namespace TranslationHelper.Functions
         /// <param name="WriteNow">If True then text will be now writed to log else only added to be writed later<br/></param>
         public void LogToFile(string TextToLog, bool WriteNow = true)
         {
-            if (THsbLog == null)
+            if (THsbLog == null) THsbLog = new StringBuilder();
+            if (!AppSettings.THdebug) return;
+            if (!WriteNow)
             {
-                THsbLog = new StringBuilder();
+                THsbLog.Append(DateTime.Now + " >>" + TextToLog + Environment.NewLine);
+                return;
             }
-            if (Properties.Settings.Default.THdebug)
-            {
-                if (WriteNow)
-                {
-                    if (THsbLog.Length == 0)
-                    {
-                        FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log")
-                            , Environment.NewLine
-                            + DateTime.Now + " >>" + TextToLog
-                            + Environment.NewLine
-                            + (DebugData.Count > 0 ? "Debug data:" + Environment.NewLine + string.Join(Environment.NewLine, DebugData) : "")
-                            , Properties.Settings.Default.DebugMode);
-                    }
-                    else
-                    {
-                        FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log")
-                            , Environment.NewLine
-                            + DateTime.Now + " >>" + THsbLog
-                            + Environment.NewLine
-                            + TextToLog
-                            + Environment.NewLine
-                            + (DebugData.Count > 0 ? "Debug data:" + Environment.NewLine + string.Join(Environment.NewLine, DebugData) : "")
-                            , Properties.Settings.Default.DebugMode);
-                        //File.Move(Application.StartupPath + "\\TranslationHelper.log", Application.StartupPath + "\\TranslationHelper" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") + ".log");
-                        THsbLog.Clear();
-                    }
 
-                    DebugData.Clear();//clear debug data after they was logged
-                }
-                else
-                {
-                    THsbLog.Append(DateTime.Now + " >>" + TextToLog + Environment.NewLine);
-                }
+            if (THsbLog.Length == 0)
+            {
+                FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log")
+                    , Environment.NewLine
+                    + DateTime.Now + " >>" + TextToLog
+                    + Environment.NewLine
+                    + (DebugData.Count > 0 ? "Debug data:" + Environment.NewLine + string.Join(Environment.NewLine, DebugData) : "")
+                    , AppSettings.DebugMode);
             }
+            else
+            {
+                FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log")
+                    , Environment.NewLine
+                    + DateTime.Now + " >>" + THsbLog
+                    + Environment.NewLine
+                    + TextToLog
+                    + Environment.NewLine
+                    + (DebugData.Count > 0 ? "Debug data:" + Environment.NewLine + string.Join(Environment.NewLine, DebugData) : "")
+                    , AppSettings.DebugMode);
+                //File.Move(Application.StartupPath + "\\TranslationHelper.log", Application.StartupPath + "\\TranslationHelper" + DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss") + ".log");
+                THsbLog.Clear();
+            }
+
+            DebugData.Clear();//clear debug data after they was logged
         }
     }
 }
