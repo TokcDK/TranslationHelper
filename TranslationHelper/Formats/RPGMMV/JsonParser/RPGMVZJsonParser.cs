@@ -69,10 +69,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         private void WriteTranslation(JValue value, string tokenValue)
         {
             string translation = tokenValue;
-            if (!Format.SetTranslation(ref translation))
-            {
-                return;
-            }
+            if (!Format.SetTranslation(ref translation)) return;
 
             int originalLinesCount;
             if (translation.GetLinesCount() == (originalLinesCount = tokenValue.GetLinesCount())
@@ -149,10 +146,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
         protected override void ParseJsonObject(JObject jsonObject)
         {
-            if (AddedJObjects.Contains(jsonObject))
-            {
-                return;
-            }
+            if (AddedJObjects.Contains(jsonObject)) return;
 
             ParseJsonObjectProperties(jsonObject);
 
@@ -164,19 +158,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// </summary>
         private void ResetCurrentCode()
         {
-            if (CurrentEventCode != -1)
-            {
-                CurrentEventCode = -1;
-            }
+            if (CurrentEventCode != -1) CurrentEventCode = -1;
         }
 
         protected override JsonObjectPropertyState ParseJsonObjectProperty(JProperty jsonProperty)
         {
             bool IsCode = IsInteger(jsonProperty.Value.Type) && jsonProperty.Name == "code";
-            if (IsCode)
-            {
-                CurrentEventCode = (int)jsonProperty.Value;
-            }
+            if (IsCode) CurrentEventCode = (int)jsonProperty.Value;
 
             if (IsExcludedOrParsed(jsonProperty.Parent as JObject, CurrentEventCode, JsonName))
             {
@@ -234,7 +222,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// </summary>
         /// <param name="currentEventCode"></param>
         /// <returns></returns>
-        private bool IsCodeWithStringInParameters(int currentEventCode)
+        private static bool IsCodeWithStringInParameters(int currentEventCode)
         {
             return //IsMessageCode(currentEventCode) || 
                 currentEventCode == 102
@@ -248,10 +236,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// </summary>
         /// <param name="currentEventCode"></param>
         /// <returns></returns>
-        private static bool IsMessageCode(int currentEventCode)
-        {
-            return currentEventCode == 401 || currentEventCode == 405;
-        }
+        private static bool IsMessageCode(int currentEventCode) => currentEventCode == 401 || currentEventCode == 405;
 
         /// <summary>
         /// get all string lines of message from input <paramref name="messagePartsList"/>
@@ -265,7 +250,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             {
                 JProperty prop = token.Last as JProperty;
                 JArray array = prop.Value as JArray;
-                foreach (string value in array)
+                foreach (string value in array.Select(v => (string)v))
                 {
                     lines.Add(value);
                 }
@@ -281,10 +266,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <returns></returns>
         private List<JObject> GetNextTokensWithSameCode(JToken jsonToken)
         {
-            var list = new List<JObject>
-            {
-                jsonToken as JObject
-            };
+            var list = new List<JObject> { jsonToken as JObject };
 
             var next = jsonToken.Next as JObject;
             while (next is JObject obj
@@ -308,16 +290,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// <param name="originalMergedMessage"></param>
         private void TranslateMessages(List<JObject> originalMessageJTokensList, string originalMergedMessage)
         {
-            if (!Format.IsValidString(originalMergedMessage))
-            {
-                return;
-            }
+            if (!Format.IsValidString(originalMergedMessage)) return;
 
             var translation = originalMergedMessage;
-            if (!Format.SetTranslation(ref translation))
-            {
-                return;
-            }
+            if (!Format.SetTranslation(ref translation)) return;
 
             var translated = translation.SplitToLines().ToArray();
 
