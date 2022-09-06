@@ -33,6 +33,26 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
+        internal class TableTranslationData
+        {
+            internal int TableIndex;
+            internal HashSet<RowsTranslationData> Rows = new HashSet<RowsTranslationData>();
+        }
+
+        internal class RowsTranslationData
+        {
+            internal int RowIndex;
+            internal HashSet<LineTranslationData> Lines = new HashSet<LineTranslationData>();
+        }
+
+        internal class LineTranslationData
+        {
+            internal int LineIndex;
+            internal string OriginalText;
+            internal string TranslationText;
+            internal ExtractRegexGroupInfo RegexExtractionData = null;
+        }
+
         readonly Dictionary<string/*table index,row index*/, Dictionary<int/*line number*/, Dictionary<string/*text from original*/, string/*text of translation*/>>> _buffer;
         readonly Dictionary<string/*table index,row index*/, Dictionary<int/*line number*/, Dictionary<string/*text from original*/, string/*text of translation*/>>> _bufferExtracted;
 
