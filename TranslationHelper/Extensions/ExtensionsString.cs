@@ -6,12 +6,65 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
+using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Extensions
 {
     internal static class ExtensionsString
     {
+        /// <summary>
+        /// extract captured groups from string
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="lineCoordinates"></param>
+        /// <param name="lineNum"></param>
+        /// <returns></returns>
+        internal static ExtractRegexInfo ExtractMulty(this string line)
+        {
+            var log = new FunctionsLogs();
+            var extractRegexData = new ExtractRegexInfo();
+            try
+            {
+                foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
+                {
+                    // check if any regex is match
+                    try { if (!Regex.IsMatch(line, PatternReplacementPair.Key)) continue; }
+                    catch (System.ArgumentException ex)
+                    {
+                        log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
+                        AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName);
+                        continue;
+                    }
+
+                    // add regex pattern and replacer
+                    extractRegexData.Pattern = PatternReplacementPair.Key;
+                    extractRegexData.Replacer = PatternReplacementPair.Value;
+
+                    // add matched groups values
+                    foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
+                    {
+                        if (!extractRegexData.Replacer.Contains("$" + g.Name)) continue; // skip if group is missing in replacer value
+
+                        var valueData = extractRegexData.ValueData.ContainsKey(g.Value) ? extractRegexData.ValueData[g.Value] : new ExtractRegexValueInfo();
+
+                        if (valueData.Groups.Contains(g.Index)) continue;
+
+                        valueData.Groups.Add(g.Index);
+                    }
+
+                    break; // regex found skip other
+                }
+            }
+            catch (InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
+            {
+                // retry extraction
+                return line.ExtractMulty();
+            }
+
+            return extractRegexData;
+        }
+
         /// <summary>
         /// extract captured groups from string
         /// </summary>

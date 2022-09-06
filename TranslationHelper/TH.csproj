@@ -277,6 +277,10 @@
     <Compile Include="Functions\FileElementsFunctions\Row\FillEmptyTablesLinesDict\FillEmptyTablesLinesDictSaveModeNoDups.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FixCellsForce.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\MakeTranslatedCopyIfFileWithTheNameExists.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\ExtractRegexData.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslateNew.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\RowData.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\RowTranslationInfo.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OpenInWeb.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\PasteTranslation.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\RowBase.cs" />
