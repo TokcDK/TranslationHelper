@@ -199,6 +199,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var extractData = line.ExtractMulty();
                 lineData.RegexExtractionData = extractData;
 
+                bool isExtracted = false;
                 //parse all extracted values from original
                 foreach (var val in extractData.ValueData)
                 {
@@ -218,6 +219,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         Size += val.Key.Length; // increase size of string for translation for check later
                     }
                 }
+
+                if (!isExtracted) Size += lineData.OriginalText.Length; // increase size of string for translation for check later
 
                 // when max limit of string size for translation
                 if (IsMax())
