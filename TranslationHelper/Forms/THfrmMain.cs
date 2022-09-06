@@ -1323,7 +1323,7 @@ namespace TranslationHelper
         internal bool IsTranslating;
         private void OnlineTranslateSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Thread trans = new Thread((obj) => new OnlineTranslate().Selected());
+            Thread trans = new Thread((obj) => new OnlineTranslateNew().Selected());
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1368,7 +1368,7 @@ namespace TranslationHelper
 
         private void OnlineTranslateTableToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Thread trans = new Thread((obj) => new OnlineTranslate().Table());
+            Thread trans = new Thread((obj) => new OnlineTranslateNew().Table());
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -1410,7 +1410,7 @@ namespace TranslationHelper
 
         private void OnlineTranslateAllToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Thread trans = new Thread((obj) => new OnlineTranslate().All());
+            Thread trans = new Thread((obj) => new OnlineTranslateNew().All());
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере

@@ -171,13 +171,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 // set row's line data
                 var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
                 var lineData = rowData.Lines.FirstOrDefault(d => d.LineIndex == lineNum);
-                if (rowData != null) continue; // skip if line already exists?
+
+                // skip if line already exists?
+                if (lineData != null) continue;
+
+                // init line data
                 lineData = new LineTranslationData(lineNum, line) { TranslationText = line };
+                rowData.Lines.Add(lineData);
 
                 //check for line valid
                 if (!line.IsValidForTranslation())
                 {
-                    rowData.Lines.Add(lineData); // add original as translation because line is not valid and will be added as is
+                    //rowData.Lines.Add(lineData); // add original as translation because line is not valid and will be added as is
                     lineNum++;
                     continue;
                 }
@@ -278,7 +283,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             continue;
                         }
                         
-                        if (!orig.Contains(lineData.OriginalText) && lineData.TranslationText == null && lineData.OriginalText.IsValidForTranslation()) orig.Add(lineData.OriginalText);
+                        if (!orig.Contains(lineData.OriginalText) && (lineData.TranslationText == null || lineData.TranslationText == lineData.OriginalText) && lineData.OriginalText.IsValidForTranslation()) orig.Add(lineData.OriginalText);
                     }
                 }
             }
@@ -390,7 +395,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         {
                             foreach (var value in lineData.RegexExtractionData.ValueData)
                             {
-                                if (value.Value.Translation != null) continue;
+                                if (value.Value.Translation != null && value.Value.Translation != value.Key) continue;
                                 if (!value.Key.IsValidForTranslation()) continue;
                                 if (!translations.ContainsKey(value.Key)) continue;
 
@@ -400,7 +405,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             continue;
                         }
 
-                        if (lineData.TranslationText != null) continue;
+                        if (lineData.TranslationText != null && lineData.TranslationText != lineData.OriginalText) continue;
                         if (!lineData.OriginalText.IsValidForTranslation()) continue;
                         if (!translations.ContainsKey(lineData.OriginalText)) continue;
 
@@ -455,19 +460,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     //}
 
                     var newValue = new List<string>();
-                    var lineNum = -1;
+                    var lineNum = 0;
                     var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
                     foreach (var line in rowValue.SplitToLines())
                     {
-                        var lineData = rowData.Lines[++lineNum];
+                        LineTranslationData lineData = rowData.Lines[lineNum];
 
                         if (lineData.TranslationText == null || lineData.TranslationText == line || line.IsSoundsText())
                         {
                             newValue.Add(line);
-                            continue;
                         }
-
-                        if (lineData.RegexExtractionData.ValueData.Count > 0) // when line has extracted values
+                        else if (lineData.RegexExtractionData.ValueData.Count > 0) // when line has extracted values
                         {
                             // replace all groups with translation of selected value
                             var newLineText = lineData.RegexExtractionData.Replacer;
@@ -482,8 +485,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             newValue.Add(newLineText);
                         }
                         else newValue.Add(lineData.TranslationText);
+
+                        lineNum++;
                     }
 
+                    // set new row value
                     row.SetValue(1, string.Join(Environment.NewLine, newValue));
 
                     if (row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) continue; // continue if any original line equal to translation line with same index
