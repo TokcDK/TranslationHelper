@@ -20,36 +20,40 @@ namespace TranslationHelper.Extensions
         /// <param name="lineCoordinates"></param>
         /// <param name="lineNum"></param>
         /// <returns></returns>
-        internal static Dictionary<string, ExtractRegexGroupInfo> ExtractMulty(this string line)
+        internal static ExtractRegexInfo ExtractMulty(this string line)
         {
             var log = new FunctionsLogs();
-            var ret = new Dictionary<string, ExtractRegexGroupInfo>();
+            var extractRegexData = new ExtractRegexInfo();
             try
             {
                 foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
                 {
-                    try
-                    {
-                        if (!Regex.IsMatch(line, PatternReplacementPair.Key)) continue;
-                    }
+                    // check if any regex is match
+                    try { if (!Regex.IsMatch(line, PatternReplacementPair.Key)) continue; }
                     catch (System.ArgumentException ex)
                     {
                         log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
-                        AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName());
+                        AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName);
                         continue;
                     }
 
+                    // add regex pattern and replacer
+                    extractRegexData.Pattern = PatternReplacementPair.Key;
+                    extractRegexData.Replacer = PatternReplacementPair.Value;
+
+                    // add matched groups values
                     foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
                     {
-                        //if replacement contains the group name ($1,$2,$3...$99)
-                        if (!PatternReplacementPair.Value.Contains("$" + g.Name)) continue;
-                        if (!ret.ContainsKey(g.Value)) ret.Add(g.Value, new ExtractRegexGroupInfo(PatternReplacementPair.Key, PatternReplacementPair.Value));
+                        if (!extractRegexData.Replacer.Contains("$" + g.Name)) continue; // skip if group is missing in replacer value
 
-                        var groups = ret[g.Value].Groups;
-                        if (!groups.Contains(g.Index)) groups.Add(g.Index);
+                        var valueData = extractRegexData.ValueData.ContainsKey(g.Value) ? extractRegexData.ValueData[g.Value] : new ExtractRegexValueInfo();
+
+                        if (valueData.Groups.Contains(g.Index)) continue;
+
+                        valueData.Groups.Add(g.Index);
                     }
 
-                    break;
+                    break; // regex found skip other
                 }
             }
             catch (InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
@@ -58,7 +62,7 @@ namespace TranslationHelper.Extensions
                 return line.ExtractMulty();
             }
 
-            return ret;
+            return extractRegexData;
         }
 
         /// <summary>

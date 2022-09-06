@@ -6,7 +6,7 @@
         {
             public int RowNumber { get; set; }
             public int LineNumber { get; set; }
-            public ExtractRegexGroupInfo RegexInfo { get; set; }
+            public ExtractRegexValueInfo RegexInfo { get; set; }
         }
     }
 }

@@ -1,9 +1,12 @@
-﻿using GoogleTranslateFreeApi;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Util;
 using System.Windows.Forms;
+using GoogleTranslateFreeApi;
+using IniParser.Model;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
@@ -33,7 +36,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        internal class TableTranslationData
+        internal class TranslationData
         {
             internal int TableIndex;
             internal HashSet<RowsTranslationData> Rows = new HashSet<RowsTranslationData>();
@@ -42,19 +45,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         internal class RowsTranslationData
         {
             internal int RowIndex;
-            internal HashSet<LineTranslationData> Lines = new HashSet<LineTranslationData>();
+            internal List<LineTranslationData> Lines = new List<LineTranslationData>();
         }
 
         internal class LineTranslationData
         {
-            internal int LineIndex;
-            internal string OriginalText;
+            internal readonly int LineIndex;
+            internal readonly string OriginalText;
             internal string TranslationText;
-            internal ExtractRegexGroupInfo RegexExtractionData = null;
+            internal ExtractRegexInfo RegexExtractionData;
+
+            public LineTranslationData(int lineIndex, string originalText)
+            {
+                LineIndex = lineIndex;
+                OriginalText = originalText;
+            }
         }
 
-        readonly Dictionary<string/*table index,row index*/, Dictionary<int/*line number*/, Dictionary<string/*text from original*/, string/*text of translation*/>>> _buffer;
-        readonly Dictionary<string/*table index,row index*/, Dictionary<int/*line number*/, Dictionary<string/*text from original*/, string/*text of translation*/>>> _bufferExtracted;
+        List<TranslationData> _buffer;
 
         int Size { get; set; }
         static int MaxSize { get => 1000; }
@@ -66,18 +74,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         public OnlineTranslateNew()
         {
-            if (_buffer == null)
-            {
-                _buffer = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
-            }
-            if (_bufferExtracted == null)
-            {
-                _bufferExtracted = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
-            }
-            if (_translator == null)
-            {
-                _translator = new GoogleAPIOLD();
-            }
+            if (_buffer == null) _buffer = new List<TranslationData>();
+            if (_translator == null) _translator = new GoogleAPIOLD();
         }
 
         protected override bool IsValidRow()
@@ -118,7 +116,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             TranslateStrings();
             Size = 0;
-            _buffer.Clear();
+            _buffer = null;
             AppData.OnlineTranslationCache.Write();
             FunctionsOnlineCache.Unload();
 
@@ -150,22 +148,36 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var original = SelectedRow[0] as string;
             var lineNum = 0;
 
+            // add table data
+            var data = _buffer.FirstOrDefault(d => d.TableIndex == SelectedTableIndex);
+            if (data == null)
+            {
+                data = new TranslationData();
+                data.TableIndex = SelectedTableIndex;
+                _buffer.Add(data);
+            }
+            // add table's row data
+            var rowData = data.Rows.FirstOrDefault(d => d.RowIndex == SelectedRowIndex);
+            if (rowData == null)
+            {
+                rowData = new RowsTranslationData();
+                rowData.RowIndex = SelectedRowIndex;
+                data.Rows.Add(rowData);
+            }
+
             // parse lines of original
             foreach (var line in original.SplitToLines())
             {
+                // set row's line data
                 var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
-
-                //init data
-                //add lineCoordinates and row data
-                _buffer.TryAdd(lineCoordinates, new Dictionary<int, Dictionary<string, string>>());//add coordinates
-
-                _buffer[lineCoordinates].TryAdd(lineNum, new Dictionary<string, string>());//add linenum
+                var lineData = rowData.Lines.FirstOrDefault(d => d.LineIndex == lineNum);
+                if (rowData != null) continue; // skip if line already exists?
+                lineData = new LineTranslationData(lineNum, line) { TranslationText = line };
 
                 //check for line valid
                 if (!line.IsValidForTranslation())
                 {
-                    _buffer[lineCoordinates][lineNum].Add(line, line);//add original as translation because line is not valid and will be added as is
-
+                    rowData.Lines.Add(lineData); // add original as translation because line is not valid and will be added as is
                     lineNum++;
                     continue;
                 }
@@ -174,33 +186,31 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var linecache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
                 if (!string.IsNullOrEmpty(linecache))
                 {
-                    _buffer[lineCoordinates][lineNum].Add(line, linecache);
+                    lineData.TranslationText = linecache;
                     lineNum++;
                     continue;
                 }
 
-                var values = line.ExtractMulty();
+                var extractData = line.ExtractMulty();
+                lineData.RegexExtractionData = extractData;
 
                 //parse all extracted values from original
-                foreach (var val in values)
+                foreach (var val in extractData.ValueData)
                 {
-                    if (_buffer[lineCoordinates][lineNum].ContainsKey(val.Key)) continue; // skip if already exists?
-
                     // get translation from cache
                     var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val.Key);
 
                     if (!string.IsNullOrEmpty(valcache))
                     {
-                        _buffer[lineCoordinates][lineNum].Add(val.Key, valcache); // add translation from cache if found
+                        val.Value.Translation = valcache; // add translation from cache if found
                     }
                     else if (val.Key.IsSoundsText())
                     {
-                        _buffer[lineCoordinates][lineNum].Add(val.Key, val.Key); // original=translation when value is soundtext
+                        val.Value.Translation = val.Key; // original=translation when value is soundtext
                     }
-                    else // add value for translation
+                    else
                     {
-                        _buffer[lineCoordinates][lineNum].Add(val.Key, null);
-                        Size += val.Key.Length;
+                        Size += val.Key.Length; // increase size of string for translation for check later
                     }
                 }
 
@@ -256,13 +266,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private string[] GetOriginals()
         {
             var orig = new List<string>();
-            foreach (var coordinate in _buffer)//get all coordinate keys
+            foreach (var data in _buffer) // get data
             {
-                foreach (var lineNumber in coordinate.Value) // get all sublines
+                foreach (var rowData in data.Rows) // get rows data
                 {
-                    foreach (var linetext in lineNumber.Value) // get all sublines
+                    foreach (var lineData in rowData.Lines) // get line data
                     {
-                        if (!orig.Contains(linetext.Key) && linetext.Value == null && linetext.Key.IsValidForTranslation()) orig.Add(linetext.Key);
+                        if (lineData.RegexExtractionData.ValueData.Count > 0)
+                        {
+                            foreach(var value in lineData.RegexExtractionData.ValueData) if (!orig.Contains(value.Key) && value.Value.Translation == null && value.Key.IsValidForTranslation()) orig.Add(value.Key);
+                            continue;
+                        }
+                        
+                        if (!orig.Contains(lineData.OriginalText) && lineData.TranslationText == null && lineData.OriginalText.IsValidForTranslation()) orig.Add(lineData.OriginalText);
                     }
                 }
             }
@@ -277,7 +293,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private string[] ApplyProjectPretranslationAction(string[] originalLines)
         {
-            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null 
+            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null
                 && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0) AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
 
             var newOriginalLines = new string[originalLines.Length];
@@ -300,7 +316,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             for (int i = 0; i < translatedLines.Length; i++)
             {
-                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);                
+                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
                 if (!string.IsNullOrEmpty(s) && s != translatedLines[i]) translatedLines[i] = s;
             }
 
@@ -328,7 +344,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (originalLinesArePreApplied.Length > 0)
                 {
                     translated = _translator.Translate(originalLinesArePreApplied);
-                    if (translated == null || originals.Length != translated.Length) return new string[1] { "" };                    
+                    if (translated == null || originals.Length != translated.Length) return new string[1] { "" };
                     translated = ApplyProjectPosttranslationAction(originals, translated);
                 }
             }
@@ -354,26 +370,41 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             var translations = new Dictionary<string, string>();
             if (originals != null && translated != null && originals.Length > 0 && originals.Length == translated.Length)
+            {
                 for (int i = 0; i < originals.Length; i++)
                 {
                     translations.Add(originals[i], translated[i]);
 
                     FunctionsOnlineCache.AddToTranslationCacheIfValid(originals[i], translated[i]);
                 }
+            }
+            else return;
 
-            var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(_buffer);
-            foreach (var coordinate in coordinates)//get all coordinate keys
+            foreach (var data in _buffer) // get data
             {
-                var lineNumbers = new Dictionary<int, Dictionary<string, string>>(coordinate.Value);
-                foreach (var linenumber in lineNumbers) // get all sublines
+                foreach (var rowData in data.Rows) // get rows data
                 {
-                    var liTexts = new Dictionary<string, string>(linenumber.Value);
-                    foreach (var linetext in liTexts) // get all sublines
+                    foreach (var lineData in rowData.Lines) // get line data
                     {
-                        if (linetext.Value == null && translations.ContainsKey(linetext.Key))
+                        if (lineData.RegexExtractionData.ValueData.Count > 0)
                         {
-                            _buffer[coordinate.Key][linenumber.Key][linetext.Key] = translations[linetext.Key];
+                            foreach (var value in lineData.RegexExtractionData.ValueData)
+                            {
+                                if (value.Value.Translation != null) continue;
+                                if (!value.Key.IsValidForTranslation()) continue;
+                                if (!translations.ContainsKey(value.Key)) continue;
+
+                                value.Value.Translation = translations[value.Key];
+                            }
+
+                            continue;
                         }
+
+                        if (lineData.TranslationText != null) continue;
+                        if (!lineData.OriginalText.IsValidForTranslation()) continue;
+                        if (!translations.ContainsKey(lineData.OriginalText)) continue;
+
+                        lineData.TranslationText = translations[lineData.TranslationText];
                     }
                 }
             }
@@ -384,122 +415,142 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         private void SetBufferToRows()
         {
-            var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(_buffer);
-            
             //get all coordinate keys
-            foreach (var coordinate in coordinates)
+            foreach (var data in _buffer)
             {
-                var tr = coordinate.Key.Split(',');
-                var tindex = int.Parse(tr[0]);
-                var rindex = int.Parse(tr[1]);
-                var row = AppData.CurrentProject.FilesContent.Tables[tindex].Rows[rindex];
-
-                var cellTranslationEqualOriginal = Equals(row[1], row[0]);
-
-                //skip equal
-                if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) continue;
-
-                var cellTranslationIsNotEmptyAndNotEqualOriginal = (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !cellTranslationEqualOriginal);
-
-                if (cellTranslationIsNotEmptyAndNotEqualOriginal && !row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) continue;
-
-                var newValue = new List<string>();
-                var lineNum = 0;
-                var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
-                foreach (var line in rowValue.SplitToLines())
+                foreach (var rowData in data.Rows)
                 {
-                    if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0) || line.IsSoundsText())
-                    {
-                        newValue.Add(line);
-                    }
-                    else if (_bufferExtracted != null
-                        && _bufferExtracted.Count > 0
-                        && _bufferExtracted.ContainsKey(coordinate.Key)
-                        && _bufferExtracted[coordinate.Key].ContainsKey(lineNum)
-                        && _bufferExtracted[coordinate.Key][lineNum].Count > 0
-                        )
-                    {
-                        newValue.Add(GetMergedValue(coordinate.Key, lineNum, line));
+                    var row = AppData.CurrentProject.FilesContent.Tables[data.TableIndex].Rows[rowData.RowIndex];
 
-                    }
-                    else if (coordinate.Value[lineNum].ContainsKey(line))
+                    // skip equal
+                    var cellTranslationEqualOriginal = Equals(row[1], row[0]);
+                    if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) continue;
+
+                    // skip when translation not equal to original and and have No any original line equal translation
+                    var cellTranslationIsNotEmptyAndNotEqualOriginal = (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !cellTranslationEqualOriginal);
+                    if (cellTranslationIsNotEmptyAndNotEqualOriginal && !row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) continue;
+
+
+                    //foreach (var lineData in rowData.Lines) // get line data
+                    //{
+                    //    if (lineData.RegexExtractionData.Values.Count > 0)
+                    //    {
+                    //        foreach (var value in lineData.RegexExtractionData.Values)
+                    //        {
+                    //            if (value.Value.Translation != null) continue;
+                    //            if (!value.Key.IsValidForTranslation()) continue;
+                    //            if (!translations.ContainsKey(value.Key)) continue;
+
+                    //            value.Value.Translation = translations[value.Key];
+                    //        }
+
+                    //        continue;
+                    //    }
+
+                    //    if (lineData.TranslationText != null) continue;
+                    //    if (!lineData.OriginalText.IsValidForTranslation()) continue;
+                    //    if (!translations.ContainsKey(lineData.OriginalText)) continue;
+
+                    //    lineData.TranslationText = translations[lineData.TranslationText];
+                    //}
+
+                    var newValue = new List<string>();
+                    var lineNum = -1;
+                    var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
+                    foreach (var line in rowValue.SplitToLines())
                     {
-                        newValue.Add(coordinate.Value[lineNum][line]);
+                        var lineData = rowData.Lines[++lineNum];
+
+                        if (lineData.TranslationText == null || lineData.TranslationText == line || line.IsSoundsText())
+                        {
+                            newValue.Add(line);
+                            continue;
+                        }
+
+                        if (lineData.RegexExtractionData.ValueData.Count > 0) // when line has extracted values
+                        {
+                            // replace all groups with translation of selected value
+                            var newLineText = lineData.RegexExtractionData.Replacer;
+                            foreach (var valueData in lineData.RegexExtractionData.ValueData.Values)
+                            {
+                                foreach (var groupIndex in valueData.GroupIndexes)
+                                {
+                                    newLineText = newLineText.Replace($"${groupIndex}", valueData.Translation);
+                                }
+                            }
+
+                            newValue.Add(newLineText);
+                        }
+                        else newValue.Add(lineData.TranslationText);
                     }
-                    else
-                    {
-                        newValue.Add(line);
-                    }
 
-                    lineNum++;
-                }
+                    row.SetValue(1, string.Join(Environment.NewLine, newValue));
 
-                row.SetValue(1, string.Join(Environment.NewLine, newValue));
+                    if (row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) continue; // continue if any original line equal to translation line with same index
 
-                if (!row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//apply only for finished rows
-                {
-                    //apply fixes for cell
-                    new AllHardFixes().Selected(row, tindex, rindex);
-                    new FixCells().Selected(row, tindex, rindex);
+                    // apply fixes for cell
+                    // apply only for finished rows
+                    new AllHardFixes().Selected(row, data.TableIndex, rowData.RowIndex);
+                    new FixCells().Selected(row, data.TableIndex, rowData.RowIndex);
                 }
             }
         }
 
-        /// <summary>
-        /// merge extracted strings to result merged translation
-        /// </summary>
-        /// <param name="coordinates"></param>
-        /// <param name="lineNum"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        private string GetMergedValue(string coordinates, int lineNum, string line)
-        {
-            using (var enumer = _bufferExtracted[coordinates][lineNum].GetEnumerator())
-            {
-                enumer.MoveNext();
-                var extractionkeyvalue = enumer.Current;
-                var replacement = extractionkeyvalue.Value;
+        ///// <summary>
+        ///// merge extracted strings to result merged translation
+        ///// </summary>
+        ///// <param name="coordinates"></param>
+        ///// <param name="lineNum"></param>
+        ///// <param name="line"></param>
+        ///// <returns></returns>
+        //private string GetMergedValue(string coordinates, int lineNum, string line)
+        //{
+        //    using (var enumer = _bufferExtracted[coordinates][lineNum].GetEnumerator())
+        //    {
+        //        enumer.MoveNext();
+        //        var extractionkeyvalue = enumer.Current;
+        //        var replacement = extractionkeyvalue.Value;
 
-                if (Regex.IsMatch(replacement.Trim(), @"^\$[1-9]$"))
-                {
-                    var bufenum = _buffer[coordinates][lineNum].GetEnumerator();
-                    bufenum.MoveNext();
+        //        if (Regex.IsMatch(replacement.Trim(), @"^\$[1-9]$"))
+        //        {
+        //            var bufenum = _buffer[coordinates][lineNum].GetEnumerator();
+        //            bufenum.MoveNext();
 
-                    int indexOfTheString = line.IndexOf(bufenum.Current.Key);
-                    if (indexOfTheString > -1)
-                    {
-                        if (bufenum.Current.Value != null)//null when o translation?
-                        {
-                            return line
-                            .Remove(indexOfTheString, bufenum.Current.Key.Length)
-                            .Insert(indexOfTheString,
-                            bufenum.Current.Value
-                            );
-                        }
-                        else
-                        {
-                            return line;
-                        }
-                    }
-                }
+        //            int indexOfTheString = line.IndexOf(bufenum.Current.Key);
+        //            if (indexOfTheString > -1)
+        //            {
+        //                if (bufenum.Current.Value != null)//null when o translation?
+        //                {
+        //                    return line
+        //                    .Remove(indexOfTheString, bufenum.Current.Key.Length)
+        //                    .Insert(indexOfTheString,
+        //                    bufenum.Current.Value
+        //                    );
+        //                }
+        //                else
+        //                {
+        //                    return line;
+        //                }
+        //            }
+        //        }
 
-                KeyValuePair<string, string> substitution;
-                while (enumer.MoveNext())
-                {
-                    substitution = enumer.Current;
+        //        KeyValuePair<string, string> substitution;
+        //        while (enumer.MoveNext())
+        //        {
+        //            substitution = enumer.Current;
 
-                    if (replacement.Contains(substitution.Key))
-                    {
-                        string val = substitution.Value;
-                        if (_buffer[coordinates][lineNum].ContainsKey(substitution.Value))
-                            val = _buffer[coordinates][lineNum][substitution.Value];
+        //            if (replacement.Contains(substitution.Key))
+        //            {
+        //                string val = substitution.Value;
+        //                if (_buffer[coordinates][lineNum].ContainsKey(substitution.Value))
+        //                    val = _buffer[coordinates][lineNum][substitution.Value];
 
-                        replacement = replacement.Replace(substitution.Key, val);
-                    }
-                }
+        //                replacement = replacement.Replace(substitution.Key, val);
+        //            }
+        //        }
 
-                return replacement;
-            }
-        }
+        //        return replacement;
+        //    }
+        //}
     }
 }
