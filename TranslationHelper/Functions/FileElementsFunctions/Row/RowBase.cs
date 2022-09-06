@@ -540,11 +540,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 SelectedRowsCountRest = SelectedRowsCount;
             }
 
-            SelectedRowsCountRest--;//reduce rest of rows by 1
+            //reduce rest of rows by 1
+            //set IsLastRow to true because it is last processed row
+            IsLastRow = --SelectedRowsCountRest == 0;
 
             if (!IsValidRow()) return;
-
-            IsLastRow = SelectedRowsCountRest == 0;//set IsLastRow to true because it is last processed row
 
             try { if (Apply()) Ret = true; } catch { }
         }
