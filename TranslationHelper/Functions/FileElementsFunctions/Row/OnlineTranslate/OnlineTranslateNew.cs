@@ -162,25 +162,27 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 //parse all extracted values from original
                 foreach (var val in values)
                 {
-                    //if (_buffer[lineCoordinates][lineNum].ContainsKey(val)) continue;
+                    if (_buffer[lineCoordinates][lineNum].ContainsKey(val.Key)) continue; // skip if already exists?
 
-                    //var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val);
+                    // get translation from cache
+                    var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val.Key);
 
-                    //if (!string.IsNullOrEmpty(valcache))
-                    //{
-                    //    _buffer[lineCoordinates][lineNum].Add(val, valcache);
-                    //}
-                    //else if (val.IsSoundsText())
-                    //{
-                    //    _buffer[lineCoordinates][lineNum].Add(val, val);
-                    //}
-                    //else
-                    //{
-                    //    _buffer[lineCoordinates][lineNum].Add(val, null);
-                    //    Size += val.Length;
-                    //}
+                    if (!string.IsNullOrEmpty(valcache))
+                    {
+                        _buffer[lineCoordinates][lineNum].Add(val.Key, valcache); // add translation from cache if found
+                    }
+                    else if (val.Key.IsSoundsText())
+                    {
+                        _buffer[lineCoordinates][lineNum].Add(val.Key, val.Key); // original=translation when value is soundtext
+                    }
+                    else // add value for translation
+                    {
+                        _buffer[lineCoordinates][lineNum].Add(val.Key, null);
+                        Size += val.Key.Length;
+                    }
                 }
 
+                // when max limit of string size for translation
                 if (IsMax())
                 {
                     TranslateStrings();
