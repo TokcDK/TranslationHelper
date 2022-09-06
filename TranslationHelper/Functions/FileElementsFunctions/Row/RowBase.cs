@@ -474,16 +474,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             foreach (DataTable table in tables)
             {
                 SelectedTable = table;
-                SelectedTableIndex = tindex;
-                try
-                {
-                    Table(table);
-                }
-                catch (Exception ex)
-                {
-                    _log.LogToFile("An error occured while rowbase all tables table parse. Error:" + ex);
-                }
-                tindex++;
+                SelectedTableIndex = tindex++; // set and increase table index
+
+                try { Table(table); }
+                catch (Exception ex) { _log.LogToFile("An error occured while rowbase all tables table parse. Error:" + ex); }
             }
 
             ActionsPostTablesApply();
