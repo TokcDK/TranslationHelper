@@ -129,6 +129,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             var original = SelectedRow[0] as string;
             var lineNum = 0;
+
+            // parse lines of original
             foreach (var line in original.SplitToLines())
             {
                 var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
