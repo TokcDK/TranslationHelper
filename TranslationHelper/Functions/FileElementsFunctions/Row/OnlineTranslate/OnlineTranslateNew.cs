@@ -53,7 +53,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             internal readonly int LineIndex;
             internal readonly string OriginalText;
             internal string TranslationText;
-            internal ExtractRegexInfo RegexExtractionData;
+            internal ExtractRegexInfo RegexExtractionData = new ExtractRegexInfo();
 
             public LineTranslationData(int lineIndex, string originalText)
             {
