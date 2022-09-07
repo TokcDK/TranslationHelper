@@ -237,7 +237,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     TranslateStrings();
 
                     Size = 0;
-                    _buffer.Clear();
+                    //_buffer.Clear();
 
                     //write cache periodically
                     AppData.OnlineTranslationCache.Write();

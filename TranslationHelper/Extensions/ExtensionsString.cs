@@ -55,7 +55,9 @@ namespace TranslationHelper.Extensions
                     {
                         if (!extractRegexData.Replacer.Contains("$" + g.Name)) continue; // skip if group is missing in replacer value
 
-                        var valueData = extractRegexData.ValueDataList.ContainsKey(g.Value) ? extractRegexData.ValueDataList[g.Value] : new ExtractRegexValueInfo();
+                        ExtractRegexValueInfo valueData = null;
+                        if (extractRegexData.ValueDataList.ContainsKey(g.Value)) valueData = extractRegexData.ValueDataList[g.Value];
+                        else valueData = new ExtractRegexValueInfo();
 
                         if (valueData.Group.Contains(g)) continue;
 
