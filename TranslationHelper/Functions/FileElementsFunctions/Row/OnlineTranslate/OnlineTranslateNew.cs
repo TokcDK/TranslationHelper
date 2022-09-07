@@ -37,12 +37,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         internal class TranslationData
         {
             internal int TableIndex;
-            internal HashSet<RowsTranslationData> Rows = new HashSet<RowsTranslationData>();
+            internal HashSet<RowTranslationData> Rows = new HashSet<RowTranslationData>();
         }
 
-        internal class RowsTranslationData
+        internal class RowTranslationData
         {
             internal bool IsAllLinesAdded = false;
+            internal bool IsTranslated = false;
             internal int RowIndex;
             internal List<LineTranslationData> Lines = new List<LineTranslationData>();
         }
@@ -148,20 +149,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var lineNum = 0;
 
             // add table data
-            var data = _buffer.FirstOrDefault(d => d.TableIndex == SelectedTableIndex);
-            if (data == null)
+            var tableData = _buffer.FirstOrDefault(d => d.TableIndex == SelectedTableIndex);
+            if (tableData == null)
             {
-                data = new TranslationData();
-                data.TableIndex = SelectedTableIndex;
-                _buffer.Add(data);
+                tableData = new TranslationData();
+                tableData.TableIndex = SelectedTableIndex;
+                _buffer.Add(tableData);
             }
             // add table's row data
-            var rowData = data.Rows.FirstOrDefault(d => d.RowIndex == SelectedRowIndex);
+            var rowData = tableData.Rows.FirstOrDefault(d => d.RowIndex == SelectedRowIndex);
             if (rowData == null)
             {
-                rowData = new RowsTranslationData();
+                rowData = new RowTranslationData();
                 rowData.RowIndex = SelectedRowIndex;
-                data.Rows.Add(rowData);
+                tableData.Rows.Add(rowData);
             }
 
             // parse lines of original
@@ -257,8 +258,30 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             TranslateStrings();
 
+            // cleaning
             Size = 0;
-            _buffer.Clear();
+            //_buffer.Clear();
+            // clear translated tables/rows data
+            var tempTablesList = new List<TranslationData>(_buffer);
+            foreach (var tData in tempTablesList)
+            {
+                var tempRowsList = new HashSet<RowTranslationData>(tData.Rows);
+                foreach (var rowD in tempRowsList)
+                {
+                    if (!rowD.IsAllLinesAdded) continue;
+                    tableData.Rows.Remove(rowD); // remove row data because the row was translated
+                }
+
+                if (tData.Rows.Count == 0) _buffer.Remove(tData); // remove empty table
+
+                tempRowsList = null; // clear rows list
+            }
+            tempTablesList = null; // clear tables list
+            if (tableData != null && rowData != null && rowData.IsAllLinesAdded && tableData.Rows.Contains(rowData))
+            {
+                rowData = null;
+                tableData.Rows.Remove(rowData); // remove row data because the row was translated
+            }
 
             //write cache periodically
             AppData.OnlineTranslationCache.Write();
