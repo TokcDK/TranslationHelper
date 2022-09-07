@@ -321,7 +321,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     translations.Add(originals[i], translated[i]);
 
-                    FunctionsOnlineCache.AddToTranslationCacheIfValid(originals[i], translated[i]);
+                    FunctionsOnlineCache.TryAdd(originals[i], translated[i]);
                 }
 
             var coordinates = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>(_buffer);

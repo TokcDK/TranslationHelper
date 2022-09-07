@@ -16,8 +16,7 @@ namespace TranslationHelper.Functions
 
         internal string GetValueFromCacheOrReturnEmpty(string keyValue)
         {
-            if (!AppSettings.EnableTranslationCache)
-                return string.Empty;
+            if (!AppSettings.EnableTranslationCache) return string.Empty;
 
             if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
                 && AppData.AllDBmerged != null
@@ -49,9 +48,7 @@ namespace TranslationHelper.Functions
                     {
                         return keyValue.Remove(ind, trimmed.Length).Insert(ind, AppData.AllDBmerged[trimmed]);
                     }
-                    catch (ArgumentException ex)
-                    {
-                    }
+                    catch { }
                 }
                 else if (
                     trimmed.Length > 0
@@ -65,22 +62,17 @@ namespace TranslationHelper.Functions
                     {
                         return keyValue.Remove(ind, trimmed.Length).Insert(ind, cache[trimmed]);
                     }
-                    catch(ArgumentException ex)
-                    {
-                    }
+                    catch { }
                 }
 
                 return string.Empty;
             }
         }
 
-        object cacheWriteLocker = new object();
+        readonly object cacheWriteLocker = new object();
         public void Write()
         {
-            if (cache == null || cache.Count < 1)
-            {
-                return;
-            }
+            if (cache == null || cache.Count < 1) return;
 
             lock (cacheWriteLocker)
             {
@@ -123,7 +115,9 @@ namespace TranslationHelper.Functions
         /// </summary>
         internal static void Unload()
         {
-            AppData.OnlineTranslationCache.UsersCount--;
+            AppData.OnlineTranslationCache.Write(); // write on unload
+
+            AppData.OnlineTranslationCache.UsersCount--; // decrease users count
 
             if (AppData.OnlineTranslationCache != null && AppData.OnlineTranslationCache.UsersCount == 0)
             {
@@ -131,26 +125,18 @@ namespace TranslationHelper.Functions
             }
         }
 
-        object cacheReadLocker = new object();
-
+        readonly object cacheReadLocker = new object();
         public void Read()
         {
-            if (cache != null && cache.Count > 0)
-            {
-                return;
-            }
+            if (cache != null && cache.Count > 0) return;
 
             lock (cacheReadLocker)
             {
                 string xml = FunctionsDBFile.ReadXMLToString(AppSettings.THTranslationCachePath);
-                if (xml.Length == 0)
-                    return;
+                if (xml.Length == 0) return;
 
                 XElement rootElement;// = null;
-                try
-                {
-                    rootElement = XElement.Parse(xml);
-                }
+                try { rootElement = XElement.Parse(xml); }
                 catch (Exception ex)
                 {
                     //write exception, rename broken cache file and return
@@ -159,82 +145,25 @@ namespace TranslationHelper.Functions
                     File.Move(AppSettings.THTranslationCachePath, targetFilePath);
                     return;
                 }
+
                 foreach (var el in rootElement.Elements())
                 {
                     string key = el.Element(THSettings.OriginalColumnName).Value;
-                    if (!cache.ContainsKey(key))
-                    {
-                        cache.Add(key, el.Element(THSettings.TranslationColumnName).Value);
-                    }
+                    if (!cache.ContainsKey(key)) cache.Add(key, el.Element(THSettings.TranslationColumnName).Value);
                 }
             }
 
         }
 
-        public static void AddToTranslationCacheIfValid(/*DataSet THTranslationCache*/string Original, string Translation)
+        public static void TryAdd(string Original, string Translation)
         {
-            if (AppSettings.EnableTranslationCache && !AppSettings.IsTranslationHelperWasClosed)
-            {
-                if (string.IsNullOrWhiteSpace(Translation) || string.CompareOrdinal(Original, Translation) == 0 || Original.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length != Translation.Split(new string[1] { Environment.NewLine }, StringSplitOptions.None).Length || AppData.OnlineTranslationCache.cache.ContainsKey(Original) /*FunctionsTable.GetAlreadyAddedInTableAndTableHasRowsColumns(THTranslationCache.Tables[0], Original)*/)
-                {
-                }
-                else
-                {
-                    //THTranslationCache.Tables[0].Rows.Add(Original, Translation);
-                    AppData.OnlineTranslationCache.cache.Add(Original, Translation);
-                }
-            }
+            if (!AppSettings.EnableTranslationCache || AppSettings.IsTranslationHelperWasClosed) return;
+            if (string.IsNullOrWhiteSpace(Translation)) return;
+            if (string.Equals(Original, Translation)) return;
+            if (Original.GetLinesCount() != Translation.GetLinesCount()) return;
+            if (AppData.OnlineTranslationCache.cache.ContainsKey(Original)) return;
+
+            AppData.OnlineTranslationCache.cache.Add(Original, Translation);
         }
-
-        //private static string ReadXMLToString()
-        //{
-        //    using (FileStream fs = new FileStream(AppSettings.THTranslationCachePath, FileMode.Open))
-        //    {
-        //        Stream s;
-        //        string fileExtension = Path.GetExtension(AppSettings.THTranslationCachePath);
-        //        if (fileExtension == ".cmx")
-        //        {
-        //            s = new GZipStream(fs, CompressionMode.Decompress);
-        //        }
-        //        else if (fileExtension == ".cmz")
-        //        {
-        //            s = new DeflateStream(fs, CompressionMode.Decompress);
-        //        }
-        //        else
-        //        {
-        //            s = fs;
-        //        }
-        //        string stringForReturn;
-        //        using (StreamReader sr = new StreamReader(s))
-        //        {
-        //            stringForReturn = sr.ReadToEnd();
-        //        }
-        //        return stringForReturn;
-        //        //s.Close();
-        //    }
-        //}
-
-        //private static void WriteXElementToXMLFile(XElement el)
-        //{
-        //    using (FileStream fs = new FileStream(AppSettings.THTranslationCachePath, FileMode.Create))
-        //    {
-        //        Stream s;
-        //        string fileExtension = Path.GetExtension(AppSettings.THTranslationCachePath);
-        //        if (fileExtension == ".cmx")
-        //        {
-        //            s = new GZipStream(fs, CompressionMode.Compress);
-        //        }
-        //        else if (fileExtension == ".cmz")
-        //        {
-        //            s = new DeflateStream(fs, CompressionMode.Compress);
-        //        }
-        //        else
-        //        {
-        //            s = fs;
-        //        }
-        //        el.Save(s);
-        //        s.Close();
-        //    }
-        //}
     }
 }

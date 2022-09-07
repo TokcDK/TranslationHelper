@@ -116,7 +116,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             TranslateStrings();
             Size = 0;
             _buffer = null;
-            AppData.OnlineTranslationCache.Write();
             FunctionsOnlineCache.Unload();
 
             AppData.Main.ProgressInfo(false);
@@ -311,7 +310,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         /// <param name="originalLines"></param>
         /// <returns></returns>
-        private string[] ApplyProjectPretranslationAction(string[] originalLines)
+        private static string[] ApplyProjectPretranslationAction(string[] originalLines)
         {
             if (AppData.CurrentProject.HideVARSMatchCollectionsList != null
                 && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0) AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
@@ -395,7 +394,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     translations.Add(originals[i], translated[i]);
 
-                    FunctionsOnlineCache.AddToTranslationCacheIfValid(originals[i], translated[i]);
+                    FunctionsOnlineCache.TryAdd(originals[i], translated[i]);
                 }
             }
             else return;
@@ -562,7 +561,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             // clean empty tables
-            for (int t = _buffer.Count; t >= 0; t--) if (_buffer[t].Rows.Count == 0) _buffer.RemoveAt(t);
+            for (int t = _buffer.Count - 1; t >= 0; t--) if (_buffer[t].Rows.Count == 0) _buffer.RemoveAt(t);
         }
 
         ///// <summary>

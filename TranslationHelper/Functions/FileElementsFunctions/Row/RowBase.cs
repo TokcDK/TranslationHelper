@@ -278,8 +278,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected virtual void ActionsPostTablesApply() { }
 
         /// <summary>
-        /// apply the actions before selected type of object will be parsed
-        /// will be executed always before all elements of selected type of object and after any other actions
+        /// apply the actions after all selected type of object will be parsed
+        /// will be executed always last, after all elements of selected type of object and after any other actions
         /// </summary>
         protected virtual void ActionsFinalize() { }
 

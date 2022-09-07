@@ -158,7 +158,7 @@ namespace TranslationHelper.Functions
 
                                     //LogToFile("resultvalue=" + resultvalue, true);
                                     //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
-                                    FunctionsOnlineCache.AddToTranslationCacheIfValid(InputValue, ResultValue);
+                                    FunctionsOnlineCache.TryAdd(InputValue, ResultValue);
                                 }
                                 else
                                 {
@@ -179,7 +179,7 @@ namespace TranslationHelper.Functions
 
                                             //LogToFile("resultvalue=" + resultvalue, true);
                                             //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
-                                            FunctionsOnlineCache.AddToTranslationCacheIfValid(InputValue, ResultValue);
+                                            FunctionsOnlineCache.TryAdd(InputValue, ResultValue);
                                         }
                                     }
                                     else
@@ -205,7 +205,7 @@ namespace TranslationHelper.Functions
                                     //LogToFile("THTranslationCache Rows count="+ THTranslationCache.Tables[0].Rows.Count);
 
                                     //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, InputValue, ResultValue);
-                                    FunctionsOnlineCache.AddToTranslationCacheIfValid(InputValue, ResultValue);
+                                    FunctionsOnlineCache.TryAdd(InputValue, ResultValue);
                                     //THTranslationCacheAdd(inputvalue, onlinetranslation);                                    
 
                                     //запись перевода
@@ -260,7 +260,7 @@ namespace TranslationHelper.Functions
                         {
                             Result = Translator.Translate(OriginalLine);
                         }
-                        FunctionsOnlineCache.AddToTranslationCacheIfValid(OriginalLine, Result);
+                        FunctionsOnlineCache.TryAdd(OriginalLine, Result);
                     }
                     else
                     {
@@ -276,7 +276,7 @@ namespace TranslationHelper.Functions
                             ExtractedOriginal
                             );
                         //FunctionsTable.AddToTranslationCacheIfValid(cacheDS, ExtractedOriginal, Result);
-                        FunctionsOnlineCache.AddToTranslationCacheIfValid(ExtractedOriginal, ExtractedTranslation);
+                        FunctionsOnlineCache.TryAdd(ExtractedOriginal, ExtractedTranslation);
                     }
                     ResultValue.Append(Result);
 
@@ -762,7 +762,7 @@ namespace TranslationHelper.Functions
                         Row[1] = s;
 
                         //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
-                        FunctionsOnlineCache.AddToTranslationCacheIfValid(Cell as string, s);
+                        FunctionsOnlineCache.TryAdd(Cell as string, s);
 
                         //закоментировано для повышения производительности
                         //THAutoSetSameTranslationForSimular(PreviousTableIndex, PreviousRowIndex, 0);
