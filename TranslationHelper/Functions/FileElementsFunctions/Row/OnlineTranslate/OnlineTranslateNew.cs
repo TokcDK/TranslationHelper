@@ -465,7 +465,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
                     foreach (var line in rowValue.SplitToLines())
                     {
-                        if (lineNum >= rowData.Lines.Count) continue; // multyline row was not fully translated, skip to translate later on next loop
+                        if (lineNum >= rowData.Lines.Count) break; // multyline row was not fully translated, skip to translate later on next loop
 
                         var lineData = rowData.Lines[lineNum];
 
