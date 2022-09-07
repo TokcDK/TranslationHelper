@@ -46,6 +46,7 @@ namespace TranslationHelper.Extensions
                     }
 
                     // add regex pattern and replacer
+                    extractRegexData.Match = match;
                     extractRegexData.Pattern = PatternReplacementPair.Key;
                     extractRegexData.Replacer = PatternReplacementPair.Value;
 
@@ -56,9 +57,9 @@ namespace TranslationHelper.Extensions
 
                         var valueData = extractRegexData.ValueDataList.ContainsKey(g.Value) ? extractRegexData.ValueDataList[g.Value] : new ExtractRegexValueInfo();
 
-                        if (valueData.GroupIndexes.Contains(g.Index)) continue;
+                        if (valueData.Group.Contains(g)) continue;
 
-                        valueData.GroupIndexes.Add(g.Index);
+                        valueData.Group.Add(g);
                     }
 
                     break; // regex found skip other
