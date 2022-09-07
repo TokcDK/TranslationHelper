@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GoogleTranslateFreeApi;
+using IniParser.Model;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
@@ -482,46 +483,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 if (lineData.RegexExtractionData.ValueDataList.Count > 0) // when line has extracted values
                 {
-                    // replace all groups with translation of selected value
-                    var newLineText = lineData.RegexExtractionData.Replacer;
-                    foreach (var valueData in lineData.RegexExtractionData.ValueDataList.Values)
-                    {
-                        // search all $1-$99 in replacer
-                        var replacerMatches = Regex.Matches(newLineText, @"\$[0-9]+");
-                        var matchesCount = replacerMatches.Count;
-
-                        // when only one replacer mark like '$1'
-                        if (matchesCount == 1 && valueData.Group.Count == 1 && Regex.IsMatch(newLineText.Trim(), @"^\$[0-9]+$"))
-                        {
-                            var group = valueData.Group[0];
-
-                            // replace original value text with translation
-                            newLineText = lineData.OriginalText
-                                .Remove(group.Index, group.Length)
-                                .Insert(group.Index, valueData.Translation);
-
-                            break; // exit from values loop, to not execute lines below
-                        }
-
-                        // mark all matches for precise replacement, $1 to %$1%
-                        for (int i = matchesCount - 1; i >= 0; i--)
-                        {
-                            var match = replacerMatches[i];
-
-                            newLineText = newLineText.Remove(match.Index, match.Length)
-                                .Insert(match.Index, $"%{match.Value}%");
-                            ;
-                        }
-
-                        // replace group index by translation
-                        foreach (var groupIndex in valueData.Group)
-                        {
-                            // replace group mark with translation
-                            newLineText = newLineText.Replace($"%${groupIndex}%", valueData.Translation);
-                        }
-                    }
-
-                    newValue.Add(newLineText);
+                    newValue.Add(MergeExtracted(lineData));
                 }
                 else if (lineData.TranslationText == null || lineData.TranslationText == line || line.IsSoundsText())
                 {
@@ -544,6 +506,50 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             new FixCells().Selected(row, tableIndex, rowData.RowIndex);
 
             return true;
+        }
+
+        private static string MergeExtracted(LineTranslationData lineData)
+        {
+            // replace all groups with translation of selected value
+            var newLineText = lineData.RegexExtractionData.Replacer;
+            foreach (var valueData in lineData.RegexExtractionData.ValueDataList.Values)
+            {
+                // search all $1-$99 in replacer
+                var replacerMatches = Regex.Matches(newLineText, @"\$[0-9]+");
+                var matchesCount = replacerMatches.Count;
+
+                // when only one replacer mark like '$1'
+                if (matchesCount == 1 && valueData.Group.Count == 1 && Regex.IsMatch(newLineText.Trim(), @"^\$[0-9]+$"))
+                {
+                    var group = valueData.Group[0];
+
+                    // replace original value text with translation
+                    newLineText = lineData.OriginalText
+                        .Remove(group.Index, group.Length)
+                        .Insert(group.Index, valueData.Translation);
+
+                    break; // exit from values loop, to not execute lines below
+                }
+
+                // mark all matches for precise replacement, $1 to %$1%
+                for (int i = matchesCount - 1; i >= 0; i--)
+                {
+                    var match = replacerMatches[i];
+
+                    newLineText = newLineText.Remove(match.Index, match.Length)
+                        .Insert(match.Index, $"%{match.Value}%");
+                    ;
+                }
+
+                // replace group index by translation
+                foreach (var groupIndex in valueData.Group)
+                {
+                    // replace group mark with translation
+                    newLineText = newLineText.Replace($"%${groupIndex}%", valueData.Translation);
+                }
+            }
+
+            return newLineText;
         }
 
         ///// <summary>
