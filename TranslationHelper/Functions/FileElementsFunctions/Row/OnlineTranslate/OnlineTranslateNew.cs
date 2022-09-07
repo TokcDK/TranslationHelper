@@ -331,7 +331,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <param name="originalLines"></param>
         /// <param name="translatedLines"></param>
         /// <returns></returns>
-        private string[] ApplyProjectPosttranslationAction(string[] originalLines, string[] translatedLines)
+        private static string[] ApplyProjectPosttranslationAction(string[] originalLines, string[] translatedLines)
         {
             for (int i = 0; i < translatedLines.Length; i++)
             {
@@ -440,119 +440,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var translatedRowsData = new HashSet<RowsTranslationData>();
                 foreach (var rowData in data.Rows)
                 {
-                    if (!rowData.IsAllLinesAdded) continue; // skip if row is not fully translated
-
-                    var row = AppData.CurrentProject.FilesContent.Tables[data.TableIndex].Rows[rowData.RowIndex];
-
-                    // skip equal
-                    var cellTranslationEqualOriginal = Equals(row[1], row[0]);
-                    if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) continue;
-
-                    // skip when translation not equal to original and and have No any original line equal translation
-                    var cellTranslationIsNotEmptyAndNotEqualOriginal = (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !cellTranslationEqualOriginal);
-                    if (cellTranslationIsNotEmptyAndNotEqualOriginal && !row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) continue;
-
-
-                    //foreach (var lineData in rowData.Lines) // get line data
-                    //{
-                    //    if (lineData.RegexExtractionData.Values.Count > 0)
-                    //    {
-                    //        foreach (var value in lineData.RegexExtractionData.Values)
-                    //        {
-                    //            if (value.Value.Translation != null) continue;
-                    //            if (!value.Key.IsValidForTranslation()) continue;
-                    //            if (!translations.ContainsKey(value.Key)) continue;
-
-                    //            value.Value.Translation = translations[value.Key];
-                    //        }
-
-                    //        continue;
-                    //    }
-
-                    //    if (lineData.TranslationText != null) continue;
-                    //    if (!lineData.OriginalText.IsValidForTranslation()) continue;
-                    //    if (!translations.ContainsKey(lineData.OriginalText)) continue;
-
-                    //    lineData.TranslationText = translations[lineData.TranslationText];
-                    //}
-
-                    var newValue = new List<string>();
-                    var lineNum = 0;
-                    var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
-                    foreach (var line in rowValue.SplitToLines())
-                    {
-                        //if (lineNum >= rowData.Lines.Count) break; // multyline row was not fully translated, skip to translate later on next loop
-                        if (lineNum >= rowData.Lines.Count)
-                        {
-                            break; // temp check if this condition is useless because IsAllLinesAdded must skip it
-                        }
-
-                        var lineData = rowData.Lines[lineNum];
-
-                        if (lineData.RegexExtractionData.ValueDataList.Count > 0) // when line has extracted values
-                        {
-                            // replace all groups with translation of selected value
-                            var newLineText = lineData.RegexExtractionData.Replacer;
-                            foreach (var valueData in lineData.RegexExtractionData.ValueDataList.Values)
-                            {
-                                // search all $1-$99 in replacer
-                                var replacerMatches = Regex.Matches(newLineText, @"\$[0-9]+");
-                                var matchesCount = replacerMatches.Count;
-
-                                // when only one replacer mark like '$1'
-                                if (matchesCount == 1 && valueData.Group.Count == 1 && Regex.IsMatch(newLineText.Trim(), @"^\$[0-9]+$"))
-                                {
-                                    var group = valueData.Group[0];
-
-                                    // replace original value text with translation
-                                    newLineText = lineData.OriginalText
-                                        .Remove(group.Index, group.Length)
-                                        .Insert(group.Index, valueData.Translation);
-
-                                    break; // exit from values loop, to not execute lines below
-                                }
-
-                                // mark all matches for precise replacement, $1 to %$1%
-                                for (int i = matchesCount - 1; i >= 0; i--)
-                                {
-                                    var match = replacerMatches[i];
-
-                                    newLineText = newLineText.Remove(match.Index, match.Length)
-                                        .Insert(match.Index, $"%{match.Value}%");
-                                    ;
-                                }
-
-                                // replace group index by translation
-                                foreach (var groupIndex in valueData.Group)
-                                {
-                                    // replace group mark with translation
-                                    newLineText = newLineText.Replace($"%${groupIndex}%", valueData.Translation);
-                                }
-                            }
-
-                            newValue.Add(newLineText);
-                        }
-                        else if (lineData.TranslationText == null || lineData.TranslationText == line || line.IsSoundsText())
-                        {
-                            // when null,=original or issoundstext. jusst insert original line
-                            newValue.Add(line);
-                        }
-                        else newValue.Add(lineData.TranslationText);
-
-                        lineNum++;
-                    }
-
-                    // set new row value
-                    row.SetValue(1, string.Join(Environment.NewLine, newValue));
-
-                    if (row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) continue; // continue if any original line equal to translation line with same index
-
-                    // apply fixes for cell
-                    // apply only for finished rows
-                    new AllHardFixes().Selected(row, data.TableIndex, rowData.RowIndex);
-                    new FixCells().Selected(row, data.TableIndex, rowData.RowIndex);
-
-                    translatedRowsData.Add(rowData); // add rowData to translated
+                    if (WriteRowData(rowData, data.TableIndex))
+                        translatedRowsData.Add(rowData); // add rowData to translated
                 }
 
                 // clean rows
@@ -562,6 +451,99 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             // clean empty tables
             for (int t = _buffer.Count - 1; t >= 0; t--) if (_buffer[t].Rows.Count == 0) _buffer.RemoveAt(t);
+        }
+
+        private static bool WriteRowData(RowsTranslationData rowData, int tableIndex)
+        {
+            if (!rowData.IsAllLinesAdded) return false; // skip if row is not fully translated
+
+            var row = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rowData.RowIndex];
+
+            // skip equal
+            var cellTranslationEqualOriginal = Equals(row[1], row[0]);
+            if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) return false;
+
+            // skip when translation not equal to original and and have No any original line equal translation
+            var cellTranslationIsNotEmptyAndNotEqualOriginal = (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !cellTranslationEqualOriginal);
+            if (cellTranslationIsNotEmptyAndNotEqualOriginal && !row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) return false;
+
+            var newValue = new List<string>();
+            var lineNum = 0;
+            var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
+            foreach (var line in rowValue.SplitToLines())
+            {
+                //if (lineNum >= rowData.Lines.Count) break; // multyline row was not fully translated, skip to translate later on next loop
+                if (lineNum >= rowData.Lines.Count)
+                {
+                    break; // temp check if this condition is useless because IsAllLinesAdded must skip it
+                }
+
+                var lineData = rowData.Lines[lineNum];
+
+                if (lineData.RegexExtractionData.ValueDataList.Count > 0) // when line has extracted values
+                {
+                    // replace all groups with translation of selected value
+                    var newLineText = lineData.RegexExtractionData.Replacer;
+                    foreach (var valueData in lineData.RegexExtractionData.ValueDataList.Values)
+                    {
+                        // search all $1-$99 in replacer
+                        var replacerMatches = Regex.Matches(newLineText, @"\$[0-9]+");
+                        var matchesCount = replacerMatches.Count;
+
+                        // when only one replacer mark like '$1'
+                        if (matchesCount == 1 && valueData.Group.Count == 1 && Regex.IsMatch(newLineText.Trim(), @"^\$[0-9]+$"))
+                        {
+                            var group = valueData.Group[0];
+
+                            // replace original value text with translation
+                            newLineText = lineData.OriginalText
+                                .Remove(group.Index, group.Length)
+                                .Insert(group.Index, valueData.Translation);
+
+                            break; // exit from values loop, to not execute lines below
+                        }
+
+                        // mark all matches for precise replacement, $1 to %$1%
+                        for (int i = matchesCount - 1; i >= 0; i--)
+                        {
+                            var match = replacerMatches[i];
+
+                            newLineText = newLineText.Remove(match.Index, match.Length)
+                                .Insert(match.Index, $"%{match.Value}%");
+                            ;
+                        }
+
+                        // replace group index by translation
+                        foreach (var groupIndex in valueData.Group)
+                        {
+                            // replace group mark with translation
+                            newLineText = newLineText.Replace($"%${groupIndex}%", valueData.Translation);
+                        }
+                    }
+
+                    newValue.Add(newLineText);
+                }
+                else if (lineData.TranslationText == null || lineData.TranslationText == line || line.IsSoundsText())
+                {
+                    // when null,=original or issoundstext. jusst insert original line
+                    newValue.Add(line);
+                }
+                else newValue.Add(lineData.TranslationText);
+
+                lineNum++;
+            }
+
+            // set new row value
+            row.SetValue(1, string.Join(Environment.NewLine, newValue));
+
+            if (row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) return false; // continue if any original line equal to translation line with same index
+
+            // apply fixes for cell
+            // apply only for finished rows
+            new AllHardFixes().Selected(row, tableIndex, rowData.RowIndex);
+            new FixCells().Selected(row, tableIndex, rowData.RowIndex);
+
+            return true;
         }
 
         ///// <summary>
