@@ -29,7 +29,15 @@ namespace TranslationHelper.Extensions
                 foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
                 {
                     // check if any regex is match
-                    try { if (!Regex.IsMatch(line, PatternReplacementPair.Key)) continue; }
+                    Regex regex = null;
+                    Match match = null;
+                    try 
+                    {
+                        regex = new Regex(PatternReplacementPair.Key);
+                        match = regex.Match(line);
+
+                        if (!match.Success) continue; 
+                    }
                     catch (System.ArgumentException ex)
                     {
                         log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
@@ -42,15 +50,15 @@ namespace TranslationHelper.Extensions
                     extractRegexData.Replacer = PatternReplacementPair.Value;
 
                     // add matched groups values
-                    foreach (Group g in Regex.Match(line, PatternReplacementPair.Key).Groups)
+                    foreach (Group g in match.Groups)
                     {
                         if (!extractRegexData.Replacer.Contains("$" + g.Name)) continue; // skip if group is missing in replacer value
 
-                        var valueData = extractRegexData.ValueData.ContainsKey(g.Value) ? extractRegexData.ValueData[g.Value] : new ExtractRegexValueInfo();
+                        var valueData = extractRegexData.ValueDataList.ContainsKey(g.Value) ? extractRegexData.ValueDataList[g.Value] : new ExtractRegexValueInfo();
 
-                        if (valueData.Groups.Contains(g.Index)) continue;
+                        if (valueData.GroupIndexes.Contains(g.Index)) continue;
 
-                        valueData.Groups.Add(g.Index);
+                        valueData.GroupIndexes.Add(g.Index);
                     }
 
                     break; // regex found skip other

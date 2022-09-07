@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web.Util;
 using System.Windows.Forms;
 using GoogleTranslateFreeApi;
-using IniParser.Model;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
@@ -201,7 +199,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 bool isExtracted = false;
                 //parse all extracted values from original
-                foreach (var val in extractData.ValueData)
+                foreach (var val in extractData.ValueDataList)
                 {
                     // get translation from cache
                     var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val.Key);
@@ -280,12 +278,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     foreach (var lineData in rowData.Lines) // get line data
                     {
-                        if (lineData.RegexExtractionData.ValueData.Count > 0)
+                        if (lineData.RegexExtractionData.ValueDataList.Count > 0)
                         {
-                            foreach(var value in lineData.RegexExtractionData.ValueData) if (!orig.Contains(value.Key) && value.Value.Translation == null && value.Key.IsValidForTranslation()) orig.Add(value.Key);
+                            foreach (var value in lineData.RegexExtractionData.ValueDataList) if (!orig.Contains(value.Key) && value.Value.Translation == null && value.Key.IsValidForTranslation()) orig.Add(value.Key);
                             continue;
                         }
-                        
+
                         if (!orig.Contains(lineData.OriginalText) && (lineData.TranslationText == null || lineData.TranslationText == lineData.OriginalText) && lineData.OriginalText.IsValidForTranslation()) orig.Add(lineData.OriginalText);
                     }
                 }
@@ -394,9 +392,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     foreach (var lineData in rowData.Lines) // get line data
                     {
-                        if (lineData.RegexExtractionData.ValueData.Count > 0)
+                        if (lineData.RegexExtractionData.ValueDataList.Count > 0)
                         {
-                            foreach (var value in lineData.RegexExtractionData.ValueData)
+                            foreach (var value in lineData.RegexExtractionData.ValueDataList)
                             {
                                 if (value.Value.Translation != null && value.Value.Translation != value.Key) continue;
                                 if (!value.Key.IsValidForTranslation()) continue;
@@ -475,15 +473,26 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         {
                             newValue.Add(line);
                         }
-                        else if (lineData.RegexExtractionData.ValueData.Count > 0) // when line has extracted values
+                        else if (lineData.RegexExtractionData.ValueDataList.Count > 0) // when line has extracted values
                         {
                             // replace all groups with translation of selected value
                             var newLineText = lineData.RegexExtractionData.Replacer;
-                            foreach (var valueData in lineData.RegexExtractionData.ValueData.Values)
+                            foreach (var valueData in lineData.RegexExtractionData.ValueDataList.Values)
                             {
+                                // mark all matches for precise replacement, $1 to %$1%
+                                var replacerMatches = Regex.Matches(newLineText, @"\$[0-9]+");
+                                for (int i = replacerMatches.Count - 1; i >= 0; i--)
+                                {
+                                    var match = replacerMatches[i];
+                                    newLineText = newLineText.Remove(match.Index, match.Length)
+                                        .Insert(match.Index, "%" + match.Value + "%");
+                                    ;
+                                }
+
+                                // replace group index by translation
                                 foreach (var groupIndex in valueData.GroupIndexes)
                                 {
-                                    newLineText = newLineText.Replace($"${groupIndex}", valueData.Translation);
+                                    newLineText = newLineText.Replace($"%${groupIndex}%", valueData.Translation);
                                 }
                             }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -6,15 +7,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     {
         public string Pattern { get; set; }
         public string Replacer { get; set; }
-        public List<int> Groups = new List<int>();
-
-        public Dictionary<string, ExtractRegexValueInfo> ValueData = new Dictionary<string, ExtractRegexValueInfo>();
+        public Dictionary<string, ExtractRegexValueInfo> ValueDataList = new Dictionary<string, ExtractRegexValueInfo>();
     }
     public class ExtractRegexValueInfo
     {
-        public List<int> Groups = new List<int>();
+        public List<int> GroupIndexes = new List<int>();
         public string Translation;
-
-        public IEnumerable<object> GroupIndexes { get; internal set; }
     }
 }
