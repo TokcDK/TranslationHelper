@@ -172,7 +172,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var lineData = rowData.Lines.FirstOrDefault(d => d.LineIndex == lineNum);
 
                 // skip if line already exists?
-                if (lineData != null) { lineNum++; continue; }
+                if (lineData != null && string.IsNullOrEmpty(lineData.TranslationText) && lineData.TranslationText != lineData.OriginalText) { lineNum++; continue; }
 
                 // init line data
                 lineData = new LineTranslationData(lineNum, line) { TranslationText = line };
@@ -215,7 +215,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                 }
 
-                if (extractedValuesCount>0 && skippedValuesCount == extractedValuesCount) { lineNum++; continue; } // all extracted was skipped, dont need to execute code below
+                if (extractedValuesCount > 0 && skippedValuesCount == extractedValuesCount) { lineNum++; continue; } // all extracted was skipped, dont need to execute code below
 
                 //check line value in cache
                 if (!isExtracted)
