@@ -20,7 +20,7 @@ namespace TranslationHelper.Functions
 
             if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
                 && AppData.AllDBmerged != null
-                && AppData.AllDBmerged.Count > 0
+                //&& AppData.AllDBmerged.Count > 0
                 && AppData.AllDBmerged.ContainsKey(keyValue)
                 && !string.IsNullOrWhiteSpace(AppData.AllDBmerged[keyValue]))
             {
@@ -39,7 +39,7 @@ namespace TranslationHelper.Functions
                 if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
                    && trimmed.Length > 0
                    && AppData.AllDBmerged != null
-                   && AppData.AllDBmerged.Count > 0
+                   //&& AppData.AllDBmerged.Count > 0
                    && AppData.AllDBmerged.ContainsKey(trimmed)
                    && !string.IsNullOrWhiteSpace(AppData.AllDBmerged[trimmed]))
                 {
@@ -53,7 +53,7 @@ namespace TranslationHelper.Functions
                 else if (
                     trimmed.Length > 0
                     && cache != null
-                    && cache.Count > 0
+                    //&& cache.Count > 0
                     && cache.ContainsKey(trimmed)
                     && !string.IsNullOrWhiteSpace(cache[trimmed]))
                 {
