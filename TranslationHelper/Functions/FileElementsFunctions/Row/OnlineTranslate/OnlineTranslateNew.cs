@@ -190,7 +190,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var extractData = line.ExtractMulty();
                 lineData.RegexExtractionData = extractData;
                 var extractedValuesCount = extractData.ValueDataList.Count;
-                bool isExtracted = extractData.ValueDataList.Count > 0;
+                bool isExtracted = extractedValuesCount > 0;
 
                 int skippedValuesCount = 0;
                 //parse all extracted values from original
@@ -215,7 +215,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                 }
 
-                if (skippedValuesCount == extractedValuesCount) { lineNum++; continue; } // all extracted was skipped, dont need to execute code below
+                if (extractedValuesCount>0 && skippedValuesCount == extractedValuesCount) { lineNum++; continue; } // all extracted was skipped, dont need to execute code below
 
                 //check line value in cache
                 if (!isExtracted)
@@ -258,7 +258,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             TranslateStrings();
 
             Size = 0;
-            _buffer.Clear();
+            _buffer = new List<TranslationData>();
 
             //write cache periodically
             AppData.OnlineTranslationCache.Write();
