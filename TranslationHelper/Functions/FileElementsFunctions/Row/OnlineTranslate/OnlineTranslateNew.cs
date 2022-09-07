@@ -42,6 +42,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         internal class RowsTranslationData
         {
+            internal bool IsAllLinesAdded = false;
             internal int RowIndex;
             internal List<LineTranslationData> Lines = new List<LineTranslationData>();
         }
@@ -238,6 +239,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 lineNum++;
             }
 
+            // mark row data, all lines was added
+            rowData.IsAllLinesAdded = true;
+
             //translate if is last row or was added 300+ rows to buffer
             if (!IsLastRow && _buffer.Count < 300) return;
 
@@ -426,6 +430,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 foreach (var rowData in data.Rows)
                 {
+                    if (!rowData.IsAllLinesAdded) continue; // skip if row is not fully translated
+
                     var row = AppData.CurrentProject.FilesContent.Tables[data.TableIndex].Rows[rowData.RowIndex];
 
                     // skip equal
