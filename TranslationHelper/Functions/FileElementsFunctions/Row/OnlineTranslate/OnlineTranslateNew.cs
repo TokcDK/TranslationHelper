@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GoogleTranslateFreeApi;
-using IniParser.Model;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
@@ -165,6 +164,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             // parse lines of original
+            var oldSize = Size;
             foreach (var line in original.SplitToLines())
             {
                 // set row's line data
@@ -251,6 +251,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             // mark row data, all lines was added
             rowData.IsAllLinesAdded = true;
+
+            if (Size != 0 && oldSize == Size) // not need to translate any
+            {
+                if (WriteRowData(rowData, data.TableIndex)) // write row data
+                {
+                    // clean data
+                    rowData = null;
+                    data.Rows.Remove(rowData);
+                    if (data.Rows.Count > 0) data = null;
+                    return;
+                }
+            }
 
             //translate if is last row or was added 300+ rows to buffer
             if (!IsLastRow && _buffer.Count < 300) return;
