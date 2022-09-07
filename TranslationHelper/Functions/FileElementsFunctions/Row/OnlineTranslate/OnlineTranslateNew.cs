@@ -438,6 +438,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             //get all coordinate keys
             foreach (var data in _buffer)
             {
+                var translatedRowsData = new HashSet<RowsTranslationData>();
                 foreach (var rowData in data.Rows)
                 {
                     if (!rowData.IsAllLinesAdded) continue; // skip if row is not fully translated
@@ -488,7 +489,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         }
 
                         var lineData = rowData.Lines[lineNum];
-                        
+
                         if (lineData.RegexExtractionData.ValueDataList.Count > 0) // when line has extracted values
                         {
                             // replace all groups with translation of selected value
@@ -551,8 +552,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     // apply only for finished rows
                     new AllHardFixes().Selected(row, data.TableIndex, rowData.RowIndex);
                     new FixCells().Selected(row, data.TableIndex, rowData.RowIndex);
+
+                    translatedRowsData.Add(rowData); // add rowData to translated
                 }
+
+                // clean rows
+                foreach (var rowdata in translatedRowsData) data.Rows.Remove(rowdata);
+                translatedRowsData = null;
             }
+
+            // clean empty tables
+            for (int t = _buffer.Count; t >= 0; t--) if (_buffer[t].Rows.Count == 0) _buffer.RemoveAt(t);
         }
 
         ///// <summary>
