@@ -186,19 +186,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     continue;
                 }
 
-                //check line value in cache
-                var linecache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
-                if (!string.IsNullOrEmpty(linecache))
-                {
-                    lineData.TranslationText = linecache;
-                    lineNum++;
-                    continue;
-                }
-
+                // get extracted
                 var extractData = line.ExtractMulty();
                 lineData.RegexExtractionData = extractData;
+                var extractedValuesCount = extractData.ValueDataList.Count;
+                bool isExtracted = extractData.ValueDataList.Count > 0;
 
-                bool isExtracted = false;
+                int skippedValuesCount = 0;
                 //parse all extracted values from original
                 foreach (var val in extractData.ValueDataList)
                 {
@@ -207,10 +201,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     if (!string.IsNullOrEmpty(valcache))
                     {
+                        skippedValuesCount++;
                         val.Value.Translation = valcache; // add translation from cache if found
                     }
                     else if (val.Key.IsSoundsText())
                     {
+                        skippedValuesCount++;
                         val.Value.Translation = val.Key; // original=translation when value is soundtext
                     }
                     else
@@ -219,7 +215,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                 }
 
-                if (!isExtracted) Size += lineData.OriginalText.Length; // increase size of string for translation for check later
+                if (skippedValuesCount == extractedValuesCount) { lineNum++; continue; } // all extracted was skipped, dont need to execute code below
+
+                //check line value in cache
+                if (!isExtracted)
+                {
+                    var linecache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
+                    if (!string.IsNullOrEmpty(linecache))
+                    {
+                        lineData.TranslationText = linecache;
+                        lineNum++;
+                        continue;
+                    }
+
+                    Size += lineData.OriginalText.Length; // increase size of string for translation for check later
+                }
 
                 // when max limit of string size for translation
                 if (IsMax())
@@ -471,7 +481,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
                     foreach (var line in rowValue.SplitToLines())
                     {
-                        if (lineNum >= rowData.Lines.Count) break; // multyline row was not fully translated, skip to translate later on next loop
+                        //if (lineNum >= rowData.Lines.Count) break; // multyline row was not fully translated, skip to translate later on next loop
+                        if (lineNum >= rowData.Lines.Count)
+                        {
+                            break; // temp check if this condition is useless because IsAllLinesAdded must skip it
+                        }
 
                         var lineData = rowData.Lines[lineNum];
 
@@ -491,7 +505,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                                 var matchesCount = replacerMatches.Count;
 
                                 // when only one replacer mark like '$1'
-                                if (matchesCount == 1 && valueData.Group.Count ==1 && Regex.IsMatch(newLineText.Trim(), @"^\$[0-9]+$"))
+                                if (matchesCount == 1 && valueData.Group.Count == 1 && Regex.IsMatch(newLineText.Trim(), @"^\$[0-9]+$"))
                                 {
                                     var group = valueData.Group[0];
 
@@ -499,7 +513,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                                     newLineText = lineData.OriginalText
                                         .Remove(group.Index, group.Length)
                                         .Insert(group.Index, valueData.Translation);
-                                    
+
                                     break; // exit from values loop, to not execute lines below
                                 }
 
