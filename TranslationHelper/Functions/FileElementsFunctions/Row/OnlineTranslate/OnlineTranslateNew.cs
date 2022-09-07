@@ -488,13 +488,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         }
 
                         var lineData = rowData.Lines[lineNum];
-
-                        if (lineData.TranslationText == null || lineData.TranslationText == line || line.IsSoundsText())
-                        {
-                            // when null,=original or issoundstext. jusst insert original line
-                            newValue.Add(line);
-                        }
-                        else if (lineData.RegexExtractionData.ValueDataList.Count > 0) // when line has extracted values
+                        
+                        if (lineData.RegexExtractionData.ValueDataList.Count > 0) // when line has extracted values
                         {
                             // replace all groups with translation of selected value
                             var newLineText = lineData.RegexExtractionData.Replacer;
@@ -536,6 +531,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             }
 
                             newValue.Add(newLineText);
+                        }
+                        else if (lineData.TranslationText == null || lineData.TranslationText == line || line.IsSoundsText())
+                        {
+                            // when null,=original or issoundstext. jusst insert original line
+                            newValue.Add(line);
                         }
                         else newValue.Add(lineData.TranslationText);
 

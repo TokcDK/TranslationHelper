@@ -57,7 +57,7 @@ namespace TranslationHelper.Extensions
 
                         ExtractRegexValueInfo valueData = null;
                         if (extractRegexData.ValueDataList.ContainsKey(g.Value)) valueData = extractRegexData.ValueDataList[g.Value];
-                        else valueData = new ExtractRegexValueInfo();
+                        else extractRegexData.ValueDataList.Add(g.Value, valueData = new ExtractRegexValueInfo());
 
                         if (valueData.Group.Contains(g)) continue;
 
