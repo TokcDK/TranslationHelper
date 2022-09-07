@@ -172,7 +172,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var lineData = rowData.Lines.FirstOrDefault(d => d.LineIndex == lineNum);
 
                 // skip if line already exists?
-                if (lineData != null) continue;
+                if (lineData != null) { lineNum++; continue; }
 
                 // init line data
                 lineData = new LineTranslationData(lineNum, line) { TranslationText = line };
