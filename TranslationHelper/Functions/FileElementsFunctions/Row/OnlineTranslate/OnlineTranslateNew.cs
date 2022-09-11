@@ -167,6 +167,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var oldSize = Size;
             foreach (var line in original.SplitToLines())
             {
+                if (line == "・10000G")
+                {
+
+                }
+
                 // set row's line data
                 var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
                 var lineData = rowData.Lines.FirstOrDefault(d => d.LineIndex == lineNum);
@@ -536,9 +541,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var group = valueData.Group[0];
 
                     // replace original value text with translation
-                    newLineText = lineData.OriginalText
-                        .Remove(group.Index, group.Length)
-                        .Insert(group.Index, valueData.Translation);
+                    try
+                    {
+                        newLineText = lineData.OriginalText
+                            .Remove(group.Index, group.Length)
+                            .Insert(group.Index, valueData.Translation ?? valueData.Group[0].Value);
+                    }
+                    catch (ArgumentException ex)
+                    {
+
+                    }
 
                     break; // exit from values loop, to not execute lines below
                 }
@@ -557,7 +569,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 foreach (var groupIndex in valueData.Group)
                 {
                     // replace group mark with translation
-                    newLineText = newLineText.Replace($"%${groupIndex}%", valueData.Translation);
+                    newLineText = newLineText.Replace($"%${groupIndex}%", valueData.Translation ?? valueData.Group[0].Value);
                 }
             }
 
