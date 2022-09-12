@@ -59,9 +59,9 @@ namespace TranslationHelper.Extensions
                         if (extractRegexData.ValueDataList.ContainsKey(g.Value)) valueData = extractRegexData.ValueDataList[g.Value];
                         else extractRegexData.ValueDataList.Add(g.Value, valueData = new ExtractRegexValueInfo());
 
-                        if (valueData.Group.Contains(g)) continue;
+                        if (valueData.MatchGroups.Contains(g)) continue;
 
-                        valueData.Group.Add(g);
+                        valueData.MatchGroups.Add(g);
                     }
 
                     break; // regex found skip other

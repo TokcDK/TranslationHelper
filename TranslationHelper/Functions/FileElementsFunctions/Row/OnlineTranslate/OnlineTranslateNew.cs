@@ -167,11 +167,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var oldSize = Size;
             foreach (var line in original.SplitToLines())
             {
-                if (line == "・10000G")
-                {
-
-                }
-
                 // set row's line data
                 var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
                 var lineData = rowData.Lines.FirstOrDefault(d => d.LineIndex == lineNum);
@@ -257,7 +252,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             // mark row data, all lines was added
             rowData.IsAllLinesAdded = true;
 
-            if (Size != 0 && oldSize == Size) // not need to translate any
+            if (oldSize == Size) // not need to translate any
             {
                 if (WriteRowData(rowData, data.TableIndex)) // write row data
                 {
@@ -311,7 +306,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
                         if (lineData.RegexExtractionData.ValueDataList.Count > 0)
                         {
-                            foreach (var value in lineData.RegexExtractionData.ValueDataList) if (!orig.Contains(value.Key) && value.Value.Translation == null && value.Key.IsValidForTranslation()) orig.Add(value.Key);
+                            foreach (var value in lineData.RegexExtractionData.ValueDataList)
+                            {
+                                if (!orig.Contains(value.Key) 
+                                    && value.Value.Translation == null 
+                                    && value.Key.IsValidForTranslation())
+                                {
+                                    orig.Add(value.Key);
+                                }
+                            }
+
                             continue;
                         }
 
@@ -515,7 +519,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             // set new row value
             row.SetValue(1, string.Join(Environment.NewLine, newValue));
 
-            if (row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) return false; // continue if any original line equal to translation line with same index
+            // dont need now. if (row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) return false; // continue if any original line equal to translation line with same index
 
             // apply fixes for cell
             // apply only for finished rows
@@ -529,47 +533,46 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             // replace all groups with translation of selected value
             var newLineText = lineData.RegexExtractionData.Replacer;
+            bool isMarked = false;
+            var replacerMatches = Regex.Matches(newLineText, @"\$[0-9]+");
+            var matchesCount = replacerMatches.Count;
+            bool isOneMatchNeedInsertText = matchesCount == 1 && Regex.IsMatch(newLineText.Trim(), @"^\$[0-9]+$");
             foreach (var valueData in lineData.RegexExtractionData.ValueDataList.Values)
             {
                 // search all $1-$99 in replacer
-                var replacerMatches = Regex.Matches(newLineText, @"\$[0-9]+");
-                var matchesCount = replacerMatches.Count;
 
                 // when only one replacer mark like '$1'
-                if (matchesCount == 1 && valueData.Group.Count == 1 && Regex.IsMatch(newLineText.Trim(), @"^\$[0-9]+$"))
+                if (isOneMatchNeedInsertText)
                 {
-                    var group = valueData.Group[0];
+                    var group = valueData.MatchGroups[0];
 
                     // replace original value text with translation
-                    try
-                    {
-                        newLineText = lineData.OriginalText
-                            .Remove(group.Index, group.Length)
-                            .Insert(group.Index, valueData.Translation ?? valueData.Group[0].Value);
-                    }
-                    catch (ArgumentException ex)
-                    {
-
-                    }
+                    newLineText = lineData.OriginalText
+                        .Remove(group.Index, group.Length)
+                        .Insert(group.Index, valueData.Translation);
 
                     break; // exit from values loop, to not execute lines below
                 }
 
-                // mark all matches for precise replacement, $1 to %$1%
-                for (int i = matchesCount - 1; i >= 0; i--)
+                if (!isMarked)
                 {
-                    var match = replacerMatches[i];
+                    isMarked = true; // mark only one time
 
-                    newLineText = newLineText.Remove(match.Index, match.Length)
-                        .Insert(match.Index, $"%{match.Value}%");
-                    ;
+                    // mark all matches for precise replacement, $1 to %$1%
+                    for (int i = matchesCount - 1; i >= 0; i--)
+                    {
+                        var match = replacerMatches[i];
+
+                        newLineText = newLineText.Remove(match.Index, match.Length)
+                            .Insert(match.Index, $"%{match.Value}%");
+                        ;
+                    }
                 }
 
-                // replace group index by translation
-                foreach (var groupIndex in valueData.Group)
+                // replace group mark with translation
+                foreach (var matchGroup in valueData.MatchGroups)
                 {
-                    // replace group mark with translation
-                    newLineText = newLineText.Replace($"%${groupIndex}%", valueData.Translation ?? valueData.Group[0].Value);
+                    newLineText = newLineText.Replace($"%${matchGroup.Name}%", valueData.Translation);
                 }
             }
 
