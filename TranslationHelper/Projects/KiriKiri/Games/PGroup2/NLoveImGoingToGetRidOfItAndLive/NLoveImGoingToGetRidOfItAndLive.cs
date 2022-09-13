@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
             exeCRC = "a83b58570eee4fabfd0e91f3fc67beab";
         }
 
-        internal override string Name => "Nラブ ―ネ取りネ取られ生きるのさ―";
+        public override string Name => "Nラブ ―ネ取りネ取られ生きるのさ―";
 
         internal override bool Check()
         {

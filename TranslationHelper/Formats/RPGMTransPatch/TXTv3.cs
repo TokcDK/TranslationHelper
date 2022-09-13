@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
             }
         }
 
-        internal override string Name => "RPGMTrans patch txt";
+        public override string Name => "RPGMTrans patch txt";
 
         protected override string PatchFileID()
         {

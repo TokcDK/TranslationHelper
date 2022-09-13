@@ -187,7 +187,7 @@ namespace TranslationHelper.Projects
         /// Project title
         /// </summary>
         /// <returns></returns>
-        internal abstract string Name { get; }
+        public abstract string Name { get; }
 
         /// <summary>
         /// Project folder name to locate files in DB and Work folders

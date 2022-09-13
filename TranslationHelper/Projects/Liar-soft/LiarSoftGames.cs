@@ -16,7 +16,7 @@ namespace TranslationHelper.Projects.Liar_soft
             return Path.GetExtension(AppData.SelectedFilePath).ToUpperInvariant()==".EXE" && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "scr.xfl"));
         }
 
-        internal override string Name => "Liar-Soft";
+        public override string Name => "Liar-Soft";
         internal override string ProjectFolderName => "Liar-Soft";
 
         public override bool Open()

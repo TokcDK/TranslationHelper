@@ -33,7 +33,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override string Filters => GameExeFilter;
 
-        internal override string Name => "RPG Maker MV";
+        public override string Name => "RPG Maker MV";
 
         internal override string ProjectFolderName => "RPGMakerMV";
 

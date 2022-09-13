@@ -25,7 +25,7 @@ namespace TranslationHelper.Formats.RPGMMV
             return ReadJson(Path.GetFileNameWithoutExtension(FilePath), FilePath);
         }
 
-        internal override string Ext()
+        public override string Ext()
         {
             return ".json";
         }

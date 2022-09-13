@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects.LiveMaker
             return IsExe() && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "live.dll"));
         }
 
-        internal override string Name => "LiveMaker";
+        public override string Name => "LiveMaker";
 
         internal override string ProjectFolderName => Name;
 

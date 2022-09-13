@@ -22,7 +22,7 @@
 //            return b1 && b2 && b3;
 //        }
 
-//        internal override string Name()
+//        public override string Name()
 //        {
 //            return "Kenshi mod";
 //        }

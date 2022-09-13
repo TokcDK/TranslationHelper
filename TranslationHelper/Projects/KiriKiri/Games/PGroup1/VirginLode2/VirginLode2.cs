@@ -11,7 +11,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
             exeCRC = "dacf4898da60741356cc5c254774e5cb";
         }
 
-        internal override string Name => "Virgin Lode 2";
+        public override string Name => "Virgin Lode 2";
 
         internal override bool Check()
         {

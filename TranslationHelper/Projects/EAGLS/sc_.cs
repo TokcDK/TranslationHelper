@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.EAGLS
             return format.Open();
         }
 
-        internal override string Name => "EAGLS scenario (" + Path.GetFileNameWithoutExtension(AppData.SelectedFilePath) + ")";
+        public override string Name => "EAGLS scenario (" + Path.GetFileNameWithoutExtension(AppData.SelectedFilePath) + ")";
 
         internal override string ProjectFolderName => "EAGLS";
 

@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
             exeCRC = "7c2bfd95";
         }
 
-        internal override string Name => "[RJ297684]Goblins Cave";
+        public override string Name => "[RJ297684]Goblins Cave";
 
         internal override bool Check()
         {

@@ -19,7 +19,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override string ProjectFolderName => "KiriKiri";
 
-        internal override string Name => "KiriKiri tjs";
+        public override string Name => "KiriKiri tjs";
 
         public override bool Open()
         {

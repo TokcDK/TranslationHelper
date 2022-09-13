@@ -10,7 +10,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         {
         }
 
-        internal override string Ext => ".ks";
+        public override string Ext => ".ks";
 
         protected const string waitSymbol = "[待]";
         protected const string newlineSymbol = "[落]";

@@ -2,6 +2,6 @@
 {
     internal abstract class FormatTxtFileBase : FormatStringBase
     {
-        internal override string Ext => ".txt";
+        public override string Ext => ".txt";
     }
 }

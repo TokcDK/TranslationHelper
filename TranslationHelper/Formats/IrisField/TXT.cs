@@ -21,7 +21,7 @@ namespace TranslationHelper.Formats.IrisField
 
         readonly int MaxLineLength;
 
-        internal override string Ext => ".txt";
+        public override string Ext => ".txt";
 
         //protected override bool TryOpen()
         //{

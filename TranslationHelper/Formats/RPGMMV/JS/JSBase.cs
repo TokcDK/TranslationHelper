@@ -16,9 +16,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         internal override bool UseTableNameWithoutExtension => false;
 
-        internal override string Ext => ".js";
+        public override string Ext => ".js";
 
-        internal override string Name => "RPGMakerMV plugin js file";
+        public override string Name => "RPGMakerMV plugin js file";
 
         /// <summary>
         /// Get all inherited classes of an abstract class

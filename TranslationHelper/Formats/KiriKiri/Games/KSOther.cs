@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         readonly KSSyntax.Attribute Attr = new KSSyntax.Attribute();
 
-        internal override string Ext => ".ks";
+        public override string Ext => ".ks";
 
         bool IsScript = false;
         protected override KeywordActionAfter ParseStringFileLine()

@@ -33,7 +33,7 @@ namespace TranslationHelper.Projects
 
         internal override string Filters => GameExeFilter;
 
-        internal override string Name => "Raijin 7";
+        public override string Name => "Raijin 7";
 
         public override bool Open()
         {

@@ -35,7 +35,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         FormatBase Format;
 
-        internal override string Name => string.IsNullOrWhiteSpace(Format.Name) ? Format.Ext: Format.Name;
+        public override string Name => string.IsNullOrWhiteSpace(Format.Name) ? Format.Ext: Format.Name;
 
         public override bool Open()
         {

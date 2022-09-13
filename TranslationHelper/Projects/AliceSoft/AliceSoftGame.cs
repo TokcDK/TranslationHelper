@@ -22,7 +22,7 @@ namespace TranslationHelper.Projects.AliceSoft
                 ;
         }
 
-        internal override string Name => "AliceSoft";
+        public override string Name => "AliceSoft";
 
         public override bool Open()
         {

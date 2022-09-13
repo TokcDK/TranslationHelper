@@ -40,7 +40,7 @@ namespace TranslationHelper.Projects
 
         internal override string Filters => GameExeFilter;
 
-        internal override string Name => "RPG Maker Game";
+        public override string Name => "RPG Maker Game";
 
         internal override string ProjectFolderName => "RPGMakerTrans";
 

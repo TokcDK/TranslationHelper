@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.WolfRPG
         {
         }
 
-        internal override string Ext => ".txt";
+        public override string Ext => ".txt";
 
         protected override void PreOpenExtraActions()
         {

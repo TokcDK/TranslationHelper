@@ -16,7 +16,7 @@ namespace TranslationHelper.Projects.IrisField
             };
         }
 
-        internal override string Name => "Irisfield game";
+        public override string Name => "Irisfield game";
 
         internal override string ProjectDBFileName => Name;
 

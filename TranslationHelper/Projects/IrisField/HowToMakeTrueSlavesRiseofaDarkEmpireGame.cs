@@ -5,7 +5,7 @@ namespace TranslationHelper.Projects.IrisField
 {
     class HowToMakeTrueSlavesRiseofaDarkEmpireGame : IrisFieldGameBase
     {
-        internal override string Name => "How to make true slaves -Rise of a Dark Empire-";
+        public override string Name => "How to make true slaves -Rise of a Dark Empire-";
 
         protected override string GameExeName => "正しい性奴隷の使い方";
 

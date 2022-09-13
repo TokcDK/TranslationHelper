@@ -28,7 +28,7 @@ namespace TranslationHelper.Projects.EAGLS
             return PackUnpackFiles() && OpenFiles();
         }
 
-        internal override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
+        public override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
 
         public override bool Save()
         {

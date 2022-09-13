@@ -23,7 +23,7 @@ namespace TranslationHelper.Projects.RPGMMV
             return false;
         }
 
-        internal override string Name => "RPG Maker MV Json";
+        public override string Name => "RPG Maker MV Json";
 
         internal override string ProjectFolderName => "RPGMakerMV";
 

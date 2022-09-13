@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.LiveMaker
         {
         }
 
-        internal override string Ext => ".csv";
+        public override string Ext => ".csv";
 
         protected override void FileOpen()
         {

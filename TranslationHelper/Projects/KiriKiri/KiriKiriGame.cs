@@ -29,7 +29,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override string Filters => GameExeFilter;
 
-        internal override string Name => "KiriKiri Game";
+        public override string Name => "KiriKiri Game";
 
         internal override string ProjectFolderName => "KiriKiri";
 

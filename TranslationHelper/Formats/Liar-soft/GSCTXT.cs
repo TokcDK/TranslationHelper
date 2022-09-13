@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.Liar_soft
         {
         }
 
-        internal override string Ext => ".txt";
+        public override string Ext => ".txt";
 
         protected override KeywordActionAfter ParseStringFileLine()
         {

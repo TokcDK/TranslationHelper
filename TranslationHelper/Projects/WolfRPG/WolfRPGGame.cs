@@ -16,7 +16,7 @@ namespace TranslationHelper.Projects.WolfRPG
         {
         }
 
-        internal override string Name => "Wolf RPG";
+        public override string Name => "Wolf RPG";
 
         public override bool Open()
         {
