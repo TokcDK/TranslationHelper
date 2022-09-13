@@ -51,7 +51,7 @@ namespace TranslationHelper.Formats.RPGMMV
                             ParseData.Line = ParseData.Line
                                 .Remove(r.Index, r.Value.Length)
                                 .Insert(r.Index,
-                                r.Value.Remove(i = r.Value.IndexOf(str), str.Length).Insert(i, Environment.ExpandEnvironmentVariables(trans))
+                                r.Value.Remove(i = r.Value.IndexOf(str), str.Length).Insert(i, Environment.ExpandEnvironmentVariables(trans).Replace("\\", "/"))
                                 );
                             //ParseData.ResultForWrite.AppendLine(str);
                             ParseData.Ret = true;
