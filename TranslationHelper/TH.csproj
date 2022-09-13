@@ -114,6 +114,7 @@
     <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
     <Compile Include="Data\AppSettings.cs" />
     <Compile Include="Formats\AI6WIN\MESTXT.cs" />
+    <Compile Include="Formats\IFormat.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonSystemMZ.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
     <Compile Include="Functions\FunctionsCleanup.cs" />

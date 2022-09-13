@@ -10,7 +10,7 @@ using TranslationHelper.Functions;
 
 namespace TranslationHelper.Formats
 {
-    public abstract class FormatBase
+    public abstract class FormatBase : IFormat
     {
         protected FormatBase()
         {
@@ -76,7 +76,7 @@ namespace TranslationHelper.Formats
         /// check if format can be parsed?
         /// </summary>
         /// <returns></returns>
-        internal virtual bool Check()
+        public virtual bool Check()
         {
             return false;
         }
@@ -86,7 +86,7 @@ namespace TranslationHelper.Formats
         /// override ExtIdentifier() to determine when a file with the extension can be opened
         /// </summary>
         /// <returns></returns>
-        internal virtual string Ext => null;
+        public virtual string Ext => null;
 
         /// <summary>
         /// identifier to check how to identify if selected extension must be parsed with this format.
@@ -99,7 +99,7 @@ namespace TranslationHelper.Formats
         /// name of format
         /// </summary>
         /// <returns></returns>
-        internal virtual string Name => string.Empty;
+        public virtual string Name => string.Empty;
 
         public bool OpenFileMode { get; set; } = true;
         public bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }
@@ -108,13 +108,13 @@ namespace TranslationHelper.Formats
         /// Open file strings actions executing here
         /// </summary>
         /// <returns></returns>
-        internal bool Open() { OpenFileMode = true; return TryOpen(); }
+        public bool Open() { OpenFileMode = true; return TryOpen(); }
 
         /// <summary>
         /// Save file strings actions executing here
         /// </summary>
         /// <returns></returns>
-        internal bool Save() { OpenFileMode = false; return TrySave(); }
+        public bool Save() { OpenFileMode = false; return TrySave(); }
 
         /// <summary>
         /// Open file strings actions executing here
@@ -784,6 +784,10 @@ namespace TranslationHelper.Formats
         }
 
         public bool RET { get; internal set; }
+
+        string IFormat.Name => throw new NotImplementedException();
+
+        string IFormat.Ext => throw new NotImplementedException();
 
         /// <summary>
         /// check if translation is exists and set str return true if found.
