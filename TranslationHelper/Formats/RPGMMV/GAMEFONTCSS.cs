@@ -36,7 +36,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 {
                     if (OpenFileMode)
                     {
-                        ParseData.Ret = AddRowData(r.Result("$1"), T._("GameFont.\r\nFont must be installed in system or file placed in folder %GAME%\\www\\fonts\\ \r\n or use absolute path. \r\n Change font to smaller is more preferable than line split function\r\nexample: c:/windows/fonts/browa.ttf"), CheckInput: false);
+                        ParseData.Ret = AddRowData(r.Result("$1"), T._("GameFont.\r\nFont must be installed in system or file placed in folder %GAME%\\www\\fonts\\ \r\n or use absolute path. \r\n Change font to smaller is more preferable than line split function\r\nexamples:\r\nWin7:c:/windows/fonts/browa.ttf\r\nWin10: %LocalAppData%/Microsoft/Windows/Fonts/browa.ttf"), CheckInput: false);
 
                         return KeywordActionAfter.Break;
                     }
