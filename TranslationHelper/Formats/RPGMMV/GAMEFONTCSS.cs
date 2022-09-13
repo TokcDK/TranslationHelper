@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMMV.JsonParser;
 
@@ -50,7 +51,7 @@ namespace TranslationHelper.Formats.RPGMMV
                             ParseData.Line = ParseData.Line
                                 .Remove(r.Index, r.Value.Length)
                                 .Insert(r.Index,
-                                r.Value.Remove(i = r.Value.IndexOf(str), str.Length).Insert(i, trans)
+                                r.Value.Remove(i = r.Value.IndexOf(str), str.Length).Insert(i, Environment.ExpandEnvironmentVariables(trans))
                                 );
                             //ParseData.ResultForWrite.AppendLine(str);
                             ParseData.Ret = true;
