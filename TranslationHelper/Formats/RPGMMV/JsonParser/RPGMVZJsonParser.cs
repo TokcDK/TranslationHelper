@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 
         protected override void Init()
         {
-            ExcludedCodes = RPGMVUtils.GetSkipCodes();
+            RPGMVUtils.GetSkipCodes(ExcludedCodes);
 
             base.Init();
         }

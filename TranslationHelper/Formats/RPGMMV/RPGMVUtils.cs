@@ -9,14 +9,13 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
-    internal class RPGMVUtils
+    public static class RPGMVUtils
     {
-        public static Dictionary<int, string> GetSkipCodes()
+        public static void GetSkipCodes(this Dictionary<int, string> excludedCodes)
         {
             var codesFile = THSettings.RPGMakerMVSkipCodesFilePath;
-            if (!File.Exists(codesFile)) return new Dictionary<int, string>();
+            if (!File.Exists(codesFile)) return;
 
-            var codes = new Dictionary<int, string>();
             using (StreamReader sr = new StreamReader(codesFile))
             {
                 while (!sr.EndOfStream)
@@ -32,11 +31,9 @@ namespace TranslationHelper.Formats.RPGMMV
                     var code = codeInfo[0];
                     if (!int.TryParse(code, out int codeValue)) continue;
 
-                    codes.TryAdd(codeValue, commment);
+                    excludedCodes.TryAdd(codeValue, commment);
                 }
             }
-
-            return codes;
         }
 
         /// <summary>

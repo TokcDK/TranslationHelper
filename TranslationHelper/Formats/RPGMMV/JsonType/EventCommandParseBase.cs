@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
         {
             if (AppData.CurrentProject == null) return;
 
-            ExcludedCodes = RPGMVUtils.GetSkipCodes();
+            RPGMVUtils.GetSkipCodes(ExcludedCodes);
         }
 
         protected void ParseCommandStrings(List<Command> commands, string info)
