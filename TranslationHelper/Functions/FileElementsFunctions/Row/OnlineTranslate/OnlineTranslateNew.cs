@@ -309,7 +309,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             foreach (var value in lineData.RegexExtractionData.ValueDataList)
                             {
                                 if (!orig.Contains(value.Key) 
-                                    && value.Value.Translation == null 
+                                    && (string.IsNullOrEmpty(value.Value.Translation)) 
                                     && value.Key.IsValidForTranslation())
                                 {
                                     orig.Add(value.Key);
@@ -549,7 +549,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     // replace original value text with translation
                     newLineText = lineData.OriginalText
                         .Remove(group.Index, group.Length)
-                        .Insert(group.Index, valueData.Translation);
+                        .Insert(group.Index, valueData.Translation ?? group.Value);
 
                     break; // exit from values loop, to not execute lines below
                 }
@@ -572,7 +572,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 // replace group mark with translation
                 foreach (var matchGroup in valueData.MatchGroups)
                 {
-                    newLineText = newLineText.Replace($"%${matchGroup.Name}%", valueData.Translation);
+                    newLineText = newLineText.Replace($"%${matchGroup.Name}%", valueData.Translation ?? matchGroup.Value);
                 }
             }
 

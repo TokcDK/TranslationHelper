@@ -29,21 +29,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         public List<Group> MatchGroups = new List<Group>();
         
-        private string translation;
-
         /// <summary>
         /// Captured group match values translation
         /// </summary>
-        public string Translation
-        {
-            get
-            {
-                if (translation == null) return MatchGroups[0].Value; // return original captured text value
-
-                return translation;
-            }
-
-            set => translation = value;
-        }
+        public string Translation;
     }
 }
