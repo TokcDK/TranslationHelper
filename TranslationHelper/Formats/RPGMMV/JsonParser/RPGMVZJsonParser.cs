@@ -16,9 +16,15 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         {
         }
 
+        static int SkipCodesCount = -1;
         protected override void Init()
         {
-            RPGMVUtils.GetSkipCodes(ExcludedCodes);
+            var excludedCodesCount = ExcludedCodes.Count;
+            if (SkipCodesCount != excludedCodesCount)
+            {
+                SkipCodesCount = excludedCodesCount;
+                RPGMVUtils.GetSkipCodes(ExcludedCodes);
+            }
 
             base.Init();
         }
@@ -378,20 +384,14 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         /// </summary>
         /// <param name="currentEventCode"></param>
         /// <returns></returns>
-        private static bool IsExcludedCode(int currentEventCode)
-        {
-            return ExcludedCodes.ContainsKey(currentEventCode); /*currentEventCode.Length == 3 && (currentEventCode == 108 || currentEventCode == 408 || currentEventCode == 356)*/;
-        }
+        private static bool IsExcludedCode(int currentEventCode) { return ExcludedCodes.ContainsKey(currentEventCode); }
 
         /// <summary>
         /// true if type is JTokenType.Integer
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        private static bool IsInteger(JTokenType type)
-        {
-            return type == JTokenType.Integer;
-        }
+        private static bool IsInteger(JTokenType type) { return type == JTokenType.Integer; }
 
         /// <summary>
         /// Event code if exists

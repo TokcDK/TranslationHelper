@@ -13,6 +13,8 @@ namespace TranslationHelper.Formats.RPGMMV
     {
         public static void GetSkipCodes(this Dictionary<int, string> excludedCodes)
         {
+            if (excludedCodes == null) return;
+
             var codesFile = THSettings.RPGMakerMVSkipCodesFilePath;
             if (!File.Exists(codesFile)) return;
 
