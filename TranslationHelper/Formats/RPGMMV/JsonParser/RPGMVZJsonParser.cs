@@ -426,7 +426,6 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             { 41, "Image name?" }, // file name
             { 44, "" }, // file name
             { 45, "" }, // file name
-            { 102, "" }, // file name
             { 118, "" }, // file name
             //{ 122, "" }, // file name
             { 123, "" }, // file name
