@@ -3,6 +3,23 @@ using System.Text.RegularExpressions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
+    public enum TranslationRegexExtractType
+    {
+        /// <summary>
+        /// something like '$1'
+        /// </summary>
+        ReplaceOne,
+        /// <summary>
+        /// something like: '$1,$2,$3'
+        /// </summary>
+        ReplaceList,
+        /// <summary>
+        /// standart regex replacer when more of one $ group
+        /// </summary>
+        Replacer,
+
+    }
+
     public class ExtractRegexInfo
     {
         /// <summary>

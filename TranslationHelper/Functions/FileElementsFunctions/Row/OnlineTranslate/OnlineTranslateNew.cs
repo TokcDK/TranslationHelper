@@ -204,7 +204,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         skippedValuesCount++;
                         val.Value.Translation = valcache; // add translation from cache if found
                     }
-                    else if (val.Key.IsSoundsText())
+                    else if (val.Key.IsSoundsText() || !val.Key.IsValidForTranslation())
                     {
                         skippedValuesCount++;
                         val.Value.Translation = val.Key; // original=translation when value is soundtext
@@ -308,8 +308,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         {
                             foreach (var value in lineData.RegexExtractionData.ValueDataList)
                             {
-                                if (!orig.Contains(value.Key) 
-                                    && (string.IsNullOrEmpty(value.Value.Translation)) 
+                                if (!orig.Contains(value.Key)
+                                    && (string.IsNullOrEmpty(value.Value.Translation))
                                     && value.Key.IsValidForTranslation())
                                 {
                                     orig.Add(value.Key);
@@ -532,48 +532,75 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private static string MergeExtracted(LineTranslationData lineData)
         {
             // replace all groups with translation of selected value
-            var newLineText = lineData.RegexExtractionData.Replacer;
             bool isMarked = false;
-            var replacerMatches = Regex.Matches(newLineText, @"\$[0-9]+");
+            var replacerMatches = Regex.Matches(lineData.RegexExtractionData.Replacer, @"\$[0-9]+");
             var matchesCount = replacerMatches.Count;
-            bool isOneMatchNeedInsertText = matchesCount == 1 && Regex.IsMatch(newLineText.Trim(), @"^\$[0-9]+$");
-            foreach (var valueData in lineData.RegexExtractionData.ValueDataList.Values)
+            var replacerType = TranslationRegexExtractType.ReplaceOne;
+            bool isOneMatchNeedInsertText = matchesCount == 1 && Regex.IsMatch(lineData.RegexExtractionData.Replacer.Trim(), @"^\$[0-9]+$");
+            if (!isOneMatchNeedInsertText)
             {
+                replacerType = Regex.IsMatch(lineData.RegexExtractionData.Replacer.Trim(), @"^\$[0-9]+(,\$[0-9]+)+$")
+                    ? TranslationRegexExtractType.ReplaceList
+                    : TranslationRegexExtractType.Replacer;
+            }
+
+            var newLineText = lineData.OriginalText;
+
+            var list = new List<ExtractRegexValueInfo>(lineData.RegexExtractionData.ValueDataList.Values);
+            var maxValueDataIndex = list.Count - 1;
+            for (int i = maxValueDataIndex; i >= 0; i--)
+            {
+                var valueData = list[i];
                 // search all $1-$99 in replacer
 
-                // when only one replacer mark like '$1'
-                if (isOneMatchNeedInsertText)
+                // just replace values for each group by translation
+                if (replacerType != TranslationRegexExtractType.Replacer)
                 {
-                    var group = valueData.MatchGroups[0];
+                    var maxGroupIndex = valueData.MatchGroups.Count - 1;
+                    for (int i1 = maxGroupIndex; i1 >= 0; i1--)
+                    {
+                        var group = valueData.MatchGroups[i1];
 
-                    // replace original value text with translation
-                    newLineText = lineData.OriginalText
-                        .Remove(group.Index, group.Length)
-                        .Insert(group.Index, valueData.Translation ?? group.Value);
+                        try
+                        {
+                            // replace original value text with translation
+                            newLineText = newLineText
+                                .Remove(group.Index, group.Length)
+                                .Insert(group.Index, valueData.Translation ?? group.Value);
+                        }
+                        catch { }
+                    }
 
-                    break; // exit from values loop, to not execute lines below
+                    if (replacerType == TranslationRegexExtractType.ReplaceOne) break; // exit from values loop, to not execute lines below
+                    else continue; // continue for list
                 }
 
+                ////
+                // Standart replacer parse
+                //
                 if (!isMarked)
                 {
                     isMarked = true; // mark only one time
 
+                    newLineText = lineData.RegexExtractionData.Replacer;
+
                     // mark all matches for precise replacement, $1 to %$1%
-                    for (int i = matchesCount - 1; i >= 0; i--)
+                    for (int i2 = matchesCount - 1; i2 >= 0; i2--)
                     {
-                        var match = replacerMatches[i];
+                        var match = replacerMatches[i2];
 
                         newLineText = newLineText.Remove(match.Index, match.Length)
                             .Insert(match.Index, $"%{match.Value}%");
                         ;
                     }
                 }
-
+                //
                 // replace group mark with translation
                 foreach (var matchGroup in valueData.MatchGroups)
                 {
                     newLineText = newLineText.Replace($"%${matchGroup.Name}%", valueData.Translation ?? matchGroup.Value);
                 }
+                ////
             }
 
             return newLineText;
