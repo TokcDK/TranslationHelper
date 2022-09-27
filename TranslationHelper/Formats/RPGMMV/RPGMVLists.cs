@@ -37,7 +37,7 @@ namespace TranslationHelper.Formats.RPGMMV
             { 251, "Stop SE" },
             { 261, "Play Movie" },
             { 283, "" },
-            { 320, "" },
+            //{ 320, "" },
             { 322, "" },
             { 323, "" },
             //{ 355, "Script command" }, // can contain text
