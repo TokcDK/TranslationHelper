@@ -14,7 +14,7 @@ using TranslationHelper.Menus.ProjectMenus;
 
 namespace TranslationHelper.Projects
 {
-    public abstract class ProjectBase
+    public abstract class ProjectBase : IProject
     {
         protected ProjectBase()
         {
@@ -23,10 +23,7 @@ namespace TranslationHelper.Projects
 
             if (AppData.CurrentProject == null) return;
 
-            if (SaveFileMode && DontLoadDuplicates)
-            {
-                TablesLinesDict = new ConcurrentDictionary<string, string>();
-            }
+            if (SaveFileMode && DontLoadDuplicates) TablesLinesDict = new ConcurrentDictionary<string, string>();
         }
 
         /// <summary>
@@ -80,14 +77,9 @@ namespace TranslationHelper.Projects
         {
             lock (TableDataAddLocker)
             {
-                if (!FilesContent.Tables.Contains(tableData.TableName))
-                {
-                    FilesContent.Tables.Add(tableData);
-                }
-                else
-                {
+                if (FilesContent.Tables.Contains(tableData.TableName)) return;
 
-                }
+                FilesContent.Tables.Add(tableData);
             }
         }
 
@@ -100,14 +92,9 @@ namespace TranslationHelper.Projects
         {
             lock (TableInfoAddLocker)
             {
-                if (!FilesContentInfo.Tables.Contains(tableInfo.TableName))
-                {
-                    FilesContentInfo.Tables.Add(tableInfo);
-                }
-                else
-                {
+                if (FilesContentInfo.Tables.Contains(tableInfo.TableName)) return;
 
-                }
+                FilesContentInfo.Tables.Add(tableInfo);
             }
         }
 
@@ -133,12 +120,11 @@ namespace TranslationHelper.Projects
         /// </summary>
         public virtual void Init()
         {
-            if (!string.IsNullOrWhiteSpace(AppData.SelectedFilePath))
-            {
-                AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedFilePath);
-                AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedFilePath);
-                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, this.ProjectFolderName, ProjectName);
-            }
+            if (string.IsNullOrWhiteSpace(AppData.SelectedFilePath)) return;
+
+            AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedFilePath);
+            AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedFilePath);
+            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, ProjectName);
         }
 
         /// <summary>
@@ -148,29 +134,16 @@ namespace TranslationHelper.Projects
         internal virtual string ProjectName => Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
 
         /// <summary>
-        /// return if selected file of project is exe
-        /// </summary>
-        /// <returns></returns>
-        protected static bool IsExe()
-        {
-            return Path.GetExtension(AppData.SelectedFilePath).ToUpperInvariant() == ".EXE";
-        }
-
-        /// <summary>
         /// Conditions to detect on open
         /// </summary>
         /// <returns></returns>
-        internal abstract bool Check();
+        internal abstract bool IsValid();
 
-        /// <summary>
-        /// exe files *.exe
-        /// </summary>
-        protected static string GameExeFilter { get => "Game execute|\"*.exe\""; }
         /// <summary>
         /// Project's filter for fileopen dialog
         /// </summary>
         /// <returns></returns>
-        internal virtual string Filters => string.Empty;
+        internal virtual string FileFilter => string.Empty;
 
         /// <summary>
         /// executed before DB will be saved
@@ -193,7 +166,7 @@ namespace TranslationHelper.Projects
         /// Project folder name to locate files in DB and Work folders
         /// </summary>
         /// <returns></returns>
-        internal virtual string ProjectFolderName => "Other";
+        internal virtual string ProjectDBFolderName => "Other";
 
         /// <summary>
         /// Returns project's DB file name for save/load

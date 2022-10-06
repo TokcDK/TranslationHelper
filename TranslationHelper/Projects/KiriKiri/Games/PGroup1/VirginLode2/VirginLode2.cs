@@ -13,7 +13,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
 
         public override string Name => "Virgin Lode 2";
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             if (CheckKiriKiriBase())
             {

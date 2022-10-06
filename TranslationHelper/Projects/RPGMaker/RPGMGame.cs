@@ -15,7 +15,7 @@ namespace TranslationHelper.Projects
     {
         public int RPGMTransPatchVersion { get; private set; }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             if (Path.GetExtension(AppData.SelectedFilePath) == ".exe")
             {
@@ -38,11 +38,11 @@ namespace TranslationHelper.Projects
             return false;
         }
 
-        internal override string Filters => GameExeFilter;
+        internal override string FileFilter => ProjectTools.GameExeFilter;
 
         public override string Name => "RPG Maker Game";
 
-        internal override string ProjectFolderName => "RPGMakerTrans";
+        internal override string ProjectDBFolderName => "RPGMakerTrans";
 
         internal override bool TablesLinesDictAddEqual => true;
 
@@ -74,7 +74,7 @@ namespace TranslationHelper.Projects
         private bool Patching()
         {
             var GameDirPath = new DirectoryInfo(AppData.CurrentProject.SelectedGameDir);
-            var workdir = new DirectoryInfo(Path.Combine(THSettings.WorkDirPath, ProjectFolderName, GameDirPath.Name));
+            var workdir = new DirectoryInfo(Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, GameDirPath.Name));
             AppData.CurrentProject.ProjectWorkDir = workdir.FullName;
             var patchdirPath = Path.Combine(workdir.FullName, workdir.Name + "_patch");
 

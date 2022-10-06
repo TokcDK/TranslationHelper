@@ -10,7 +10,7 @@ namespace TranslationHelper.Projects.RPGMMV
         {
         }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             if (Path.GetExtension(AppData.SelectedFilePath).ToUpperInvariant() == ".JSON")
             {

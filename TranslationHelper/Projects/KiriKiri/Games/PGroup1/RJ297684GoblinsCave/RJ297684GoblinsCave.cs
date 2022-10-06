@@ -14,7 +14,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
 
         public override string Name => "[RJ297684]Goblins Cave";
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             return CheckKiriKiriBase() && exeCRC.Length > 0 && AppData.SelectedFilePath.GetCrc32() == exeCRC;
         }

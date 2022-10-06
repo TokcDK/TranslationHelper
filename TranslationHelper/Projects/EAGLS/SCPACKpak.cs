@@ -11,12 +11,12 @@ namespace TranslationHelper.Projects.EAGLS
         }
 
         bool ISpak;
-        internal override bool Check()
+        internal override bool IsValid()
         {
             return (ISpak = Path.GetFileName(AppData.SelectedFilePath) == "SCPACK.pak") && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "SCPACK.idx")) || (Path.GetFileName(AppData.SelectedFilePath) == "SCPACK.idx") && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "SCPACK.pak"));
         }
 
-        internal override string Filters => "EAGLS SCPACK|SCPACK.pak;SCPACK.idx";
+        internal override string FileFilter => "EAGLS SCPACK|SCPACK.pak;SCPACK.idx";
 
         public override bool Open()
         {

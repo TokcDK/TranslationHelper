@@ -372,6 +372,7 @@
     <Compile Include="Projects\EAGLS\SCPACKpak.cs" />
     <Compile Include="Projects\EAGLS\EAGLSGame.cs" />
     <Compile Include="Projects\EAGLS\sc_.cs" />
+    <Compile Include="Projects\IProject.cs" />
     <Compile Include="Projects\IrisField\HowToBuildAMagnificentNationGame.cs" />
     <Compile Include="Projects\IrisField\HowToMakeTrueSlavesRiseofaDarkEmpireGame.cs" />
     <Compile Include="Projects\IrisField\IrisFieldGameBase.cs" />
@@ -393,6 +394,7 @@
     <Compile Include="Projects\NScript\NScriptBase.cs" />
     <Compile Include="Projects\NScript\NScriptGame.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
+    <Compile Include="Projects\ProjectTools.cs" />
     <Compile Include="Projects\ProjectUtils.cs" />
     <Compile Include="Projects\Raijin7\Raijin7Game.cs" />
     <Compile Include="Projects\RJ263914\RJ263914OLD.cs" />

@@ -356,7 +356,7 @@ namespace TranslationHelper.Functions
         /// <returns></returns>
         private static bool TryDetectProject(ProjectBase Project)
         {
-            if (Project.Check())
+            if (Project.IsValid())
             {
                 AppData.CurrentProject = Project;
                 return true;

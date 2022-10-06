@@ -26,12 +26,12 @@ namespace TranslationHelper.Projects.RPGMMV
 
         protected virtual bool HasWWWDir { get; } = true;
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
-            return IsExe() && File.Exists(Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "", "data", "system.json"));
+            return ProjectTools.IsExe(AppData.SelectedFilePath) && File.Exists(Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "", "data", "system.json"));
         }
 
-        internal override string Filters => GameExeFilter;
+        internal override string FileFilter => ProjectTools.GameExeFilter;
 
         public override string Name => "RPG Maker MV";
 

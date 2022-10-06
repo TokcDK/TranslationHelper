@@ -10,7 +10,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         {
         }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             return CheckKiriKiriBase();
         }

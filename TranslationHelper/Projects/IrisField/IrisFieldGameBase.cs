@@ -27,7 +27,7 @@ namespace TranslationHelper.Projects.IrisField
         /// </summary>
         internal virtual int MaxLineLength { get => 60; }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             return Path.GetExtension(AppData.SelectedFilePath) == ".exe"
                 &&
@@ -36,7 +36,7 @@ namespace TranslationHelper.Projects.IrisField
                 Directory.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "data", "Script"));
         }
 
-        internal override string Filters => GameExeFilter;
+        internal override string FileFilter => ProjectTools.GameExeFilter;
 
         public override bool Open()
         {

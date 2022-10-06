@@ -14,7 +14,7 @@ namespace TranslationHelper.Projects.AliceSoft
         {
         }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             string dirPath = Path.GetDirectoryName(AppData.SelectedFilePath);
             return Path.GetExtension(AppData.SelectedFilePath) == ".exe"

@@ -15,7 +15,7 @@ namespace TranslationHelper.Projects.KiriKiri
         {
         }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             return false; // old code
             //Path.GetExtension(ProjectData.SPath) == ".exe"
@@ -27,7 +27,7 @@ namespace TranslationHelper.Projects.KiriKiri
             //    FunctionsFileFolder.IsInDirExistsAnyFile(Path.GetDirectoryName(ProjectData.SPath), "*.xp3");
         }
 
-        internal override string Filters => GameExeFilter;
+        internal override string FileFilter => ProjectTools.GameExeFilter;
 
         public override string Name => "KiriKiri Game";
 

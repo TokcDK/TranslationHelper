@@ -18,7 +18,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         public override bool IsSaveToSourceFile => true; // we opened standalone file and will write in it
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             var fileExt = Path.GetExtension(AppData.SelectedFilePath);
             foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatStringBase)))

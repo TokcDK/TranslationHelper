@@ -8,7 +8,7 @@ namespace TranslationHelper.Projects
     {
         public int RPGMTransPatchVersion { get; private set; }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             if (Path.GetFileName(AppData.SelectedFilePath) == "RPGMKTRANSPATCH")
             {

@@ -22,7 +22,7 @@ namespace TranslationHelper.Projects
             };
         }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             string dirPath = Path.GetDirectoryName(AppData.SelectedFilePath);
             return Path.GetExtension(AppData.SelectedFilePath) == ".exe"
@@ -31,7 +31,7 @@ namespace TranslationHelper.Projects
                 ;
         }
 
-        internal override string Filters => GameExeFilter;
+        internal override string FileFilter => ProjectTools.GameExeFilter;
 
         public override string Name => "Raijin 7";
 

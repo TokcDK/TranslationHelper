@@ -11,7 +11,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
         {
         }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             return Path.GetFileName(AppData.SelectedFilePath) == "index.html" && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "data", "scenario", "config.ks"));
         }

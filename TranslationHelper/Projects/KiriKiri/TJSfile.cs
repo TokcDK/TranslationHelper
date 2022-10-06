@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.KiriKiri
         {
         }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             return AppData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TJS");
         }

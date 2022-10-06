@@ -14,7 +14,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.NLoveImGoingToGetRidOfItAndL
 
         public override string Name => "Nラブ ―ネ取りネ取られ生きるのさ―";
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             if (CheckKiriKiriBase())
             {

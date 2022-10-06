@@ -24,10 +24,10 @@ namespace TranslationHelper.Projects.WolfRPG
                 {"\\udb[", @"\\\\udb\[[^:]+:[^:]+:[^:\]]+\]"}
             };
         }
-        internal override bool Check()
+        internal override bool IsValid()
         {
             string d;
-            return IsExe()
+            return ProjectTools.IsExe(AppData.SelectedFilePath)
                 && (File.Exists(Path.Combine(d = Path.GetDirectoryName(AppData.SelectedFilePath), "DATA.wolf"))
                 || FunctionsFileFolder.IsInDirExistsAnyFile(d = Path.GetDirectoryName(AppData.SelectedFilePath), "*.wolf", recursive: true)
                 || (Directory.Exists(d = Path.Combine(d, "Data")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.wolf", recursive: true))

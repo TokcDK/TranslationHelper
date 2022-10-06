@@ -13,12 +13,12 @@ namespace TranslationHelper.Projects.EAGLS
         {
         }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             return AppData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".TXT") && Path.GetFileName(AppData.SelectedFilePath).StartsWith("sc_");
         }
 
-        internal override string Filters => "EAGLS SCPACK sc_txt|sc_*.txt";
+        internal override string FileFilter => "EAGLS SCPACK sc_txt|sc_*.txt";
 
         public override bool Open()
         {

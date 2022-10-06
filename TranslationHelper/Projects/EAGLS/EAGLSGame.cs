@@ -9,13 +9,13 @@ namespace TranslationHelper.Projects.EAGLS
         {
         }
 
-        internal override bool Check()
+        internal override bool IsValid()
         {
             return File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "Script", "SCPACK.pak"))
                 && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "Script", "SCPACK.idx"));
         }
 
-        internal override string Filters => GameExeFilter;
+        internal override string FileFilter => ProjectTools.GameExeFilter;
 
         public override bool Open()
         {
