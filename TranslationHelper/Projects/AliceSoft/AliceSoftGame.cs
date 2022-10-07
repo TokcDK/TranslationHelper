@@ -33,7 +33,7 @@ namespace TranslationHelper.Projects.AliceSoft
         {
             if (OpenFileMode)
             {
-                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectFolderName, Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)));
+                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)));
             }
 
             var ret = false;

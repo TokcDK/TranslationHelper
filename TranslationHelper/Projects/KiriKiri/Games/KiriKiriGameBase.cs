@@ -99,7 +99,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return ret;
         }
 
-        internal override string ProjectFolderName => "KiriKiri";
+        internal override string ProjectDBFolderName => "KiriKiri";
 
         protected virtual List<Type> FormatType()
         {
@@ -137,7 +137,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             {
                 //ProjectData.CurrentProject.SelectedGameDir
 
-                KiriKiriWorkOrigFolder = Path.Combine(THSettings.WorkDirPath, AppData.CurrentProject.ProjectFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir), "Orig");
+                KiriKiriWorkOrigFolder = Path.Combine(THSettings.WorkDirPath, AppData.CurrentProject.ProjectDBFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir), "Orig");
 
                 //string DirName = Path.GetFileName(ProjectData.CurrentProject.SelectedGameDir);;
                 AppData.CurrentProject.ProjectWorkDir = Path.GetDirectoryName(KiriKiriWorkOrigFolder);

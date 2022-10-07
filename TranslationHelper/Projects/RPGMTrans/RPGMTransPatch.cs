@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects
 
         public override string Name => "RPG Maker Trans Patch";
 
-        internal override string ProjectFolderName => "RPGMakerTrans";
+        internal override string ProjectDBFolderName => "RPGMakerTrans";
 
         public override bool Open()
         {

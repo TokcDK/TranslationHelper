@@ -35,7 +35,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         public override string Name => "RPG Maker MV";
 
-        internal override string ProjectFolderName => "RPGMakerMV";
+        internal override string ProjectDBFolderName => "RPGMakerMV";
 
         internal override bool IsTestRunEnabled => true;
 

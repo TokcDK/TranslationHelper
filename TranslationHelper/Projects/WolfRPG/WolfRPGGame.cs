@@ -28,7 +28,7 @@ namespace TranslationHelper.Projects.WolfRPG
         private bool OpenSaveFiles()
         {
             var OrigFolder = Path.Combine(THSettings.WorkDirPath
-                , AppData.CurrentProject.ProjectFolderName                , Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
+                , AppData.CurrentProject.ProjectDBFolderName                , Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
             var patchdir = Path.Combine(OrigFolder, "patch");
             bool[] b = new bool[2] { OpenSaveFilesBase(new DirectoryInfo(patchdir), typeof(Formats.WolfRPG.WolfTrans.TXT), "*.txt"), OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt") };
             return b.Any(b1 => b1 == true);
@@ -51,7 +51,7 @@ namespace TranslationHelper.Projects.WolfRPG
             try
             {
                 var WorkFolder = Path.Combine(THSettings.WorkDirPath
-                    , AppData.CurrentProject.ProjectFolderName                    , Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
+                    , AppData.CurrentProject.ProjectDBFolderName                    , Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
 
                 AppData.CurrentProject.ProjectWorkDir = WorkFolder;
 
@@ -215,7 +215,7 @@ namespace TranslationHelper.Projects.WolfRPG
         }
 
         readonly string[] _projectTranslatableFilesExtensionMasks = new[] { "*.mps", "*.dat", "*.project" };
-        string TranslatedDirPath => Path.Combine(THSettings.WorkDirPath, ProjectFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir), "translated");
+        string TranslatedDirPath => Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir), "translated");
         internal override bool BakCreate()
         {
             //.mps,.dat,.project using in patcher

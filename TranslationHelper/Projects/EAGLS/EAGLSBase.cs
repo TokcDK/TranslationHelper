@@ -17,16 +17,16 @@ namespace TranslationHelper.Projects.EAGLS
         {
             base.Init();
             ProjectName = ProjectName;
-            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectFolderName, ProjectName);
+            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, ProjectName);
             WorkTXTDir = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "txt");
             ScriptDir = Path.Combine(AppData.CurrentProject.SelectedGameDir, "Script");
             SCPACKpak = Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "Script", "SCPACK.pak");
             SCPACKidx = Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "Script", "SCPACK.idx");
         }
 
-        internal override string ProjectFolderName => "EAGLS";
+        internal override string ProjectDBFolderName => "EAGLS";
 
-        internal override string ProjectTitlePrefix => ProjectFolderName;
+        internal override string ProjectTitlePrefix => ProjectDBFolderName;
 
         string scriptsMask = "sc_*.txt";
 
@@ -39,7 +39,7 @@ namespace TranslationHelper.Projects.EAGLS
         {
             try
             {
-                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectFolderName, ProjectName);
+                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, ProjectName);
                 var workdir = AppData.CurrentProject.ProjectWorkDir;
 
                 var pythonexe = THSettings.PythonExePath;

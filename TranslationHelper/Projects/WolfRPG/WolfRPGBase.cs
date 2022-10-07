@@ -86,7 +86,7 @@ namespace TranslationHelper.Projects.WolfRPG
             return ret;
         }
 
-        internal override string ProjectFolderName => "WolfRPG";
+        internal override string ProjectDBFolderName => "WolfRPG";
         internal override bool TablesLinesDictAddEqual => true;
 
         internal override string OnlineTranslationProjectSpecificPosttranslationAction(string o, string t, int tind = -1, int rind = -1)

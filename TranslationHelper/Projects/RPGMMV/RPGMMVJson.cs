@@ -25,7 +25,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         public override string Name => "RPG Maker MV Json";
 
-        internal override string ProjectFolderName => "RPGMakerMV";
+        internal override string ProjectDBFolderName => "RPGMakerMV";
 
         public override bool Open()
         {

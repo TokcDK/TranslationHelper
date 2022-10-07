@@ -162,7 +162,7 @@ namespace TranslationHelper.Main.Functions
         internal static string GetProjectDBFolder()
         {
             string ret = string.Empty;
-            if (AppData.CurrentProject != null) ret = AppData.CurrentProject.ProjectFolderName;
+            if (AppData.CurrentProject != null) ret = AppData.CurrentProject.ProjectDBFolderName;
             //else if (ProjectData.CurrentProject.Name().Contains("RPG Maker MV"))
             //{
             //    ret = "RPGMakerMV";

@@ -31,7 +31,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
         public override string Name => "KiriKiri Game";
 
-        internal override string ProjectFolderName => "KiriKiri";
+        internal override string ProjectDBFolderName => "KiriKiri";
 
         public override bool Open()
         {
