@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Cache;
 
 namespace TranslationHelper.OnlineTranslators
 {
@@ -9,6 +10,7 @@ namespace TranslationHelper.OnlineTranslators
         public WebClientEx(CookieContainer container)
         {
             this.CookieContainer = container;
+            CachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
         }
 
         public CookieContainer CookieContainer { get; set; } = new CookieContainer();
