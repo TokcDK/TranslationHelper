@@ -18,10 +18,8 @@ namespace TranslationHelper.OnlineTranslators
         protected override WebRequest GetWebRequest(Uri address)
         {
             WebRequest r = base.GetWebRequest(address);
-            if (r is HttpWebRequest request)
-            {
-                request.CookieContainer = CookieContainer;
-            }
+            if (r is HttpWebRequest request) request.CookieContainer = CookieContainer;
+
             return r;
         }
 
@@ -29,6 +27,7 @@ namespace TranslationHelper.OnlineTranslators
         {
             WebResponse response = base.GetWebResponse(request, result);
             ReadCookies(response);
+
             return response;
         }
 
@@ -36,6 +35,7 @@ namespace TranslationHelper.OnlineTranslators
         {
             WebResponse response = base.GetWebResponse(request);
             ReadCookies(response);
+
             return response;
         }
 

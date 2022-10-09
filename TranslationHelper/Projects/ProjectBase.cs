@@ -277,17 +277,12 @@ namespace TranslationHelper.Projects
             foreach (var file in dir.EnumerateFiles(mask, SearchOption.AllDirectories))
             {
                 var name = file.Name;
-                bool contains = newestfiles.ContainsKey(name);
-                if (contains)
+                bool isAlreadyContains = newestfiles.ContainsKey(name);
+                if (isAlreadyContains)
                 {
-                    if (file.LastWriteTime <= newestfiles[name].LastWriteTime)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        newestfiles[name] = file;
-                    }
+                    if (file.LastWriteTime <= newestfiles[name].LastWriteTime) continue;
+
+                    newestfiles[name] = file;
                 }
                 else
                 {
@@ -380,30 +375,17 @@ namespace TranslationHelper.Projects
         {
             HideVARSPatterns = HideVARSPatterns ?? AppData.CurrentProject.HideVarsBase;
 
-            if (HideVARSPatterns == null || HideVARSPatterns.Count == 0)
-            {
-                return str;
-            }
+            if (HideVARSPatterns == null || HideVARSPatterns.Count == 0) return str;
 
             var keyfound = false;
             foreach (var key in HideVARSPatterns.Keys)
             {
-                if (str.Contains(key))
-                {
-                    keyfound = true;
-                    break;
-                }
+                if (str.Contains(key)) { keyfound = true; break; }
             }
-            if (!keyfound)
-            {
-                return str;
-            }
+            if (!keyfound) return str;
 
             var mc = Regex.Matches(str, "(" + string.Join(")|(", HideVARSPatterns.Values) + ")");
-            if (mc.Count == 0)
-            {
-                return str;
-            }
+            if (mc.Count == 0) return str;
 
             if (HideVARSMatchCollectionsList == null)//init list
                 HideVARSMatchCollectionsList = new List<MatchCollection>();
@@ -419,10 +401,7 @@ namespace TranslationHelper.Projects
                 {
                     str = str.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, "{VAR" + m.ToString("000") + "}");
                 }
-                catch (System.ArgumentOutOfRangeException)
-                {
-
-                }
+                catch { }
             }
 
             return str;
@@ -552,33 +531,33 @@ namespace TranslationHelper.Projects
             try
             {
 
-                if (Directory.Exists(dir + ".bak"))
+                if (!Directory.Exists(dir + ".bak")) return false;
+
+                bool tmp = false;
+                if (Directory.Exists(dir))
                 {
-                    bool tmp = false;
-                    if (Directory.Exists(dir))
-                    {
-                        tmp = true;
+                    tmp = true;
 
-                        if (Directory.Exists(dir + ".tmp"))
-                        {
-                            new DirectoryInfo(dir + ".tmp").Attributes = FileAttributes.Normal;
-                            Directory.Delete(dir + ".tmp", true);
-                        }
-
-                        Directory.Move(dir, dir + ".tmp");
-                    }
-                    Directory.Move(dir + ".bak", dir);
-                    if (tmp && Directory.Exists(dir + ".tmp") && Directory.Exists(dir))
+                    if (Directory.Exists(dir + ".tmp"))
                     {
                         new DirectoryInfo(dir + ".tmp").Attributes = FileAttributes.Normal;
                         Directory.Delete(dir + ".tmp", true);
-                        return true;
                     }
-                    else if (!tmp && Directory.Exists(dir))
-                    {
-                        return true;
-                    }
+
+                    Directory.Move(dir, dir + ".tmp");
                 }
+                Directory.Move(dir + ".bak", dir);
+                if (tmp && Directory.Exists(dir + ".tmp") && Directory.Exists(dir))
+                {
+                    new DirectoryInfo(dir + ".tmp").Attributes = FileAttributes.Normal;
+                    Directory.Delete(dir + ".tmp", true);
+                    return true;
+                }
+                else if (!tmp && Directory.Exists(dir))
+                {
+                    return true;
+                }
+                return false;
             }
             catch
             {
@@ -682,23 +661,14 @@ namespace TranslationHelper.Projects
         {
             try
             {
-                if (Directory.Exists(dir + ".bak"))
-                {
-                    RestoreDir(dir);
-                }
-                if (!Directory.Exists(dir + ".bak") && Directory.Exists(dir))
-                {
-                    dir.CopyAll(dir + ".bak");
-                }
-                if (Directory.Exists(dir + ".bak"))
-                {
-                    return true;
-                }
+                if (Directory.Exists(dir + ".bak")) RestoreDir(dir);
+
+                if (!Directory.Exists(dir + ".bak") && Directory.Exists(dir)) dir.CopyAll(dir + ".bak");
             }
             catch
             {
             }
-            return false;
+            return Directory.Exists(dir + ".bak");
         }
 
         /// <summary>
@@ -711,10 +681,9 @@ namespace TranslationHelper.Projects
             var ret = false;
             foreach (var file in filePaths)
             {
-                if (BackupFile(file))
-                {
-                    ret = true;
-                }
+                if (!BackupFile(file)) continue;
+
+                ret = true;
             }
             return ret;
         }
@@ -730,25 +699,15 @@ namespace TranslationHelper.Projects
 
             try
             {
-                if (File.Exists(file + ".bak"))
-                {
-                    RestoreFile(file);
-                }
-                if (File.Exists(file) && !File.Exists(file + ".bak"))
-                {
-                    File.Copy(file, file + ".bak");
-                }
-                if (File.Exists(file + ".bak"))
-                {
-                    AppData.Main.ProgressInfo(false);
-                    return true;
-                }
+                if (File.Exists(file + ".bak")) RestoreFile(file);
+
+                if (File.Exists(file) && !File.Exists(file + ".bak")) File.Copy(file, file + ".bak");
             }
             catch
             {
             }
             AppData.Main.ProgressInfo(false);
-            return false;
+            return File.Exists(file + ".bak");
         }
 
         /// <summary>
@@ -757,37 +716,22 @@ namespace TranslationHelper.Projects
         /// </summary>
         /// <param name="row"></param>
         /// <returns></returns>
-        internal virtual bool CheckForRowIssue(DataRow row)
-        {
-            return false;
-        }
+        internal virtual bool CheckForRowIssue(DataRow row) { return false; }
 
         /// <summary>
         /// true if <paramref name="inputString"/> is valid for translation
         /// </summary>
         /// <param name="inputString"></param>
         /// <returns></returns>
-        internal virtual bool IsValidForTranslation(string inputString)
-        {
-            return true;
-        }
+        internal virtual bool IsValidForTranslation(string inputString) { return true; }
 
         /// <summary>
         /// here can be set actions to execute after write of translation
         /// </summary>
-        internal virtual void AfterTranslationWriteActions()
-        {
-            System.Diagnostics.Process.Start("explorer.exe", AppData.CurrentProject.SelectedDir);
-        }
+        internal virtual void AfterTranslationWriteActions() { System.Diagnostics.Process.Start("explorer.exe", AppData.CurrentProject.SelectedDir); }
 
-        internal virtual List<IProjectMenu> FilesListItemMenusList()
-        {
-            return new List<IProjectMenu>();
-        }
+        internal virtual List<IProjectMenu> FilesListItemMenusList() { return new List<IProjectMenu>(); }
 
-        internal virtual List<IProjectMenu> GridItemMenusList()
-        {
-            return new List<IProjectMenu>();
-        }
+        internal virtual List<IProjectMenu> GridItemMenusList() { return new List<IProjectMenu>(); }
     }
 }
