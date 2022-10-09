@@ -242,7 +242,7 @@ namespace TranslationHelper.Formats
                         foreach (Match m in mc)
                         {
                             var str = m.Result("$1");
-                            IsSet = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, CheckInput: true);
+                            IsSet = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, isCheckInput: true);
                         }
                     }
                     else

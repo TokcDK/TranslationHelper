@@ -38,7 +38,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
                         if (OpenFileMode)
                         {
-                            AddRowData(result, ParseData.Line, CheckInput: false);
+                            AddRowData(result, ParseData.Line, isCheckInput: false);
                         }
                         else
                         {

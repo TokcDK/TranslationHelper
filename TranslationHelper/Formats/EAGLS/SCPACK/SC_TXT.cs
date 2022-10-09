@@ -52,7 +52,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
                 {
                     foreach (Match match in mc)
                     {
-                        AddRowData(match.Result("$1"), "", CheckInput: true);
+                        AddRowData(match.Result("$1"), "", isCheckInput: true);
                     }
                 }
                 else

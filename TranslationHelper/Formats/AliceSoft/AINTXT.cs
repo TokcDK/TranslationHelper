@@ -24,7 +24,7 @@ namespace TranslationHelper.Formats.AliceSoft
                 {
                     if (OpenFileMode)
                     {
-                        AddRowData(orig, T._("Last group") + ": " + lastgroupname, CheckInput: false);
+                        AddRowData(orig, T._("Last group") + ": " + lastgroupname, isCheckInput: false);
                     }
                     else
                     {

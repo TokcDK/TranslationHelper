@@ -41,7 +41,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                     Format.AddRowData(JsonName, tokenValue,
                         jsonValue.Path
                         + ExtraInfo(jsonValue)
-                        , CheckInput: true);
+                        , isCheckInput: true);
                 }
                 else
                 {

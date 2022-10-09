@@ -278,7 +278,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     {
                         if (OpenFileMode)
                         {
-                            AddRowData(str, string.Empty, CheckInput: false);
+                            AddRowData(str, string.Empty, isCheckInput: false);
                         }
                         else
                         {

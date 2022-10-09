@@ -326,11 +326,11 @@ namespace TranslationHelper.Formats.WolfRPG
                 var context = string.Join("\r\n", contextLines);
                 if (string.IsNullOrEmpty(translation))
                 {
-                    AddRowData(original, context + AdviceInfo(advice), CheckInput: false);
+                    AddRowData(original, context + AdviceInfo(advice), isCheckInput: false);
                 }
                 else
                 {
-                    AddRowData(new[] { original, translation }, context + AdviceInfo(advice), CheckInput: false);
+                    AddRowData(new[] { original, translation }, context + AdviceInfo(advice), isCheckInput: false);
                 }
             }
             else

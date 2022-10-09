@@ -265,79 +265,74 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Add string to table with options
         /// </summary>
-        /// <param name="RowData">original string</param>
-        /// <param name="RowInfo">info about the string</param>
+        /// <param name="rowData">original string</param>
+        /// <param name="rowInfo">info about the string</param>
         /// <returns></returns>
-        internal bool AddRowData(string RowData, string RowInfo = "", bool CheckInput = true)
+        internal bool AddRowData(string rowData, string rowInfo = "", bool isCheckInput = true)
         {
-            return AddRowData(FileName, RowData, RowInfo, CheckInput);
+            return AddRowData(FileName, rowData, rowInfo, isCheckInput);
         }
         /// <summary>
-        /// Add string to table with options. In save mode will replace <paramref name="RowData"/>[0] as translation and will use <paramref name="RowData"/>[1] as default translation 
+        /// Add string to table with options. In save mode will replace <paramref name="rowData"/>[0] as translation and will use <paramref name="rowData"/>[1] as default translation 
         /// </summary>
-        /// <param name="RowData">First value is Original, second value is translation.</param>
-        /// <param name="RowInfo">info about the string</param>
+        /// <param name="rowData">First value is Original, second value is translation.</param>
+        /// <param name="rowInfo">info about the string</param>
         /// <returns></returns>
-        internal bool AddRowData(ref string[] RowData, string RowInfo = "", bool CheckInput = true)
+        internal bool AddRowData(ref string[] rowData, string rowInfo = "", bool isCheckInput = true)
         {
             if (OpenFileMode)
             {
-                return AddRowData(FileName, RowData, RowInfo, CheckInput);
+                return AddRowData(FileName, rowData, rowInfo, isCheckInput);
             }
             else
             {
-                if (CheckInput && !IsValidString(RowData[0])) return false;
+                if (isCheckInput && !IsValidString(rowData[0])) return false;
 
-                return SetTranslation(ref RowData[0], RowData[1]);
+                return SetTranslation(ref rowData[0], rowData[1]);
             }
         }
 
         /// <summary>
         /// Add string to table with options
         /// </summary>
-        /// <param name="RowData">original string</param>
-        /// <param name="RowInfo">info about the string</param>
+        /// <param name="rowData">original string</param>
+        /// <param name="rowInfo">info about the string</param>
         /// <returns></returns>
-        internal bool AddRowData(string[] RowData, string RowInfo = "", bool CheckInput = true)
+        internal bool AddRowData(string[] rowData, string rowInfo = "", bool isCheckInput = true)
         {
-            return AddRowData(FileName, RowData, RowInfo, CheckInput);
+            return AddRowData(FileName, rowData, rowInfo, isCheckInput);
         }
         /// <summary>
         /// Add string to table with options
         /// </summary>
         /// <param name="tablename">file/table name</param>
-        /// <param name="RowData">original string</param>
-        /// <param name="RowInfo">info about the string</param>
-        /// <param name="CheckInput">cheack original string if valid</param>
+        /// <param name="rowData">original string</param>
+        /// <param name="rowInfo">info about the string</param>
+        /// <param name="isCheckInput">cheack original string if valid</param>
         /// <returns></returns>
-        internal bool AddRowData(string tablename, string RowData, string RowInfo = "", bool CheckInput = true)
+        internal bool AddRowData(string tablename, string rowData, string rowInfo = "", bool isCheckInput = true)
         {
-            return AddRowData(tablename, new string[] { RowData }, RowInfo, CheckInput);
+            return AddRowData(tablename, new string[] { rowData }, rowInfo, isCheckInput);
         }
 
         /// <summary>
         /// Add string to table with options
         /// </summary>
         /// <param name="tablename">file/table name</param>
-        /// <param name="RowData">original string</param>
-        /// <param name="RowInfo">info about the string</param>
-        /// <param name="CheckInput">cheack original string if valid</param>
+        /// <param name="rowData">original string</param>
+        /// <param name="rowInfo">info about the string</param>
+        /// <param name="isCheckInput">cheack original string if valid</param>
         /// <returns></returns>
-        internal bool AddRowData(string tablename, string[] RowData, string RowInfo, bool CheckInput = true)
+        internal bool AddRowData(string tablename, string[] rowData, string rowInfo, bool isCheckInput = true)
         {
-            var original = AddRowDataPreAddOriginalStringMod(RowData[0]);
+            var original = AddRowDataPreAddOriginalStringMod(rowData[0]);
 
-            if (CheckInput && !IsValidString(original))
-            {
-                return false;
-            }
+            if (isCheckInput && !IsValidString(original)) return false;
 
             if (AppData.CurrentProject.DontLoadDuplicates)
             {
-                if (AppData.CurrentProject.Hashes == null || AppData.CurrentProject.Hashes.Contains(original))
-                {
-                    return false;
-                }
+                if (AppData.CurrentProject.Hashes == null 
+                    || AppData.CurrentProject.Hashes.Contains(original)) return false;
 
                 // add to hashes when only unique values
                 AppData.CurrentProject.Hashes.TryAdd(original);
@@ -370,13 +365,10 @@ namespace TranslationHelper.Formats
 
             try
             {
-                Data.Rows.Add(RowData);
-                Info.Rows.Add(RowInfo);
+                Data.Rows.Add(rowData);
+                Info.Rows.Add(rowInfo);
             }
-            catch (Exception ex)
-            {
-
-            }
+            catch { }
 
             return true;
         }
@@ -550,9 +542,7 @@ namespace TranslationHelper.Formats
                 string Original;
                 string Translation;
                 if (AppData.CurrentProject.TablesLinesDict.ContainsKey(Original = Row[0] + string.Empty) || (Translation = Row[1] + string.Empty).Length == 0 || Translation == Original)
-                {
-                    continue;
-                }
+                continue;
 
                 AppData.CurrentProject.TablesLinesDict.TryAdd(Original, Translation);
             }
@@ -614,33 +604,25 @@ namespace TranslationHelper.Formats
             foreach (DataTable Table in AppData.CurrentProject.FilesContent.Tables)
             {
                 if (onlyOneTable && Table.TableName != tableName)
-                {
-                    continue;
-                }
+                continue;
 
                 foreach (DataRow Row in Table.Rows)
                 {
                     string Original = (Row[0] + string.Empty);
                     int OriginalLinesCount = Original.GetLinesCount();
                     if (OriginalLinesCount == 1 && AppData.CurrentProject.TablesLinesDict.ContainsKey(Original))
-                    {
-                        continue;
-                    }
+                    continue;
 
                     string Translation = (Row[1] + string.Empty);
                     if (Translation.Length == 0)
-                    {
-                        continue;
-                    }
+                    continue;
 
                     int TranslationLinesCount = Translation.GetLinesCount();
                     bool LinesCountisEqual = OriginalLinesCount == TranslationLinesCount;
                     if (!LinesCountisEqual && makeLinesCountEqual)
                     {
                         if (OriginalLinesCount > Translation.Length)
-                        {
-                            continue;//skip lines where translation is incosistent to original
-                        }
+                        continue;
 
                         Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
                     }
@@ -658,25 +640,19 @@ namespace TranslationHelper.Formats
                         catch (ArgumentException) { }
 
                         if (OriginalLinesCount == 1)
-                        {
-                            continue;//когда одна строка не тратить время на её разбор
-                        }
+                        continue;
                     }
                     else if (Translation != Original && Original == AppData.CurrentProject.TablesLinesDict[Original])
                     {
                         AppData.CurrentProject.TablesLinesDict[Original] = Translation;
                         if (OriginalLinesCount == 1)
-                        {
-                            continue;//когда одна строка не тратить время на её разбор
-                        }
+                        continue;
                     }
 
                     if (!makeLinesCountEqual && OriginalLinesCount > TranslationLinesCount)
                     {
                         if (OriginalLinesCount > Translation.Length)
-                        {
-                            continue;//skip lines where translation is incosistent to original
-                        }
+                        continue;
 
                         Translation = string.Join(Environment.NewLine, FunctionsString.SplitStringByEqualParts(Translation, OriginalLinesCount));
                     }

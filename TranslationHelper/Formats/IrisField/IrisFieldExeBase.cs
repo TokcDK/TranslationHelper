@@ -169,7 +169,7 @@ namespace TranslationHelper.Formats.IrisField
                             }
 
                             var info = "Orig bytes length(" + DefaultEncoding().GetByteCount(str) + ")" + "\r\n" + "Zero bytes length after" + " (" + (/*ffbytesAfter.Count + */zeroffbytesAfter.Count) + ") " + "\r\n" + "Max bytes length" + " (" + maxbytes + ")";
-                            AddRowData(str, info, CheckInput: true);
+                            AddRowData(str, info, isCheckInput: true);
                         }
                         else//save mode
                         {

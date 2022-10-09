@@ -102,7 +102,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             {
                 if (!lineParts[i].IsString) continue;
 
-                AddRowData(lineParts[i].Value, ParseData.Line, CheckInput: false);
+                AddRowData(lineParts[i].Value, ParseData.Line, isCheckInput: false);
             }
 
             Saveline();

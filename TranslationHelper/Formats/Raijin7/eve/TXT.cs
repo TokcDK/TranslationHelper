@@ -63,8 +63,8 @@ namespace TranslationHelper.Formats.Raijin7.eve
                 var RestOfText = ParseData.Reader.ReadToEnd();
                 if (OpenFileMode)
                 {
-                    AddRowData(Values[1], "", CheckInput: true);
-                    AddRowData(RestOfText, "", CheckInput: true);
+                    AddRowData(Values[1], "", isCheckInput: true);
+                    AddRowData(RestOfText, "", isCheckInput: true);
                 }
                 else
                 {

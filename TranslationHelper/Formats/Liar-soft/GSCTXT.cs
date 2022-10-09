@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.Liar_soft
             {
                 if (OpenFileMode)
                 {
-                    AddRowData(str, "", CheckInput: false);
+                    AddRowData(str, "", isCheckInput: false);
                 }
                 else if(SetTranslation(ref str))
                 {

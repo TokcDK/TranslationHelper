@@ -65,11 +65,11 @@ namespace TranslationHelper.Formats.LiveMaker
                     {
                         if (!string.IsNullOrEmpty(translation))
                         {
-                            AddRowData(new string[] { original, translation }, "", CheckInput: false);
+                            AddRowData(new string[] { original, translation }, "", isCheckInput: false);
                         }
                         else
                         {
-                            AddRowData(original, "", CheckInput: false);
+                            AddRowData(original, "", isCheckInput: false);
                         }
                     }
                     else

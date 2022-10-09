@@ -45,11 +45,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 AddToStats();
 
                 bool HasCurCode = CurrentEventCode > -1;
-                Format.AddRowData(tablename: JsonName, RowData: tokenValue, RowInfo: "JsonPath: "
+                Format.AddRowData(tablename: JsonName, rowData: tokenValue, rowInfo: "JsonPath: "
                     + Environment.NewLine
                     + jsonValue.Path
                     + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + RPGMVUtils.GetCodeName(CurrentEventCode) : string.Empty)
-                    , CheckInput: false);
+                    , isCheckInput: false);
             }
             else
             {
@@ -196,11 +196,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 if (Format.OpenFileMode)
                 {
                     bool HasCurCode = true; // message code parse
-                    Format.AddRowData(tablename: JsonName, RowData: fullmessage, RowInfo: "JsonPath: "
+                    Format.AddRowData(tablename: JsonName, rowData: fullmessage, rowInfo: "JsonPath: "
                         + Environment.NewLine
                         + jsonObject.Path
                         + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + RPGMVUtils.GetCodeName(CurrentEventCode) : string.Empty)
-                        , CheckInput: true);
+                        , isCheckInput: true);
 
                     AddToStats();
                 }

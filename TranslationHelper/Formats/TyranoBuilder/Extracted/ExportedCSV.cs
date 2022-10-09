@@ -17,7 +17,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                 var data = ParseData.Line.Split('\t');
                 if (OpenFileMode)
                 {
-                    AddRowData(data[0], "", CheckInput: false);
+                    AddRowData(data[0], "", isCheckInput: false);
                 }
                 else
                 {

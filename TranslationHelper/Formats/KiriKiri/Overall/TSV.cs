@@ -49,7 +49,7 @@ namespace TranslationHelper.Formats.KiriKiri
 
                         if (OpenFileMode)
                         {
-                            AddRowData(dataSubValueArray[1], "Parent array:" + lineArray[0] + ", Member name:" + dataSubValueArray[0], CheckInput: true);
+                            AddRowData(dataSubValueArray[1], "Parent array:" + lineArray[0] + ", Member name:" + dataSubValueArray[0], isCheckInput: true);
                         }
                         else
                         {
@@ -67,7 +67,7 @@ namespace TranslationHelper.Formats.KiriKiri
                     {
                         if (OpenFileMode)
                         {
-                            AddRowData(dataSubValue, "Parent array:" + lineArray[0], CheckInput: true);
+                            AddRowData(dataSubValue, "Parent array:" + lineArray[0], isCheckInput: true);
                         }
                         else
                         {
@@ -84,7 +84,7 @@ namespace TranslationHelper.Formats.KiriKiri
 
             if (OpenFileMode)
             {
-                AddRowData(lineArray[1], "Varname: " + lineArray[0], CheckInput: false);
+                AddRowData(lineArray[1], "Varname: " + lineArray[0], isCheckInput: false);
             }
             else
             {
