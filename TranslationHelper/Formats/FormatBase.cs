@@ -797,9 +797,10 @@ namespace TranslationHelper.Formats
         /// <param name="valueToTranslate">input=original, output=translation</param>
         /// <param name="existsTranslation">control translation value if was loaded translation from file</param>
         /// <returns>true if translation was set and not equal to input original</returns>
-        internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null)
+        internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null, bool isCheckInput = true)
         {
             if (OpenFileMode) return false;
+            if (isCheckInput && !IsValidString(valueToTranslate)) return false;
 
             var isTranslated = false;
             bool letDuplicates = !AppData.CurrentProject.DontLoadDuplicates;
