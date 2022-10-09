@@ -91,7 +91,7 @@ namespace TranslationHelper.Formats.IrisField
 
                     if (OpenFileMode)
                     {
-                        AddRowData(RowData: mergedMessage.TrimEnd(), RowInfo: LastMSGType, CheckInput: true);
+                        AddRowData(rowData: mergedMessage.TrimEnd(), rowInfo: LastMSGType, isCheckInput: true);
                     }
                     else if (IsValidString(mergedMessage))
                     {

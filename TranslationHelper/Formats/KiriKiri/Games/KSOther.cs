@@ -54,7 +54,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     if (!match.Value.StartsWith("emb=")) continue;
 
                     var s = match.Groups[1].Value;
-                    AddRowData(RowData: s, RowInfo: ParseData.Line);
+                    AddRowData(rowData: s, rowInfo: ParseData.Line);
 
                     break;
                 }
