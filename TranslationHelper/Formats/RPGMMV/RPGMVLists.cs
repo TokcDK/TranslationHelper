@@ -37,6 +37,7 @@ namespace TranslationHelper.Formats.RPGMMV
             { 251, "Stop SE" },
             { 261, "Play Movie" },
             { 283, "" },
+            { 284, "Change Parallax Background" },
             //{ 320, "Change name" }, // was ingame npc name text
             { 322, "" },
             { 323, "" },
