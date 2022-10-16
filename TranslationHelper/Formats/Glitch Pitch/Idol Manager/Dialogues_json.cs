@@ -40,7 +40,12 @@ namespace TranslationHelper.Formats.Glitch_Pitch.Idol_Manager
             if (string.IsNullOrWhiteSpace(script.Val)) return ret;
 
             var ot = new[] { script.Val, "" };
-            if (AddRowData(ref ot, rowInfo: script.Type, isCheckInput: false)) ret = true;
+            if (AddRowData(ref ot, rowInfo: script.Type, isCheckInput: false)) 
+            {
+                ret = true;
+
+                if (SaveFileMode) script.Val = ot[0]; // set to translated
+            };
 
             return ret;
         }
