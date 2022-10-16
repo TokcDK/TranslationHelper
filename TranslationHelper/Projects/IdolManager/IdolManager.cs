@@ -14,20 +14,19 @@ namespace TranslationHelper.Projects.IdolManager
         public override string Name => "Idol Manager Mod";
         internal override string FileFilter => $"Idol Manager Mod|*.json";
 
-        public override bool Open()
+        public override bool Open() { return ParseFiles(); }
+
+        private bool ParseFiles()
         {
             var rootDir = Path.GetDirectoryName(Data.AppData.SelectedFilePath);
             var ret = false;
             var dialogsPath = Path.Combine(rootDir, "JSON", "Events", "dialogues.json");
-            if (File.Exists(dialogsPath) && OpenSaveFilesBase(Path.GetDirectoryName(dialogsPath), typeof(Dialogues_json ), mask: "dialogues.json")) ret = true;
+            if (File.Exists(dialogsPath) && OpenSaveFilesBase(Path.GetDirectoryName(dialogsPath), typeof(Dialogues_json), mask: "dialogues.json")) ret = true;
 
             return ret;
         }
 
-        public override bool Save()
-        {
-            throw new NotImplementedException();
-        }
+        public override bool Save() { return ParseFiles(); }
 
         internal override bool IsValid()
         {
