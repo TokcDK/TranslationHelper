@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.Glitch_Pitch.Idol_Manager
         public override string Ext => ".json";
         protected override void ParseFileContent()
         {
-            var infoContent = JsonConvert.DeserializeObject<List<Dialogues_json_s>>(ParseData.Reader.ReadToEnd());
+            var infoContent = JsonConvert.DeserializeObject<List<Dialogues_json_c>>(ParseData.Reader.ReadToEnd());
 
             bool ret = false;
             foreach (var info in infoContent) 

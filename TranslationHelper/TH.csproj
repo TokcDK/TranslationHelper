@@ -115,7 +115,7 @@
     <Compile Include="Data\AppSettings.cs" />
     <Compile Include="Formats\AI6WIN\MESTXT.cs" />
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Dialogues_json.cs" />
-    <Compile Include="Formats\Glitch Pitch\Idol Manager\Dialogues_json_s.cs" />
+    <Compile Include="Formats\Glitch Pitch\Idol Manager\Dialogues_json_c.cs" />
     <Compile Include="Formats\IFormat.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonSystemMZ.cs" />
     <Compile Include="Formats\RPGMMV\RPGMVLists.cs" />

@@ -12,6 +12,7 @@ namespace TranslationHelper.Projects.IdolManager
     internal class IdolManager : ProjectBase
     {
         public override string Name => "Idol Manager Mod";
+        internal override string FileFilter => $"Idol Manager Mod|*.json";
 
         public override bool Open()
         {

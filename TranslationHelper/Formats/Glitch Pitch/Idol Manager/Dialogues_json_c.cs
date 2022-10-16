@@ -8,7 +8,7 @@ using TranslationHelper.Formats.KiriKiri.Games.KSSyntax;
 
 namespace TranslationHelper.Formats.Glitch_Pitch.Idol_Manager
 {
-    public partial class Dialogues_json_s
+    public partial class Dialogues_json_c
     {
         [JsonProperty("latestID")]
         public long LatestId { get; set; }
