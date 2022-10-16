@@ -17,9 +17,9 @@ namespace TranslationHelper.Formats.LiveMaker
         {
             //reading all file and split it by \r\n because streamreader.readline also split by \n
             ParseData.LinesArray = File.ReadAllText(GetOpenFilePath(), ParseStringFileEncoding()).Split(new[] { "\r\n" }, System.StringSplitOptions.None);
-            ParseStringFileLines();
+            ParseFileContent();
         }
-        protected override void ParseStringFileLines()
+        protected override void ParseFileContent()
         {
             var lcnt = 0;
             foreach (var line in ParseData.LinesArray)//iterate all lines

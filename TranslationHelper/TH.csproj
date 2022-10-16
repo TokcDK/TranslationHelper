@@ -114,6 +114,8 @@
     <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
     <Compile Include="Data\AppSettings.cs" />
     <Compile Include="Formats\AI6WIN\MESTXT.cs" />
+    <Compile Include="Formats\Glitch Pitch\Idol Manager\Dialogues_json.cs" />
+    <Compile Include="Formats\Glitch Pitch\Idol Manager\Dialogues_json_s.cs" />
     <Compile Include="Formats\IFormat.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonSystemMZ.cs" />
     <Compile Include="Formats\RPGMMV\RPGMVLists.cs" />
@@ -372,6 +374,7 @@
     <Compile Include="Projects\EAGLS\SCPACKpak.cs" />
     <Compile Include="Projects\EAGLS\EAGLSGame.cs" />
     <Compile Include="Projects\EAGLS\sc_.cs" />
+    <Compile Include="Projects\IdolManager\IdolManager.cs" />
     <Compile Include="Projects\IProject.cs" />
     <Compile Include="Projects\IrisField\HowToBuildAMagnificentNationGame.cs" />
     <Compile Include="Projects\IrisField\HowToMakeTrueSlavesRiseofaDarkEmpireGame.cs" />

@@ -432,25 +432,13 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual bool FilePreOpenActions()
         {
-            if (!string.IsNullOrWhiteSpace(Ext) && Path.GetExtension(GetOpenFilePath()) != Ext) // extension must be same as set, if set
-            {
-                return false;
-            }
+            if (!string.IsNullOrWhiteSpace(Ext) && Path.GetExtension(GetOpenFilePath()) != Ext) return false; // extension must be same as set, if set
 
-            if (SaveFileMode && !AppData.THFilesList.Items.Contains(FileName))
-            {
-                return false;
-            }
+            if (SaveFileMode && !AppData.THFilesList.Items.Contains(FileName)) return false;
 
-            if (OpenFileMode)
-            {
-                AddTables();
-            }
+            if (OpenFileMode) AddTables();
 
-            if (SaveFileMode)
-            {
-                SplitTableCellValuesAndTheirLinesToDictionary(FileName, false, false);
-            }
+            if (SaveFileMode) SplitTableCellValuesAndTheirLinesToDictionary(FileName, false, false);
 
             PreOpenExtraActions();
 

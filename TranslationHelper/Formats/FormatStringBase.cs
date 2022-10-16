@@ -27,7 +27,7 @@ namespace TranslationHelper.Formats
         {
             using (ParseData.Reader = new StreamReader(GetOpenFilePath(), ParseStringFileEncoding()))
             {
-                ParseStringFileLines();
+                ParseFileContent();
             }
         }
 
@@ -70,7 +70,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// opening string file and parse lines
         /// </summary>
-        protected virtual void ParseStringFileLines()
+        protected virtual void ParseFileContent()
         {
             while (ReadLine() != null)
             {

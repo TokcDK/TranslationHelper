@@ -37,7 +37,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
             };
         }
 
-        protected override void ParseStringFileLines()
+        protected override void ParseFileContent()
         {
             var file = ParseData.Reader.ReadToEnd();
             foreach (var pattern in Patterns())

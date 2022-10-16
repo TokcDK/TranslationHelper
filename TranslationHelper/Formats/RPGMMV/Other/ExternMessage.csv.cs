@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.RPGMMV.Other
 {
     internal class ExternMessageCSV : RPGMMVBase
     {
-        protected override void ParseStringFileLines()
+        protected override void ParseFileContent()
         {
             var blocks = ParseData.Reader.ReadToEnd().Split(new[] { "\r\n" }, StringSplitOptions.None);
 
