@@ -263,7 +263,11 @@ namespace TranslationHelper.Projects
 
                 AppData.Main.ProgressInfo(true, (OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
 
-                if (OpenFileMode ? format.Open() : format.Save()) ret = true;
+                bool isOpenSuccess = false;
+                if (OpenFileMode ? (isOpenSuccess = format.Open()) : format.Save()) ret = true;
+
+                // add to bak paths for default backup
+                if (OpenFileMode && isOpenSuccess && !BakPaths.Contains(file.FullName)) BakPaths.Add(file.FullName);
             });
 
             AppData.Main.ProgressInfo(false);
@@ -504,12 +508,19 @@ namespace TranslationHelper.Projects
         }
 
         /// <summary>
+        /// Backup paths
+        /// When empty, will be added all files parsed in OpenSaveFilesBase
+        /// </summary>
+        /// <returns></returns>
+        protected virtual List<string> BakPaths { get; set; } = new List<string>();
+
+        /// <summary>
         /// Must make buckup of project translating original files<br/>if any code exit here else will return false
         /// </summary>
         /// <returns></returns>
         internal virtual bool BakCreate()
         {
-            return BackupRestorePaths(new[] { AppData.SelectedFilePath });
+            return BackupRestorePaths(BakPaths);
         }
 
         /// <summary>
@@ -518,7 +529,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakRestore()
         {
-            return BackupRestorePaths(new[] { AppData.SelectedFilePath }, false);
+            return BackupRestorePaths(BakPaths, false);
         }
 
         /// <summary>
@@ -626,19 +637,19 @@ namespace TranslationHelper.Projects
 
             var ret = false;
 
-            var bakuped = new HashSet<string>();
+            var added = new HashSet<string>();
 
-            foreach (var subpath in paths)
+            foreach (var path in paths)
             {
-                if (string.IsNullOrWhiteSpace(subpath)) continue;
+                if (string.IsNullOrWhiteSpace(path)) continue;
 
-                string path = (subpath.StartsWith(@".\") || subpath.StartsWith(@"..\")) ? Path.GetFullPath(Path.Combine(AppData.CurrentProject.SelectedDir, subpath)) : subpath;
+                string fullPath = (path.StartsWith(@".\") || path.StartsWith(@"..\")) ? Path.GetFullPath(Path.Combine(AppData.CurrentProject.SelectedDir, path)) : path;
 
-                if (string.IsNullOrWhiteSpace(path) || bakuped.Contains(path)) continue;
+                if (string.IsNullOrWhiteSpace(fullPath) || added.Contains(fullPath)) continue;
 
-                bakuped.Add(path);//add path to backuped
+                added.Add(fullPath);//add path to backuped
 
-                var target = path.EndsWith(".bak") ? path.Remove(path.Length - 4, 4) : path;
+                var target = fullPath.EndsWith(".bak") ? fullPath.Remove(fullPath.Length - 4, 4) : fullPath;
                 if (bak)
                 {
                     if ((File.Exists(target) && BackupFile(target)) || (Directory.Exists(target) && BackupDir(target)))
