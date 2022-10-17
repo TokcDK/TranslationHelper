@@ -22,15 +22,19 @@ namespace TranslationHelper.Projects.IdolManager.Mod
         {
             var rootDir = Path.GetDirectoryName(Data.AppData.SelectedFilePath);
             var ret = false;
-            var dialogsPath = Path.Combine(rootDir, "JSON", "Events", "dialogues.json");
-            if (File.Exists(dialogsPath) && OpenSaveFilesBase(Path.GetDirectoryName(dialogsPath), typeof(Dialogues_json), mask: "dialogues.json")) ret = true;
+
+            IEnumerable<FileInfo> FileInfos()
+            {
+                yield return new FileInfo(Path.Combine(rootDir, "JSON", "Events", "dialogues.json")),
+                yield return new FileInfo(Path.Combine(rootDir, "Singles", "marketing.json")),
+            }
+
+            var paths = FileInfos();
 
             var charsDataDir = new DirectoryInfo(Path.Combine(rootDir, "Textures", "IdolPortraits"));
-            if (charsDataDir.Exists)
-            {
-                foreach (var dir in charsDataDir.GetDirectories())
-                    if (OpenSaveFilesBase(dir.FullName, typeof(Params_json), mask: "params.json")) ret = true;
-            }
+            if (charsDataDir.Exists) paths = paths.Concat(charsDataDir.GetFiles("params.json", System.IO.SearchOption.AllDirectories));
+
+            foreach (var path in paths) if (path.Exists && OpenSaveFilesBase(path.DirectoryName, typeof(Dialogues_json), mask: path.Name)) ret = true;
 
             return ret;
         }
