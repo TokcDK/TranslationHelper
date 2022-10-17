@@ -8,7 +8,7 @@ using System.Windows;
 using Newtonsoft.Json;
 using TranslationHelper.Formats.RPGMMV;
 
-namespace TranslationHelper.Formats.Glitch_Pitch.Idol_Manager
+namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Dialogues_json :FormatStringBase
     {

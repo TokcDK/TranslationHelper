@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json;
 
-namespace TranslationHelper.Formats.Glitch_Pitch.Idol_Manager
+namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Params_json : FormatStringBase
     {
@@ -18,11 +18,11 @@ namespace TranslationHelper.Formats.Glitch_Pitch.Idol_Manager
             bool ret = false;
 
             string str = infoContent.FirstName;
-            if (IsParsed(ref str)) { ret = true; infoContent.FirstName = str; }
+            if (IsParsed(ref str)) { ret = true; if (SaveFileMode) infoContent.FirstName = str; }
             str = infoContent.LastName;
-            if (IsParsed(ref str)) { ret = true; infoContent.LastName = str; }
+            if (IsParsed(ref str)) { ret = true; if (SaveFileMode) infoContent.LastName = str; }
             str = infoContent.IntroMessage;
-            if (IsParsed(ref str)) { ret = true; infoContent.IntroMessage = str; }
+            if (IsParsed(ref str)) { ret = true; if (SaveFileMode) infoContent.IntroMessage = str; }
 
             if (SaveFileMode && ret && ParseData.Ret)
                 ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(infoContent));

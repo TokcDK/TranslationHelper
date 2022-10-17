@@ -114,10 +114,12 @@
     <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
     <Compile Include="Data\AppSettings.cs" />
     <Compile Include="Formats\AI6WIN\MESTXT.cs" />
-    <Compile Include="Formats\Glitch Pitch\Idol Manager\Dialogues_json.cs" />
-    <Compile Include="Formats\Glitch Pitch\Idol Manager\Dialogues_json_c.cs" />
-    <Compile Include="Formats\Glitch Pitch\Idol Manager\Params_json.cs" />
-    <Compile Include="Formats\Glitch Pitch\Idol Manager\Params_json_c.cs" />
+    <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Marketing_json.cs" />
+    <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Dialogues_json.cs" />
+    <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Dialogues_json_c.cs" />
+    <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Marketing_json_c.cs" />
+    <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Params_json.cs" />
+    <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Params_json_c.cs" />
     <Compile Include="Formats\IFormat.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonSystemMZ.cs" />
     <Compile Include="Formats\RPGMMV\RPGMVLists.cs" />

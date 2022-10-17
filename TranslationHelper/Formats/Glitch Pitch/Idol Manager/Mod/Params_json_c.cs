@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace TranslationHelper.Formats.Glitch_Pitch.Idol_Manager
+namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Params_json_c
     {

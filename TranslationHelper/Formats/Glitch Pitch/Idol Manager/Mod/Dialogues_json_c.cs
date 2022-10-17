@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TranslationHelper.Formats.KiriKiri.Games.KSSyntax;
 
-namespace TranslationHelper.Formats.Glitch_Pitch.Idol_Manager
+namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     public partial class Dialogues_json_c
     {
