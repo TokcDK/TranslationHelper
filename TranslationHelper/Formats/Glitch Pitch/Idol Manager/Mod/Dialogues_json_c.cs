@@ -10,120 +10,120 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     public partial class Dialogues_json_c
     {
-        [JsonProperty("latestID")]
+        [JsonProperty("latestID", NullValueHandling = NullValueHandling.Ignore)]
         public long LatestId { get; set; }
 
-        [JsonProperty("parent")]
+        [JsonProperty("parent", NullValueHandling = NullValueHandling.Ignore)]
         public string Parent { get; set; }
 
-        [JsonProperty("type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string Type { get; set; }
 
-        [JsonProperty("id")]
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public string Id { get; set; }
 
-        [JsonProperty("location")]
+        [JsonProperty("location", NullValueHandling = NullValueHandling.Ignore)]
         public string Location { get; set; }
 
-        [JsonProperty("music")]
+        [JsonProperty("music", NullValueHandling = NullValueHandling.Ignore)]
         public string Music { get; set; }
 
-        [JsonProperty("random")]
+        [JsonProperty("random", NullValueHandling = NullValueHandling.Ignore)]
         public bool Random { get; set; }
 
-        [JsonProperty("conditions")]
+        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public EffectElement[] Conditions { get; set; }
 
-        [JsonProperty("actors")]
+        [JsonProperty("actors", NullValueHandling = NullValueHandling.Ignore)]
         public Actor[] Actors { get; set; }
 
-        [JsonProperty("setup")]
+        [JsonProperty("setup", NullValueHandling = NullValueHandling.Ignore)]
         public Setup[] Setup { get; set; }
 
-        [JsonProperty("scene_params")]
+        [JsonProperty("scene_params", NullValueHandling = NullValueHandling.Ignore)]
         public SceneParam[] SceneParams { get; set; }
 
-        [JsonProperty("script")]
+        [JsonProperty("script", NullValueHandling = NullValueHandling.Ignore)]
         public Script[] Scripts { get; set; }
     }
     public partial class SceneParam
     {
-        [JsonProperty("parameter")]
+        [JsonProperty("parameter", NullValueHandling = NullValueHandling.Ignore)]
         public string Parameter { get; set; }
 
-        [JsonProperty("formula")]
+        [JsonProperty("formula", NullValueHandling = NullValueHandling.Ignore)]
         public string Formula { get; set; }
     }
 
     public partial class Actor
     {
-        [JsonProperty("type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string Type { get; set; }
 
-        [JsonProperty("tag")]
+        [JsonProperty("tag", NullValueHandling = NullValueHandling.Ignore)]
         public string Tag { get; set; }
 
-        [JsonProperty("conditions")]
+        [JsonProperty("conditions", NullValueHandling = NullValueHandling.Ignore)]
         public ActorCondition[] Conditions { get; set; }
     }
 
     public partial class ActorCondition
     {
-        [JsonProperty("parameter")]
+        [JsonProperty("parameter", NullValueHandling = NullValueHandling.Ignore)]
         public string Parameter { get; set; }
 
-        [JsonProperty("formula")]
+        [JsonProperty("formula", NullValueHandling = NullValueHandling.Ignore)]
         public string Formula { get; set; }
     }
 
     public partial class EffectElement
     {
-        [JsonProperty("parameter")]
+        [JsonProperty("parameter", NullValueHandling = NullValueHandling.Ignore)]
         public string Parameter { get; set; }
 
-        [JsonProperty("formula")]
+        [JsonProperty("formula", NullValueHandling = NullValueHandling.Ignore)]
         public string Formula { get; set; }
 
-        [JsonProperty("target")]
+        [JsonProperty("target", NullValueHandling = NullValueHandling.Ignore)]
         public string Target { get; set; }
     }
 
     public partial class Script
     {
-        [JsonProperty("id")]
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public long Id { get; set; }
 
-        [JsonProperty("type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string Type { get; set; }
 
-        [JsonProperty("val")]
+        [JsonProperty("val", NullValueHandling = NullValueHandling.Ignore)]
         public string Val { get; set; }
 
-        [JsonProperty("actor")]
+        [JsonProperty("actor", NullValueHandling = NullValueHandling.Ignore)]
         public string Actor { get; set; }
 
-        [JsonProperty("effect")]
+        [JsonProperty("effect", NullValueHandling = NullValueHandling.Ignore)]
         public EffectElement[] Effect { get; set; }
 
-        [JsonProperty("requirements")]
+        [JsonProperty("requirements", NullValueHandling = NullValueHandling.Ignore)]
         public EffectElement[] Requirements { get; set; }
 
-        [JsonProperty("script")]
+        [JsonProperty("script", NullValueHandling = NullValueHandling.Ignore)]
         public Script[] Scripts { get; set; }
     }
 
     public partial class Setup
     {
-        [JsonProperty("tag")]
+        [JsonProperty("tag", NullValueHandling = NullValueHandling.Ignore)]
         public string Tag { get; set; }
 
-        [JsonProperty("posX")]
+        [JsonProperty("posX", NullValueHandling = NullValueHandling.Ignore)]
         public long PosX { get; set; }
 
-        [JsonProperty("facing")]
+        [JsonProperty("facing", NullValueHandling = NullValueHandling.Ignore)]
         public string Facing { get; set; }
 
-        [JsonProperty("startHidden")]
+        [JsonProperty("startHidden", NullValueHandling = NullValueHandling.Ignore)]
         public bool StartHidden { get; set; }
 
         [JsonProperty("sprite", NullValueHandling = NullValueHandling.Ignore)]

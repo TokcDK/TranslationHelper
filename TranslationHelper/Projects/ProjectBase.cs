@@ -264,7 +264,13 @@ namespace TranslationHelper.Projects
                 AppData.Main.ProgressInfo(true, (OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
 
                 bool isOpenSuccess = false;
-                if (OpenFileMode ? (isOpenSuccess = format.Open()) : format.Save()) ret = true;
+                try
+                {
+                    if (OpenFileMode ? (isOpenSuccess = format.Open()) : format.Save()) ret = true;
+                }
+                catch (Exception ex)
+                { 
+                }
 
                 // add to bak paths for default backup
                 if (OpenFileMode && isOpenSuccess && !BakPaths.Contains(file.FullName)) BakPaths.Add(file.FullName);

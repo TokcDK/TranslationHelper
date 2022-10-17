@@ -9,52 +9,52 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Params_json_c
     {
-        [JsonProperty("left")]
+        [JsonProperty("left", NullValueHandling = NullValueHandling.Ignore)]
         public long Left { get; set; }
 
-        [JsonProperty("top")]
+        [JsonProperty("top", NullValueHandling = NullValueHandling.Ignore)]
         public long Top { get; set; }
 
-        [JsonProperty("ignore_body")]
-        public long[] IgnoreBody { get; set; }
-
-        [JsonProperty("first_name")]
+        [JsonProperty("first_name", NullValueHandling = NullValueHandling.Ignore)]
         public string FirstName { get; set; }
 
-        [JsonProperty("last_name")]
+        [JsonProperty("last_name", NullValueHandling = NullValueHandling.Ignore)]
         public string LastName { get; set; }
 
-        [JsonProperty("unique")]
+        [JsonProperty("unique", NullValueHandling = NullValueHandling.Ignore)]
         public bool Unique { get; set; }
 
-        [JsonProperty("unique_id")]
+        [JsonProperty("unique_id", NullValueHandling = NullValueHandling.Ignore)]
         public string UniqueId { get; set; }
 
-        [JsonProperty("age")]
+        [JsonProperty("age", NullValueHandling = NullValueHandling.Ignore)]
         public long Age { get; set; }
 
-        [JsonProperty("trait")]
+        [JsonProperty("trait", NullValueHandling = NullValueHandling.Ignore)]
         public object Trait { get; set; } // can be string or integer
 
-        [JsonProperty("intro_message")]
+        [JsonProperty("intro_message", NullValueHandling = NullValueHandling.Ignore)]
         public string IntroMessage { get; set; }
 
-        [JsonProperty("value")]
+        [JsonProperty("value", NullValueHandling = NullValueHandling.Ignore)]
         public string Value { get; set; }
 
-        [JsonProperty("stats")]
+        [JsonProperty("ignore_body", NullValueHandling = NullValueHandling.Ignore)]
+        public long[] IgnoreBody { get; set; }
+
+        [JsonProperty("stats", NullValueHandling = NullValueHandling.Ignore)]
         public Stat[] Stats { get; set; }
     }
 
     public partial class Stat
     {
-        [JsonProperty("type")]
+        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public string Type { get; set; }
 
-        [JsonProperty("val")]
+        [JsonProperty("val", NullValueHandling = NullValueHandling.Ignore)]
         public long Val { get; set; }
 
-        [JsonProperty("potential")]
+        [JsonProperty("potential", NullValueHandling = NullValueHandling.Ignore)]
         public long Potential { get; set; }
     }
 }
