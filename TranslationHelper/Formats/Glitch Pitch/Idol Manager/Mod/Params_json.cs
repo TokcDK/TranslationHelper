@@ -13,11 +13,16 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
         public override string Ext => ".json";
         protected override void ParseFileContent()
         {
-            var infoContent = JsonConvert.DeserializeObject<Params_json_c>(ParseData.Reader.ReadToEnd());
+            var infoContent = JsonConvert.DeserializeObject<Params_json_c>(ParseData.Reader.ReadToEnd(), new JsonSerializerSettings()
+            { 
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            });
 
             bool ret = false;
 
-            string str = infoContent.FirstName;
+            string str = null;
+
+            str = infoContent.FirstName;
             if (IsParsed(ref str, nameof(infoContent.FirstName))) { ret = true; if (SaveFileMode) infoContent.FirstName = str; }
             str = infoContent.LastName;
             if (IsParsed(ref str, nameof(infoContent.LastName))) { ret = true; if (SaveFileMode) infoContent.LastName = str; }

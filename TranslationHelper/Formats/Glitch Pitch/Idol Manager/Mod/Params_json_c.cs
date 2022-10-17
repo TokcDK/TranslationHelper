@@ -34,7 +34,7 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
         public long Age { get; set; }
 
         [JsonProperty("trait")]
-        public string Trait { get; set; }
+        public object Trait { get; set; } // can be string or integer
 
         [JsonProperty("intro_message")]
         public string IntroMessage { get; set; }
