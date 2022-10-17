@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 using Alphaleonis.Win32.Filesystem;
+using Microsoft.Scripting.Utils;
 using TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod;
 
 namespace TranslationHelper.Projects.IdolManager.Mod
@@ -23,20 +21,27 @@ namespace TranslationHelper.Projects.IdolManager.Mod
             var rootDir = Path.GetDirectoryName(Data.AppData.SelectedFilePath);
             var ret = false;
 
-            IEnumerable<FileInfo> FileInfos()
-            {
-                yield return new FileInfo(Path.Combine(rootDir, "JSON", "Events", "dialogues.json"));
-                yield return new FileInfo(Path.Combine(rootDir, "Singles", "marketing.json"));
-            }
+            var infos = FileInfos(rootDir).Concat(ParamInfos(rootDir));
 
-            var paths = FileInfos();
-
-            var charsDataDir = new DirectoryInfo(Path.Combine(rootDir, "Textures", "IdolPortraits"));
-            if (charsDataDir.Exists) paths = paths.Concat(charsDataDir.GetFiles("params.json", System.IO.SearchOption.AllDirectories));
-
-            foreach (var path in paths) if (path.Exists && OpenSaveFilesBase(path.DirectoryName, typeof(Dialogues_json), mask: path.Name)) ret = true;
+            foreach (var info in infos) if (info.i.Exists && OpenSaveFilesBase(info.i.DirectoryName, info.t, mask: info.i.Name)) ret = true;
 
             return ret;
+        }
+
+        IEnumerable<(FileInfo i, Type t)> FileInfos(string rootDir)
+        {
+            yield return (new FileInfo(Path.Combine(rootDir, "JSON", "Events", "dialogues.json")), typeof(Dialogues_json));
+            yield return (new FileInfo(Path.Combine(rootDir, "Singles", "marketing.json")), typeof(Marketing_json));
+        }
+
+        IEnumerable<(FileInfo i, Type t)> ParamInfos(string rootDir)
+        {
+            var charsDataDir = new DirectoryInfo(Path.Combine(rootDir, "Textures", "IdolPortraits"));
+            if (charsDataDir.Exists) yield break;
+            foreach (var i in charsDataDir.EnumerateFiles("params.json", System.IO.SearchOption.AllDirectories))
+            {
+                yield return (i, typeof(Params_json));
+            }
         }
 
         public override bool Save() { return ParseFiles(); }
