@@ -37,7 +37,7 @@ namespace TranslationHelper.Projects.IdolManager.Mod
         IEnumerable<(FileInfo i, Type t)> ParamInfos(string rootDir)
         {
             var charsDataDir = new DirectoryInfo(Path.Combine(rootDir, "Textures", "IdolPortraits"));
-            if (charsDataDir.Exists) yield break;
+            if (!charsDataDir.Exists) yield break;
             foreach (var i in charsDataDir.EnumerateFiles("params.json", System.IO.SearchOption.AllDirectories))
             {
                 yield return (i, typeof(Params_json));
