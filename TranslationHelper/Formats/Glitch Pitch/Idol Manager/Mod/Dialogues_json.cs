@@ -29,7 +29,7 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
             }
 
             if (SaveFileMode && ret && ParseData.Ret) 
-                ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(infoContent));
+                ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(infoContent, Formatting.Indented));
         }
 
         private bool ReadScriptStrings(Script script)

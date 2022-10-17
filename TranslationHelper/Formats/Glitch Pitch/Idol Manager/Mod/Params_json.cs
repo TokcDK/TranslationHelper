@@ -30,7 +30,7 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
             if (IsParsed(ref str, nameof(infoContent.IntroMessage))) { ret = true; if (SaveFileMode) infoContent.IntroMessage = str; }
 
             if (SaveFileMode && ret && ParseData.Ret)
-                ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(infoContent));
+                ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(infoContent, Formatting.Indented));
         }
         private bool IsParsed(ref string stringToTranslate, string info = "")
         {
