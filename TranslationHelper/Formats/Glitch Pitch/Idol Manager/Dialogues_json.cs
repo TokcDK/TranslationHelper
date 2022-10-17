@@ -22,8 +22,11 @@ namespace TranslationHelper.Formats.Glitch_Pitch.Idol_Manager
             {
                 if (info.Scripts == null) continue;
 
-                foreach (var script in info.Scripts) if (ReadScriptStrings(script)) ret = true; 
+                foreach (var script in info.Scripts) if (ReadScriptStrings(script)) ret = true;
             }
+
+            if (SaveFileMode && ret && ParseData.Ret) 
+                ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(infoContent));
         }
 
         private bool ReadScriptStrings(Script script)
