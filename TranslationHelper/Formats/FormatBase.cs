@@ -288,7 +288,7 @@ namespace TranslationHelper.Formats
             {
                 if (isCheckInput && !IsValidString(rowData[0])) return false;
 
-                return SetTranslation(ref rowData[0], rowData[1]);
+                return SetTranslation(ref rowData[0], rowData[1], isCheckInput);
             }
         }
 
