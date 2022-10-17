@@ -31,7 +31,7 @@ namespace TranslationHelper.Projects.IdolManager.Mod
         IEnumerable<(FileInfo i, Type t)> FileInfos(string rootDir)
         {
             yield return (new FileInfo(Path.Combine(rootDir, "JSON", "Events", "dialogues.json")), typeof(Dialogues_json));
-            yield return (new FileInfo(Path.Combine(rootDir, "Singles", "marketing.json")), typeof(Marketing_json));
+            yield return (new FileInfo(Path.Combine(rootDir, "JSON", "Singles", "marketing.json")), typeof(Marketing_json));
         }
 
         IEnumerable<(FileInfo i, Type t)> ParamInfos(string rootDir)

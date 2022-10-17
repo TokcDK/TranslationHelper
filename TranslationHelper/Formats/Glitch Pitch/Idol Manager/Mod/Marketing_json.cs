@@ -22,21 +22,21 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
             foreach (var info in infoContent)
             {
                 string str = info.Title;
-                if (IsParsed(ref str)) { ret = true; if (SaveFileMode) info.Title = str; }
+                if (IsParsed(ref str, nameof(info.Title))) { ret = true; if (SaveFileMode) info.Title = str; }
                 str = info.Description;
-                if (IsParsed(ref str)) { ret = true; if (SaveFileMode) info.Description = str; }
+                if (IsParsed(ref str, nameof(info.Description))) { ret = true; if (SaveFileMode) info.Description = str; }
             }
 
             if (SaveFileMode && ret && ParseData.Ret) 
                 ParseData.ResultForWrite.Append(JsonConvert.SerializeObject(infoContent));
         }
 
-        private bool IsParsed(ref string stringToTranslate)
+        private bool IsParsed(ref string stringToTranslate, string info="")
         {
             if (string.IsNullOrEmpty(stringToTranslate)) return false;
 
             var ot = new[] { stringToTranslate, "" };
-            if (AddRowData(ref ot, rowInfo: nameof(stringToTranslate), isCheckInput: false))
+            if (AddRowData(ref ot, rowInfo: info, isCheckInput: false))
             {
                 if (SaveFileMode) stringToTranslate = ot[0]; // set to translated
 
