@@ -25,8 +25,8 @@ namespace TranslationHelper.Projects.IdolManager.Mod
 
             IEnumerable<FileInfo> FileInfos()
             {
-                yield return new FileInfo(Path.Combine(rootDir, "JSON", "Events", "dialogues.json")),
-                yield return new FileInfo(Path.Combine(rootDir, "Singles", "marketing.json")),
+                yield return new FileInfo(Path.Combine(rootDir, "JSON", "Events", "dialogues.json"));
+                yield return new FileInfo(Path.Combine(rootDir, "Singles", "marketing.json"));
             }
 
             var paths = FileInfos();
