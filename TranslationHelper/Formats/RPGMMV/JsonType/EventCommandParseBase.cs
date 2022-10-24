@@ -1,12 +1,64 @@
-﻿using Newtonsoft.Json.Linq;
-using RPGMVJsonParser;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using Command = RPGMVJsonParser.Command;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
+    internal interface IParametersParser
+    {
+        bool Parse(ParametersData parametersData);
+    }
+
+    internal class SoR_GabWindow : IParametersParser
+    {
+        public bool Parse(ParametersData parametersData)
+        {
+            if (parametersData.ParentCommand.Parameters.Length != 4) return false;
+            if (!(parametersData.ParentCommand.Parameters[1] is string s)) return false;
+            if (!string.Equals(s, "PushGab")) return false;
+            if (!(parametersData.ParentCommand.Parameters[3] is JToken t)) return false;
+
+            var parameterdata = new JParameterData
+            {
+                Token = t,
+                ParameterIndex = parametersData.ParameterIndex,
+                ParentCommand = parametersData.ParentCommand,
+                ParentInfo = parametersData.ParentInfo
+            };
+
+            try
+            {
+                parametersData.Parser.ParseJToken(parameterdata);
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    internal class ParametersData
+    {
+        public int ParameterIndex;
+        public Command ParentCommand;
+        public string ParentInfo;
+
+        public EventCommandParseBase Parser;
+    }
+
+    internal class JParameterData
+    {
+        public JToken Token;
+        public int ParameterIndex;
+        public Command ParentCommand;
+        public string ParentInfo;
+    }
+
     internal class EventCommandParseBase : JsonTypeBase
     {
         static Dictionary<int, string> ExcludedCodes { get => RPGMVLists.ExcludedCodes; set => RPGMVLists.ExcludedCodes = value; }
@@ -41,41 +93,108 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 else
                 {
                     int extra;
-                    if (message.Any()) { extra = ParseMessage(commands, message, info, c); c += extra; commandsCount += extra; };
+                    if (message.Count > 0) { extra = ParseMessage(commands, message, info, c); c += extra; commandsCount += extra; };
 
                     if (ExcludedCodes.ContainsKey(command.Code)) continue;
                     if (command.Parameters == null) continue;
 
+                    // try parse by parameters parsers
+                    bool isParsedByParametersParser = false;
+                    var parametersParsers = new List<IParametersParser>
+                    {
+                        new SoR_GabWindow(),
+                    };
+                    var data = new ParametersData
+                    {
+                        ParameterIndex = -1,
+                        ParentCommand = command,
+                        Parser = this
+                    };
+                    foreach (var parser in parametersParsers)
+                    {
+                        if (!parser.Parse(data)) continue;
+
+                        isParsedByParametersParser = true;
+                        break;
+                    }
+                    if (isParsedByParametersParser) continue;
+
+                    // general parse
                     int parametersCount = command.Parameters.Length;
                     for (int i = 0; i < parametersCount; i++)
                     {
-                        if (command.Parameters[i] is JArray a)
-                        {
-                            int count = a.Count;
-                            for (int i1 = 0; i1 < count; i1++)
-                            {
-                                if (a[i1] is JValue v) { } else continue;
-                                if (v.Value is string s) { } else continue;
-
-                                if (AddRowData(ref s, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMVUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}") && SaveFileMode)
-                                {
-                                    v.Value = s;
-                                }
-                            }
-                        }
-                        else if (command.Parameters[i] is string s)
+                        if (command.Parameters[i] is string s)
                         {
                             if (AddRowData(ref s, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMVUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}") && SaveFileMode)
                             {
                                 command.Parameters[i] = s;
                             }
                         }
+                        else if (command.Parameters[i] is JToken t)
+                        {
+                            var parameterdata = new JParameterData
+                            {
+                                Token = t,
+                                ParameterIndex = i,
+                                ParentCommand = command,
+                                ParentInfo = info
+                            };
+
+                            ParseJToken(parameterdata);
+                        }
                     }
                 }
-
             }
 
-            if (message.Any()) ParseMessage(commands, message, info, commandsCount);
+            if (message.Count > 0) ParseMessage(commands, message, info, commandsCount);
+        }
+
+        internal void ParseJToken(JParameterData data)
+        {
+            var jsonToken = data.Token;
+
+            if (jsonToken == null) return;
+
+            switch (jsonToken)
+            {
+                case JValue value:
+                    {
+                        if (!(value.Value is string s)) break;
+
+                        // add string in open mode and continue
+                        if (!AddRowData(ref s, SaveFileMode ? "" : data.ParentInfo + $"\r\nCommand code: {data.ParentCommand.Code}{RPGMVUtils.GetCodeName(data.ParentCommand.Code)}\r\n Parameter #: {data.ParameterIndex}") || !SaveFileMode) break;
+
+                        // set translation in save mode
+                        value.Value = s;
+
+                        break;
+                    }
+
+                case JObject jsonObject:
+                    {
+                        foreach (var property in jsonObject.Properties())
+                        {
+                            data.Token = property.Value;
+                            ParseJToken(data);
+                        }
+                        break;
+                    }
+
+                case JArray jsonArray:
+                    {
+                        int count = jsonArray.Count;
+                        for (int aIndex = 0; aIndex < count; aIndex++)
+                        {
+                            data.Token = jsonArray[aIndex];
+                            ParseJToken(data);
+                        }
+
+                        break;
+                    }
+
+                default:
+                    break;
+            }
         }
 
         /// <summary>
