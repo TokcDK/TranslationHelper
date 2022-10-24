@@ -76,6 +76,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             }
         }
 
+        readonly List<IParametersParser> ParametersParsers = new List<IParametersParser>
+        {
+            new SoR_GabWindow(),
+        };
+
         protected void ParseCommandStrings(List<Command> commands, string info)
         {
             bool isSave = SaveFileMode;
@@ -101,17 +106,13 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 
                     // try parse by parameters parsers
                     bool isParsedByParametersParser = false;
-                    var parametersParsers = new List<IParametersParser>
-                    {
-                        new SoR_GabWindow(),
-                    };
                     var data = new ParametersData
                     {
                         ParameterIndex = -1,
                         ParentCommand = command,
                         Parser = this
                     };
-                    foreach (var parser in parametersParsers)
+                    foreach (var parser in ParametersParsers)
                     {
                         if (!parser.Parse(data)) continue;
 
