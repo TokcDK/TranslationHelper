@@ -61,18 +61,18 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 
     internal class EventCommandParseBase : JsonTypeBase
     {
-        static Dictionary<int, string> ExcludedCodes { get => RPGMVLists.ExcludedCodes; set => RPGMVLists.ExcludedCodes = value; }
+        static Dictionary<int, string> SkipCodes { get => RPGMVLists.ExcludedCodes; set => RPGMVLists.ExcludedCodes = value; }
 
         static int SkipCodesCount = -1;
         public EventCommandParseBase()
         {
             if (AppData.CurrentProject == null) return;
 
-            var excludedCodesCount = ExcludedCodes.Count;
+            var excludedCodesCount = SkipCodes.Count;
             if (SkipCodesCount != excludedCodesCount)
             {
                 SkipCodesCount = excludedCodesCount;
-                RPGMVUtils.GetSkipCodes(ExcludedCodes);
+                RPGMVUtils.GetSkipCodes(SkipCodes);
             }
         }
 
@@ -95,8 +95,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                     int extra;
                     if (message.Count > 0) { extra = ParseMessage(commands, message, info, c); c += extra; commandsCount += extra; };
 
-                    if (ExcludedCodes.ContainsKey(command.Code)) continue;
+                    if (SkipCodes.ContainsKey(command.Code)) continue;
                     if (command.Parameters == null) continue;
+                    if (command.Parameters.Length == 0) continue;
 
                     // try parse by parameters parsers
                     bool isParsedByParametersParser = false;
