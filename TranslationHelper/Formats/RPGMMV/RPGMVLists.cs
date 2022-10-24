@@ -17,6 +17,7 @@ namespace TranslationHelper.Formats.RPGMMV
             { 44, "" },
             { 45, "" },
             { 118, "label" },
+            { 119, "jump to label" }, // must be skipped both with 118
             //{ 122, "Control variables" },
             { 123, "" },
             { 132, "" },
@@ -43,7 +44,7 @@ namespace TranslationHelper.Formats.RPGMMV
             { 323, "" },
             //{ 355, "Script command" }, // can contain text
             { 356, "" },
-            { 357, "Plugin command" },
+            //{ 357, "Plugin command" }, // sometime here can be text popup when activate npc
             { 302, "" },
             { 405, "" },
             { 657, "Plugin command" },
