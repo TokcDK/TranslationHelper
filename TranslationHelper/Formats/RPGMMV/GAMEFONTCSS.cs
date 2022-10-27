@@ -1,7 +1,6 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
-using TranslationHelper.Data;
-using TranslationHelper.Formats.RPGMMV.JsonParser;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
@@ -15,20 +14,14 @@ namespace TranslationHelper.Formats.RPGMMV
         {
             if (ParseData.IsComment)
             {
-                if (ParseData.TrimmedLine.EndsWith("*/")) //comment section end
-                {
-                    ParseData.IsComment = false;
-                }
+                if (ParseData.TrimmedLine.EndsWith("*/")) ParseData.IsComment = false; //comment section end
             }
             else
             {
                 Match r;
                 if (ParseData.TrimmedLine.StartsWith("/*")) //comment section start
                 {
-                    if (!ParseData.TrimmedLine.EndsWith("*/"))
-                    {
-                        ParseData.IsComment = true;
-                    }
+                    if (!ParseData.TrimmedLine.EndsWith("*/")) ParseData.IsComment = true;
                 }
                 else if (ParseData.TrimmedLine.StartsWith("//")) //comment
                 {
@@ -45,7 +38,7 @@ namespace TranslationHelper.Formats.RPGMMV
                     {
                         string str = r.Result("$1");
                         var trans = str;
-                        if (SetTranslation(ref trans))
+                        if (SetTranslation(ref trans, isCheckInput: false) && ParseFont(str, ref trans))
                         {
                             int i;
                             ParseData.Line = ParseData.Line
@@ -63,6 +56,65 @@ namespace TranslationHelper.Formats.RPGMMV
             SaveModeAddLine();
 
             return KeywordActionAfter.ReadToEnd;
+        }
+
+        /// <summary>
+        /// copy font file into rpfmv fonts dir and set font name as value if exists
+        /// </summary>
+        /// <param name="orig"></param>
+        /// <param name="trans"></param>
+        /// <returns></returns>
+        private bool ParseFont(string orig, ref string trans)
+        {
+            var fullPath = "";
+
+            ParseData.Ret = false;
+
+            try
+            {
+                fullPath = Path.GetFullPath(trans.Contains("%") ? Environment.ExpandEnvironmentVariables(trans).Replace("\\", "/") : trans);
+            }
+            catch
+            {
+                return ParseData.Ret;
+            }
+
+            var targetFontsDirPath = Path.Combine(Data.AppData.CurrentProject.SelectedGameDir, "www", "Fonts");
+
+            if (!Directory.Exists(Path.GetDirectoryName(targetFontsDirPath))) return ParseData.Ret;
+
+            var fileName = Path.GetFileName(fullPath);
+            bool isFileName = string.Equals(fileName, fullPath, StringComparison.InvariantCultureIgnoreCase);
+
+            bool isExists = File.Exists(fullPath);
+            bool isBreak = (!isFileName && isExists) || (isFileName && !isExists);
+            foreach (var path in new[]
+            {
+                "%WinDir%/fonts/",
+                "%LocalAppData%/Microsoft/Windows/Fonts/"
+            })
+            {
+                if (isBreak) break;
+
+                var searchFontFilePath = Path.Combine(Environment.ExpandEnvironmentVariables(path), fileName);
+                if (!File.Exists(searchFontFilePath)) continue;
+
+                fullPath = searchFontFilePath;
+            }
+
+            ParseData.Ret = File.Exists(fullPath) && string.Equals(Path.GetExtension(fullPath), ".ttf", StringComparison.InvariantCultureIgnoreCase);
+
+            if (!ParseData.Ret) return false;
+
+            var fontFileName = Path.GetFileName(fullPath);
+
+            trans = fontFileName;
+
+            if (File.Exists(targetFontsDirPath)) return true;
+
+            File.Copy(fullPath, Path.Combine(targetFontsDirPath, fontFileName));
+
+            return ParseData.Ret;
         }
 
         protected override bool TrySave()
