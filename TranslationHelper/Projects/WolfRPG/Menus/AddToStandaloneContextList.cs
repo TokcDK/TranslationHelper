@@ -8,13 +8,13 @@ using TranslationHelper.Menus.ProjectMenus;
 
 namespace TranslationHelper.Projects.WolfRPG.Menus
 {
-    class AddToStandaloneContextList : IGridItemMenu
+    class AddToStandaloneContextList : IFileRowItemMenu
     {
         public string Text => "Add standalone context";
 
         public string Description => "Adds entered context as standalone. Each string using the context path will be moved in separated text block in patch in time of open/save";
 
-        public string Category => "";
+        public string CategoryName => "";
 
         public static string BeginStringMarker = "> BEGIN STRING\r\n";
         public static string EndStringMarker = "\r\n> END STRING\r\n";

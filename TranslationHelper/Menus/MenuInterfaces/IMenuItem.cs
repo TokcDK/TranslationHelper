@@ -3,7 +3,7 @@
 namespace TranslationHelper.Menus.ProjectMenus
 {
 
-    public interface IProjectMenu
+    public interface IMenuItem
     {
         /// <summary>
         /// Menu item text
@@ -19,7 +19,7 @@ namespace TranslationHelper.Menus.ProjectMenus
         /// Submenu list name where it must be placed.
         /// Set to null to place as one of main menu.
         /// </summary>
-        string Category { get; }
+        string CategoryName { get; }
 
         /// <summary>
         /// Menu item action

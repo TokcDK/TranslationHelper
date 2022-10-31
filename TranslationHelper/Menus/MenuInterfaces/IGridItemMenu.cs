@@ -3,7 +3,7 @@
 namespace TranslationHelper.Menus.ProjectMenus
 {
 
-    public interface IGridItemMenu: IProjectMenu
+    public interface IFileRowItemMenu: IMenuItem
     {
     }
 }

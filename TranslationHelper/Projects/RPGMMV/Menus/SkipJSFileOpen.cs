@@ -11,7 +11,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 
         public string Description => "Open Skip.js file in text editor";
 
-        public string Category => "";
+        public string CategoryName => "";
 
         public void OnClick(object sender, EventArgs e)
         {

@@ -747,8 +747,8 @@ namespace TranslationHelper.Projects
         /// </summary>
         internal virtual void AfterTranslationWriteActions() { System.Diagnostics.Process.Start("explorer.exe", AppData.CurrentProject.SelectedDir); }
 
-        internal virtual List<IProjectMenu> FilesListItemMenusList() { return new List<IProjectMenu>(); }
+        internal virtual List<IMenuItem> FilesListItemMenusList() { return new List<IMenuItem>(); }
 
-        internal virtual List<IProjectMenu> GridItemMenusList() { return new List<IProjectMenu>(); }
+        internal virtual List<IMenuItem> GridItemMenusList() { return new List<IMenuItem>(); }
     }
 }

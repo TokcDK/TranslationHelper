@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 
         public string Description => "Open skipcodes.txt file in project dir to add codes which need to be skipped for the project";
 
-        public string Category => "";
+        public string CategoryName => "";
 
         public void OnClick(object sender, EventArgs e)
         {

@@ -347,9 +347,10 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Menus\MenusCreator.cs" />
     <Compile Include="Menus\MenusExtensions.cs" />
-    <Compile Include="Menus\ProjectMenus\IGridItemMenu.cs" />
-    <Compile Include="Menus\ProjectMenus\IProjectMenu.cs" />
-    <Compile Include="Menus\ProjectMenus\IFileListItemMenu.cs" />
+    <Compile Include="Menus\MenuInterfaces\IGridItemMenu.cs" />
+    <Compile Include="Menus\MenuInterfaces\IMainMenuItem.cs" />
+    <Compile Include="Menus\MenuInterfaces\IMenuItem.cs" />
+    <Compile Include="Menus\MenuInterfaces\IFileListItemMenu.cs" />
     <Compile Include="Old elements\DoubleBufferedListBox.cs" />
     <Compile Include="Functions\FunctionsAutoOperations.cs" />
     <Compile Include="Functions\FunctionsCopyPaste.cs" />
@@ -527,6 +528,8 @@
     <Folder Include="Costura32\" />
     <Folder Include="Costura64\" />
     <Folder Include="Formats\KiriKiri\DungeonAndBrideTest\" />
+    <Folder Include="Menus\FilesListMenus\" />
+    <Folder Include="Menus\MainMenus\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

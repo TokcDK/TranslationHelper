@@ -14,7 +14,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 
         public string Description => T._("Add selected item to Skip.js file");
 
-        public string Category => "";
+        public string CategoryName => "";
 
         public void OnClick(object sender, EventArgs e)
         {
