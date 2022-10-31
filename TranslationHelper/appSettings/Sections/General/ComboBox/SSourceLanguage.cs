@@ -25,8 +25,7 @@ namespace TranslationHelper.INISettings
         {
             if (!SetObject)
             {
-                AppSettings.OnlineTranslationSourceLanguage = AppData.Settings.SourceLanguageComboBox.SelectedItem.ToString();
-                
+                AppSettings.OnlineTranslationSourceLanguage = AppData.Settings.SourceLanguageComboBox.SelectedItem.ToString();                
             }
             else
             {
