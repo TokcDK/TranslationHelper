@@ -79,18 +79,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             try
             {
-                var origTranslation = SelectedRow[ColumnIndexTranslation] + "";
-                if (origTranslation.Length == 0) return false;
+                var translation = SelectedRow[ColumnIndexTranslation] + "";
+                if (translation.Length == 0) return false;
 
                 if (
-                    !origTranslation.Contains("\"")
-                    && !origTranslation.Contains("''")
-                    && !origTranslation.Contains("“")
-                    && !origTranslation.Contains("”")
+                    !translation.Contains("\"")
+                    && !translation.Contains("''")
+                    && !translation.Contains("“")
+                    && !translation.Contains("”")
                     ) return false;
 
                 string originalValue = SelectedRow[ColumnIndexOriginal] as string;
-                if (string.Equals(origTranslation, originalValue)) return false;
 
                 var frontQuote = string.Empty;
                 var backQuote = string.Empty;
@@ -105,17 +104,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     frontQuote = "『";
                     backQuote = "』";
                 }
-                else // no jp qotes in original
+                else // no jp quotes in original
                 {
-                    isNoQuotes = !originalValue.Contains("\""); // original must not contain quote
+                    if (originalValue.Contains("\"")) return false; // skip when original must contains standard quote
+
+                    isNoQuotes = true; 
                 }
 
-                var mc = Regex.Matches(origTranslation, "(\"|('')|“|”)");
-                var maxInd = origTranslation.Length - 1;
+                var mc = Regex.Matches(translation, "(\"|('')|“|”)");
+                var maxInd = translation.Length - 1;
 
-                var result = origTranslation;
-                var mcCount = mc.Count;
-                for (int i = mcCount - 1; i >= 0; i--)
+                var result = translation;
+                var max = mc.Count - 1;
+                bool changed = false;
+                for (int i = max; i >= 0; i--)
                 {
                     var val = mc[i];
                     int ind = val.Index;
@@ -124,25 +126,38 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     if (isNoQuotes)
                     {
                         result = result.Remove(ind, valLength).Insert(ind, string.Empty);
+                        changed = true;
                         continue;
                     }
 
                     char nextchar;
                     char prevchar;
                     bool found = false;
+
                     if (ind > 0)
                     {
-                        if (ind - 1 + valLength == maxInd)
+                        if (ind - 1 + valLength == maxInd) // when next char is last is out of translation length
                         {
                             found = true;
                         }
-                        else if ((nextchar = origTranslation[ind + valLength]) == ' ' || nextchar == '”' || jpQuotes.Contains(nextchar) || (nextchar != '-' && origTranslation[ind - 1] != frontQuote[0] && char.IsPunctuation(nextchar)) || char.IsWhiteSpace(nextchar) || char.IsControl(nextchar) || (char.IsLetterOrDigit(origTranslation[ind - 1]) && char.IsLetterOrDigit(nextchar) && i != 0))
+                        else if (
+                            (nextchar = translation[ind + valLength]) == ' ' 
+                            || nextchar == '”' 
+                            || jpQuotes.Contains(nextchar) 
+                            || (nextchar != '-' && translation[ind - 1] != frontQuote[0] && char.IsPunctuation(nextchar)) 
+                            || char.IsWhiteSpace(nextchar) 
+                            || char.IsControl(nextchar) 
+                            || (char.IsLetterOrDigit(translation[ind - 1]) && char.IsLetterOrDigit(nextchar) && i > 0))
                         {
                             //RiseChar(nextchar, false);
                             found = true;
                         }
                     }
-                    if (found) result = result.Remove(ind, valLength).Insert(ind, backQuote);
+                    if (found)
+                    {
+                        result = result.Remove(ind, valLength).Insert(ind, backQuote);
+                        changed = true;
+                    }
                     else
                     {
                         if (ind - 1 + valLength < maxInd)
@@ -153,7 +168,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                                 {
                                     found = true;
                                 }
-                                else if ((prevchar = origTranslation[ind - 1]) == ' ' || prevchar == '“' || jpQuotes.Contains(prevchar) || char.IsPunctuation(prevchar) || char.IsWhiteSpace(prevchar) || char.IsControl(prevchar) || char.IsLetterOrDigit(origTranslation[ind + valLength]))
+                                else if (
+                                    (prevchar = translation[ind - 1]) == ' ' 
+                                    || prevchar == '“' 
+                                    || jpQuotes.Contains(prevchar) 
+                                    || char.IsPunctuation(prevchar) 
+                                    || char.IsWhiteSpace(prevchar) 
+                                    || char.IsControl(prevchar) 
+                                    || char.IsLetterOrDigit(translation[ind + valLength]))
                                 {
                                     //RiseChar(prevchar);
                                     found = true;
@@ -162,11 +184,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             catch { }
                         }
 
-                        if (found) result = result.Remove(ind, val.Value.Length).Insert(ind, frontQuote);
+                        if (found)
+                        {
+                            result = result.Remove(ind, val.Length).Insert(ind, frontQuote);
+                            changed = true;
+                        }
                     }
                 }
 
-                SelectedRow[ColumnIndexTranslation] = result;
+                if(changed) SelectedRow[ColumnIndexTranslation] = result;
             }
             catch
             {
