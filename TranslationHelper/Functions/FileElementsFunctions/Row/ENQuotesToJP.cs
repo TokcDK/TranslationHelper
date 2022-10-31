@@ -130,7 +130,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     char nextchar;
                     char prevchar;
                     bool found = false;
-                    //if (ind > 0 && (ind - 1 + ind == maxInd || (nextchar = origTranslation[ind + mc[i].Length]) == ' ' || nextchar == '”' || JPQuotes.Contains(nextchar) || char.IsPunctuation(nextchar) || char.IsWhiteSpace(nextchar) || char.IsControl(nextchar)))
                     if (ind > 0)
                     {
                         if (ind - 1 + valLength == maxInd)
@@ -139,7 +138,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         }
                         else if ((nextchar = origTranslation[ind + valLength]) == ' ' || nextchar == '”' || jpQuotes.Contains(nextchar) || (nextchar != '-' && origTranslation[ind - 1] != frontQuote[0] && char.IsPunctuation(nextchar)) || char.IsWhiteSpace(nextchar) || char.IsControl(nextchar) || (char.IsLetterOrDigit(origTranslation[ind - 1]) && char.IsLetterOrDigit(nextchar) && i != 0))
                         {
-                            RiseChar(nextchar, false);
+                            //RiseChar(nextchar, false);
                             found = true;
                         }
                     }
@@ -156,14 +155,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                                 }
                                 else if ((prevchar = origTranslation[ind - 1]) == ' ' || prevchar == '“' || jpQuotes.Contains(prevchar) || char.IsPunctuation(prevchar) || char.IsWhiteSpace(prevchar) || char.IsControl(prevchar) || char.IsLetterOrDigit(origTranslation[ind + valLength]))
                                 {
-                                    RiseChar(prevchar);
+                                    //RiseChar(prevchar);
                                     found = true;
                                 }
                             }
-                            catch
-                            {
-
-                            }
+                            catch { }
                         }
 
                         if (found) result = result.Remove(ind, val.Value.Length).Insert(ind, frontQuote);
@@ -179,32 +175,32 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
-        private void RiseChar(char c, bool prev = true)
-        {
-            if (IsAll || IsTable)
-                if (prev)
-                {
-                    if (AppData.ENQuotesToJPLearnDataFoundPrev.ContainsKey(c))
-                    {
-                        AppData.ENQuotesToJPLearnDataFoundPrev[c]++;
-                    }
-                    else
-                    {
-                        AppData.ENQuotesToJPLearnDataFoundPrev.Add(c, 1);
-                    }
-                }
-                else
-                {
-                    if (AppData.ENQuotesToJPLearnDataFoundNext.ContainsKey(c))
-                    {
-                        AppData.ENQuotesToJPLearnDataFoundNext[c]++;
-                    }
-                    else
-                    {
-                        AppData.ENQuotesToJPLearnDataFoundNext.Add(c, 1);
-                    }
-                }
+        //private void RiseChar(char c, bool prev = true)
+        //{
+        //    if (IsAll || IsTable)
+        //        if (prev)
+        //        {
+        //            if (AppData.ENQuotesToJPLearnDataFoundPrev.ContainsKey(c))
+        //            {
+        //                AppData.ENQuotesToJPLearnDataFoundPrev[c]++;
+        //            }
+        //            else
+        //            {
+        //                AppData.ENQuotesToJPLearnDataFoundPrev.Add(c, 1);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (AppData.ENQuotesToJPLearnDataFoundNext.ContainsKey(c))
+        //            {
+        //                AppData.ENQuotesToJPLearnDataFoundNext[c]++;
+        //            }
+        //            else
+        //            {
+        //                AppData.ENQuotesToJPLearnDataFoundNext.Add(c, 1);
+        //            }
+        //        }
 
-        }
+        //}
     }
 }
