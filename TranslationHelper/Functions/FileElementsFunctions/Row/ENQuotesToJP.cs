@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -198,15 +199,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             try
             {
                 var origTranslation = SelectedRow[ColumnIndexTranslation] + "";
-                if (origTranslation.Length == 0)
-                {
-                    return false;
-                }
+                if (origTranslation.Length == 0) return false;
 
-                if (!Regex.IsMatch(origTranslation, "(\"|('')|“|”)"))
-                {
-                    return false;
-                }
+                if (
+                    !origTranslation.Contains("\"")
+                    && !origTranslation.Contains("''")
+                    && !origTranslation.Contains("“")
+                    && !origTranslation.Contains("”")
+                    ) return false;
 
                 var frontQuote = string.Empty;
                 var backQuote = string.Empty;
