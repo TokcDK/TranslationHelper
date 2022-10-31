@@ -13,28 +13,22 @@ namespace TranslationHelper.Menus
         /// <returns>true if found and set out item, else false and null</returns>
         public static bool Contains(this MenuStrip toolStripMenuItem, string itemWithText, out ToolStripMenuItem foundFoolStripMenuItem)
         {
-            foreach (ToolStripMenuItem item in toolStripMenuItem.Items)
-            {
-                if (item.Text == itemWithText)
-                {
-                    foundFoolStripMenuItem = item;
-                    return true;
-                }
-            }
-
-            foundFoolStripMenuItem = null;
-            return false;
+            return toolStripMenuItem.Items.Contains(itemWithText, out foundFoolStripMenuItem);
         }
 
         public static bool Contains(this ToolStripMenuItem toolStripMenuItem, string itemWithText, out ToolStripMenuItem foundFoolStripMenuItem)
         {
-            foreach (ToolStripMenuItem item in toolStripMenuItem.DropDownItems)
+            return toolStripMenuItem.DropDownItems.Contains(itemWithText, out foundFoolStripMenuItem);
+        }
+
+        public static bool Contains(this ToolStripItemCollection toolStripMenuItems, string itemWithText, out ToolStripMenuItem foundFoolStripMenuItem)
+        {
+            foreach (ToolStripMenuItem item in toolStripMenuItems)
             {
-                if (item.Text == itemWithText)
-                {
-                    foundFoolStripMenuItem = item;
-                    return true;
-                }
+                if (item.Text != itemWithText) continue;
+
+                foundFoolStripMenuItem = item;
+                return true;
             }
 
             foundFoolStripMenuItem = null;
