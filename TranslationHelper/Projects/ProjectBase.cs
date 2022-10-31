@@ -10,7 +10,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Functions;
-using TranslationHelper.Menus.ProjectMenus;
+using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Projects
 {

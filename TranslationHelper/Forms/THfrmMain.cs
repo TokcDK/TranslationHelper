@@ -1840,10 +1840,7 @@ namespace TranslationHelper
         string WriteDBFileLiteLastFileName = string.Empty;
         private async void WriteDBFileLite(DataSet ds, string fileName)
         {
-            if (fileName.Length == 0 || ds == null)
-            {
-                return;
-            }
+            if (fileName.Length == 0 || ds == null) return;
 
             try
             {

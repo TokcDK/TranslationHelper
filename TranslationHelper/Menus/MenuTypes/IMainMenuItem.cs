@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TranslationHelper.Menus.ProjectMenus
+namespace TranslationHelper.Menus.MenuTypes
 {
     public interface IMainMenuItem : IMenuItem
     {

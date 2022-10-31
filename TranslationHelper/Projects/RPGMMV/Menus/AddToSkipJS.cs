@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Menus.ProjectMenus;
+using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Projects.RPGMMV.Menus
 {

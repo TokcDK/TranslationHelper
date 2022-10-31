@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TranslationHelper.Menus.ProjectMenus
+namespace TranslationHelper.Menus.MenuTypes
 {
 
     public interface IFileListItemMenu: IMenuItem

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using TranslationHelper.Data;
-using TranslationHelper.Menus.ProjectMenus;
+using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Projects.RPGMMV.Menus
 {
