@@ -20,17 +20,25 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         internal override bool IsValid()
         {
-            var fileExt = Path.GetExtension(AppData.SelectedFilePath);
-            foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatBase)))
-            {
-                var format = (FormatBase)Activator.CreateInstance(formatType);
-                if (string.Equals(format.Ext, fileExt, StringComparison.InvariantCultureIgnoreCase) && format.ExtIdentifier > -1)
-                {
-                    return true;
-                }
-            }
+            var fileExt = Path.GetExtension(AppData.SelectedFilePath);            
+            foreach (var formatType in GetFormatTypes(typeof(FormatBase))) 
+                if (IsValidFormat(formatType, fileExt)) return true;
 
             return false;
+        }
+
+        private static IEnumerable<Type> GetFormatTypes(Type type)
+        {
+            foreach(var fType in 
+                GetListOfSubClasses.Inherited.GetInheritedTypes(type)) yield return fType;
+        }
+
+        private bool IsValidFormat(Type formatType, string fileExt)
+        {
+            var format = (FormatBase)Activator.CreateInstance(formatType);
+            
+            return string.Equals(format.Ext, fileExt, StringComparison.InvariantCultureIgnoreCase) 
+                && format.ExtIdentifier > -1;
         }
 
         FormatBase Format;
@@ -41,29 +49,17 @@ namespace TranslationHelper.Projects.ZZZZFormats
         {
             var fileExt = Path.GetExtension(AppData.SelectedFilePath);
             List<Type> foundTypes = new List<Type>();
-            foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatBase)))
-            {
-                var format = (FormatBase)Activator.CreateInstance(formatType);
-                if (string.Equals(format.Ext, fileExt, StringComparison.InvariantCultureIgnoreCase) && format.ExtIdentifier> -1)
-                {
-                    foundTypes.Add(formatType);
-                }
-            }
+            foreach (var formatType in GetFormatTypes(typeof(FormatBase))) 
+                if (IsValidFormat(formatType, fileExt)) foundTypes.Add(formatType);
 
             if (foundTypes.Count == 0) return false;
 
             int selectedIndex = -1;
             var foundForm = new FoundTypesbyExtensionForm();
-            foreach (var type in foundTypes)
-            {
-                foundForm.listBox1.Items.Add(type.FullName);
-            }
+            foreach (var type in foundTypes) foundForm.listBox1.Items.Add(type.FullName);
 
             var result = foundForm.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                selectedIndex = foundForm.SelectedTypeIndex;
-            }
+            if (result == DialogResult.OK) selectedIndex = foundForm.SelectedTypeIndex;
 
             foundForm.Dispose();
 
