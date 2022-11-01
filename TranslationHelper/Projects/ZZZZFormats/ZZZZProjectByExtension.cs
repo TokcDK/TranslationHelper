@@ -33,7 +33,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
                 GetListOfSubClasses.Inherited.GetInheritedTypes(type)) yield return fType;
         }
 
-        private bool IsValidFormat(Type formatType, string fileExt)
+        private static bool IsValidFormat(Type formatType, string fileExt)
         {
             var format = (FormatBase)Activator.CreateInstance(formatType);
             
