@@ -21,10 +21,10 @@ namespace TranslationHelper.Projects.ZZZZFormats
         internal override bool IsValid()
         {
             var fileExt = Path.GetExtension(AppData.SelectedFilePath);
-            foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatStringBase)))
+            foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatBase)))
             {
                 var format = (FormatBase)Activator.CreateInstance(formatType);
-                if (format.Ext== fileExt && format.ExtIdentifier> -1)
+                if (string.Equals(format.Ext, fileExt, StringComparison.InvariantCultureIgnoreCase) && format.ExtIdentifier > -1)
                 {
                     return true;
                 }
@@ -41,10 +41,10 @@ namespace TranslationHelper.Projects.ZZZZFormats
         {
             var fileExt = Path.GetExtension(AppData.SelectedFilePath);
             List<Type> foundTypes = new List<Type>();
-            foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatStringBase)))
+            foreach (var formatType in GetListOfSubClasses.Inherited.GetInheritedTypes(typeof(FormatBase)))
             {
                 var format = (FormatBase)Activator.CreateInstance(formatType);
-                if (format.Ext== fileExt && format.ExtIdentifier> -1)
+                if (string.Equals(format.Ext, fileExt, StringComparison.InvariantCultureIgnoreCase) && format.ExtIdentifier> -1)
                 {
                     foundTypes.Add(formatType);
                 }

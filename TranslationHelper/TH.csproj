@@ -122,6 +122,8 @@
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Params_json.cs" />
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Params_json_c.cs" />
     <Compile Include="Formats\IFormat.cs" />
+    <Compile Include="Formats\RPGMakerVX\RVData2\Actors.rvdata2.cs" />
+    <Compile Include="Formats\RPGMakerVX\RVData2\RVDATA2.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonSystemMZ.cs" />
     <Compile Include="Formats\RPGMMV\RPGMVLists.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
@@ -564,6 +566,10 @@
     <ProjectReference Include="K:\0GIT\[TokcDK]\LoadRPGMVJson\RPGMVJsonParser\RPGMVJsonParser.csproj">
       <Project>{449a8a59-1ba7-4e70-8f41-95527f4d39a6}</Project>
       <Name>RPGMVJsonParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="K:\0GIT\[TokcDK]\RPGMakerVXRVData2Assistant\RPGMakerVXRVData2Assistant\RPGMakerVXRVData2Assistant.csproj">
+      <Project>{f3817f93-1016-487a-8797-a4fbdfa4fb0d}</Project>
+      <Name>RPGMakerVXRVData2Assistant</Name>
     </ProjectReference>
     <ProjectReference Include="K:\0GIT\[TokcDK]\wolftrans-csharp\WolfTrans.Net\WolfTrans.Net.csproj">
       <Project>{494DB09B-C872-4E19-B6D8-3D2D5C1B44F0}</Project>
