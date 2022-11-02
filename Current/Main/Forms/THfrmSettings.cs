@@ -14,7 +14,7 @@ namespace TranslationHelper
     public partial class THfrmSettings : Form
     {
         //Defaults
-        internal INIFileMan.INIFile THConfigINI = new INIFileMan.INIFile(Application.ProductName + ".ini");
+        internal INIFileMan.INIFile THConfigINI = new INIFileMan.INIFile(Application.ProductName + ".ini", forceCreate: true);
         
         internal THfrmSettings()
         {
