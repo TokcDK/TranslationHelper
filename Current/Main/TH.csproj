@@ -516,7 +516,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="..\.editorconfig">
+    <None Include="..\..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
     <None Include="Properties\Settings.settings">
