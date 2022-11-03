@@ -21,6 +21,8 @@ namespace TranslationHelper.Formats.RPGMMV
             //{ 122, "Control variables" },
             { 123, "" },
             { 132, "" },
+            { 205, "Set Move Route" },
+            { 505, "Set Move Route" },
             { 231, "Show Picture" },
             { 232, "Move Picture" },
             { 233, "Rotate Picture" },
