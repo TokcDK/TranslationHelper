@@ -8,7 +8,7 @@ using THConfig.Interfaces;
 
 namespace THConfig
 {
-    public class ConfigManage
+    public class Manage
     {
         public static IAppSettings Settings = null;
         public static void Load()
