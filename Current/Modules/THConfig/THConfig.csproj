@@ -98,11 +98,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Groups\ISetting.cs" />
-    <Compile Include="Groups\IAppSettings.cs" />
-    <Compile Include="Groups\IToolsSettings.cs" />
-    <Compile Include="Groups\IOptimizationSettings.cs" />
-    <Compile Include="Groups\IGeneralSettings.cs" />
+    <Compile Include="Interfaces\ISetting.cs" />
+    <Compile Include="Interfaces\IAppSettings.cs" />
+    <Compile Include="Interfaces\SettingsGroups\IToolsSettings.cs" />
+    <Compile Include="Interfaces\SettingsGroups\IOptimizationSettings.cs" />
+    <Compile Include="Interfaces\SettingsGroups\IGeneralSettings.cs" />
     <Compile Include="Manage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
