@@ -2,7 +2,7 @@
 
 namespace THConfig.Groups
 {
-    public interface IAppSettings : IGeneralSettings, IOptimizationSettings, IToolsnSettings
+    public interface IAppSettings : IGeneralSettings, IOptimizationSettings, IToolsSettings
     {
     }
 }

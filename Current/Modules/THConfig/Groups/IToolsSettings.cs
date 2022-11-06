@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace THConfig.Groups
 {
-    public interface IToolsnSettings
+    public interface IToolsSettings
     {
         [DefaultValue("True")]
         bool UseOnlineTranslationCache { get; set; }
