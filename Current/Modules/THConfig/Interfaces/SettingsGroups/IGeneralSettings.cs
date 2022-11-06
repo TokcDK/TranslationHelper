@@ -12,15 +12,15 @@ namespace THConfig.Interfaces.SettingsGroups
     {
         [DisplayName("Recursive DB Load")]
         [Description("Resursive scan of the loading translation DB. SLow but can find more translations")]
-        [DefaultValue("False")]
+        [DefaultValue(false)]
         bool RecursiveDBLoad { get; set; }
-        [DefaultValue("60")]
+        [DefaultValue(60)]
         int LineSplitCharsLimit { get; set; }
         [DefaultValue("Japanese jp")]
         string SourceLanguage { get; set; }
-        [DefaultValue("True")]
+        [DefaultValue(true)]
         bool EnableAutoSave { get; set; }
-        [DefaultValue("90")]
+        [DefaultValue(90)]
         int AutoSaveCooldownSec { get; set; }
     }
 }

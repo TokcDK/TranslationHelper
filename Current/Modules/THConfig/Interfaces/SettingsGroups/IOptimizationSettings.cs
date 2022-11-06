@@ -9,15 +9,15 @@ namespace THConfig.Interfaces.SettingsGroups
 {
     public interface IOptimizationSettings
     {
-        [DefaultValue("True")]
+        [DefaultValue(true)]
         bool AutoTranslateForSimilar { get; set; }
-        [DefaultValue("90")]
+        [DefaultValue(90)]
         bool DontLoadStringIfRomajiPercent { get; set; }
         [DefaultValue("Gzip (cmx)")]
         string DBCompressionFormat { get; set; }
-        [DefaultValue("True")]
+        [DefaultValue(true)]
         bool IgnoreOriginalEqualsTranslationLines { get; set; }
-        [DefaultValue("False")]
+        [DefaultValue(false)]
         bool DontLoadDuplicates { get; set; }
     }
 }
