@@ -15,6 +15,7 @@ namespace THConfig
         {
             Settings = new ConfigurationBuilder<IAppSettings>()
            .UseAppConfig()
+           .UseIniFile(StaticSettings.ApplicationIniPath)
            .Build();
         }
     }
