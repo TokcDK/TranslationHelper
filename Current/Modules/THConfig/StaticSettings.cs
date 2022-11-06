@@ -1,11 +1,16 @@
 ﻿using System.IO;
+using THConfig.Interfaces;
 
 namespace THConfig
 {
     public class StaticSettings
     {
-        public static string ApplicationExeName;
+        public static IAppSettings Settings = null;
+
+        public static string ApplicationProductName;
         public static string ApplicationStartupPath;
-        public static string ApplicationIniPath { get => Path.Combine(ApplicationStartupPath, ApplicationExeName + ".ini"); }
+
+        internal static string AppIniPath = "";
+        public static string ApplicationIniPath { get => string.IsNullOrWhiteSpace(AppIniPath) ? Path.Combine(ApplicationStartupPath, ApplicationProductName + ".ini") : AppIniPath; }
     }
 }

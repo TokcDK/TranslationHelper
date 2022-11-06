@@ -10,12 +10,21 @@ namespace THConfig
 {
     public class Manage
     {
-        public static IAppSettings Settings = null;
-        public static void Load()
+        public static void Load(string startupPath, string productName)
         {
-            Settings = new ConfigurationBuilder<IAppSettings>()
+            Load(startupPath, productName, StaticSettings.ApplicationIniPath);
+        }
+        public static void Load(string startupPath, string productName, string iniFilePath)
+        {
+            // set app exe name, startup path and ini file path
+            StaticSettings.ApplicationStartupPath = startupPath;
+            StaticSettings.ApplicationProductName = productName;
+            if (!string.IsNullOrEmpty(iniFilePath)) StaticSettings.AppIniPath = iniFilePath;
+
+            // set main settings
+            StaticSettings.Settings = new ConfigurationBuilder<IAppSettings>()
            .UseAppConfig()
-           .UseIniFile(StaticSettings.ApplicationIniPath)
+           .UseIniFile(iniFilePath)
            .Build();
         }
     }
