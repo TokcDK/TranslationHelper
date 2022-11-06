@@ -1,6 +1,6 @@
 ﻿using Config.Net;
 
-namespace THConfig.Groups
+namespace THConfig.Interfaces
 {
     public interface IAppSettings : IGeneralSettings, IOptimizationSettings, IToolsSettings
     {

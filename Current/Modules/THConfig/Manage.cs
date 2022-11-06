@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Config.Net;
-using THConfig.Groups;
+using THConfig.Interfaces;
 
 namespace THConfig
 {
