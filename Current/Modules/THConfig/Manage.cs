@@ -23,7 +23,6 @@ namespace THConfig
 
             // set main settings
             StaticSettings.Settings = new ConfigurationBuilder<IAppSettings>()
-           .UseAppConfig()
            .UseIniFile(iniFilePath)
            .Build();
         }
