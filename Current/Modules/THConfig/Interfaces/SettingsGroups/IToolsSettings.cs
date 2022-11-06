@@ -12,7 +12,7 @@ namespace THConfig.Interfaces.SettingsGroups
         [DefaultValue(true)]
         bool UseOnlineTranslationCache { get; set; }
         [DefaultValue("https://translate.google.com/?ie=UTF-8&op=translate&sl={from}&tl={to}&text={text}")]
-        string WebTranslationLink { get; set; }
+        Uri WebTranslationLink { get; set; }
         [DefaultValue("G|https://translate.google.com/?ie=UTF-8&op=translate&sl={from}&tl={to}&text={text}||D|https://www.deepl.com/ru/translator#{from}/{to}/{text}||Y|https://translate.yandex.com/?lang={from}-{to}&text={text}")]
         string WebTranslationLinkServices { get; set; }
         [DefaultValue(true)]
