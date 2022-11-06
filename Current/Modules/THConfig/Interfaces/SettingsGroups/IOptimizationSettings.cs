@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace THConfig.Interfaces
+namespace THConfig.Interfaces.SettingsGroups
 {
     public interface IOptimizationSettings
     {

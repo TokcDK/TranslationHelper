@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Config.Net;
 
-namespace THConfig.Interfaces
+namespace THConfig.Interfaces.SettingsGroups
 {
     public interface IGeneralSettings
     {
