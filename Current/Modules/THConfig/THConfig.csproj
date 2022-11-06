@@ -99,10 +99,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Groups\ISetting.cs" />
-    <Compile Include="Groups\ITHAppSettings.cs" />
+    <Compile Include="Groups\IAppSettings.cs" />
     <Compile Include="Groups\IToolsnSettings.cs" />
     <Compile Include="Groups\IOptimizationSettings.cs" />
     <Compile Include="Groups\IGeneralSettings.cs" />
+    <Compile Include="Manage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
