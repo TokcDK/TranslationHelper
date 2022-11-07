@@ -45,7 +45,7 @@ namespace TranslationHelper.Formats.RPGMMV
             { 322, "" },
             { 323, "" },
             //{ 355, "Script command" }, // can contain text
-            //{ 356, "" },
+            { 356, "Script command" }, // can have text to display
             //{ 357, "Plugin command" }, // sometime here can be text popup when activate npc
             { 302, "" },
             { 405, "" },

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using THConfig.Interfaces;
+using THConfig.Interfaces.SettingsGroups;
 
 namespace THConfig
 {

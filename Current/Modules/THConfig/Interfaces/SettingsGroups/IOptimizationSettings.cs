@@ -12,7 +12,7 @@ namespace THConfig.Interfaces.SettingsGroups
         [DefaultValue(true)]
         bool AutoTranslateForSimilar { get; set; }
         [DefaultValue(90)]
-        bool DontLoadStringIfRomajiPercent { get; set; }
+        int DontLoadStringIfRomajiPercent { get; set; }
         [DefaultValue("Gzip (cmx)")]
         string DBCompressionFormat { get; set; }
         [DefaultValue(true)]
