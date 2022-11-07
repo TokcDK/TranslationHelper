@@ -99,6 +99,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\Class1.cs" />
     <Compile Include="Interfaces\ISetting.cs" />
     <Compile Include="Interfaces\IAppSettings.cs" />
     <Compile Include="Interfaces\SettingsGroups\IToolsSettings.cs" />
@@ -128,9 +129,7 @@
       <Version>6.0.5</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="N:\Documents\Visual Studio 2019\Projects\TH\packages\System.Text.Json.6.0.5\build\System.Text.Json.targets" Condition="Exists('N:\Documents\Visual Studio 2019\Projects\TH\packages\System.Text.Json.6.0.5\build\System.Text.Json.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
