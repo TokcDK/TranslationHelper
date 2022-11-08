@@ -45,10 +45,10 @@ namespace TranslationHelper.Formats.RPGMMV
             { 322, "" },
             { 323, "" },
             //{ 355, "Script command" }, // can contain text
-            { 356, "Script command" }, // can have text to display
+            //{ 356, "Script command" }, // can have text to display
             //{ 357, "Plugin command" }, // sometime here can be text popup when activate npc
             { 302, "" },
-            { 405, "" },
+            //{ 405, "Show Text" },
             { 657, "Plugin command" },
             //{ 108, "Comment" }, // not to skip in some games
             //{ 408, "Comment" }, // not to skip in some games
