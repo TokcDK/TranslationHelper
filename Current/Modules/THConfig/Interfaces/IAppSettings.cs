@@ -13,6 +13,10 @@ namespace THConfig.Interfaces
         [Description("Resursive scan of the loading translation DB. SLow but can find more translations")]
         [DefaultValue(false)]
         bool RecursiveDBLoad { get; set; }
+        [DisplayName("Some bool property name")]
+        [Description("Some description for bool")]
+        [DefaultValue(true)]
+        bool BoolProperty { get; set; }
         [DisplayName("Some integer property name")]
         [Description("Some description for integer")]
         [DefaultValue(90)]
