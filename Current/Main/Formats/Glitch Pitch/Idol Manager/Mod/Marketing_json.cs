@@ -11,7 +11,7 @@ using TranslationHelper.Formats.RPGMMV;
 
 namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
-    internal class Marketing_json :FormatStringBase
+    internal class Marketing_json : IdolManagerModBase
     {
         public override string Ext => ".json";
         protected override void ParseFileContent()

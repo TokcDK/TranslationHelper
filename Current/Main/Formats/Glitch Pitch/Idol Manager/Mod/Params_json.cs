@@ -6,10 +6,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json;
+using TranslationHelper.Formats.Glitch_Pitch.Idol_Manager.Mod;
 
 namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
-    internal class Params_json : FormatStringBase
+    internal class Params_json : IdolManagerModBase
     {
         public override string Ext => ".json";
         protected override void ParseFileContent()

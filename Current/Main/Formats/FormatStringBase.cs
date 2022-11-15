@@ -25,7 +25,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected override void FileOpen()
         {
-            using (ParseData.Reader = new StreamReader(GetOpenFilePath(), ParseStringFileEncoding()))
+            using (ParseData.Reader = new StreamReader(GetOpenFilePath(), GetStringFileEncoding()))
             {
                 ParseFileContent();
             }
@@ -35,7 +35,7 @@ namespace TranslationHelper.Formats
         /// get encoding for string file open
         /// </summary>
         /// <returns></returns>
-        protected virtual Encoding ParseStringFileEncoding()
+        protected virtual Encoding GetStringFileEncoding()
         {
             return FunctionsFileFolder.GetEncoding(GetOpenFilePath()) ?? DefaultEncoding();
         }
@@ -271,7 +271,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual Encoding ReadEncoding()
         {
-            return ParseStringFileEncoding();
+            return GetStringFileEncoding();
         }
 
         /// <summary>
@@ -280,7 +280,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual Encoding WriteEncoding()
         {
-            return ParseStringFileEncoding();
+            return GetStringFileEncoding();
         }
 
         protected override bool WriteFileData(string filePath = "")
