@@ -231,38 +231,38 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected bool ParsePattern(KeyValuePair<string, string> pattern, bool useInlineSearch = true)
         {
-            if ((!useInlineSearch || ParseData.Line.IndexOf(pattern.Key) != -1) && Regex.IsMatch(ParseData.Line, pattern.Value, RegexOptions.Compiled))
+            if (useInlineSearch && ParseData.Line.IndexOf(pattern.Key) == -1 || !Regex.IsMatch(ParseData.Line, pattern.Value, RegexOptions.Compiled))
             {
-                var mc = Regex.Matches(ParseData.Line, pattern.Value, RegexOptions.Compiled);
-                if (mc.Count > 0)
+                return false;
+            }
+
+            var mc = Regex.Matches(ParseData.Line, pattern.Value, RegexOptions.Compiled);
+            if (mc.Count <= 0) return false;
+
+            var IsSet = false;
+            if (OpenFileMode)
+            {
+                foreach (Match m in mc)
                 {
-                    var IsSet = false;
-                    if (OpenFileMode)
-                    {
-                        foreach (Match m in mc)
-                        {
-                            var str = m.Result("$1");
-                            IsSet = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, isCheckInput: true);
-                        }
-                    }
-                    else
-                    {
-                        for (int m = mc.Count - 1; m >= 0; m--)
-                        {
-                            var str = mc[m].Result("$1");
-                            var trans = str;
-                            if (IsValidString(str) && SetTranslation(ref trans) && trans != str)
-                            {
-                                ParseData.Line = ParseData.Line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
-                                ParseData.Ret = true;
-                                IsSet = true;
-                            }
-                        }
-                    }
-                    return IsSet;
+                    var str = m.Result("$1");
+                    IsSet = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, isCheckInput: true);
                 }
             }
-            return false;
+            else
+            {
+                for (int m = mc.Count - 1; m >= 0; m--)
+                {
+                    var str = mc[m].Result("$1");
+                    var trans = str;
+                    if (IsValidString(str) && SetTranslation(ref trans) && trans != str)
+                    {
+                        ParseData.Line = ParseData.Line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
+                        ParseData.Ret = true;
+                        IsSet = true;
+                    }
+                }
+            }
+            return IsSet;
         }
 
         /// <summary>
@@ -287,16 +287,15 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                if (ParseData.Ret && SaveFileMode && ParseData.ResultForWrite.Length > 0 && !FunctionsFileFolder.FileInUse(GetSaveFilePath()))
-                {
-                    File.WriteAllText(filePath.Length > 0 ? filePath : AppData.CurrentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
-                    return true;
-                }
-            }
-            catch
-            {
+                if (!ParseData.Ret) return false;
+                if (!SaveFileMode) return false;
+                if (ParseData.ResultForWrite.Length <= 0) return false;
+                if (FunctionsFileFolder.FileInUse(GetSaveFilePath())) return false;
 
+                File.WriteAllText(filePath.Length > 0 ? filePath : AppData.CurrentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
+                return true;
             }
+            catch { }
             return false;
         }
 
@@ -312,10 +311,7 @@ namespace TranslationHelper.Formats
             {
                 this.format = format;
 
-                if (format.SaveFileMode)
-                {
-                    ResultForWrite = new StringBuilder();
-                }
+                if (format.SaveFileMode) ResultForWrite = new StringBuilder();
             }
 
             /// <summary>
