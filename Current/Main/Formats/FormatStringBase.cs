@@ -72,13 +72,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual void ParseFileContent()
         {
-            while (ReadLine() != null)
-            {
-                if (ParseStringFileLine() == KeywordActionAfter.Break)
-                {
-                    break;
-                }
-            }
+            while (ReadLine() != null) if (ParseStringFileLine() == KeywordActionAfter.Break) break;
         }
 
         /// <summary>
@@ -129,10 +123,7 @@ namespace TranslationHelper.Formats
         /// <param name="newLineAfter">last line must be empty</param>
         protected virtual void SaveModeAddLine(string line, string newline = "\r\n", bool newLineAfter = false)
         {
-            if (OpenFileMode)
-            {
-                return;
-            }
+            if (OpenFileMode) return;
 
             if (newLineAfter)
             {
@@ -213,13 +204,8 @@ namespace TranslationHelper.Formats
         protected bool ParsePatterns()
         {
             bool ret = false;
-            foreach (var pattern in Patterns())
-            {
-                if (ParsePattern(pattern))
-                {
-                    ret = true;
-                }
-            }
+            foreach (var pattern in Patterns()) if (ParsePattern(pattern)) ret = true;
+
             return ret;
         }
 
