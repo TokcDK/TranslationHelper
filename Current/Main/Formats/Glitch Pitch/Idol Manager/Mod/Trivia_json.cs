@@ -18,17 +18,17 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 
         protected override KeywordActionAfter ParseStringFileLine()
         {
-            var match = Regex.Match(ParseData.Line, @"^\t*ID:\t*([0-9]+),$");
+            var match = Regex.Match(ParseData.Line, @"^\s*ID:\s*([0-9]+),$");
             if (!match.Success) return KeywordActionAfter.Continue;
 
             var id = match.Groups[1].Value;
 
-            match = Regex.Match(ReadLine(), @"^\t*Type:\t*\""([^\""]+)\"",$");
+            match = Regex.Match(ReadLine(), @"^\s*Type:\s*\""([^\""]+)\"",$");
             if (!match.Success) return KeywordActionAfter.Continue;
 
             var type = match.Groups[1].Value;
 
-            match = Regex.Match(ReadLine(), @"^\t*Text:\t*\""([^\""]+)\"",$");
+            match = Regex.Match(ReadLine(), @"^\s*Text:\s*\""([^\""]+)\""$");
             if (!match.Success) return KeywordActionAfter.Continue;
 
             var text = match.Groups[1].Value;
@@ -37,5 +37,7 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 
             return base.ParseStringFileLine();
         }
+
+        internal override bool IsValidString(string inputString) { return true; }
     }
 }
