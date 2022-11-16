@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TH.WPF.Models;
 
 namespace TH.WPF.ViewModels
 {
@@ -12,6 +13,6 @@ namespace TH.WPF.ViewModels
         /// Menu File\Open clicked
         /// </summary>
         private RelayCommand? onOpen;
-        public RelayCommand OnOpen => onOpen ??= new RelayCommand(obj => { });
+        public RelayCommand OnOpen => onOpen ??= new RelayCommand(obj => { Menus.Open(); });
     }
 }

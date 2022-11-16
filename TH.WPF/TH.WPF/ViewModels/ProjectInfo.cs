@@ -40,7 +40,7 @@ namespace TH.WPF.ViewModels
         }
 
         private RelayCommand? onProjectClose;
-        public RelayCommand OnProjectClose => onProjectClose ??= new RelayCommand(obj => { ModelProject.CloseProject(obj as ProjectInfo); });
+        public RelayCommand OnProjectClose => onProjectClose ??= new RelayCommand(obj => { Project.CloseProject(obj as ProjectInfo); });
     }
 
     /// <summary>

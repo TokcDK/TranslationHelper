@@ -7,7 +7,7 @@ using TH.WPF.ViewModels;
 
 namespace TH.WPF.Models
 {
-    internal class ModelProject
+    internal class Project
     {
         public static void CloseProject(ProjectInfo project)
         {
