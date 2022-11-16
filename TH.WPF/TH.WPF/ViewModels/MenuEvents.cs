@@ -13,6 +13,6 @@ namespace TH.WPF.ViewModels
         /// Menu File\Open clicked
         /// </summary>
         private RelayCommand? onOpen;
-        public RelayCommand OnOpen => onOpen ??= new RelayCommand(obj => { Menus.Open(); });
+        public RelayCommand OnOpen => onOpen ??= new RelayCommand(obj => { MenuCommands.Open(); });
     }
 }

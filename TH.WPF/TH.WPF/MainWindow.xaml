@@ -26,20 +26,15 @@
             <RowDefinition Height="0,15*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        
-        <Menu Grid.Row="0" Grid.ColumnSpan="3" Height="20">
-            <MenuItem Header="File">
-                <MenuItem Header="Open" Command="{Binding OnOpen}"/>
-                <MenuItem Header="Write"/>
-                <MenuItem Header="Save DB"/>
-                <MenuItem Header="Save DB as"/>
-                <MenuItem Header="Export"/>
-                <MenuItem Header="Import"/>
-            </MenuItem>
-            <MenuItem Header="Edit"></MenuItem>
-            <MenuItem Header="View"></MenuItem>
-            <MenuItem Header="Options"></MenuItem>
-            <MenuItem Header="Help"></MenuItem>
+
+        <Menu Grid.Row="0" Grid.ColumnSpan="3" Height="20" ItemsSource="{Binding MainMenusList}">
+            <Menu.Resources>
+                <Style TargetType="{x:Type MenuItem}">
+                    <Setter Property="Header" Value="{Binding Path=Name}"/>
+                    <Setter Property="Command" Value="{Binding Path=Command}"/>
+                </Style>
+                <HierarchicalDataTemplate DataType="{x:Type vm:MenuItemVM}" ItemsSource="{Binding Childs}"/>
+            </Menu.Resources>
         </Menu>
 
         <TabControl 

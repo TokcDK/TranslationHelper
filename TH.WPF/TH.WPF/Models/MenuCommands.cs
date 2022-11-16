@@ -9,7 +9,7 @@ using System.IO;
 
 namespace TH.WPF.Models
 {
-    public class Menus
+    public class MenuCommands
     {
         public static void Open()
         {
