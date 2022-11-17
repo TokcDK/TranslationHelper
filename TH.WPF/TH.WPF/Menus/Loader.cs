@@ -29,7 +29,7 @@ namespace TH.WPF.Menus
                 }
 
                 if(isNeedParent && menu2add == null)
-                    menu2add = new MenuItemData(menu.ParentMenuName, "", null);
+                    menu2add = new MenuItemData(menu.ParentMenuName, menu.ParentMenuName, null);
 
                 if (menu2add != null)
                 {
