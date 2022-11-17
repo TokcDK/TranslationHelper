@@ -12,6 +12,6 @@ namespace TH.WPF.ViewModels
     {
         public static ProjectsListInfo ProjectsList { get; set; } = TestData.TestProjects;
 
-        public static List<MenuItemVM> MainMenusList { get; set; } = new List<MenuItemVM>() { new MenuItemVM("File", "") { Childs = new ObservableCollection<IMenu> { new OpenFileMenuItem() } } };
+        public static List<MenuItemData> MainMenusList { get; set; } = new List<MenuItemData>() { new MenuItemData("File", "") { Childs = new ObservableCollection<IMenu> { new OpenFileMenuItem() } } };
     }
 }

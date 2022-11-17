@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TH.WPF"
         xmlns:vm="clr-namespace:TH.WPF.ViewModels"
+        xmlns:menus="clr-namespace:TH.WPF.Menus"
         xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
@@ -32,8 +33,9 @@
                 <Style TargetType="{x:Type MenuItem}">
                     <Setter Property="Header" Value="{Binding Path=Name}"/>
                     <Setter Property="Command" Value="{Binding Path=Command}"/>
+                    <Setter Property="ToolTip" Value="{Binding Path=Description}"/>
                 </Style>
-                <HierarchicalDataTemplate DataType="{x:Type vm:MenuItemVM}" ItemsSource="{Binding Childs}"/>
+                <HierarchicalDataTemplate DataType="{x:Type menus:MenuItemData}" ItemsSource="{Binding Childs}"/>
             </Menu.Resources>
         </Menu>
 

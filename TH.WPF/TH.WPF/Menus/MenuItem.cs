@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TH.WPF.Menus;
 
-namespace TH.WPF.ViewModels
+namespace TH.WPF.Menus
 {
-    public class MenuItemVM
+    public class MenuItemData
     {
-        public MenuItemVM(string name, string description)
+        public MenuItemData(string name, string description)
         {
             Name = name;
             Description = description;
