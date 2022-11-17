@@ -12,9 +12,10 @@ namespace TH.WPF.Menus
     {
         internal static void LoadMainMenus(ICollection<MenuItemData> menus)
         {
+            // clear examples data
             menus.Clear();
 
-            //Load Main menus
+            // Load Main menus
             var mainMenus = Inherited.GetInterfaceImplimentations<IMainMenuItem>();
 
             foreach (var menu in mainMenus)
@@ -23,6 +24,7 @@ namespace TH.WPF.Menus
                 bool isNeedParent = !string.IsNullOrWhiteSpace(menu.ParentMenuName);
                 if (isNeedParent)
                 {
+                    // search main menu item
                     var searchMenu = menus.FirstOrDefault(m=>string.Equals(m.Name, menu.ParentMenuName, StringComparison.InvariantCultureIgnoreCase));
 
                     if (searchMenu != default) menu2add = searchMenu;
@@ -30,11 +32,13 @@ namespace TH.WPF.Menus
 
                 if(isNeedParent && menu2add == null)
                 {
+                    // create main menu if was not found but need to be created
                     menu2add = new MenuItemData(menu.ParentMenuName, menu.ParentMenuName, null);
                 }
 
                 if (menu2add != null)
                 {
+                    // create menu data from current menu
                     var menuItemData = new MenuItemData(menu.Name, menu.Description, menu.Command);
 
                     // category check and setup
@@ -45,22 +49,25 @@ namespace TH.WPF.Menus
                         {
                             var newCategoryMenuItemData = new MenuItemData(menu.CategoryName, menu.CategoryName, menu.Command);
                             newCategoryMenuItemData.Childs.Add(menuItemData);
-                            menuItemData = newCategoryMenuItemData; // relink to category menu
+                            menuItemData = newCategoryMenuItemData; // relink to the new category menu
                         }
                         else
                         {
                             categoryMenuItemData.Childs.Add(menuItemData);
-                            menuItemData = categoryMenuItemData; // relink to category menu
+                            menuItemData = categoryMenuItemData; // relink to the exist category menu
                         }
                     }
 
-                    if(!menu2add.Childs.Contains(menuItemData)) menu2add.Childs.Add(menuItemData);
+                    // add if missing in case if it is category manu
+                    if (!menu2add.Childs.Contains(menuItemData)) menu2add.Childs.Add(menuItemData);
                 }
                 else
                 {
+                    // create new main menu item from current menu
                     menu2add = new MenuItemData(menu.Name, menu.Description, menu.Command);
                 }
 
+                // add main menu if missing
                 if (!menus.Contains(menu2add)) menus.Add(menu2add);
             }
         }
