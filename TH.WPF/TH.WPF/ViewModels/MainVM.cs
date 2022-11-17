@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using TH.WPF.Examples;
-using TH.WPF.Examples;
 using TH.WPF.Menus;
 using TH.WPF.Menus.Main;
 
