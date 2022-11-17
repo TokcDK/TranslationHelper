@@ -14,7 +14,7 @@ namespace TH.WPF.Menus.Main.File
     {
         public string ParentMenuName => "File";
 
-        public string CategoryName => "";
+        public string CategoryName => "Project";
 
         public string Name => "Write";
 

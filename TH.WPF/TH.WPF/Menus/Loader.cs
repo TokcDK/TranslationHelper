@@ -29,17 +29,36 @@ namespace TH.WPF.Menus
                 }
 
                 if(isNeedParent && menu2add == null)
+                {
                     menu2add = new MenuItemData(menu.ParentMenuName, menu.ParentMenuName, null);
+                }
 
                 if (menu2add != null)
                 {
-                    var m = new MenuItemData(menu.Name, menu.Description, menu.Command);
-                    menu2add.Childs.Add(m);
+                    var menuItemData = new MenuItemData(menu.Name, menu.Description, menu.Command);
+
+                    // category check and setup
+                    if (!string.IsNullOrWhiteSpace(menu.CategoryName))
+                    {
+                        var categoryMenuItemData = menu2add.Childs.FirstOrDefault(m => string.Equals(m.Name, menu.CategoryName, StringComparison.InvariantCultureIgnoreCase));
+                        if (categoryMenuItemData == default)
+                        {
+                            var newCategoryMenuItemData = new MenuItemData(menu.CategoryName, menu.CategoryName, menu.Command);
+                            newCategoryMenuItemData.Childs.Add(menuItemData);
+                            menuItemData = newCategoryMenuItemData; // relink to category menu
+                        }
+                        else
+                        {
+                            categoryMenuItemData.Childs.Add(menuItemData);
+                            menuItemData = categoryMenuItemData; // relink to category menu
+                        }
+                    }
+
+                    if(!menu2add.Childs.Contains(menuItemData)) menu2add.Childs.Add(menuItemData);
                 }
                 else
                 {
                     menu2add = new MenuItemData(menu.Name, menu.Description, menu.Command);
-                    menus.Add(menu2add);
                 }
 
                 if (!menus.Contains(menu2add)) menus.Add(menu2add);
