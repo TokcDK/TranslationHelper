@@ -50,7 +50,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Name}" />
-                        <Button BorderBrush="Gray" Margin="3,0,0,0" Height="10" Width="10" Command="{Binding Path=OnClose}" CommandParameter="{Binding}"/>
+                        <Button BorderBrush="Gray" Margin="3,0,0,0" Height="10" Width="10" Command="{Binding Source={x:Static vm:MainVM.OnProjectClose}}" CommandParameter="{Binding}"/>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>

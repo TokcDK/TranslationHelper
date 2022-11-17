@@ -37,8 +37,6 @@ namespace TH.WPF.Core.Data.Project
                 OnPropertyChanged(nameof(SelectedFile));
             }
         }
-
-        public ICommand? OnClose;
     }
 
     /// <summary>
