@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using TH.WPF.Core.Data.Project;
 using TH.WPF.ViewModels;
 
 namespace TH.WPF.Examples

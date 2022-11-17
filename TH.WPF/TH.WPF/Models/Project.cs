@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TH.WPF.Core.Data.Project;
 using TH.WPF.ViewModels;
 
 namespace TH.WPF.Models

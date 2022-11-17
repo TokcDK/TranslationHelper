@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using TH.WPF.Core.Data.Project;
 using TH.WPF.Examples;
 using TH.WPF.Menus;
 using TH.WPF.Menus.Main;
