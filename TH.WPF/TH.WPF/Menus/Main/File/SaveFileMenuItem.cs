@@ -20,7 +20,9 @@ namespace TH.WPF.Menus.Main.File
 
         public string Description => "Write project translation";
 
-        private RelayCommand? onOpen;
-        public ICommand Command => onOpen ??= new RelayCommand(obj => { });
+        public void Command()
+        {
+            // save
+        }
     }
 }

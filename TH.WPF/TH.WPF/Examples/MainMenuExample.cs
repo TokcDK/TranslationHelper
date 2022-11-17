@@ -14,7 +14,7 @@ namespace TH.WPF.Examples
         {
             get => new()
             {
-                new("File", "", null)
+                new("File", "")
                 {
                     Childs = new ObservableCollection<MenuItemData> { TestMenu }
                 }
@@ -25,7 +25,7 @@ namespace TH.WPF.Examples
             get
             {
                 var _testOpenMenu = new Menus.Main.File.OpenFileMenuItem();
-                return new MenuItemData(_testOpenMenu.Name, _testOpenMenu.Description, _testOpenMenu.Command);
+                return new MenuItemData(_testOpenMenu.Name, _testOpenMenu.Description);
             }
         }
     }

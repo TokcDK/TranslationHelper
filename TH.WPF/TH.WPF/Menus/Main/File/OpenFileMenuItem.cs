@@ -20,7 +20,9 @@ namespace TH.WPF.Menus.Main.File
 
         public string Description => "Open project file";
 
-        private RelayCommand? onOpen;
-        public ICommand Command => onOpen ??= new RelayCommand(obj => { MenuCommands.Open(); });
+        public void Command() 
+        { 
+            MenuCommands.Open(); 
+        }
     }
 }

@@ -25,6 +25,6 @@ namespace TH.WPF.Menus
         /// <summary>
         /// Command for menu
         /// </summary>
-        ICommand Command { get; }
+        void Command();
     }
 }
