@@ -19,6 +19,10 @@ namespace TH.WPF.Menus
         /// </summary>
         string Description { get; }
         /// <summary>
+        /// Menu category if it is submenu
+        /// </summary>
+        string CategoryName { get; }
+        /// <summary>
         /// Command for menu
         /// </summary>
         ICommand Command { get; }

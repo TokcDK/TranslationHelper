@@ -11,4 +11,8 @@
     <PackageReference Include="DataGridExtensions" Version="2.5.13" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="K:\0GIT\[TokcDK]\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj" />
+  </ItemGroup>
+
 </Project>

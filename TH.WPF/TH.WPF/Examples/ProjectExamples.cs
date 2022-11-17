@@ -2,9 +2,9 @@
 using System.IO;
 using TH.WPF.ViewModels;
 
-namespace TH.WPF.Models
+namespace TH.WPF.Examples
 {
-    public class TestData
+    public class ProjectExamples
     {
         public static ProjectFileInfo TestFile { get; } = new ProjectFileInfo()
         {
