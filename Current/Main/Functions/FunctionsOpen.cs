@@ -28,16 +28,7 @@ namespace TranslationHelper.Functions
                     //bool tempMode = AppData.CurrentProject.OpenFileMode;
                     //AppData.CurrentProject.OpenFileMode = true;// temporary set open file mode to true if on save mode trying to open files to prevent errors in time of get extensions for filter
 
-                    var possibleExtensions = string.Join("|",
-                        GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFormat>()
-                        .Where(f => !string.IsNullOrWhiteSpace(f.Extension))
-                        .Select(f =>
-                        (!string.IsNullOrWhiteSpace(f.Name) ? f.Name : f.GetType().ToString().Substring($"{nameof(TranslationHelper)}.{nameof(TranslationHelper.Formats)}.".Length))
-                        + "|"
-                        + string.Join(";", f.Extension.Split(',').Where(e => e.Length > 0).Select(e => (e[0] == '.' ? "*" : "") + e))
-                        )
-                        .Distinct());
-                    THFOpen.Filter = possibleExtensions + "|RPGMakerTrans patch|RPGMKTRANSPATCH|Application EXE|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
+                    THFOpen.Filter = GetFilters();
                     //THFOpen.Filter = string.Join(";", THFOpen.Filter.Split(';').Distinct());
 
                     //AppData.CurrentProject.OpenFileMode = tempMode;
@@ -100,19 +91,28 @@ namespace TranslationHelper.Functions
             AppData.Main.IsOpeningInProcess = false;
         }
 
+        private static string GetFilters()
+        {
+            var filtersFromFormats = string.Join("|",
+                        GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFormat>()
+                        .Where(f => !string.IsNullOrWhiteSpace(f.Extension))
+                        .Select(f =>
+                        (!string.IsNullOrWhiteSpace(f.Name) ? f.Name : f.GetType().ToString().Substring($"{nameof(TranslationHelper)}.{nameof(TranslationHelper.Formats)}.".Length))
+                        + "|"
+                        + string.Join(";", f.Extension.Split(',').Where(e => e.Length > 0).Select(e => (e[0] == '.' ? "*" : "") + e))
+                        )
+                        .Distinct());
+            return filtersFromFormats + "|RPGMakerTrans patch|RPGMKTRANSPATCH|Application EXE|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
+        }
+
         private static string GetCorrectedGameDIr(string tHSelectedGameDir)
         {
-            if (tHSelectedGameDir.Length == 0)
-            {
-                tHSelectedGameDir = AppData.CurrentProject.SelectedDir;
-            }
+            if (tHSelectedGameDir.Length == 0) tHSelectedGameDir = AppData.CurrentProject.SelectedDir;
 
             //для rpgmaker mv. если была папка data, которая в папке www
             string pFolderName = Path.GetFileName(tHSelectedGameDir);
-            if (string.Compare(pFolderName, "data", true, CultureInfo.InvariantCulture) == 0)
-            {
-                return Path.GetDirectoryName(Path.GetDirectoryName(tHSelectedGameDir));
-            }
+            if (string.Compare(pFolderName, "data", true, CultureInfo.InvariantCulture) == 0) return Path.GetDirectoryName(Path.GetDirectoryName(tHSelectedGameDir));
+
             return tHSelectedGameDir;
         }
 
@@ -123,7 +123,7 @@ namespace TranslationHelper.Functions
 
             AppData.Main.frmMainPanel.Invoke((Action)(() => AppData.Main.frmMainPanel.Visible = true));
 
-            List<Type> foundTypes = new List<Type>();
+            var foundTypes = new List<Type>();
 
             //Try detect and open new type projects
             foreach (Type Project in AppData.ProjectsList) // iterate projectbase types
@@ -377,10 +377,7 @@ namespace TranslationHelper.Functions
         {
             AppData.CurrentProject.SaveFileMode = true; // project opened. dont need to openfilemode
 
-            if (!AppData.Main.THWorkSpaceSplitContainer.Visible)
-            {
-                AppData.Main.THWorkSpaceSplitContainer.Visible = true;
-            }
+            if (!AppData.Main.THWorkSpaceSplitContainer.Visible) AppData.Main.THWorkSpaceSplitContainer.Visible = true;
 
             if (AppData.Main.THFilesList.GetItemsCount() == 0 && AppData.CurrentProject.FilesContent.Tables.Count > 0)
             {
@@ -455,9 +452,7 @@ namespace TranslationHelper.Functions
             {
                 AppData.Main.Text += AppData.Main.FVariant;
             }
-            catch
-            {
-            }
+            catch { }
 
             AppSettings.ProjectNewLineSymbol = (AppData.CurrentProject != null)
                 ? AppData.CurrentProject.NewlineSymbol
@@ -493,10 +488,7 @@ namespace TranslationHelper.Functions
             List<DataTable> result = new List<DataTable>();
             result.AddRange(sortedNoExt.OrderBy(t => t.TableName));
             sortedByExt = sortedByExt.OrderBy(p => p.Key).ToDictionary(p => p.Key, p => p.Value);
-            foreach (var list in sortedByExt.Values)
-            {
-                result.AddRange(list.OrderBy(t => t.TableName));
-            }
+            foreach (var list in sortedByExt.Values) result.AddRange(list.OrderBy(t => t.TableName));
 
             return result.ToArray();
         }
@@ -570,7 +562,7 @@ namespace TranslationHelper.Functions
             //ProjectData.Main.fileToolStripMenuItem.DropDownItems
             if (!foundOld)
             {
-                category = new System.Windows.Forms.ToolStripMenuItem
+                category = new ToolStripMenuItem
                 {
                     Text = recentMenuName
                 };
@@ -582,7 +574,7 @@ namespace TranslationHelper.Functions
 
             foreach (var item in items)
             {
-                var ItemMenu = new System.Windows.Forms.ToolStripMenuItem
+                var ItemMenu = new ToolStripMenuItem
                 {
                     Text = item
                 };
@@ -590,16 +582,10 @@ namespace TranslationHelper.Functions
                 ItemMenu.Click += RecentFilesOpen_Click;
             }
 
-            if (!foundOld)
-            {
-                AppData.Main.Invoke((Action)(() => AppData.Main.fileToolStripMenuItem.DropDownItems.Add(category)));
-            }
+            if (!foundOld) AppData.Main.Invoke((Action)(() => AppData.Main.fileToolStripMenuItem.DropDownItems.Add(category)));
         }
 
-        private static void RecentFilesOpen_Click(object sender, EventArgs e)
-        {
-            OpenProject((sender as ToolStripMenuItem).Text);
-        }
+        private static void RecentFilesOpen_Click(object sender, EventArgs e) { OpenProject((sender as ToolStripMenuItem).Text); }
 
         private static void AfterOpenCleaning()
         {
