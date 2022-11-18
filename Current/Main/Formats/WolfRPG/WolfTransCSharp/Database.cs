@@ -8,6 +8,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class Database : WolftransCSharpBase
     {
+        public override string Extension => "";
 
         protected override void FileOpen()
         {

@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.KiriKiri
         {
         }
 
-        public override string Ext => ".tsv";
+        public override string Extension => ".tsv";
 
         protected override KeywordActionAfter ParseStringFileLine()
         {

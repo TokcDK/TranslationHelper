@@ -8,6 +8,8 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class MPS : CommandUserBase
     {
+        public override string Extension => ".mps";
+
         protected override void FileOpen()
         {
             Data = new ParserMap();

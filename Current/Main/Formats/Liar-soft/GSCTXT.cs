@@ -11,7 +11,7 @@ namespace TranslationHelper.Formats.Liar_soft
         {
         }
 
-        public override string Ext => ".txt";
+        public override string Extension => ".txt";
 
         protected override KeywordActionAfter ParseStringFileLine()
         {

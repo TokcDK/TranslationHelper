@@ -37,12 +37,12 @@ namespace TranslationHelper.Projects.ZZZZFormats
         {
             var format = (FormatBase)Activator.CreateInstance(formatType);
             
-            return string.Equals(format.Ext, fileExt, StringComparison.InvariantCultureIgnoreCase);
+            return string.Equals(format.Extension, fileExt, StringComparison.InvariantCultureIgnoreCase);
         }
 
         FormatBase Format;
 
-        public override string Name => string.IsNullOrWhiteSpace(Format.Name) ? Format.Ext: Format.Name;
+        public override string Name => string.IsNullOrWhiteSpace(Format.Name) ? Format.Extension: Format.Name;
 
         public override bool Open()
         {
@@ -74,7 +74,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
         bool OpenSave()
         {
             var dir = Path.GetDirectoryName(AppData.SelectedFilePath);
-            var ext = Format.Ext;
+            var ext = Format.Extension;
             int extCnt = 0;
             foreach (var i in Directory.EnumerateFiles(dir, "*" + ext)) if (++extCnt > 1) break;
 

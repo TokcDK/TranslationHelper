@@ -10,7 +10,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games.CSV
         {
         }
 
-        public override string Ext => ".csv";
+        public override string Extension => ".csv";
 
         /// <summary>
         /// Determines when need or not need to set info line

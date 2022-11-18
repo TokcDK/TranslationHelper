@@ -8,21 +8,9 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 {
     abstract class KSOther : KSParserBase
     {
-        public class LinePart
-        {
-            public string Value { get; }
-
-            public bool IsString { get; }
-            public LinePart(string value, bool isString)
-            {
-                Value = value;
-                IsString = isString;
-            }
-        }
-
         readonly KSSyntax.Attribute Attr = new KSSyntax.Attribute();
 
-        public override string Ext => ".ks";
+        public override string Extension => ".ks";
 
         bool IsScript = false;
         protected override KeywordActionAfter ParseStringFileLine()

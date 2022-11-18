@@ -13,6 +13,8 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class CommonEvents: CommandUserBase
     {
+        public override string Extension => "";
+
         protected override void FileOpen()
         {
             Data = new WT.Parsers.CommonEvents.ParserCommonEvents();

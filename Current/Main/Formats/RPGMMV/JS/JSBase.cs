@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         internal override bool UseTableNameWithoutExtension => false;
 
-        public override string Ext => ".js";
+        public override string Extension => ".js";
 
         public override string Name => "RPGMakerMV plugin js file";
 

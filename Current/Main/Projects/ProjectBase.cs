@@ -256,7 +256,7 @@ namespace TranslationHelper.Projects
                 format.FilePath = file.FullName;
 
                 // check extension for case im mask was "*.*" or kind of
-                if (!string.IsNullOrWhiteSpace(format.Ext) && file.Extension != format.Ext) return;
+                if (!string.IsNullOrWhiteSpace(format.Extension) && file.Extension != format.Extension) return;
 
                 // check if exist table has any translated
                 if (SaveFileMode && existsTables.Contains(format.FileName) && !format.FileName.HasAnyTranslated()) return;

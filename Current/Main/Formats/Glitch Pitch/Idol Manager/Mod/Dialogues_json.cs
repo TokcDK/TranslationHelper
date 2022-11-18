@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Dialogues_json : IdolManagerModBase
     {
-        public override string Ext => ".json";
+        public override string Extension => ".json";
         protected override void ParseFileContent()
         {
             var infoContent = JsonConvert.DeserializeObject<List<Dialogues_json_c>>(ParseData.Reader.ReadToEnd());

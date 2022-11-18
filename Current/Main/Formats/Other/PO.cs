@@ -6,7 +6,7 @@ namespace TranslationHelper.Formats.Other
 {
     internal class PO : FormatStringBase
     {
-        public override string Ext => ".po";
+        public override string Extension => ".po";
 
         StringBuilder Info = new StringBuilder();
         protected override KeywordActionAfter ParseStringFileLine()

@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.AliceSoft
         {
         }
 
-        public override string Ext => ".txt";
+        public override string Extension => ".txt";
 
         string lastgroupname = "";
         readonly string ainstringpattern = @"^;?[sm]\[[0-9]{1,10}\] \= \""(.+)\""$";

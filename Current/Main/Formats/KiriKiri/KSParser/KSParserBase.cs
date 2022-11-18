@@ -19,7 +19,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             textOnMessage = new List<string>();
         }
 
-        public override string Ext => ".ks";
+        public override string Extension => ".ks";
 
         bool IsScript = false;
         bool TextOn = false;
@@ -608,7 +608,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
             return Regex.Replace(line, @"\[[^\]]+\]", "");
         }
 
-        internal virtual Encoding FileEncoding()
+        internal override Encoding FileEncoding()
         {
             return new UTF8Encoding(false);
         }

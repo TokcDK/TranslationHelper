@@ -6,6 +6,8 @@ namespace TranslationHelper.Formats.RPGMMV
 {
     class GAMEFONTCSS : RPGMMVBase
     {
+        public override string Extension => ".css";
+
         public GAMEFONTCSS()
         {
         }

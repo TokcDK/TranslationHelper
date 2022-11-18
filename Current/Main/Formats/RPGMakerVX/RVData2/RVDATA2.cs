@@ -5,7 +5,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 {
     internal class RVDATA2 : FormatBinaryBase
     {
-        public override string Ext => ".rvdata2";
+        public override string Extension => ".rvdata2";
 
         protected override void FileOpen()
         {

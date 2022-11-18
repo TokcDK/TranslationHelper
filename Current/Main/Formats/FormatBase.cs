@@ -83,10 +83,9 @@ namespace TranslationHelper.Formats
 
         /// <summary>
         /// extension which can be parsed with the format, ".txt" or ".txt,.csv" for example.
-        /// override ExtIdentifier() to determine when a file with the extension can be opened
         /// </summary>
         /// <returns></returns>
-        public virtual string Ext => null;
+        public abstract string Extension { get; }
 
         /// <summary>
         /// name of format
@@ -425,7 +424,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected virtual bool FilePreOpenActions()
         {
-            if (!string.IsNullOrWhiteSpace(Ext) && Path.GetExtension(GetOpenFilePath()) != Ext) return false; // extension must be same as set, if set
+            if (!string.IsNullOrWhiteSpace(Extension) && Path.GetExtension(GetOpenFilePath()) != Extension) return false; // extension must be same as set, if set
 
             if (SaveFileMode && !AppData.THFilesList.Items.Contains(FileName)) return false;
 

@@ -10,6 +10,8 @@ namespace TranslationHelper.Formats.KiriKiri
 {
     class CSV : FormatStringBase
     {
+        public override string Extension => ".csv";
+
         public CSV()
         {
         }

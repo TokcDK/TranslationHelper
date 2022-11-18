@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.Raijin7.eve
         {
         }
 
-        public override string Ext => ".txt";
+        public override string Extension => ".txt";
 
         protected override bool TryOpen()
         {

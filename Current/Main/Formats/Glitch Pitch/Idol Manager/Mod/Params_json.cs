@@ -12,7 +12,7 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Params_json : IdolManagerModBase
     {
-        public override string Ext => ".json";
+        public override string Extension => ".json";
         protected override void ParseFileContent()
         {
             var infoContent = JsonConvert.DeserializeObject<Params_json_c>(FixBadJson(ParseData.Reader.ReadToEnd()));

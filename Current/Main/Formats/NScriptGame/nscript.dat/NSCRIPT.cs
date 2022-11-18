@@ -14,7 +14,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
         {
         }
 
-        public override string Ext => ".dat";
+        public override string Extension => ".dat";
 
         protected override bool TryOpen()
         {

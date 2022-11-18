@@ -14,7 +14,7 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Trivia_json : IdolManagerModBase
     {
-        public override string Ext => ".json";
+        public override string Extension => ".json";
 
         protected override KeywordActionAfter ParseStringFileLine()
         {

@@ -8,7 +8,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
         {
         }
 
-        public override string Ext => ".csv";
+        public override string Extension => ".csv";
 
         protected override KeywordActionAfter ParseStringFileLine()
         {

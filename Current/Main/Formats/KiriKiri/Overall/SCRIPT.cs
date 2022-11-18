@@ -21,6 +21,9 @@ namespace TranslationHelper.Formats.KiriKiri
         string KiriKiriVariableSearchRegexPattern = string.Empty;
         string KiriKiriVariableSearchRegexFullPattern = string.Empty;
         string KiriKiriQuotePattern;
+
+        public override string Extension => ".ks";
+
         private bool KiriKiriScriptScenarioOpen()
         {
             try

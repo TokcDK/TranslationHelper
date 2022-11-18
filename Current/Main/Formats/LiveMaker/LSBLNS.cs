@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.LiveMaker
         {
         }
 
-        public override string Ext => ".lns";
+        public override string Extension => ".lns";
 
         bool CaptureMessage = false;
         protected override KeywordActionAfter ParseStringFileLine()
