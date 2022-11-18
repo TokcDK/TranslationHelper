@@ -28,9 +28,17 @@ namespace TranslationHelper.Functions
                     //bool tempMode = AppData.CurrentProject.OpenFileMode;
                     //AppData.CurrentProject.OpenFileMode = true;// temporary set open file mode to true if on save mode trying to open files to prevent errors in time of get extensions for filter
 
-                    var possibleExtensions = string.Join(";*", GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFormat>().Where(f => !string.IsNullOrWhiteSpace(f.Extension) && f.Extension[0] == '.').Select(f => f.Extension).Distinct());
-                    THFOpen.Filter = "All|*" + possibleExtensions + ";RPGMKTRANSPATCH|RPGMakerTrans patch|RPGMKTRANSPATCH|RPG maker execute(*.exe)|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
-                    THFOpen.Filter = string.Join(";", THFOpen.Filter.Split(';').Distinct());
+                    var possibleExtensions = string.Join("|",
+                        GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFormat>()
+                        .Where(f => !string.IsNullOrWhiteSpace(f.Extension))
+                        .Select(f =>
+                        (!string.IsNullOrWhiteSpace(f.Name) ? f.Name : f.GetType().ToString().Substring(nameof(TranslationHelper).Length + nameof(TranslationHelper.Formats).Length + 2))
+                        + "|"
+                        + string.Join(";", f.Extension.Split(',').Where(e => e.Length > 0).Select(e => (e[0] == '.' ? "*" : "") + e))
+                        )
+                        .Distinct());
+                    THFOpen.Filter = possibleExtensions + "|RPGMakerTrans patch|RPGMKTRANSPATCH|Application EXE|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
+                    //THFOpen.Filter = string.Join(";", THFOpen.Filter.Split(';').Distinct());
 
                     //AppData.CurrentProject.OpenFileMode = tempMode;
                     if (THFOpen.ShowDialog() != DialogResult.OK || THFOpen.FileName == null)
