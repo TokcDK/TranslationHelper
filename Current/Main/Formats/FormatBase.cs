@@ -749,10 +749,6 @@ namespace TranslationHelper.Formats
 
         public bool RET { get; internal set; }
 
-        string IFormat.Name => throw new NotImplementedException();
-
-        string IFormat.Ext => throw new NotImplementedException();
-
         /// <summary>
         /// check if translation is exists and set str return true if found.
         /// <paramref name="valueToTranslate"/> = input string, must contain original value for search.
