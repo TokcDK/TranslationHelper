@@ -35,7 +35,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         private static bool IsValidFormat(Type formatType, string fileExt)
         {
-            var format = (FormatBase)Activator.CreateInstance(formatType);
+            var format = (IFormat)Activator.CreateInstance(formatType);
             
             return string.Equals(format.Extension, fileExt, StringComparison.InvariantCultureIgnoreCase);
         }
@@ -47,7 +47,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
         public override bool Open()
         {
             var fileExt = Path.GetExtension(AppData.SelectedFilePath);
-            List<Type> foundTypes = new List<Type>();
+            var foundTypes = new List<Type>();
             foreach (var formatType in GetFormatTypes(typeof(FormatBase))) 
                 if (IsValidFormat(formatType, fileExt)) foundTypes.Add(formatType);
 
