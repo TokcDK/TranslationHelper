@@ -60,9 +60,6 @@
     <ApplicationIcon>thIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="KenshModTIO">
-      <HintPath>K:\0GIT\[TokcDK]\[Kenshi]\KenshiModTranslationExportImport\KenshModTIO\bin\Release\net6.0\KenshModTIO.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
