@@ -23,7 +23,7 @@ namespace TranslationHelper.Menus.MainMenus.File
         {
             if (AppData.CurrentProject.DontLoadDuplicates 
                 && AppData.CurrentProject.TablesLinesDict != null 
-                && AppData.CurrentProject.TablesLinesDict.Count > 0)
+                && !AppData.CurrentProject.TablesLinesDict.IsEmpty)
             {
                 AppData.CurrentProject.TablesLinesDict.Clear();
             }
