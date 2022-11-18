@@ -89,13 +89,6 @@ namespace TranslationHelper.Formats
         public virtual string Ext => null;
 
         /// <summary>
-        /// identifier to check how to identify if selected extension must be parsed with this format.
-        /// in result can be added new project which will be used Ext and this identifier to open valid standalone files.
-        /// </summary>
-        /// <returns></returns>
-        internal virtual int ExtIdentifier => 0; // 0 means not use identifier
-
-        /// <summary>
         /// name of format
         /// </summary>
         /// <returns></returns>

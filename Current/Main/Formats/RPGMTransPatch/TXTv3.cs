@@ -9,15 +9,6 @@ namespace TranslationHelper.Formats.RPGMTransPatch
         {
         }
 
-        internal override int ExtIdentifier
-        {
-            get
-            {
-                var patchfile = Path.GetFullPath(Path.GetDirectoryName(AppData.SelectedFilePath) + @"\..\RPGMKTRANSPATCH");
-                return File.Exists(patchfile) && Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)) == "patch" ? 1 : -1;
-            }
-        }
-
         public override string Name => "RPGMTrans patch txt";
 
         protected override string PatchFileID()

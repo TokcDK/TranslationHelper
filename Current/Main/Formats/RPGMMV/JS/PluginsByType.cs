@@ -13,8 +13,6 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
         }
 
-        internal override int ExtIdentifier => (Path.GetFileName(AppData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)).ToUpperInvariant() == "JS" ? 1 : -1);
-
         protected override bool JSTokenValid(JValue value)
         {
             return !value.Path.Contains("Modelname") && !value.Path.Contains("imageName");

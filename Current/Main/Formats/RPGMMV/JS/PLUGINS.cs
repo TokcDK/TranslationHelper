@@ -13,8 +13,6 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             JsonParser = new PluginsJSJsonParser(this);
         }
 
-        internal override int ExtIdentifier => (Path.GetFileName(AppData.SelectedFilePath).ToUpperInvariant() == "PLUGINS.JS" && Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath)).ToUpperInvariant() == "JS" ? 1 : -1);
-
         //protected static bool IsPluginsJS = false; //for some specific to plugins.js operations
 
         protected override bool JSTokenValid(JValue value)

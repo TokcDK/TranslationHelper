@@ -37,8 +37,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
         {
             var format = (FormatBase)Activator.CreateInstance(formatType);
             
-            return string.Equals(format.Ext, fileExt, StringComparison.InvariantCultureIgnoreCase) 
-                && format.ExtIdentifier > -1;
+            return string.Equals(format.Ext, fileExt, StringComparison.InvariantCultureIgnoreCase);
         }
 
         FormatBase Format;
