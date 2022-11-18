@@ -32,7 +32,7 @@ namespace TranslationHelper.Functions
                         GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFormat>()
                         .Where(f => !string.IsNullOrWhiteSpace(f.Extension))
                         .Select(f =>
-                        (!string.IsNullOrWhiteSpace(f.Name) ? f.Name : f.GetType().ToString().Substring(nameof(TranslationHelper).Length + nameof(TranslationHelper.Formats).Length + 2))
+                        (!string.IsNullOrWhiteSpace(f.Name) ? f.Name : f.GetType().ToString().Substring($"{nameof(TranslationHelper)}.{nameof(TranslationHelper.Formats)}.".Length))
                         + "|"
                         + string.Join(";", f.Extension.Split(',').Where(e => e.Length > 0).Select(e => (e[0] == '.' ? "*" : "") + e))
                         )
