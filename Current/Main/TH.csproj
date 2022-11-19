@@ -347,6 +347,8 @@
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlock.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Menus\MainMenus\File\MenuItemXOREncript.cs" />
+    <Compile Include="Menus\MainMenus\File\MenuItemXORDecript.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemLoadDB.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemLoadDBAsForced.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemLoadDBAs.cs" />
