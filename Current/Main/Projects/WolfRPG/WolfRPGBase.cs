@@ -99,27 +99,26 @@ namespace TranslationHelper.Projects.WolfRPG
         internal override string HardcodedFixes(string original, string translation)
         {
             //fix escape sequences 
-            if (Regex.IsMatch(translation, @"(?<!\\)\\[^sntr><#\\]"))
+            if (!Regex.IsMatch(translation, @"(?<!\\)\\[^sntr><#\\]")) return translation;
+
+            var sequences = new char[] { 'S', 'N', 'T', 'R' };
+            var mc = Regex.Matches(translation, @"(?<!\\)\\[^sntr><#\\]");
+            for (int i = mc.Count - 1; i >= 0; i--)
             {
-                var sequences = new char[] { 'S', 'N', 'T', 'R' };
-                var mc = Regex.Matches(translation, @"(?<!\\)\\[^sntr><#\\]");
-                for (int i = mc.Count - 1; i >= 0; i--)
+                foreach (var schar in sequences)
                 {
-                    foreach (var schar in sequences)
-                    {
-                        if (mc[i].Value == "\\" + schar)
-                        {
-                            translation = translation.Remove(mc[i].Index, mc[i].Length).Insert(mc[i].Index, ("\\" + schar).ToLower());
-                        }
-                    }
+                    if (mc[i].Value != "\\" + schar) continue;
+
+                    translation = translation.Remove(mc[i].Index, mc[i].Length).Insert(mc[i].Index, ("\\" + schar).ToLower());
                 }
             }
+
             return translation;
         }
 
-        internal override List<IMenuItem> FileRowItemMenusList()
+        internal override IFileRowMenuItem[] FileRowItemMenusList()
         {
-            return new List<IMenuItem>() { new AddToStandaloneContextList() };
+            return new IFileRowMenuItem[] { new AddToStandaloneContextList() };
         }
     }
 }

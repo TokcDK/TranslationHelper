@@ -513,9 +513,9 @@ namespace TranslationHelper.Projects.RPGMMV
             return str;
         }
 
-        internal override List<IMenuItem> FilesListItemMenusList()
+        internal override IFileListMenuItem[] FilesListItemMenusList()
         {
-            return new List<IMenuItem>()
+            return new IFileListMenuItem[]
             {
                 new AddToSkipJS(),
                 new SkipJSFileOpen(),
