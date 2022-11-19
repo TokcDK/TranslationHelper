@@ -2489,18 +2489,7 @@ namespace TranslationHelper
 
         private void THSourceRichTextBox_SelectionChanged(object sender, EventArgs e)
         {
-            if (!tlpTextLenPosInfo.Visible)
-                tlpTextLenPosInfo.Visible = true;
-        }
-
-        private void TestXorDecriptToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            tests.Xorfornscript.DecryptXor();
-        }
-
-        private void TestXorEncriptToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            tests.Xorfornscript.EncryptXor();
+            if (!tlpTextLenPosInfo.Visible) tlpTextLenPosInfo.Visible = true;
         }
 
         private void THfrmMain_FormClosed(object sender, FormClosedEventArgs e)
