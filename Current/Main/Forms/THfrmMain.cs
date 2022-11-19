@@ -274,10 +274,6 @@ namespace TranslationHelper
         }
 
         internal volatile bool IsOpeningInProcess;
-        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FunctionsOpen.OpenProject();
-        }
 
         private void SetDoublebuffered(bool value)
         {
@@ -736,19 +732,6 @@ namespace TranslationHelper
 
         internal volatile bool SaveInAction;
         internal bool FileDataWasChanged;
-        private async void WriteTranslationToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (AppData.CurrentProject.DontLoadDuplicates && AppData.CurrentProject.TablesLinesDict != null && AppData.CurrentProject.TablesLinesDict.Count > 0)
-            {
-                AppData.CurrentProject.TablesLinesDict.Clear();
-            }
-            await Task.Run(() => new FunctionsSave().PrepareToWrite()).ConfigureAwait(true);
-            AppData.CurrentProject.AfterTranslationWriteActions();
-            if (AppData.CurrentProject.DontLoadDuplicates)
-            {
-                AppData.CurrentProject.TablesLinesDict = null;
-            }
-        }
 
         /// <summary>
         /// control progressbar Current\Max
@@ -968,37 +951,7 @@ namespace TranslationHelper
         }
 
         string dbpath;
-        string lastautosavepath;
-        private async void SaveTranslationToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //if (ProjectData.Main.SaveInAction)
-            //{
-            //    return;
-            //}
-
-            //ProjectData.SaveFileMode = true;
-
-            var path = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
-            lastautosavepath = path;
-
-            ProgressInfo(true);
-
-            switch (AppData.CurrentProject.Name)
-            {
-                case "RPGMakerTransPatch":
-                case "RPG Maker game with RPGMTransPatch":
-                    _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(AppData.CurrentProject.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
-                    break;
-            }
-
-            await Task.Run(() => AppData.CurrentProject.PreSaveDB()).ConfigureAwait(true);
-            await Task.Run(() => WriteDBFileLite(AppData.CurrentProject.FilesContent, path)).ConfigureAwait(true);
-
-            FunctionsSounds.SaveDBComplete();
-            ProgressInfo(false);
-
-            //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
-        }
+        internal string lastautosavepath;
 
         bool AutosaveActivated;
         private void Autosave()
@@ -1789,56 +1742,9 @@ namespace TranslationHelper
             AppData.CurrentProject.FilesContent.Tables[THFilesList.GetSelectedIndex()].DefaultView.Sort = string.Empty;
         }
 
-        private async void SaveTranslationAsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
-            {
-                THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
-
-                THFSaveBDAs.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
-                THFSaveBDAs.FileName = FunctionsDBFile.GetDBFileName(true) + FunctionsDBFile.GetDBCompressionExt();
-
-                if (THFSaveBDAs.ShowDialog() == DialogResult.OK)
-                {
-                    if (THFSaveBDAs.FileName.Length == 0)
-                    {
-                    }
-                    else
-                    {
-                        //string spath = THFOpenBD.FileName;
-                        //THFOpenBD.OpenFile().Close();
-                        //MessageBox.Show(THFOpenBD.FileName);
-                        //LoadTranslationFromDB();
-
-                        ProgressInfo(true);
-
-                        switch (AppData.CurrentProject.Name)
-                        {
-                            case "RPGMakerTransPatch":
-                            case "RPG Maker game with RPGMTransPatch":
-                                _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(AppData.CurrentProject.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
-                                break;
-                        }
-
-                        //SaveNEWDB(THFilesElementsDataset, THFSaveBDAs.FileName);
-                        //WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
-
-                        await Task.Run(() => WriteDBFileLite(AppData.CurrentProject.FilesContent, THFSaveBDAs.FileName)).ConfigureAwait(true);
-                        //Task task = new Task(() => WriteDBFileLite(ProjectData.THFilesElementsDataset, THFSaveBDAs.FileName));
-                        //task.Start();
-                        //task.Wait();
-
-                        FunctionsSounds.SaveDBComplete();
-                        ProgressInfo(false);
-                        //MessageBox.Show("finished");
-                    }
-                }
-            }
-        }
-
         bool WriteDBFileIsBusy;
         string WriteDBFileLiteLastFileName = string.Empty;
-        private async void WriteDBFileLite(DataSet ds, string fileName)
+        internal async void WriteDBFileLite(DataSet ds, string fileName)
         {
             if (fileName.Length == 0 || ds == null) return;
 

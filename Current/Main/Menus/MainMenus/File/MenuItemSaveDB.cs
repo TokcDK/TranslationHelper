@@ -25,6 +25,24 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         public async void OnClick(object sender, EventArgs e)
         {
+            var path = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
+            AppData.Main.lastautosavepath = path;
+
+            AppData.Main.ProgressInfo(true);
+
+            //switch (AppData.CurrentProject.Name)
+            //{
+            //    case "RPGMakerTransPatch":
+            //    case "RPG Maker game with RPGMTransPatch":
+            //        //_ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(AppData.CurrentProject.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+            //        break;
+            //}
+
+            await Task.Run(() => AppData.CurrentProject.PreSaveDB()).ConfigureAwait(true);
+            await Task.Run(() => AppData.Main.WriteDBFileLite(AppData.CurrentProject.FilesContent, path)).ConfigureAwait(true);
+
+            FunctionsSounds.SaveDBComplete();
+            AppData.Main.ProgressInfo(false);
         }
     }
 }
