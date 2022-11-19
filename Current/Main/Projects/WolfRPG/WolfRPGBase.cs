@@ -117,7 +117,7 @@ namespace TranslationHelper.Projects.WolfRPG
             return translation;
         }
 
-        internal override List<IMenuItem> GridItemMenusList()
+        internal override List<IMenuItem> FileRowItemMenusList()
         {
             return new List<IMenuItem>() { new AddToStandaloneContextList() };
         }

@@ -8,7 +8,7 @@ using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Projects.RPGMMV.Menus
 {
-    class AddToSkipJS : IFileListItemMenu
+    class AddToSkipJS : IFileListMenuItem
     {
         public string Text => "[" + AppData.CurrentProject.Name+ "]" + T._("Skip JS");
 

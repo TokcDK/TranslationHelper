@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Automation.Provider;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
@@ -747,8 +748,20 @@ namespace TranslationHelper.Projects
         /// </summary>
         internal virtual void AfterTranslationWriteActions() { System.Diagnostics.Process.Start("explorer.exe", AppData.CurrentProject.SelectedDir); }
 
-        internal virtual List<IMenuItem> FilesListItemMenusList() { return new List<IMenuItem>(); }
-
-        internal virtual List<IMenuItem> GridItemMenusList() { return new List<IMenuItem>(); }
+        /// <summary>
+        /// Main menus which need to be added for the project
+        /// </summary>
+        /// <returns></returns>
+        internal virtual List<IMainMenuItem> MainMenuItemMenusList() { return new List<IMainMenuItem>(); }
+        /// <summary>
+        /// Files list item menus which must be added for the project
+        /// </summary>
+        /// <returns></returns>
+        internal virtual List<IFileListMenuItem> FilesListItemMenusList() { return new List<IFileListMenuItem>(); }
+        /// <summary>
+        /// FileRow menus which must be added for the project
+        /// </summary>
+        /// <returns></returns>
+        internal virtual List<IFileRowMenuItem> FileRowItemMenusList() { return new List<IFileRowMenuItem>(); }
     }
 }

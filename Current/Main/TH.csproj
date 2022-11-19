@@ -353,7 +353,7 @@
     <Compile Include="Menus\MainMenus\File\MenuItemOpen.cs" />
     <Compile Include="Menus\MenusCreator.cs" />
     <Compile Include="Menus\MenusExtensions.cs" />
-    <Compile Include="Menus\FileRowMenus\IGridItemMenu.cs" />
+    <Compile Include="Menus\FileRowMenus\IFileRowItemMenu.cs" />
     <Compile Include="Menus\MainMenus\IMainMenuItem.cs" />
     <Compile Include="Menus\IMenuItem.cs" />
     <Compile Include="Menus\FilesListMenus\IFileListItemMenu.cs" />

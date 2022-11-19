@@ -6,7 +6,7 @@ using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Projects.RPGMMV.Menus
 {
-    class OpenJsonSkipCodesList : IFileListItemMenu
+    class OpenJsonSkipCodesList : IFileListMenuItem
     {
         public string Text => "[" + AppData.CurrentProject.Name+ "]" + T._(" Open SkipCodesList");
 

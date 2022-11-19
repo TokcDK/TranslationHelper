@@ -3,7 +3,7 @@
 namespace TranslationHelper.Menus.MenuTypes
 {
 
-    public interface IFileListItemMenu: IMenuItem
+    public interface IFileListMenuItem: IMenuItem
     {
     }
 }

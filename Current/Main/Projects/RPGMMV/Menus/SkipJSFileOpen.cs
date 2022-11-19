@@ -5,7 +5,7 @@ using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Projects.RPGMMV.Menus
 {
-    class SkipJSFileOpen : IFileListItemMenu
+    class SkipJSFileOpen : IFileListMenuItem
     {
         public string Text => "[" + AppData.CurrentProject.Name+ "]" + T._("Skip JS") + "-->" + T._("Open");
 

@@ -8,7 +8,7 @@ using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Projects.WolfRPG.Menus
 {
-    class AddToStandaloneContextList : IFileRowItemMenu
+    class AddToStandaloneContextList : IFileRowMenuItem
     {
         public string Text => "Add standalone context";
 
