@@ -33,19 +33,14 @@ namespace TranslationHelper.Menus
                 if (contextMenuParent.Items.ContainsKey(contextMenuName))
                 {
                     var menu = contextMenuParent.Items[contextMenuName];
-                    if (menu != null || !menu.IsDisposed)
-                    {
-                        menu.Dispose();
-                    }
+                    if (menu != null || !menu.IsDisposed) menu.Dispose();
+
                     AppData.Main.Invoke((Action)(() => contextMenuParent.Items.RemoveByKey(contextMenuName)));
                 }
 
                 var contextMenuList = parent.Value;
 
-                if (contextMenuList.Count == 0)
-                {
-                    continue;
-                }
+                if (contextMenuList.Count == 0) continue;
 
                 // create main category
                 var contextMenuProjectCategory = new ToolStripMenuItem
