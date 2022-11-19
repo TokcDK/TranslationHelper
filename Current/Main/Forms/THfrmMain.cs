@@ -172,14 +172,6 @@ namespace TranslationHelper
         {
             //Menu File
             this.fileToolStripMenuItem.Text = T._("File");
-            this.openToolStripMenuItem.Text = T._("Open");
-            this.WriteTranslationInGameToolStripMenuItem.Text = T._("Write translation");
-            this.SaveTranslationToolStripMenuItem.Text = T._("Save translation");
-            this.SaveTranslationAsToolStripMenuItem.Text = T._("Save Translation as");
-            this.LoadTranslationToolStripMenuItem.Text = T._("Load Translation");
-            this.LoadTrasnlationAsToolStripMenuItem.Text = T._("Load Translation as");
-            this.LoadTrasnlationAsForcedToolStripMenuItem.Text = T._("Load Translation as") + "(" + T._("forced") + ")";
-            this.runTestGameToolStripMenuItem.Text = T._("Test");
             //Menu Edit
             this.EditToolStripMenuItem.Text = T._("Edit");
             this.OpenInWebToolStripMenuItem.Text = T._("Open in Web");
@@ -1049,17 +1041,17 @@ namespace TranslationHelper
         {
             UnLockDBLoad(false);
             LoadDB();
-            Invoke((Action)(() => LoadTranslationToolStripMenuItem.Enabled = true));
+            //Invoke((Action)(() => LoadTranslationToolStripMenuItem.Enabled = true));
         }
 
-        private void UnLockDBLoad(bool unlock = true)
+        internal void UnLockDBLoad(bool unlock = true)
         {
-            Invoke((Action)(() =>
-            {
-                LoadTranslationToolStripMenuItem.Enabled = unlock;
-                LoadTrasnlationAsToolStripMenuItem.Enabled = unlock;
-                LoadTrasnlationAsForcedToolStripMenuItem.Enabled = unlock;
-            }));
+            //Invoke((Action)(() =>
+            //{
+            //    LoadTranslationToolStripMenuItem.Enabled = unlock;
+            //    LoadTrasnlationAsToolStripMenuItem.Enabled = unlock;
+            //    LoadTrasnlationAsForcedToolStripMenuItem.Enabled = unlock;
+            //}));
         }
 
         internal async void LoadDB(bool force = true)
@@ -1211,45 +1203,39 @@ namespace TranslationHelper
         /// Load translation from selected DB
         /// </summary>
         /// <param name="forced">means load with current lines override even if they are not empty</param>
-        private async void LoadDBAs(bool forced = false)
+        internal async void LoadDBAs(bool forced = false)
         {
-            if (IsOpeningInProcess)//Do nothing if user will try to use Open menu before previous will be finished
+            //Do nothing if user will try to use Open menu before previous will be finished
+            if (IsOpeningInProcess) return;
+
+            IsOpeningInProcess = true;
+            using (OpenFileDialog THFOpenBD = new OpenFileDialog())
             {
-            }
-            else
-            {
-                IsOpeningInProcess = true;
-                using (OpenFileDialog THFOpenBD = new OpenFileDialog())
+                THFOpenBD.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
+
+                THFOpenBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
+
+                if (THFOpenBD.ShowDialog() == DialogResult.OK)
                 {
-                    THFOpenBD.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
-
-                    THFOpenBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
-
-                    if (THFOpenBD.ShowDialog() == DialogResult.OK)
+                    if (THFOpenBD.FileName.Length > 0)
                     {
-                        if (THFOpenBD.FileName.Length > 0)
-                        {
-                            await Task.Run(() => LoadTranslationFromDB(THFOpenBD.FileName, false, forced)).ConfigureAwait(true);
-                        }
+                        await Task.Run(() => LoadTranslationFromDB(THFOpenBD.FileName, false, forced)).ConfigureAwait(true);
                     }
                 }
-                IsOpeningInProcess = false;
             }
+            IsOpeningInProcess = false;
         }
 
         internal bool SavemenusNOTenabled = true;
         private async void THFileElementsDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
-            if (!AppSettings.ProjectIsOpened)
-                return;
+            if (!AppSettings.ProjectIsOpened) return;
+
 
             try
             {
                 if (FileDataWasChanged && SavemenusNOTenabled)
                 {
-                    WriteTranslationInGameToolStripMenuItem.Enabled = true;
-                    SaveTranslationToolStripMenuItem.Enabled = true;
-                    SaveTranslationAsToolStripMenuItem.Enabled = true;
                     SavemenusNOTenabled = false;
                 }
 
@@ -1801,138 +1787,6 @@ namespace TranslationHelper
             }
             catch
             {
-            }
-        }
-
-        //private void SaveNEWDB(DataSet DS4Save, string fileName)
-        //{
-        //    //int TablesCount = DS4Save.Tables.Count;
-        //    //for (int t = 0; t < TablesCount; t++)
-        //    //{
-        //    //    int RowsCount = DS4Save.Tables[t].Rows.Count;
-        //    //    for (int r = 0; r < RowsCount; r++)
-        //    //    {
-        //    //        string
-        //    //    }
-        //    //}
-        //}
-
-        private async void RunTestGameToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (AppData.CurrentProject == null /*|| ProjectData.CurrentProject.Name() == "RPG Maker MV"*/)
-            {
-                return;
-            }
-
-            if (AppData.CurrentProject.TablesLinesDict != null && AppData.CurrentProject.TablesLinesDict.Count > 0)
-            {
-                AppData.CurrentProject.TablesLinesDict.Clear();
-            }
-
-            bool BuckupCreated = false;
-            try
-            {
-                //bool success = false;
-                //if (ProjectData.CurrentProject != null)
-                //{
-                ProgressInfo(true, "Creating buckups");
-                if (!(BuckupCreated = AppData.CurrentProject.BakCreate()))
-                {
-                    return;
-                }
-
-                bool success = await Task.Run(() => AppData.CurrentProject.Save()).ConfigureAwait(true);
-                //}
-                //else
-                //{
-                //    for (int f = 0; f < THFilesList.GetItemsCount(); f++)
-                //    {
-                //        //глянуть здесь насчет поиска значения строки в колонки. Для функции поиска, например.
-                //        //https://stackoverflow.com/questions/633819/find-a-value-in-datatable
-
-                //        bool changed = false;
-                //        for (int r = 0; r < ProjectData.THFilesElementsDataset.Tables[f].Rows.Count; r++)
-                //        {
-                //            if ((ProjectData.THFilesElementsDataset.Tables[f].Rows[r][THSettings.TranslationColumnName] + string.Empty).Length == 0)
-                //            {
-                //            }
-                //            else
-                //            {
-                //                changed = true;
-                //                break;
-                //            }
-                //        }
-                //        ///*THMsg*/MessageBox.Show(ProjectData.CurrentProject.SelectedDir + "\\" + THFilesListBox.Items[0].ToString() + ".json");
-                //        if (changed)
-                //        {
-
-                //            ///*THMsg*/MessageBox.Show("start writing");
-
-                //            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                //            success = await Task.Run(() => new RPGMMVOLD().WriteJson(THFilesList.GetItemName(f), Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "data", THFilesList.GetItemName(f) + ".json"))).ConfigureAwait(true);
-                //            if (!success)
-                //            {
-                //                break;
-                //            }
-                //            //success = WriteJson(THFilesListBox.Items[f].ToString(), AppSettings.THWorkProjectDir + "\\www\\data\\" + THFilesListBox.Items[f].ToString() + ".json");
-                //        }
-                //    }
-                //}
-
-                if (success)
-                {
-                    //using (Process Testgame = new Process())
-                    {
-                        try
-                        {
-                            DirectoryInfo di = new DirectoryInfo(AppData.CurrentProject.SelectedDir);
-                            FileInfo[] fiArr = di.GetFiles("*.exe");
-                            string largestexe = string.Empty;
-                            long filesize = 0;
-                            foreach (FileInfo file in fiArr)
-                            {
-                                if (file.Length > filesize)
-                                {
-                                    filesize = file.Length;
-                                    largestexe = file.FullName;
-                                }
-                            }
-                            //MessageBox.Show("outdir=" + outdir);
-                            //Testgame.StartInfo.FileName = Path.Combine(ProjectData.CurrentProject.SelectedDir,"game.exe");
-                            //Testgame.StartInfo.FileName = largestexe;
-                            //RPGMakerTransPatch.StartInfo.Arguments = string.Empty;
-                            //Testgame.StartInfo.UseShellExecute = true;
-
-                            //http://www.cyberforum.ru/windows-forms/thread31052.html
-                            // свернуть
-                            WindowState = FormWindowState.Minimized;
-
-                            _ = Process.Start("explorer.exe", AppData.CurrentProject.SelectedDir);
-
-                            _ = FunctionsProcess.RunProcess(largestexe);
-
-                            //await Task.Run(() => Testgame.Start()).ConfigureAwait(true);
-                            //Testgame.WaitForExit();
-
-                            // Показать
-                            WindowState = FormWindowState.Normal;
-                        }
-                        catch
-                        {
-                        }
-                    }
-                }
-            }
-            catch (Win32Exception)
-            {
-            }
-            catch
-            {
-            }
-
-            if (BuckupCreated)
-            {
-                _ = AppData.CurrentProject.BakRestore();
             }
         }
 
@@ -2683,20 +2537,6 @@ namespace TranslationHelper
             _ = new EnQuotesToJp().TableT();
         }
 
-        //Form overall;
-        private void TestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //MessageBox.Show(string.Join("\r\n---------\r\n", dict));
-
-            //var b = File.ReadAllBytes(exePath);
-            //var bytes = Encoding.GetEncoding(932).GetBytes("　　極至王プラムちゃん");
-            //var pos = GetBytesPosition(b, bytes);
-
-            //var br = b.;
-
-            //CharFunctionTest();
-        }
-
         /// <summary>
         /// Byte search in byte array. One of methods from here: https://stackoverflow.com/a/41414219
         /// </summary>
@@ -2797,15 +2637,13 @@ namespace TranslationHelper
                     var xuaStatic = wc.DownloadString(new Uri("https://github.com/bbepis/XUnity.AutoTranslator/raw/master/src/XUnity.AutoTranslator.Plugin.Core/Translations/StaticTranslations.txt"));
                     foreach (var line in xuaStatic.SplitToLines())
                     {
-                        if (line.Length > 0 && line.Contains("="))
-                        {
-                            var data = line.Split('=');
+                        if (line.Length == 0 || !line.Contains("=")) continue;
 
-                            if (!dict.ContainsKey(data[0]))
-                            {
-                                dict.Add(data[0], data[1]);
-                            }
-                        }
+                        var data = line.Split('=');
+
+                        if (dict.ContainsKey(data[0])) continue;
+
+                        dict.Add(data[0], data[1]);
                     }
 
                     FunctionsDBFile.WriteDictToXMLDB(dict, Path.Combine(THSettings.DBDirPath, "XUA.cmx"));
@@ -2816,11 +2654,6 @@ namespace TranslationHelper
                 }
             }
             AppData.Main.ProgressInfo(false);
-        }
-
-        private void LoadTrasnlationAsForcedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LoadDBAs(true);
         }
 
         private void CharFunctionTest(object sender, EventArgs e)
