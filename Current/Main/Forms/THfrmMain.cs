@@ -1196,7 +1196,6 @@ namespace TranslationHelper
 
         private void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LoadDBAs();
         }
 
         /// <summary>
@@ -2611,38 +2610,6 @@ namespace TranslationHelper
         private void TableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new FixJpMessagesTranslation().TableT();
-        }
-
-        private void GetAndSaveStaticToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //get static XUA translation
-            using (var wc = new WebClient())
-            {
-                try
-                {
-                    var dict = new Dictionary<string, string>();
-                    AppData.Main.ProgressInfo(true, T._("Loading") + ": " + T._("Static translations") + "-" + "XUA");
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//tls12 for github
-                    var xuaStatic = wc.DownloadString(new Uri("https://github.com/bbepis/XUnity.AutoTranslator/raw/master/src/XUnity.AutoTranslator.Plugin.Core/Translations/StaticTranslations.txt"));
-                    foreach (var line in xuaStatic.SplitToLines())
-                    {
-                        if (line.Length == 0 || !line.Contains("=")) continue;
-
-                        var data = line.Split('=');
-
-                        if (dict.ContainsKey(data[0])) continue;
-
-                        dict.Add(data[0], data[1]);
-                    }
-
-                    FunctionsDBFile.WriteDictToXMLDB(dict, Path.Combine(THSettings.DBDirPath, "XUA.cmx"));
-                }
-                catch
-                {
-
-                }
-            }
-            AppData.Main.ProgressInfo(false);
         }
 
         private void CharFunctionTest(object sender, EventArgs e)

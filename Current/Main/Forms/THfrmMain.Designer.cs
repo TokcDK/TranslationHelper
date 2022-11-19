@@ -29,19 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadTranslationFromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.xmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rPGMakerTransPatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExportToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tXTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pOFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.getAndSaveStaticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenInWebToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -221,38 +217,12 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadTranslationFromToolStripMenuItem,
             this.ExportToolStripMenuItem1,
             this.importToolStripMenuItem,
-            this.getAndSaveStaticToolStripMenuItem,
             this.recentToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
-            // 
-            // loadTranslationFromToolStripMenuItem
-            // 
-            this.loadTranslationFromToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.xmlToolStripMenuItem,
-            this.rPGMakerTransPatchToolStripMenuItem});
-            this.loadTranslationFromToolStripMenuItem.Name = "loadTranslationFromToolStripMenuItem";
-            this.loadTranslationFromToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
-            this.loadTranslationFromToolStripMenuItem.Text = "Load translation from";
-            this.loadTranslationFromToolStripMenuItem.Visible = false;
-            // 
-            // xmlToolStripMenuItem
-            // 
-            this.xmlToolStripMenuItem.Name = "xmlToolStripMenuItem";
-            this.xmlToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.xmlToolStripMenuItem.Text = "xml/cmx/cmz";
-            this.xmlToolStripMenuItem.Click += new System.EventHandler(this.LoadTrasnlationAsToolStripMenuItem_Click);
-            // 
-            // rPGMakerTransPatchToolStripMenuItem
-            // 
-            this.rPGMakerTransPatchToolStripMenuItem.Name = "rPGMakerTransPatchToolStripMenuItem";
-            this.rPGMakerTransPatchToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.rPGMakerTransPatchToolStripMenuItem.Text = "Translated compatible source";
-            this.rPGMakerTransPatchToolStripMenuItem.Click += new System.EventHandler(this.LoadTranslationFromCompatibleSourceToolStripMenuItem_Click);
             // 
             // ExportToolStripMenuItem1
             // 
@@ -284,14 +254,6 @@
             this.pOFileToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.pOFileToolStripMenuItem.Text = "PO file";
             this.pOFileToolStripMenuItem.Click += new System.EventHandler(this.pOFileToolStripMenuItem_Click);
-            // 
-            // getAndSaveStaticToolStripMenuItem
-            // 
-            this.getAndSaveStaticToolStripMenuItem.Name = "getAndSaveStaticToolStripMenuItem";
-            this.getAndSaveStaticToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
-            this.getAndSaveStaticToolStripMenuItem.Text = "Get and save static";
-            this.getAndSaveStaticToolStripMenuItem.Visible = false;
-            this.getAndSaveStaticToolStripMenuItem.Click += new System.EventHandler(this.GetAndSaveStaticToolStripMenuItem_Click);
             // 
             // recentToolStripMenuItem
             // 
@@ -942,28 +904,28 @@
             this.THFiltersDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFiltersDataGridView.ColumnHeadersVisible = false;
-            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle25.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle25.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle25.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle25.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle25.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle25.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle25;
+            dataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle31.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle31.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle31.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle31.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle31.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle31.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle31;
             this.THFiltersDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.THFiltersDataGridView.Enabled = false;
             this.THFiltersDataGridView.Location = new System.Drawing.Point(1, 1);
             this.THFiltersDataGridView.Margin = new System.Windows.Forms.Padding(1);
             this.THFiltersDataGridView.Name = "THFiltersDataGridView";
-            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle26.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle26.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle26.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle26.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle26.SelectionForeColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle26.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle26;
+            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle32.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle32.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle32.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle32.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle32.SelectionForeColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle32.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle32;
             this.THFiltersDataGridView.RowTemplate.Height = 23;
             this.THFiltersDataGridView.Size = new System.Drawing.Size(621, 21);
             this.THFiltersDataGridView.TabIndex = 3;
@@ -1000,8 +962,8 @@
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(1, 26);
             this.THFileElementsDataGridView.Margin = new System.Windows.Forms.Padding(1, 1, 3, 1);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle27.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle27;
+            dataGridViewCellStyle33.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle33;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 325);
             this.THFileElementsDataGridView.TabIndex = 2;
@@ -1676,7 +1638,6 @@
         private System.Windows.Forms.ToolStripMenuItem addSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem commitChangesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem revertToPreviousToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem xmlToolStripMenuItem;
         public System.Windows.Forms.ProgressBar THActionProgressBar;
         public System.Windows.Forms.Label THInfolabel;
         private System.Windows.Forms.ToolStripMenuItem fixCellSpecialSymbolsToolStripMenuItem;
@@ -1685,13 +1646,11 @@
         private System.Windows.Forms.Button THbtnMainResetTable;
         public System.Windows.Forms.RichTextBox THTargetRichTextBox;
         public System.Windows.Forms.RichTextBox THSourceRichTextBox;
-        private System.Windows.Forms.ToolStripMenuItem rPGMakerTransPatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toUPPERCASEAllToolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem firstCharacterToUppercaseAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem2;
         internal System.Windows.Forms.ToolStripMenuItem translationInteruptToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem translationInteruptToolStripMenuItem1;
-        internal System.Windows.Forms.ToolStripMenuItem loadTranslationFromToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem EditToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem ViewToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem OpenInWebToolStripMenuItem;
@@ -1767,7 +1726,6 @@
         private System.Windows.Forms.ToolStripMenuItem splitLinesWhichLongerOfLimitALLToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fixMessagesForAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem getAndSaveStaticToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showCharCategoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToCustomDBToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyNameToolStripMenuItem;
