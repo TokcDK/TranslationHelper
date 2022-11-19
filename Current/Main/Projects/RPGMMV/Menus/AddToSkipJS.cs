@@ -49,17 +49,13 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
                 }
 
                 //check if name already exists in list
-                if (!SkipJSList.Contains(names) && !SkipJSOveralList.Contains(names))
-                {
-                    changed = true;
-                    SkipJSOveralList.Add(names);
-                }
+                if (SkipJSList.Contains(names) || SkipJSOveralList.Contains(names)) continue;
+
+                changed = true;
+                SkipJSOveralList.Add(names);
             }
 
-            if (!changed)
-            {
-                return;
-            }
+            if (!changed) return;
 
             //write list
             File.WriteAllLines(THSettings.RPGMakerMVSkipjsRulesFilePath, SkipJSOveralList);
@@ -72,19 +68,14 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
         /// <param name="skipjsfilePath"></param>
         private static void SetSkipJSList(HashSet<string> SkipJSList, string skipjsfilePath)
         {
-            if (!File.Exists(skipjsfilePath))
-            {
-                return;
-            }
+            if (!File.Exists(skipjsfilePath)) return;
 
             var skipjs = File.ReadAllLines(skipjsfilePath);
             foreach (var line in skipjs)
             {
                 var jsfile = line.Trim();
-                if (jsfile.Length == 0 || jsfile[0] == ';' || SkipJSList.Contains(jsfile))
-                {
-                    continue;
-                }
+                if (jsfile.Length == 0 || jsfile[0] == ';' || SkipJSList.Contains(jsfile)) continue;
+
                 SkipJSList.Add(jsfile);
             }
         }
