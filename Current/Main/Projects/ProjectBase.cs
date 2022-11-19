@@ -752,16 +752,16 @@ namespace TranslationHelper.Projects
         /// Main menus which need to be added for the project
         /// </summary>
         /// <returns></returns>
-        internal virtual List<IMainMenuItem> MainMenuItemMenusList() { return new List<IMainMenuItem>(); }
+        internal virtual IMainMenuItem[] MainMenuItemMenusList() { return Array.Empty<IMainMenuItem>(); }
         /// <summary>
         /// Files list item menus which must be added for the project
         /// </summary>
         /// <returns></returns>
-        internal virtual List<IFileListMenuItem> FilesListItemMenusList() { return new List<IFileListMenuItem>(); }
+        internal virtual IFileListMenuItem[] FilesListItemMenusList() { return Array.Empty<IFileListMenuItem>(); }
         /// <summary>
         /// FileRow menus which must be added for the project
         /// </summary>
         /// <returns></returns>
-        internal virtual List<IFileRowMenuItem> FileRowItemMenusList() { return new List<IFileRowMenuItem>(); }
+        internal virtual IFileRowMenuItem[] FileRowItemMenusList() { return Array.Empty<IFileRowMenuItem>(); }
     }
 }

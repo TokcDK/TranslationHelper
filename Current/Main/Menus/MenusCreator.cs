@@ -21,7 +21,7 @@ namespace TranslationHelper.Menus
             //Load Menus
             string contextMenuName = T._("Project");
 
-            foreach (var parent in new Dictionary<ContextMenuStrip, List<IMenuItem>>()
+            foreach (var parent in new Dictionary<ContextMenuStrip, IMenuItem[]>()
             {
                 { AppData.Main.CMSFilesList, AppData.CurrentProject.FilesListItemMenusList() },
                 { AppData.Main.THFileElementsDataGridViewContextMenuStrip, AppData.CurrentProject.FileRowItemMenusList() }
@@ -40,7 +40,7 @@ namespace TranslationHelper.Menus
 
                 var contextMenuList = parent.Value;
 
-                if (contextMenuList.Count == 0) continue;
+                if (contextMenuList.Length == 0) continue;
 
                 // create main category
                 var contextMenuProjectCategory = new ToolStripMenuItem
