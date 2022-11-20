@@ -1,4 +1,4 @@
-﻿namespace TranslationHelper.Menus.MainMenus.File
+﻿namespace TranslationHelper.Menus.MainMenus.Edit
 {
     public abstract class MainMenuEditSubItemBase : MainMenuItemBase
     {

@@ -9,21 +9,18 @@ using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects.RPGMTrans;
 
-namespace TranslationHelper.Menus.MainMenus.File
+namespace TranslationHelper.Menus.MainMenus.Edit
 {
-    internal class MenuItemOpenInWeb : IMainMenuItem
+    internal class MenuItemOpenInWeb : MainMenuEditSubItemBase
     {
-        public string ParentMenuName => T._("Edit");
+        public override string Text => T._("Open in Web");
 
-        public string Text => T._("Open in Web");
+        public override string Description => T._("Open selected rows in web service");
 
-        public string Description => T._("Open selected rows in web service");
-
-        public string CategoryName => "";
-
-        public void OnClick(object sender, EventArgs e)
+        public override void OnClick(object sender, EventArgs e)
         {
             _ = new OpenInWeb().Selected();
         }

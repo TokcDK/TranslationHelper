@@ -349,6 +349,11 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuEditSubBase.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemOpenInWeb.cs" />
+    <Compile Include="Menus\MainMenus\Edit\Online Translate\MainMenuFileSubItemExportBase.cs" />
+    <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateSelected.cs" />
+    <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateInterupt.cs" />
+    <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateTable.cs" />
+    <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateAll.cs" />
     <Compile Include="Menus\MainMenus\File\Export\MainMenuFileSubItemExportBase.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MainMenuFileSubItemImportBase.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MenuItemExportToRPGMakerTransPatch.cs" />
