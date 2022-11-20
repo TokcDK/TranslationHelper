@@ -91,18 +91,52 @@ namespace TranslationHelper.Functions
             AppData.Main.IsOpeningInProcess = false;
         }
 
+        public class FormatFilterData
+        {
+            public string Name { get; set; }
+            public string[] ExtensionMasks { get; set; }
+        }
+
+        static IEnumerable<FormatFilterData> GetFormatsData()
+        {
+            foreach (var format in GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFormat>())
+            {
+                if (string.IsNullOrWhiteSpace(format.Extension)) continue;
+
+                var formatData = new FormatFilterData();
+
+                formatData.Name = format.Name;
+                if (string.IsNullOrWhiteSpace(formatData.Name))
+                {
+                    formatData.Name = format
+                        .GetType()
+                        .ToString()
+                        .Substring($"{nameof(TranslationHelper)}.{nameof(TranslationHelper.Formats)}.".Length);
+                }
+
+                formatData.ExtensionMasks = format.Extension
+                    .Split(',')
+                    .Where(e => e.Length > 0)
+                    .Select(e => (e[0] == '.' ? "*" : "") + e)
+                    .ToArray();
+
+                yield return formatData;
+            }
+        }
+
         private static string GetFilters()
         {
-            var filtersFromFormats = string.Join("|",
-                        GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFormat>()
-                        .Where(f => !string.IsNullOrWhiteSpace(f.Extension))
-                        .Select(f =>
-                        (!string.IsNullOrWhiteSpace(f.Name) ? f.Name : f.GetType().ToString().Substring($"{nameof(TranslationHelper)}.{nameof(TranslationHelper.Formats)}.".Length))
-                        + "|"
-                        + string.Join(";", f.Extension.Split(',').Where(e => e.Length > 0).Select(e => (e[0] == '.' ? "*" : "") + e))
-                        )
-                        .Distinct());
-            return filtersFromFormats + "|RPGMakerTrans patch|RPGMKTRANSPATCH|Application EXE|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
+            var formatsDataList = GetFormatsData().ToArray();
+
+            var filtersFromFormats = "Found formats|" + string.Join(";",
+                        formatsDataList
+                        .Select(d => string.Join(";", d.ExtensionMasks))
+                        );
+            var filtersFromFormatsSplitted = string.Join("|",
+                        formatsDataList
+                        .Select(d => $"{d.Name}|{string.Join(";", d.ExtensionMasks)}")
+                        );
+            return $"{filtersFromFormats}|{filtersFromFormatsSplitted}|RPGMakerTrans patch|RPGMKTRANSPATCH|Application EXE|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
         }
 
         private static string GetCorrectedGameDIr(string tHSelectedGameDir)
