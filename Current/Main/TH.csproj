@@ -347,6 +347,7 @@
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlock.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Menus\MainMenus\Edit\MenuItemOpenInWeb.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MenuItemExportToRPGMakerTransPatch.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemTestGetXUATranslation.cs" />
     <Compile Include="Menus\MainMenus\File\Export\MenuItemExportToRPGMakerTransPatch.cs" />
