@@ -174,7 +174,6 @@ namespace TranslationHelper
             this.fileToolStripMenuItem.Text = T._("File");
             //Menu Edit
             this.EditToolStripMenuItem.Text = T._("Edit");
-            this.OpenInWebToolStripMenuItem.Text = T._("Open in Web");
             this.tryToTranslateOnlineToolStripMenuItem.Text = T._("Translate Online");
             this.SelectedToolStripMenuItem1.Text = T._("Selected");
             this.TableToolStripMenuItem1.Text = T._("Table");
@@ -487,8 +486,6 @@ namespace TranslationHelper
                 THTargetRichTextBox.Enabled = true;
             }
 
-
-            OpenInWebToolStripMenuItem.Enabled = true;
             SelectedToolStripMenuItem1.Enabled = true;
             TableToolStripMenuItem1.Enabled = true;
             FixCellsSelectedToolStripMenuItem.Enabled = true;
