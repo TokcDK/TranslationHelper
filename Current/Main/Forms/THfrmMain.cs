@@ -2632,11 +2632,6 @@ namespace TranslationHelper
             _ = new MakeTranslatedCopyIfFileWithTheNameExists().AllT();
         }
 
-        private void RPGMakerLikeTXTToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new RpgMakerLikeTxt().All();
-        }
-
         private void ClearTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new ClearCells().TableT();
@@ -2675,62 +2670,6 @@ namespace TranslationHelper
         private async void fixInstancesOfNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             await new FixInstancesOfName().AllT();
-        }
-
-        private void pOFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (OpenFileDialog d = new OpenFileDialog())
-            {
-                if (d.ShowDialog() != DialogResult.OK) return;
-
-                if (string.IsNullOrWhiteSpace(d.FileName) || !File.Exists(d.FileName)) return;
-
-                Dictionary<string, string> pairs = new Dictionary<string, string>();
-
-                using (StreamReader sr = new StreamReader(d.FileName))
-                {
-                    string line;
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        if (!line.StartsWith("msgid")) continue;
-
-                        var o = Regex.Match(line, @"^msgid \""(.*)\""$").Groups[1].Value;
-                        while ((line = sr.ReadLine()) != null && line.StartsWith("\""))
-                        {
-                            o += Regex.Match(line, @"^\""(.*)\""$").Groups[1].Value;
-                        }
-                        if (string.IsNullOrWhiteSpace(o)) continue;
-
-                        //if ((line = sr.ReadLine()) == null) continue;
-                        if (string.IsNullOrEmpty(line)) continue;
-                        if (!line.StartsWith("msgstr")) continue;
-
-                        var t = Regex.Match(line, @"^msgstr \""(.*)\""$").Groups[1].Value;
-                        while ((line = sr.ReadLine()) != null && line.StartsWith("\""))
-                        {
-                            t += Regex.Match(line, @"^\""(.*)\""$").Groups[1].Value;
-                        }
-                        if (string.IsNullOrWhiteSpace(t)) continue;
-                        //if (t == o) continue;
-
-                        pairs.Add(o, t);
-                    }
-                }
-
-                foreach (DataTable table in AppData.CurrentProject.FilesContent.Tables)
-                {
-                    foreach (DataRow row in table.Rows)
-                    {
-                        var cellValue = row[THSettings.TranslationColumnName] + "";
-                        if (cellValue.Length > 0) continue;
-
-                        var cellOriginalValue = row[THSettings.OriginalColumnName] + "";
-                        if (!pairs.ContainsKey(cellOriginalValue)) continue;
-
-                        row[THSettings.TranslationColumnName] = pairs[cellOriginalValue];
-                    }
-                }
-            }
         }
 
         // commented because files list events using from fileslistcontrollistbox class
