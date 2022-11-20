@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Menus.MenuTypes;
+using TranslationHelper.Menus.FileRowMenus;
 
 namespace TranslationHelper.Projects.WolfRPG.Menus
 {

@@ -8,22 +8,18 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemLoadDB : IMainMenuItem
+    internal class MenuItemLoadDB : MainMenuFileSubItemBase
     {
-        public string ParentMenuName => T._("File");
 
-        public string Text => T._("Load DB");
+        public override string Text => T._("Load DB");
 
-        public string Description => T._("Load translated strings from database file if exist");
+        public override string Description => T._("Load translated strings from database file if exist");
 
-        public string CategoryName => "";
-
-        public void OnClick(object sender, EventArgs e)
+        public override void OnClick(object sender, EventArgs e)
         {
             AppData.Main.UnLockDBLoad(false);
             AppData.Main.LoadDB();

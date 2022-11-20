@@ -10,22 +10,15 @@ using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemTestGetXUATranslation : IMainMenuItem
+    internal class MenuItemTestGetXUATranslation : MainMenuFileSubItemBase
     {
-        public string ParentMenuName => T._("File");
+        public override string Text => "test get xua translation";
 
-        public string Text => "test get xua translation";
-
-        public string Description => "";
-
-        public string CategoryName => "";
-
-        public void OnClick(object sender, EventArgs e)
+        public override void OnClick(object sender, EventArgs e)
         {
             //get static XUA translation
             using (var wc = new WebClient())

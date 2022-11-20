@@ -347,8 +347,12 @@
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlock.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Menus\MainMenus\Edit\MainMenuEditSubBase.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemOpenInWeb.cs" />
+    <Compile Include="Menus\MainMenus\File\Export\MainMenuFileSubItemExportBase.cs" />
+    <Compile Include="Menus\MainMenus\File\Import\MainMenuFileSubItemImportBase.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MenuItemExportToRPGMakerTransPatch.cs" />
+    <Compile Include="Menus\MainMenus\File\MainMenuFileSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemTestGetXUATranslation.cs" />
     <Compile Include="Menus\MainMenus\File\Export\MenuItemExportToRPGMakerTransPatch.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemXOREncript.cs" />
@@ -360,6 +364,7 @@
     <Compile Include="Menus\MainMenus\File\MenuItemSaveDB.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemWriteTranslation.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemOpen.cs" />
+    <Compile Include="Menus\MainMenus\MainMenuItemBase.cs" />
     <Compile Include="Menus\MenusCreator.cs" />
     <Compile Include="Menus\MenusExtensions.cs" />
     <Compile Include="Menus\FileRowMenus\IFileRowItemMenu.cs" />

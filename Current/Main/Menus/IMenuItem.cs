@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace TranslationHelper.Menus.MenuTypes
 {
@@ -27,5 +28,10 @@ namespace TranslationHelper.Menus.MenuTypes
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void OnClick(object sender, EventArgs e);
+
+        /// <summary>
+        /// Shortcut keys to activate the menu
+        /// </summary>
+        Keys ShortcutKeys { get; }
     }
 }

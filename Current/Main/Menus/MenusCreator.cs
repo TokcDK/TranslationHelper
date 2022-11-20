@@ -54,7 +54,8 @@ namespace TranslationHelper.Menus
                     var menu = new ToolStripMenuItem
                     {
                         Text = contextMenu.Text,
-                        ToolTipText = contextMenu.Description
+                        ToolTipText = contextMenu.Description,
+                        ShortcutKeys = contextMenu.ShortcutKeys
                     };
 
                     //Register click event

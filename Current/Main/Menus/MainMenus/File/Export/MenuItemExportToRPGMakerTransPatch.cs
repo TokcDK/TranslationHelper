@@ -9,22 +9,17 @@ using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File.Export
 {
-    internal class MenuItemExportToRPGMakerTransPatch : IMainMenuItem
+    internal class MenuItemExportToRPGMakerTransPatch : MainMenuFileSubItemExportBase
     {
-        public string ParentMenuName => T._("File");
+        public override string Text => T._("Export translation to RPG Maker Trans patch");
 
-        public string Text => T._("Export translation to RPG Maker Trans patch");
+        public override string Description => "";
 
-        public string Description => "";
-
-        public string CategoryName => "Export";
-
-        public void OnClick(object sender, EventArgs e)
+        public override void OnClick(object sender, EventArgs e)
         {
             _ = new RpgMakerLikeTxt().All();
         }

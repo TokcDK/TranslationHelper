@@ -8,22 +8,17 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemSaveDB : IMainMenuItem
+    internal class MenuItemSaveDB : MainMenuFileSubItemBase
     {
-        public string ParentMenuName => T._("File");
+        public override string Text => T._("Save DB");
 
-        public string Text => T._("Save DB");
+        public override string Description => T._("Save translated strings into database file");
 
-        public string Description => T._("Save translated strings into database file");
-
-        public string CategoryName => "";
-
-        public async void OnClick(object sender, EventArgs e)
+        public override async void OnClick(object sender, EventArgs e)
         {
             var path = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
             AppData.Main.lastautosavepath = path;

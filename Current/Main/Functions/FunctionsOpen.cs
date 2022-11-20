@@ -300,11 +300,6 @@ namespace TranslationHelper.Functions
 
             AppData.Main.EditToolStripMenuItem.Enabled = true;
             AppData.Main.ViewToolStripMenuItem.Enabled = true;
-            AppData.Main.LoadTranslationToolStripMenuItem.Enabled = true;
-            AppData.Main.LoadTrasnlationAsToolStripMenuItem.Enabled = true;
-            AppData.Main.LoadTrasnlationAsForcedToolStripMenuItem.Enabled = true;
-            AppData.Main.ExportToolStripMenuItem1.Enabled = true;
-            AppData.Main.runTestGameToolStripMenuItem.Enabled = AppData.CurrentProject != null && AppData.CurrentProject.IsTestRunEnabled;
             AppData.Main.OpenProjectsDirToolStripMenuItem.Enabled = true;
             AppData.Main.OpenTranslationRulesFileToolStripMenuItem.Enabled = true;
             AppData.Main.OpenCellFixesFileToolStripMenuItem.Enabled = true;

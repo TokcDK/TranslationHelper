@@ -5,21 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
-using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemWriteTranslation : IMainMenuItem
+    internal class MenuItemWriteTranslation : MainMenuFileSubItemBase
     {
-        public string ParentMenuName => T._("File");
+        public override string Text => T._("Write translation");
 
-        public string Text => T._("Write translation");
+        public override string Description => T._("Write traslated strings back into source files");
 
-        public string Description => T._("Write traslated strings back into source files");
-
-        public string CategoryName => "";
-
-        public async void OnClick(object sender, EventArgs e)
+        public override async void OnClick(object sender, EventArgs e)
         {
             if (AppData.CurrentProject.DontLoadDuplicates 
                 && AppData.CurrentProject.TablesLinesDict != null 

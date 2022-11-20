@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TranslationHelper.Menus.MenuTypes;
 
-namespace TranslationHelper.Menus.MenuTypes
+namespace TranslationHelper.Menus.MainMenus
 {
     public interface IMainMenuItem : IMenuItem
     {

@@ -8,22 +8,15 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemXOREncript : IMainMenuItem
+    internal class MenuItemXOREncript : MainMenuFileSubItemBase
     {
-        public string ParentMenuName => T._("File");
+        public override string Text => "test xor encrypt";
 
-        public string Text => "test xor encrypt";
-
-        public string Description => "";
-
-        public string CategoryName => "";
-
-        public void OnClick(object sender, EventArgs e)
+        public override void OnClick(object sender, EventArgs e)
         {
             tests.Xorfornscript.EncryptXor();
         }

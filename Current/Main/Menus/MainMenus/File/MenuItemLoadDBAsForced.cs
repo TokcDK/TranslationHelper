@@ -9,22 +9,17 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemLoadDBAsForced : IMainMenuItem
+    internal class MenuItemLoadDBAsForced : MainMenuFileSubItemBase
     {
-        public string ParentMenuName => T._("File");
+        public override string Text => T._("Load DB as (forced)");
 
-        public string Text => T._("Load DB as (forced)");
+        public override string Description => T._("Load translated strings from database file of selected location");
 
-        public string Description => T._("Load translated strings from database file of selected location");
-
-        public string CategoryName => "";
-
-        public async void OnClick(object sender, EventArgs e)
+        public override void OnClick(object sender, EventArgs e)
         {
             AppData.Main.LoadDBAs(true);
         }

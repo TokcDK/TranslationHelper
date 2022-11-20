@@ -9,22 +9,17 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemSaveDBTo : IMainMenuItem
+    internal class MenuItemSaveDBTo : MainMenuFileSubItemBase
     {
-        public string ParentMenuName => T._("File");
+        public override string Text => T._("Save DB to");
 
-        public string Text => T._("Save DB to");
+        public override string Description => T._("Save translated strings into database file into selected locatin");
 
-        public string Description => T._("Save translated strings into database file into selected locatin");
-
-        public string CategoryName => "";
-
-        public async void OnClick(object sender, EventArgs e)
+        public override async void OnClick(object sender, EventArgs e)
         {
             using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
             {

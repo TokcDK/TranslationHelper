@@ -11,7 +11,9 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Functions;
-using TranslationHelper.Menus.MenuTypes;
+using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.FilesListMenus;
+using TranslationHelper.Menus.MainMenus;
 
 namespace TranslationHelper.Projects
 {

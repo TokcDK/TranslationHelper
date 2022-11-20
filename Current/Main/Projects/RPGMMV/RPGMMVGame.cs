@@ -11,7 +11,7 @@ using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Formats.RPGMMV.Other;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesLinesDict;
-using TranslationHelper.Menus.MenuTypes;
+using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Projects.RPGMMV.Menus;
 
 namespace TranslationHelper.Projects.RPGMMV

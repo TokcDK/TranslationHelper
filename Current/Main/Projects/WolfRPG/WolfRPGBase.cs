@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.MenuTypes;
+using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Projects.WolfRPG.Menus;
 
 namespace TranslationHelper.Projects.WolfRPG
