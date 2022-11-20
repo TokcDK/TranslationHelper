@@ -8,11 +8,12 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Menus.MainMenus.File.Other;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemXOREncript : MainMenuFileSubItemBase
+    internal class MenuItemXOREncript : MainMenuFileSubItemOtherBase
     {
         public override string Text => "test xor encrypt";
 

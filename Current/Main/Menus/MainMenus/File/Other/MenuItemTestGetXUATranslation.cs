@@ -10,11 +10,12 @@ using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Menus.MainMenus.File.Other;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemTestGetXUATranslation : MainMenuFileSubItemBase
+    internal class MenuItemTestGetXUATranslation : MainMenuFileSubItemOtherBase
     {
         public override string Text => "test get xua translation";
 

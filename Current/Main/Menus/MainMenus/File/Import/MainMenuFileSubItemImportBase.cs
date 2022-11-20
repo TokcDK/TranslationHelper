@@ -2,6 +2,6 @@
 {
     public abstract class MainMenuFileSubItemImportBase : MainMenuFileSubItemBase
     {
-        public override string CategoryName => T._("Imxport");
+        public override string CategoryName => T._("Import");
     }
 }
