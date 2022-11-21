@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
+using TranslationHelper.Menus.FileRowMenus;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 {
-    internal class MenuItemOnlineTranslateAll : MainMenuFileSubItemOnlineTranslateBase
+    internal class MenuItemOnlineTranslateAll : MainMenuFileSubItemOnlineTranslateBase, IFileRowMenuItem
     {
         public override string Text => T._("All");
 
