@@ -1933,12 +1933,6 @@ namespace TranslationHelper
             ControlsSwitch();
         }
 
-        private void CompleteRomajiotherLinesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new CompleteRomajiotherLines().AllT();
-            _ = new SetOrigToTransIfSoundsText().AllT();
-        }
-
         private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (!AppSettings.ProjectIsOpened)
@@ -1982,11 +1976,6 @@ namespace TranslationHelper
         private void ShowCheckboxvalueToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = MessageBox.Show(AppSettings.EnableTranslationCache.ToString(CultureInfo.InvariantCulture));
-        }
-
-        private async void ForceSameTranslationForIdenticalToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            await Task.Run(() => new AutoSameForSimularForce().Selected()).ConfigureAwait(false);
         }
 
         private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
