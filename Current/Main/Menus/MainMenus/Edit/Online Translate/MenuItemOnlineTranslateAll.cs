@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Menus.FileRowMenus;
@@ -17,7 +13,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 
         public override void OnClick(object sender, EventArgs e)
         {
-            var trans = new Thread((obj) => new OnlineTranslateNew().All());
+            var trans = new Thread(Param);
             //
             //..и фикс ошибки:
             //System.TypeInitializationException: Инициализатор типа "TranslationHelper.GoogleAPI" выдал исключение. ---> System.Threading.ThreadStateException: Создание экземпляра элемента управления ActiveX '8856f961-340a-11d0-a96b-00c04fd705a2' невозможно: текущий поток не находится в однопоточном контейнере
@@ -26,5 +22,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
             //но при выборе только одной строчки почему-то кидает исключение
             trans.Start();
         }
+
+        protected virtual ParameterizedThreadStart Param { get => (obj) => new OnlineTranslateNew().All(); }
     }
 }
