@@ -1474,74 +1474,6 @@ namespace TranslationHelper
             }
         }
 
-        //==============вырезать, копировать, вставить, для одной или нескольких ячеек
-
-        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (DGVCellInEditMode)//если ячейка в режиме редактирования
-            {
-                //вылючение действий для ячеек при выходе из режима редактирования
-                ControlsSwitch();
-            }
-
-            if (THFileElementsDataGridView == null)
-            {
-            }
-            else
-            {
-                // Ensure that text is currently selected in the text box.    
-                if (THFileElementsDataGridView.SelectedCells.Count > 0)
-                {
-                    //Copy to clipboard
-                    FunctionsCopyPaste.CopyToClipboard(THFileElementsDataGridView);
-
-                    //Clear selected cells                
-                    //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
-                    if (THFileElementsDataGridView.CurrentCell.ReadOnly)
-                    {
-                    }
-                    else
-                    {
-                        foreach (DataGridViewCell dgvCell in THFileElementsDataGridView.SelectedCells)
-                        {
-                            dgvCell.Value = string.Empty;
-                        }
-                    }
-
-                }
-            }
-        }
-        private void CopyOriginalToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!IsValidToCopy())
-            {
-                return;
-            }
-
-            new CopyOriginals().Selected();
-        }
-
-        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!IsValidToCopy())
-            {
-                return;
-            }
-
-            FunctionsCopyPaste.CopyToClipboard(THFileElementsDataGridView);
-        }
-
-        private bool IsValidToCopy()
-        {
-            if (DGVCellInEditMode)//если ячейка в режиме редактирования
-            {
-                //вылючение действий для ячеек при выходе из режима редактирования
-                ControlsSwitch();
-            }
-
-            return THFileElementsDataGridView != null && THFileElementsDataGridView.SelectedCells.Count > 0;
-        }
-
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DGVCellInEditMode)//если ячейка в режиме редактирования
@@ -1551,28 +1483,6 @@ namespace TranslationHelper
             }
 
             new PasteTranslation().Selected();
-
-            ////LogToFile("Paste Enter");
-            //if (THFileElementsDataGridView == null)
-            //{
-            //}
-            //else
-            //{
-            //    //LogToFile("DGV is not empty");
-            //    // Determine if there is any text in the Clipboard to paste into the text box. 
-            //    if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text) == true)
-            //    {
-            //        //LogToFile("GetDataPresent is true");
-            //        // Determine if any text is selected in the text box. 
-            //        if (THFileElementsDataGridView.SelectedCells.Count > 0)
-            //        {
-            //            //LogToFile("DGV sel cells > 0");
-            //            //Perform paste Operation
-            //            FunctionsCopyPaste.PasteClipboardValue(THFileElementsDataGridView);
-            //        }
-            //    }
-            //}
-            //LogToFile("Paste End", true);
         }
 
         private void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1587,8 +1497,6 @@ namespace TranslationHelper
         {
             _ = new ClearCells().AllT();
         }
-
-        //==============вырезать, копировать, вставить, для одной или нескольких ячеек
 
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
         {

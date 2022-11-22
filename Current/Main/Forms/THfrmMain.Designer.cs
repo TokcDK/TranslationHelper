@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,9 +43,6 @@
             this.allIfExistsFiledirWithNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TSMISetOriginalToTranslationAll = new System.Windows.Forms.ToolStripMenuItem();
             this.TSMISetOriginalToTranslationTable = new System.Windows.Forms.ToolStripMenuItem();
-            this.CutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.CopyCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CopyOriginalCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PasteCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ClearSelectedCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ClearTableCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,9 +106,6 @@
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.selectedForceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OriginalToTransalationContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CopyCMStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CopyOriginalCMStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CleanSelectedCellsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem14 = new System.Windows.Forms.ToolStripMenuItem();
@@ -201,9 +195,6 @@
             this.EditToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fixCellSpecialSymbolsToolStripMenuItem,
             this.SetOriginalValueToTranslationToolStripMenuItem,
-            this.CutToolStripMenuItem1,
-            this.CopyCellValuesToolStripMenuItem,
-            this.CopyOriginalCellValuesToolStripMenuItem,
             this.PasteCellValuesToolStripMenuItem,
             this.ClearSelectedCellsToolStripMenuItem,
             this.ToUPPERCASEToolStripMenuItem,
@@ -289,33 +280,6 @@
             this.TSMISetOriginalToTranslationTable.Size = new System.Drawing.Size(230, 22);
             this.TSMISetOriginalToTranslationTable.Text = "Table";
             this.TSMISetOriginalToTranslationTable.Click += new System.EventHandler(this.TSMISetOriginalToTranslationTable_Click);
-            // 
-            // CutToolStripMenuItem1
-            // 
-            this.CutToolStripMenuItem1.Enabled = false;
-            this.CutToolStripMenuItem1.Name = "CutToolStripMenuItem1";
-            this.CutToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.CutToolStripMenuItem1.Size = new System.Drawing.Size(296, 22);
-            this.CutToolStripMenuItem1.Text = "Cut";
-            this.CutToolStripMenuItem1.Click += new System.EventHandler(this.CutToolStripMenuItem_Click);
-            // 
-            // CopyCellValuesToolStripMenuItem
-            // 
-            this.CopyCellValuesToolStripMenuItem.Enabled = false;
-            this.CopyCellValuesToolStripMenuItem.Name = "CopyCellValuesToolStripMenuItem";
-            this.CopyCellValuesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.CopyCellValuesToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
-            this.CopyCellValuesToolStripMenuItem.Text = "Copy";
-            this.CopyCellValuesToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
-            // 
-            // CopyOriginalCellValuesToolStripMenuItem
-            // 
-            this.CopyOriginalCellValuesToolStripMenuItem.Name = "CopyOriginalCellValuesToolStripMenuItem";
-            this.CopyOriginalCellValuesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.C)));
-            this.CopyOriginalCellValuesToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
-            this.CopyOriginalCellValuesToolStripMenuItem.Text = "Copy original";
-            this.CopyOriginalCellValuesToolStripMenuItem.Click += new System.EventHandler(this.CopyOriginalToolStripMenuItem_Click);
             // 
             // PasteCellValuesToolStripMenuItem
             // 
@@ -742,28 +706,28 @@
             this.THFiltersDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFiltersDataGridView.ColumnHeadersVisible = false;
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle16.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle1;
             this.THFiltersDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.THFiltersDataGridView.Enabled = false;
             this.THFiltersDataGridView.Location = new System.Drawing.Point(1, 1);
             this.THFiltersDataGridView.Margin = new System.Windows.Forms.Padding(1);
             this.THFiltersDataGridView.Name = "THFiltersDataGridView";
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle17.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle17;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.THFiltersDataGridView.RowTemplate.Height = 23;
             this.THFiltersDataGridView.Size = new System.Drawing.Size(621, 21);
             this.THFiltersDataGridView.TabIndex = 3;
@@ -800,8 +764,8 @@
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(1, 26);
             this.THFileElementsDataGridView.Margin = new System.Windows.Forms.Padding(1, 1, 3, 1);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle18;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(641, 325);
             this.THFileElementsDataGridView.TabIndex = 2;
@@ -869,9 +833,6 @@
             this.THFileElementsDataGridViewContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem2,
             this.OriginalToTransalationContextToolStripMenuItem,
-            this.CutToolStripMenuItem,
-            this.CopyCMStripMenuItem,
-            this.CopyOriginalCMStripMenuItem,
             this.PasteToolStripMenuItem,
             this.CleanSelectedCellsToolStripMenuItem1,
             this.ToolStripMenuItem14,
@@ -884,7 +845,7 @@
             this.addToCustomDBToolStripMenuItem,
             this.trimEndToolStripMenuItem1});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 356);
+            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 290);
             // 
             // toolStripMenuItem2
             // 
@@ -936,29 +897,6 @@
             this.OriginalToTransalationContextToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.OriginalToTransalationContextToolStripMenuItem.Text = "Original=Translation";
             this.OriginalToTransalationContextToolStripMenuItem.Click += new System.EventHandler(this.SetOriginalValueToTranslationToolStripMenuItem_Click);
-            // 
-            // CutToolStripMenuItem
-            // 
-            this.CutToolStripMenuItem.Enabled = false;
-            this.CutToolStripMenuItem.Name = "CutToolStripMenuItem";
-            this.CutToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.CutToolStripMenuItem.Text = "Cut";
-            this.CutToolStripMenuItem.Click += new System.EventHandler(this.CutToolStripMenuItem_Click);
-            // 
-            // CopyCMStripMenuItem
-            // 
-            this.CopyCMStripMenuItem.Enabled = false;
-            this.CopyCMStripMenuItem.Name = "CopyCMStripMenuItem";
-            this.CopyCMStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.CopyCMStripMenuItem.Text = "Copy";
-            this.CopyCMStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
-            // 
-            // CopyOriginalCMStripMenuItem
-            // 
-            this.CopyOriginalCMStripMenuItem.Name = "CopyOriginalCMStripMenuItem";
-            this.CopyOriginalCMStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.CopyOriginalCMStripMenuItem.Text = "Copy original";
-            this.CopyOriginalCMStripMenuItem.Click += new System.EventHandler(this.CopyOriginalToolStripMenuItem_Click);
             // 
             // PasteToolStripMenuItem
             // 
@@ -1424,11 +1362,7 @@
         internal System.Windows.Forms.ToolStripMenuItem ClearSelectedCellsToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem OriginalToTransalationContextToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem CleanSelectedCellsToolStripMenuItem1;
-        internal System.Windows.Forms.ToolStripMenuItem CutToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem CopyCMStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem PasteToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem CutToolStripMenuItem1;
-        internal System.Windows.Forms.ToolStripMenuItem CopyCellValuesToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem PasteCellValuesToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem ToUPPERCASEToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem FirstCharacterToUppercaseToolStripMenuItem;
@@ -1499,8 +1433,6 @@
         private System.Windows.Forms.ToolStripMenuItem trimEndToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem fixInstancesOfNameToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem CopyOriginalCMStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem CopyOriginalCellValuesToolStripMenuItem;
         internal System.Windows.Forms.ContextMenuStrip THFileElementsDataGridViewContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem pOFileToolStripMenuItem;
     }
