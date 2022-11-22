@@ -2363,11 +2363,6 @@ namespace TranslationHelper
             _ = Task.Run(() => new LoadRowDataToCustomDb().Selected()).ConfigureAwait(false);
         }
 
-        private void CopyNameToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Clipboard.SetText(THFilesList.CopySelectedNames());
-        }
-
         private void MakeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new MakeTranslatedCopyIfFileWithTheNameExists().AllT();
@@ -2401,11 +2396,6 @@ namespace TranslationHelper
         private void TrimEndToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             new TrimEndSpace().Selected();
-        }
-
-        private async void fixInstancesOfNameToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            await new FixInstancesOfName().AllT();
         }
 
         // commented because files list events using from fileslistcontrollistbox class

@@ -348,6 +348,7 @@
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Menus\FilesListMenus\FileListMenuItemBase.cs" />
+    <Compile Include="Menus\FilesListMenus\FileListMenuItemCopyName.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuEditSubBase.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemCompleteRomajiotherLines.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemForceSameTranslationForIdentical.cs" />
@@ -356,6 +357,7 @@
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextCopyOriginal.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextCopy.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextClearSelected.cs" />
+    <Compile Include="Menus\MainMenus\Edit\MenuItemRowFixNameInstance.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextPaste.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextCut.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemOpenInWeb.cs" />
