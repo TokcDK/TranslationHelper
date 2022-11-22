@@ -359,6 +359,7 @@
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextClearSelected.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowFixNameInstance.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowSearch.cs" />
+    <Compile Include="Menus\MainMenus\Edit\MenuItemRowMakeFileCopyWithTranslationName.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextPaste.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextCut.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemOpenInWeb.cs" />

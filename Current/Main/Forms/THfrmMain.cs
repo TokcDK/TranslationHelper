@@ -2275,7 +2275,6 @@ namespace TranslationHelper
 
         private void MakeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new MakeTranslatedCopyIfFileWithTheNameExists().AllT();
         }
 
         private void UPPERCASETableToolStripMenuItem1_Click(object sender, EventArgs e)

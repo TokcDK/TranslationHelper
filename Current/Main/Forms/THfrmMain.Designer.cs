@@ -52,7 +52,6 @@
             this.ToLowercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.allToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.LowercaseTableToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongestOfLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongerOfLimitALLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongerOfLimitTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,7 +62,6 @@
             this.fixMessagesForAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extraHardFixesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trimEndToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.allToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
@@ -191,12 +189,10 @@
             this.ToUPPERCASEToolStripMenuItem,
             this.FirstCharacterToUppercaseToolStripMenuItem,
             this.ToLowercaseToolStripMenuItem,
-            this.searchToolStripMenuItem,
             this.splitLinesWhichLongestOfLimitToolStripMenuItem,
             this.TSMIEnQuotes0,
             this.fixMessagesForSelectedToolStripMenuItem,
             this.extraHardFixesToolStripMenuItem,
-            this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem,
             this.trimEndToolStripMenuItem});
             this.EditToolStripMenuItem.Enabled = false;
             this.EditToolStripMenuItem.Name = "EditToolStripMenuItem";
@@ -210,7 +206,7 @@
             this.FixCellsTableToolStripMenuItem,
             this.allToolStripMenuItem});
             this.fixCellSpecialSymbolsToolStripMenuItem.Name = "fixCellSpecialSymbolsToolStripMenuItem";
-            this.fixCellSpecialSymbolsToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.fixCellSpecialSymbolsToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.fixCellSpecialSymbolsToolStripMenuItem.Text = "Fix cell special symbols";
             // 
             // FixCellsSelectedToolStripMenuItem
@@ -246,7 +242,7 @@
             this.TSMISetOriginalToTranslationTable});
             this.SetOriginalValueToTranslationToolStripMenuItem.Enabled = false;
             this.SetOriginalValueToTranslationToolStripMenuItem.Name = "SetOriginalValueToTranslationToolStripMenuItem";
-            this.SetOriginalValueToTranslationToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.SetOriginalValueToTranslationToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.SetOriginalValueToTranslationToolStripMenuItem.Text = "Original=Translation";
             this.SetOriginalValueToTranslationToolStripMenuItem.Click += new System.EventHandler(this.SetOriginalValueToTranslationToolStripMenuItem_Click);
             // 
@@ -278,7 +274,7 @@
             this.toUPPERCASETableToolStripMenuItem2});
             this.ToUPPERCASEToolStripMenuItem.Enabled = false;
             this.ToUPPERCASEToolStripMenuItem.Name = "ToUPPERCASEToolStripMenuItem";
-            this.ToUPPERCASEToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.ToUPPERCASEToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.ToUPPERCASEToolStripMenuItem.Text = "UPPERCASE";
             this.ToUPPERCASEToolStripMenuItem.Click += new System.EventHandler(this.ToUPPERCASEToolStripMenuItem_Click);
             // 
@@ -303,7 +299,7 @@
             this.firstCharacterToUppercaseTableToolStripMenuItem});
             this.FirstCharacterToUppercaseToolStripMenuItem.Enabled = false;
             this.FirstCharacterToUppercaseToolStripMenuItem.Name = "FirstCharacterToUppercaseToolStripMenuItem";
-            this.FirstCharacterToUppercaseToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.FirstCharacterToUppercaseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.FirstCharacterToUppercaseToolStripMenuItem.Text = "Uppercase";
             this.FirstCharacterToUppercaseToolStripMenuItem.Click += new System.EventHandler(this.FirstCharacterToUppercaseToolStripMenuItem_Click);
             // 
@@ -328,7 +324,7 @@
             this.LowercaseTableToolStripMenuItem4});
             this.ToLowercaseToolStripMenuItem.Enabled = false;
             this.ToLowercaseToolStripMenuItem.Name = "ToLowercaseToolStripMenuItem";
-            this.ToLowercaseToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.ToLowercaseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.ToLowercaseToolStripMenuItem.Text = "lowercase";
             this.ToLowercaseToolStripMenuItem.Click += new System.EventHandler(this.TolowercaseToolStripMenuItem_Click);
             // 
@@ -352,7 +348,7 @@
             this.splitLinesWhichLongerOfLimitALLToolStripMenuItem,
             this.splitLinesWhichLongerOfLimitTableToolStripMenuItem});
             this.splitLinesWhichLongestOfLimitToolStripMenuItem.Name = "splitLinesWhichLongestOfLimitToolStripMenuItem";
-            this.splitLinesWhichLongestOfLimitToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.splitLinesWhichLongestOfLimitToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.splitLinesWhichLongestOfLimitToolStripMenuItem.Text = "Split lines which longer of limit";
             this.splitLinesWhichLongestOfLimitToolStripMenuItem.Click += new System.EventHandler(this.SplitLinesWhichLongestOfLimitToolStripMenuItem_Click);
             // 
@@ -376,7 +372,7 @@
             this.TSMIEnQuotesAll,
             this.TSMIEnQuotesTable});
             this.TSMIEnQuotes0.Name = "TSMIEnQuotes0";
-            this.TSMIEnQuotes0.Size = new System.Drawing.Size(296, 22);
+            this.TSMIEnQuotes0.Size = new System.Drawing.Size(237, 22);
             this.TSMIEnQuotes0.Text = "ENQuotesToJP";
             this.TSMIEnQuotes0.Click += new System.EventHandler(this.TSMIEnQuotesToJp_Click);
             // 
@@ -400,7 +396,7 @@
             this.fixMessagesForAllToolStripMenuItem,
             this.tableToolStripMenuItem});
             this.fixMessagesForSelectedToolStripMenuItem.Name = "fixMessagesForSelectedToolStripMenuItem";
-            this.fixMessagesForSelectedToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.fixMessagesForSelectedToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.fixMessagesForSelectedToolStripMenuItem.Text = "Fix JP messages translation";
             this.fixMessagesForSelectedToolStripMenuItem.Click += new System.EventHandler(this.FixMessagesInTheTableToolStripMenuItem_Click);
             // 
@@ -421,16 +417,9 @@
             // extraHardFixesToolStripMenuItem
             // 
             this.extraHardFixesToolStripMenuItem.Name = "extraHardFixesToolStripMenuItem";
-            this.extraHardFixesToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.extraHardFixesToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.extraHardFixesToolStripMenuItem.Text = "Extra Fixes (All)";
             this.extraHardFixesToolStripMenuItem.Click += new System.EventHandler(this.ExtraFixesToolStripMenuItem_Click);
-            // 
-            // makeTranslatedFilecopyForExistOriginalsToolStripMenuItem
-            // 
-            this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem.Name = "makeTranslatedFilecopyForExistOriginalsToolStripMenuItem";
-            this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
-            this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem.Text = "Make translated filecopy for exist originals";
-            this.makeTranslatedFilecopyForExistOriginalsToolStripMenuItem.Click += new System.EventHandler(this.MakeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click);
             // 
             // trimEndToolStripMenuItem
             // 
@@ -438,7 +427,7 @@
             this.tableToolStripMenuItem2,
             this.allToolStripMenuItem3});
             this.trimEndToolStripMenuItem.Name = "trimEndToolStripMenuItem";
-            this.trimEndToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.trimEndToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.trimEndToolStripMenuItem.Text = "TrimEnd";
             // 
             // tableToolStripMenuItem2
@@ -1281,7 +1270,6 @@
         internal System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem14;
         internal System.Windows.Forms.ToolStripMenuItem UppercaseToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem LowercaseToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem splitLinesWhichLongestOfLimitToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem fixMessagesForSelectedToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem allIfExistsFiledirWithNameToolStripMenuItem;
@@ -1322,7 +1310,6 @@
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showCharCategoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToCustomDBToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem makeTranslatedFilecopyForExistOriginalsToolStripMenuItem;
         internal System.Windows.Forms.ContextMenuStrip CMSFilesList;
         internal System.Windows.Forms.ToolStripMenuItem OpenProjectsDirToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem OpenTranslationRulesFileToolStripMenuItem;
