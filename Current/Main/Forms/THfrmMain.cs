@@ -1607,35 +1607,6 @@ namespace TranslationHelper
         }
 
         internal THfrmSearch search;
-        private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (THFilesList.GetSelectedIndex() == -1) return;
-
-            try
-            {
-                if (search == null || search.IsDisposed)
-                {
-                    search = new THfrmSearch(THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
-                }
-
-                if (search.Visible)
-                {
-                    search.Activate();//помещает на передний план
-                    search.GetSelectedText();
-                }
-                else
-                {
-                    search.Show();
-                    search.GetSelectedText();
-                    //поместить на передний план
-                    //search.TopMost = true;
-                    //search.TopMost = false;
-                }
-            }
-            catch
-            {
-            }
-        }
 
         private void THMainResetTableButton_Click(object sender, EventArgs e)
         {

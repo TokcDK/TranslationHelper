@@ -346,14 +346,6 @@
             this.LowercaseTableToolStripMenuItem4.Text = "Table";
             this.LowercaseTableToolStripMenuItem4.Click += new System.EventHandler(this.LowercaseTableToolStripMenuItem_Click);
             // 
-            // searchToolStripMenuItem
-            // 
-            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
-            this.searchToolStripMenuItem.Text = "Search";
-            this.searchToolStripMenuItem.Click += new System.EventHandler(this.SearchToolStripMenuItem_Click);
-            // 
             // splitLinesWhichLongestOfLimitToolStripMenuItem
             // 
             this.splitLinesWhichLongestOfLimitToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
