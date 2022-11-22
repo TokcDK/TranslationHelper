@@ -19,9 +19,9 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 {
     internal class MenuItemRowFixNameInstance : MainMenuEditSubItemBase, IFileRowMenuItem
     {
-        public override string Text => T._("File by translation");
+        public override string Text => T._("Fix instances of name");
 
-        public override string Description => T._("Create copy of file in game dir with name like in translation if file with original name is exist");
+        public override string Description => T._("Fix instances of name");
 
         public override async void OnClick(object sender, EventArgs e)
         {
